@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 * {
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .nav__link a.active {
-    color: red;
+  background: #007bbb;
+  color: white;
 }
