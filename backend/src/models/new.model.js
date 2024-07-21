@@ -1,0 +1,39 @@
+const { default: mongoose } = require("mongoose");
+
+const newSchema = new mongoose.Schema({
+    specialtyID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Specialty',
+        required: true
+    },
+    title: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    content: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    author: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    viewCount: {
+        type: Number,
+        required: true
+    },
+    isHidden: {
+        type: Boolean,
+        default: false
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
+}
+);
+
+module.exports = mongoose.model('New', newSchema);
