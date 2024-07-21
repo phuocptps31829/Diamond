@@ -26,15 +26,16 @@ const branchSchema = new mongoose.Schema({
         required: true
     },
     coordinates: {
-        Ing: {
+        ing: {
             type: Number,
             required: true
         },
-        Lat: {
+        lat: {
             type: Number,
             required: true
         }
-    }, isDeleted: {
+    },
+    isDeleted: {
         type: Boolean,
         default: false
     }

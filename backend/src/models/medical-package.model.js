@@ -27,11 +27,11 @@ const medicalPackageSchema = new mongoose.Schema({
     },
     services: [
         {
-            servicesID: {
+            servicesID: [{
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Services',
                 required: true,
-            },
+            }],
             levelName: {
                 type: String,
                 trim: true,
@@ -49,14 +49,18 @@ const medicalPackageSchema = new mongoose.Schema({
                 type: String,
                 trim: true,
                 required: true
-            },
-            isDeleted: {
-                type: Boolean,
-                default: false
             }
 
         },
     ],
+    isHidden: {
+        type: Boolean,
+        default: false
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }
 );
 

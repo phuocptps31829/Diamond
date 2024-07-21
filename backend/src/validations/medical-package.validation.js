@@ -34,8 +34,8 @@ const medicalPackagePostValidator = checkSchema({
         exists: {
             errorMessage: 'Service ID is required'
         },
-        isMongoId: {
-            errorMessage: 'Invalid service ID'
+        isArray: {
+            errorMessage: 'service ID: must be an array'
         }
     },
     'service.*.levelName': {
@@ -74,6 +74,7 @@ const medicalPackagePostValidator = checkSchema({
 });
 
 const medicalPackageUpdateValidator = checkSchema({
+
     name: {
         exists: {
             errorMessage: 'Name is required'
@@ -105,8 +106,8 @@ const medicalPackageUpdateValidator = checkSchema({
         exists: {
             errorMessage: 'Service ID is required'
         },
-        isMongoId: {
-            errorMessage: 'Invalid service ID'
+        isArray: {
+            errorMessage: 'service ID: must be an array'
         }
     },
     'service.*.levelName': {
@@ -140,6 +141,7 @@ const medicalPackageUpdateValidator = checkSchema({
             errorMessage: 'Invalid service ID'
         }
     }
+
 });
 
 module.exports = {

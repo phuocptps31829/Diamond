@@ -46,12 +46,11 @@ const servicePostValidator = checkSchema({
     },
     duration: {
         exists: {
-            errorMessage: 'Duration is required'
+            errorMessage: 'Price is required'
         },
-        isString: {
-            errorMessage: 'Duration should be a string'
-        },
-        trim: true
+        isNumeric: {
+            errorMessage: 'Price should be a number'
+        }
     },
 
 });
@@ -100,14 +99,12 @@ const serviceUpdateValidator = checkSchema({
     },
     duration: {
         exists: {
-            errorMessage: 'Duration is required'
+            errorMessage: 'Price is required'
         },
-        isString: {
-            errorMessage: 'Duration should be a string'
-        },
-        trim: true
+        isNumeric: {
+            errorMessage: 'Price should be a number'
+        }
     },
-
 });
 
 module.exports = {

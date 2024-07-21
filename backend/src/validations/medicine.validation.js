@@ -3,6 +3,14 @@ const MedicineModel = require('../models/medicine.model');
 
 
 const medicinePostValidator = checkSchema({
+    medicineCategoryID: {
+        exists: {
+            errorMessage: 'MedicineCategory ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid medicineCategory ID'
+        }
+    },
     medicineCode: {
         exists: {
             errorMessage: 'MedicineCode is required'
@@ -52,10 +60,10 @@ const medicinePostValidator = checkSchema({
         exists: {
             errorMessage: 'Type is required'
         },
-        isIn: {
-            options: [['thuốc bột', 'thuốc viên', 'thuốc cao', 'thuốc mỡ', 'gel', 'dung dịch', 'hỗn dịch', 'nhũ dịch', 'xiro']],
-            errorMessage: "Invalid type. Must be one of 'thuốc bột', 'thuốc viên','thuốc cao', 'thuốc mỡ', 'gel','dung dịch', 'hỗn dịch', 'nhũ dịch', 'xiro'"
+        isString: {
+            errorMessage: 'Type should be a string'
         },
+        trim: true
     },
     instruction: {
         exists: {
@@ -79,6 +87,14 @@ const medicinePostValidator = checkSchema({
 });
 
 const medicineUpdateValidator = checkSchema({
+    medicineCategoryID: {
+        exists: {
+            errorMessage: 'MedicineCategory ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid medicineCategory ID'
+        }
+    },
     medicineCode: {
         exists: {
             errorMessage: 'MedicineCode is required'
@@ -128,10 +144,10 @@ const medicineUpdateValidator = checkSchema({
         exists: {
             errorMessage: 'Type is required'
         },
-        isIn: {
-            options: [['thuốc bột', 'thuốc viên', 'thuốc cao', 'thuốc mỡ', 'gel', 'dung dịch', 'hỗn dịch', 'nhũ dịch', 'xiro']],
-            errorMessage: "Invalid type. Must be one of 'thuốc bột', 'thuốc viên','thuốc cao', 'thuốc mỡ', 'gel','dung dịch', 'hỗn dịch', 'nhũ dịch', 'xiro'"
+        isString: {
+            errorMessage: 'Type should be a string'
         },
+        trim: true
     },
     instruction: {
         exists: {

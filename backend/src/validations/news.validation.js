@@ -1,8 +1,16 @@
 const { checkSchema } = require('express-validator');
-const NewModel = require('../models/new.model');
+const NewsModel = require('../models/news.model');
 
 
-const newPostValidator = checkSchema({
+const newsPostValidator = checkSchema({
+    specialtyID: {
+        exists: {
+            errorMessage: 'Specialty ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid specialty ID'
+        }
+    },
     title: {
         exists: {
             errorMessage: 'Title is required'
@@ -41,7 +49,15 @@ const newPostValidator = checkSchema({
 
 });
 
-const newUpdateValidator = checkSchema({
+const newsUpdateValidator = checkSchema({
+    specialtyID: {
+        exists: {
+            errorMessage: 'Specialty ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid specialty ID'
+        }
+    },
     title: {
         exists: {
             errorMessage: 'Title is required'
@@ -80,6 +96,6 @@ const newUpdateValidator = checkSchema({
 });
 
 module.exports = {
-    newPostValidator,
-    newUpdateValidator
+    newsPostValidator,
+    newsUpdateValidator
 };

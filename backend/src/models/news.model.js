@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
-const newSchema = new mongoose.Schema({
+const newsSchema = new mongoose.Schema({
     specialtyID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Specialty',
@@ -36,4 +36,4 @@ const newSchema = new mongoose.Schema({
 }
 );
 
-module.exports = mongoose.model('New', newSchema);
+module.exports = mongoose.model('News', newsSchema);

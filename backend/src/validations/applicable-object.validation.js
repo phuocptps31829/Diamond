@@ -3,6 +3,14 @@ const ApplicableObjectModel = require('../models/applicable-object.model');
 
 
 const applicableObjectPostValidator = checkSchema({
+    medicalPackageID: {
+        exists: {
+            errorMessage: 'MedicalPackage ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid medicalPackage ID'
+        }
+    },
     gender: {
         exists: {
             errorMessage: 'Gender is required'
@@ -13,7 +21,7 @@ const applicableObjectPostValidator = checkSchema({
         trim: true
     },
 
-    'coordinates.Min': {
+    'coordinates.min': {
         exists: {
             errorMessage: 'Min is required'
         },
@@ -21,19 +29,42 @@ const applicableObjectPostValidator = checkSchema({
             errorMessage: 'Min should be a number'
         }
     },
-    'coordinates.Max': {
+    'coordinates.max': {
         exists: {
             errorMessage: 'Max is required'
         },
         isNumeric: {
             errorMessage: 'Max should be a number'
-        }
+        },
     },
-
+    'coordinates.isMarried': {
+        exists: {
+            errorMessage: 'isMarried is required'
+        },
+        isBoolean: {
+            errorMessage: 'isMarried should be a boolean'
+        },
+    },
+    'coordinates.isFamily': {
+        exists: {
+            errorMessage: 'isFamily is required'
+        },
+        isBoolean: {
+            errorMessage: 'isFamily should be a boolean'
+        },
+    },
 
 });
 
 const applicableObjectUpdateValidator = checkSchema({
+    medicalPackageID: {
+        exists: {
+            errorMessage: 'MedicalPackage ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid medicalPackage ID'
+        }
+    },
     gender: {
         exists: {
             errorMessage: 'Gender is required'
@@ -44,22 +75,39 @@ const applicableObjectUpdateValidator = checkSchema({
         trim: true
     },
 
-    'coordinates.Ing': {
+    'coordinates.min': {
         exists: {
-            errorMessage: 'Ing is required'
+            errorMessage: 'Min is required'
         },
         isNumeric: {
-            errorMessage: 'Ing should be a number'
+            errorMessage: 'Min should be a number'
         }
     },
-    'coordinates.Lat': {
+    'coordinates.max': {
         exists: {
-            errorMessage: 'Lat is required'
+            errorMessage: 'Max is required'
         },
         isNumeric: {
-            errorMessage: 'Lat should be a number'
-        }
-    }
+            errorMessage: 'Max should be a number'
+        },
+    },
+    'coordinates.isMarried': {
+        exists: {
+            errorMessage: 'isMarried is required'
+        },
+        isBoolean: {
+            errorMessage: 'isMarried should be a boolean'
+        },
+    },
+    'coordinates.isFamily': {
+        exists: {
+            errorMessage: 'isFamily is required'
+        },
+        isBoolean: {
+            errorMessage: 'isFamily should be a boolean'
+        },
+    },
+
 });
 
 module.exports = {

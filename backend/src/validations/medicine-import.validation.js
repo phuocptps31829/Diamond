@@ -3,7 +3,14 @@ const MedicineImportModel = require('../models/medicine-import.model');
 
 
 const medicineImportPostValidator = checkSchema({
-
+    medicineID: {
+        exists: {
+            errorMessage: 'Medicine ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid Medicine ID'
+        }
+    },
     quantity: {
         exists: {
             errorMessage: 'Quantity is required'
@@ -66,6 +73,14 @@ const medicineImportPostValidator = checkSchema({
 });
 
 const medicineImportUpdateValidator = checkSchema({
+    medicineID: {
+        exists: {
+            errorMessage: 'Medicine ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid Medicine ID'
+        }
+    },
     quantity: {
         exists: {
             errorMessage: 'Quantity is required'

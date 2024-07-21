@@ -44,7 +44,7 @@ const branchPostValidator = checkSchema({
         },
         trim: true
     },
-    'coordinates.Ing': {
+    'coordinates.ing': {
         exists: {
             errorMessage: 'Ing is required'
         },
@@ -52,7 +52,7 @@ const branchPostValidator = checkSchema({
             errorMessage: 'Ing should be a number'
         }
     },
-    'coordinates.Lat': {
+    'coordinates.lat': {
         exists: {
             errorMessage: 'Lat is required'
         },
@@ -105,7 +105,7 @@ const branchUpdateValidator = checkSchema({
         },
         trim: true
     },
-    'coordinates.Ing': {
+    'coordinates.ing': {
         exists: {
             errorMessage: 'Ing is required'
         },
@@ -113,7 +113,7 @@ const branchUpdateValidator = checkSchema({
             errorMessage: 'Ing should be a number'
         }
     },
-    'coordinates.Lat': {
+    'coordinates.lat': {
         exists: {
             errorMessage: 'Lat is required'
         },
@@ -121,7 +121,6 @@ const branchUpdateValidator = checkSchema({
             errorMessage: 'Lat should be a number'
         }
     }
-
 });
 
 module.exports = {
