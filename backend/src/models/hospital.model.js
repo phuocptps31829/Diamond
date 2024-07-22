@@ -21,6 +21,9 @@ const hospitalSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+}, {
+    collection: 'Hospital',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Hospital', hospitalSchema);

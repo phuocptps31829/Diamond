@@ -11,6 +11,9 @@ const medicineCategorySchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'MedicineCategory',
+    timestamps: true
 }
 );
 

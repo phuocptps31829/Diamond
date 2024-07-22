@@ -32,6 +32,9 @@ const applicableObjectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'ApplicableObject',
+    timestamps: true
 }
 );
 

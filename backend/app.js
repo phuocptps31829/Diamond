@@ -3,8 +3,13 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
+const swaggerDocs = require('./swagger');
 
 const { createError } = require('./src/utils/helper.util');
+
+const medicalPackageRoutes = require('./src/routes/medical-package.route');
+const serviceRoutes = require('./src/routes/service.route');
+const specialtyRoutes = require('./src/routes/specialty.route');
 
 const app = express();
 
@@ -18,10 +23,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
+swaggerDocs(app, process.env.PORT);
 
-app.use('/', (req, res, next) => {
-    res.send('Hello from E-BookingHealthcare');
-});
+app.use('/api/v1/medical-packages', medicalPackageRoutes);
+app.use('/api/v1/services', serviceRoutes);
+app.use('/api/v1/specialties', specialtyRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

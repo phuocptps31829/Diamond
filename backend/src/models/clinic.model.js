@@ -20,6 +20,9 @@ const clinicSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'Clinic',
+    timestamps: true
 }
 );
 

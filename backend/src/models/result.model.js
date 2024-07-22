@@ -23,6 +23,9 @@ const resultSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+}, {
+    collection: 'Result',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Result', resultSchema);
