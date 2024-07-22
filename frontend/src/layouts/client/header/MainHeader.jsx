@@ -44,7 +44,7 @@ export default function MainHeader() {
                         |
                     </li>
                     <li>
-                        <Link className="uppercase bg-primary-500 px-5 py-2 rounded-lg text-white">
+                        <Link className="uppercase bg-primary-500 px-5 py-2 rounded-lg text-white" to='components/client/Account/login'>
                             Đăng nhập
                         </Link>
                     </li>
