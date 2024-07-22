@@ -2,7 +2,7 @@ const { checkSchema } = require('express-validator');
 const MedicalPackageModel = require('../models/medical-package.model');
 
 
-const medicalPackagePostValidator = checkSchema({
+const medicalPackageValidator = checkSchema({
     name: {
         exists: {
             errorMessage: 'Name is required'
@@ -14,10 +14,10 @@ const medicalPackagePostValidator = checkSchema({
     },
     shortDescription: {
         exists: {
-            errorMessage: 'ShortDescription is required'
+            errorMessage: 'Short description is required'
         },
         isString: {
-            errorMessage: 'ShortDescription should be a string'
+            errorMessage: 'Short description should be a string'
         },
         trim: true
     },
@@ -40,10 +40,10 @@ const medicalPackagePostValidator = checkSchema({
     },
     'service.*.levelName': {
         exists: {
-            errorMessage: 'LevelName is required'
+            errorMessage: 'Level name is required'
         },
         isString: {
-            errorMessage: 'LevelName should be a string'
+            errorMessage: 'Level name should be a string'
         },
         trim: true
     },
@@ -58,7 +58,7 @@ const medicalPackagePostValidator = checkSchema({
     'service.*.discountPrice': {
         optional: true,
         isNumeric: {
-            errorMessage: 'DiscountPrice must be a number'
+            errorMessage: 'Discount price must be a number'
         }
     },
     'service.*.duration': {
@@ -73,78 +73,7 @@ const medicalPackagePostValidator = checkSchema({
 
 });
 
-const medicalPackageUpdateValidator = checkSchema({
-
-    name: {
-        exists: {
-            errorMessage: 'Name is required'
-        },
-        isString: {
-            errorMessage: 'Name should be a string'
-        },
-        trim: true
-    },
-    shortDescription: {
-        exists: {
-            errorMessage: 'ShortDescription is required'
-        },
-        isString: {
-            errorMessage: 'ShortDescription should be a string'
-        },
-        trim: true
-    },
-    details: {
-        exists: {
-            errorMessage: 'Details is required'
-        },
-        isString: {
-            errorMessage: 'Details should be a string'
-        },
-        trim: true
-    },
-    'service.*.serviceID': {
-        exists: {
-            errorMessage: 'Service ID is required'
-        },
-        isArray: {
-            errorMessage: 'service ID: must be an array'
-        }
-    },
-    'service.*.levelName': {
-        exists: {
-            errorMessage: 'LevelName is required'
-        },
-        isString: {
-            errorMessage: 'LevelName should be a string'
-        },
-        trim: true
-    },
-    'service.*.price': {
-        exists: {
-            errorMessage: 'Price is required'
-        },
-        isNumeric: {
-            errorMessage: 'Price must be a number'
-        }
-    },
-    'service.*.discountPrice': {
-        optional: true,
-        isNumeric: {
-            errorMessage: 'DiscountPrice must be a number'
-        }
-    },
-    'service.*.duration': {
-        exists: {
-            errorMessage: 'Service ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid service ID'
-        }
-    }
-
-});
 
 module.exports = {
-    medicalPackagePostValidator,
-    medicalPackageUpdateValidator
+    medicalPackageValidator
 };

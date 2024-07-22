@@ -2,7 +2,7 @@ const { checkSchema } = require('express-validator');
 const clinicModel = require('../models/clinic.model');
 
 
-const clinicPostValidator = checkSchema({
+const clinicValidator = checkSchema({
 
     name: {
         exists: {
@@ -15,21 +15,9 @@ const clinicPostValidator = checkSchema({
     },
 
 
-});
-
-const clinicUpdateValidator = checkSchema({
-    name: {
-        exists: {
-            errorMessage: 'Name is required'
-        },
-        isString: {
-            errorMessage: 'Name should be a string'
-        },
-        trim: true
-    },
 });
 
 module.exports = {
-    clinicPostValidator,
-    clinicUpdateValidator
+    clinicValidator
+
 };
