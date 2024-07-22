@@ -9,6 +9,9 @@ const adminSchema = new mongoose.Schema({
         enum: ['ADMIN', 'DOCTOR'],
         required: true
     },
+}, {
+    collection: 'Invoice',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Admin', adminSchema);

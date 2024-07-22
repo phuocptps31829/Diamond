@@ -35,6 +35,9 @@ const patientSchema = new mongoose.Schema({
             type: String
         },
     }]
+}, {
+    collection: 'Invoice',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Patient', patientSchema);

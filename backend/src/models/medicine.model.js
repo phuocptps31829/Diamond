@@ -51,6 +51,9 @@ const medicineSchema = new mongoose.Schema({
         default: false
     }
 
+}, {
+    collection: 'Invoice',
+    timestamps: true
 }
 );
 

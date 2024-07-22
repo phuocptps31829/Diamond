@@ -5,7 +5,10 @@ const cors = require('cors');
 const logger = require('morgan');
 
 const { createError } = require('./src/utils/helper.util');
+const newsRoutes = require('./src/routes/news.route');
+const doctorRoutes = require('./src/routes/doctor.route');
 
+const swaggerDocs = require('./swagger');
 const app = express();
 
 // app.use((req, res, next) => {
@@ -18,11 +21,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
+swaggerDocs(app, process.env.PORT);
 
-app.use('/', (req, res, next) => {
-    res.send('Hello from E-BookingHealthcare');
-});
-
+// app.use('/', (req, res, next) => {
+//     res.send('Hello from E-BookingHealthcare');
+// });
+app.use('/api/v1/news', newsRoutes);
+app.use('/api/v1/doctors', doctorRoutes);
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
 });

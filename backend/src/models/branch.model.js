@@ -39,6 +39,9 @@ const branchSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'Invoice',
+    timestamps: true
 }
 );
 

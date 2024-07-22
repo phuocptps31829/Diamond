@@ -23,6 +23,9 @@ const contractSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+}, {
+    collection: 'Invoice',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Contract', contractSchema);
