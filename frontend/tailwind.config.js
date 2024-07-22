@@ -23,6 +23,9 @@ export default {
           950: "#001938",
         },
       },
+      gridTemplateColumns: {
+        "70-30": "60% 40%",
+      },
     },
     plugins: [],
   },

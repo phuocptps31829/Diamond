@@ -1,0 +1,16 @@
+import BannerAboutUs from "../../components/client/aboutUs/Banner";
+import UsageSteps from "../../components/client/aboutUs/UsageSteps";
+import Mission from "../../components/client/aboutUs/Mission";
+import ServicePhilosophy from "../../components/client/aboutUs/ServicePhilosophy";
+import ContactForm from "../../components/client/aboutUs/ContactForm";
+export default function AboutUs() {
+  return (
+    <>
+      <BannerAboutUs />
+      <UsageSteps />
+      <Mission />
+      <ServicePhilosophy />
+      <ContactForm />
+    </>
+  );
+}

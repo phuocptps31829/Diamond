@@ -4,6 +4,9 @@ import Home from "./pages/client/Home";
 import SpecialtiesCategory from "./pages/client/Specialties";
 import CategoryService from "./pages/client/CategoryService";
 import DetailService from "./pages/client/DetailService";
+import News from "./pages/client/News";
+import AboutUs from "./pages/client/AboutUs";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "detail-service/:id",
         element: <DetailService />,
+      },
+      {
+        path: "news",
+        element: <News />,
+      },
+      {
+        path: "about-us",
+        element: <AboutUs />,
       },
     ],
   },

@@ -1,12 +1,12 @@
-// import PropTypes from "prop-types";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function Product() {
+export default function Product({ props }) {
   return (
-    <div className="shadow-custom overflow-hidden rounded-xl">
+    <div className="overflow-hidden rounded-xl shadow-custom">
       <Link
         to="/chitietsp"
         className="group block h-[106px] overflow-hidden md:h-[206px]"
@@ -17,7 +17,7 @@ export default function Product() {
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex flex-col md:p-5 p-3">
+      <div className="flex flex-col p-3 md:p-5">
         <Link
           to="/chitietsp"
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
@@ -48,6 +48,6 @@ export default function Product() {
   );
 }
 
-// Product.propTypes = {
-//   props: PropTypes.object.isRequired,
-// };
+Product.propTypes = {
+  props: PropTypes.object.isRequired,
+};
