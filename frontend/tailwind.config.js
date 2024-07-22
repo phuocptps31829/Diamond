@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      boxShadow: {
+        custom:
+          "-2px -2px 5px rgba(109, 142, 195, .5), 3px 3px 10px rgba(109, 142, 196, .2)",
+      },
       colors: {
         primary: {
           50: "#E1F2FC",
@@ -17,6 +21,9 @@ export default {
           900: "#002D54",
           950: "#001938",
         },
+      },
+      gridTemplateColumns: {
+        "70-30": "60% 40%",
       },
     },
     plugins: [],

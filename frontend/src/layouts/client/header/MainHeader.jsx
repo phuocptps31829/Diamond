@@ -21,47 +21,54 @@ export default function MainHeader() {
     {
       id: 4,
       name: "Tin tức",
-      to: "/tintuc",
+      to: "/news",
     },
     {
       id: 5,
       name: "Liên hệ",
       to: "/lienhe",
     },
+    {
+      id: 6,
+      name: "Về chúng tôi",
+      to: "/about-us",
+    },
   ];
 
   return (
-    <div className="mx-auto flex max-w-screen-xl items-center justify-between bg-white p-3 sm:px-10 lg:py-4">
-      <Link to={"/"} className="relative w-44 items-center">
-        <img
-          src="https://ykhoadiamond.com/images/icons/logo.png"
-          className="w-full"
-          alt="Logo"
-        />
-      </Link>
-      <div className="block lg:hidden" role="button">
-        <AiOutlineMenu className="text-2xl" />
-      </div>
-      <nav className="hidden lg:block">
-        <ul className="nav__link flex text-sm font-semibold">
-          {dataNav.map((item) => (
-            <li key={item.id}>
-              <NavLink
-                to={item.to}
-                className="rounded-full px-4 py-2.5 uppercase hover:bg-primary-500 hover:text-white"
-              >
-                {item.name}
-              </NavLink>
+    <div className="w-full bg-white">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between bg-white p-3 sm:px-10 lg:py-4">
+        <Link to={"/"} className="relative w-44 items-center">
+          <img
+            src="https://ykhoadiamond.com/images/icons/logo.png"
+            className="w-full"
+            alt="Logo"
+          />
+        </Link>
+        <div className="block lg:hidden" role="button">
+          <AiOutlineMenu className="text-2xl" />
+        </div>
+        <nav className="hidden lg:block">
+          <ul className="nav__link flex text-sm font-semibold">
+            {dataNav.map((item) => (
+              <li key={item.id}>
+                <NavLink
+                  to={item.to}
+                  className="rounded-full px-4 py-2.5 uppercase hover:bg-primary-500 hover:text-white"
+                >
+                  {item.name}
+                </NavLink>
+              </li>
+            ))}
+            <li className="px-5">|</li>
+            <li>
+              <Link className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white">
+                Đăng nhập
+              </Link>
             </li>
-          ))}
-          <li className="px-5">|</li>
-          <li>
-            <Link className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white">
-              Đăng nhập
-            </Link>
-          </li>
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 }
