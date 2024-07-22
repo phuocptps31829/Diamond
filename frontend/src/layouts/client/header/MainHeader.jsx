@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 export default function MainHeader() {
   return (
-    <div className="mx-auto flex max-w-screen-2xl items-center justify-between bg-white p-3 sm:px-10 lg:py-4">
+    <div className="mx-auto flex max-w-screen-xl items-center justify-between bg-white p-3 sm:px-10 lg:py-4">
       <Link to={"/"} className="relative w-44 items-center">
         <img
           src="https://ykhoadiamond.com/images/icons/logo.png"

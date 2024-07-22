@@ -1,13 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      
+      boxShadow: {
+        custom:
+          "-2px -2px 5px rgba(109, 142, 195, .5), 3px 3px 10px rgba(109, 142, 196, .2)",
+      },
       colors: {
+        "bg-gray": "#F9FAFC",
         primary: {
           50: "#E1F2FC",
           100: "#B3DEFA",
@@ -19,10 +20,10 @@ export default {
           700: "#00578D",
           800: "#004474",
           900: "#002D54",
-          950: "#001938"
-        }
+          950: "#001938",
+        },
       },
     },
     plugins: [],
-  }
+  },
 };

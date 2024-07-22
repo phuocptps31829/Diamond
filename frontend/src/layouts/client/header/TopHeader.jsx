@@ -3,7 +3,7 @@ import { IoIosCall } from "react-icons/io";
 export default function TopHeader() {
   return (
     <div className="bg-primary-500">
-      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-3 py-1 text-white sm:px-12">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 text-white sm:px-12">
         <div>Hệ thống phòng khám</div>
         <div className="flex items-center justify-between gap-10">
           <div className="flex items-center justify-center gap-x-1 text-center">
