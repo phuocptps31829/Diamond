@@ -34,7 +34,7 @@ const newsSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'News',
     timestamps: true
 }
 );

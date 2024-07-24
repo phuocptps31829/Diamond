@@ -15,6 +15,10 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    discountPrice: {
+        type: Number,
+        required: false
+    },
     shortDescription: {
         type: String,
         trim: true,
@@ -25,13 +29,8 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    discountPrice: {
-        type: Number,
-        required: false
-    },
     duration: {
         type: Number,
-        required: false
     },
     isHidden: {
         type: Boolean,
@@ -42,7 +41,7 @@ const serviceSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'Service',
     timestamps: true
 }
 );

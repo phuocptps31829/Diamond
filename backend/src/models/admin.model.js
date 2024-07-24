@@ -10,7 +10,7 @@ const adminSchema = new mongoose.Schema({
         required: true
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Admin',
     timestamps: true
 });
 

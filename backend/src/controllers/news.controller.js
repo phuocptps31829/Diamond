@@ -1,6 +1,6 @@
 const NewsModel = require('../models/news.model');
-const { createError } = require('../utils/helper.util');
-const { validationError } = require('../utils/validation.util');
+const { createError, errorValidator } = require('../utils/helper.util');
+
 
 const getAllNews = async (req, res, next) => {
     try {
@@ -44,11 +44,9 @@ const getNewsById = async (req, res, next) => {
             createError(404, 'News not found.');
         }
 
-        const { __v, isDeleted, ...data } = news._doc;
-
         return res.status(200).json({
             message: 'News retrieved successfully.',
-            data
+            data: news
         });
     } catch (error) {
         next(error);
@@ -57,15 +55,11 @@ const getNewsById = async (req, res, next) => {
 
 const createNews = async (req, res, next) => {
     try {
-        validationError(req, res);
-
+        errorValidator(req, res);
         const newNews = await NewsModel.create(req.body);
-
-        const { __v, isDeleted, ...resNews } = newNews._doc;
-
         return res.status(201).json({
             message: 'News created successfully.',
-            data: resNews
+            data: newNews
         });
     } catch (error) {
         next(error);
@@ -74,7 +68,7 @@ const createNews = async (req, res, next) => {
 
 const updateNews = async (req, res, next) => {
     try {
-        validationError(req, res);
+        errorValidator(req, res);
 
         const { id } = req.params;
 
@@ -88,11 +82,9 @@ const updateNews = async (req, res, next) => {
             createError(404, 'News not found.');
         }
 
-        const { __v, isDeleted, ...resNews } = updatedNews._doc;
-
         return res.status(200).json({
             message: 'News updated successfully.',
-            data: resNews
+            data: updatedNews
         });
     } catch (error) {
         next(error);
@@ -113,11 +105,9 @@ const deleteNews = async (req, res, next) => {
             createError(404, 'News not found.');
         }
 
-        const { __v, isDeleted, ...resNews } = deletedNews._doc;
-
         return res.status(200).json({
             message: 'News deleted successfully.',
-            data: resNews
+            data: deletedNews
         });
     } catch (error) {
         next(error);

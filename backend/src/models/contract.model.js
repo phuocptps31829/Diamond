@@ -24,7 +24,7 @@ const contractSchema = new mongoose.Schema({
         default: false
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Contract',
     timestamps: true
 });
 

@@ -43,7 +43,7 @@ const medicineImportSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'MedicineImport',
     timestamps: true
 }
 );

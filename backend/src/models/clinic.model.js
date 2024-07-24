@@ -21,7 +21,7 @@ const clinicSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'Clinic',
     timestamps: true
 }
 );

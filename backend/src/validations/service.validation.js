@@ -1,6 +1,4 @@
 const { checkSchema } = require('express-validator');
-const ServiceModel = require('../models/service.model');
-
 
 const serviceValidator = checkSchema({
     name: {
@@ -54,8 +52,6 @@ const serviceValidator = checkSchema({
     },
 
 });
-
-
 
 module.exports = {
     serviceValidator,

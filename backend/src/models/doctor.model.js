@@ -32,7 +32,7 @@ const doctorSchema = new mongoose.Schema({
         required: true
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Doctor',
     timestamps: true
 });
 

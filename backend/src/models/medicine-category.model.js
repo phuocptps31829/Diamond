@@ -12,7 +12,7 @@ const medicineCategorySchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'MedicineCategory',
     timestamps: true
 }
 );

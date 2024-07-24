@@ -27,7 +27,7 @@ const prescriptionSchema = new mongoose.Schema({
         }
     }]
 }, {
-    collection: 'Invoice',
+    collection: 'Prescription',
     timestamps: true
 }
 );

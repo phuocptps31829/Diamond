@@ -26,7 +26,7 @@ const specialtySchema = new mongoose.Schema({
         default: false
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Specialty',
     timestamps: true
 });
 

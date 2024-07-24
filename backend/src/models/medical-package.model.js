@@ -46,7 +46,6 @@ const medicalPackageSchema = new mongoose.Schema({
                 trim: true,
                 required: true
             }
-
         },
     ],
     isHidden: {
@@ -58,7 +57,7 @@ const medicalPackageSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'MedicalPackage',
     timestamps: true
 }
 );

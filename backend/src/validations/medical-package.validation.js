@@ -1,6 +1,4 @@
 const { checkSchema } = require('express-validator');
-const MedicalPackageModel = require('../models/medical-package.model');
-
 
 const medicalPackageValidator = checkSchema({
     name: {
@@ -69,8 +67,6 @@ const medicalPackageValidator = checkSchema({
             errorMessage: 'Invalid service ID'
         }
     }
-
-
 });
 
 

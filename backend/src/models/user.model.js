@@ -41,10 +41,6 @@ const userSchema = new mongoose.Schema({
     citizenIdentificationNumber: {
         type: Number,
     },
-    role: {
-        type: String,
-        required: true
-    },
     isActivated: {
         type: Boolean,
         required: true
@@ -54,7 +50,7 @@ const userSchema = new mongoose.Schema({
         default: false
     },
 }, {
-    collection: 'Invoice',
+    collection: 'User',
     timestamps: true
 });
 

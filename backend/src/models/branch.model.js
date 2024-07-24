@@ -40,7 +40,7 @@ const branchSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'Branch',
     timestamps: true
 }
 );

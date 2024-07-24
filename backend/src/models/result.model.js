@@ -24,7 +24,7 @@ const resultSchema = new mongoose.Schema({
         required: true
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Result',
     timestamps: true
 });
 

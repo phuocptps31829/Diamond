@@ -22,7 +22,7 @@ const hospitalSchema = new mongoose.Schema({
         default: false
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Hospital',
     timestamps: true
 });
 

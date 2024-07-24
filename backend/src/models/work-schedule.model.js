@@ -14,7 +14,7 @@ const workScheduleSchema = new mongoose.Schema({
         }]
     },
 }, {
-    collection: 'Invoice',
+    collection: 'WorkSchedule',
     timestamps: true
 });
 

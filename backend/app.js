@@ -3,12 +3,16 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const logger = require('morgan');
+const swaggerDocs = require('./swagger');
 
 const { createError } = require('./src/utils/helper.util');
 const newsRoutes = require('./src/routes/news.route');
 const doctorRoutes = require('./src/routes/doctor.route');
 
-const swaggerDocs = require('./swagger');
+const medicalPackageRoutes = require('./src/routes/medical-package.route');
+const serviceRoutes = require('./src/routes/service.route');
+const specialtyRoutes = require('./src/routes/specialty.route');
+
 const app = express();
 
 // app.use((req, res, next) => {
@@ -28,6 +32,10 @@ swaggerDocs(app, process.env.PORT);
 // });
 app.use('/api/v1/news', newsRoutes);
 app.use('/api/v1/doctors', doctorRoutes);
+app.use('/api/v1/medical-packages', medicalPackageRoutes);
+app.use('/api/v1/services', serviceRoutes);
+app.use('/api/v1/specialties', specialtyRoutes);
+
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
 });

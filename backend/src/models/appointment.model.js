@@ -51,7 +51,7 @@ const appointmentSchema = new mongoose.Schema({
         required: true
     },
 }, {
-    collection: 'Invoice',
+    collection: 'Appointment',
     timestamps: true
 });
 

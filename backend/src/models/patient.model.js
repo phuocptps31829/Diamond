@@ -36,7 +36,7 @@ const patientSchema = new mongoose.Schema({
         },
     }]
 }, {
-    collection: 'Invoice',
+    collection: 'Patient',
     timestamps: true
 });
 

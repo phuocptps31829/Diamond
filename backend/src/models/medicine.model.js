@@ -52,7 +52,7 @@ const medicineSchema = new mongoose.Schema({
     }
 
 }, {
-    collection: 'Invoice',
+    collection: 'Medicine',
     timestamps: true
 }
 );

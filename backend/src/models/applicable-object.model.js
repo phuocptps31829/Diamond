@@ -33,7 +33,7 @@ const applicableObjectSchema = new mongoose.Schema({
         default: false
     }
 }, {
-    collection: 'Invoice',
+    collection: 'ApplicableObject',
     timestamps: true
 }
 );
