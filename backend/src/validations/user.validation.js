@@ -15,10 +15,18 @@ const userValidator = checkSchema({
             errorMessage: "Phone number should be a string",
         },
     },
+
     email: {
         optional: true,
         isString: {
             errorMessage: "Email should be a string",
+        },
+    },
+    custom: {
+        options: (value, { req }) => {
+            if (!req.body.phoneNumber && !req.body.email) {
+                throw new Error('Either phone number or email is required');
+            } return true;
         },
     },
     dateOfBirth: {

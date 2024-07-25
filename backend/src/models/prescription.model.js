@@ -1,7 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
 const prescriptionSchema = new mongoose.Schema({
-
     advice: {
         type: String,
         trim: true,

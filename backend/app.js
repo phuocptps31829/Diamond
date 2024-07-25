@@ -6,6 +6,8 @@ const logger = require('morgan');
 const swaggerDocs = require('./swagger');
 
 const { createError } = require('./src/utils/helper.util');
+const newsRoutes = require('./src/routes/news.route');
+const doctorRoutes = require('./src/routes/doctor.route');
 
 const medicalPackageRoutes = require('./src/routes/medical-package.route');
 const serviceRoutes = require('./src/routes/service.route');
@@ -25,6 +27,11 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 swaggerDocs(app, process.env.PORT);
 
+// app.use('/', (req, res, next) => {
+//     res.send('Hello from E-BookingHealthcare');
+// });
+app.use('/api/v1/news', newsRoutes);
+app.use('/api/v1/doctors', doctorRoutes);
 app.use('/api/v1/medical-packages', medicalPackageRoutes);
 app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/specialties', specialtyRoutes);

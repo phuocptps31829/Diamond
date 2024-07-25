@@ -5,13 +5,14 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Grocery Shop API - Swagger',
-            description: "Grocery Shop API with Node.js, Express and MongoDB",
+            title: 'E-BookingHealthcare API - Swagger',
+            description: "E-BookingHealthcare API with Node.js, Express and MongoDB",
             contact: {
                 name: "Nguyen Chinh",
                 email: "chinhnguyennn24@gmail.com",
-                url: "https://github.com/ngchinhdev/"
+                url: "https://github.com/ngchinhdev/",
             },
+
             version: '1.0.0',
         },
         servers: [
