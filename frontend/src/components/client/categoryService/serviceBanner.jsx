@@ -1,4 +1,4 @@
-import banner from "../../../assets/healthcare-workers-preventing-virus-quarantine-campaign-concept-smiling-asian-female-nurse-doctor-wi.jpg";
+import banner from "../../../assets/images/healthcare-workers-preventing-virus-quarantine-campaign-concept-smiling-asian-female-nurse-doctor-wi.jpg";
 
 const serviceBanner = () => {
   return (

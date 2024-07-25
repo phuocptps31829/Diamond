@@ -1,6 +1,6 @@
-import verifiedDoctorIcon from "../../../assets/Profile-2--Streamline-Milano.png";
-import insuranceSupportIcon from "../../../assets/Insurance-4--Streamline-Milano.png";
-import supportTeamIcon from "../../../assets/Support-Team-4--Streamline-Milano.png";
+import verifiedDoctorIcon from "../../../assets/images/Profile-2--Streamline-Milano.png";
+import insuranceSupportIcon from "../../../assets/images/Insurance-4--Streamline-Milano.png";
+import supportTeamIcon from "../../../assets/images/Support-Team-4--Streamline-Milano.png";
 
 const TrustedSafety = () => {
   const items = [

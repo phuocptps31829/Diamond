@@ -1,5 +1,4 @@
-
-import imageDoctor from "../../../assets/Virus-Theat-Found-1--Streamline-Milano.png";
+import imageDoctor from "../../../assets/images/Virus-Theat-Found-1--Streamline-Milano.png";
 const SpecialtiesList = () => {
   const items = new Array(16).fill({
     label: "Bác Sĩ Gia Đình",
@@ -12,7 +11,7 @@ const SpecialtiesList = () => {
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>
-        <div className="grid grid-cols-2 gap-4 rounded-lg border border-black bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+        <div className="grid grid-cols-2 gap-4 rounded-lg border  bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
           {items.map((item, index) => (
             <div
               key={index}

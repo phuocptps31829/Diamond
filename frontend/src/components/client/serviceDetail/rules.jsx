@@ -1,9 +1,9 @@
-import doctorImage from "../../../assets/doctor.png";
+import doctorImage from "../../../assets/images/doctor.png";
 
 const Rules = () => {
   return (
     <div className="mx-auto max-w-screen-2xl">
-      <div className="relative mx-auto my-5 flex w-full max-w-7xl justify-end overflow-hidden rounded-lg bg-primary-500 p-9 shadow-md">
+      <div className="relative mx-auto my-5 flex w-full max-w-7xl justify-end overflow-hidden rounded-lg bg-primary-500 md:p-9 p-4 shadow-md">
         <div className="absolute -top-10 left-0 w-auto">
           <img
             src={doctorImage}

@@ -1,4 +1,4 @@
-import healthImg from "../../../assets/healthcare-medical-people-concept-smiling-asian-female-doctor-pointing-fingers-right-showing-adverti.jpg";
+import healthImg from "../../../assets/images/healthcare-medical-people-concept-smiling-asian-female-doctor-pointing-fingers-right-showing-adverti.jpg";
 const DescriptionService = () => {
   return (
     <div className="mx-auto max-w-screen-2xl">
@@ -12,7 +12,7 @@ const DescriptionService = () => {
           />
         </div>
         <div className="flex flex-col items-start justify-center gap-8 text-start">
-          <div className="rounded-md border border-primary-500 bg-white p-5">
+          <div className="rounded-md border  bg-white p-5">
             <h2 className="mb-4 text-2xl font-bold">Khám tiền sản là gì?</h2>
             <p className="mb-4 text-justify">
               Khám tiền sản là phương pháp tiến hành kiểm tra sức khỏe cặp vợ
@@ -22,7 +22,7 @@ const DescriptionService = () => {
               trong suốt thai kỳ.
             </p>
           </div>
-          <div className="rounded-md border border-primary-500 bg-white p-5">
+          <div className="rounded-md border  bg-white p-5">
             <h2 className="mb-4 text-2xl font-bold">Khám tiền sản là gì?</h2>
             <p className="mb-4 text-justify">
               Tại những quốc gia phát triển, khám sức khỏe tiền sản là việc làm
@@ -34,7 +34,7 @@ const DescriptionService = () => {
           </div>
         </div>
       </div>
-      <div className="container rounded-md border border-primary-500 bg-white p-5">
+      <div className="container rounded-md border  bg-white p-5">
         <h2 className="mb-4 text-2xl font-bold">
           Theo đó, việc khám tiền sản mang đến những lợi ích sau:
         </h2>

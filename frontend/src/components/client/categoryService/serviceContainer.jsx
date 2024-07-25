@@ -1,6 +1,6 @@
 import Avatar from "@mui/material/Avatar";
-import avatarImg from "../../../assets/105124.jpg";
-import mapImg from "../../../assets/2149377706.jpg";
+import avatarImg from "../../../assets/images/105124.jpg";
+import mapImg from "../../../assets/images/2149377706.jpg";
 import { useState } from "react";
 import Product from "../product/Product";
 

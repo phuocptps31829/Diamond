@@ -6,6 +6,10 @@ import CategoryService from "./pages/client/CategoryService";
 import DetailService from "./pages/client/DetailService";
 import News from "./pages/client/News";
 import AboutUs from "./pages/client/AboutUs";
+import TablePriceService from "./pages/client/TablePriceService";
+import UserProfileLayout from "./pages/client/UserProfile";
+import MedicalRecords from "./components/client/infomationUser/MedicalRecords";
+import UserInfoForm from "./components/client/infomationUser/UserInfoForm";
 
 const router = createBrowserRouter([
   {
@@ -29,12 +33,30 @@ const router = createBrowserRouter([
         element: <DetailService />,
       },
       {
+        path: "price-service",
+        element: <TablePriceService />,
+      },
+      {
         path: "news",
         element: <News />,
       },
       {
         path: "about-us",
         element: <AboutUs />,
+      },
+      {
+        path: "user-profile",
+        element: <UserProfileLayout />,
+        children: [
+          {
+            path: "",
+            element: <UserInfoForm />,
+          },
+          {
+            path: "medical-records",
+            element: <MedicalRecords />,
+          },
+        ],
       },
     ],
   },

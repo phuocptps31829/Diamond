@@ -1,4 +1,4 @@
-import banner from "../../../assets/young-asia-female-doctor-white-medical-uniform-using-clipboard-is-delivering-great-news-talk-discuss-results.jpg";
+import banner from "../../../assets/images/young-asia-female-doctor-white-medical-uniform-using-clipboard-is-delivering-great-news-talk-discuss-results.jpg";
 
 const specialtiesBanner = () => {
   return (

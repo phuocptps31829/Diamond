@@ -1,6 +1,6 @@
-import { Button } from "@mui/material";
-import { AiOutlineSchedule } from "react-icons/ai";
+import { Button } from "@/components/ui/button"
 
+import { AiOutlineSchedule } from "react-icons/ai";
 const ServiceDetail = () => {
   const product = {
     image: "https://www.material-tailwind.com/image/product-4.png",
@@ -14,7 +14,7 @@ const ServiceDetail = () => {
 
   return (
     <div className="mx-auto max-w-screen-2xl py-20 ">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border border-primary-500 bg-white p-8 md:grid-cols-2 md:py-10">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border  bg-white p-8 md:grid-cols-2 md:py-10">
         <div className="container flex items-center justify-center">
           {" "}
           <img
@@ -42,13 +42,8 @@ const ServiceDetail = () => {
           </span>
 
           <div className="mb-4 flex w-full items-center gap-3">
-            <Button
-              size="large"
-              variant="contained"
-              className="w-full !rounded-lg !bg-primary-500"
-            >
-              Đặt lịch ngay
-            </Button>
+          <Button className="w-full">Đặt lịch ngay</Button>
+
           </div>
         </div>
       </div>
