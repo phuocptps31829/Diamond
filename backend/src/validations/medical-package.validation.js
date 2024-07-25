@@ -1,6 +1,15 @@
 const { checkSchema } = require('express-validator');
+const { isValidObjectId } = require("mongoose");
 
 const medicalPackageValidator = checkSchema({
+    specialtyID: {
+        exists: {
+            errorMessage: 'Specialty ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Invalid specialty ID'
+        }
+    },
     name: {
         exists: {
             errorMessage: 'Name is required'
@@ -28,15 +37,16 @@ const medicalPackageValidator = checkSchema({
         },
         trim: true
     },
-    'service.*.serviceID': {
-        exists: {
-            errorMessage: 'Service ID is required'
-        },
-        isArray: {
-            errorMessage: 'service ID: must be an array'
+    'services.*.servicesID': {
+        custom: {
+            options: (serviceIDArray) => {
+                if (!serviceIDArray.length) return false;
+                return serviceIDArray.every(id => isValidObjectId(id));
+            },
+            errorMessage: 'Each Service ID must be a valid MongoDB ObjectID'
         }
     },
-    'service.*.levelName': {
+    'services.*.levelName': {
         exists: {
             errorMessage: 'Level name is required'
         },
@@ -45,7 +55,7 @@ const medicalPackageValidator = checkSchema({
         },
         trim: true
     },
-    'service.*.price': {
+    'services.*.price': {
         exists: {
             errorMessage: 'Price is required'
         },
@@ -53,18 +63,18 @@ const medicalPackageValidator = checkSchema({
             errorMessage: 'Price must be a number'
         }
     },
-    'service.*.discountPrice': {
+    'services.*.discountPrice': {
         optional: true,
         isNumeric: {
             errorMessage: 'Discount price must be a number'
         }
     },
-    'service.*.duration': {
+    'services.*.duration': {
         exists: {
-            errorMessage: 'Service ID is required'
+            errorMessage: 'Duration ID is required'
         },
-        isMongoId: {
-            errorMessage: 'Invalid service ID'
+        isString: {
+            errorMessage: 'Duration should be a string'
         }
     }
 });

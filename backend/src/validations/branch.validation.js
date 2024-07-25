@@ -1,6 +1,4 @@
 const { checkSchema } = require('express-validator');
-const BranchModel = require('../models/branch.model');
-
 
 const branchPostValidator = checkSchema({
     name: {

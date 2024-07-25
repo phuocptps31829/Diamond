@@ -88,7 +88,9 @@ router.get(
  *                  type: object
  *                  properties: 
  *                    servicesID: 
- *                      type: string
+ *                      type: array
+ *                      items: 
+ *                        type: string
  *                    levelName: 
  *                      type: string
  *                    price: 
@@ -156,7 +158,9 @@ router.post(
  *                  type: object
  *                  properties: 
  *                    servicesID: 
- *                      type: string
+ *                      type: array
+ *                      items: 
+ *                        type: string
  *                    levelName: 
  *                      type: string
  *                    price: 

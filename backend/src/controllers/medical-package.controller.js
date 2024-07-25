@@ -77,6 +77,10 @@ const updateMedicalPackage = async (req, res, next) => {
             { new: true }
         );
 
+        if (!updatedMedicalPackage) {
+            createError(404, 'Medical package not found.');
+        }
+
         return res.status(201).json({
             message: 'Medical package updated successfully.',
             data: updatedMedicalPackage

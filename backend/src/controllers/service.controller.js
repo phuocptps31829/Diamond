@@ -8,6 +8,7 @@ const getAllServices = async (req, res, next) => {
         });
         const services = await ServiceModel.find({
             isDeleted: false,
+            _id: { $ne: UserID }
         });
 
         if (!services.length) {
@@ -76,6 +77,10 @@ const updateService = async (req, res, next) => {
             { ...req.body },
             { new: true }
         );
+
+        if (!updatedService) {
+            createError(404, 'Service not found.');
+        }
 
         return res.status(201).json({
             message: 'Service updated successfully.',

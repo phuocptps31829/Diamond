@@ -1,6 +1,14 @@
 const { checkSchema } = require('express-validator');
 
 const serviceValidator = checkSchema({
+    specialtyID: {
+        exists: {
+            errorMessage: 'Specialty ID is required'
+        },
+        isMongoId: {
+            errorMessage: 'Specialty ID is invalid'
+        },
+    },
     name: {
         exists: {
             errorMessage: 'Name is required'
@@ -44,10 +52,10 @@ const serviceValidator = checkSchema({
     },
     duration: {
         exists: {
-            errorMessage: 'Price is required'
+            errorMessage: 'Duration is required'
         },
         isNumeric: {
-            errorMessage: 'Price should be a number'
+            errorMessage: 'Duration should be a number'
         }
     },
 
