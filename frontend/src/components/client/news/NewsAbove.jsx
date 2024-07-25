@@ -1,23 +1,19 @@
-import { BiPlusMedical } from "react-icons/bi";
-import { FaMinus } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function NewsAbove() {
   return (
-    <div className="mx-auto my-5 max-w-screen-xl p-3 md:my-10">
+    <div className="mx-auto max-w-screen-xl p-3">
       <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
         Tin tức
       </div>
       <div className="my-3 flex items-center justify-center text-2xl text-[#797676]">
-        <FaMinus />
-        <BiPlusMedical />
-        <FaMinus />
+        <img src="https://benhviennamsaigon.com.vn/skins/default/images/line.png" />
       </div>
-      <div className="grid gap-4 px-2 md:grid-cols-2 md:grid-rows-1 lg:px-3">
+      <div className="mt-6 grid gap-4 px-2 md:grid-cols-2 md:grid-rows-1 lg:px-3">
         <Link
-          to="/none"
-          className="gap-4 overflow-hidden rounded-md border bg-primary-50 md:row-span-3 md:grid-rows-subgrid"
+          to="/news-detail"
+          className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
         >
           <img
             src="https://img.ykhoadiamond.com/uploads/avatar/19072024/cd8b430b-d6b2-44f7-9ce5-7a132804c72f.png"
@@ -45,8 +41,8 @@ export default function NewsAbove() {
           </div>
         </Link>
         <Link
-          to="/none"
-          className="flex flex-col overflow-hidden rounded-md bg-primary-50 sm:h-[200px] sm:flex-row"
+          to="/news-detail"
+          className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row"
         >
           <div className="h-full w-[500px] md:w-[40%]">
             <img
@@ -75,8 +71,8 @@ export default function NewsAbove() {
           </div>
         </Link>
         <Link
-          to="/none"
-          className="flex flex-col overflow-hidden rounded-md bg-primary-50 sm:h-[200px] sm:flex-row"
+          to="/news-detail"
+          className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row"
         >
           <div className="h-full w-[500px] md:w-[40%]">
             <img
@@ -105,8 +101,8 @@ export default function NewsAbove() {
           </div>
         </Link>
         <Link
-          to="/none"
-          className="flex flex-col overflow-hidden rounded-md bg-primary-50 sm:h-[200px] sm:flex-row"
+          to="/news-detail"
+          className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row"
         >
           <div className="h-full w-[500px] md:w-[40%]">
             <img

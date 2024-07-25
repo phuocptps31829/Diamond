@@ -6,7 +6,7 @@ import News from "../../components/client/home/News";
 import Collaborate from "../../components/client/home/Collaborate";
 export default function Home() {
   return (
-    <div>
+    <div className="bg-[#E8F2F7]">
       <Banner />
       <OutstandingProduct />
       <Specialty />

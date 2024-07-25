@@ -7,7 +7,7 @@ import "swiper/css/scrollbar";
 
 export default function Collaborate() {
   return (
-    <div className="mx-auto mt-5 max-w-screen-xl md:mt-10 px-3">
+    <div className="mx-auto mt-5 max-w-screen-xl md:mt-10 px-5">
       <div className="mb-4 w-full text-center text-[23px] font-bold md:mb-2 md:text-[35px]">
         Đối tác y khoa Diamond
       </div>

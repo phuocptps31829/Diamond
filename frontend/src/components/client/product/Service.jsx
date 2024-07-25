@@ -4,9 +4,9 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function Product({ props }) {
+export default function ServiceProduct({ props }) {
   return (
-    <div className="overflow-hidden rounded-xl shadow-custom">
+    <div className="overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to="/chitietsp"
         className="group block h-[106px] overflow-hidden md:h-[206px]"
@@ -48,6 +48,6 @@ export default function Product({ props }) {
   );
 }
 
-Product.propTypes = {
-  props: PropTypes.object.isRequired,
+ServiceProduct.propTypes = {
+  props: PropTypes.object,
 };

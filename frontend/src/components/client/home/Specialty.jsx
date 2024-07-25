@@ -8,7 +8,7 @@ import "swiper/css/scrollbar";
 export default function Specialty() {
   return (
     <div className="my-10 w-full bg-primary-500 py-4">
-      <div className="mx-auto my-5 max-w-screen-xl px-3">
+      <div className="mx-auto my-5 max-w-screen-xl px-5">
         <div className="mb-2 w-full text-center text-[23px] font-bold text-white md:text-[35px]">
           Chuyên khoa
         </div>

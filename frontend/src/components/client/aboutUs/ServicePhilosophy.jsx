@@ -1,6 +1,6 @@
 export default function ServicePhilosophy() {
   return (
-    <div className="mx-auto my-5 mt-5 max-w-screen-xl md:px-7 px-3 md:mt-10">
+    <div className="mx-auto my-5 mt-5 max-w-screen-xl px-5 md:mt-10 md:px-7">
       <div className="mb-5 flex items-center justify-center">
         <img
           src="https://medpro.vn/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fphilohosi.45c09a3b.png&w=64&q=75"
@@ -23,7 +23,7 @@ export default function ServicePhilosophy() {
         <div className="absolute inset-0 hidden items-center justify-center md:flex">
           <img src="https://medpro.vn/_next/image?url=https%3A%2F%2Fbo-api.medpro.com.vn%2Fstatic%2Fimages%2Fmedpro%2Fweb%2Fbg_phone.svg&w=384&q=75" />
         </div>
-        <div className="-left-56 top-28 flex gap-3 rounded-2xl bg-primary-50 p-3 md:absolute">
+        <div className="-left-56 top-28 flex gap-3 rounded-2xl bg-white p-3 md:absolute">
           <p className="h-[35px] w-[35px] rounded-full bg-[#ffb54a] text-center text-[22px] font-bold text-white">
             1
           </p>
@@ -35,7 +35,7 @@ export default function ServicePhilosophy() {
             </p>
           </div>
         </div>
-        <div className="-right-56 top-56 flex gap-3 rounded-2xl bg-primary-50 p-3 md:absolute">
+        <div className="-right-56 top-56 flex gap-3 rounded-2xl bg-white p-3 md:absolute">
           <p className="h-[35px] w-[35px] rounded-full bg-[#ffb54a] text-center text-[22px] font-bold text-white">
             2
           </p>
@@ -47,7 +47,7 @@ export default function ServicePhilosophy() {
             </p>
           </div>
         </div>
-        <div className="-left-56 bottom-56 flex gap-3 rounded-2xl bg-primary-50 p-3 md:absolute">
+        <div className="-left-56 bottom-56 flex gap-3 rounded-2xl bg-white p-3 md:absolute">
           <p className="h-[35px] w-[35px] rounded-full bg-[#ffb54a] text-center text-[22px] font-bold text-white">
             3
           </p>
@@ -58,14 +58,15 @@ export default function ServicePhilosophy() {
             </p>
           </div>
         </div>
-        <div className="-right-56 bottom-28 flex gap-3 rounded-2xl bg-primary-50 p-3 md:absolute">
+        <div className="-right-56 bottom-28 flex gap-3 rounded-2xl bg-white p-3 md:absolute">
           <p className="h-[35px] w-[35px] rounded-full bg-[#ffb54a] text-center text-[22px] font-bold text-white">
-            3
+            4
           </p>
           <div>
-            <h3 className="text-[18px] font-semibold">Thực tiễn</h3>
+            <h3 className="text-[18px] font-semibold">Hợp tác</h3>
             <p className="max-w-[250px] text-[15px]">
-              Người dùng được tiếp cận với các dịch vụ chăm sóc sức khoẻ phù hợp
+              Trong tiến trình chuyển đổi số hiện nay các CSYT cần hợp tác, mở
+              rộng dịch vụ tiện ích phục vụ người dùng
             </p>
           </div>
         </div>

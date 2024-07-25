@@ -12,7 +12,7 @@ import "swiper/css/scrollbar";
 export default function News() {
   return (
     <div className="my-10 w-full bg-primary-500 py-4">
-      <div className="mx-auto my-5 max-w-screen-xl p-3 md:my-10">
+      <div className="mx-auto my-5 max-w-screen-xl p-5 md:my-10">
         <div className="w-full text-center text-[23px] font-bold text-white md:text-[35px]">
           Tin tức mới nhất
         </div>
@@ -20,9 +20,9 @@ export default function News() {
           Cập nhật những tin tức mới nhất về y tế, sức khỏe, cùng những thông
           tin hữu ích khác.
         </span>
-        <div className="hidden gap-4 px-2 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
+        <div className="hidden gap-4 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
           <Link
-            to="/none"
+            to="/news-detail"
             className="gap-4 overflow-hidden rounded-md border-2 border-white bg-white md:row-span-3 md:grid-rows-subgrid"
           >
             <img
@@ -51,7 +51,7 @@ export default function News() {
             </div>
           </Link>
           <Link
-            to="/none"
+            to="/news-detail"
             className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
           >
             <div className="h-full w-[500px] md:w-[40%]">
@@ -82,7 +82,7 @@ export default function News() {
             </div>
           </Link>
           <Link
-            to="/none"
+            to="/news-detail"
             className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
           >
             <div className="h-full w-[500px] md:w-[40%]">
@@ -113,7 +113,7 @@ export default function News() {
             </div>
           </Link>
           <Link
-            to="/none"
+            to="/news-detail"
             className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
           >
             <div className="h-full w-[500px] md:w-[40%]">
@@ -163,7 +163,7 @@ export default function News() {
           {Array.from({ length: 4 }).map((_, index) => (
             <SwiperSlide key={index}>
               <Link
-                to="/none"
+                to="/news-detail"
                 className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row"
               >
                 <div className="h-full w-[100%] sm:w-[40%]">

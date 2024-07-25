@@ -1,22 +1,24 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
-import NewsProduct from "../product/News";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/scrollbar";
+import DoctorProduct from "../product/Doctor";
 
-export default function NewsBelow() {
+export default function OtherDoctor() {
   return (
-    <div className="mx-auto max-w-screen-xl p-3">
-      <h2 className="relative flex text-[24px] font-bold uppercase">
+    <div className="mx-auto max-w-screen-xl px-5">
+      <h2 className="relative flex text-[24px] font-bold">
         <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
-        <span className="sm:text-md pl-5 text-[18px]">Đọc nhiều nhất</span>
+        <span className="sm:text-md pl-5 text-[22px]">
+          Bác sĩ cùng chuyên ngành
+        </span>
       </h2>
       <Swiper
         className="my-3"
         modules={[Navigation, Pagination]}
-        spaceBetween={20}
+        spaceBetween={10}
         slidesPerView={5}
         loop={true}
         speed={500}
@@ -24,13 +26,16 @@ export default function NewsBelow() {
         pagination
         breakpoints={{
           0: {
-            slidesPerView: 1,
+            slidesPerView: 2,
           },
           576: {
             slidesPerView: 2,
           },
-          1250: {
+          768: {
             slidesPerView: 3,
+          },
+          1024: {
+            slidesPerView: 4,
           },
         }}
       >
@@ -39,7 +44,7 @@ export default function NewsBelow() {
             className="overflow-hidden rounded-md bg-white"
             key={index}
           >
-            <NewsProduct />
+            <DoctorProduct key={index} />
           </SwiperSlide>
         ))}
       </Swiper>
