@@ -32,15 +32,15 @@ const router = createBrowserRouter([
         element: <Accuracy />
       },
       {
-        path: '/forget_password',
+        path: '/forget-password',
         element: <ForgetPassword />
       },
       {
-        path: '/changepassword_accuracy',
+        path: '/changepassword-accuracy',
         element: <ChangePassAccuracy />
       },
       {
-        path: '/change_password',
+        path: '/change-password',
         element: <ChangePass />
       },
     ]

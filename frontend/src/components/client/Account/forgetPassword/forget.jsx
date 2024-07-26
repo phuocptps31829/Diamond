@@ -5,7 +5,7 @@ export default function ForgetComponent() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/changepassword_accuracy');
+    navigate('/changepassword-accuracy');
   };
   return (
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">

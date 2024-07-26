@@ -58,7 +58,7 @@ export default function LoginComponent() {
                                     Ghi nhớ tôi
                                 </label>
                             </div>
-                            <Link to={ "/forget_password" } className="text-primary-500 text-sm italic font-bold hover:underline">
+                            <Link to={ "/forget-password" } className="text-primary-500 text-sm italic font-bold hover:underline">
                                 Quên mật khẩu?
                             </Link>
                             </div>

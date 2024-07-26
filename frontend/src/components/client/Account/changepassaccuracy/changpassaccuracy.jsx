@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import {  FaKey  } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
-export default function ChangePass_AccuracyComponent() {
+export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/change_password');
+    navigate('/change-password');
   };
   return (
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
