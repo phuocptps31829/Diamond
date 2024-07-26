@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom";
 import {  FaKey  } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';
 
 export default function ChangePass_AccuracyComponent() {
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate('/change_password');
+  };
   return (
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-2xl">
@@ -45,7 +51,7 @@ export default function ChangePass_AccuracyComponent() {
               </div>
 
               <div className="text-center">
-                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button onClick={handleButtonClick} type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                   Xác thực tài khoản
                 </button>
               </div>
@@ -77,7 +83,7 @@ export default function ChangePass_AccuracyComponent() {
                 <div className="flex flex-col items-center mt-3 mb-10">
                     <p className="text-center">
                             Bạn đã có tài khoản? 
-                        <Link className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                        <Link to={'/login'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                             Đăng nhập ngay!
                         </Link>
                     </p>

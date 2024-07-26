@@ -77,7 +77,7 @@ export default function AccuracyComponent() {
                 <div className="flex flex-col items-center mt-3 mb-10">
                     <p className="text-center">
                             Bạn đã có tài khoản? 
-                        <Link className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                        <Link to={'/login'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                             Đăng nhập ngay!
                         </Link>
                     </p>
