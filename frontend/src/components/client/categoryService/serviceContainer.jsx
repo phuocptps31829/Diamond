@@ -1,0 +1,325 @@
+import Avatar from "@mui/material/Avatar";
+import avatarImg from "../../../assets/images/105124.jpg";
+import mapImg from "../../../assets/images/2149377706.jpg";
+import { useState } from "react";
+import Service from "../product/Service";
+
+import { Box, Slider } from "@mui/material";
+const ServiceContainer = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [value, setValue] = useState([10000, 10000000]);
+
+  const toggleAccordion = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  return (
+    <section className="relative mx-auto max-w-screen-2xl py-10">
+      <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
+        <div className="container h-auto w-full rounded-md bg-primary-500 p-3">
+          <div className="flex flex-col items-center justify-center gap-5 md:flex-row md:gap-16">
+            <a href="/">
+              <div className="flex items-center gap-2">
+                <Avatar
+                  alt="Remy Sharp"
+                  src={avatarImg}
+                  sx={{ width: 56, height: 56 }}
+                />
+                <div className="items-center text-white">
+                  <h2 className="text-sm font-semibold md:text-base">
+                    Hỗ trợ tư vấn gói khám
+                  </h2>
+                  <span className="text-xs md:text-sm">Hỏi chuyên viên</span>
+                </div>
+              </div>
+            </a>
+            <a href="/">
+              <div className="flex items-center gap-2">
+                <Avatar
+                  alt="Remy Sharp"
+                  src={mapImg}
+                  sx={{ width: 56, height: 56 }}
+                />
+                <div className="items-center text-white">
+                  <h2 className="text-sm font-semibold md:text-base">
+                    Hỗ trợ tư vấn gói khám
+                  </h2>
+                  <span className="text-xs md:text-sm">Hỏi chuyên viên</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <svg
+          className="my-4 w-full"
+          xmlns="http://www.w3.org/2000/svg"
+          width="1216"
+          height="2"
+          viewBox="0 0 1216 2"
+          fill="none"
+        >
+          <path d="M0 1H1216" stroke="#E5E7EB" />
+        </svg>
+        <div className="grid grid-cols-12 md:gap-7">
+          <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
+            <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
+              <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
+                <p className="text-base font-medium leading-7 text-black">
+                  Lọc
+                </p>
+                <p className="cursor-pointer text-xs font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
+                  Làm mới
+                </p>
+              </div>
+              <div className="container mb-3 border-b pb-1">
+                {" "}
+                <p className="mb-3 text-sm font-medium leading-6 text-black">
+                  Giá
+                </p>
+                <Box>
+                  <Slider
+                    getAriaLabel={() => "Temperature range"}
+                    value={value}
+                    onChange={handleChange}
+                    min={10000}
+                    max={10000000}
+                    sx={{
+                      "& .MuiSlider-thumb": {
+                        color: "bg-primary-600",
+                      },
+                    }}
+                    valueLabelDisplay="auto"
+                    valueLabelFormat={(value) =>
+                      `${value.toLocaleString()} VNĐ`
+                    }
+                  />
+                </Box>
+              </div>
+              <div className="mb-3 w-full border-b pb-2">
+                <div className="grid grid-cols-1 gap-5 sm:gap-9">
+                  <div className="accordion">
+                    <button
+                      className="inline-flex w-full items-center justify-between leading-8 text-gray-600 transition duration-500 hover:text-primary-600 active:text-primary-600"
+                      aria-controls="category-collapse-one"
+                      onClick={toggleAccordion}
+                    >
+                      <h5 className="text-sm font-medium text-gray-900">
+                        Chuyên khoa
+                      </h5>
+                      <svg
+                        className={`text-gray-900 transition duration-500 group-hover:text-primary-600 ${isOpen ? "rotate-180" : ""}`}
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M16.5 8.25L12.4142 12.3358C11.7475 13.0025 11.4142 13.3358 11 13.3358C10.5858 13.3358 10.2525 13.0025 9.58579 12.3358L5.5 8.25"
+                          stroke="currentColor"
+                          strokeWidth="1.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        ></path>
+                      </svg>
+                    </button>
+                    <div
+                      className={`accordion-content ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                    >
+                      <div className="box mt-5 flex flex-col gap-2">
+                        <div className="mb-2 flex items-center">
+                          <input
+                            id="checkbox-option-1"
+                            type="checkbox"
+                            value=""
+                            className="checked:primary-600mary-100 mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                          />
+                          <label
+                            htmlFor="checkbox-option-1"
+                            className="ml-1 cursor-pointer text-xs font-normal text-gray-600"
+                          >
+                            option-1
+                          </label>
+                        </div>
+                        <div className="mb-2 flex items-center">
+                          <input
+                            id="checkbox-option-2"
+                            type="checkbox"
+                            value=""
+                            className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                          />
+                          <label
+                            htmlFor="checkbox-option-2"
+                            className="ml-1 cursor-pointer text-xs font-normal text-gray-600"
+                          >
+                            option-2
+                          </label>
+                        </div>
+                        <div className="mb-2 flex items-center">
+                          <input
+                            id="checkbox-option-3"
+                            type="checkbox"
+                            value=""
+                            className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                          />
+                          <label
+                            htmlFor="checkbox-option-3"
+                            className="ml-1 cursor-pointer text-xs font-normal text-gray-600"
+                          >
+                            option-3
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="container mb-3 border-b pb-1">
+                {" "}
+                <p className="mb-3 text-sm font-medium leading-6 text-black">
+                  Chi nhánh
+                </p>
+                <div className="box mb-3 flex flex-col gap-2">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-default-1"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-default-1"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      ĐA KHOA 179
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-default-2"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-default-2"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      ĐA KHOA DIAMOND
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="container mb-3 border-b pb-1">
+                <p className="mb-3 text-sm font-medium leading-6 text-black">
+                  Loại
+                </p>
+                <div className="box mb-3 flex flex-col gap-2">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-default-3"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-default-3"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      Gói khám
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-default-4"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-default-4"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      Dịch vụ
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="container mb-3 border-b pb-1">
+                <p className="mb-3 text-sm font-medium leading-6 text-black">
+                  Giới tính
+                </p>
+                <div className="box mb-3 flex flex-col gap-2">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-gt-1"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-gt-1"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      Nam
+                    </label>
+                  </div>
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-gt-2"
+                      type="checkbox"
+                      value=""
+                      className="mr-2 h-5 w-5 appearance-none rounded-md border border-gray-300 checked:border-primary-500 checked:bg-primary-100 checked:bg-[url('https://pagedone.io/asset/uploads/1689406942.svg')] checked:bg-center checked:bg-no-repeat hover:border-primary-500 hover:bg-primary-100"
+                    />
+                    <label
+                      htmlFor="checkbox-gt-2"
+                      className="cursor-pointer text-xs font-normal leading-4 text-gray-600"
+                    >
+                      Nữ
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <button className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm">
+                <svg
+                  width="17"
+                  height="16"
+                  viewBox="0 0 17 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14.4987 13.9997L13.1654 12.6663M13.832 7.33301C13.832 10.6467 11.1457 13.333 7.83203 13.333C4.51832 13.333 1.83203 10.6467 1.83203 7.33301C1.83203 4.0193 4.51832 1.33301 7.83203 1.33301C11.1457 1.33301 13.832 4.0193 13.832 7.33301Z"
+                    stroke="white"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Lọc
+              </button>
+            </div>
+          </div>
+          <div className="col-span-12 mt-7 md:col-span-9">
+            <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <Service />
+              <Service />
+              <Service />
+              <Service />
+              <Service />
+              <Service />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default ServiceContainer;

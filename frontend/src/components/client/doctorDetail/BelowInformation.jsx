@@ -1,34 +1,36 @@
 import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function BelowInformation() {
-  const [tab, setTab] = useState(1);
+  const [activeTab, setActiveTab] = useState("certification");
+
   return (
     <div className="mx-auto my-10 max-w-screen-xl px-5">
-      <div className="mx-auto flex flex-col overflow-hidden rounded-lg border border-gray-400 bg-white">
-        <div className="flex w-full justify-between divide-x divide-gray-400">
-          <button
-            className={`w-full border-b border-gray-400 p-3 text-center font-bold hover:bg-primary-500 hover:text-white ${
-              tab === 1
-                ? "bg-primary-500 text-white"
-                : "bg-white text-gray-800 hover:bg-primary-500"
-            }`}
-            onClick={() => setTab(1)}
+      <Tabs
+        defaultValue="certification"
+        onValueChange={setActiveTab}
+        className="my-5 w-full"
+      >
+        <TabsList className="w-full gap-1 bg-gray-200 py-7">
+          <TabsTrigger
+            value="certification"
+            className={`w-full p-3 ${activeTab === "certification" ? "shadcn-tabs-active" : ""}`}
           >
             Chứng nhận
-          </button>
-          <button
-            className={`w-full border-b border-gray-400 p-3 text-center font-bold hover:bg-primary-500 hover:text-white ${
-              tab === 2
-                ? "bg-primary-500 text-white"
-                : "bg-white text-gray-800 hover:bg-primary-500"
-            }`}
-            onClick={() => setTab(2)}
+          </TabsTrigger>
+          <TabsTrigger
+            value="experience"
+            className={`w-full p-3 ${activeTab === "experience" ? "shadcn-tabs-active" : ""}`}
           >
             Kinh nghiệm
-          </button>
-        </div>
-        <div className="p-5 sm:p-10">
-          <div className={`space-y-5 ${tab === 1 ? "block" : "hidden"}`}>
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent
+          value="certification"
+          className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
+        >
+          <div className="space-y-5">
             <div className="flex flex-col">
               <strong className="mb-2">Trường y:</strong>
               <ul className="pl-12">
@@ -64,7 +66,12 @@ export default function BelowInformation() {
               </ul>
             </div>
           </div>
-          <div className={`space-y-5 ${tab === 2 ? "block" : "hidden"}`}>
+        </TabsContent>
+        <TabsContent
+          value="experience"
+          className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
+        >
+          <div className="space-y-5">
             <div className="flex flex-col">
               <strong className="mb-2">Kinh nghiệm:</strong>
               <ul className="pl-12">
@@ -79,8 +86,8 @@ export default function BelowInformation() {
               </ul>
             </div>
           </div>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -4,18 +4,18 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function DoctorProduct({ props }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="overflow-hidden shadow-custom rounded-sm">
       <Link
         to="/doctor-detail"
-        className="group block h-[106px] overflow-hidden sm:h-[206px]"
+        className="group flex items-center justify-center overflow-hidden p-3"
       >
         <img
           src="https://benhviennamsaigon.com.vn/vnt_upload/doctor/01_2022/18_Vo_Van_Man.jpg"
           alt=""
-          className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
+          className="ease w-[250px] transform rounded-full border border-gray-400 transition-transform duration-500 group-hover:scale-[1.05]"
         />
       </Link>
-      <div className="flex flex-col p-3 md:p-5">
+      <div className="flex flex-col bg-white p-3 shadow-2xl md:p-5">
         <Link
           to="/doctor-detail"
           className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]"
