@@ -1,10 +1,10 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 function createData(stt, danhMucKham, thucHien) {
   return { stt, danhMucKham, thucHien };
@@ -30,27 +30,31 @@ const MedicalPackageService = () => {
           Hiện tại, Phòng Khám Đa Khoa Diamond cung cấp dịch vụ gói khám sức
           khỏe tiền sản cho nữ gồm:
         </h1>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 300 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell style={{ fontWeight: "bold" }}>STT</TableCell>
-                <TableCell align="left" style={{ fontWeight: "bold" }}>
+        <div className="overflow-x-auto rounded-lg border bg-white">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow className="bg-primary-500 text-white hover:bg-primary-500">
+                <TableCell className="whitespace-nowrap p-3 text-center font-semibold">
+                  STT
+                </TableCell>
+                <TableCell className="whitespace-nowrap p-3 text-left font-semibold">
                   Danh mục khám
                 </TableCell>
-                <TableCell align="center" style={{ fontWeight: "bold" }}>
+                <TableCell className="whitespace-nowrap p-3 text-center font-semibold">
                   Thực hiện
                 </TableCell>
               </TableRow>
-            </TableHead>
+            </TableHeader>
             <TableBody>
               {rows.map((row) => (
                 <TableRow key={row.stt}>
-                  <TableCell component="th" scope="row">
+                  <TableCell className="text-center font-normal">
                     {row.stt}
                   </TableCell>
-                  <TableCell align="left">{row.danhMucKham}</TableCell>
-                  <TableCell align="center">
+                  <TableCell className="whitespace-nowrap text-left font-normal">
+                    {row.danhMucKham}
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-center font-normal">
                     <div>
                       <label className="text-white">
                         <input
@@ -65,7 +69,7 @@ const MedicalPackageService = () => {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </div>
       </div>
     </div>
   );

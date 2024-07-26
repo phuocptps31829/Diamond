@@ -1,6 +1,6 @@
-import Avatar from "@mui/material/Avatar";
 import avatarImg from "../../../assets/images/105124.jpg";
 import mapImg from "../../../assets/images/2149377706.jpg";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const services = [
   {
@@ -37,11 +37,9 @@ const SupportService = () => {
           {services.map((service, index) => (
             <a href={service.link} key={index}>
               <div className="flex items-center gap-2">
-                <Avatar
-                  alt={service.title}
-                  src={service.img}
-                  sx={{ width: 56, height: 56 }}
-                />
+              <Avatar className="size-14 ">
+              <AvatarImage src={service.img}  className="object-cover"/>
+            </Avatar>
                 <div className="items-center text-white">
                   <h2 className="text-sm font-normal md:text-base">
                     {service.title}

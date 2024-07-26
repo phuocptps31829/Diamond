@@ -2,7 +2,7 @@ import healthImg from "../../../assets/images/healthcare-medical-people-concept-
 const DescriptionService = () => {
   return (
     <div className="mx-auto max-w-screen-2xl">
-    <div className="container mx-auto max-w-7xl py-4">
+    <div className=" mx-auto max-w-7xl md:py-4 py-0">
       <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="flex items-center justify-center">
           <img

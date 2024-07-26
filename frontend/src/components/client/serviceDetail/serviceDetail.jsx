@@ -13,7 +13,7 @@ const ServiceDetail = () => {
   };
 
   return (
-    <div className="mx-auto max-w-screen-2xl py-20 ">
+    <div className="mx-auto max-w-screen-2xl pb-7  ">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border  bg-white p-8 md:grid-cols-2 md:py-10">
         <div className="container flex items-center justify-center">
           {" "}
