@@ -1,16 +1,15 @@
 import {
-  Paper,
   Table,
   TableBody,
-  TableContainer,
-  TableHead,
+  TableCell,
+  TableHeader,
   TableRow,
-} from "@mui/material";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { styled } from "@mui/material/styles";
+} from "@/components/ui/table";
+
 function createData(stt, nameService, price) {
   return { stt, nameService, price };
 }
+
 const services = [
   {
     serviceName: "DA LIỄU",
@@ -36,83 +35,61 @@ const services = [
     rows: [createData(1, "Chụp X-quang khớp gối", "200.000 VND")],
   },
 ];
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#007BBB",
-    color: theme.palette.common.white,
-    fontSize: 20,
-    fontWeight: "600",
-  },
-}));
-const StyledTableCellSTT = styled(TableCell)({
-  width: "50px",
-});
 
-const StyledTableCellNameService = styled(TableCell)({
-  minWidth: "170px",
-});
-
-const StyledTableCellPrice = styled(TableCell)({
-  width: "170px",
-});
-
-const StyledTableCellBody = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    color: theme.palette.common.black,
-    fontSize: 15,
-  },
-}));
 const PriceServiceContainer = () => {
   return (
     <div className="mx-auto max-w-screen-2xl p-10">
       {services.map((service, index) => (
-        <div key={service.serviceName} className=" my-7 mx-auto max-w-7xl">
-          <TableContainer component={Paper}>
-            <Table
-              sx={{ minWidth: 300 }}
-              aria-label={`${service.serviceName.toLowerCase()} table`}
-            >
-              <TableHead>
+        <div key={service.serviceName} className="mx-auto my-7 max-w-7xl">
+          <div className="overflow-x-auto rounded-lg border bg-white">
+            <Table className="min-w-full">
+              <TableHeader>
                 <TableRow>
-                  <StyledTableCell align="center" colSpan={3}>
+                  <TableCell
+                    colSpan={3}
+                    className="bg-primary-500 text-center text-2xl font-semibold text-white"
+                  >
                     {service.serviceName}
-                  </StyledTableCell>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
+              </TableHeader>
 
               {index === 0 && (
-                <TableHead>
+                <TableHeader>
                   <TableRow>
-                    <StyledTableCellBody align="left">STT</StyledTableCellBody>
-                    <StyledTableCellBody align="left">
+                    <TableCell className="text-left font-semibold">
+                      STT
+                    </TableCell>
+                    <TableCell className="text-left font-semibold">
                       Tên dịch vụ
-                    </StyledTableCellBody>
-                    <StyledTableCellBody align="center">
+                    </TableCell>
+                    <TableCell className="text-center font-semibold">
                       Giá
-                    </StyledTableCellBody>
+                    </TableCell>
                   </TableRow>
-                </TableHead>
+                </TableHeader>
               )}
               <TableBody>
                 {service.rows.map((row) => (
-                  <TableRow
-                    key={row.stt}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <StyledTableCellSTT align="left" component="th" scope="row">
+                  <TableRow key={row.stt} className="last:border-0">
+                    <TableCell
+                      className="w-12 text-left font-normal"
+                      component="th"
+                      scope="row"
+                    >
                       {row.stt}
-                    </StyledTableCellSTT>
-                    <StyledTableCellNameService align="left">
+                    </TableCell>
+                    <TableCell className="min-w-[170px] max-w-[200px] text-left font-normal">
                       {row.nameService}
-                    </StyledTableCellNameService>
-                    <StyledTableCellPrice align="center">
+                    </TableCell>
+                    <TableCell className="w-40 text-center font-normal">
                       {row.price}
-                    </StyledTableCellPrice>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </TableContainer>
+          </div>
         </div>
       ))}
     </div>

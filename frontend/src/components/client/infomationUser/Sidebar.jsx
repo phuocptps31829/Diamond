@@ -18,7 +18,7 @@ const Sidebar = () => {
       : "flex items-center rounded-lg p-3  text-black hover:bg-bg-gray hover:text-primary-700 active:bg-bg-gray active:text-primary-600";
 
   return (
-    <div className="h-screen w-full bg-white">
+    <div className="h-auto w-full bg-white">
       <ul>
         <li className="p-2 ">
           <NavLink
