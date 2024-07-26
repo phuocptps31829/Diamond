@@ -1,6 +1,6 @@
 
 import Service from "../product/Service";
-import SidebarFilter from "./sidebarFilter";
+import SidebarFilter from "./SidebarFilter";
 
 const ServiceContainer = () => {
   return (

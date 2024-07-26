@@ -1,5 +1,5 @@
-import ListServiceBanner from "../../components/client/priceListService/listServiceBanner"
-import PriceServiceContainer from "../../components/client/priceListService/priceServiceContainer"
+import ListServiceBanner from "../../components/client/priceListService/ListServiceBanner"
+import PriceServiceContainer from "../../components/client/priceListService/PriceServiceContainer"
 
 const TablePriceService = () => {
   return (

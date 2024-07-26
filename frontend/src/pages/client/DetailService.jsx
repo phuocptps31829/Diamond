@@ -1,8 +1,8 @@
-import DescriptionService from "../../components/client/serviceDetail/descriptionService";
-import MedicalPackageService from "../../components/client/serviceDetail/medicalPackageService";
-import PackageServiceOther from "../../components/client/serviceDetail/packageServiceOther";
-import Rules from "../../components/client/serviceDetail/rules";
-import ServiceDetail from "../../components/client/serviceDetail/serviceDetail";
+import DescriptionService from "../../components/client/serviceDetail/DescriptionService";
+import MedicalPackageService from "../../components/client/serviceDetail/MedicalPackageService";
+import PackageServiceOther from "../../components/client/serviceDetail/PackageServiceOther";
+import Rules from "../../components/client/serviceDetail/Rules";
+import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
 
 const DetailService = () => {
   return (
