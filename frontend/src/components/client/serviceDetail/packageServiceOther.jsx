@@ -1,4 +1,4 @@
-import Service from "../../client/product/Service";
+import Service from "../product/Service";
 const PackageServiceOther = () => {
   return (
     <div className="container mx-auto max-w-7xl py-4">
