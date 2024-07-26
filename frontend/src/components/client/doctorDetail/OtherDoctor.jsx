@@ -1,4 +1,4 @@
-import NewsProduct from "../product/News";
+import DoctorProduct from "../product/Doctor";
 import {
   Carousel,
   CarouselContent,
@@ -8,13 +8,16 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-export default function NewsBelow() {
+export default function OtherDoctor() {
   return (
-    <div className="mx-auto max-w-screen-xl p-3">
-      <h2 className="relative flex text-[24px] font-bold uppercase">
+    <div className="mx-auto max-w-screen-xl px-5">
+      <h2 className="relative flex text-[24px] font-bold">
         <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
-        <span className="sm:text-md pl-5 text-[18px]">Đọc nhiều nhất</span>
+        <span className="sm:text-md pl-5 text-[22px]">
+          Bác sĩ cùng chuyên ngành
+        </span>
       </h2>
+
       <Carousel
         opts={{
           align: "start",
@@ -33,9 +36,9 @@ export default function NewsBelow() {
           {Array.from({ length: 12 }).map((_, index) => (
             <CarouselItem
               key={index}
-              className="pl-4 sm:basis-1/2 lg:basis-1/3"
+              className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
             >
-              <NewsProduct />
+              <DoctorProduct />
             </CarouselItem>
           ))}
         </CarouselContent>

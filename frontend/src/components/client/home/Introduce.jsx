@@ -11,7 +11,7 @@ export default function Introduce() {
         nhất, chất lượng cao, tận tâm nhằm gánh vác một phần trách nhiệm trong
         việc chăm sóc sức khỏe cho cộng đồng và xã hội.
       </span>
-      <div className="my-5 grid gap-4 px-2 md:grid-cols-2 lg:px-3">
+      <div className="my-5 grid gap-4 px-5 md:grid-cols-2 ">
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/none"

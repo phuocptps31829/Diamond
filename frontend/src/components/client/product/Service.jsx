@@ -4,11 +4,11 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function Product({ props }) {
+export default function ServiceProduct({ props }) {
   return (
-    <div className="overflow-hidden rounded-xl shadow-custom">
+    <div className="overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to="/chitietsp"
+        to="/detail-service/1"
         className="group block h-[106px] overflow-hidden md:h-[206px]"
       >
         <img
@@ -19,12 +19,15 @@ export default function Product({ props }) {
       </Link>
       <div className="flex flex-col p-3 md:p-5">
         <Link
-          to="/chitietsp"
+          to="/detail-service/1"
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
           Toàn diện
         </Link>
-        <Link to="/chitietsp" className="text-sm font-bold md:my-1 md:text-xl">
+        <Link
+          to="/detail-service/1"
+          className="text-sm font-bold md:my-1 md:text-xl"
+        >
           GÓI KHÁM TỔNG QUÁT NAM
         </Link>
         <hr className="mb-1 md:mb-3" />
@@ -48,6 +51,6 @@ export default function Product({ props }) {
   );
 }
 
-Product.propTypes = {
-  props: PropTypes.object.isRequired,
+ServiceProduct.propTypes = {
+  props: PropTypes.object,
 };

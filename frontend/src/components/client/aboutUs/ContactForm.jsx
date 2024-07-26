@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 export default function ContactForm() {
   return (
-    <div className="mx-auto my-5 mt-5 max-w-screen-xl md:px-7 px-3 md:mt-10">
-      <div className="relative h-[400px] overflow-hidden rounded-2xl border-2 border-primary-100 lg:h-[250px]">
+    <div className="mx-auto mt-5 max-w-screen-xl px-5 md:mt-10 md:px-7">
+      <div className="relative h-[400px] overflow-hidden rounded-2xl border-2 border-white lg:h-[250px]">
         <img
           src="https://cdn-pkh.longvan.net/prod-partner/0f04db66-ff2a-49b5-9f63-e18f4c7ef354-bg-contact-desktop.webp"
           className="block h-full w-full object-cover"
@@ -16,8 +16,12 @@ export default function ContactForm() {
               <img src="https://medpro.vn/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmobile.650ea615.svg&w=1920&q=75" />
             </div>
             <div className="flex flex-col items-center text-white">
-              <p className="sm:text-[30px] text-[20px] uppercase">Các hình thức hỗ trợ</p>
-              <span className="sm:text-[49px] text-[30px] font-bold">1900-2115</span>
+              <p className="text-[20px] uppercase sm:text-[30px]">
+                Các hình thức hỗ trợ
+              </p>
+              <span className="text-[30px] font-bold sm:text-[49px]">
+                1900-2115
+              </span>
             </div>
           </div>
           <div className="flex gap-5">

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 import { AiOutlineSchedule } from "react-icons/ai";
 const ServiceDetail = () => {
@@ -13,8 +13,8 @@ const ServiceDetail = () => {
   };
 
   return (
-    <div className="mx-auto max-w-screen-2xl pb-7  ">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border  bg-white p-8 md:grid-cols-2 md:py-10">
+    <div className="mx-auto max-w-screen-2xl">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
         <div className="container flex items-center justify-center">
           {" "}
           <img
@@ -42,8 +42,7 @@ const ServiceDetail = () => {
           </span>
 
           <div className="mb-4 flex w-full items-center gap-3">
-          <Button className="w-full">Đặt lịch ngay</Button>
-
+            <Button className="w-full">Đặt lịch ngay</Button>
           </div>
         </div>
       </div>

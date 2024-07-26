@@ -5,12 +5,12 @@ import ServicePhilosophy from "../../components/client/aboutUs/ServicePhilosophy
 import ContactForm from "../../components/client/aboutUs/ContactForm";
 export default function AboutUs() {
   return (
-    <>
+    <div className="bg-[#E8F2F7] pb-10">
       <BannerAboutUs />
       <UsageSteps />
       <Mission />
       <ServicePhilosophy />
       <ContactForm />
-    </>
+    </div>
   );
 }

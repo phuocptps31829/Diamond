@@ -16,7 +16,7 @@ export default function MainHeader() {
     {
       id: 3,
       name: "Bác sĩ",
-      to: "/bacsi",
+      to: "/doctors",
     },
     {
       id: 4,
@@ -26,7 +26,7 @@ export default function MainHeader() {
     {
       id: 5,
       name: "Liên hệ",
-      to: "/lienhe",
+      to: "/contact",
     },
     {
       id: 6,
@@ -49,7 +49,7 @@ export default function MainHeader() {
           <AiOutlineMenu className="text-2xl" />
         </div>
         <nav className="hidden lg:block">
-          <ul className="nav__link flex text-sm font-semibold gap-1" >
+          <ul className="nav__link flex space-x-1 text-sm font-semibold">
             {dataNav.map((item) => (
               <li key={item.id}>
                 <NavLink

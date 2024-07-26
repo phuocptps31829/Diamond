@@ -1,7 +1,7 @@
 export default function Mission() {
   return (
-    <div className="mx-auto my-5 mt-5 max-w-screen-xl md:px-7 px-3 md:mt-10">
-      <div className="relative grid grid-cols-1 gap-5 rounded-2xl bg-primary-50 px-3 pb-10 pt-24 md:grid-cols-2 md:py-14 md:pt-14 lg:gap-0">
+    <div className="mx-auto my-5 mt-5 max-w-screen-xl md:px-7 px-5 md:mt-10">
+      <div className="relative grid grid-cols-1 gap-5 rounded-2xl bg-white px-3 pb-10 pt-24 md:grid-cols-2 md:py-14 md:pt-14 lg:gap-0">
         <div className="absolute inset-x-0 flex justify-center">
           <img
             src="https://medpro.vn/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FFrame%201000002170.8488ec4f.png&w=1920&q=75"
