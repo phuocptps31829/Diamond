@@ -1,10 +1,12 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
 import NewsProduct from "../product/News";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function NewsBelow() {
   return (
@@ -13,36 +15,33 @@ export default function NewsBelow() {
         <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
         <span className="sm:text-md pl-5 text-[18px]">Đọc nhiều nhất</span>
       </h2>
-      <Swiper
-        className="my-3"
-        modules={[Navigation, Pagination]}
-        spaceBetween={20}
-        slidesPerView={5}
-        loop={true}
-        speed={500}
-        navigation
-        pagination
-        breakpoints={{
-          0: {
-            slidesPerView: 1,
-          },
-          576: {
-            slidesPerView: 2,
-          },
-          1250: {
-            slidesPerView: 3,
-          },
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
         }}
+        className="my-4 w-full"
+        plugins={[
+          Autoplay({
+            delay: 3500,
+            stopOnInteraction: false,
+            stopOnMouseEnter: false,
+          }),
+        ]}
       >
-        {Array.from({ length: 10 }).map((_, index) => (
-          <SwiperSlide
-            className="overflow-hidden rounded-md bg-white"
-            key={index}
-          >
-            <NewsProduct />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+        <CarouselContent>
+          {Array.from({ length: 12 }).map((_, index) => (
+            <CarouselItem
+              key={index}
+              className="pl-4 sm:basis-1/2 lg:basis-1/3"
+            >
+              <NewsProduct />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   );
 }

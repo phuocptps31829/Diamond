@@ -14,6 +14,7 @@ import TablePriceService from "./pages/client/TablePriceService";
 import UserProfileLayout from "./pages/client/UserProfile";
 import MedicalRecords from "./components/client/infomationUser/MedicalRecords";
 import UserInfoForm from "./components/client/infomationUser/UserInfoForm";
+import AppointmentHistory from "./components/client/infomationUser/AppointmentHistory";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
           {
             path: "medical-records",
             element: <MedicalRecords />,
+          },
+          {
+            path: "appointment-history",
+            element: <AppointmentHistory />,
           },
         ],
       },

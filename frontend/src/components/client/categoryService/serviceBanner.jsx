@@ -11,17 +11,17 @@ const serviceBanner = () => {
         />
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="py-3 text-2xl font-bold sm:text-3xl lg:text-4xl">
-              Chuyên khoa Diamond
+            <h1 className="mb-3 text-[30px] font-bold text-primary-500 sm:text-[39px]">
+              Dịch vụ gói khám sức khỏe
             </h1>
-            <span className="text-sm sm:text-base md:text-lg lg:text-xl">
-              Diamond hãy sống theo cách của bạn
+            <span className="px-5 text-[14px] font-medium sm:px-20 sm:text-[18px]">
+              Đăng ký gói khám sức khỏe để nhận ưu đãi hấp dẫn từ chúng tôi
             </span>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default serviceBanner
+export default serviceBanner;

@@ -16,7 +16,7 @@ export default function OutstandingProduct() {
         ))}
       </div>
       <Link
-        to="/none"
+        to="/category-service"
         className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border border-primary-500 py-2 text-[12px] font-semibold uppercase text-primary-500 hover:bg-primary-500 hover:text-white md:w-[40%] md:text-[14px]"
       >
         Xem tất cả <AiOutlineDoubleRight />

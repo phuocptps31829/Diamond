@@ -1,10 +1,12 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import "swiper/css/scrollbar";
 import DoctorProduct from "../product/Doctor";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function OtherDoctor() {
   return (
@@ -15,39 +17,34 @@ export default function OtherDoctor() {
           Bác sĩ cùng chuyên ngành
         </span>
       </h2>
-      <Swiper
-        className="my-3"
-        modules={[Navigation, Pagination]}
-        spaceBetween={10}
-        slidesPerView={5}
-        loop={true}
-        speed={500}
-        navigation
-        pagination
-        breakpoints={{
-          0: {
-            slidesPerView: 2,
-          },
-          576: {
-            slidesPerView: 2,
-          },
-          768: {
-            slidesPerView: 3,
-          },
-          1024: {
-            slidesPerView: 4,
-          },
+
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
         }}
+        className="my-4 w-full"
+        plugins={[
+          Autoplay({
+            delay: 3500,
+            stopOnInteraction: false,
+            stopOnMouseEnter: false,
+          }),
+        ]}
       >
-        {Array.from({ length: 10 }).map((_, index) => (
-          <SwiperSlide
-            className="overflow-hidden rounded-md bg-white"
-            key={index}
-          >
-            <DoctorProduct key={index} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+        <CarouselContent>
+          {Array.from({ length: 12 }).map((_, index) => (
+            <CarouselItem
+              key={index}
+              className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+            >
+              <DoctorProduct />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     </div>
   );
 }
