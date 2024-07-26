@@ -1,6 +1,6 @@
-import SupportService from "@/components/client/categoryService/SupportService";
-import ServiceBanner from "../../components/client/categoryService/ServiceBanner";
-import ServiceContainer from "../../components/client/categoryService/ServiceContainer";
+import SupportService from "@/components/client/categoryService/";
+import ServiceBanner from "../../components/client/categoryService/";
+import ServiceContainer from "../../components/client/categoryService/";
 
 const CategoryService = () => {
   return (

@@ -1,13 +1,13 @@
-import ListServiceBanner from "../../components/client/priceListService/ListServiceBanner"
-import PriceServiceContainer from "../../components/client/priceListService/PriceServiceContainer"
+import ListServiceBanner from "../../components/client/priceListService/";
+import PriceServiceContainer from "../../components/client/priceListService/";
 
 const TablePriceService = () => {
   return (
     <div>
-      <ListServiceBanner/>
-      <PriceServiceContainer/>
+      <ListServiceBanner />
+      <PriceServiceContainer />
     </div>
-  )
-}
+  );
+};
 
-export default TablePriceService
+export default TablePriceService;
