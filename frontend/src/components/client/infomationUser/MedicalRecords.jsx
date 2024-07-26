@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -18,6 +19,16 @@ import {
 import { Button } from "@/components/ui/button";
 
 const MedicalRecords = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(queryParams.get("page")) || 1;
+
+  const handlePageChange = (page) => {
+    navigate(`/user-profile/medical-records?page=${page}`);
+  };
+
   let count = 1;
   const records = [
     {
@@ -87,14 +98,11 @@ const MedicalRecords = () => {
     },
   ];
 
-  const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 5;
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = records.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(records.length / recordsPerPage);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="p-6">
@@ -144,7 +152,7 @@ const MedicalRecords = () => {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="bg-primary-500 text-white px-6"
+                  className="bg-primary-500 px-6 text-white"
                 >
                   Xem chi tiết
                 </Button>
@@ -153,18 +161,22 @@ const MedicalRecords = () => {
           ))}
         </TableBody>
       </Table>
-      <Pagination className="mt-4">
-        <PaginationContent>
+      <Pagination className="py-5">
+        <PaginationContent className="hover:cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
+              onClick={() =>
+                handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
+              }
+              className={
+                currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
+              }
             />
           </PaginationItem>
-          {[...Array(totalPages)].map((_, index) => (
+          {Array.from({ length: totalPages }).map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
-                onClick={() => paginate(index + 1)}
+                onClick={() => handlePageChange(index + 1)}
                 isActive={currentPage === index + 1}
               >
                 {index + 1}
@@ -172,9 +184,20 @@ const MedicalRecords = () => {
             </PaginationItem>
           ))}
           <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
             <PaginationNext
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              onClick={() =>
+                handlePageChange(
+                  currentPage + 1 > totalPages ? totalPages : currentPage + 1,
+                )
+              }
+              className={
+                currentPage === totalPages
+                  ? "opacity-50 hover:cursor-default"
+                  : ""
+              }
             />
           </PaginationItem>
         </PaginationContent>
