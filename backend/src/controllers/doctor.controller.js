@@ -1,5 +1,4 @@
 const DoctorModel = require('../models/doctor.model');
-// const { createError } = require('../utils/helper.util');
 const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllDoctors = async (req, res, next) => {
@@ -56,7 +55,7 @@ const createDoctor = async (req, res, next) => {
     try {
         const userID = req.newUser._id;
         const newDoctor = await DoctorModel.create({ userID, ...req.body });
-        newDoctor.userID = req.newUser
+        newDoctor.userID = req.newUser;
 
         return res.status(201).json({
             message: 'Doctor created successfully.',
@@ -77,7 +76,7 @@ const updateDoctor = async (req, res, next) => {
             { ...req.body },
             { new: true }
         );
-        updatedDoctor.userID = await req.updatedUser
+        updatedDoctor.userID = await req.updatedUser;
 
         return res.status(201).json({
             message: 'Doctor updated successfully.',

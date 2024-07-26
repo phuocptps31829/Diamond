@@ -26,7 +26,7 @@ const branchSchema = new mongoose.Schema({
         required: true
     },
     coordinates: {
-        ing: {
+        lng: {
             type: Number,
             required: true
         },

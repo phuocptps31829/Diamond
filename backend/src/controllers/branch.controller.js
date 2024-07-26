@@ -1,5 +1,5 @@
 const BranchModel = require('../models/branch.model');
-const { createError } = require('../utils/helper.util');
+const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllBranches = async (req, res, next) => {
     try {

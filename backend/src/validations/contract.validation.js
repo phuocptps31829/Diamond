@@ -18,15 +18,15 @@ const contractValidator = checkSchema({
             errorMessage: "Start date is required",
         },
         isString: {
-            errorMessage: "Start date should be a string",
+            errorMessage: "Start date should be a date type",
         },
     },
     endDate: {
         exists: {
             errorMessage: "End date is required",
         },
-        isString: {
-            errorMessage: "End date should be a string",
+        isISO8601: {
+            errorMessage: "End date should be a date type",
         },
     },
     detail: {

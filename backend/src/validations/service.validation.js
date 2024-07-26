@@ -1,13 +1,12 @@
 const { checkSchema } = require('express-validator');
 
+const SpecialtyModel = require('../models/specialty.model');
+
 const serviceValidator = checkSchema({
     specialtyID: {
-        exists: {
-            errorMessage: 'Specialty ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Specialty ID is invalid'
-        },
+        customSanitizer: {
+            options: (id) => checkIsExistID(SpecialtyModel, id),
+        }
     },
     name: {
         exists: {

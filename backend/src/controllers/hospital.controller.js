@@ -1,5 +1,5 @@
 const HospitalModel = require('../models/hospital.model');
-const { createError } = require('../utils/helper.util');
+const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllHospitals = async (req, res, next) => {
     try {

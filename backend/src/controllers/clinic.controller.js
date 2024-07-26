@@ -1,5 +1,5 @@
 const ClinicModel = require('../models/clinic.model');
-const { createError } = require('../utils/helper.util');
+const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllClinics = async (req, res, next) => {
     try {
@@ -26,18 +26,18 @@ const getClinicByID = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const branch = await ClinicModel.findOne({
+        const clinic = await ClinicModel.findOne({
             isDeleted: false,
             _id: id
         });
 
-        if (!branch) {
+        if (!clinic) {
             createError(404, "Clinic not found.");
         }
 
         return res.status(200).json({
             message: 'Clinic retrieved successfully.',
-            data: branch,
+            data: clinic,
         });
     } catch (error) {
         next(error);

@@ -1,5 +1,5 @@
 const ContractModel = require('../models/contract.model');
-const { createError } = require('../utils/helper.util');
+const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllContracts = async (req, res, next) => {
     try {
