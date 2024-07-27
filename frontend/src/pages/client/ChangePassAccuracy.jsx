@@ -1,8 +1,8 @@
-import ChangePassAccuracyComponent from "../../components/client/Account/changepassaccuracy/changpassaccuracy";
+import ChangePassAccuracyComponent from "../../components/client/Account/changePassAccuracy/ChangePassAccuracy";
 
 export default function ChangePassAccuracy() {
     return (
-        <ChangePassAccuracyComponent/>
+        <ChangePassAccuracyComponent />
     )
-    ;
+        ;
 }
