@@ -35,10 +35,14 @@ export default function TopHeader() {
         </div>
         <div className="flex items-center justify-between gap-10 text-sm">
           <div className="flex items-center gap-2">
-            <MdEmail className="text-xl" /> Email: cskh@ykhoadiamond.com
+            <MdEmail className="text-xl" />{" "}
+            <span className="text-sm font-normal">
+              Email: cskh@ykhoadiamond.com
+            </span>
           </div>
           <div className="flex items-center gap-2">
-            <FaPhone /> Đặt hẹn: 02839307575
+            <FaPhone />
+            <span className="text-sm font-normal"> Đặt hẹn: 02839307575</span>
           </div>
         </div>
       </div>
