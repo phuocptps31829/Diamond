@@ -77,6 +77,10 @@ const updateSpecialty = async (req, res, next) => {
             { new: true }
         );
 
+        if (!updatedSpecialty) {
+            createError(404, 'Specialty not found.');
+        }
+
         return res.status(201).json({
             message: 'Specialty updated successfully.',
             data: updatedSpecialty

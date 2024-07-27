@@ -8,11 +8,11 @@ const contractSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Hospital',
     },
     startDate: {
-        type: String,
+        type: Date,
         required: true
     },
     endDate: {
-        type: String,
+        type: Date,
         required: true
     },
     detail: {

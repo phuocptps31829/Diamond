@@ -1,18 +1,18 @@
 const express = require('express');
 
-const helperMiddleware = require('../middlewares/helper.middleware');
-const medicineImportController = require('../controllers/medicine-import.controller');
-const medicineImportValidator = require('../validations/medicine-import.validation');
-
 const router = express.Router();
+
+const helperMiddleware = require('../middlewares/helper.middleware');
+const clinicController = require('../controllers/clinic.controller');
+const clinicValidator = require('../validations/clinic.validation');
 
 /**
  * @openapi
- * '/api/v1/medicine-imports':
+ * '/api/v1/clinics':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get all medicine import (?page=1&limit=10&sort=1)
+ *    - Clinic Routes
+ *    summary: Get all clinics
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -24,21 +24,21 @@ const router = express.Router();
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
-    medicineImportController.getAllMedicineImports
+    clinicController.getAllClinics
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/{id}':
+ * '/api/v1/clinics/{id}':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get medicine import by id
+ *    - Clinic Routes
+ *    summary: Get clinic by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: medicine import id
+ *        description: Clinic id
  *        schema:
  *          type: string
  *    responses:
@@ -52,15 +52,16 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.getMedicineImportById
+    clinicController.getClinicByID
 );
+
 /** 
 * @openapi
- * '/api/v1/medicine-imports/add':
+ * '/api/v1/clinics/add':
  *  post:
  *    tags:
- *    - Medicine import Routes
- *    summary: Add new medicine import
+ *    - Clinic Routes
+ *    summary: Add new clinic
  *    requestBody:
  *      required: true
  *      content:
@@ -68,30 +69,15 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - medicineID
- *              - quantity
- *              - purchaseDate
- *              - manufacturingDate
- *              - expiryDate
- *              - purchasePrice
- *              - sellingPrice
- *              - origin
+ *              - branchID
+ *              - specialtyID
+ *              - name
  *            properties:
- *              medicineID:
+ *              branchID:
  *                type: string
- *              quantity:
+ *              specialtyID:
  *                type: string
- *              purchaseDate:
- *                type: string
- *              manufacturingDate:
- *                type: string
- *              expiryDate:
- *                type: string
- *              purchasePrice:
- *                type: string
- *              sellingPrice:
- *                type: string
- *              origin:
+ *              name:
  *                type: string
  *    responses:
  *      '201':
@@ -107,24 +93,24 @@ router.get(
  */
 router.post(
     '/add',
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.createMedicineImport
+    clinicValidator.clinicValidator,
+    clinicController.createClinic
 );
 
 /** 
-* @openapi
- * '/api/v1/medicine-imports/update/{id}':
+ * @openapi
+ * '/api/v1/clinics/update/{id}':
  *  put:
  *    tags:
- *    - Medicine import Routes
- *    summary: Update medicine import by id
+ *    - Clinic Routes
+ *    summary: Update branch by id
  *    parameters:
  *      - name: id
  *        in: path
  *        required: true
  *        schema:
  *          type: string
- *        description: The ID of the medicine import to update
+ *        description: The ID of the branch to update
  *    requestBody:
  *      required: true
  *      content:
@@ -132,8 +118,14 @@ router.post(
  *          schema:
  *            type: object
  *            required:
+ *              - branchID
+ *              - specialtyID
  *              - name
  *            properties:
+ *              branchID:
+ *                type: string
+ *              specialtyID:
+ *                type: string
  *              name:
  *                type: string
  *    responses:
@@ -151,22 +143,22 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.updateMedicineImport
+    clinicValidator.clinicValidator,
+    clinicController.updateClinic
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/delete/{id}':
+ * '/api/v1/clinics/delete/{id}':
  *  delete:
  *    tags:
- *    - Medicine import Routes
- *    summary: Delete medicine import by id
+ *    - Clinic Routes
+ *    summary: Delete clinic by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the medicine import to delete
+ *        description: Clinic id
  *        schema:
  *          type: string
  *    responses:
@@ -180,7 +172,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.deleteMedicineImport
+    clinicController.deleteClinic
 );
 
 module.exports = router;

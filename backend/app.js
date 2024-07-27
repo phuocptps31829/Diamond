@@ -15,6 +15,12 @@ const specialtyRoutes = require('./src/routes/specialty.route');
 const medicineCategoryRoutes = require('./src/routes/medicine-category.route');
 const medicineRoutes = require('./src/routes/medicine.route');
 const medicineImportRoutes = require('./src/routes/medicine-import.route');
+const clinicRoutes = require('./src/routes/clinic.route');
+const hospitalRoutes = require('./src/routes/hospital.route');
+const contractRoutes = require('./src/routes/contract.route');
+const branchRoutes = require('./src/routes/branch.route');
+const resultRoutes = require('./src/routes/result.route');
+const invoiceRoutes = require('./src/routes/invoice.route');
 
 const app = express();
 
@@ -41,6 +47,12 @@ app.use('/api/v1/specialties', specialtyRoutes);
 app.use('/api/v1/medicine-categories', medicineCategoryRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/medicine-imports', medicineImportRoutes);
+app.use('/api/v1/clinics', clinicRoutes);
+app.use('/api/v1/hospitals', hospitalRoutes);
+app.use('/api/v1/branches', branchRoutes);
+app.use('/api/v1/contracts', contractRoutes);
+app.use('/api/v1/results', resultRoutes);
+app.use('/api/v1/invoices', invoiceRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

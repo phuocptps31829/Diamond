@@ -1,18 +1,18 @@
 const express = require('express');
 
-const helperMiddleware = require('../middlewares/helper.middleware');
-const medicineImportController = require('../controllers/medicine-import.controller');
-const medicineImportValidator = require('../validations/medicine-import.validation');
-
 const router = express.Router();
+
+const helperMiddleware = require('../middlewares/helper.middleware');
+const contractController = require('../controllers/contract.controller');
+const contractValidator = require('../validations/contract.validation');
 
 /**
  * @openapi
- * '/api/v1/medicine-imports':
+ * '/api/v1/contracts':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get all medicine import (?page=1&limit=10&sort=1)
+ *    - Contract Routes
+ *    summary: Get all contracts
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,22 +23,21 @@ const router = express.Router();
 */
 router.get(
     '/',
-    helperMiddleware.checkQueryParams,
-    medicineImportController.getAllMedicineImports
+    contractController.getAllContracts
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/{id}':
+ * '/api/v1/contracts/{id}':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get medicine import by id
+ *    - Contract Routes
+ *    summary: Get contract by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: medicine import id
+ *        description: Contract id
  *        schema:
  *          type: string
  *    responses:
@@ -52,15 +51,16 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.getMedicineImportById
+    contractController.getContractByID
 );
+
 /** 
 * @openapi
- * '/api/v1/medicine-imports/add':
+ * '/api/v1/contracts/add':
  *  post:
  *    tags:
- *    - Medicine import Routes
- *    summary: Add new medicine import
+ *    - Contract Routes
+ *    summary: Add new contract
  *    requestBody:
  *      required: true
  *      content:
@@ -68,30 +68,21 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - medicineID
- *              - quantity
- *              - purchaseDate
- *              - manufacturingDate
- *              - expiryDate
- *              - purchasePrice
- *              - sellingPrice
- *              - origin
+ *              - startDate
+ *              - endDate
+ *              - detail
  *            properties:
- *              medicineID:
+ *              doctorID:
  *                type: string
- *              quantity:
+ *              hospitalID:
  *                type: string
- *              purchaseDate:
+ *              startDate:
  *                type: string
- *              manufacturingDate:
+ *                format: date
+ *              endDate:
  *                type: string
- *              expiryDate:
- *                type: string
- *              purchasePrice:
- *                type: string
- *              sellingPrice:
- *                type: string
- *              origin:
+ *                format: date
+ *              detail:
  *                type: string
  *    responses:
  *      '201':
@@ -107,24 +98,24 @@ router.get(
  */
 router.post(
     '/add',
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.createMedicineImport
+    contractValidator.contractValidator,
+    contractController.createContract
 );
 
 /** 
-* @openapi
- * '/api/v1/medicine-imports/update/{id}':
+ * @openapi
+ * '/api/v1/contracts/update/{id}':
  *  put:
  *    tags:
- *    - Medicine import Routes
- *    summary: Update medicine import by id
+ *    - Contract Routes
+ *    summary: Update contract by id
  *    parameters:
  *      - name: id
  *        in: path
  *        required: true
  *        schema:
  *          type: string
- *        description: The ID of the medicine import to update
+ *        description: The ID of the contract to update
  *    requestBody:
  *      required: true
  *      content:
@@ -132,9 +123,21 @@ router.post(
  *          schema:
  *            type: object
  *            required:
- *              - name
+ *              - startDate
+ *              - endDate
+ *              - detail
  *            properties:
- *              name:
+ *              doctorID:
+ *                type: string
+ *              hospitalID:
+ *                type: string
+ *              startDate:
+ *                type: string
+ *                format: date
+ *              endDate:
+ *                type: string
+ *                format: date
+ *              detail:
  *                type: string
  *    responses:
  *      '201':
@@ -151,22 +154,22 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.updateMedicineImport
+    contractValidator.contractValidator,
+    contractController.updateContract
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/delete/{id}':
+ * '/api/v1/contracts/delete/{id}':
  *  delete:
  *    tags:
- *    - Medicine import Routes
- *    summary: Delete medicine import by id
+ *    - Contract Routes
+ *    summary: Delete contract by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the medicine import to delete
+ *        description: Contract id
  *        schema:
  *          type: string
  *    responses:
@@ -180,7 +183,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.deleteMedicineImport
+    contractController.deleteContract
 );
 
 module.exports = router;

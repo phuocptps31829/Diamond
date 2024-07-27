@@ -1,6 +1,13 @@
 const { checkSchema } = require('express-validator');
 
+const SpecialtyModel = require('../models/specialty.model');
+
 const serviceValidator = checkSchema({
+    specialtyID: {
+        customSanitizer: {
+            options: (id) => checkIsExistID(SpecialtyModel, id),
+        }
+    },
     name: {
         exists: {
             errorMessage: 'Name is required'
@@ -44,10 +51,10 @@ const serviceValidator = checkSchema({
     },
     duration: {
         exists: {
-            errorMessage: 'Price is required'
+            errorMessage: 'Duration is required'
         },
         isNumeric: {
-            errorMessage: 'Price should be a number'
+            errorMessage: 'Duration should be a number'
         }
     },
 

@@ -1,6 +1,4 @@
 const { checkSchema } = require('express-validator');
-const BranchModel = require('../models/branch.model');
-
 
 const branchValidator = checkSchema({
     name: {
@@ -46,10 +44,10 @@ const branchValidator = checkSchema({
     },
     'coordinates.lng': {
         exists: {
-            errorMessage: 'Ing is required'
+            errorMessage: 'Lng is required'
         },
         isNumeric: {
-            errorMessage: 'Ing should be a number'
+            errorMessage: 'Lng should be a number'
         }
     },
     'coordinates.lat': {
@@ -60,12 +58,10 @@ const branchValidator = checkSchema({
             errorMessage: 'Lat should be a number'
         }
     }
-
 });
 
 
 
 module.exports = {
     branchValidator
-
 };

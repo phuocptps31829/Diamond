@@ -1,4 +1,4 @@
-const MedicineImportModel = require('../models/medical-import.model');
+const MedicineImportModel = require('../models/medicine-import.model');
 const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllMedicineImports = async (req, res, next) => {

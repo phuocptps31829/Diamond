@@ -1,18 +1,18 @@
 const express = require('express');
 
-const helperMiddleware = require('../middlewares/helper.middleware');
-const medicineImportController = require('../controllers/medicine-import.controller');
-const medicineImportValidator = require('../validations/medicine-import.validation');
-
 const router = express.Router();
+
+const helperMiddleware = require('../middlewares/helper.middleware');
+const branchController = require('../controllers/branch.controller');
+const branchValidator = require('../validations/branch.validation');
 
 /**
  * @openapi
- * '/api/v1/medicine-imports':
+ * '/api/v1/branches':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get all medicine import (?page=1&limit=10&sort=1)
+ *    - Branch Routes
+ *    summary: Get all branches
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -24,21 +24,21 @@ const router = express.Router();
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
-    medicineImportController.getAllMedicineImports
+    branchController.getAllBranches
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/{id}':
+ * '/api/v1/branches/{id}':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get medicine import by id
+ *    - Branch Routes
+ *    summary: Get branch by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: medicine import id
+ *        description: Branch id
  *        schema:
  *          type: string
  *    responses:
@@ -52,15 +52,16 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.getMedicineImportById
+    branchController.getBranchByID
 );
+
 /** 
 * @openapi
- * '/api/v1/medicine-imports/add':
+ * '/api/v1/branches/add':
  *  post:
  *    tags:
- *    - Medicine import Routes
- *    summary: Add new medicine import
+ *    - Branch Routes
+ *    summary: Add new branch
  *    requestBody:
  *      required: true
  *      content:
@@ -68,31 +69,32 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - medicineID
- *              - quantity
- *              - purchaseDate
- *              - manufacturingDate
- *              - expiryDate
- *              - purchasePrice
- *              - sellingPrice
- *              - origin
+ *              - name
+ *              - workingTime
+ *              - imagesURL
+ *              - address
+ *              - hotline
+ *              - coordinates
  *            properties:
- *              medicineID:
+ *              name:
  *                type: string
- *              quantity:
+ *              workingTime:
  *                type: string
- *              purchaseDate:
+ *              imagesURL:
+ *                type: array
+ *                items: 
+ *                  type: string
+ *              address:
  *                type: string
- *              manufacturingDate:
+ *              hotline:
  *                type: string
- *              expiryDate:
- *                type: string
- *              purchasePrice:
- *                type: string
- *              sellingPrice:
- *                type: string
- *              origin:
- *                type: string
+ *              coordinates:
+ *                type: object
+ *                properties: 
+ *                  lat:
+ *                    type: number
+ *                  lng:
+ *                    type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -107,24 +109,24 @@ router.get(
  */
 router.post(
     '/add',
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.createMedicineImport
+    branchValidator.branchValidator,
+    branchController.createBranch
 );
 
 /** 
-* @openapi
- * '/api/v1/medicine-imports/update/{id}':
+ * @openapi
+ * '/api/v1/branches/update/{id}':
  *  put:
  *    tags:
- *    - Medicine import Routes
- *    summary: Update medicine import by id
+ *    - Branch Routes
+ *    summary: Update branch by id
  *    parameters:
  *      - name: id
  *        in: path
  *        required: true
  *        schema:
  *          type: string
- *        description: The ID of the medicine import to update
+ *        description: The ID of the branch to update
  *    requestBody:
  *      required: true
  *      content:
@@ -133,9 +135,31 @@ router.post(
  *            type: object
  *            required:
  *              - name
+ *              - workingTime
+ *              - imagesURL
+ *              - address
+ *              - hotline
+ *              - coordinates
  *            properties:
  *              name:
  *                type: string
+ *              workingTime:
+ *                type: string
+ *              imagesURL:
+ *                type: array
+ *                items: 
+ *                  type: string
+ *              address:
+ *                type: string
+ *              hotline:
+ *                type: string
+ *              coordinates:
+ *                type: object
+ *                properties: 
+ *                  lat:
+ *                    type: number
+ *                  lng:
+ *                    type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -151,22 +175,21 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.updateMedicineImport
+    branchValidator.branchValidator,
+    branchController.updateBranch
 );
-
 /**
  * @openapi
- * '/api/v1/medicine-imports/delete/{id}':
+ * '/api/v1/branches/delete/{id}':
  *  delete:
  *    tags:
- *    - Medicine import Routes
- *    summary: Delete medicine import by id
+ *    - Branch Routes
+ *    summary: Delete news by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the medicine import to delete
+ *        description: News id
  *        schema:
  *          type: string
  *    responses:
@@ -180,7 +203,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.deleteMedicineImport
+    branchController.deleteBranch
 );
 
 module.exports = router;
