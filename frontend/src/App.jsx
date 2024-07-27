@@ -6,7 +6,7 @@ import AppLayout from "./layouts/client/AppLayout";
 import Home from "./pages/client/Home";
 import Login from "./pages/client/Login";
 import Register from "./pages/client/Register";
-import Accuracy from "./pages/client/Accuracy";
+import Accurancy from "./pages/client/Accuracy";
 import ForgetPassword from "./pages/client/ForgetPassWord";
 import ChangePassAccuracy from "./pages/client/ChangePassAccuracy";
 import ChangePass from "./pages/client/ChangePass";
@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/accuracy',
-        element: <Accuracy />
+        element: <Accurancy />
       },
       {
         path: '/forget-password',

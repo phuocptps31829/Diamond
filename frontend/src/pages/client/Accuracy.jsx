@@ -1,8 +1,8 @@
-import AccuracyComponent from "../../components/client/Account/accuracy/accuracy";
+import AccurancyComponent from "../../components/client/Account/accurancy/Accurancy";
 
-export default function Accuracy() {
+export default function Accurancy() {
     return (
-        <AccuracyComponent/>
+        <AccurancyComponent/>
     )
     ;
 }

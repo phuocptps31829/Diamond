@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import {  FaKey  } from "react-icons/fa";
 
-export default function AccuracyComponent() {
+export default function AccurancyComponent() {
   return (
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-2xl">
