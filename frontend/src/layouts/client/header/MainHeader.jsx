@@ -62,7 +62,7 @@ export default function MainHeader() {
             )) }
             <li className="px-5">|</li>
             <li>
-              <Link className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white">
+              <Link to={ '/login' } className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white">
                 Đăng nhập
               </Link>
             </li>

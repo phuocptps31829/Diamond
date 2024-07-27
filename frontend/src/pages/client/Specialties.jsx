@@ -1,6 +1,6 @@
-import SpecialtiesBanner from "../../components/client/specialties/ấd";
-import SpecialtiesList from "../../components/client/specialties/ss";
-import Safe from "../../components/client/specialties/";
+import SpecialtiesBanner from "../../components/client/specialties/SpecialtiesBanner";
+import SpecialtiesList from "../../components/client/specialties/SpecialtiesList";
+import Safe from "../../components/client/specialties/TrustedSafety";
 const Specialties = () => {
   return (
     <div className="bg-bg-gray">

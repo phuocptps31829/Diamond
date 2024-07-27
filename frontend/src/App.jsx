@@ -89,35 +89,33 @@ const router = createBrowserRouter([
           },
         ],
       },
-    ],
-    path: '',
-    element: <Home />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/accuracy',
-    element: <Accuracy />
-  },
-  {
-    path: '/forget-password',
-    element: <ForgetPassword />
-  },
-  {
-    path: '/changepassword-accuracy',
-    element: <ChangePassAccuracy />
-  },
-  {
-    path: '/change-password',
-    element: <ChangePass />
-  },
-]);
+      {
+        path: '/login',
+        element: <Login />
+      },
+      {
+        path: '/register',
+        element: <Register />
+      },
+      {
+        path: '/accuracy',
+        element: <Accuracy />
+      },
+      {
+        path: '/forget-password',
+        element: <ForgetPassword />
+      },
+      {
+        path: '/changepassword-accuracy',
+        element: <ChangePassAccuracy />
+      },
+      {
+        path: '/change-password',
+        element: <ChangePass />
+      }
+    ]
+  }]
+);
 
 function App() {
   return <RouterProvider router={ router }></RouterProvider>;
