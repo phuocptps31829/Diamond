@@ -5,6 +5,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function Specialty() {
   return (
@@ -23,6 +24,13 @@ export default function Specialty() {
             loop: true,
           }}
           className="my-4 w-full"
+          plugins={[
+            Autoplay({
+              delay: 2500,
+              stopOnInteraction: false,
+              stopOnMouseEnter: false,
+            }),
+          ]}
         >
           <CarouselContent>
             {Array.from({ length: 12 }).map((_, index) => (

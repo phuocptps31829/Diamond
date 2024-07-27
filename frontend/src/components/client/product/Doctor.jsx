@@ -4,9 +4,9 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function DoctorProduct({ props }) {
   return (
-    <div className="overflow-hidden shadow-custom rounded-sm">
+    <div className="overflow-hidden rounded-sm shadow-sm">
       <Link
-        to="/doctor-detail"
+        to="/doctor-detail/1"
         className="group flex items-center justify-center overflow-hidden p-3"
       >
         <img
@@ -17,13 +17,13 @@ export default function DoctorProduct({ props }) {
       </Link>
       <div className="flex flex-col bg-white p-3 shadow-2xl md:p-5">
         <Link
-          to="/doctor-detail"
+          to="/doctor-detail/1"
           className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]"
         >
           Chuyên khoa: Mắt
         </Link>
         <Link
-          to="/doctor-detail"
+          to="/doctor-detail/1"
           className="py-2 text-[12px] font-bold sm:text-[14px] md:my-1 md:text-xl"
         >
           NGUYỄN KIM CHUNG
