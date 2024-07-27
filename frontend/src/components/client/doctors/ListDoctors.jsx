@@ -73,7 +73,7 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 p-6 bg-white rounded-md shadow">
         {Array.from({ length: 8 }).map((_, index) => (
           <DoctorProduct key={index} />
         ))}
