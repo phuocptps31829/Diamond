@@ -52,6 +52,7 @@ const UserInfoForm = () => {
               className="col-span-1 sm:col-span-1"
               name="phoneNumber"
               label="Số điện thoại"
+              
               type="text"
               control={control}
               errors={errors}
@@ -160,9 +161,15 @@ const UserInfoForm = () => {
                 <label>Nữ</label>
               </div>
             </div>
+          <button
+            type="submit"
+            className="mt-5 h-fit w-full rounded bg-primary-500 p-2 text-white md:block hidden"
+          >
+            Cập nhật
+          </button>
           </div>
         </div>
-        <div className="mt-auto w-full px-4 pb-4 md:px-4">
+        <div className="mt-auto w-full px-4 pb-4 md:px-4  md:hidden block">
           <button
             type="submit"
             className="mt-4 h-fit w-full rounded bg-primary-500 p-3 text-white"
