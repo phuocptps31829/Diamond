@@ -4,7 +4,7 @@ import {
     TableCell,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 
 function createData(stt, danhMucKham, thucHien) {
     return { stt, danhMucKham, thucHien };

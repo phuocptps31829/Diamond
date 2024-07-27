@@ -21,18 +21,18 @@ export default function Footer() {
               <li className="pb-3">
                 <p>
                   <strong className="font-medium">Hotline </strong>
-                  <span>19001008</span>
+                  <span  className="font-normal text-sm">19001008</span>
                 </p>
               </li>
               <li className="pb-3">
                 <p>
                   <strong className="font-medium">Hỗ trợ </strong>
-                  <span>diamond@contact.com</span>
+                  <span  className="font-normal text-sm">diamond@contact.com</span>
                 </p>
               </li>
               <li className="pb-3">
                 <p>
-                  <span>
+                  <span  className="font-normal text-sm">
                     Copyright © 2017-2024 Rai and Rohl Technologies, Inc. All
                     rights reserved.
                   </span>
@@ -45,27 +45,13 @@ export default function Footer() {
               <h6 className="pb-2 text-lg font-semibold">Dịch vụ</h6>
               <ul>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="">
-              <h6 className="pb-2 text-lg font-semibold">Dịch vụ</h6>
-              <ul>
-                <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
-                </li>
-                <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
-                </li>
-                <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
               </ul>
             </div>
@@ -73,13 +59,27 @@ export default function Footer() {
               <h6 className="pb-2 text-lg font-semibold">Dịch vụ</h6>
               <ul>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
                 <li className="pb-2">
-                  <Link to="/">Đặt lịch khám chữa bệnh</Link>
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
+                </li>
+              </ul>
+            </div>
+            <div className="">
+              <h6 className="pb-2 text-lg font-semibold">Dịch vụ</h6>
+              <ul>
+                <li className="pb-2">
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
+                </li>
+                <li className="pb-2">
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
+                </li>
+                <li className="pb-2">
+                  <Link to="/" className="font-normal text-sm">Đặt lịch khám chữa bệnh</Link>
                 </li>
               </ul>
             </div>
@@ -90,7 +90,7 @@ export default function Footer() {
             <h6 className="pb-3 font-semibold">
               CÔNG TY TNHH PHÒNG KHÁM ĐA KHOA DIAMOND
             </h6>
-            <p>
+            <p  className="font-normal text-sm">
               Giấy CN ĐKDN số 0309145924, đăng ký lần đầu ngày 06/07/2009, đăng
               ký thay đổi lần thứ 9 ngày 06/07/2023, cấp bởi Sở KH&ĐT Thành phố
               Hồ Chí Minh.
@@ -99,7 +99,7 @@ export default function Footer() {
           <div className="flex flex-[3] flex-col justify-between gap-3 lg:flex-row">
             <div className="flex-[2]">
               <h6 className="pb-2 text-lg font-semibold">Địa chỉ</h6>
-              <p className="pb-4">
+              <p className="pb-4 font-normal text-sm" >
                 Phòng khám Đa khoa Cao cấp Diamond - Diamond Healthcare 39 Lê
                 Duẩn, Phường Bến Nghé, Quận 1, TP.HCM
               </p>
@@ -107,10 +107,10 @@ export default function Footer() {
                 Hãy theo dõi Diamond tại
               </h6>
               <div className="flex gap-3">
-                <Link to="/">
+                <Link to="/" className="font-normal text-sm">
                   <FaFacebookSquare className="text-2xl" />
                 </Link>
-                <Link to="/">
+                <Link to="/" className="font-normal text-sm">
                   <FaInstagram className="text-2xl" />
                 </Link>
               </div>

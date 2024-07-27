@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import {
   Pagination,
   PaginationContent,
@@ -15,8 +15,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/Button";
 
 const MedicalRecords = () => {
   const location = useLocation();
