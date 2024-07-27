@@ -23,7 +23,6 @@ const router = express.Router();
  *      '500':
  *        $ref: '#/components/responses/500'
 */
-
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
@@ -253,8 +252,6 @@ router.put(
     doctorController.updateDoctor
 );
 
-
-
 /**
  * @openapi
  * '/api/v1/doctors/delete/{id}':
@@ -283,6 +280,5 @@ router.delete(
     userController.deleteUser,
     doctorController.deleteDoctor
 );
-
 
 module.exports = router;

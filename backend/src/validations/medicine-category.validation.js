@@ -1,8 +1,6 @@
 const { checkSchema } = require('express-validator');
-const MedicineImportModel = require('../models/medicine-import.model');
 
-
-const medicineImportValidator = checkSchema({
+const medicineCategoryValidator = checkSchema({
 
     name: {
         exists: {
@@ -13,12 +11,8 @@ const medicineImportValidator = checkSchema({
         },
         trim: true
     },
-
-
 });
 
-
 module.exports = {
-    medicineImportValidator,
-
+    medicineCategoryValidator
 };

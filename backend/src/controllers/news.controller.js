@@ -18,15 +18,10 @@ const getAllNews = async (req, res, next) => {
             createError(404, 'No news found.');
         }
 
-        const resNews = news.map(item => {
-            const { __v, isDeleted, ...data } = item._doc;
-            return data;
-        });
-
         return res.status(200).json({
             page: page || 1,
             message: 'Categories retrieved successfully.',
-            data: resNews,
+            data: news,
             totalRecords
         });
     } catch (error) {

@@ -44,7 +44,7 @@ const branchValidator = checkSchema({
         },
         trim: true
     },
-    'coordinates.ing': {
+    'coordinates.lng': {
         exists: {
             errorMessage: 'Ing is required'
         },
