@@ -18,6 +18,9 @@ const contractRoutes = require('./src/routes/contract.route');
 const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
+const medicineCategoryRoutes = require('./src/routes/medicine-category.route');
+const medicineRoutes = require('./src/routes/medicine.route');
+const medicineImportRoutes = require('./src/routes/medicine-import.route');
 
 const app = express();
 
@@ -47,6 +50,9 @@ app.use('/api/v1/branches', branchRoutes);
 app.use('/api/v1/contracts', contractRoutes);
 app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
+app.use('/api/v1/medicine-categories', medicineCategoryRoutes);
+app.use('/api/v1/medicines', medicineRoutes);
+app.use('/api/v1/medicine-imports', medicineImportRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

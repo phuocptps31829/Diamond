@@ -1,18 +1,18 @@
 const express = require('express');
 
 const helperMiddleware = require('../middlewares/helper.middleware');
-const newsController = require('../controllers/news.controller');
-const newsValidator = require('../validations/news.validation');
+const medicineController = require('../controllers/medicine.controller');
+const medicineValidator = require('../validations/medicine.validation');
 
 const router = express.Router();
 
 /**
  * @openapi
- * '/api/v1/news':
+ * '/api/v1/medicines':
  *  get:
  *    tags:
- *    - News Routes
- *    summary: Get all news (?page=1&limit=10&sort=1)
+ *    - Medicine Routes
+ *    summary: Get all medicine (?page=1&limit=10&sort=1)
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -24,21 +24,21 @@ const router = express.Router();
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
-    newsController.getAllNews
+    medicineController.getAllMedicines
 );
 
 /**
  * @openapi
- * '/api/v1/news/{id}':
+ * '/api/v1/medicines/{id}':
  *  get:
  *    tags:
- *    - News Routes
- *    summary: Get news by id
+ *    - Medicine Routes
+ *    summary: Get medicine  by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: News id
+ *        description: medicine  id
  *        schema:
  *          type: string
  *    responses:
@@ -52,16 +52,16 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    newsController.getNewsById
+    medicineController.getMedicineById
 );
 
 /** 
 * @openapi
- * '/api/v1/news/add':
+ * '/api/v1/medicines/add':
  *  post:
  *    tags:
- *    - News Routes
- *    summary: Add new News
+ *    - Medicine Routes
+ *    summary: Add new medicine 
  *    requestBody:
  *      required: true
  *      content:
@@ -69,26 +69,34 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyID
- *              - title
- *              - content
- *              - author
- *              - viewCount
- *              - isHidden
+ *              - medicineCategoryID
+ *              - medicineCode
+ *              - name
+ *              - ingredients
+ *              - unit
+ *              - sideEffects
+ *              - type
+ *              - instruction
+ *              - note
  *            properties:
- *              specialtyID:
+ *              medicineCategoryID:
  *                type: string
- *                description: The ID of the specialty placing the news
- *              title:
+ *              medicineCode:
  *                type: string
- *              content:
+ *              name:
  *                type: string
- *              author:
+ *              ingredients:
  *                type: string
- *              viewCount:
- *                type: number
- *              isHidden:
- *                type: boolean
+ *              unit:
+ *                type: string
+ *              sideEffects:
+ *                type: string
+ *              type:
+ *                type: string
+ *              instruction:
+ *                type: string
+ *              note:
+ *                type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -103,24 +111,24 @@ router.get(
  */
 router.post(
     '/add',
-    newsValidator.newsValidator,
-    newsController.createNews
+    // medicineValidator.medicineValidator,
+    medicineController.createMedicine
 );
 
 /** 
- * @openapi
- * '/api/v1/news/update/{id}':
+* @openapi
+ * '/api/v1/medicines/update/{id}':
  *  put:
  *    tags:
- *    - News Routes
- *    summary: Update news by id
+ *    - Medicine Routes
+ *    summary: Update medicine by id
  *    parameters:
  *      - name: id
  *        in: path
  *        required: true
  *        schema:
  *          type: string
- *        description: The ID of the news to update
+ *        description: The ID of the medicine to update
  *    requestBody:
  *      required: true
  *      content:
@@ -128,25 +136,34 @@ router.post(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyID
- *              - title
- *              - content
- *              - author
- *              - viewCount
- *              - isHidden
+ *              - medicineCategoryID
+ *              - medicineCode
+ *              - name
+ *              - ingredients
+ *              - unit
+ *              - sideEffects
+ *              - type
+ *              - instruction
+ *              - note
  *            properties:
- *              specialtyID:
+ *              medicineCategoryID:
  *                type: string
- *              title:
+ *              medicineCode:
  *                type: string
- *              content:
+ *              name:
  *                type: string
- *              author:
+ *              ingredients:
  *                type: string
- *              viewCount:
- *                type: number
- *              isHidden:
- *                type: boolean
+ *              unit:
+ *                type: string
+ *              sideEffects:
+ *                type: string
+ *              type:
+ *                type: string
+ *              instruction:
+ *                type: string
+ *              note:
+ *                type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -162,22 +179,22 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    newsValidator.newsValidator,
-    newsController.updateNews
+    medicineValidator.medicineValidator,
+    medicineController.updateMedicine
 );
 
 /**
  * @openapi
- * '/api/v1/news/delete/{id}':
+ * '/api/v1/medicines/delete/{id}':
  *  delete:
  *    tags:
- *    - News Routes
- *    summary: Delete news by id
+ *    - Medicine Routes
+ *    summary: Delete medicine by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: News id
+ *        description: ID of the medicine to delete
  *        schema:
  *          type: string
  *    responses:
@@ -191,7 +208,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    newsController.deleteNews
+    medicineController.deleteMedicine
 );
 
 module.exports = router;
