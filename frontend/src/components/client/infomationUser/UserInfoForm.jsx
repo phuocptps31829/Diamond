@@ -4,7 +4,7 @@ import avatarU from "../../../assets/images/healthcare-medical-people-concept-sm
 import InputCustom from "@/components/ui/inputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userInfoSchema } from "@/zod/UserZod";
+import { userInfoSchema } from "@/zods/user";
 
 
 const UserInfoForm = () => {
@@ -36,7 +36,7 @@ const UserInfoForm = () => {
   return (
     <div className="w-full p-6">
       <h2 className="col-span-2 mb-6 text-xl font-bold">Thông tin tài khoản</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
           <div className="flex-2 grid w-full grid-cols-1 gap-6 p-4 sm:grid-cols-2">
             <InputCustom
@@ -44,8 +44,8 @@ const UserInfoForm = () => {
               name="fullName"
               label="Họ và tên"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập họ và tên"
             />
             <InputCustom
@@ -53,8 +53,8 @@ const UserInfoForm = () => {
               name="phoneNumber"
               label="Số điện thoại"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập số điện thoại"
             />
             <InputCustom
@@ -62,8 +62,8 @@ const UserInfoForm = () => {
               name="email"
               label="Email"
               type="email"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập email"
             />
             <InputCustom
@@ -71,8 +71,8 @@ const UserInfoForm = () => {
               name="occupation"
               label="Nghề nghiệp"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập nghề nghiệp"
             />
             <InputCustom
@@ -80,16 +80,16 @@ const UserInfoForm = () => {
               name="birthDate"
               label="Ngày sinh"
               type="date"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="ethnicity"
               label="Dân tộc"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập dân tộc"
             />
             <InputCustom
@@ -97,8 +97,8 @@ const UserInfoForm = () => {
               name="idNumber"
               label="Số CMND/CCCD"
               type="password"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="**************"
             />
             <InputCustom
@@ -106,16 +106,16 @@ const UserInfoForm = () => {
               name="insuranceNumber"
               label="Số thẻ BH"
               type="password"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="**************"
             />
             <InputCustom
               name="address"
               label="Địa chỉ"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập địa chỉ"
               className="col-span-1 sm:col-span-2"
             />
@@ -123,7 +123,7 @@ const UserInfoForm = () => {
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-              <AvatarImage src={avatarU} />
+              <AvatarImage src={ avatarU } />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">
@@ -134,8 +134,8 @@ const UserInfoForm = () => {
                 name="avatar"
                 id="picture"
                 type="file"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="mt-4 flex w-full justify-center gap-4 md:flex-wrap">
