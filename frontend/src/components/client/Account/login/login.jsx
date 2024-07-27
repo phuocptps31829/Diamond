@@ -58,7 +58,7 @@ export default function LoginComponent() {
                                     Ghi nhớ tôi
                                 </label>
                             </div>
-                            <Link href="#" className="text-primary-500 text-sm italic font-bold hover:underline">
+                            <Link to={ "/forget-password" } className="text-primary-500 text-sm italic font-bold hover:underline">
                                 Quên mật khẩu?
                             </Link>
                             </div>
@@ -103,7 +103,7 @@ export default function LoginComponent() {
                                 <div className="flex flex-col items-center mt-3 mb-10">
                                     <p className="text-center">
                                         Bạn chưa có tài khoản? 
-                                        <Link className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                                        <Link to={'/register'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                                             Đăng kí ngay!
                                         </Link>
                                     </p>
