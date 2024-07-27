@@ -52,12 +52,12 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    medicineimportController.getMedicineImportById
+    medicineImportController.getMedicineImportById
 );
 
 /** 
 * @openapi
- * '/api/v1/medicine-categories/add':
+ * '/api/v1/medicine-imports/add':
  *  post:
  *    tags:
  *    - Medicine import Routes
@@ -69,9 +69,33 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - name
+ *              - MedicineImport
+ *              - quantity
+ *              - MedicineImport
+ *              - purchaseDate
+ *              - manufacturingDate
+ *              - expiryDate
+ *              - purchasePrice
+ *              - sellingPrice
+ *              - origin
  *            properties:
- *              name:
+ *              MedicineImport:
+ *                type: string
+ *              quantity:
+ *                type: string
+ *              MedicineImport:
+ *                type: string
+ *              purchaseDate:
+ *                type: string
+ *              manufacturingDate:
+ *                type: string
+ *              expiryDate:
+ *                type: string
+ *              purchasePrice:
+ *                type: string
+ *              sellingPrice:
+ *                type: string
+ *              origin:
  *                type: string
  *    responses:
  *      '201':
