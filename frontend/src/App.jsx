@@ -16,6 +16,12 @@ import MedicalRecords from "./components/client/infomationUser/MedicalRecords";
 import UserInfoForm from "./components/client/infomationUser/UserInfoForm";
 import AppointmentHistory from "./components/client/infomationUser/AppointmentHistory";
 
+import Login from "./pages/client/Login";
+import Register from "./pages/client/Register";
+import Accuracy from "./pages/client/Accuracy";
+import ForgetPassword from "./pages/client/ForgetPassWord";
+import ChangePassAccuracy from "./pages/client/ChangePassAccuracy";
+import ChangePass from "./pages/client/ChangePass";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -84,11 +90,37 @@ const router = createBrowserRouter([
         ],
       },
     ],
+    path: '',
+    element: <Home />
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/register',
+    element: <Register />
+  },
+  {
+    path: '/accuracy',
+    element: <Accuracy />
+  },
+  {
+    path: '/forget-password',
+    element: <ForgetPassword />
+  },
+  {
+    path: '/changepassword-accuracy',
+    element: <ChangePassAccuracy />
+  },
+  {
+    path: '/change-password',
+    element: <ChangePass />
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return <RouterProvider router={ router }></RouterProvider>;
 }
 
 export default App;

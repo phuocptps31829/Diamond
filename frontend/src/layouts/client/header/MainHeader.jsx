@@ -38,7 +38,7 @@ export default function MainHeader() {
   return (
     <div className="w-full  bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between  p-3 sm:px-10 lg:py-4">
-        <Link to={"/"} className="relative w-44 items-center">
+        <Link to={ "/" } className="relative w-44 items-center">
           <img
             src="https://ykhoadiamond.com/images/icons/logo.png"
             className="w-full"
@@ -50,16 +50,16 @@ export default function MainHeader() {
         </div>
         <nav className="hidden lg:block">
           <ul className="nav__link flex space-x-1 text-sm font-semibold">
-            {dataNav.map((item) => (
-              <li key={item.id}>
+            { dataNav.map((item) => (
+              <li key={ item.id }>
                 <NavLink
-                  to={item.to}
+                  to={ item.to }
                   className="rounded-full px-4 py-2.5 uppercase hover:bg-primary-500 hover:text-white"
                 >
-                  {item.name}
+                  { item.name }
                 </NavLink>
               </li>
-            ))}
+            )) }
             <li className="px-5">|</li>
             <li>
               <Link className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white">
