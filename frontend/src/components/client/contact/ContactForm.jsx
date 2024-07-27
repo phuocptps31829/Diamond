@@ -1,23 +1,18 @@
 import { FaHospital, FaHandHoldingMedical } from "react-icons/fa";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { contactSchema } from "@/zods/contact";
+
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/Carousel";
 
 import Autoplay from "embla-carousel-autoplay";
-
-const contactSchema = z.object({
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
-  phoneNumber: z.string().regex(/^[0-9]{10}$/, "Số điện thoại không hợp lệ"),
-  email: z.string().email("Email không hợp lệ"),
-});
 
 export default function ContactForm() {
   const {

@@ -6,7 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import {
   Pagination,
   PaginationContent,
@@ -15,7 +15,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "@/components/ui/Pagination";
 
 import DoctorProduct from "../product/Doctor";
 
@@ -44,7 +44,7 @@ export default function ListDoctors() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl p-5 md:p-10">
+    <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp theo:</h2>
         <div className="flex flex-row items-center justify-center gap-3">

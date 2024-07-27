@@ -1,11 +1,10 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "@/components/ui/label";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { Label } from "@/components/ui/Label";
 import avatarU from "../../../assets/images/healthcare-medical-people-concept-smiling-asian-female-doctor-pointing-fingers-right-showing-adverti.jpg";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userInfoSchema } from "@/zod/UserZod";
-
+import { userInfoSchema } from "@/zods/user";
 
 const UserInfoForm = () => {
   const {

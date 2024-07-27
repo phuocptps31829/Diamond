@@ -1,6 +1,6 @@
 import avatarImg from "../../../assets/images/105124.jpg";
 import mapImg from "../../../assets/images/2149377706.jpg";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 
 const services = [
     {

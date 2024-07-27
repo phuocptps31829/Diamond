@@ -8,11 +8,11 @@ const contractSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Hospital',
     },
     startDate: {
-        type: String,
+        type: Date,
         required: true
     },
     endDate: {
-        type: String,
+        type: Date,
         required: true
     },
     detail: {
@@ -23,6 +23,9 @@ const contractSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+}, {
+    collection: 'Contract',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Contract', contractSchema);

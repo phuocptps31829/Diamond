@@ -12,11 +12,11 @@ const applicableObjectSchema = new mongoose.Schema({
         required: true
     },
     age: {
-        Min: {
+        min: {
             type: Number,
             required: false,
         },
-        Max: {
+        max: {
             type: Number,
             required: false,
         },
@@ -32,6 +32,9 @@ const applicableObjectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'ApplicableObject',
+    timestamps: true
 }
 );
 

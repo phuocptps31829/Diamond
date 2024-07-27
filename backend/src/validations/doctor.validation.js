@@ -1,14 +1,90 @@
 const { checkSchema } = require("express-validator");
 
 const doctorValidator = checkSchema({
-    userID: {
+    fullName: {
         exists: {
-            errorMessage: "User ID is required",
+            errorMessage: "Full name is required",
         },
-        isMongoId: {
-            errorMessage: "Invalid User ID",
+        isString: {
+            errorMessage: "Full name should be a string",
         },
     },
+    phoneNumber: {
+        optional: true,
+        isString: {
+            errorMessage: "Phone number should be a string",
+        },
+    },
+
+    email: {
+        optional: true,
+        isString: {
+            errorMessage: "Email should be a string",
+        },
+    },
+
+
+    dateOfBirth: {
+        optional: true,
+        isISO8601: {
+            errorMessage: "Invalid date of birth time format",
+        },
+    },
+    address: {
+        optional: true,
+        isObject: {
+            errorMessage: "Address should be an object",
+        },
+        custom: {
+            options: (value) => {
+                if (!value.province || !value.district || !value.ward || !value.street) {
+                    throw new Error("Address should have province, district, ward, and street");
+                }
+                return true;
+            },
+        },
+    },
+    gender: {
+        exists: {
+            errorMessage: "Gender is required",
+        },
+        isString: {
+            errorMessage: 'Gender should be a string'
+        }
+    },
+    password: {
+        exists: {
+            errorMessage: "Password is required",
+        },
+        isString: {
+            errorMessage: "Password should be a string",
+        },
+    },
+    avatar: {
+        exists: {
+            errorMessage: "Avatar is required",
+        },
+        isString: {
+            errorMessage: "Avatar should be a string",
+        },
+    },
+    citizenIdentificationNumber: {
+        exists: {
+            errorMessage: "Avatar is required",
+        },
+        isNumeric: {
+            errorMessage: "Citizen identification number should be a number",
+        },
+    },
+    isActivated: {
+        exists: {
+            errorMessage: "Is activated is required",
+        },
+        isBoolean: {
+            errorMessage: "Is activated should be a boolean",
+        },
+    },
+
     specialtyID: {
         exists: {
             errorMessage: "Specialty ID is required",
@@ -17,6 +93,7 @@ const doctorValidator = checkSchema({
             errorMessage: "Invalid Specialty ID",
         },
     },
+
     title: {
         exists: {
             errorMessage: "Title is required",

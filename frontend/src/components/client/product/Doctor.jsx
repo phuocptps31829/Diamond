@@ -4,26 +4,26 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function DoctorProduct({ props }) {
   return (
-    <div className="overflow-hidden rounded-lg border  ">
+    <div className="overflow-hidden rounded-lg border">
       <Link
         to="/doctor-detail"
-        className="group flex items-center justify-center  !bg-white  w-full "
+        className="group flex w-full items-center justify-center !bg-white"
       >
         <img
           src="https://benhviennamsaigon.com.vn/vnt_upload/doctor/01_2022/18_Vo_Van_Man.jpg"
           alt=""
-          className="ease w-full transform  transition-transform duration-500 group-hover:scale-[1.05] overflow-hidden p-4"
+          className="ease w-full transform overflow-hidden p-4 transition-transform duration-500 group-hover:scale-[1.05]"
         />
       </Link>
-      <div className="flex flex-col bg-white p-3  md:p-5">
+      <div className="flex flex-col bg-white px-3 pb-3">
         <Link
-          to="/doctor-detail"
+          to="/doctor-detail/1"
           className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]"
         >
           Chuyên khoa: Mắt
         </Link>
         <Link
-          to="/doctor-detail"
+          to="/doctor-detail/1"
           className="py-2 text-[12px] font-bold sm:text-[14px] md:my-1 md:text-xl"
         >
           NGUYỄN KIM CHUNG

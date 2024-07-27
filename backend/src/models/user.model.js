@@ -41,10 +41,6 @@ const userSchema = new mongoose.Schema({
     citizenIdentificationNumber: {
         type: Number,
     },
-    role: {
-        type: String,
-        required: true
-    },
     isActivated: {
         type: Boolean,
         required: true
@@ -53,6 +49,9 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+}, {
+    collection: 'User',
+    timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);
