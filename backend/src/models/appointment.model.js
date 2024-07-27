@@ -50,6 +50,9 @@ const appointmentSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     },
+}, {
+    collection: 'Appointment',
+    timestamps: true
 });
 
 module.exports = mongoose.model('Appointment', appointmentSchema);

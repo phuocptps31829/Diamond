@@ -42,6 +42,9 @@ const medicineImportSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'MedicineImport',
+    timestamps: true
 }
 );
 

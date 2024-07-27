@@ -21,10 +21,6 @@ const medicalPackageSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    level: {
-        type: Number,
-        required: true
-    },
     services: [
         {
             servicesID: [{
@@ -50,7 +46,6 @@ const medicalPackageSchema = new mongoose.Schema({
                 trim: true,
                 required: true
             }
-
         },
     ],
     isHidden: {
@@ -61,6 +56,9 @@ const medicalPackageSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
+}, {
+    collection: 'MedicalPackage',
+    timestamps: true
 }
 );
 

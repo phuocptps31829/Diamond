@@ -26,7 +26,7 @@ const branchSchema = new mongoose.Schema({
         required: true
     },
     coordinates: {
-        ing: {
+        lng: {
             type: Number,
             required: true
         },
@@ -39,7 +39,9 @@ const branchSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-}
-);
+}, {
+    collection: 'Branch',
+    timestamps: true
+});
 
 module.exports = mongoose.model('Branch', branchSchema);

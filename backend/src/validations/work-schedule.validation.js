@@ -1,13 +1,12 @@
 const { checkSchema } = require("express-validator");
 
+const DoctorModel = require('../models/doctor.model');
+
 const workScheduleValidator = checkSchema({
     doctorID: {
-        exists: {
-            errorMessage: "Doctor ID is required",
-        },
-        isString: {
-            errorMessage: "Doctor ID should be a string",
-        },
+        customSanitizer: {
+            options: (id) => checkIsExistID(DoctorModel, id),
+        }
     },
     detail: {
         exists: {
