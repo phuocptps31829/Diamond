@@ -1,14 +1,11 @@
 const { checkSchema } = require('express-validator');
 const MedicineImportModel = require('../models/medicine-import.model');
-
+const MedicineModel = require('../models/medicine-import.model');
 
 const medicineImportValidator = checkSchema({
     medicineID: {
-        exists: {
-            errorMessage: 'Medicine ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid Medicine ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(MedicineModel, id),
         }
     },
     quantity: {

@@ -1,13 +1,11 @@
 const { checkSchema } = require('express-validator');
 const { isValidObjectId } = require("mongoose");
+const SpecialtyModel = require('../models/specialty.model');
 
 const medicalPackageValidator = checkSchema({
     specialtyID: {
-        exists: {
-            errorMessage: 'Specialty ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid specialty ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(SpecialtyModel, id),
         }
     },
     name: {

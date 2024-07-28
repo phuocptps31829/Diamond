@@ -1,14 +1,11 @@
 const { checkSchema } = require('express-validator');
 const ApplicableObjectModel = require('../models/applicable-object.model');
-
+const MedicalPackageModel = require('../models/medical-package.model');
 
 const applicableObjectValidator = checkSchema({
     medicalPackageID: {
-        exists: {
-            errorMessage: 'Medical package ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid medical package ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(MedicalPackageModel, id),
         }
     },
     gender: {
@@ -21,7 +18,7 @@ const applicableObjectValidator = checkSchema({
         trim: true
     },
 
-    'coordinates.min': {
+    'age.min': {
         exists: {
             errorMessage: 'Min is required'
         },
@@ -29,7 +26,7 @@ const applicableObjectValidator = checkSchema({
             errorMessage: 'Min should be a number'
         }
     },
-    'coordinates.max': {
+    'age.max': {
         exists: {
             errorMessage: 'Max is required'
         },
@@ -37,7 +34,7 @@ const applicableObjectValidator = checkSchema({
             errorMessage: 'Max should be a number'
         },
     },
-    'coordinates.isMarried': {
+    isMarried: {
         exists: {
             errorMessage: 'is married is required'
         },
@@ -45,7 +42,7 @@ const applicableObjectValidator = checkSchema({
             errorMessage: 'is married should be a boolean'
         },
     },
-    'coordinates.isFamily': {
+    isFamily: {
         exists: {
             errorMessage: 'is family is required'
         },
