@@ -1,21 +1,15 @@
 import { Link } from "react-router-dom";
 import {  FaKey  } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
 
-export default function ChangePassAccuracyComponent() {
-  const navigate = useNavigate();
-
-  const handleButtonClick = () => {
-    navigate('/change-password');
-  };
+export default function AccurancyComponent() {
   return (
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
           {/* FORM */}
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực</h1>
-            <p className="mb-6 text-center text-sm text-gray-500">Nhập mã xác thực để tiếp tục đặt lại mật khẩu</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực tài khoản</h1>
+            <p className="mb-6 text-center text-sm text-gray-500">Xác thực tài khoản để hoàn tất quá trình đăng kí</p>
 
             <form>
               <div className="mb-2 relative">
@@ -51,7 +45,7 @@ export default function ChangePassAccuracyComponent() {
               </div>
 
               <div className="text-center">
-                <button onClick={handleButtonClick} type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                   Xác thực tài khoản
                 </button>
               </div>
