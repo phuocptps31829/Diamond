@@ -97,8 +97,6 @@ router.get(
  *                      type: number
  *                    discountPrice: 
  *                      type: number
- *                    duration: 
- *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -167,8 +165,6 @@ router.post(
  *                      type: number
  *                    discountPrice: 
  *                      type: number
- *                    duration: 
- *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'

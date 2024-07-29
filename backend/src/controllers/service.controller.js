@@ -8,7 +8,6 @@ const getAllServices = async (req, res, next) => {
         });
         const services = await ServiceModel.find({
             isDeleted: false,
-            _id: { $ne: UserID }
         });
 
         if (!services.length) {

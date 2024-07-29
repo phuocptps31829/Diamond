@@ -41,11 +41,6 @@ const medicalPackageSchema = new mongoose.Schema({
                 type: Number,
                 required: false
             },
-            duration: {
-                type: String,
-                trim: true,
-                required: true
-            }
         },
     ],
     isHidden: {
