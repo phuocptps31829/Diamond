@@ -2,23 +2,20 @@ import { Link } from "react-router-dom";
 import { FaKey } from "react-icons/fa";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const verificationSchema = z.object({
-  authCode: z.string().min(6, "Mã xác thực phải có ít nhất 6 ký tự").max(6, "Mã xác thực không được vượt quá 6 ký tự"),
-});
+import { accountSchema } from "@/zods/account";
 
 export default function AccurancyComponent() {
-  const { handleSubmit, control, formState: { errors } } = useForm({
-    resolver: zodResolver(verificationSchema),
+  const { handleSubmit,
+    control,
+    formState: { errors } 
+  } = useForm({
+    resolver: zodResolver(accountSchema),
     defaultValues: {
       authCode: "",
     },
   });
-
-  const onSubmit = (data) => {
+const onSubmit = (data) => {
     console.log(data);
-    // Handle form submission, e.g., call an API to verify the code
   };
 
   return (
@@ -82,7 +79,7 @@ export default function AccurancyComponent() {
 
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-300"></div>
-                <span className="mx-4 text-gray-500 text-sm">Hoặc tiếp tục với</span>
+                <span className="mx-4 text-gray-800 text-sm">Hoặc tiếp tục với</span>
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
@@ -90,7 +87,7 @@ export default function AccurancyComponent() {
               <div className="block md:flex justify-center md:space-x-2">
                 <button 
                   type="button" 
-                  className="flex w-[100%] items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
+                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
                   <img src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png" className="w-7 mr-2 md:mr-2" alt="Google icon" />
                   <span className="block mr-4 md:mr-0">
                     Tài khoản Google
@@ -98,7 +95,7 @@ export default function AccurancyComponent() {
                 </button>
                 <button 
                   type="button" 
-                  className="flex w-[100%] items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-1 md:py-1 px-2 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 my-2">
+                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-1 md:py-1 px-2 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 my-2">
                   <img src="https://static.vecteezy.com/system/resources/previews/018/930/698/original/facebook-logo-facebook-icon-transparent-free-png.png" className="w-12 mr-0 md:mr-0" alt="Facebook icon" /> 
                   <span className="block">
                     Tài khoản Facebook

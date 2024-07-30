@@ -42,6 +42,9 @@ module.exports = {
           900: "#002D54",
           950: "#001938",
         },
+        gray: {
+          500: "#D9D9D9",
+        },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",

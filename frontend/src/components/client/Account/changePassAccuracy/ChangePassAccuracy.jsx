@@ -12,7 +12,10 @@ const authCodeSchema = z.object({
 export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();
 
-  const { handleSubmit, control, formState: { errors } } = useForm({
+  const { handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
     resolver: zodResolver(authCodeSchema),
     defaultValues: {
       authCode: "",
@@ -31,7 +34,7 @@ export default function ChangePassAccuracyComponent() {
           {/* FORM */}
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực</h1>
-            <p className="mb-6 text-center text-sm text-gray-500">Nhập mã xác thực để tiếp tục đặt lại mật khẩu</p>
+            <p className="mb-6 text-center text-sm text-gray-400">Nhập mã xác thực để tiếp tục đặt lại mật khẩu</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-2 relative">
@@ -55,9 +58,7 @@ export default function ChangePassAccuracyComponent() {
                       />
                     )}
                   />
-                  {errors.authCode && (
-                    <p className="text-red-500 text-sm mt-1">{errors.authCode.message}</p>
-                  )}
+
                   <button
                     type="button"
                     className=" text-base absolute inset-y-0 right-0 flex items-center font-bold md:text-lg pr-3 text-primary-500 hover:text-blue-700"
@@ -66,6 +67,9 @@ export default function ChangePassAccuracyComponent() {
                     Nhận mã
                   </button>
                 </div>
+                {errors.authCode && (
+                    <p className="text-red-500 text-sm mt-1">{errors.authCode.message}</p>
+                  )}
               </div>
 
               <div className="my-2 text-sm">
@@ -84,7 +88,7 @@ export default function ChangePassAccuracyComponent() {
               </div>
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-300"></div>
-                <span className="mx-4 text-gray-500 text-sm">Hoặc tiếp tục với</span>
+                <span className="mx-4 text-gray-800 text-sm">Hoặc tiếp tục với</span>
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
@@ -92,7 +96,7 @@ export default function ChangePassAccuracyComponent() {
               <div className="block md:flex justify-center  md:space-x-2">
                 <button
                   type="button"
-                  className="flex w-[100%] items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
+                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
                   <img src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png" className="w-7 mr-2 md:mr-2" alt="Google icon" />
                   <span className="block mr-4 md:mr-0">
                     Tài khoản Google
@@ -100,7 +104,7 @@ export default function ChangePassAccuracyComponent() {
                 </button>
                 <button
                   type="button"
-                  className="flex w-[100%] items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-1 md:py-1 px-2 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 my-2">
+                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-1 md:py-1 px-2 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 my-2">
                   <img src="https://static.vecteezy.com/system/resources/previews/018/930/698/original/facebook-logo-facebook-icon-transparent-free-png.png" className="w-12 mr-0 md:mr-0" alt="Facebook icon" />
                   <span className="block">
                     Tài khoản Facebook
