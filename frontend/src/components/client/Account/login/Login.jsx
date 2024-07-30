@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { FaPhone, FaLock, FaEye } from "react-icons/fa";
 import { useForm, Controller } from "react-hook-form";
+import InputCustom from "@/components/ui/inputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 
@@ -34,59 +35,43 @@ export default function LoginComponent() {
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <FaPhone className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span>
-                  <Controller
-                    name="phoneNumber"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Số điện thoại"
+                  </span> */}
+                  <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập số điện thoại"
+                        name="phoneNumber"
                         type="text"
-                        id="phone"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.phoneNumber ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        id="phoneNumber"
+                        control={control}
+                        errors={ errors }
                   />
   
                 </div>
-                {errors.phoneNumber && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>
-                  )}
+
               </div>
               <div className="mb-2">
                 <label htmlFor="password" className="block text-gray-700 font-semibold">Mật khẩu:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span>
-                  <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <input
+                  </span> */}
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
                         placeholder="Mật khẩu"
+                        name="password"
                         type="password"
                         id="password"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.password ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        control={control}
+                        errors={ errors }
                   />
      
-                  <span className="absolute inset-y-0 right-5 flex items-center pl-3">
+                  {/* <span className="absolute inset-y-0 right-5 flex items-center pl-3">
                     <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span>
+                  </span> */}
                 </div>
-                {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                  )}
+
               </div>
               <div className="my-3 flex items-center justify-between">
                 <div className="flex items-center">
