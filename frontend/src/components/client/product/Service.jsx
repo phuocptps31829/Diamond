@@ -4,7 +4,11 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({ props }) {
+export default function ServiceProduct({ 
+  image, 
+  specialtyID, 
+  name 
+}) {
   return (
     <div className="overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
@@ -12,8 +16,8 @@ export default function ServiceProduct({ props }) {
         className="group block h-[106px] overflow-hidden md:h-[206px]"
       >
         <img
-          src="https://img.ykhoadiamond.com/uploads/package/28032023/00667e4b-3aca-4b5c-9b1f-d5b109ce3d26.jpg"
-          alt=""
+          src={image}
+          alt={name}
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
@@ -22,13 +26,13 @@ export default function ServiceProduct({ props }) {
           to="/detail-service/1"
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
-          Toàn diện
+          {specialtyID}
         </Link>
         <Link
           to="/detail-service/1"
           className="text-sm font-bold md:my-1 md:text-xl"
         >
-          GÓI KHÁM TỔNG QUÁT NAM
+          {name}
         </Link>
         <hr className="mb-1 md:mb-3" />
         <div className="flex items-center justify-between">
@@ -52,5 +56,7 @@ export default function ServiceProduct({ props }) {
 }
 
 ServiceProduct.propTypes = {
-  props: PropTypes.object,
+  image: PropTypes.string.isRequired,
+  specialtyID: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
