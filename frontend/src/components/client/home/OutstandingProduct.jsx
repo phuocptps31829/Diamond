@@ -10,7 +10,8 @@ export default function OutstandingProduct() {
       <span className="mx-auto my-2 block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
         Danh sách gói khám nổi bật, được khách hàng yêu thích nhất.
       </span>
-      <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4 ">
+
+      <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
         {Array.from({ length: 8 }).map((_, index) => (
           <ServiceProduct key={index} />
         ))}

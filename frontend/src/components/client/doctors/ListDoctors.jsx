@@ -16,7 +16,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
-
 import DoctorProduct from "../product/Doctor";
 
 export default function ListDoctors() {
@@ -73,7 +72,7 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 p-6 bg-white rounded-md shadow">
+      <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
         {Array.from({ length: 8 }).map((_, index) => (
           <DoctorProduct key={index} />
         ))}
