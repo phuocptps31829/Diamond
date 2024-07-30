@@ -13,12 +13,12 @@ const SidebarFilter = () => {
       <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
-          <p className="cursor-pointer text-xs font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
+          <p className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
             Làm mới
           </p>
         </div>
         <div className="mb-3 gap-2 border-b pb-1">
-          <p className="mb-3 text-sm font-medium leading-6 text-black">
+          <p className="mb-3 text-base font-medium leading-6 text-black">
             Lọc theo giá
           </p>
           <div className="box mb-3 flex flex-col gap-2">
@@ -26,7 +26,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-lowest" />
               <label
                 htmlFor="checkbox-lowest"
-                className="text-xs font-normal text-gray-600"
+                className="text-sm font-normal text-gray-600"
               >
                 Thấp nhất
               </label>
@@ -35,7 +35,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-highest" />
               <label
                 htmlFor="checkbox-highest"
-                className="text-xs font-normal text-gray-600"
+                className="text-sm font-normal text-gray-600"
               >
                 Cao nhất
               </label>
@@ -47,10 +47,9 @@ const SidebarFilter = () => {
             <div className="accordion">
               <button
                 className="inline-flex w-full items-center justify-between leading-8 text-gray-600 transition duration-500 hover:text-primary-600 active:text-primary-600"
-                aria-controls="category-collapse-one"
                 onClick={toggleAccordion}
               >
-                <h5 className="text-sm font-medium text-gray-900">
+                <h5 className="text-base font-medium text-gray-900">
                   Chuyên khoa
                 </h5>
                 <svg
@@ -71,14 +70,14 @@ const SidebarFilter = () => {
                 </svg>
               </button>
               <div
-                className={`accordion-content ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
               >
                 <div className="box mt-5 flex flex-col gap-2">
                   <div className="flex items-center space-x-2">
                     <Checkbox id="checkbox-option-1" />
                     <label
                       htmlFor="checkbox-option-1"
-                      className="text-xs font-normal text-gray-600"
+                      className="text-sm font-normal text-gray-600"
                     >
                       option-1
                     </label>
@@ -87,7 +86,7 @@ const SidebarFilter = () => {
                     <Checkbox id="checkbox-option-2" />
                     <label
                       htmlFor="checkbox-option-2"
-                      className="text-xs font-normal text-gray-600"
+                      className="text-sm font-normal text-gray-600"
                     >
                       option-2
                     </label>
@@ -96,7 +95,7 @@ const SidebarFilter = () => {
                     <Checkbox id="checkbox-option-3" />
                     <label
                       htmlFor="checkbox-option-3"
-                      className="text-xs font-normal text-gray-600"
+                      className="text-sm font-normal text-gray-600"
                     >
                       option-3
                     </label>
@@ -107,7 +106,7 @@ const SidebarFilter = () => {
           </div>
         </div>
         <div className="mb-3 border-b pb-1">
-          <p className="mb-3 text-sm font-medium leading-6 text-black">
+          <p className="mb-3 text-base font-medium leading-6 text-black">
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
@@ -115,7 +114,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-default-1" />
               <label
                 htmlFor="checkbox-default-1"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 ĐA KHOA 179
               </label>
@@ -124,7 +123,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-default-2" />
               <label
                 htmlFor="checkbox-default-2"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 ĐA KHOA DIAMOND
               </label>
@@ -133,13 +132,15 @@ const SidebarFilter = () => {
         </div>
 
         <div className="mb-3 border-b pb-1">
-          <p className="mb-3 text-sm font-medium leading-6 text-black">Loại</p>
+          <p className="mb-3 text-base font-medium leading-6 text-black">
+            Loại
+          </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
               <Checkbox id="checkbox-default-3" />
               <label
                 htmlFor="checkbox-default-3"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 Gói khám
               </label>
@@ -148,7 +149,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-default-4" />
               <label
                 htmlFor="checkbox-default-4"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 Dịch vụ
               </label>
@@ -156,7 +157,7 @@ const SidebarFilter = () => {
           </div>
         </div>
         <div className="mb-3 border-b pb-1">
-          <p className="mb-3 text-sm font-medium leading-6 text-black">
+          <p className="mb-3 text-base font-medium leading-6 text-black">
             Giới tính
           </p>
           <div className="box mb-3 flex flex-col gap-2">
@@ -164,7 +165,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-gt-1" />
               <label
                 htmlFor="checkbox-gt-1"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 Nam
               </label>
@@ -173,7 +174,7 @@ const SidebarFilter = () => {
               <Checkbox id="checkbox-gt-2" />
               <label
                 htmlFor="checkbox-gt-2"
-                className="text-xs font-normal leading-4 text-gray-600"
+                className="text-sm font-normal leading-4 text-gray-600"
               >
                 Nữ
               </label>

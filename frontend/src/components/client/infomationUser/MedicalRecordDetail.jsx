@@ -1,4 +1,3 @@
-import { useLocation, useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -17,147 +16,68 @@ import {
   PaginationPrevious,
 } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/Button";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const MedicalRecords = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
+const MedicalRecordDetail = () => {
+    const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-  const handleViewDetail = (id) => {
-    navigate(`detail/${id}`);
-  };
+
+
+    const navigate = useNavigate();
+  const records = Array(9).fill({
+    service: "Khám thai ngoài giờ",
+    diagnosis: "Viêm đường ruột",
+    note: "Viêm đường ruột cấp tính (chuyển lên tuyến trên)",
+    image: "Xem chi tiết",
+  });
   const handlePageChange = (page) => {
-    navigate(`/user-profile/medical-records?page=${page}`);
+    const params = new URLSearchParams(location.search);
+    params.set('page', page);
+    navigate(`${location.pathname}?${params.toString()}`);
   };
-
-  let count = 1;
-  const records = [
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-    {
-      id: count++,
-      date: "13:00 02/07/2024",
-      status: "Tái khám",
-      payment: "Bảo hiểm",
-      doctor: "Võ Thanh Phương",
-      service: "Tiền sử sau khi sinh",
-    },
-  ];
-
   const recordsPerPage = 5;
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentRecords = records.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(records.length / recordsPerPage);
-
   return (
     <div className="p-6">
-      <h2 className="mb-6 text-xl font-bold">Hồ sơ bệnh án</h2>
+      <h2 className="mb-6 text-xl font-bold">Hồ sơ bệnh án chi tiết</h2>
       <Table>
         <TableHeader className="!rounded-2xl bg-bg-gray">
           <TableRow>
-            <TableHead className="text-black">ID</TableHead>
             <TableHead className="whitespace-nowrap font-bold text-black">
-              Ngày giờ khám
+              Dịch vụ khám
             </TableHead>
             <TableHead className="whitespace-nowrap font-bold text-black">
-              Tình trạng
+              Chuẩn đoán
             </TableHead>
             <TableHead className="whitespace-nowrap font-bold text-black">
-              Thanh toán
+              Ghi chú
             </TableHead>
             <TableHead className="whitespace-nowrap font-bold text-black">
-              Bác sĩ phụ trách
-            </TableHead>
-            <TableHead className="whitespace-nowrap font-bold text-black">
-              Dịch vụ/ Gói khám
-            </TableHead>
-            <TableHead className="whitespace-normal font-bold text-black">
-              Chi tiết bệnh án
+              Hình ảnh
             </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {currentRecords.map((record, index) => (
             <TableRow key={index}>
-              <TableCell className="whitespace-nowrap">{record.id}</TableCell>
-              <TableCell className="whitespace-nowrap">{record.date}</TableCell>
-              <TableCell className="whitespace-nowrap">
-                {record.status}
-              </TableCell>
-              <TableCell className="whitespace-nowrap">
-                {record.payment}
-              </TableCell>
-              <TableCell className="whitespace-nowrap">
-                {record.doctor}
-              </TableCell>
               <TableCell className="whitespace-nowrap">
                 {record.service}
               </TableCell>
-              <TableCell>
-                <Button
+              <TableCell className="whitespace-nowrap">
+                {record.diagnosis}
+              </TableCell>
+              <TableCell className="whitespace-nowrap">{record.note}</TableCell>
+              <TableCell className="whitespace-nowrap">
+              <Button
                   variant="primary"
                   size="sm"
-                  onClick={() => handleViewDetail(record.id)}
                   className="bg-primary-500 px-6 text-white"
                 >
-                  Xem chi tiết
+                 {record.image}
                 </Button>
               </TableCell>
             </TableRow>
@@ -209,4 +129,4 @@ const MedicalRecords = () => {
   );
 };
 
-export default MedicalRecords;
+export default MedicalRecordDetail;

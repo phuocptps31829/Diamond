@@ -6,8 +6,8 @@ const SpecialtiesList = () => {
     });
 
     return (
-        <div className="container mx-auto max-w-screen-2xl py-10 lg:py-10">
-            <div className="mx-auto w-5/6">
+        <div className="container mx-auto max-w-screen-xl py-5  lg:py-10">
+            <div className="mx-auto w-full md:w-5/6">
                 <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
                     Chọn một chuyên khoa:
                 </h1>
