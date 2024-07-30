@@ -70,6 +70,7 @@ router.get(
  *            required:
  *              - specialtyID
  *              - name
+ *              - images
  *              - price
  *              - discountPrice
  *              - shortDescription
@@ -78,6 +79,8 @@ router.get(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              images:
  *                type: string
  *              price:
  *                type: number
@@ -128,6 +131,7 @@ router.post(
  *            required:
  *              - specialtyID
  *              - name
+ *              - images
  *              - price
  *              - discountPrice
  *              - shortDescription
@@ -136,6 +140,8 @@ router.post(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              images:
  *                type: string
  *              price:
  *                type: number

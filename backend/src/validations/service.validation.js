@@ -18,6 +18,15 @@ const serviceValidator = checkSchema({
         },
         trim: true
     },
+    image: {
+        exists: {
+            errorMessage: 'Image is required'
+        },
+        isString: {
+            errorMessage: 'Image should be a string'
+        },
+        trim: true
+    },
     price: {
         exists: {
             errorMessage: 'Price is required'
