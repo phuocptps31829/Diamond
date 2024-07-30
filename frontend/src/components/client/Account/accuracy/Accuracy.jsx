@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { FaKey } from "react-icons/fa";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
+import InputCustom from "@/components/ui/inputCustom";
 
 export default function AccurancyComponent() {
   const { handleSubmit,
@@ -25,41 +26,24 @@ const onSubmit = (data) => {
           {/* FORM */}
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực tài khoản</h1>
-            <p className="mb-6 text-center text-sm text-gray-500">Xác thực tài khoản để hoàn tất quá trình đăng kí</p>
+            <p className="mb-6 text-center text-sm text-gray-400">Xác thực tài khoản để hoàn tất quá trình đăng kí</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-2 relative">
                 <label htmlFor="authCode" className="block text-gray-700 font-semibold">Mã xác thực:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-[-2px] md:left-0 flex items-center pl-3">
-                    <FaKey className="text-gray-400 w-5 h-5" />
-                  </span>
-                  <Controller
-                    name="authCode"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Nhập mã xác thực:"
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập mã xác thực"
+                        name="authCode"
                         type="text"
                         id="authCode"
-                        {...field}
-                        className={`w-full px-8 md:px-10 py-3 border-2 ${
-                          errors.authCode ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue`}
-                      />
-                    )}
+                        icon={<FaKey></FaKey>}
+                        control={control}
+                        errors={ errors }
                   />
-                  <button
-                    type="button"
-                    className="text-base absolute inset-y-0 right-0 flex items-center font-bold md:text-lg pr-3 text-primary-500 hover:text-blue-700"
-                    style={{ paddingRight: '20px' }}
-                  >
-                    Nhận mã
-                  </button>
+                  
                 </div>
-                {errors.authCode && (
-                  <p className="text-red-500 text-sm mt-1">{errors.authCode.message}</p>
-                )}
               </div>
 
               <div className="my-2 text-sm">

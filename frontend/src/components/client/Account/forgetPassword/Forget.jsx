@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import { FaPhone } from "react-icons/fa";
+import { FaPhoneAlt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-// import { accountSchema } from "@/zods/account";
-const phoneSchema = z.object({
-  phone: z.string().min(10, "Số điện thoại phải có ít nhất 10 ký tự").max(15, "Số điện thoại không được vượt quá 15 ký tự"),
-});
+import InputCustom from "@/components/ui/inputCustom";
+import { accountSchema } from "@/zods/account";
 
 export default function ForgetComponent() {
   const navigate = useNavigate();
 
-  const { handleSubmit, control, formState: { errors } } = useForm({
-    resolver: zodResolver(phoneSchema),
+  const { handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(accountSchema),
     defaultValues: {
-      phone: "",
+      phoneNumber: "",
     },
   });
 
@@ -37,28 +37,17 @@ export default function ForgetComponent() {
               <div className="mb-2 relative">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-[-2px] md:left-0 flex items-center pl-3">
-                    <FaPhone className="text-gray-400 w-5 h-5" />
-                  </span>
-                  <Controller
-                    name="phone"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Số điện thoại của bạn"
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập số điện thoại"
+                        name="phoneNumber"
                         type="text"
-                        id="phone"
-                        {...field}
-                        className={`w-full px-8 md:px-10 py-3 border-2 ${
-                          errors.phone ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue`}
-                      />
-                    )}
+                        id="phoneNumber"
+                        icon={<FaPhoneAlt></FaPhoneAlt>}
+                        control={control}
+                        errors={ errors }
                   />
                 </div>
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-                )}
               </div>
 
               <div className="my-2 text-sm italic text-right">
@@ -68,7 +57,7 @@ export default function ForgetComponent() {
               </div>
 
               <div className="text-center">
-                <button type="submit" className="font-bold text-3xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button type="submit" className="font-bold text-[26px] w-full bg-primary-500 text-white py-1 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                   Kiểm tra
                 </button>
               </div>

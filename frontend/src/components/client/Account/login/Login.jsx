@@ -1,7 +1,7 @@
 
 import { Link } from "react-router-dom";
-import { FaPhone, FaLock, FaEye } from "react-icons/fa";
-import { useForm, Controller } from "react-hook-form";
+import { FaPhoneAlt, FaLock, FaEye } from "react-icons/fa";
+import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/inputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
@@ -39,15 +39,16 @@ export default function LoginComponent() {
                     <FaPhone className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
                   </span> */}
                   <InputCustom
-                        className="col-span-1 sm:col-span-1"
+                        className="col-span-1 sm:col-span-1 "
                         placeholder="Nhập số điện thoại"
                         name="phoneNumber"
                         type="text"
                         id="phoneNumber"
+                        icon={<FaPhoneAlt></FaPhoneAlt>}
                         control={control}
                         errors={ errors }
                   />
-  
+                                          
                 </div>
 
               </div>
@@ -63,6 +64,7 @@ export default function LoginComponent() {
                         name="password"
                         type="password"
                         id="password"
+                        icon={<FaLock></FaLock>}
                         control={control}
                         errors={ errors }
                   />

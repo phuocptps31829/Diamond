@@ -1,17 +1,11 @@
 
-import {  FaLock, FaEye  } from "react-icons/fa";
+import {  FaLock  } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { passwordSchema } from "@/zods/password";
+import InputCustom from "@/components/ui/inputCustom";
 
-const registerSchema = z.object({
-  password: z.string().min(1, "Mật khẩu không được để trống!"),
-  confirmPassword: z.string().min(1, "Nhập lại mật khẩu không được để trống!")
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu không khớp!",
-  path: ["confirmPassword"],
-});
 
 
 export default function ChangePassComponent() {
@@ -20,10 +14,10 @@ export default function ChangePassComponent() {
     handleSubmit,
     formState: { errors },
     control,
+    
   } = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
-      phoneNumber: "",
       password: "",
       confirmPassword: "",
     },
@@ -46,23 +40,15 @@ export default function ChangePassComponent() {
               <div className="mb-2">
                   <label htmlFor="phone" className="block text-gray-700 font-semibold">Mật khẩu mới:</label>
                   <div className="relative">
-                      <span className="absolute inset-y-0 left-0 md:left-0 flex items-center pl-3">
-                          <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />                  
-                      </span>
-                      <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Mật khẩu"
+                  <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập mật khẩu"
+                        name="password"
                         type="password"
                         id="password"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.password ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        icon={<FaLock></FaLock>}
+                        control={control}
+                        errors={ errors }
                   />
 
                       {/* <input placeholder="Mật khẩu mới" type="text" id="phone" 
@@ -70,49 +56,24 @@ export default function ChangePassComponent() {
                       px-9 py-3 border-2 border-gray-200 
                       rounded-md focus:outline-none focus:ring-2 
                       focus:ring-blue-500 focus:border-blue"  /> */}
-                  <span className="absolute inset-y-0 right-5 md:right-5 flex items-center pl-3">
-                        <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />                  
-                  </span>
                   </div>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                  )}
               </div>
                                 
               <div className="mb-2">
                   <label htmlFor="phone" className="block text-gray-700 font-semibold">Nhập lại mật khẩu:</label>
                   <div className="relative">
-                      <span className="absolute inset-y-0 left-0 md:left-0 flex items-center pl-3">
-                          <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />                  
-                      </span>
-                      
-                      {/* <input placeholder="Nhập lại mật khẩu" type="text" id="phone" 
-                      className="w-full 
-                      px-9 py-3 border-2 border-gray-200 
-                      rounded-md focus:outline-none focus:ring-2 
-                      focus:ring-blue-500 focus:border-blue"  /> */}
-                      <span className="absolute inset-y-0 right-5 md:right-5 flex items-center pl-3">
-                        <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />                  
-                      </span>
-                      <Controller
-                    name="confirmPassword"
-                    control={control}
-                    render={({ field }) => (
-                      <input
+
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1 "
                         placeholder="Nhập lại mật khẩu"
+                        name="confirmPassword"
                         type="password"
                         id="confirmPassword"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
-                    />
+                        icon={<FaLock></FaLock>}
+                        control={control}
+                        errors={ errors }
+                  />
                   </div>
-                  {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
-                  )}
               </div>
 
               <div className="text-center mt-3">

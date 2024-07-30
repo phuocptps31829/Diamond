@@ -1,18 +1,10 @@
 import { Link } from "react-router-dom";
-import { FaPhone, FaLock, FaEye } from "react-icons/fa";
+import { FaPhoneAlt, FaLock } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const registerSchema = z.object({
-  phoneNumber: z.string().regex(/^[0-9]{10}$/, "Số điện thoại không hợp lệ!"),
-  password: z.string().min(1, "Mật khẩu không được để trống!"),
-  confirmPassword: z.string().min(1, "Nhập lại mật khẩu không được để trống!")
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu không khớp!",
-  path: ["confirmPassword"],
-});
+import InputCustom from "@/components/ui/inputCustom";
+import { registerSchema } from "@/zods/register";
 
 export default function RegisterComponent() {
   const navigate = useNavigate();
@@ -53,91 +45,53 @@ export default function RegisterComponent() {
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 md:left-0 flex items-center pl-3">
-                    <FaPhone className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />
-                  </span>
-                  <Controller
-                    name="phoneNumber"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Số điện thoại"
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập số điện thoại"
+                        name="phoneNumber"
                         type="text"
-                        id="phone"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.phoneNumber ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        id="phoneNumber"
+                        icon={<FaPhoneAlt></FaPhoneAlt>}
+                        control={control}
+                        errors={ errors }
                   />
     
                 </div>
-                {errors.phoneNumber && (
-                    <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>
-                  )}
+
               </div>
 
               <div className="mb-2">
                 <label htmlFor="password" className="block text-gray-700 font-semibold">Mật khẩu:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 md:left-0 flex items-center pl-3">
-                    <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />
-                  </span>
-                  <Controller
-                    name="password"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        placeholder="Mật khẩu"
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập mật khẩu"
+                        name="password"
                         type="password"
                         id="password"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.password ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        icon={<FaLock></FaLock>}
+                        control={control}
+                        errors={ errors }
                   />
-
-                  <span className="absolute inset-y-0 right-5 md:right-5 flex items-center pl-3">
-                    <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />
-                  </span>
                 </div>
-                {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
-                  )}
               </div>
 
               <div className="mb-2">
                 <label htmlFor="confirmPassword" className="block text-gray-700 font-semibold">Nhập lại mật khẩu:</label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 md:left-0 flex items-center pl-3">
-                    <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />
-                  </span>
-                  <Controller
-                    name="confirmPassword"
-                    control={control}
-                    render={({ field }) => (
-                      <input
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
                         placeholder="Nhập lại mật khẩu"
+                        name="confirmPassword"
                         type="password"
                         id="confirmPassword"
-                        {...field}
-                        className={`w-full px-9 py-3 border-2 ${
-                          errors.confirmPassword ? 'border-red-500' : 'border-gray-200'
-                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    )}
+                        icon={<FaLock></FaLock>}
+                        control={control}
+                        errors={ errors }
                   />
      
-                  <span className="absolute inset-y-0 right-5 md:right-5 flex items-center pl-3">
-                    <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5 " />
-                  </span>
+
                 </div>
-                {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
-                  )}
               </div>
 
               <div className="text-center my-3">
