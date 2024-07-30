@@ -1,5 +1,6 @@
 const { checkSchema } = require('express-validator');
 const { isValidObjectId } = require("mongoose");
+const { checkIsExistID } = require('../utils/database.util');
 const SpecialtyModel = require('../models/specialty.model');
 
 const medicalPackageValidator = checkSchema({
@@ -67,14 +68,6 @@ const medicalPackageValidator = checkSchema({
             errorMessage: 'Discount price must be a number'
         }
     },
-    'services.*.duration': {
-        exists: {
-            errorMessage: 'Duration ID is required'
-        },
-        isString: {
-            errorMessage: 'Duration should be a string'
-        }
-    }
 });
 
 

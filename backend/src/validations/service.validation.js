@@ -1,6 +1,7 @@
 const { checkSchema } = require('express-validator');
 
 const SpecialtyModel = require('../models/specialty.model');
+const { checkIsExistID } = require('../utils/database.util');
 
 const serviceValidator = checkSchema({
     specialtyID: {
@@ -49,15 +50,6 @@ const serviceValidator = checkSchema({
             errorMessage: 'Discount Price should be a number'
         }
     },
-    duration: {
-        exists: {
-            errorMessage: 'Duration is required'
-        },
-        isNumeric: {
-            errorMessage: 'Duration should be a number'
-        }
-    },
-
 });
 
 module.exports = {

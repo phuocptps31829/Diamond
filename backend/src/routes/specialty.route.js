@@ -68,18 +68,12 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyCode
  *              - name
  *              - image
- *              - description
  *            properties:
- *              specialtyCode:
- *                type: string
  *              name:
  *                type: string
  *              image:
- *                type: string
- *              description:
  *                type: string
  *    responses:
  *      '201':
@@ -120,18 +114,12 @@ router.post(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyCode
  *              - name
  *              - image
- *              - description
  *            properties:
- *              specialtyCode:
- *                type: string
  *              name:
  *                type: string
  *              image:
- *                type: string
- *              description:
  *                type: string
  *    responses:
  *      '201':

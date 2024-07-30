@@ -1,7 +1,6 @@
 const NewsModel = require('../models/news.model');
 const { createError, errorValidator } = require('../utils/helper.util');
 
-
 const getAllNews = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;

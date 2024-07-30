@@ -55,6 +55,7 @@ app.use('/api/v1/branches', branchRoutes);
 app.use('/api/v1/contracts', contractRoutes);
 app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
+app.use('/api/v1/medicines', medicineRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

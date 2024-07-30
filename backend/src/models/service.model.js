@@ -29,9 +29,6 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    duration: {
-        type: Number,
-    },
     isHidden: {
         type: Boolean,
         default: false

@@ -1,4 +1,5 @@
 const { checkSchema } = require('express-validator');
+const { checkIsExistID } = require('../utils/database.util');
 const MedicineModel = require('../models/medicine.model');
 const MedicineCategoryModel = require('../models/medicine.model');
 

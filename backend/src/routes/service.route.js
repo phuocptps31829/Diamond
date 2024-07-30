@@ -74,7 +74,6 @@ router.get(
  *              - discountPrice
  *              - shortDescription
  *              - details
- *              - duration
  *            properties:
  *              specialtyID:
  *                type: string
@@ -88,8 +87,6 @@ router.get(
  *                type: string
  *              details:
  *                type: string
- *              duration:
- *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -135,7 +132,6 @@ router.post(
  *              - discountPrice
  *              - shortDescription
  *              - details
- *              - duration
  *            properties:
  *              specialtyID:
  *                type: string
@@ -149,8 +145,6 @@ router.post(
  *                type: string
  *              details:
  *                type: string
- *              duration:
- *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
