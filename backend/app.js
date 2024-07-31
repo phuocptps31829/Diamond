@@ -25,13 +25,18 @@ const medicineImportRoutes = require('./src/routes/medicine-import.route');
 const app = express();
 
 // app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", ['']);
+//     res.header("Access-Control-Allow-Origin", ['http://localhost:5173']);
 //     next();
 // });
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+// app.use(cors({
+//     origin: ['http://127.0.0.1:5173', 'http://localhost:5173'],
+//     methods: "GET, PUT, POST, DELETE, PATCH",
+//     credentials: true
+// }));
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 swaggerDocs(app, process.env.PORT);
