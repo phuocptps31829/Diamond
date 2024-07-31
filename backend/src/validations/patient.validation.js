@@ -1,14 +1,14 @@
 const e = require("express");
 const { checkSchema } = require("express-validator");
+const { checkIsExistID } = require('../utils/database.util');
+
+const UserModel = require('../models/user.model');
 
 const patientValidator = checkSchema({
     userID: {
-        exists: {
-            errorMessage: "User ID is required",
-        },
-        isMongoId: {
-            errorMessage: "Invalid User ID",
-        },
+        customSanitizer: {
+            options: (id) => checkIsExistID(UserModel, id),
+        }
     },
     patientCode: {
         exists: {

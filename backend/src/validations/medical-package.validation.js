@@ -18,6 +18,15 @@ const medicalPackageValidator = checkSchema({
         },
         trim: true
     },
+    image: {
+        exists: {
+            errorMessage: 'Image is required'
+        },
+        isString: {
+            errorMessage: 'Image should be a string'
+        },
+        trim: true
+    },
     shortDescription: {
         exists: {
             errorMessage: 'Short description is required'

@@ -70,6 +70,7 @@ router.get(
  *            required:
  *              - specialtyID
  *              - name
+ *              - image
  *              - shortDescription
  *              - details
  *              - services
@@ -77,6 +78,8 @@ router.get(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              image:
  *                type: string
  *              shortDescription:
  *                type: string
@@ -138,6 +141,7 @@ router.post(
  *            required:
  *              - specialtyID
  *              - name
+ *              - image
  *              - shortDescription
  *              - details
  *              - services
@@ -145,6 +149,8 @@ router.post(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              image:
  *                type: string
  *              shortDescription:
  *                type: string

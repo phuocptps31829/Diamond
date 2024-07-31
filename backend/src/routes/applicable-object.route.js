@@ -1,18 +1,18 @@
 const express = require('express');
 
-const helperMiddleware = require('../middlewares/helper.middleware');
-const medicineImportController = require('../controllers/medicine-import.controller');
-const medicineImportValidator = require('../validations/medicine-import.validation');
-
 const router = express.Router();
+
+const applicableObjectController = require('../controllers/applicable-object.controller');
+const helperMiddleware = require('../middlewares/helper.middleware');
+const applicableObjectValidator = require('../validations/applicable-object.validation');
 
 /**
  * @openapi
- * '/api/v1/medicine-imports':
+ * '/api/v1/applicable-objects':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get all medicine import (?page=1&limit=10&sort=1)
+ *    - Applicable object Routes
+ *    summary: Get all applicable objects
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,22 +23,21 @@ const router = express.Router();
 */
 router.get(
     '/',
-    helperMiddleware.checkQueryParams,
-    medicineImportController.getAllMedicineImports
+    applicableObjectController.getAllApplicableObjects
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/{id}':
+ * '/api/v1/applicable-objects/{id}':
  *  get:
  *    tags:
- *    - Medicine import Routes
- *    summary: Get medicine import by id
+ *    - Applicable object Routes
+ *    summary: Get applicable object by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: medicine import id
+ *        description: Medical package id
  *        schema:
  *          type: string
  *    responses:
@@ -52,121 +51,133 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.getMedicineImportById
-);
-/** 
-* @openapi
- * '/api/v1/medicine-imports/add':
- *  post:
- *    tags:
- *    - Medicine import Routes
- *    summary: Add new medicine import
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            required:
- *              - medicineID
- *              - quantity
- *              - purchaseDate
- *              - manufacturingDate
- *              - expiryDate
- *              - purchasePrice
- *              - sellingPrice
- *              - origin
- *            properties:
- *              medicineID:
- *                type: string
- *              quantity:
- *                type: string
- *              purchaseDate:
- *                type: string
- *              manufacturingDate:
- *                type: string
- *              expiryDate:
- *                type: string
- *              purchasePrice:
- *                type: string
- *              sellingPrice:
- *                type: string
- *              origin:
- *                type: string
- *    responses:
- *      '201':
- *        $ref: '#/components/responses/201'
- *      '401':
- *        $ref: '#/components/responses/401'
- *      '400':
- *        $ref: '#/components/responses/400'
- *      '409':
- *        $ref: '#/components/responses/409'
- *      '500':
- *        $ref: '#/components/responses/500'
- */
-router.post(
-    '/add',
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.createMedicineImport
-);
-
-/** 
-* @openapi
- * '/api/v1/medicine-imports/update/{id}':
- *  put:
- *    tags:
- *    - Medicine import Routes
- *    summary: Update medicine import by id
- *    parameters:
- *      - name: id
- *        in: path
- *        required: true
- *        schema:
- *          type: string
- *        description: The ID of the medicine import to update
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            required:
- *              - name
- *            properties:
- *              name:
- *                type: string
- *    responses:
- *      '201':
- *        $ref: '#/components/responses/201'
- *      '401':
- *        $ref: '#/components/responses/401'
- *      '400':
- *        $ref: '#/components/responses/400'
- *      '409':
- *        $ref: '#/components/responses/409'
- *      '500':
- *        $ref: '#/components/responses/500'
- */
-router.put(
-    '/update/:id',
-    helperMiddleware.checkValidId,
-    medicineImportValidator.medicineImportValidator,
-    medicineImportController.updateMedicineImport
+    applicableObjectController.getApplicableObjectById
 );
 
 /**
  * @openapi
- * '/api/v1/medicine-imports/delete/{id}':
- *  delete:
+ * '/api/v1/applicable-objects/add':
+ *  post:
  *    tags:
- *    - Medicine import Routes
- *    summary: Delete medicine import by id
+ *    - Applicable object Routes
+ *    summary: Add a new applicable object
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - medicalPackageID
+ *              - gender
+ *              - age
+ *              - isMarried
+ *            properties:
+ *              medicalPackageID:
+ *                type: string
+ *              gender:
+ *                type: string
+ *              isMarried:
+ *                type: boolean
+ *              isFamily:
+ *                type: boolean
+ *              age: 
+ *                type: object
+ *                properties: 
+ *                  min: 
+ *                   type: number
+ *                  max: 
+ *                   type: number
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.post(
+    '/add',
+    applicableObjectValidator.applicableObjectValidator,
+    applicableObjectController.createApplicableObject
+);
+
+/**
+ * @openapi
+ * '/api/v1/applicable-objects/update/{id}':
+ *  put:
+ *    tags:
+ *    - Applicable object Routes
+ *    summary: Update applicable object by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the medicine import to delete
+ *        description: Applicable object id
+ *        schema:
+ *          type: string
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - medicalPackageID
+ *              - gender
+ *              - age
+ *              - isMarried
+ *            properties:
+ *              medicalPackageID:
+ *                type: string
+ *              gender:
+ *                type: string
+ *              isMarried:
+ *                type: boolean
+ *              isFamily:
+ *                type: boolean
+ *              age: 
+ *                type: object
+ *                properties: 
+ *                  min: 
+ *                   type: number
+ *                  max: 
+ *                   type: number
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.put(
+    '/update/:id',
+    helperMiddleware.checkValidId,
+    applicableObjectValidator.applicableObjectValidator,
+    applicableObjectController.updateApplicableObject
+);
+
+/**
+ * @openapi
+ * '/api/v1/applicable-objects/delete/{id}':
+ *  delete:
+ *    tags:
+ *    - Applicable object Routes
+ *    summary: Delete applicable object by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID of the applicable object to delete
  *        schema:
  *          type: string
  *    responses:
@@ -180,7 +191,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    medicineImportController.deleteMedicineImport
+    applicableObjectController.deleteApplicableObject
 );
 
 module.exports = router;
