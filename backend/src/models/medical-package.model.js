@@ -48,6 +48,10 @@ const medicalPackageSchema = new mongoose.Schema({
             },
         },
     ],
+    orderCount: {
+        type: Number,
+        default: 0
+    },
     isHidden: {
         type: Boolean,
         default: false

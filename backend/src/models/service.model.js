@@ -34,6 +34,10 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
+    orderCount: {
+        type: Number,
+        default: 0
+    },
     isHidden: {
         type: Boolean,
         default: false
