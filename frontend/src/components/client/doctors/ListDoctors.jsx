@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Select,
@@ -16,13 +16,46 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
+import { useQuery } from "@tanstack/react-query";
+import { getAllDoctors } from "@/services/doctors";
+import { getAllSpecialties } from "@/services/specialties";
+import Loading from "@/components/ui/Loading";
 import DoctorProduct from "../product/Doctor";
 
 export default function ListDoctors() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [specialtyMap, setSpecialtyMap] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
+
+  const {
+    data: doctors,
+    error: errorDoctors,
+    isLoading: loadingDoctors,
+  } = useQuery({
+    queryKey: ["doctors"],
+    queryFn: getAllDoctors,
+  });
+
+  const {
+    data: specialties,
+    error: errorSpecialties,
+    isLoading: loadingSpecialties,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: getAllSpecialties,
+  });
+
+  useEffect(() => {
+    if (specialties) {
+      const map = {};
+      specialties.forEach((specialty) => {
+        map[specialty._id] = specialty.name;
+      });
+      setSpecialtyMap(map);
+    }
+  }, [specialties]);
 
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
@@ -42,6 +75,14 @@ export default function ListDoctors() {
     navigate(`/doctors?page=${page}`);
   };
 
+  if (loadingDoctors || loadingSpecialties) {
+    return <Loading />;
+  }
+
+  if (errorDoctors || errorSpecialties) {
+    return <div>Error loading doctors</div>;
+  }
+
   return (
     <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
@@ -55,9 +96,11 @@ export default function ListDoctors() {
               <SelectValue placeholder="Chọn chuyên khoa" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+              {specialties?.map((specialty) => (
+                <SelectItem key={specialty._id} value={specialty._id}>
+                  {specialty.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <Select value={selectedDoctor} onValueChange={handleDoctorChange}>
@@ -65,18 +108,27 @@ export default function ListDoctors() {
               <SelectValue placeholder="Chọn bác sĩ" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="light">Light</SelectItem>
-              <SelectItem value="dark">Dark</SelectItem>
-              <SelectItem value="system">System</SelectItem>
+              {doctors?.map((doctor) => (
+                <SelectItem key={doctor._id} value={doctor._id}>
+                  {doctor.userID.fullName}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <DoctorProduct key={index} />
-        ))}
+        {doctors.map((doctor) => {
+          return (
+            <DoctorProduct
+              key={doctor._id}
+              {...doctor}
+              specialtyName={specialtyMap[doctor.specialtyID]}
+            />
+          );
+        })}
       </div>
+
       <Pagination className="py-5">
         <PaginationContent className="hover:cursor-pointer">
           <PaginationItem>

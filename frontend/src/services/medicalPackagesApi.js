@@ -1,11 +1,12 @@
-import { API_URL_GET_ALL_PACKAGES } from "@/configs/varibles";
+import { API_URL_GET_ALL_MEDICAL_PACKAGES } from "@/configs/varibles";
 import axios from "axios";
 export const getAllMedicalPackages = async () => {
   try {
-    const res = await axios.get(`${API_URL_GET_ALL_PACKAGES}`);
+    const res = await axios.get(API_URL_GET_ALL_MEDICAL_PACKAGES);
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    throw error;
   }
 };
