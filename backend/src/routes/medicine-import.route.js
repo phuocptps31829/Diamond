@@ -54,7 +54,6 @@ router.get(
     helperMiddleware.checkValidId,
     medicineImportController.getMedicineImportById
 );
-
 /** 
 * @openapi
  * '/api/v1/medicine-imports/add':
@@ -69,9 +68,8 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - MedicineImport
+ *              - medicineID
  *              - quantity
- *              - MedicineImport
  *              - purchaseDate
  *              - manufacturingDate
  *              - expiryDate
@@ -79,7 +77,7 @@ router.get(
  *              - sellingPrice
  *              - origin
  *            properties:
- *              MedicineImport:
+ *              medicineID:
  *                type: string
  *              quantity:
  *                type: string

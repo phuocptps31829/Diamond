@@ -11,6 +11,11 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
+    image: {
+        type: String,
+        trim: true,
+        required: true
+    },
     price: {
         type: Number,
         required: true
@@ -29,8 +34,9 @@ const serviceSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    duration: {
+    orderCount: {
         type: Number,
+        default: 0
     },
     isHidden: {
         type: Boolean,

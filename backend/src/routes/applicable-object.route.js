@@ -2,17 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 
-const specialtyController = require('../controllers/specialty.controller');
-const specialtyValidator = require('../validations/specialty.validation');
+const applicableObjectController = require('../controllers/applicable-object.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const applicableObjectValidator = require('../validations/applicable-object.validation');
 
 /**
  * @openapi
- * '/api/v1/specialties':
+ * '/api/v1/applicable-objects':
  *  get:
  *    tags:
- *    - Specialty Routes
- *    summary: Get all specialties
+ *    - Applicable object Routes
+ *    summary: Get all applicable objects
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,21 +23,21 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
-    specialtyController.getAllSpecialties
+    applicableObjectController.getAllApplicableObjects
 );
 
 /**
  * @openapi
- * '/api/v1/specialties/{id}':
+ * '/api/v1/applicable-objects/{id}':
  *  get:
  *    tags:
- *    - Specialty Routes
- *    summary: Get specialty by id
+ *    - Applicable object Routes
+ *    summary: Get applicable object by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Specialty id
+ *        description: Medical package id
  *        schema:
  *          type: string
  *    responses:
@@ -51,16 +51,16 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    specialtyController.getSpecialtyById
+    applicableObjectController.getApplicableObjectById
 );
 
 /**
  * @openapi
- * '/api/v1/specialties/add':
+ * '/api/v1/applicable-objects/add':
  *  post:
  *    tags:
- *    - Specialty Routes
- *    summary: Add a new specialty
+ *    - Applicable object Routes
+ *    summary: Add a new applicable object
  *    requestBody:
  *      required: true
  *      content:
@@ -68,13 +68,26 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - name
- *              - image
+ *              - medicalPackageID
+ *              - gender
+ *              - age
+ *              - isMarried
  *            properties:
- *              name:
+ *              medicalPackageID:
  *                type: string
- *              image:
+ *              gender:
  *                type: string
+ *              isMarried:
+ *                type: boolean
+ *              isFamily:
+ *                type: boolean
+ *              age: 
+ *                type: object
+ *                properties: 
+ *                  min: 
+ *                   type: number
+ *                  max: 
+ *                   type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -89,22 +102,22 @@ router.get(
 */
 router.post(
     '/add',
-    specialtyValidator.specialtyValidator,
-    specialtyController.createSpecialty
+    applicableObjectValidator.applicableObjectValidator,
+    applicableObjectController.createApplicableObject
 );
 
 /**
  * @openapi
- * '/api/v1/specialties/update/{id}':
+ * '/api/v1/applicable-objects/update/{id}':
  *  put:
  *    tags:
- *    - Specialty Routes
- *    summary: Update specialty by id
+ *    - Applicable object Routes
+ *    summary: Update applicable object by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Specialty id
+ *        description: Applicable object id
  *        schema:
  *          type: string
  *    requestBody:
@@ -114,13 +127,26 @@ router.post(
  *          schema:
  *            type: object
  *            required:
- *              - name
- *              - image
+ *              - medicalPackageID
+ *              - gender
+ *              - age
+ *              - isMarried
  *            properties:
- *              name:
+ *              medicalPackageID:
  *                type: string
- *              image:
+ *              gender:
  *                type: string
+ *              isMarried:
+ *                type: boolean
+ *              isFamily:
+ *                type: boolean
+ *              age: 
+ *                type: object
+ *                properties: 
+ *                  min: 
+ *                   type: number
+ *                  max: 
+ *                   type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -136,22 +162,22 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    specialtyValidator.specialtyValidator,
-    specialtyController.createSpecialty
+    applicableObjectValidator.applicableObjectValidator,
+    applicableObjectController.updateApplicableObject
 );
 
 /**
  * @openapi
- * '/api/v1/specialties/delete/{id}':
+ * '/api/v1/applicable-objects/delete/{id}':
  *  delete:
  *    tags:
- *    - Specialty Routes
- *    summary: Delete specialty by id
+ *    - Applicable object Routes
+ *    summary: Delete applicable object by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the specialty to delete
+ *        description: ID of the applicable object to delete
  *        schema:
  *          type: string
  *    responses:
@@ -165,7 +191,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    specialtyController.deleteSpecialty
+    applicableObjectController.deleteApplicableObject
 );
 
 module.exports = router;

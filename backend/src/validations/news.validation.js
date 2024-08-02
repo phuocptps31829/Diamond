@@ -1,14 +1,13 @@
 const { checkSchema } = require('express-validator');
-const NewsModel = require('../models/news.model');
+const { checkIsExistID } = require('../utils/database.util');
 
+const NewsModel = require('../models/news.model');
+const SpecialtyModel = require('../models/specialty.model');
 
 const newsValidator = checkSchema({
     specialtyID: {
-        exists: {
-            errorMessage: 'Specialty ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid specialty ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(SpecialtyModel, id),
         }
     },
     title: {
@@ -17,6 +16,15 @@ const newsValidator = checkSchema({
         },
         isString: {
             errorMessage: 'Title should be a string'
+        },
+        trim: true
+    },
+    image: {
+        exists: {
+            errorMessage: 'Image is required'
+        },
+        isString: {
+            errorMessage: 'Image should be a string'
         },
         trim: true
     },
