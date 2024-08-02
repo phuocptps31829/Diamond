@@ -1,10 +1,22 @@
-import { Link } from "react-router-dom";
-import imageDoctor from "../../../assets/images/Virus-Theat-Found-1--Streamline-Milano.png";
+import { getAllSpecialties } from "@/services/specialtiesApi";
+import { useQuery } from "@tanstack/react-query";
 const SpecialtiesList = () => {
-  const items = new Array(16).fill({
-    label: "Bác Sĩ Gia Đình",
-    img: imageDoctor,
+  const {
+    data: specialties,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: getAllSpecialties,
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data</div>;
+  }
 
   return (
     <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
@@ -12,28 +24,23 @@ const SpecialtiesList = () => {
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>
-        <Link
-          to="/none"
-          className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 shadow-lg sm:grid-cols-3 lg:grid-cols-4 lg:p-6"
-        >
-          {items.map((item, index) => (
+        <div className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+          { specialties.map((item) => (
             <div
-              key={index}
-              className="relative flex cursor-pointer flex-col items-center gap-3 rounded-md border border-dashed border-black"
+              key={ item.id }
+              className="relative max-w-full rounded-lg border border-gray-200 bg-white shadow dark:border-gray-700 dark:bg-gray-800"
             >
-              <img
-                src="https://hoangnguyenpharma.com.vn/wp-content/uploads/2019/06/NOI-SOI-TAI-MUI-HONG-2.jpg"
-                alt="Bác Sĩ Gia Đình"
-                className="size-24 h-auto w-full rounded-md object-cover"
-              />
-              <span className="absolute bottom-0 flex h-full w-full text-center text-white">
-                <div className="h-fit w-full bg-[#0000009e] py-1 self-end mb-2">
-                  {item.label}
+              <a href="#">
+                <img className="rounded-lg" src={ item.image } alt={ item.name } />
+                <div className="absolute  inset-0 flex top-24 items-center justify-center rounded-lg">
+                  <h5 className="rounded-lg bg-white bg-opacity-10 w-full text-center py-1 text-2xl font-bold tracking-tight text-white backdrop-blur">
+                    { item.name }
+                  </h5>
                 </div>
-              </span>
+              </a>
             </div>
-          ))}
-        </Link>
+          )) }
+        </div>
       </div>
     </div>
   );
