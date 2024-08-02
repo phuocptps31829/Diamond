@@ -6,7 +6,7 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function ServiceProduct({ 
   image, 
-  specialtyID, 
+  services, 
   name 
 }) {
   return (
@@ -26,7 +26,7 @@ export default function ServiceProduct({
           to="/detail-service/1"
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
-          {specialtyID}
+          {services[0].levelName}
         </Link>
         <Link
           to="/detail-service/1"
@@ -57,6 +57,10 @@ export default function ServiceProduct({
 
 ServiceProduct.propTypes = {
   image: PropTypes.string.isRequired,
-  specialtyID: PropTypes.string.isRequired,
+  services: PropTypes.arrayOf(
+    PropTypes.shape({
+      levelName: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   name: PropTypes.string.isRequired,
 };

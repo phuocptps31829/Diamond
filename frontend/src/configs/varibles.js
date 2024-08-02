@@ -1,8 +1,14 @@
-const API_URL = "https://x0dvd1wq-3500.asse.devtunnels.ms/api/v1";
+const API_URL = "https://chd0n2vz-3500.asse.devtunnels.ms/api/v1";
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
 // medical-packages
 const API_URL_GET_ALL_MEDICAL_PACKAGES = `${API_URL}/medical-packages`;
+// specialty
+const API_URL_GET_ALL_SPECIALTIES = `${API_URL}/specialties`;
+const API_URL_GET_SPECIALTY_BY_ID = `${API_URL}/specialties`;
+
 export { API_URL_GET_ALL_SERVICES ,
-    API_URL_GET_ALL_MEDICAL_PACKAGES
+    API_URL_GET_ALL_MEDICAL_PACKAGES,
+    API_URL_GET_ALL_SPECIALTIES,
+    API_URL_GET_SPECIALTY_BY_ID,
 };
