@@ -1,4 +1,4 @@
-const API_URL = "https://chd0n2vz-3500.asse.devtunnels.ms/api/v1";
+const API_URL = "https://api.cosstewn.io.vn/api/v1";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;

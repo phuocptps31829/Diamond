@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function DoctorProduct({
+  _id,
   userID,
   yearsExperience,
   specialtyName,
@@ -10,7 +11,7 @@ export default function DoctorProduct({
   return (
     <div className="overflow-hidden rounded-lg border">
       <Link
-        to={`/doctor-detail/${userID._id}`}
+        to={`/doctor-detail/${_id}`}
         className="group flex w-full items-center justify-center !bg-white"
       >
         <img
@@ -45,6 +46,7 @@ export default function DoctorProduct({
 }
 
 DoctorProduct.propTypes = {
+  _id: PropTypes.string.isRequired,
   userID: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     fullName: PropTypes.string.isRequired,
