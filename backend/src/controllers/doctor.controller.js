@@ -31,6 +31,41 @@ const getAllDoctors = async (req, res, next) => {
         next(error);
     }
 };
+
+const getAllDoctorsBySpecialtyId = async (req, res, next) => {
+    try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        const { id } = req.params;
+
+        const totalRecords = await DoctorModel.countDocuments()
+            .find({ specialtyID: id })
+            .populate({
+                path: 'userID',
+                match: { isDeleted: false }
+            });
+
+        const doctors = await DoctorModel
+            .find({ specialtyID: id }).populate({
+                path: 'userID',
+                match: { isDeleted: false }
+            })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
+        if (!doctors.length) {
+            createError(404, 'No doctor found.');
+        }
+        return res.status(200).json({
+            page: page || 1,
+            message: 'Doctor retrieved successfully.',
+            data: doctors,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const getDoctorById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -108,4 +143,5 @@ module.exports = {
     updateDoctor,
     getDoctorById,
     deleteDoctor,
+    getAllDoctorsBySpecialtyId
 };
