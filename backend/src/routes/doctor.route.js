@@ -59,6 +59,35 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/doctors/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get doctor by specialty id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: doctor id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkValidId,
+    helperMiddleware.checkQueryParams,
+    doctorController.getAllDoctorsBySpecialtyId
+);
+
+/**
+ * @openapi
  * '/api/v1/doctors/add':
  *  post:
  *    tags:
