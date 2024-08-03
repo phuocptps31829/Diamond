@@ -186,6 +186,10 @@
   color: white;
 }
 
+.navBarMoblie {
+  right: 0 !important;
+}
+
 .pyramid-loader {
   position: relative;
   width: 300px;
