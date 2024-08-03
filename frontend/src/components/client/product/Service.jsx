@@ -4,11 +4,11 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({ image, services, name, orderCount }) {
+export default function ServiceProduct({ image, services, name, orderCount ,_id }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to="/detail-service/1"
+        to={`/detail-service/${_id}`}
         className="group block h-full w-full overflow-hidden"
       >
         <img
@@ -19,13 +19,13 @@ export default function ServiceProduct({ image, services, name, orderCount }) {
       </Link>
       <div className="flex h-full flex-col p-3 md:p-5">
         <Link
-          to="/detail-service/1"
+        to={`/detail-service/${_id}`}
           className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
           { services[0].levelName }
         </Link>
         <Link
-          to="/detail-service/1"
+        to={`/detail-service/${_id}`}
           className="grow text-sm font-bold md:text-xl"
         >
           { name }
@@ -60,4 +60,5 @@ ServiceProduct.propTypes = {
   ).isRequired,
   name: PropTypes.string.isRequired,
   orderCount: PropTypes.number.isRequired,
+  _id: PropTypes.string.isRequired,
 };

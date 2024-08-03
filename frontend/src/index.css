@@ -342,3 +342,13 @@
   transform: rotateX(90deg) translateZ(40px);
   filter: blur(12px);
 }
+.render-details img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+}
+.render-details {
+  line-height: 2;
+}

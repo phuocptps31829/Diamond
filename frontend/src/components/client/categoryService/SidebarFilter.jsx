@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { getAllSpecialties } from "@/services/specialtiesApi";
+import { useQuery } from "@tanstack/react-query";
 
 const SidebarFilter = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -8,6 +10,17 @@ const SidebarFilter = () => {
     setIsOpen(!isOpen);
   };
 
+  const {
+    data: specialties,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: () => getAllSpecialties(),
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading specialties</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
       <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
@@ -73,33 +86,20 @@ const SidebarFilter = () => {
                 className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
               >
                 <div className="box mt-5 flex flex-col gap-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="checkbox-option-1" />
-                    <label
-                      htmlFor="checkbox-option-1"
-                      className="text-sm font-normal text-gray-600"
+                  {specialties.map((specialty) => (
+                    <div
+                      key={specialty._id}
+                      className="flex items-center space-x-2"
                     >
-                      option-1
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="checkbox-option-2" />
-                    <label
-                      htmlFor="checkbox-option-2"
-                      className="text-sm font-normal text-gray-600"
-                    >
-                      option-2
-                    </label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox id="checkbox-option-3" />
-                    <label
-                      htmlFor="checkbox-option-3"
-                      className="text-sm font-normal text-gray-600"
-                    >
-                      option-3
-                    </label>
-                  </div>
+                      <Checkbox id={`checkbox-${specialty._id}`} />
+                      <label
+                        htmlFor={`checkbox-${specialty._id}`}
+                        className="text-sm font-normal text-gray-600"
+                      >
+                        {specialty.name}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
