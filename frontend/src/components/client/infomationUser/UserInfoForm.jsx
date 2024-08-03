@@ -1,23 +1,10 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "@/components/ui/label";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { Label } from "@/components/ui/Label";
 import avatarU from "../../../assets/images/healthcare-medical-people-concept-smiling-asian-female-doctor-pointing-fingers-right-showing-adverti.jpg";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-const userInfoSchema = z.object({
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
-  phoneNumber: z.string().regex(/^[0-9]{10}$/, "Số điện thoại không hợp lệ"),
-  email: z.string().email("Email không hợp lệ"),
-  occupation: z.string().min(1, "Nghề nghiệp không được để trống"),
-  birthDate: z.string().min(1, "Ngày sinh không được để trống"),
-  ethnicity: z.string().min(1, "Dân tộc không được để trống"),
-  idNumber: z.string().min(1, "Số CMND/CCCD không được để trống"),
-  insuranceNumber: z.string().min(1, "Số thẻ BH không được để trống"),
-  address: z.string().min(1, "Địa chỉ không được để trống"),
-  avatar: z.string().min(1, "Ảnh đại diện không được để trống"),
-});
+import { userInfoSchema } from "@/zods/user";
 
 const UserInfoForm = () => {
   const {
@@ -64,6 +51,7 @@ const UserInfoForm = () => {
               className="col-span-1 sm:col-span-1"
               name="phoneNumber"
               label="Số điện thoại"
+              
               type="text"
               control={control}
               errors={errors}
@@ -172,9 +160,15 @@ const UserInfoForm = () => {
                 <label>Nữ</label>
               </div>
             </div>
+          <button
+            type="submit"
+            className="mt-5 h-fit w-full rounded bg-primary-500 p-2 text-white md:block hidden"
+          >
+            Cập nhật
+          </button>
           </div>
         </div>
-        <div className="mt-auto w-full px-4 pb-4 md:px-4">
+        <div className="mt-auto w-full px-4 pb-4 md:px-4  md:hidden block">
           <button
             type="submit"
             className="mt-4 h-fit w-full rounded bg-primary-500 p-3 text-white"

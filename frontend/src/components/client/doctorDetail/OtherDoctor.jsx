@@ -5,7 +5,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
+} from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 
 export default function OtherDoctor() {
@@ -38,7 +38,7 @@ export default function OtherDoctor() {
               key={index}
               className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
             >
-              <DoctorProduct />
+              {/* <DoctorProduct /> */}
             </CarouselItem>
           ))}
         </CarouselContent>

@@ -5,7 +5,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import {
   Pagination,
   PaginationContent,
@@ -14,9 +14,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import {
   Select,
   SelectContent,
@@ -25,15 +25,19 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/Select";
 import { useLocation, useNavigate } from "react-router-dom";
 const AppointmentHistory = () => {
+
+
   const location = useLocation();
   const navigate = useNavigate();
 
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-
+  const handleViewDetail = (id) => {
+    navigate(`detail/${id}`);
+  };
   const handlePageChange = (page) => {
     navigate(`/user-profile/appointment-history?page=${page}`);
   };
@@ -46,42 +50,42 @@ const AppointmentHistory = () => {
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 2,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 3,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 4,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 5,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 6,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
       payment: "Đã thanh toán",
     },
     {
-      id: 1,
+      id: 7,
       service: "Tầm soát ung thư...",
       appointmentTime: "13:00 02/07/2024",
       status: "Đã khám",
@@ -171,6 +175,7 @@ const AppointmentHistory = () => {
                 <Button
                   variant="primary"
                   size="sm"
+                  onClick={() => handleViewDetail(record.id)}
                   className="bg-primary-500 p-1 text-[9px] text-white md:p-3 md:text-xs"
                 >
                   Xem chi tiết

@@ -18,10 +18,13 @@ import AppointmentHistory from "./components/client/infomationUser/AppointmentHi
 
 import Login from "./pages/client/Login";
 import Register from "./pages/client/Register";
-import Accuracy from "./pages/client/Accuracy";
+import Accurancy from "./pages/client/Accuracy";
 import ForgetPassword from "./pages/client/ForgetPassWord";
 import ChangePassAccuracy from "./pages/client/ChangePassAccuracy";
 import ChangePass from "./pages/client/ChangePass";
+import ChangePassword from "./components/client/infomationUser/ChangePassword";
+import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
+import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,7 +55,7 @@ const router = createBrowserRouter([
         element: <News />,
       },
       {
-        path: "news-detail",
+        path: "news-detail/:id",
         element: <NewsDetail />,
       },
       {
@@ -68,7 +71,7 @@ const router = createBrowserRouter([
         element: <Doctors />,
       },
       {
-        path: "doctor-detail",
+        path: "doctor-detail/:id",
         element: <DoctorDetail />,
       },
       {
@@ -84,38 +87,50 @@ const router = createBrowserRouter([
             element: <MedicalRecords />,
           },
           {
+            path: "medical-records/detail/:id",
+            element: <MedicalRecordDetail />,
+          },
+          {
             path: "appointment-history",
             element: <AppointmentHistory />,
+          },
+          {
+            path: "appointment-history/detail/:id",
+            element: <AppointmentDetail />,
+          },
+          {
+            path: "change-password",
+            element: <ChangePassword />,
           },
         ],
       },
       {
-        path: '/login',
-        element: <Login />
+        path: "/login",
+        element: <Login />,
       },
       {
-        path: '/register',
-        element: <Register />
+        path: "/register",
+        element: <Register />,
       },
       {
         path: '/accuracy',
-        element: <Accuracy />
+        element: <Accurancy />
       },
       {
-        path: '/forget-password',
-        element: <ForgetPassword />
+        path: "/forget-password",
+        element: <ForgetPassword />,
       },
       {
-        path: '/changepassword-accuracy',
-        element: <ChangePassAccuracy />
+        path: "/changepassword-accuracy",
+        element: <ChangePassAccuracy />,
       },
       {
-        path: '/change-password',
-        element: <ChangePass />
-      }
-    ]
-  }]
-);
+        path: "/change-password",
+        element: <ChangePass />,
+      },
+    ],
+  },
+]);
 
 function App() {
   return <RouterProvider router={ router }></RouterProvider>;
