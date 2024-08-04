@@ -72,9 +72,18 @@ function InputCustom({
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </div>
           )}
+          {name === "authCode" &&(
+            <button
+                    type="button"
+                    className="text-base absolute inset-y-0 right-0 flex items-center font-bold md:text-lg pr-3 text-primary-500 hover:text-blue-700"
+                    style={{ paddingRight: '20px' }}
+                  >
+                    Nhận mã
+                  </button>
+          )}
         </div>
         {error && (
-          <small className="mt-1 inline-block text-sm text-red-500">
+          <small className="mt-1 text-sm text-red-400">
             {error.message}
           </small>
         )}
