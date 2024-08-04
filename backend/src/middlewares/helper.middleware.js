@@ -66,7 +66,18 @@ const checkQueryParams = (req, res, next) => {
         next(error);
     }
 };
+
+const isCreatePatient = (req, res, next) => {
+    try {
+        req.isCreateDoctor = false;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     checkValidId,
-    checkQueryParams
+    checkQueryParams,
+    isCreatePatient
 };

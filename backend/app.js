@@ -9,6 +9,7 @@ const { createError } = require('./src/utils/helper.util');
 const newsRoutes = require('./src/routes/news.route');
 const doctorRoutes = require('./src/routes/doctor.route');
 
+const authRoutes = require('./src/routes/auth.route');
 const medicalPackageRoutes = require('./src/routes/medical-package.route');
 const serviceRoutes = require('./src/routes/service.route');
 const specialtyRoutes = require('./src/routes/specialty.route');
@@ -22,6 +23,7 @@ const contractRoutes = require('./src/routes/contract.route');
 const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
+const patientsRoutes = require('./src/routes/patient.route');
 
 const app = express();
 
@@ -61,6 +63,8 @@ app.use('/api/v1/contracts', contractRoutes);
 app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
+app.use('/api/v1/patients', patientsRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

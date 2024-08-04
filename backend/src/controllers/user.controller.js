@@ -2,10 +2,16 @@
 const DoctorModel = require('../models/doctor.model');
 const UserModel = require('../models/user.model');
 const { createError, errorValidator, hashPassword } = require("../utils/helper.util");
-const checkPhoneNumberAndEmail = async (item) => {
+const checkPhoneNumberAndEmail = async (item, hasEmail = true) => {
     const { phoneNumber, email } = item;
-    if ((!email && !phoneNumber) || (email.trim() === '' && phoneNumber.trim() === '')) {
-        createError(400, 'Email or phone number is required');
+    if (!phoneNumber || !phoneNumber.trim()) {
+        createError(400, 'Phone number is required');
+    }
+
+    if (hasEmail) {
+        if ((!email) || !email.trim() === '') {
+            createError(400, 'Email is required');
+        }
     }
 
     if (email && email.trim() !== '') {
@@ -21,15 +27,14 @@ const checkPhoneNumberAndEmail = async (item) => {
             createError(400, 'Phone number already exists');
         }
     }
-
-
 };
+
 const createUser = async (req, res, next) => {
     try {
         errorValidator(req, res);
-        await checkPhoneNumberAndEmail(req.body);
+        await checkPhoneNumberAndEmail(req.body, req.isCreateDoctor);
         const hashedPassword = await hashPassword(req.body.password);
-        const newUser = await UserModel.create({ ...req.body, password: hashedPassword })
+        const newUser = await UserModel.create({ ...req.body, password: hashedPassword });
         req.newUser = newUser;
         next();
     } catch (error) {

@@ -13,7 +13,7 @@ const router = express.Router();
  * '/api/v1/patients':
  *  get:
  *    tags:
- *    - patient Routes
+ *    - Patient Routes
  *    summary: Get all patient (?page=1&limit=10&sort=1)
  *    responses:
  *      '200':
@@ -34,7 +34,7 @@ router.get(
  * '/api/v1/patients/{id}':
  *  get:
  *    tags:
- *    - patient Routes
+ *    - Patient Routes
  *    summary: Get patient by id
  *    parameters:
  *      - in: path
@@ -72,66 +72,15 @@ router.get(
  *            type: object
  *            required:
  *              - fullName
- *              - dateOfBirth
- *              - address
- *              - gender
+ *              - phoneNumber
  *              - password
- *              - avatar
- *              - citizenIdentificationNumber
- *              - specialtyID
- *              - isActivated
- *              - title
- *              - practicingCertificate
- *              - yearsExperience
- *              - detail
- *              - isInternal
  *            properties:
  *              fullName:
  *                type: string
  *              phoneNumber:
  *                type: string
- *              email:
- *                type: string
- *              dateOfBirth:
- *                type: string
- *              gender:
- *                type: string
- *              address:
- *                type: object
- *                required:
- *                  - province
- *                  - district
- *                  - ward
- *                  - street
- *                properties:
- *                  province:
- *                    type: string
- *                  district:
- *                    type: string
- *                  ward:
- *                    type: string
- *                  street:
- *                    type: string
  *              password:
  *                type: string
- *              avatar:
- *                type: string
- *              citizenIdentificationNumber:
- *                type: number
- *              isActivated:
- *                type: boolean
- *              specialtyID:
- *                type: string
- *              title:
- *                type: string
- *              practicingCertificate:
- *                type: string
- *              yearsExperience:
- *                type: number
- *              detail:
- *                type: string
- *              isInternal:
- *                type: boolean
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -146,8 +95,9 @@ router.get(
  */
 router.post(
     '/add',
-    patientValidator.patientValidator,
+    helperMiddleware.isCreatePatient,
     userController.createUser,
+    patientValidator.patientValidator,
     patientController.createPatient
 );
 
