@@ -4,31 +4,31 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({ props }) {
+export default function ServiceProduct({ image, services, name, orderCount }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to="/detail-service/1"
-        className="group block h-[106px] overflow-hidden md:h-[206px]"
+        className="group block h-full w-full overflow-hidden"
       >
         <img
-          src="https://img.ykhoadiamond.com/uploads/package/28032023/00667e4b-3aca-4b5c-9b1f-d5b109ce3d26.jpg"
-          alt=""
+          src={ image }
+          alt={ name }
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex flex-col p-3 md:p-5">
+      <div className="flex h-full flex-col p-3 md:p-5">
         <Link
           to="/detail-service/1"
-          className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
+          className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
-          Toàn diện
+          { services[0].levelName }
         </Link>
         <Link
           to="/detail-service/1"
-          className="text-sm font-bold md:my-1 md:text-xl"
+          className="grow text-sm font-bold md:text-xl"
         >
-          GÓI KHÁM TỔNG QUÁT NAM
+          { name }
         </Link>
         <hr className="mb-1 md:mb-3" />
         <div className="flex items-center justify-between">
@@ -40,7 +40,7 @@ export default function ServiceProduct({ props }) {
             <FaHeart />
           </div>
           <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-            <SiTicktick /> 17
+            <SiTicktick /> { orderCount }
           </div>
         </div>
         <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
@@ -52,5 +52,12 @@ export default function ServiceProduct({ props }) {
 }
 
 ServiceProduct.propTypes = {
-  props: PropTypes.object,
+  image: PropTypes.string.isRequired,
+  services: PropTypes.arrayOf(
+    PropTypes.shape({
+      levelName: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  name: PropTypes.string.isRequired,
+  orderCount: PropTypes.number.isRequired,
 };

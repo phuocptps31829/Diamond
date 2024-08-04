@@ -56,6 +56,35 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/services/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Service Routes
+ *    summary: Get service by specialty id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Service id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkValidId,
+    helperMiddleware.checkQueryParams,
+    serviceController.getAllServicesBySpecialtyId
+);
+
+/**
+ * @openapi
  * '/api/v1/services/add':
  *  post:
  *    tags:

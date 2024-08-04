@@ -4,9 +4,9 @@ import { FaRegEye } from "react-icons/fa";
 
 export default function NewsProduct({ props }) {
   return (
-    <div className="overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="overflow-hidden rounded-xl bg-white shadow-sm">
       <Link
-        to="/news-detail"
+        to="/news-detail/1"
         className="gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid"
       >
         <img

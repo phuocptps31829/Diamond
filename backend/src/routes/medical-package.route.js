@@ -56,6 +56,35 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/medical-packages/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Medical Package Routes
+ *    summary: Get medical package by specialty id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Specialty package id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkQueryParams,
+    helperMiddleware.checkValidId,
+    medicalPackageController.getAllMedicalPackagesBySpecialtyId
+);
+
+/**
+ * @openapi
  * '/api/v1/medical-packages/add':
  *  post:
  *    tags:

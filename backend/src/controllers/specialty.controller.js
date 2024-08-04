@@ -118,5 +118,6 @@ module.exports = {
     getSpecialtyById,
     createSpecialty,
     updateSpecialty,
-    deleteSpecialty
+    deleteSpecialty,
+
 };
