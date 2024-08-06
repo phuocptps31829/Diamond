@@ -12,7 +12,6 @@ import {
   CarouselPrevious,
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
-import FormatContent from "@/components/client/formatContent/ContentNews";
 
 export default function ContentNews({
   news,
@@ -83,7 +82,10 @@ export default function ContentNews({
               </div>
             </div>
 
-            <FormatContent content={news.content} />
+            <div
+              className="content-news w-full"
+              dangerouslySetInnerHTML={{ __html: news.content }}
+            ></div>
           </div>
         )}
 
