@@ -1,7 +1,3 @@
-import { Link } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
-import { AiOutlineDoubleRight } from "react-icons/ai";
-import NewsProduct from "../product/News";
 import {
   Carousel,
   CarouselContent,
@@ -10,11 +6,35 @@ import {
   CarouselPrevious,
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
+import { Link } from "react-router-dom";
+import { FaRegEye } from "react-icons/fa";
+import { AiOutlineDoubleRight } from "react-icons/ai";
+import NewsProduct from "../product/News";
+import { getAllNews } from "@/services/newsApi";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/ui/Loading";
 
 export default function News() {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["news"],
+    queryFn: getAllNews,
+  });
+
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>Error loading news</div>;
+  }
+
   return (
     <div className="my-10 w-full bg-primary-500 py-4">
-      <div className="mx-auto my-5 max-w-screen-xl p-5 md:my-10">
+      <div className="mx-auto my-2 max-w-screen-xl p-5">
         <div className="w-full text-center text-[23px] font-bold text-white md:text-[35px]">
           Tin tức mới nhất
         </div>
@@ -24,124 +44,115 @@ export default function News() {
         </span>
         <div className="hidden gap-4 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
           <Link
-            to="/news-detail"
+            to={`news-detail/${data[0]._id}`}
             className="gap-4 overflow-hidden rounded-md border-2 border-white bg-white md:row-span-3 md:grid-rows-subgrid"
           >
-            <img
-              src="https://img.ykhoadiamond.com/uploads/avatar/19072024/cd8b430b-d6b2-44f7-9ce5-7a132804c72f.png"
-              alt=""
-            />
+            <img src={data[0].image} alt="" />
             <div className="p-5">
               <div className="mb-[6px] flex gap-2 text-[12px]">
                 <div className="font-bold text-primary-700">Tin Tức</div>
-                <div className="font-semibold">19, Tháng 7, 2024</div>
+                <div className="font-semibold">
+                  {new Date(data[0].createdAt).toLocaleDateString()}
+                </div>
                 <div>|</div>
-                <div className="font-semibold">Admin</div>
+                <div className="font-semibold">{data[0].author}</div>
               </div>
               <h2 className="my-2 text-[14px] font-bold sm:text-[18px]">
-                Trân Trọng Kính Mời Bác Sĩ Hợp Tác Cùng Hệ THống Y Khoa Diamond
+                {data[0].title}
               </h2>
               <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] sm:text-[14px]">
-                Chúng tôi mang đến cơ hội hợp tác với chính sách hấp dẫn và môi
-                trường làm việc chuyên nghiệp. Hãy cùng hợp tác với Hệ Thống Y
-                Khoa Diamond để cùng phát triển - cùng thành công ngay hôm nay.
+                {data[0].shortDescription}
               </div>
               <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                 <FaRegEye />
-                <div>100</div>
+                <div>{data[0].viewCount}</div>
               </div>
             </div>
           </Link>
           <Link
-            to="/news-detail"
+            to={`news-detail/${data[1]._id}`}
             className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
           >
-            <div className="h-full w-[500px] md:w-[40%]">
+            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
               <img
-                className="h-full w-full object-cover"
-                src="https://img.ykhoadiamond.com/uploads/avatar/12072024/b7e64860-6ce1-4909-bcb2-b564f4a15845_M.jpg"
+                className="block h-full w-full object-cover"
+                src={data[1].image}
               />
             </div>
             <div className="p-3">
               <div className="mb-[6px] flex gap-2 text-[12px]">
                 <div className="font-bold text-primary-700">Tin Tức</div>
-                <div className="font-semibold">19, Tháng 7, 2024</div>
+                <div className="font-semibold">
+                  {new Date(data[1].createdAt).toLocaleDateString()}
+                </div>
                 <div>|</div>
-                <div className="font-semibold">Admin</div>
+                <div className="font-semibold">{data[1].author}</div>
               </div>
-              <h2 className="my-2 text-[14px] font-bold">
-                Dùng chung 1 ứng dụng dữ liệu tiêm chủng vaccine
-              </h2>
+              <h2 className="my-2 text-[14px] font-bold">{data[1].title}</h2>
               <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                Bộ Y tế, Bộ Công an, Bộ Thông tin và Truyền thông cùng thống
-                nhất dùng chung một ứng dụng trong khai báo, nhập dữ liệu tiêm
-                chủng
+                {data[1].shortDescription}
               </div>
               <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                 <FaRegEye />
-                <div>100</div>
+                <div>{data[1].viewCount}</div>
               </div>
             </div>
           </Link>
           <Link
-            to="/news-detail"
+            to={`news-detail/${data[2]._id}`}
             className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
           >
-            <div className="h-full w-[500px] md:w-[40%]">
+            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
               <img
-                className="h-full w-full object-cover"
-                src="https://img.ykhoadiamond.com/uploads/avatar/12072024/b7e64860-6ce1-4909-bcb2-b564f4a15845_M.jpg"
+                className="block h-full w-full object-cover"
+                src={data[2].image}
+              />
+            </div>
+            <div className="w-full p-3">
+              <div className="mb-[6px] flex gap-2 text-[12px]">
+                <div className="font-bold text-primary-700">Tin Tức</div>
+                <div className="font-semibold">
+                  {new Date(data[2].createdAt).toLocaleDateString()}
+                </div>
+                <div>|</div>
+                <div className="font-semibold">{data[2].author}</div>
+              </div>
+              <h2 className="my-2 text-[14px] font-bold">{data[2].title}</h2>
+              <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
+                {data[2].shortDescription}
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                <FaRegEye />
+                <div>{data[2].viewCount}</div>
+              </div>
+            </div>
+          </Link>
+          <Link
+            to={`news-detail/${data[3]._id}`}
+            className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
+          >
+            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
+              <img
+                className="block h-full w-full object-cover"
+                src={data[3].image}
               />
             </div>
             <div className="p-3">
               <div className="mb-[6px] flex gap-2 text-[12px]">
                 <div className="font-bold text-primary-700">Tin Tức</div>
-                <div className="font-semibold">19, Tháng 7, 2024</div>
+                <div className="font-semibold">
+                  {new Date().toLocaleDateString()}
+                </div>
                 <div>|</div>
-                <div className="font-semibold">Admin</div>
+                <div className="font-semibold">{data[3].author}</div>
               </div>
-              <h2 className="my-2 text-[14px] font-bold">
-                Dùng chung 1 ứng dụng dữ liệu tiêm chủng vaccine
-              </h2>
+              <h2 className="my-2 text-[14px] font-bold">{data[3].title} </h2>
               <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                Bộ Y tế, Bộ Công an, Bộ Thông tin và Truyền thông cùng thống
-                nhất dùng chung một ứng dụng trong khai báo, nhập dữ liệu tiêm
-                chủng
+                {data[3].shortDescription}
               </div>
               <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                 <FaRegEye />
-                <div>100</div>
-              </div>
-            </div>
-          </Link>
-          <Link
-            to="/news-detail"
-            className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
-          >
-            <div className="h-full w-[500px] md:w-[40%]">
-              <img
-                className="h-full w-full object-cover"
-                src="https://img.ykhoadiamond.com/uploads/avatar/12072024/b7e64860-6ce1-4909-bcb2-b564f4a15845_M.jpg"
-              />
-            </div>
-            <div className="p-3">
-              <div className="mb-[6px] flex gap-2 text-[12px]">
-                <div className="font-bold text-primary-700">Tin Tức</div>
-                <div className="font-semibold">19, Tháng 7, 2024</div>
-                <div>|</div>
-                <div className="font-semibold">Admin</div>
-              </div>
-              <h2 className="my-2 text-[14px] font-bold">
-                Dùng chung 1 ứng dụng dữ liệu tiêm chủng vaccine
-              </h2>
-              <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                Bộ Y tế, Bộ Công an, Bộ Thông tin và Truyền thông cùng thống
-                nhất dùng chung một ứng dụng trong khai báo, nhập dữ liệu tiêm
-                chủng
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                <FaRegEye />
-                <div>100</div>
+                <div>{data[3].viewCount}</div>
               </div>
             </div>
           </Link>
@@ -162,12 +173,12 @@ export default function News() {
           ]}
         >
           <CarouselContent>
-            {Array.from({ length: 12 }).map((_, index) => (
+            {data.slice(0, 3).map((news, index) => (
               <CarouselItem
                 key={index}
                 className="pl-4 sm:basis-1/2 lg:basis-1/3"
               >
-                <NewsProduct />
+                <NewsProduct {...news} />
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -176,7 +187,7 @@ export default function News() {
         </Carousel>
         <Link
           to="/news"
-          className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border py-2 text-[12px] font-semibold uppercase text-white hover:bg-white hover:text-primary-500 md:w-[40%] md:text-[14px]"
+          className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border py-2 text-[12px] font-semibold uppercase text-white hover:bg-white hover:text-primary-500 md:w-[195px] md:text-[14px]"
         >
           Xem tất cả <AiOutlineDoubleRight />
         </Link>

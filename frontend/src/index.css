@@ -346,3 +346,14 @@
   transform: rotateX(90deg) translateZ(40px);
   filter: blur(12px);
 }
+
+.content-news {
+  line-height: 2;
+  img {
+    width: 100%;
+  }
+
+  p, strong, span {
+    font-family: "Be Vietnam Pro", sans-serif !important;
+  }
+}

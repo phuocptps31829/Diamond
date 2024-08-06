@@ -10,8 +10,11 @@ const API_URL_GET_ALL_MEDICAL_PACKAGES = `${API_URL}/medical-packages`;
 const API_URL_GET_ALL_SPECIALTIES = `${API_URL}/specialties`;
 const API_URL_GET_SPECIALTY_BY_ID = `${API_URL}/specialties`;
 
-//doctors
+// doctors
 const API_URL_GET_ALL_DOCTORS = `${API_URL}/doctors`;
+
+// news
+const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -19,4 +22,5 @@ export {
   API_URL_GET_ALL_SPECIALTIES,
   API_URL_GET_ALL_DOCTORS,
   API_URL_GET_SPECIALTY_BY_ID,
+  API_URL_GET_ALL_NEWS,
 };
