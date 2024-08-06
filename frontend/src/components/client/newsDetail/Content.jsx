@@ -20,6 +20,7 @@ export default function ContentNews({
   isLoadingAllNews,
 }) {
   const [newsBySpecialty, setNewsBySpecialty] = useState([]);
+  const [latestNews, setLatestNews] = useState([]);
 
   useEffect(() => {
     if (!isLoadingAllNews && news?._id && news?.specialtyID) {
@@ -29,6 +30,7 @@ export default function ContentNews({
             item.specialtyID === news.specialtyID && item._id !== news._id,
         ),
       );
+      setLatestNews(allNews.filter((item) => item._id !== news._id));
     }
   }, [allNews, isLoadingAllNews, news?._id, news?.specialtyID]);
 
@@ -127,7 +129,7 @@ export default function ContentNews({
                   </div>
                 </div>
               ))
-            : allNews.slice(0, 4).map((news, index) => (
+            : latestNews.slice(0, 4).map((news, index) => (
                 <div className="flex" key={index}>
                   <Link
                     to={`/news-detail/${news._id}`}
