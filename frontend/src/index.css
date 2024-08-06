@@ -353,7 +353,19 @@
     width: 100%;
   }
 
-  p, strong, span {
+  p,
+  strong,
+  span,
+  em,
+  figure,
+  iframe,
+  table,
+  h2,
+  h1,
+  div,
+  i {
     font-family: "Be Vietnam Pro", sans-serif !important;
+    width: 100% !important;
+    display: block;
   }
 }
