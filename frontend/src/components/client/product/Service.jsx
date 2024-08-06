@@ -6,7 +6,7 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 
 export default function ServiceProduct({ image, services, name, orderCount ,_id }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-custom h-full">
       <Link
         to={`/detail-service/${_id}`}
         className="group block h-full w-full overflow-hidden"

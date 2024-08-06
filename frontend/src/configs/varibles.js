@@ -3,11 +3,15 @@ const API_URL = "https://api.cosstewn.io.vn/api/v1";
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
 const API_URL_GET_SERVICE_BY_ID = `${API_URL}/services`;
+const API_URL_GET_SERVICE_BY_SPECIALTIES = `${API_URL}/services/specialty`;
+
 
 
 // medical-packages
 const API_URL_GET_ALL_MEDICAL_PACKAGES = `${API_URL}/medical-packages`;
 const API_URL_GET_MEDICAL_PACKAGE_BY_ID = `${API_URL}/medical-packages`;
+const API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES = `${API_URL}/medical-packages/specialty`;
+
 
 
 // specialties
@@ -24,5 +28,7 @@ export {
   API_URL_GET_ALL_DOCTORS,
   API_URL_GET_SPECIALTY_BY_ID,
   API_URL_GET_SERVICE_BY_ID,
-  API_URL_GET_MEDICAL_PACKAGE_BY_ID
+  API_URL_GET_MEDICAL_PACKAGE_BY_ID,
+  API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES,
+  API_URL_GET_SERVICE_BY_SPECIALTIES
 };

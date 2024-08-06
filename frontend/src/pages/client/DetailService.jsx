@@ -5,35 +5,61 @@ import PackageServiceOther from "../../components/client/serviceDetail/PackageSe
 import Rules from "../../components/client/serviceDetail/Rules";
 import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
 import { useQuery } from "@tanstack/react-query";
-import { getMedicalPackageById } from "@/services/medicalPackagesApi";
-import Loading from "@/components/ui/Loading";
+import {
+  getMedicalPackageById,
+  getMedicalPackageBySpecialty,
+} from "@/services/medicalPackagesApi";
+import useScrollToTop from "@/hooks/useScrollToTop";
+import NotFound from "@/components/client/notFound";
+
+// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const DetailService = () => {
+  useScrollToTop();
+
   const { id } = useParams();
   const {
     data: medicalPackage,
-    error,
-    isLoading,
+    error: errorMedicalPackage,
+    isLoading: isLoadingMedicalPackage,
   } = useQuery({
     queryKey: ["medical-packages", id],
-    queryFn: () => getMedicalPackageById(id),
+    queryFn:  () => getMedicalPackageById(id),
   });
 
-  if (isLoading)
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  if (error) return <div>Error loading services</div>;
+  const {
+    data: medicalPackageSpecialty,
+    error: errorMedicalPackageSpecialty,
+    isLoading: isLoadingMedicalPackageSpecialty,
+  } = useQuery({
+    queryKey: ["medical-packages-specialty", medicalPackage?.specialtyID],
+    queryFn: () => getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
+    enabled: !!medicalPackage?.specialtyID,
+  });
+
+  if (errorMedicalPackage || errorMedicalPackageSpecialty) {
+    return <NotFound />;
+  }
 
   return (
     <div className="bg-bg-gray p-8">
-      <ServiceDetail medicalPackage={medicalPackage} isLoading={isLoading} />
-      <DescriptionService medicalPackage={medicalPackage} />
-      <MedicalPackageService medicalPackage={medicalPackage} />
-      <Rules medicalPackage={medicalPackage} />
-      <PackageServiceOther medicalPackage={medicalPackage} />
+      <ServiceDetail
+        medicalPackage={medicalPackage}
+        isLoading={isLoadingMedicalPackage}
+      />
+      <DescriptionService
+        medicalPackage={medicalPackage}
+        isLoading={isLoadingMedicalPackage}
+      />
+      <MedicalPackageService
+        medicalPackage={medicalPackage}
+        isLoading={isLoadingMedicalPackage}
+      />
+      <Rules />
+      <PackageServiceOther
+        medicalPackageSpecialty={medicalPackageSpecialty}
+        isLoading={isLoadingMedicalPackageSpecialty}
+      />
     </div>
   );
 };
