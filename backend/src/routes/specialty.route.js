@@ -23,6 +23,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     specialtyController.getAllSpecialties
 );
 

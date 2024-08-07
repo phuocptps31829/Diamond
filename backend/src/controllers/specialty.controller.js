@@ -3,19 +3,28 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllSpecialties = async (req, res, next) => {
     try {
+        const {
+            limitDocuments,
+            page,
+            skip,
+            sortOptions
+        } = req.customQueries;
+
         const totalRecords = await SpecialtyModel.countDocuments({
             isDeleted: false,
         });
-        const specialties = await SpecialtyModel.find({
-            isDeleted: false,
-        });
+        const specialties = await SpecialtyModel
+            .find({ isDeleted: false })
+            .limit(limitDocuments)
+            .skip(skip)
+            .sort(sortOptions);
 
         if (!specialties.length) {
             createError(404, 'No specialties found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Specialties retrieved successfully.',
             data: specialties,
             totalRecords
