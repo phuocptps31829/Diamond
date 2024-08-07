@@ -186,10 +186,13 @@
   color: white;
 }
 
+<<<<<<< HEAD
 .navBarMoblie {
   right: 0 !important;
 }
 
+=======
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
 .pyramid-loader {
   position: relative;
   width: 300px;

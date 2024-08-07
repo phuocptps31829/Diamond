@@ -24,8 +24,11 @@ import ChangePass from "./pages/client/ChangePass";
 import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
+<<<<<<< HEAD
 import NotFound from "@/components/client/notFound";
 
+=======
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
 const router = createBrowserRouter([
   {
     path: "/",
@@ -114,8 +117,13 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
+<<<<<<< HEAD
         path: "/accuracy",
         element: <Accurancy />,
+=======
+        path: '/accuracy',
+        element: <Accurancy />
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
       },
       {
         path: "/forget-password",
@@ -129,10 +137,13 @@ const router = createBrowserRouter([
         path: "/change-password",
         element: <ChangePass />,
       },
+<<<<<<< HEAD
       {
         path: "*",
         element: <NotFound />,
       },
+=======
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
     ],
   },
 ]);

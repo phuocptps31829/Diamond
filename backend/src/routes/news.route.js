@@ -71,7 +71,8 @@ router.get(
  *            required:
  *              - specialtyID
  *              - title
- *              - images
+ *              - shortDescription
+ *              - image
  *              - content
  *              - author
  *              - viewCount
@@ -81,6 +82,8 @@ router.get(
  *                type: string
  *                description: The ID of the specialty placing the news
  *              title:
+ *                type: string
+ *              shortDescription:
  *                type: string
  *              images:
  *                type: string
@@ -133,7 +136,8 @@ router.post(
  *            required:
  *              - specialtyID
  *              - title
- *              - images
+ *              - shortDescription
+ *              - image
  *              - content
  *              - author
  *              - viewCount
@@ -142,6 +146,8 @@ router.post(
  *              specialtyID:
  *                type: string
  *              title:
+ *                type: string
+ *              shortDescription:
  *                type: string
  *              images:
  *                type: string

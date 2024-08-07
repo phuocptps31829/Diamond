@@ -28,6 +28,26 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/specialties/specialties-with-services':
+ *  get:
+ *    tags:
+ *    - Specialty Routes
+ *    summary: Get all specialties with services
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialties-with-services',
+    specialtyController.getAllSpecialtiesWithServices
+);
+
+/**
+ * @openapi
  * '/api/v1/specialties/{id}':
  *  get:
  *    tags:

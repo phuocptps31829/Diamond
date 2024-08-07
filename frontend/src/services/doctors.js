@@ -11,6 +11,7 @@ export const getAllDoctors = async () => {
     throw error;
   }
 };
+<<<<<<< HEAD
 
 export const getDoctorById = async (id) => {
   try {
@@ -22,3 +23,5 @@ export const getDoctorById = async (id) => {
     throw error;
   }
 };
+=======
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d

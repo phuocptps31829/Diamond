@@ -54,7 +54,18 @@ const getPatientById = async (req, res, next) => {
 const createPatient = async (req, res, next) => {
     try {
         const userID = req.newUser._id;
-        const newPatient = await Patient.create({ userID, ...req.body });
+
+        const lastPatient = await Patient.find({}).sort({ createdAt: -1 }).limit(1);
+        let lastPatientCode = '';
+
+        if (lastPatient.length) {
+            lastPatientCode = +lastPatient[0].patientCode.slice(2).toString();
+            console.log(lastPatientCode);
+        } else {
+            lastPatientCode = "BN1";
+        }
+
+        const newPatient = await Patient.create({ userID, patientCode: lastPatient.length ? 'BN' + (lastPatientCode + 1) : lastPatientCode });
         newPatient.userID = req.newUser;
 
         return res.status(201).json({

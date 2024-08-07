@@ -64,6 +64,7 @@ export default function OtherDoctor({
         ]}
       >
         <CarouselContent>
+<<<<<<< HEAD
           {isLoadingSpecialties && isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
                 <CarouselItem
@@ -94,6 +95,16 @@ export default function OtherDoctor({
                   />
                 </CarouselItem>
               ))}
+=======
+          {Array.from({ length: 12 }).map((_, index) => (
+            <CarouselItem
+              key={index}
+              className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+            >
+              {/* <DoctorProduct /> */}
+            </CarouselItem>
+          ))}
+>>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
