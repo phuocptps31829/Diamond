@@ -3,16 +3,22 @@ const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllClinicCapacities = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await ClinicCapacity.countDocuments({ isDeleted: false });
 
-        const clinicCapacities = await ClinicCapacity.find({ isDeleted: false });
+        const clinicCapacities = await ClinicCapacity
+            .find({ isDeleted: false })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!clinicCapacities.length) {
             createError(404, "No clinic capacities found.");
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Clinic capacities retrieved successfully.',
             data: clinicCapacities,
             totalRecords

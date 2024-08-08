@@ -15,6 +15,19 @@ const router = express.Router();
  *    tags:
  *    - Doctor Routes
  *    summary: Get all doctor (?page=1&limit=10&sort=1)
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'

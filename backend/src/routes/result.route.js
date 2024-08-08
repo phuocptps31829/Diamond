@@ -12,6 +12,19 @@ const resultController = require('../controllers/result.controller');
  *    tags:
  *    - Result Route
  *    summary: Get all results
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -22,6 +35,7 @@ const resultController = require('../controllers/result.controller');
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     resultController.getAllResults
 );
 

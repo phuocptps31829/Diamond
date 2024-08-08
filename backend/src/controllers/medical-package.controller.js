@@ -4,6 +4,8 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllMedicalPackages = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await MedicalPackageModel.countDocuments({
             isDeleted: false,
         });
@@ -11,13 +13,16 @@ const getAllMedicalPackages = async (req, res, next) => {
             .find({
                 isDeleted: false,
             })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!medicalPackages.length) {
             createError(404, 'No medical packages found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Medical packages retrieved successfully.',
             data: medicalPackages,
             totalRecords
@@ -75,7 +80,7 @@ const getAllMedicalPackagesBySpecialtyId = async (req, res, next) => {
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Medical packages retrieved successfully.',
             data: medicalPackages,
             totalRecords

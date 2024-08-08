@@ -13,6 +13,19 @@ const medicalPackageValidator = require('../validations/medical-package.validati
  *    tags:
  *    - Medical Package Routes
  *    summary: Get all medical package
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,6 +36,7 @@ const medicalPackageValidator = require('../validations/medical-package.validati
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     medicalPackageController.getAllMedicalPackages
 );
 
@@ -61,14 +75,26 @@ router.get(
  *    tags:
  *    - Medical Package Routes
  *    summary: Get medical package by specialty id
- *    parameters:
+*    parameters:
  *      - in: path
  *        name: id
  *        required: true
  *        description: Specialty package id
  *        schema:
  *          type: string
- *    responses:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
  *      '404':
