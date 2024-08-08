@@ -15,7 +15,6 @@ const userValidator = checkSchema({
             errorMessage: "Phone number should be a string",
         },
     },
-
     email: {
         optional: true,
         isString: {
@@ -75,14 +74,14 @@ const userValidator = checkSchema({
             errorMessage: "Citizen identification number should be a number",
         },
     },
-    isActivated: {
-        exists: {
-            errorMessage: "Is activated is required",
-        },
-        isBoolean: {
-            errorMessage: "Is activated should be a boolean",
-        },
-    },
+    // isActivated: {
+    //     exists: {
+    //         errorMessage: "Is activated is required",
+    //     },
+    //     isBoolean: {
+    //         errorMessage: "Is activated should be a boolean",
+    //     },
+    // },
 });
 
 module.exports = {

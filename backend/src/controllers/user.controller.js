@@ -1,7 +1,7 @@
 
 const DoctorModel = require('../models/doctor.model');
 const UserModel = require('../models/user.model');
-const { createError, errorValidator, hashPassword } = require("../utils/helper.util");
+const { createError, errorValidator, hashPassword, sendOTP } = require("../utils/helper.util");
 const checkPhoneNumberAndEmail = async (item, hasEmail = true) => {
     const { phoneNumber, email } = item;
     if (!phoneNumber || !phoneNumber.trim()) {
@@ -31,12 +31,16 @@ const checkPhoneNumberAndEmail = async (item, hasEmail = true) => {
 
 const createUser = async (req, res, next) => {
     try {
+        console.log(req.newUser);
         errorValidator(req, res);
-        await checkPhoneNumberAndEmail(req.body, req.isCreateDoctor);
-        const hashedPassword = await hashPassword(req.body.password);
-        const newUser = await UserModel.create({ ...req.body, password: hashedPassword });
-        req.newUser = newUser;
-        next();
+
+        // Gửi otp và xác thực nếu thành công mới tạo tài khoản
+
+        // await checkPhoneNumberAndEmail(req.body, req.isCreateDoctor);
+        // const hashedPassword = await hashPassword(req.body.password);
+        // const newUser = await UserModel.create({ ...req.body, password: hashedPassword });
+        // req.newUser = newUser;
+        // next();
     } catch (error) {
         next(error);
     }

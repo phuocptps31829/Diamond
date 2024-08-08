@@ -1,7 +1,18 @@
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user.model');
-const { createError, saveRefreshToken, generateAccessRefreshToken, comparePassword, hashPassword, sendEmail, errorValidator } = require('../utils/helper.util');
+const OtpModel = require('../models/otp.model');
+const { createError,
+    saveRefreshToken,
+    generateAccessRefreshToken,
+    comparePassword,
+    hashPassword,
+    sendEmail,
+    errorValidator,
+    sendOTP,
+    generateOTPToken,
+    hashValue
+} = require('../utils/helper.util');
 
 const register = async (req, res, next) => {
     try {
@@ -19,6 +30,32 @@ const register = async (req, res, next) => {
         return res.status(201).json({
             message: 'User has been registered successfully.',
             data: resUser
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const createOTP = async (req, res, next) => {
+    try {
+        errorValidator(req, res);
+
+        console.log({ ...req.body });
+
+        const OTP = sendOTP();
+
+        const hashedOTP = await hashValue(OTP);
+
+        await OtpModel.create({
+            otp: hashedOTP,
+            phoneNumber: req.body.phoneNumber
+        });
+
+        const otpToken = generateOTPToken({ ...req.body });
+
+        return res.status(201).json({
+            message: 'New OTP is created successfully.',
+            otpToken
         });
     } catch (error) {
         next(error);
@@ -281,6 +318,7 @@ module.exports = {
     refreshToken,
     googleCallback,
     facebookCallback,
+    createOTP,
     // updateProfile,
     forgotPassword,
     // changeRole,

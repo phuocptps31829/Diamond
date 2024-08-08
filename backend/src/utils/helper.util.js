@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const createHttpError = require('http-errors');
 const bcrypt = require('bcrypt');
+const otpGenerator = require('otp-generator');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
@@ -33,6 +34,18 @@ const sendEmail = async (email, subject, text, attachments = []) => {
     }
 };
 
+const sendOTP = () => {
+    const OTP = otpGenerator.generate(6, {
+        digits: true,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+        upperCaseAlphabets: false
+    });
+
+    console.log("OTP is: ", OTP);
+    return OTP;
+};
+
 const generateAccessRefreshToken = user => {
     const accessToken = jwt.sign(
         {
@@ -55,6 +68,21 @@ const generateAccessRefreshToken = user => {
     return { accessToken, refreshToken };
 };
 
+const generateOTPToken = ({ fullName, phoneNumber, password }) => {
+    const otpToken = jwt.sign(
+        {
+            fullName,
+            phoneNumber,
+            password,
+            expiresIn: Date.now() + 20000
+        },
+        'secret-key',
+        { expiresIn: '60s' }
+    );
+
+    return otpToken;
+};
+
 const saveRefreshToken = (refreshToken, res) => {
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
@@ -64,15 +92,15 @@ const saveRefreshToken = (refreshToken, res) => {
     });
 };
 
-const comparePassword = async (password, hashedPassword) => {
-    const validPassword = await bcrypt.compare(password, hashedPassword);
-    return validPassword;
+const compareHashedValue = async (value, hashedValue) => {
+    const valid = await bcrypt.compare(value, hashedValue);
+    return valid;
 };
 
-const hashPassword = async (password) => {
+const hashValue = async (value) => {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
+    const hashedValue = await bcrypt.hash(value, salt);
+    return hashedValue;
 };
 
 const errorValidator = (req, res) => {
@@ -99,8 +127,10 @@ module.exports = {
     sendEmail,
     generateAccessRefreshToken,
     saveRefreshToken,
-    comparePassword,
-    hashPassword,
+    compareHashedValue,
+    hashValue,
     errorValidator,
-    checkValidObjectId
+    checkValidObjectId,
+    sendOTP,
+    generateOTPToken
 };
