@@ -1,0 +1,56 @@
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Skeleton } from "@/components/ui/Skeleton"; // Ensure you import the Skeleton component correctly
+
+const SpecialtiesList = ({ specialties, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
+        <div className="mx-auto w-full md:w-5/6">
+          <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
+            Chọn một chuyên khoa:
+          </h1>
+          <div className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <Skeleton key={index} className="h-48 w-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
+      <div className="mx-auto w-full md:w-5/6">
+        <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
+          Chọn một chuyên khoa:
+        </h1>
+        <div className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+          {specialties.map((item) => (
+            <div
+              key={item._id}
+              className="relative max-w-full rounded-lg  bg-white shadow dark:border-gray-700 dark:bg-gray-800 h-48"
+            >
+              <Link to={`/category-service/${item._id}`}>
+                <img className="rounded-lg h-full object-cover" src={item.image} alt={item.name} />
+                <div className="absolute inset-0 top-28 flex items-center justify-center md:top-24">
+                  <h5 className="w-full bg-white bg-opacity-10 py-1 text-center text-sm font-semibold tracking-tight text-white backdrop-blur md:text-2xl">
+                    {item.name}
+                  </h5>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+SpecialtiesList.propTypes = {
+  specialties: PropTypes.object,
+  isLoading: PropTypes.bool,
+};
+
+export default SpecialtiesList;
