@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 // const passport = require('passport');
 
+const userValidator = require('../validations/user.validation');
 const authController = require('../controllers/auth.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
@@ -27,6 +28,48 @@ const authMiddleware = require('../middlewares/auth.middleware');
 //     passport.authenticate('facebook', { failureRedirect: '/' }),
 //     authController.facebookCallback
 // );
+
+/**
+ * @openapi
+ * '/api/v1/auth/register':
+ *  post:
+ *    tags:
+ *    - Auth Routes
+ *    summary: Register patient
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - fullName
+ *              - phoneNumber
+ *              - password
+ *            properties:
+ *              fullName:
+ *                type: string
+ *              phoneNumber:
+ *                type: string
+ *              password:
+ *                type: string
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.post(
+    '/register',
+    userValidator.userValidator,
+    authController.createOTP
+);
 
 /**
  * @openapi
