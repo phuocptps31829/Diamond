@@ -17,7 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "@/services/doctors";
+import { getAllDoctors } from "@/services/doctorsApi";
 import { getAllSpecialties } from "@/services/specialties";
 import DoctorProduct from "../product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";

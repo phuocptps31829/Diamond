@@ -1,8 +1,12 @@
 import { FaHospital, FaHandHoldingMedical } from "react-icons/fa";
+import { useMutation } from "@tanstack/react-query";
 import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema } from "@/zods/contact";
+import { useToast } from "@/hook/use-toast";
+import { ToastAction } from "@/components/ui/Toast";
+import { postContact } from "@/services/contactApi";
 
 import {
   Carousel,
@@ -11,26 +15,52 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/Carousel";
-
 import Autoplay from "embla-carousel-autoplay";
 
 export default function ContactForm() {
+  const { toast } = useToast();
+
   const {
     handleSubmit,
     formState: { errors },
     control,
+    reset,
   } = useForm({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       fullName: "",
       email: "",
       phoneNumber: "",
+      note: "",
+    },
+  });
+
+  const mutation = useMutation({
+    mutationFn: postContact,
+    onSuccess: () => {
+      toast({
+        variant: "success",
+        title: "Gửi thành công!",
+        description: "Chúng tôi sẽ phản hồi với bạn sớm nhất.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      reset();
+      console.log("Mutation object after submit:", mutation);
+    },
+    onError: (error) => {
+      toast({
+        variant: "destructive",
+        title: "Gửi thất bại!",
+        description: error.message || "Đã xảy ra lỗi, vui lòng thử lại.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
     },
   });
 
   const onSubmit = (data) => {
-    console.log("Form submitted");
-    console.log(data);
+    console.log("Mutation object before submit:", mutation); // Kiểm tra toàn bộ đối tượng mutation
+    mutation.mutate(data);
+    // Kiểm tra toàn bộ đối tượng mutation
   };
 
   return (
@@ -101,10 +131,20 @@ export default function ContactForm() {
                 id="note"
                 className="rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-1 focus:ring-primary-300"
                 placeholder="Nhập ghi chú"
+                {...control.register("note")}
               ></textarea>
+              {errors.note && (
+                <small className="mt-2 block text-sm text-red-400">
+                  {errors.note.message}
+                </small>
+              )}
             </div>
-            <button className="w-fit self-end rounded-lg bg-gradient-to-r from-[#00b5f1] to-[#00e0ff] px-3 py-2 font-semibold text-white">
-              Đăng ký ngay
+            <button
+              className="flex w-fit items-center gap-2 self-end rounded-lg bg-gradient-to-r from-primary-500 to-primary-300 px-3 py-2 font-semibold text-white"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Đang gửi" : "Gửi ngay"}
+             
             </button>
           </form>
         </div>

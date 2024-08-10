@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getDoctorById, getAllDoctors } from "@/services/doctors";
+import { getDoctorById, getAllDoctors } from "@/services/doctorsApi";
 import { getAllSpecialties } from "@/services/specialties";
 import AboveInformation from "../../components/client/doctorDetail/AboveInformation";
 import BelowInformation from "../../components/client/doctorDetail/BelowInformation";
