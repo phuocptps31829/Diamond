@@ -1,11 +1,18 @@
+import AdsProduct from "../../product/Ads";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
 
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { FaPhoneAlt, FaLock, FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/inputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
-
+import { Button } from "@/components/ui/button";
 export default function LoginComponent() {
   const {
     handleSubmit,
@@ -39,7 +46,8 @@ export default function LoginComponent() {
                     <FaPhone className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
                   </span> */}
                   <InputCustom
-                        className="col-span-1 sm:col-span-1 "
+                        className="col-span-1 sm:col-span-1 
+                        "
                         placeholder="Nhập số điện thoại"
                         name="phoneNumber"
                         type="text"
@@ -91,9 +99,11 @@ export default function LoginComponent() {
                 </Link>
               </div>
               <div className="text-center">
-                <button className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Đăng nhập
-                </button>
+              <Button
+                size="full"
+                variant="primary"
+                >Đăng nhập
+              </Button>
               </div>
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-300"></div>
@@ -133,8 +143,32 @@ export default function LoginComponent() {
           </div>
           {/* ADS BANNER */}
           <div className="bg-gray-200 shadow-lg hidden md:block">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOwyLlse4nIWK6PGSl3LBlvnQuAnfSOHGCvA&s" className="w-full h-full object-cover" alt="Ad Banner" />
-          </div>
+          <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="w-full"
+        plugins={[
+          Autoplay({
+            delay: 3500,
+            stopOnInteraction: false,
+            stopOnMouseEnter: false,
+          }),
+        ]}
+      >
+        <CarouselContent>
+          {Array.from({ length: 12 }).map((_, index) => (
+            <CarouselItem
+              key={index}
+              className="pl-4 "
+            >
+              <AdsProduct />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
+      </div>
         </div>
       </div>
     </div>

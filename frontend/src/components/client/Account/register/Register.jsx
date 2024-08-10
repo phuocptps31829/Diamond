@@ -1,10 +1,18 @@
+import AdsProduct from "../../product/Ads";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
-import { FaPhoneAlt, FaLock } from "react-icons/fa";
+import { FaPhoneAlt, FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustom from "@/components/ui/inputCustom";
 import { registerSchema } from "@/zods/register";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterComponent() {
   const navigate = useNavigate();
@@ -31,17 +39,29 @@ export default function RegisterComponent() {
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-screen-xl px-10 py-5">
         <div className="grid grid-cols-1 md:grid-cols-2 ">
-          {/* ADS BANNER */}
-          <div className="bg-gray-200 shadow-lg hidden md:block">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOwyLlse4nIWK6PGSl3LBlvnQuAnfSOHGCvA&s" className="w-full h-full object-cover" alt="Ad Banner" />
-          </div>
+
 
           {/* FORM */}
-          <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg ">
+          <div className="bg-white py-16 md:py-10 md:pt-18 px-5 md:px-11 shadow-lg ">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Đăng kí tài khoản</h1>
             <p className="mb-6 text-center text-sm text-gray-400">Đăng kí ngay để sử dụng dịch vụ</p>
 
             <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-2">
+                <label htmlFor="phone" className="block text-gray-700 font-semibold">Họ và tên:</label>
+                <div className="relative">
+                <InputCustom
+                        className="col-span-1 sm:col-span-1 "
+                        placeholder="Nhập tên của bạn"
+                        name="fullName"
+                        type="text"
+                        id="fullName"
+                        icon={<FaUser></FaUser>}
+                        control={control}
+                        errors={ errors }
+                  />
+                </div>
+              </div>
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
@@ -55,11 +75,8 @@ export default function RegisterComponent() {
                         control={control}
                         errors={ errors }
                   />
-    
                 </div>
-
               </div>
-
               <div className="mb-2">
                 <label htmlFor="password" className="block text-gray-700 font-semibold">Mật khẩu:</label>
                 <div className="relative">
@@ -75,7 +92,6 @@ export default function RegisterComponent() {
                   />
                 </div>
               </div>
-
               <div className="mb-2">
                 <label htmlFor="confirmPassword" className="block text-gray-700 font-semibold">Nhập lại mật khẩu:</label>
                 <div className="relative">
@@ -89,17 +105,15 @@ export default function RegisterComponent() {
                         control={control}
                         errors={ errors }
                   />
-     
-
                 </div>
               </div>
-
               <div className="text-center my-3">
-                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Đăng kí tài khoản
-                </button>
+              <Button
+                size="full"
+                variant="primary"
+                >Đăng kí ngay
+              </Button>
               </div>
-
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-300"></div>
                 <span className="mx-4 text-gray-800 text-sm">Hoặc tiếp tục với</span>
@@ -135,6 +149,34 @@ export default function RegisterComponent() {
                 </p>
               </div>
             </form>
+          </div>
+                    {/* ADS BANNER */}
+          <div className="bg-white shadow-lg hidden md:block">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+            }}
+              className="w-full"
+              plugins={[
+                Autoplay({
+                delay: 3500,
+                stopOnInteraction: false,
+                stopOnMouseEnter: false,
+                }),
+              ]}
+            > 
+              <CarouselContent>
+              {Array.from({ length: 12 }).map((_, index) => (
+                <CarouselItem
+                  key={index}
+                  className="pl-4 "
+                >
+                  <AdsProduct />
+                </CarouselItem>
+          ))}
+              </CarouselContent>
+            </Carousel>
           </div>
         </div>
       </div>

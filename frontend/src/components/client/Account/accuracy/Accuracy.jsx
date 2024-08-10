@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import InputCustom from "@/components/ui/inputCustom";
+import { Button } from "@/components/ui/button";
 
 export default function AccurancyComponent() {
   const { handleSubmit,
@@ -56,9 +57,12 @@ const onSubmit = (data) => {
               </div>
 
               <div className="text-center">
-                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Xác thực tài khoản
-                </button>
+                <Button
+                type="submit"
+                size="full"
+                variant="primary"
+                >Xác thực tài khoản
+              </Button>
               </div>
 
               <div className="flex items-center my-2">

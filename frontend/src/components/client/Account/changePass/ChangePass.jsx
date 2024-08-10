@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordSchema } from "@/zods/password";
 import InputCustom from "@/components/ui/inputCustom";
+import { Button } from "@/components/ui/button";
 
 
 
@@ -77,9 +78,12 @@ export default function ChangePassComponent() {
               </div>
 
               <div className="text-center mt-3">
-                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Đặt lại mật khẩu
-                </button>
+      <Button
+                type="submit"
+                size="full"
+                variant="primary"
+                >Đặt lại mật khẩu
+              </Button>
               </div>
 
             </form>

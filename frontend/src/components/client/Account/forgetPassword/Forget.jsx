@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustom from "@/components/ui/inputCustom";
 import { accountSchema } from "@/zods/account";
+import { Button } from "@/components/ui/button";
 
 export default function ForgetComponent() {
   const navigate = useNavigate();
@@ -57,9 +58,12 @@ export default function ForgetComponent() {
               </div>
 
               <div className="text-center">
-                <button type="submit" className="font-bold text-[26px] w-full bg-primary-500 text-white py-1 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Kiểm tra
-                </button>
+              <Button
+                type="submit"
+                size="full"
+                variant="primary"
+                >Kiểm tra
+              </Button>
               </div>
 
               <div className="flex items-center my-2">
