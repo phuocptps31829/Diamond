@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustom from "@/components/ui/InputCustom";
 import { accountSchema } from "@/zods/account";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function ForgetComponent() {
   const navigate = useNavigate();
