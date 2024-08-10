@@ -12,6 +12,19 @@ const invoiceController = require('../controllers/invoice.controller');
  *    tags:
  *    - Invoice Route
  *    summary: Get all invoices
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -22,6 +35,7 @@ const invoiceController = require('../controllers/invoice.controller');
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     invoiceController.getAllInvoices
 );
 

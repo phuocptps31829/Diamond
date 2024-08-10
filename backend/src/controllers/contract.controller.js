@@ -3,16 +3,22 @@ const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllContracts = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await ContractModel.countDocuments({ isDeleted: false });
 
-        const contracts = await ContractModel.find({ isDeleted: false });
+        const contracts = await ContractModel
+            .find({ isDeleted: false })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!contracts.length) {
             createError(404, "No contracts found.");
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Contracts retrieved successfully.',
             data: contracts,
             totalRecords

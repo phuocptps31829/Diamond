@@ -13,6 +13,19 @@ const contractValidator = require('../validations/contract.validation');
  *    tags:
  *    - Contract Routes
  *    summary: Get all contracts
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,6 +36,7 @@ const contractValidator = require('../validations/contract.validation');
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     contractController.getAllContracts
 );
 

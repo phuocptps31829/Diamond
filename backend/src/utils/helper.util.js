@@ -6,14 +6,11 @@ const otpGenerator = require('otp-generator');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
-const clientTwilio = require('twilio')('AC492411aa604146cb8685b9c7c90e2bc0', '9b34d81b7d23a6f952099b32522e62d4');
-
-
 const createError = (statusCode, message) => {
     throw new createHttpError(statusCode, message);
 };
 
-const sendEmail = async (email, subject, html, attachments = []) => {
+const sendEmail = async (email, subject, text, attachments = []) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -28,7 +25,7 @@ const sendEmail = async (email, subject, html, attachments = []) => {
             from: process.env.EMAIL_SEND,
             to: email,
             subject: subject,
-            html,
+            text: text,
             attachments: attachments
         });
     } catch (error) {
@@ -37,26 +34,13 @@ const sendEmail = async (email, subject, html, attachments = []) => {
     }
 };
 
-const sendOTP = async () => {
+const sendOTP = () => {
     const OTP = otpGenerator.generate(6, {
         digits: true,
         lowerCaseAlphabets: false,
         specialChars: false,
         upperCaseAlphabets: false
     });
-
-    let msgOption = {
-        from: '+19383566989',
-        to: '+84916512235',
-        body: 'ccc'
-    };
-
-    try {
-        const message = await clientTwilio.messages.create(msgOption);
-        console.log(message);
-    } catch (error) {
-        console.log(error);
-    }
 
     console.log("OTP is: ", OTP);
     return OTP;

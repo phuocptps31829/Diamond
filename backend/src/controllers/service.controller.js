@@ -3,20 +3,59 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllServices = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await ServiceModel.countDocuments({
             isDeleted: false,
         });
-        const services = await ServiceModel.find({
-            isDeleted: false,
-        });
+        const services = await ServiceModel
+            .find({
+                isDeleted: false,
+            })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);;
 
         if (!services.length) {
             createError(404, 'No services found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Services retrieved successfully.',
+            data: services,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllServicesBySpecialtyId = async (req, res, next) => {
+    try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        const { id } = req.params;
+
+        const totalRecords = await ServiceModel.countDocuments({
+            isDeleted: false,
+            specialtyID: id,
+        });
+        const services = await ServiceModel
+            .find({
+                isDeleted: false,
+                specialtyID: id,
+            })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
+
+        if (!services.length) {
+            createError(404, 'No service found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'Service retrieved successfully.',
             data: services,
             totalRecords
         });
@@ -118,5 +157,7 @@ module.exports = {
     getServiceById,
     createService,
     updateService,
-    deleteService
+    deleteService,
+    getAllServicesBySpecialtyId,
+
 };

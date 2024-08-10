@@ -13,6 +13,19 @@ const medicalPackageValidator = require('../validations/medical-package.validati
  *    tags:
  *    - Medical Package Routes
  *    summary: Get all medical package
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,6 +36,7 @@ const medicalPackageValidator = require('../validations/medical-package.validati
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     medicalPackageController.getAllMedicalPackages
 );
 
@@ -52,6 +66,47 @@ router.get(
     '/:id',
     helperMiddleware.checkValidId,
     medicalPackageController.getMedicalPackageById
+);
+
+/**
+ * @openapi
+ * '/api/v1/medical-packages/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Medical Package Routes
+ *    summary: Get medical package by specialty id
+*    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Specialty package id
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+  *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkQueryParams,
+    helperMiddleware.checkValidId,
+    medicalPackageController.getAllMedicalPackagesBySpecialtyId
 );
 
 /**
