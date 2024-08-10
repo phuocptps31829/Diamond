@@ -3,9 +3,8 @@ import MedicalPackageService from "../../components/client/serviceDetail/Medical
 import PackageServiceOther from "../../components/client/serviceDetail/PackageServiceOther";
 import Rules from "../../components/client/serviceDetail/Rules";
 import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
-import useScrollToTop from "@/hooks/useScrollToTop";
+
 const DetailService = () => {
-  useScrollToTop();
   return (
     <div className="bg-bg-gray p-8">
       <ServiceDetail />

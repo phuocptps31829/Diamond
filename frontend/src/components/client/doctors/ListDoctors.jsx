@@ -28,8 +28,6 @@ export default function ListDoctors() {
   const [specialtyMap, setSpecialtyMap] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
-<<<<<<< HEAD
-=======
 
   const {
     data: doctors,
@@ -59,37 +57,9 @@ export default function ListDoctors() {
     }
   }, [specialties]);
 
->>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-
-  const {
-    data: doctors,
-    error: errorDoctors,
-    isLoading: loadingDoctors,
-  } = useQuery({
-    queryKey: ["doctors"],
-    queryFn: getAllDoctors,
-  });
-
-  const {
-    data: specialties,
-    error: errorSpecialties,
-    isLoading: loadingSpecialties,
-  } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
-  });
-
-  useEffect(() => {
-    if (specialties) {
-      const map = {};
-      specialties.forEach((specialty) => {
-        map[specialty._id] = specialty.name;
-      });
-      setSpecialtyMap(map);
-    }
-  }, [specialties]);
+  const totalPages = 5;
 
   const handleSpecialtyChange = (value) => {
     setSelectedSpecialty(value);
@@ -113,15 +83,6 @@ export default function ListDoctors() {
     return <div>Error loading doctors</div>;
   }
 
-<<<<<<< HEAD
-  const recordsPerPage = 4;
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = doctors.slice(indexOfFirstRecord, indexOfLastRecord);
-  const totalPages = Math.ceil(doctors.length / recordsPerPage);
-
-=======
->>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
   return (
     <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
@@ -156,35 +117,6 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-<<<<<<< HEAD
-      {currentRecords.length === 0 ? (
-        <div className="p-6 text-center">Không có dữ liệu.</div>
-      ) : (
-        <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-          {currentRecords.map((doctor) => {
-            return (
-              <DoctorProduct
-                key={doctor._id}
-                {...doctor}
-                specialtyName={specialtyMap[doctor.specialtyID]}
-              />
-            );
-          })}
-        </div>
-      )}
-      {totalPages > 1 && (
-        <Pagination className="py-5">
-          <PaginationContent className="hover:cursor-pointer">
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() =>
-                  handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-                }
-                className={
-                  currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
-                }
-              />
-=======
       <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
         {doctors.map((doctor) => {
           return (
@@ -217,38 +149,27 @@ export default function ListDoctors() {
               >
                 {index + 1}
               </PaginationLink>
->>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d
             </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  onClick={() => handlePageChange(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  handlePageChange(
-                    currentPage + 1 > totalPages ? totalPages : currentPage + 1,
-                  )
-                }
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 hover:cursor-default"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+          ))}
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              onClick={() =>
+                handlePageChange(
+                  currentPage + 1 > totalPages ? totalPages : currentPage + 1,
+                )
+              }
+              className={
+                currentPage === totalPages
+                  ? "opacity-50 hover:cursor-default"
+                  : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

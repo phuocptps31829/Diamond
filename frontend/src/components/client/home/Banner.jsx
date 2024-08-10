@@ -1,10 +1,13 @@
-import banner from "../../../assets/images/homeBanner.webp";
 import { CiSearch } from "react-icons/ci";
 
 export default function Banner() {
   return (
-    <div className="relative h-[55vw] w-full text-primary-500 md:h-[30vw]">
-      <img src={banner} alt="Banner" className="h-full w-full object-cover" />
+    <div className="relative h-[55vw] w-full text-primary-500 md:h-[35vw]">
+      <img
+        src="https://cdn.medpro.vn/prod-partner/1fb4b491-d889-4e93-9ae7-8d237dd4fb8e-hero.webp"
+        alt="Banner"
+        className="h-full w-full object-cover"
+      />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
         <div className="font-medium text-primary-500 md:text-[25px]">
           Nền tảng công nghệ

@@ -11,17 +11,3 @@ export const getAllDoctors = async () => {
     throw error;
   }
 };
-<<<<<<< HEAD
-
-export const getDoctorById = async (id) => {
-  try {
-    const res = await axios.get(`${API_URL_GET_ALL_DOCTORS}/${id}`);
-    console.log(res.data.data);
-    return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-=======
->>>>>>> cdc53e768fe006a9092f56331d16592bf8886e1d

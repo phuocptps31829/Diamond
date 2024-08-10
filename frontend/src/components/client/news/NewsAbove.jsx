@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function NewsAbove() {
   return (
-    <div className="mx-auto max-w-screen-xl p-3 md:py-10">
+    <div className="mx-auto max-w-screen-xl p-3">
       <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
         Tin tức
       </div>
