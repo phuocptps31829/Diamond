@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
-import { FaPhoneAlt, FaLock, FaEye } from "react-icons/fa";
+import { FaPhoneAlt, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";

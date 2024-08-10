@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaKey } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import InputCustom from "@/components/ui/InputCustom";
