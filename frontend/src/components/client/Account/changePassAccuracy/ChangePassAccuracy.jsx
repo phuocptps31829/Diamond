@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
-import InputCustom from "@/components/ui/inputCustom";
-import { Button } from "@/components/ui/button";
+import InputCustom from "@/components/ui/InputCustom";
+import { Button } from "@/components/ui/Button";
 
 export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();
@@ -29,24 +29,24 @@ export default function ChangePassAccuracyComponent() {
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực</h1>
             <p className="mb-6 text-center text-sm text-gray-400">Nhập mã xác thực để tiếp tục đặt lại mật khẩu</p>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2 relative">
                 <label htmlFor="authCode" className="block text-gray-700 font-semibold">Mã xác thực:</label>
                 <div className="relative">
-                <InputCustom
-                        className="col-span-1 sm:col-span-1 "
-                        placeholder="Nhập mã xác thực"
-                        name="authCode"
-                        type="text"
-                        id="authCode"
-                        icon={<FaKey></FaKey>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1 "
+                    placeholder="Nhập mã xác thực"
+                    name="authCode"
+                    type="text"
+                    id="authCode"
+                    icon={ <FaKey></FaKey> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -74,7 +74,7 @@ export default function ChangePassAccuracyComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block md:flex justify-center  md:space-x-2">
                 <button
                   type="button"
@@ -96,7 +96,7 @@ export default function ChangePassAccuracyComponent() {
               <div className="flex flex-col items-center mt-3 mb-10">
                 <p className="text-center">
                   Bạn đã có tài khoản?
-                  <Link to={'/login'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                  <Link to={ '/login' } className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                     Đăng nhập ngay!
                   </Link>
                 </p>

@@ -3,7 +3,7 @@ import { FaPhoneAlt } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { accountSchema } from "@/zods/account";
 import { Button } from "@/components/ui/button";
 
@@ -29,30 +29,30 @@ export default function ForgetComponent() {
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Quên mật khẩu</h1>
             <p className="mb-6 text-center text-sm text-gray-400">Đặt lại mật khẩu của bạn</p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="relative">
+            <form onSubmit={ handleSubmit(onSubmit) } className="relative">
               <div className="mb-2 relative">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
-                <InputCustom
-                        className="col-span-1 sm:col-span-1 "
-                        placeholder="Nhập số điện thoại"
-                        name="phoneNumber"
-                        type="text"
-                        id="phoneNumber"
-                        icon={<FaPhoneAlt></FaPhoneAlt>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1 "
+                    placeholder="Nhập số điện thoại"
+                    name="phoneNumber"
+                    type="text"
+                    id="phoneNumber"
+                    icon={ <FaPhoneAlt></FaPhoneAlt> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
 
               <div className="my-2 text-sm italic text-right">
-                <Link to={'/login'} className="text-primary-500 text-lg italic font-bold hover:underline">
+                <Link to={ '/login' } className="text-primary-500 text-lg italic font-bold hover:underline">
                   Quay lại
                 </Link>
               </div>
@@ -72,7 +72,7 @@ export default function ForgetComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block md:flex justify-center md:space-x-2">
                 <button
                   type="button"
@@ -95,7 +95,7 @@ export default function ForgetComponent() {
               <div className="flex flex-col items-center mt-3 mb-10">
                 <p className="text-center">
                   Bạn chưa có tài khoản?
-                  <Link to={'/register'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                  <Link to={ '/register' } className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                     Đăng kí ngay!
                   </Link>
                 </p>

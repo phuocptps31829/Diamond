@@ -70,15 +70,17 @@ router.get(
  *            required:
  *              - specialtyID
  *              - name
+ *              - images
  *              - price
  *              - discountPrice
  *              - shortDescription
  *              - details
- *              - duration
  *            properties:
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              images:
  *                type: string
  *              price:
  *                type: number
@@ -88,8 +90,6 @@ router.get(
  *                type: string
  *              details:
  *                type: string
- *              duration:
- *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -131,15 +131,17 @@ router.post(
  *            required:
  *              - specialtyID
  *              - name
+ *              - images
  *              - price
  *              - discountPrice
  *              - shortDescription
  *              - details
- *              - duration
  *            properties:
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              images:
  *                type: string
  *              price:
  *                type: number
@@ -149,8 +151,6 @@ router.post(
  *                type: string
  *              details:
  *                type: string
- *              duration:
- *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'

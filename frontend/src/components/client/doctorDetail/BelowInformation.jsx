@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
 export default function BelowInformation() {
   const [activeTab, setActiveTab] = useState("certification");
@@ -91,3 +91,4 @@ export default function BelowInformation() {
     </div>
   );
 }
+

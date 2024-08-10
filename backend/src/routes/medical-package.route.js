@@ -70,6 +70,7 @@ router.get(
  *            required:
  *              - specialtyID
  *              - name
+ *              - image
  *              - shortDescription
  *              - details
  *              - services
@@ -77,6 +78,8 @@ router.get(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              image:
  *                type: string
  *              shortDescription:
  *                type: string
@@ -97,8 +100,6 @@ router.get(
  *                      type: number
  *                    discountPrice: 
  *                      type: number
- *                    duration: 
- *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -140,6 +141,7 @@ router.post(
  *            required:
  *              - specialtyID
  *              - name
+ *              - image
  *              - shortDescription
  *              - details
  *              - services
@@ -147,6 +149,8 @@ router.post(
  *              specialtyID:
  *                type: string
  *              name:
+ *                type: string
+ *              image:
  *                type: string
  *              shortDescription:
  *                type: string
@@ -167,8 +171,6 @@ router.post(
  *                      type: number
  *                    discountPrice: 
  *                      type: number
- *                    duration: 
- *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'

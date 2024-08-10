@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/Table";
 import {
   Pagination,
   PaginationContent,
@@ -15,8 +15,8 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/Button";
 
 const MedicalRecords = () => {
   const location = useLocation();
@@ -24,7 +24,9 @@ const MedicalRecords = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-
+  const handleViewDetail = (id) => {
+    navigate(`detail/${id}`);
+  };
   const handlePageChange = (page) => {
     navigate(`/user-profile/medical-records?page=${page}`);
   };
@@ -152,6 +154,7 @@ const MedicalRecords = () => {
                 <Button
                   variant="primary"
                   size="sm"
+                  onClick={() => handleViewDetail(record.id)}
                   className="bg-primary-500 px-6 text-white"
                 >
                   Xem chi tiết

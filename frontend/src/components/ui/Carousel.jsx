@@ -5,7 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { MdOutlineNavigateNext } from "react-icons/md";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 const CarouselContext = React.createContext(null);
 

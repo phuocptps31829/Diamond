@@ -1,14 +1,12 @@
 const { checkSchema } = require('express-validator');
+const { checkIsExistID } = require('../utils/database.util');
 const MedicineModel = require('../models/medicine.model');
-
+const MedicineCategoryModel = require('../models/medicine.model');
 
 const medicineValidator = checkSchema({
     medicineCategoryID: {
-        exists: {
-            errorMessage: 'Medicine category ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid medicine category ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(MedicineCategoryModel, id),
         }
     },
     medicineCode: {

@@ -1,4 +1,7 @@
 const { checkSchema } = require("express-validator");
+const { checkIsExistID } = require('../utils/database.util');
+
+const Specialty = require('../models/specialty.model');
 
 const doctorValidator = checkSchema({
     fullName: {
@@ -86,12 +89,9 @@ const doctorValidator = checkSchema({
     },
 
     specialtyID: {
-        exists: {
-            errorMessage: "Specialty ID is required",
-        },
-        isMongoId: {
-            errorMessage: "Invalid Specialty ID",
-        },
+        customSanitizer: {
+            options: (id) => checkIsExistID(Specialty, id),
+        }
     },
 
     title: {

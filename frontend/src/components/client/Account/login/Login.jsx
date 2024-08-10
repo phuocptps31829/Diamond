@@ -4,15 +4,15 @@ import {
   CarouselContent,
   CarouselItem,
 
-} from "@/components/ui/carousel";
+} from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { FaPhoneAlt, FaLock, FaEye } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 export default function LoginComponent() {
   const {
     handleSubmit,
@@ -34,11 +34,11 @@ export default function LoginComponent() {
     <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
       <div className="w-full max-w-screen-xl px-10 py-5" >
         <div className="grid grid-cols-1 md:grid-cols-2 ">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg ">
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Đăng nhập</h1>
             <p className="mb-6 text-center text-sm text-gray-400">Đăng nhập với số điện thoại và mật khẩu</p>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
@@ -56,7 +56,7 @@ export default function LoginComponent() {
                         control={control}
                         errors={ errors }
                   />
-                                          
+
                 </div>
 
               </div>
@@ -66,20 +66,17 @@ export default function LoginComponent() {
                   {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
                   </span> */}
-                      <InputCustom
-                        className="col-span-1 sm:col-span-1"
-                        placeholder="Mật khẩu"
-                        name="password"
-                        type="password"
-                        id="password"
-                        icon={<FaLock></FaLock>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1"
+                    placeholder="Mật khẩu"
+                    name="password"
+                    type="password"
+                    id="password"
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
-     
-                  {/* <span className="absolute inset-y-0 right-5 flex items-center pl-3">
-                    <FaEye className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span> */}
+
                 </div>
 
               </div>
@@ -110,7 +107,7 @@ export default function LoginComponent() {
                 <span className="mx-4 text-gray-800 text-sm">Hoặc tiếp tục với</span>
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block md:flex justify-center md:space-x-2">
                 <button
                   type="button"
@@ -134,14 +131,14 @@ export default function LoginComponent() {
               <div className="flex flex-col items-center mt-3 mb-10">
                 <p className="text-center">
                   Bạn chưa có tài khoản?
-                  <Link to={'/register'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                  <Link to={ '/register' } className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                     Đăng kí ngay!
                   </Link>
                 </p>
               </div>
             </form>
           </div>
-          {/* ADS BANNER */}
+          {/* ADS BANNER */ }
           <div className="bg-gray-200 shadow-lg hidden md:block">
           <Carousel
         opts={{

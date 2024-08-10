@@ -3,16 +3,16 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-} from "@/components/ui/carousel";
+} from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { FaPhoneAlt, FaLock, FaUser } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import InputCustom from "@/components/ui/inputCustom";
+import InputCustom from "@/components/ui/InputCustom";
 import { registerSchema } from "@/zods/register";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 export default function RegisterComponent() {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function RegisterComponent() {
             <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Đăng kí tài khoản</h1>
             <p className="mb-6 text-center text-sm text-gray-400">Đăng kí ngay để sử dụng dịch vụ</p>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Họ và tên:</label>
                 <div className="relative">
@@ -65,45 +65,45 @@ export default function RegisterComponent() {
               <div className="mb-2">
                 <label htmlFor="phone" className="block text-gray-700 font-semibold">Số điện thoại:</label>
                 <div className="relative">
-                <InputCustom
-                        className="col-span-1 sm:col-span-1 "
-                        placeholder="Nhập số điện thoại"
-                        name="phoneNumber"
-                        type="text"
-                        id="phoneNumber"
-                        icon={<FaPhoneAlt></FaPhoneAlt>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1 "
+                    placeholder="Nhập số điện thoại"
+                    name="phoneNumber"
+                    type="text"
+                    id="phoneNumber"
+                    icon={ <FaPhoneAlt></FaPhoneAlt> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
               <div className="mb-2">
                 <label htmlFor="password" className="block text-gray-700 font-semibold">Mật khẩu:</label>
                 <div className="relative">
-                <InputCustom
-                        className="col-span-1 sm:col-span-1 "
-                        placeholder="Nhập mật khẩu"
-                        name="password"
-                        type="password"
-                        id="password"
-                        icon={<FaLock></FaLock>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1 "
+                    placeholder="Nhập mật khẩu"
+                    name="password"
+                    type="password"
+                    id="password"
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
               <div className="mb-2">
                 <label htmlFor="confirmPassword" className="block text-gray-700 font-semibold">Nhập lại mật khẩu:</label>
                 <div className="relative">
-                <InputCustom
-                        className="col-span-1 sm:col-span-1 "
-                        placeholder="Nhập lại mật khẩu"
-                        name="confirmPassword"
-                        type="password"
-                        id="confirmPassword"
-                        icon={<FaLock></FaLock>}
-                        control={control}
-                        errors={ errors }
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1 "
+                    placeholder="Nhập lại mật khẩu"
+                    name="confirmPassword"
+                    type="password"
+                    id="confirmPassword"
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -120,7 +120,7 @@ export default function RegisterComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block md:flex justify-center md:space-x-2">
                 <button
                   type="button"
@@ -143,7 +143,7 @@ export default function RegisterComponent() {
               <div className="flex flex-col items-center mt-3 mb-10">
                 <p className="text-center">
                   Bạn đã có tài khoản?
-                  <Link to={'/login'} className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
+                  <Link to={ '/login' } className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
                     Đăng nhập ngay!
                   </Link>
                 </p>
