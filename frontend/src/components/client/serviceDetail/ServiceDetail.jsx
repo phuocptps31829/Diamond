@@ -1,49 +1,107 @@
 import { Button } from "@/components/ui/Button";
 import { ToastAction } from "@/components/ui/Toast";
-import { useToast } from "@/components/ui/use-toast";
-
+import { useToast } from "@/hooks/use-toast";
 import { AiOutlineSchedule } from "react-icons/ai";
-const ServiceDetail = () => {
+import PropTypes from "prop-types";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { useEffect, useState } from "react";
+
+const ServiceDetail = ({ medicalPackage, isLoading }) => {
   const { toast } = useToast();
-  const product = {
-    image: "https://www.material-tailwind.com/image/product-4.png",
-    name: "TẦM SOÁT SỨC KHỎE TIỀN SẢN",
-    new_price: 1234567,
-    description:
-      "Theo khuyến cáo các cặp vợ chồng nên thực hiện khám sàng lọc trước khi mang thai khoảng 3-6 tháng giúp ngăn ngừa lây truyền các bệnh truyền nhiễm từ cha mẹ sang con, giảm rủi ro khi sinh con, giảm nguy cơ mắc bệnh, dị tật bẩm sinh cho trẻ sơ sinh.",
-    book: 100,
-    quantity: 10,
+  const [selectedService, setSelectedService] = useState(null);
+
+  useEffect(() => {
+    if (medicalPackage?.services?.length > 0) {
+      setSelectedService(medicalPackage.services[0]);
+    }
+  }, [medicalPackage]);
+
+  if (isLoading || !medicalPackage) {
+    return (
+      <div className="mx-auto max-w-screen-2xl pb-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
+          <div className="container flex items-center justify-center">
+            <Skeleton className="h-[400px] w-[400px] overflow-hidden rounded-md" />
+          </div>
+          <div className="flex flex-col items-start justify-center text-start">
+            <Skeleton className="mb-4 h-8 w-3/4 md:h-12" />
+            <div className="my-4 flex items-center gap-2">
+              <Skeleton className="h-6 w-6" />
+              <Skeleton className="h-6 w-1/2" />
+            </div>
+            <Skeleton className="mb-4 h-6 w-full" />
+            <Skeleton className="mb-4 h-6 w-full" />
+            <Skeleton className="mb-4 h-6 w-full" />
+            <Skeleton className="mb-6 h-8 w-1/2" />
+            <div className="mb-4 flex w-full items-center gap-3">
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const { image, name, orderCount, shortDescription, services } =
+    medicalPackage;
+
+  const handleServiceChange = (service) => {
+    setSelectedService(service);
   };
 
   return (
     <div className="mx-auto max-w-screen-2xl pb-4">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
         <div className="container flex items-center justify-center">
-          {" "}
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-auto w-9/12"
-          />
+          <img src={image} alt={name} className="h-auto w-9/12" />
         </div>
-
         <div className="flex flex-col items-start justify-center text-start">
-          <h3 className="mb-4 text-xl font-bold md:text-3xl">{product.name}</h3>
+          <h3 className="mb-4 text-xl font-bold md:text-3xl">{name}</h3>
           <div className="my-4 flex items-center gap-2">
             <AiOutlineSchedule size={25} />
             <span className="text-sm font-bold !text-gray-700">
-              {product.book} lượt đặt lịch
+              {orderCount} lượt đặt lịch
             </span>
           </div>
-
-          <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-500">
-            {product.description}
+          <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-600">
+            {shortDescription}
           </p>
+          <div className="mb-3">
+            <h2 className="mb-4 font-medium">Chọn gói khám:</h2>
+            <div className="my-3 flex items-center justify-center gap-3">
+              {services
+                .slice()
+                .reverse()
+                .map((service) => (
+                  <div key={service._id} className="relative">
+                    <input
+                      className="peer hidden"
+                      id={`radio_${service._id}`}
+                      type="radio"
+                      name="radio"
+                      onChange={() => handleServiceChange(service)}
+                      value={service._id}
+                      checked={selectedService?._id === service._id}
+                    />
+                    <label
+                      className="cursor-pointer select-none rounded-lg border border-gray-300 p-2 peer-checked:border-primary-600 peer-checked:bg-gray-50 peer-checked:outline-2"
+                      htmlFor={`radio_${service._id}`}
+                    >
+                      <span className="text-base font-medium">
+                        {service.levelName}
+                      </span>
+                    </label>
+                  </div>
+                ))}
+            </div>
+          </div>
           <span className="mb-6 block text-lg font-medium">
             <strong className="font-semibold">Giá:</strong>{" "}
-            {product.new_price.toLocaleString()} đ
+            {selectedService && selectedService.price
+              ? selectedService.price.toLocaleString()
+              : "N/A"}{" "}
+            đ
           </span>
-
           <div className="mb-4 flex w-full items-center gap-3">
             <Button
               className="w-full"
@@ -52,11 +110,9 @@ const ServiceDetail = () => {
               onClick={() => {
                 toast({
                   variant: "success",
-                  title: "Uh oh! Something went wrong.",
-                  description: "There was a problem with your request.",
-                  action: (
-                    <ToastAction altText="Try again">Try again</ToastAction>
-                  ),
+                  title: "Đặt lịch thành công!",
+                  description: "Chúng tôi sẽ liên hệ với bạn sớm nhất.",
+                  action: <ToastAction altText="Đóng">Đóng</ToastAction>,
                 });
               }}
             >
@@ -67,6 +123,11 @@ const ServiceDetail = () => {
       </div>
     </div>
   );
+};
+
+ServiceDetail.propTypes = {
+  isLoading: PropTypes.bool,
+  medicalPackage: PropTypes.object,
 };
 
 export default ServiceDetail;

@@ -4,34 +4,46 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({ image, services, name, orderCount }) {
+export default function ServiceProduct({
+  image,
+  name,
+  price,
+  discountPrice,
+  orderCount,
+  _id,
+}) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to="/detail-service/1"
+        to={`/detail-service/${_id}`}
+        s
         className="group block h-full w-full overflow-hidden"
       >
         <img
-          src={ image }
-          alt={ name }
+          src={image}
+          alt={name}
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
       <div className="flex h-full flex-col p-3 md:p-5">
         <Link
-          to="/detail-service/1"
-          className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
-        >
-          { services[0].levelName }
-        </Link>
-        <Link
-          to="/detail-service/1"
+          to={`/detail-service/${_id}`}
           className="grow text-sm font-bold md:text-xl"
         >
-          { name }
+          {name}
         </Link>
-        <hr className="mb-1 md:mb-3" />
-        <div className="flex items-center justify-between">
+        <hr className="mb-1" />
+        <div className="flex items-center space-x-2 py-2">
+          <span className="text-lg font-semibold text-primary-500">
+            {price.toLocaleString()}₫
+          </span>
+          <span className="text-sm text-gray-400 line-through">
+            {discountPrice.toLocaleString()}₫
+          </span>
+        </div>
+
+        <hr className="mb-1" />
+        <div className="mt-2 flex items-center justify-between">
           <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
             <FaHeart />
             <FaHeart />
@@ -40,7 +52,7 @@ export default function ServiceProduct({ image, services, name, orderCount }) {
             <FaHeart />
           </div>
           <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-            <SiTicktick /> { orderCount }
+            <SiTicktick /> {orderCount}
           </div>
         </div>
         <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
@@ -53,11 +65,9 @@ export default function ServiceProduct({ image, services, name, orderCount }) {
 
 ServiceProduct.propTypes = {
   image: PropTypes.string.isRequired,
-  services: PropTypes.arrayOf(
-    PropTypes.shape({
-      levelName: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  price: PropTypes.number.isRequired,
+  discountPrice: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   orderCount: PropTypes.number.isRequired,
+  _id: PropTypes.string.isRequired,
 };

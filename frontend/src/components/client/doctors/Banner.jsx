@@ -1,8 +1,10 @@
+import banner from "../../../assets/images/doctorBanner.jpg";
+
 export default function BannerDoctor() {
   return (
     <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[20vw]">
       <img
-        src="https://benhviennamsaigon.com.vn/vnt_upload/weblink/banner_3.jpg"
+        src={banner}
         alt="Banner"
         className="h-full w-full object-cover opacity-40"
       />
