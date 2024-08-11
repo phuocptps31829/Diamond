@@ -1,4 +1,4 @@
-import Service from "../product/Service";
+import Service from "../product/Package";
 import SidebarFilter from "./SidebarFilter";
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";

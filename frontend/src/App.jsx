@@ -48,6 +48,10 @@ const router = createBrowserRouter([
         element: <DetailService />,
       },
       {
+        path: "detail-package/:id",
+        element: <DetailService />,
+      },
+      {
         path: "price-service",
         element: <TablePriceService />,
       },

@@ -4,19 +4,17 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({
+export default function PackageProduct({
   image,
+  services,
   name,
-  price,
-  discountPrice,
   orderCount,
   _id,
 }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to={`/detail-service/${_id}`}
-        s
+        to={`/detail-package/${_id}`}
         className="group block h-full w-full overflow-hidden"
       >
         <img
@@ -27,23 +25,19 @@ export default function ServiceProduct({
       </Link>
       <div className="flex h-full flex-col p-3 md:p-5">
         <Link
-          to={`/detail-service/${_id}`}
+          to={`/detail-package/${_id}`}
+          className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
+        >
+          {services[0].levelName}
+        </Link>
+        <Link
+          to={`/detail-package/${_id}`}
           className="grow text-sm font-bold md:text-xl"
         >
           {name}
         </Link>
-        <hr className="mb-1" />
-        <div className="flex items-center space-x-2 py-2">
-          <span className="text-lg font-semibold text-primary-500">
-            {price.toLocaleString()}₫
-          </span>
-          <span className="text-sm text-gray-400 line-through">
-            {discountPrice.toLocaleString()}₫
-          </span>
-        </div>
-
-        <hr className="mb-1" />
-        <div className="mt-2 flex items-center justify-between">
+        <hr className="mb-1 md:mb-3" />
+        <div className="flex items-center justify-between">
           <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
             <FaHeart />
             <FaHeart />
@@ -63,10 +57,13 @@ export default function ServiceProduct({
   );
 }
 
-ServiceProduct.propTypes = {
+PackageProduct.propTypes = {
   image: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  discountPrice: PropTypes.number.isRequired,
+  services: PropTypes.arrayOf(
+    PropTypes.shape({
+      levelName: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   name: PropTypes.string.isRequired,
   orderCount: PropTypes.number.isRequired,
   _id: PropTypes.string.isRequired,

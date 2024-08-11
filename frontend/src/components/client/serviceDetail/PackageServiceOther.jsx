@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/Skeleton";
-import Service from "../product/Service";
+import Service from "../product/Package";
 import PropTypes from "prop-types";
 import {
   Carousel,
@@ -27,7 +27,7 @@ const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
   }
 
   return (
-    <div className=" mx-auto max-w-7xl p-4">
+    <div className="mx-auto max-w-7xl p-4">
       <h1 className="my-6 text-center text-2xl font-bold">Các gói khám khác</h1>
       <Carousel
         opts={{

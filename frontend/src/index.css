@@ -186,6 +186,10 @@
   color: white;
 }
 
+.navBarMoblie {
+  right: 0 !important;
+}
+
 .pyramid-loader {
   position: relative;
   width: 300px;
@@ -200,10 +204,10 @@
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
-  animation: spin 2s linear infinite;
+  animation: spinElement 2s linear infinite;
 }
 
-@keyframes spin {
+@keyframes spinElement {
   100% {
     transform: rotateY(360deg);
   }
@@ -342,6 +346,50 @@
   transform: rotateX(90deg) translateZ(40px);
   filter: blur(12px);
 }
+
+.content-news {
+  line-height: 2;
+  img {
+    width: auto;
+  }
+
+  p,
+  strong,
+  span,
+  em,
+  figure,
+  table,
+  h2,
+  h1,
+  div,
+  i {
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    width: 100% !important;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .content-news {
+    img {
+      width: 100%;
+    }
+    iframe {
+      width: 100%;
+      height: auto;
+    }
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .content-news {
+    iframe {
+      width: 100%;
+      min-height: 250px;
+    }
+  }
+}
+
 .render-details img {
   width: 100%;
   height: auto;

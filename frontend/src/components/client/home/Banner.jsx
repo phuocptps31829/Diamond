@@ -3,7 +3,7 @@ import { CiSearch } from "react-icons/ci";
 
 export default function Banner() {
   return (
-    <div className="relative h-[55vw] w-full text-primary-500 md:h-[30vw]">
+    <div className="relative h-[55vw] w-full text-primary-500 md:h-[36vw]">
       <img src={banner} alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
         <div className="font-medium text-primary-500 md:text-[25px]">

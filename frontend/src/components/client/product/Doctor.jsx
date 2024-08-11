@@ -9,7 +9,7 @@ export default function DoctorProduct({
   specialtyName,
 }) {
   return (
-    <div className="overflow-hidden rounded-lg border">
+    <div className="flex flex-col overflow-hidden rounded-lg border">
       <Link
         to={`/doctor-detail/${_id}`}
         className="group flex w-full items-center justify-center !bg-white"
@@ -17,10 +17,10 @@ export default function DoctorProduct({
         <img
           src={userID.avatar}
           alt=""
-          className="ease w-full transform overflow-hidden p-4 transition-transform duration-500 group-hover:scale-[1.05]"
+          className="ease w-full transform overflow-hidden p-2 transition-transform duration-500 group-hover:scale-[1.05] sm:p-4"
         />
       </Link>
-      <div className="flex flex-col bg-white px-3 pb-3">
+      <div className="flex h-full flex-col bg-white px-3 pb-3">
         <Link
           to={`/doctor-detail/${userID._id}`}
           className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]"
@@ -29,7 +29,7 @@ export default function DoctorProduct({
         </Link>
         <Link
           to={`/doctor-detail/${userID._id}`}
-          className="py-2 text-[12px] font-bold sm:text-[14px] md:my-1 md:text-xl"
+          className="grow py-2 text-[12px] font-bold sm:text-[14px] md:my-1 md:text-xl"
         >
           {userID.fullName}
         </Link>

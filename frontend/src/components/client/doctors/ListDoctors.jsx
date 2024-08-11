@@ -17,10 +17,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "@/services/doctors";
-import { getAllSpecialties } from "@/services/specialties";
-import Loading from "@/components/ui/Loading";
+import { getAllDoctors } from "@/services/doctorsApi";
+import { getAllSpecialties } from "@/services/specialtiesApi";
 import DoctorProduct from "../product/Doctor";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function ListDoctors() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
@@ -59,6 +59,53 @@ export default function ListDoctors() {
     }
   }, [specialties]);
 
+  if (loadingDoctors || loadingSpecialties) {
+    return (
+      <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
+        <div className="flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
+          <h2 className="text-xl font-semibold">
+            <Skeleton className="h-[24px] w-[250px]" />
+          </h2>
+          <div className="flex flex-row items-center justify-center gap-3">
+            <div className="w-[170px] sm:w-[180px]">
+              <Skeleton className="h-[36px]" />
+            </div>
+            <div className="w-[170px] sm:w-[180px]">
+              <Skeleton className="h-[36px]" />
+            </div>
+          </div>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              className="flex flex-col overflow-hidden rounded-lg border"
+              key={index}
+            >
+              <div className="group flex w-full items-center justify-center !bg-white">
+                <Skeleton className="ease h-[200px] w-full transform overflow-hidden p-2 transition-transform duration-500 sm:h-[300px] sm:p-4" />
+              </div>
+              <div className="flex h-full flex-col bg-white px-3 pb-3 pt-3">
+                <Skeleton className="h-4 w-[80px] text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]" />
+                <Skeleton className="h-6 w-[120px] grow py-2 text-[12px] font-bold sm:text-[14px] md:my-1 md:text-xl" />
+                <hr className="mb-1 md:mb-3" />
+                <div className="flex h-4 w-[60px] items-center justify-between text-[10px] font-medium sm:text-[14px]">
+                  <Skeleton className="h-4 w-[60px]" />
+                </div>
+                <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#918e8e] py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
+                  <Skeleton className="h-4 w-[80px]" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (errorDoctors || errorSpecialties) {
+    return <div>Error loading doctors</div>;
+  }
+
   const handleSpecialtyChange = (value) => {
     setSelectedSpecialty(value);
     setSelectedDoctor("");
@@ -72,14 +119,6 @@ export default function ListDoctors() {
   const handlePageChange = (page) => {
     navigate(`/doctors?page=${page}`);
   };
-
-  if (loadingDoctors || loadingSpecialties) {
-    return <Loading />;
-  }
-
-  if (errorDoctors || errorSpecialties) {
-    return <div>Error loading doctors</div>;
-  }
 
   const recordsPerPage = 4;
   const indexOfLastRecord = currentPage * recordsPerPage;
