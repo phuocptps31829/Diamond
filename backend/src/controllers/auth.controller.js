@@ -48,8 +48,8 @@ const createOTP = async (req, res, next) => {
 
         console.log({ ...req.body });
 
-        const OTP = sendOTP();
         await checkPhoneNumberAndEmail(req.body, false);
+        const OTP = sendOTP();
 
         const hashedOTP = await hashValue(OTP);
 
