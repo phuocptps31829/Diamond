@@ -1,13 +1,21 @@
 import {
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_SERVICE_BY_ID,
-  API_URL_GET_SERVICE_BY_SPECIALTIES
-
+  API_URL_GET_SERVICE_BY_SPECIALTIES,
 } from "@/configs/varibles";
 import axios from "axios";
-export const getAllServices = async () => {
+export const getAllServices = async (page, limit, sort) => {
   try {
-    const res = await axios.get(API_URL_GET_ALL_SERVICES);
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+      ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+    };
+
+    const res = await axios.get(API_URL_GET_ALL_SERVICES, {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
@@ -25,9 +33,16 @@ export const getServiceById = async (id) => {
     throw error;
   }
 };
-export const getServiceBySpecialty = async (id) => {
+export const getServiceBySpecialty = async (id,page, limit, sort) => {
   try {
-    const res = await axios.get(`${API_URL_GET_SERVICE_BY_SPECIALTIES}/${id}`);
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+      ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+    };
+    const res = await axios.get(`${API_URL_GET_SERVICE_BY_SPECIALTIES}/${id}`, {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {

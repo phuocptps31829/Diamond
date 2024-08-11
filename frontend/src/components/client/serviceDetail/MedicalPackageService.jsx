@@ -8,6 +8,7 @@ import {
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { Link } from "react-router-dom";
 
 const MedicalPackageService = ({ medicalPackage, isLoading }) => {
   if (isLoading) {
@@ -68,8 +69,10 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                     <TableCell className="text-center font-normal">
                       {i + 1}
                     </TableCell>
-                    <TableCell className="whitespace-nowrap text-left font-normal">
-                      {row.name}
+                    <TableCell className="whitespace-nowrap text-left font-normal hover:underline">
+                      <Link to={`/detail-service/${row._id}`}>
+                      {row.name}</Link>
+                     
                     </TableCell>
                     {levelNames.map((levelName, index) => (
                       <TableCell

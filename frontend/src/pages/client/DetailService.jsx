@@ -11,20 +11,35 @@ import {
 } from "@/services/medicalPackagesApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
-
-// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { getServiceById, getServiceBySpecialty } from "@/services/servicesApi";
 
 const DetailService = () => {
   useScrollToTop();
 
-  const { id } = useParams();
+  const { serviceId, packageId } = useParams();
+  const id = serviceId || packageId;
+
+  // Fetch medical package if packageId is present
   const {
     data: medicalPackage,
     error: errorMedicalPackage,
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
     queryKey: ["medical-packages", id],
-    queryFn:  () => getMedicalPackageById(id),
+    queryFn: () =>
+      packageId ? getMedicalPackageById(id) : Promise.resolve(null),
+    enabled: !!packageId,
+  });
+
+  // Fetch service if serviceId is present
+  const {
+    data: service,
+    error: errorService,
+    isLoading: isLoadingService,
+  } = useQuery({
+    queryKey: ["service", id],
+    queryFn: () => (serviceId ? getServiceById(id) : Promise.resolve(null)),
+    enabled: !!serviceId,
   });
 
   const {
@@ -36,30 +51,55 @@ const DetailService = () => {
     queryFn: () => getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
     enabled: !!medicalPackage?.specialtyID,
   });
+  const {
+    data: serviceSpecialty,
+    error: errorServiceSpecialty,
+    isLoading: isLoadingServiceSpecialty,
+  } = useQuery({
+    queryKey: ["service-specialty", service?.specialtyID],
+    queryFn: () => getServiceBySpecialty(service?.specialtyID),
+    enabled: !!service?.specialtyID,
+  });
 
-  if (errorMedicalPackage || errorMedicalPackageSpecialty) {
+  if (errorMedicalPackage || errorMedicalPackageSpecialty || errorService || errorServiceSpecialty) {
     return <NotFound />;
   }
 
+  const contentToRender = service || medicalPackage;
+
   return (
     <div className="bg-bg-gray p-8">
-      <ServiceDetail
-        medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
-      />
-      <DescriptionService
-        medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
-      />
-      <MedicalPackageService
-        medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
-      />
-      <Rules />
-      <PackageServiceOther
-        medicalPackageSpecialty={medicalPackageSpecialty}
-        isLoading={isLoadingMedicalPackageSpecialty}
-      />
+      {contentToRender && (
+        <>
+          <ServiceDetail
+            medicalPackage={medicalPackage}
+            service={service}
+            isLoading={isLoadingMedicalPackage || isLoadingService}
+          />
+          <DescriptionService
+            medicalPackage={medicalPackage}
+            service={service}
+            isLoading={isLoadingMedicalPackage || isLoadingService}
+          />
+          {!service && (
+            <MedicalPackageService
+              medicalPackage={medicalPackage}
+              service={service}
+              isLoading={isLoadingMedicalPackage || isLoadingService}
+            />
+          )}
+
+          <Rules />
+          <PackageServiceOther
+            serviceSpecialty={serviceSpecialty}
+            medicalPackageSpecialty={medicalPackageSpecialty}
+            isLoading={isLoadingMedicalPackageSpecialty || isLoadingServiceSpecialty}
+          />
+        </>
+      )}
+      {!contentToRender && !isLoadingMedicalPackage && !isLoadingService && (
+        <NotFound />
+      )}
     </div>
   );
 };
