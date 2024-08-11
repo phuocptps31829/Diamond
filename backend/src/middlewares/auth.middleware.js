@@ -46,7 +46,6 @@ const verifyOTP = async (req, res, next) => {
         const verifiedToken = jwt.verify(otpToken, 'secret-key');
 
         const { phoneNumber, fullName, password } = verifiedToken;
-
         const otpHolder = await OtpModel.find({ phoneNumber });
 
         if (!otpHolder.length) {

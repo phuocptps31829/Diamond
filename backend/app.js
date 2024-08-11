@@ -24,7 +24,7 @@ const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
-const contactRoutes = require('./src/routes/contact.route');
+const passportMiddleWare = require('./src/middlewares/passport.middleware');
 
 const app = express();
 
@@ -32,6 +32,7 @@ const app = express();
 //     res.header("Access-Control-Allow-Origin", ['http://localhost:5173']);
 //     next();
 // });
+passportMiddleWare(app);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -66,7 +67,6 @@ app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/patients', patientsRoutes);
 app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/contact', contactRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

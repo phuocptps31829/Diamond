@@ -1,5 +1,6 @@
 const ServiceModel = require('../models/service.model');
 const { createError, errorValidator } = require("../utils/helper.util");
+const mongoose = require("mongoose");
 
 const getAllServices = async (req, res, next) => {
     try {
@@ -8,14 +9,55 @@ const getAllServices = async (req, res, next) => {
         const totalRecords = await ServiceModel.countDocuments({
             isDeleted: false,
         });
-        const services = await ServiceModel
-            .find({
-                isDeleted: false,
-            })
-            .skip(skip)
-            .limit(limitDocuments)
-            .sort(sortOptions);;
 
+        const services = await ServiceModel
+            // .find({
+            //     isDeleted: false,
+            // })
+            // .skip(skip)
+            // .limit(limitDocuments)
+            // .sort(sortOptions);;
+            .aggregate([
+                {
+                    $lookup: {
+                        from: 'Clinic', // Tên collection phòng khám
+                        localField: 'specialtyId',
+                        foreignField: 'specialtyId',
+                        as: 'clinics'
+                    }
+                },
+                {
+                    $unwind: {
+                        path: '$clinics',
+                        preserveNullAndEmptyArrays: true
+                    }
+                }
+                // ,
+                // {
+                //     $match: {
+                //         'clinics.specialtyID': mongoose.Types.ObjectId('669e86f57fe9668357fcaead'), // Lọc theo branchId
+
+                //         // isDeleted: false // Nếu bạn cần lọc các dịch vụ không bị xóa
+                //     }
+                // }
+                // },
+                // { $unwind: '$clinics' },
+                // {
+                //     $lookup: {
+                //         from: 'Branch', // Tên collection chi nhánh
+                //         localField: 'clinics.branchID',
+                //         foreignField: '_id',
+                //         as: 'branches'
+                //     }
+                // },
+                // {
+                //     $project: {
+                //         _id: 0,
+                //         serviceName: '$name',
+                //         branches: '$branches'
+                //     }
+                // }
+            ]);
         if (!services.length) {
             createError(404, 'No services found.');
         }

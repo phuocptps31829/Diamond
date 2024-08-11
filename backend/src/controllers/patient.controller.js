@@ -1,5 +1,5 @@
 const Patient = require('../models/patient.model');
-const { createError } = require("../utils/helper.util");
+const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllPatients = async (req, res, next) => {
     try {

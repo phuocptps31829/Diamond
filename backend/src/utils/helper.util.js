@@ -7,14 +7,11 @@ const axios = require('axios');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
-const clientTwilio = require('twilio')('AC492411aa604146cb8685b9c7c90e2bc0', '9b34d81b7d23a6f952099b32522e62d4');
-
-
 const createError = (statusCode, message) => {
     throw new createHttpError(statusCode, message);
 };
 
-const sendEmail = async (email, subject, html, attachments = []) => {
+const sendEmail = async (email, subject, text, attachments = []) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -29,7 +26,7 @@ const sendEmail = async (email, subject, html, attachments = []) => {
             from: process.env.EMAIL_SEND,
             to: email,
             subject: subject,
-            html,
+            text: text,
             attachments: attachments
         });
     } catch (error) {
@@ -67,6 +64,8 @@ const sendOTP = async ({ phoneNumber }) => {
         upperCaseAlphabets: false
     });
 
+    const talkOTP = OTP.split('').join('... ');
+    const newPhoneNumber = await phoneNumber.substring(1);
     const options = {
         method: 'POST',
         url: process.env.URL_CALL,
@@ -83,7 +82,7 @@ const sendOTP = async ({ phoneNumber }) => {
             "to": [
                 {
                     "type": "external",
-                    "number": phoneNumber,
+                    "number": '84' + newPhoneNumber,
                     "alias": "TO_NUMBER"
                 }
             ],
@@ -91,7 +90,7 @@ const sendOTP = async ({ phoneNumber }) => {
             "actions": [
                 {
                     "action": "talk",
-                    "text": "OTP của bạn là: " + OTP
+                    "text": "Mã OTP của bạn là:..." + talkOTP + "... Xin nhắc lại... Mã OTP của bạn là:..." + talkOTP
                 }
             ]
         }
@@ -135,7 +134,7 @@ const generateOTPToken = ({ fullName, phoneNumber, password }) => {
             fullName,
             phoneNumber,
             password,
-            expiresIn: Date.now() + 20000
+            expiresIn: Date.now() + 60000
         },
         'secret-key',
         { expiresIn: '60s' }
