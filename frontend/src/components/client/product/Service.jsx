@@ -16,7 +16,7 @@ export default function ServiceProduct({
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={`/detail-service/${_id}`}
-        s
+        
         className="group block h-full w-full overflow-hidden"
       >
         <img

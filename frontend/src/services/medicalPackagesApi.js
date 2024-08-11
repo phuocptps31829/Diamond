@@ -1,8 +1,21 @@
-import { API_URL_GET_ALL_MEDICAL_PACKAGES,API_URL_GET_MEDICAL_PACKAGE_BY_ID ,API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES} from "@/configs/varibles";
+import {
+  API_URL_GET_ALL_MEDICAL_PACKAGES,
+  API_URL_GET_MEDICAL_PACKAGE_BY_ID,
+  API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES,
+} from "@/configs/varibles";
 import axios from "axios";
-export const getAllMedicalPackages = async () => {
+export const getAllMedicalPackages = async (page, limit, sort) => {
   try {
-    const res = await axios.get(API_URL_GET_ALL_MEDICAL_PACKAGES);
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+      ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+    };
+
+    const res = await axios.get(API_URL_GET_ALL_MEDICAL_PACKAGES, {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
@@ -13,17 +26,23 @@ export const getAllMedicalPackages = async () => {
 export const getMedicalPackageById = async (id) => {
   try {
     const res = await axios.get(`${API_URL_GET_MEDICAL_PACKAGE_BY_ID}/${id}`);
-   
-    
+
     return res.data.data;
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-export const getMedicalPackageBySpecialty = async (id) => {
+export const getMedicalPackageBySpecialty = async (id,page, limit, sort) => {
   try {
-    const res = await axios.get(`${API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES}/${id}`);
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+      ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+    };
+    const res = await axios.get(`${API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES}/${id}`, {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {

@@ -26,20 +26,37 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>
-        <div className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+        <div className="grid grid-cols-1 items-center justify-center gap-8 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
           {specialties.map((item) => (
             <div
               key={item._id}
-              className="relative max-w-full rounded-lg  bg-white shadow dark:border-gray-700 dark:bg-gray-800 h-48"
+              className="group relative h-80 w-full cursor-pointer overflow-hidden rounded-md border p-5 text-gray-50 duration-500 md:w-64"
             >
-              <Link to={`/category-service/${item._id}`}>
-                <img className="rounded-lg h-full object-cover" src={item.image} alt={item.name} />
-                <div className="absolute inset-0 top-28 flex items-center justify-center md:top-24">
-                  <h5 className="w-full bg-white bg-opacity-10 py-1 text-center text-sm font-semibold tracking-tight text-white backdrop-blur md:text-2xl">
+              <div className="">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="h-60 w-full rounded-md bg-blue-400 object-cover"
+                />
+                <div className="absolute -bottom-14 left-0 w-full p-5 duration-200 group-hover:-translate-y-12 group-hover:backdrop-blur-md">
+                  <div className="absolute left-0 -z-10 h-28 w-64 opacity-0"></div>
+                  <span className="mb-5 block text-xl font-bold text-black group-hover:text-white">
                     {item.name}
-                  </h5>
+                  </span>
+                  <div className="flex items-center justify-around gap-2 transition-none">
+                    <Link 
+                     to={`/service/${item._id}`}
+                    className="flex h-8 w-full items-center justify-center rounded-md bg-primary-500 px-3 text-center text-xs text-white shadow transition duration-150 hover:bg-primary-600/90">
+                      Dịch vụ
+                    </Link>
+                    <Link 
+                    to={`/package/${item._id}`}
+                    className="flex h-8 w-full items-center justify-center rounded-md bg-primary-500 px-3 text-center text-xs text-white shadow transition duration-150 hover:bg-primary-600/90">
+                      Chuyên khoa
+                    </Link>
+                  </div>
                 </div>
-              </Link>
+              </div>
             </div>
           ))}
         </div>

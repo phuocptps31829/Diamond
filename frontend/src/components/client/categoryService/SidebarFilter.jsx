@@ -2,12 +2,26 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/Skeleton";
+import PropTypes from "prop-types";
 
-const SidebarFilter = () => {
+const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [sortValue, setSortValue] = useState("");
+  const [selectedSpecialty, setSelectedSpecialty] = useState(null);
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSortChange = (value) => {
+    const newValue = sortValue === value ? "" : value;
+    setSortValue(newValue);
+    setSort(newValue);
+  };
+  const handleSpecialtyChange = (specialtyId) => {
+    const newSelectedSpecialty = selectedSpecialty === specialtyId ? null : specialtyId;
+    setSelectedSpecialty(newSelectedSpecialty);
+    onSpecialtyChange(newSelectedSpecialty);
   };
 
   const {
@@ -18,8 +32,85 @@ const SidebarFilter = () => {
     queryKey: ["specialties"],
     queryFn: () => getAllSpecialties(),
   });
+  if (isLoading)
+    return (
+      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
+        <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
+          <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-4 w-16" />
+          </div>
 
-  if (isLoading) return <div>Loading...</div>;
+          <div className="mb-3 gap-2 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-32" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 w-full border-b pb-2">
+            <div className="grid grid-cols-1 gap-5 sm:gap-9">
+              <div className="accordion">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-5 w-28" />
+                  <Skeleton className="h-4 w-4" />
+                </div>
+                <div
+                  className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                >
+                  <div className="box mt-5 flex flex-col gap-2">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-28" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-24" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-20" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+            </div>
+          </div>
+
+          <Skeleton className="h-10 w-full rounded-full" />
+        </div>
+      </div>
+    );
+
   if (error) return <div>Error loading specialties</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
@@ -36,7 +127,11 @@ const SidebarFilter = () => {
           </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-lowest" />
+              <Checkbox
+                id="checkbox-lowest"
+                checked={sortValue === "price"}
+                onCheckedChange={() => handleSortChange("price")}
+              />
               <label
                 htmlFor="checkbox-lowest"
                 className="text-sm font-normal text-gray-600"
@@ -45,7 +140,11 @@ const SidebarFilter = () => {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-highest" />
+              <Checkbox
+                id="checkbox-highest"
+                checked={sortValue === "-price"}
+                onCheckedChange={() => handleSortChange("-price")}
+              />
               <label
                 htmlFor="checkbox-highest"
                 className="text-sm font-normal text-gray-600"
@@ -91,7 +190,14 @@ const SidebarFilter = () => {
                       key={specialty._id}
                       className="flex items-center space-x-2"
                     >
-                      <Checkbox id={`checkbox-${specialty._id}`} />
+                      <Checkbox
+                        checked={selectedSpecialty === specialty._id}
+                        onCheckedChange={() =>
+                          handleSpecialtyChange(specialty._id)
+                        }
+                        id={`checkbox-${specialty._id}`}
+                      />
+
                       <label
                         htmlFor={`checkbox-${specialty._id}`}
                         className="text-sm font-normal text-gray-600"
@@ -130,10 +236,9 @@ const SidebarFilter = () => {
             </div>
           </div>
         </div>
-
         <div className="mb-3 border-b pb-1">
           <p className="mb-3 text-base font-medium leading-6 text-black">
-            Loại
+            Giới tính
           </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
@@ -142,38 +247,13 @@ const SidebarFilter = () => {
                 htmlFor="checkbox-default-3"
                 className="text-sm font-normal leading-4 text-gray-600"
               >
-                Gói khám
+                Nam
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="checkbox-default-4" />
               <label
                 htmlFor="checkbox-default-4"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                Dịch vụ
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className="mb-3 border-b pb-1">
-          <p className="mb-3 text-base font-medium leading-6 text-black">
-            Giới tính
-          </p>
-          <div className="box mb-3 flex flex-col gap-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-gt-1" />
-              <label
-                htmlFor="checkbox-gt-1"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                Nam
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-gt-2" />
-              <label
-                htmlFor="checkbox-gt-2"
                 className="text-sm font-normal leading-4 text-gray-600"
               >
                 Nữ
@@ -205,4 +285,8 @@ const SidebarFilter = () => {
   );
 };
 
+SidebarFilter.propTypes = {
+  setSort: PropTypes.func.isRequired,
+  onSpecialtyChange: PropTypes.func.isRequired,
+};
 export default SidebarFilter;

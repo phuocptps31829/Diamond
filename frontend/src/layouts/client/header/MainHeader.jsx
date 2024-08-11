@@ -9,12 +9,12 @@ export default function MainHeader() {
     {
       id: 1,
       name: "Gói khám",
-      to: "/category-service",
+      to: "/package",
     },
     {
       id: 2,
       name: "Dịch vụ",
-      to: "/category-service",
+      to: "/service",
     },
     {
       id: 3,

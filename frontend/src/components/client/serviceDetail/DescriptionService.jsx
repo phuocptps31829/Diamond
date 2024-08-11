@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";
 
-const DescriptionService = ({ medicalPackage, isLoading }) => {
+const DescriptionService = ({ medicalPackage, isLoading, service }) => {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-screen-2xl">
@@ -20,8 +20,7 @@ const DescriptionService = ({ medicalPackage, isLoading }) => {
       </div>
     );
   }
-
-  const { details, name } = medicalPackage;
+  const { details, name } = service || medicalPackage || {};
 
   return (
     <div className="mx-auto max-w-screen-2xl">
@@ -41,6 +40,7 @@ const DescriptionService = ({ medicalPackage, isLoading }) => {
 DescriptionService.propTypes = {
   isLoading: PropTypes.bool,
   medicalPackage: PropTypes.object,
+  service: PropTypes.object,
 };
 
 export default DescriptionService;

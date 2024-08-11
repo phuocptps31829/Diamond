@@ -7,12 +7,31 @@ import {
 } from "@/components/ui/Table";
 import PropTypes from "prop-types";
 import NotFound from "../notFound";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const PriceServiceContainer = ({ specialtyWithService, isLoading }) => {
   if (isLoading) {
-    return <div>Loading...</div>;
-  }
+    return (
+      <div className="mx-auto my-7 max-w-7xl">
+        <div className="mb-7 overflow-x-auto rounded-lg border bg-white p-4">
+          <Skeleton className="h-8 w-full mb-2" />
 
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="flex mb-4">
+              <Skeleton className="h-6 w-12 mr-4" />
+              <Skeleton className="h-6 flex-1 mr-4" />
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-6 w-24" />
+              <Skeleton className="h-6 w-24" />
+
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (!specialtyWithService || specialtyWithService.length === 0) {
     return <NotFound />;
   }
