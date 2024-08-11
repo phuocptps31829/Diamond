@@ -42,7 +42,7 @@ const createOTP = async (req, res, next) => {
 
         console.log({ ...req.body });
 
-        const OTP = sendOTP();
+        const OTP = await sendOTP({ ...req.body });
 
         const hashedOTP = await hashValue(OTP);
 
