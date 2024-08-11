@@ -10,6 +10,11 @@ export default function MainHeader() {
     },
     {
       id: 2,
+      name: "Dịch vụ",
+      to: "/category-service",
+    },
+    {
+      id: 2,
       name: "Chuyên khoa",
       to: "/specialties",
     },
@@ -28,11 +33,7 @@ export default function MainHeader() {
       name: "Liên hệ",
       to: "/contact",
     },
-    {
-      id: 6,
-      name: "Về chúng tôi",
-      to: "/about-us",
-    },
+   
   ];
 
   return (

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { ToastAction } from "@/components/ui/Toast";
-import { useToast } from "@/hook/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { AiOutlineSchedule } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
