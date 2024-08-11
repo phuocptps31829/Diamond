@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDoctors } from "@/services/doctorsApi";
-import { getAllSpecialties } from "@/services/specialties";
+import { getAllSpecialties } from "@/services/specialtiesApi";
 import DoctorProduct from "../product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
 

@@ -1,8 +1,7 @@
 import {
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_SERVICE_BY_ID,
-  API_URL_GET_SERVICE_BY_SPECIALTIES
-
+  API_URL_GET_SERVICE_BY_SPECIALTIES,
 } from "@/configs/varibles";
 import axios from "axios";
 export const getAllServices = async () => {
