@@ -5,34 +5,40 @@ const OtpModel = require('../models/otp.model');
 const { createError,
     saveRefreshToken,
     generateAccessRefreshToken,
-    comparePassword,
     hashPassword,
     sendEmail,
     errorValidator,
     sendOTP,
     generateOTPToken,
-    hashValue
+    hashValue,
+    compareHashedValue
 } = require('../utils/helper.util');
 
-const register = async (req, res, next) => {
-    try {
-        errorValidator(req, res);
+const checkPhoneNumberAndEmail = async (item, hasEmail = true) => {
+    const { phoneNumber, email } = item;
+    console.log('item:', phoneNumber);
+    if (!phoneNumber || !phoneNumber.trim()) {
+        createError(400, 'Phone number is required');
+    }
 
-        const hashedPassword = await hashPassword(req.body.password);
+    if (hasEmail) {
+        if ((!email) || !email.trim() === '') {
+            createError(400, 'Email is required');
+        }
+    }
 
-        const newUser = await UserModel.create({
-            ...req.body,
-            password: hashedPassword,
-        });
+    if (email && email.trim() !== '') {
+        const getExistingUserByEmail = await UserModel.findOne({ email });
+        if (getExistingUserByEmail) {
+            createError(400, 'Email already exists');
+        }
+    }
 
-        const { password, isAdmin, isDeleted, _v, ...resUser } = newUser._doc;
-
-        return res.status(201).json({
-            message: 'User has been registered successfully.',
-            data: resUser
-        });
-    } catch (error) {
-        next(error);
+    if (phoneNumber && phoneNumber.trim() !== '') {
+        const getExistingUserByPhoneNumber = await UserModel.findOne({ phoneNumber });
+        if (getExistingUserByPhoneNumber) {
+            createError(400, 'Phone number already exists');
+        }
     }
 };
 
@@ -43,6 +49,7 @@ const createOTP = async (req, res, next) => {
         console.log({ ...req.body });
 
         const OTP = sendOTP();
+        await checkPhoneNumberAndEmail(req.body, false);
 
         const hashedOTP = await hashValue(OTP);
 
@@ -67,33 +74,32 @@ const login = async (req, res, next) => {
         errorValidator(req, res);
 
         const user = await UserModel.findOne({
-            email: req.body.email
+            phoneNumber: req.body.phoneNumber
         });
 
         if (!user) {
-            createError(400, 'Email or password is incorrect.');
+            createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
         }
 
-        const validPassword = await comparePassword(req.body.password, user.password);
+        const validPassword = await compareHashedValue(req.body.password, user.password);
 
         if (!validPassword) {
-            createError(400, 'Email or password is incorrect.');
+            createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
         }
 
         const { accessToken, refreshToken } = generateAccessRefreshToken(user);
 
-        user.refreshToken = {
-            token: refreshToken,
-            expired: Date.now() + 48 * 60 * 60 * 1000
-        };
+        // user.refreshToken = {
+        //     token: refreshToken,
+        //     expired: Date.now() + 48 * 60 * 60 * 1000
+        // };
 
-        await user.save();
+        // await user.save();
 
-        saveRefreshToken(refreshToken, res);
+        // saveRefreshToken(refreshToken, res);
 
         return res.status(200).json({
             message: 'User logged in successfully.',
-            totalRecords: 1,
             data: {
                 accessToken
             }
@@ -273,16 +279,16 @@ const googleCallback = async (req, res, next) => {
             email: req.user.email
         });
 
-        user.refreshToken = {
-            token: refreshToken,
-            expired: Date.now() + 48 * 60 * 60 * 1000
-        };
+        // user.refreshToken = {
+        //     token: refreshToken,
+        //     expired: Date.now() + 48 * 60 * 60 * 1000
+        // };
 
-        await user.save();
+        // await user.save();
 
-        saveRefreshToken(refreshToken, res);
+        // saveRefreshToken(refreshToken, res);
 
-        return res.redirect(`${process.env.CLIENT_URL}?accessToken=${accessToken}`);
+        return res.redirect(`${process.env.CLIENT_LOCAL_URL}?accessToken=${accessToken}`);
     } catch (error) {
         next(error);
     }
@@ -291,28 +297,27 @@ const googleCallback = async (req, res, next) => {
 const facebookCallback = async (req, res, next) => {
     try {
         const { accessToken, refreshToken } = generateAccessRefreshToken(req.user);
-
+        console.log(accessToken);
         const user = await UserModel.findOne({
             email: req.user.email
         });
 
-        user.refreshToken = {
-            token: refreshToken,
-            expired: Date.now() + 48 * 60 * 60 * 1000
-        };
+        // user.refreshToken = {
+        //     token: refreshToken,
+        //     expired: Date.now() + 48 * 60 * 60 * 1000
+        // };
 
-        await user.save();
+        // await user.save();
 
-        saveRefreshToken(refreshToken, res);
+        // saveRefreshToken(refreshToken, res);
 
-        return res.redirect(`${process.env.CLIENT_URL}?accessToken=${accessToken}`);
+        return res.redirect(`${process.env.CLIENT_LOCAL_URL}?accessToken=${accessToken}`);
     } catch (error) {
         next(error);
     }
 };
 
 module.exports = {
-    register,
     login,
     logout,
     refreshToken,

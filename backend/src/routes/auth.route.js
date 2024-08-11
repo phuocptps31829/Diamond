@@ -1,33 +1,71 @@
 const express = require('express');
 const router = express.Router();
-// const passport = require('passport');
+const passport = require('passport');
 
 const userValidator = require('../validations/user.validation');
 const authController = require('../controllers/auth.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
 
-// router.get(
-//     '/google',
-//     passport.authenticate('google', { scope: ['profile', 'email'] })
-// );
+/**
+ * @openapi
+ * '/api/v1/auth/google':
+ *  get:
+ *    tags:
+ *    - Auth Routes
+ *    summary: Google Login
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.get(
+    '/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+);
 
-// router.get(
-//     '/facebook',
-//     passport.authenticate('facebook', { scope: ['email'] })
-// );
+/**
+ * @openapi
+ * '/api/v1/auth/facebook':
+ *  get:
+ *    tags:
+ *    - Auth Routes
+ *    summary: Facebook Login
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.get(
+    '/facebook',
+    passport.authenticate('facebook', { scope: ['email'] })
+);
 
-// router.get(
-//     '/google/callback',
-//     passport.authenticate('google', { failureRedirect: '/' }),
-//     authController.googleCallback
-// );
+router.get(
+    '/google/callback',
+    passport.authenticate('google', { failureRedirect: '/' }),
+    authController.googleCallback
+);
 
-// router.get(
-//     '/facebook/callback',
-//     passport.authenticate('facebook', { failureRedirect: '/' }),
-//     authController.facebookCallback
-// );
+router.get(
+    '/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/' }),
+    authController.facebookCallback
+);
 
 /**
  * @openapi
@@ -81,19 +119,17 @@ router.post(
  *     requestBody:
  *      required: true
  *      content:
- *        multipart/form-data:
+ *        application/json:
  *           schema:
  *            type: object
  *            required:
- *              - email
+ *              - phoneNumber
  *              - password
  *            properties:
- *              email:
+ *              phoneNumber:
  *                type: string
- *                default: johndoe@gmail.com
  *              password:
  *                type: string
- *                default: johnDoe20!@
  *     responses:
  *      '200':
  *        $ref: '#/components/responses/200'

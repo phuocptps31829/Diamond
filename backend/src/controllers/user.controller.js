@@ -1,33 +1,7 @@
 
 const DoctorModel = require('../models/doctor.model');
 const UserModel = require('../models/user.model');
-const { createError, errorValidator, hashPassword, sendOTP } = require("../utils/helper.util");
-const checkPhoneNumberAndEmail = async (item, hasEmail = true) => {
-    const { phoneNumber, email } = item;
-    if (!phoneNumber || !phoneNumber.trim()) {
-        createError(400, 'Phone number is required');
-    }
-
-    if (hasEmail) {
-        if ((!email) || !email.trim() === '') {
-            createError(400, 'Email is required');
-        }
-    }
-
-    if (email && email.trim() !== '') {
-        const getExistingUserByEmail = await UserModel.findOne({ email });
-        if (getExistingUserByEmail) {
-            createError(400, 'Email already exists');
-        }
-    }
-
-    if (phoneNumber && phoneNumber.trim() !== '') {
-        const getExistingUserByPhoneNumber = await UserModel.findOne({ phoneNumber });
-        if (getExistingUserByPhoneNumber) {
-            createError(400, 'Phone number already exists');
-        }
-    }
-};
+const { createError, errorValidator, hashValue } = require("../utils/helper.util");
 
 const createUser = async (req, res, next) => {
     try {
@@ -36,11 +10,14 @@ const createUser = async (req, res, next) => {
 
         // Gửi otp và xác thực nếu thành công mới tạo tài khoản
 
-        // await checkPhoneNumberAndEmail(req.body, req.isCreateDoctor);
-        // const hashedPassword = await hashPassword(req.body.password);
-        // const newUser = await UserModel.create({ ...req.body, password: hashedPassword });
-        // req.newUser = newUser;
-        // next();
+        const hashedPassword = await hashValue(req.newUser.password);
+        const newUser = await UserModel.create({
+            ...req.newUser,
+            password: hashedPassword,
+            isActivated: true
+        });
+        req.newUser = newUser;
+        next();
     } catch (error) {
         next(error);
     }
@@ -79,7 +56,7 @@ const updateUser = async (req, res, next) => {
                 createError(400, 'Email already exists');
             }
         }
-        const hashedPassword = await hashPassword(req.body.password);
+        const hashedPassword = await hashValue(req.body.password);
         const updatedUser = await UserModel.findOneAndUpdate(
             {
                 _id: userID,

@@ -24,6 +24,7 @@ const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
+const passportMiddleWare = require('./src/middlewares/passport.middleware');
 
 const app = express();
 
@@ -31,6 +32,7 @@ const app = express();
 //     res.header("Access-Control-Allow-Origin", ['http://localhost:5173']);
 //     next();
 // });
+passportMiddleWare(app);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

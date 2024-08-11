@@ -150,7 +150,6 @@ router.get(
  */
 router.post(
     '/add',
-    helperMiddleware.isCreatePatient,
     authMiddleware.verifyOTP,
     userController.createUser,
     patientValidator.patientValidator,
