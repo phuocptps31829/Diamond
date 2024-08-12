@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({
+export default function ServiceList({
   image,
   name,
   price,
@@ -16,7 +16,6 @@ export default function ServiceProduct({
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={`/detail-service/${_id}`}
-        
         className="group block h-full w-full overflow-hidden"
       >
         <img
@@ -63,7 +62,7 @@ export default function ServiceProduct({
   );
 }
 
-ServiceProduct.propTypes = {
+ServiceList.propTypes = {
   image: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   discountPrice: PropTypes.number.isRequired,

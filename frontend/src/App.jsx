@@ -40,11 +40,11 @@ const router = createBrowserRouter([
         element: <SpecialtiesCategory />,
       },
       {
-        path: "service/:id?",
+        path: "services/:id?",
         element: <CategoryService />,
       },
       {
-        path: "package/:id?",
+        path: "packages/:id?",
         element: <CategoryService />,
       },
       {
