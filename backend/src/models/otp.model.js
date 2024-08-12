@@ -6,7 +6,7 @@ const otpSchema = new mongoose.Schema({
     time: {
         type: Date,
         default: Date.now,
-        index: { expires: 120 }
+        index: { expires: 300 }
     }
 }, {
     collection: 'OTP',

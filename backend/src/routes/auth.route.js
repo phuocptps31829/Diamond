@@ -215,18 +215,11 @@ router.post(
 
 /**
  * @openapi
- * '/api/v1/auth/forgot-password/reset-pass-word/{phone}':
+ * '/api/v1/auth/forgot-password/reset-pass-word':
  *  put:
  *     tags:
  *     - Auth Routes
  *     summary: Check OTP 
- *     parameters:
- *      - in: path
- *        name: phone
- *        required: true
- *        description: Contract phone number
- *        schema:
- *          type: string
  *     requestBody:
  *      required: true
  *      content:
@@ -234,8 +227,14 @@ router.post(
  *           schema:
  *            type: object
  *            required:
+ *              - OTP
+ *              - otpToken
  *              - password
  *            properties:
+ *              OTP:
+ *                type: string
+ *              otpToken:
+ *                type: string
  *              password:
  *                type: string
  *     responses:
@@ -250,7 +249,8 @@ router.post(
  */
 
 router.put(
-    '/forgot-password/reset-pass-word/:phone',
+    '/forgot-password/reset-pass-word',
+    authMiddleware.verifyOTP,
     authController.forgotPassword
 );
 

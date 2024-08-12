@@ -134,10 +134,10 @@ const generateOTPToken = ({ fullName, phoneNumber, password }) => {
             fullName,
             phoneNumber,
             password,
-            expiresIn: Date.now() + 60000
+            expiresIn: Date.now() + 300000
         },
         'secret-key',
-        { expiresIn: '60s' }
+        { expiresIn: '5m' }
     );
 
     return otpToken;

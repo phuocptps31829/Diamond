@@ -49,6 +49,7 @@ const verifyOTP = async (req, res, next) => {
         const otpHolder = await OtpModel.find({ phoneNumber });
 
         if (!otpHolder.length) {
+            console.log(1)
             createError(401, 'Token hết hạn.');
         }
 
@@ -66,9 +67,9 @@ const verifyOTP = async (req, res, next) => {
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             createError(401, 'Token hết hạn.');
+            console.log(2)
         }
-
-        // createError(403, 'Token không hợp lệ.');
+        next(error);
         console.log(error);
     }
 };

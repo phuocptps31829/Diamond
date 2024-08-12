@@ -277,10 +277,11 @@ const sendOTPForgotPassword = async (req, res, next) => {
 
 const checkOTPForgotPassword = async (req, res, next) => {
     try {
-        const { phoneNumber } = req.newUser;
+
+        const { OTP, otpToken } = req.body;
         return res.status(201).json({
             message: 'OTP is correct',
-            phoneNumber
+            data: { OTP, otpToken }
         });
     } catch (error) {
         next(error);
@@ -290,21 +291,22 @@ const checkOTPForgotPassword = async (req, res, next) => {
 
 const forgotPassword = async (req, res, next) => {
     try {
-        const { phone } = req.params;
 
-        const userFound = await UserModel.findOne({ phoneNumber: phone, isActivated: true });
+        const { phoneNumber } = req.newUser;
+
+        const userFound = await UserModel.findOne({ phoneNumber, isActivated: true });
 
         if (!userFound) {
             createError(404, "Phone number not found.");
         }
         const hashedPassword = await hashValue(req.body.password);
 
-        const newUser = await UserModel.updateOne(
-            { phoneNumber: phone },
+        const newUser = await UserModel.findOneAndUpdate(
+            { phoneNumber },
             { $set: { password: hashedPassword } },
             { new: true }
         );
-
+        console.log(newUser);
         return res.status(201).json({
             message: 'Updated user successfully',
             user: newUser
