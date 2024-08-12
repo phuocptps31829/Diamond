@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PackageProduct from "../product/Package";
+import PackageList from "../product/Package";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
@@ -86,12 +86,12 @@ export default function OutstandingPackages() {
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
             {OutstandingMedicalPackages.map((medicalPackage) => {
               return (
-                <PackageProduct key={medicalPackage._id} {...medicalPackage} />
+                <PackageList key={medicalPackage._id} {...medicalPackage} />
               );
             })}
           </div>
           <Link
-            to="/category-service"
+            to="/packages"
             className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border border-primary-500 py-2 text-[12px] font-semibold uppercase text-primary-500 hover:bg-primary-500 hover:text-white md:w-[40%] md:text-[14px]"
           >
             Xem tất cả <AiOutlineDoubleRight />

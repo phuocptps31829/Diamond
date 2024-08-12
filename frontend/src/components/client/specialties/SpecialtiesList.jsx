@@ -34,13 +34,13 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
             >
               <div className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <Link
-                 to={`/service/${item._id}`}
+                 to={`/services/${item._id}`}
                   className="flex h-8 w-24  cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
                 >
                   Dịch vụ
                 </Link>
                 <Link
-                   to={`/package/${item._id}`}
+                   to={`/packages/${item._id}`}
                   className="flex h-8 w-24 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-3 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
                 >
                  Gói khám

@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";
 import { getAllBranches } from "@/services/branchesApi";
+import { useLocation } from "react-router-dom";
 
 const SidebarFilter = ({ onFilterApply }) => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
     sort: "",
@@ -22,6 +24,9 @@ const SidebarFilter = ({ onFilterApply }) => {
       gender: [],
     });
   };
+  useEffect(() => {
+    handleResetFilters();
+  }, [location.pathname]);
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
@@ -166,7 +171,10 @@ const SidebarFilter = ({ onFilterApply }) => {
       <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
-          <p  onClick={handleResetFilters} className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
+          <p
+            onClick={handleResetFilters}
+            className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
+          >
             Làm mới
           </p>
         </div>
@@ -342,6 +350,7 @@ const SidebarFilter = ({ onFilterApply }) => {
 
 SidebarFilter.propTypes = {
   onFilterApply: PropTypes.func.isRequired,
+  onResetFilters: PropTypes.func,
 };
 
 export default SidebarFilter;

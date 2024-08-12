@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({
+export default function ServiceList({
   image,
   name,
   price,
@@ -42,7 +42,7 @@ export default function ServiceProduct({
         </div>
 
         <hr className="mb-1" />
-        <div className="sm:mt-2 flex items-center justify-between">
+        <div className="flex items-center justify-between sm:mt-2">
           <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
             <FaHeart />
             <FaHeart />
@@ -62,7 +62,7 @@ export default function ServiceProduct({
   );
 }
 
-ServiceProduct.propTypes = {
+ServiceList.propTypes = {
   image: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   discountPrice: PropTypes.number.isRequired,
