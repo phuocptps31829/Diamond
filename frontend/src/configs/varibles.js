@@ -27,6 +27,9 @@ const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 //contact
 const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
 
+// auth
+const API_LOGIN_GOOGLE = `http://api.cosstewn.io.vn/api/v1/auth/google`;
+
 export {
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
@@ -40,5 +43,6 @@ export {
   API_URL_GET_ALL_NEWS,
   API_URL_GET_SPECIALTY_WITH_SERVICES,
   API_URL_POST_CONTACT,
-  API_URL_GET_ALL_BRANCHES
+  API_URL_GET_ALL_BRANCHES,
+  API_LOGIN_GOOGLE
 };
