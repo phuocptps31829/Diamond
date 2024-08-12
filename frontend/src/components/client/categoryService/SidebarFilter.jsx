@@ -4,35 +4,84 @@ import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";
+import { getAllBranches } from "@/services/branchesApi";
 
-const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
+const SidebarFilter = ({ onFilterApply }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [sortValue, setSortValue] = useState("");
-  const [selectedSpecialty, setSelectedSpecialty] = useState(null);
+  const [filters, setFilters] = useState({
+    sort: "",
+    specialty: [],
+    branch: [],
+    gender: [],
+  });
+  const handleResetFilters = () => {
+    setFilters({
+      sort: "",
+      specialty: [],
+      branch: [],
+      gender: [],
+    });
+  };
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSortChange = (value) => {
-    const newValue = sortValue === value ? "" : value;
-    setSortValue(newValue);
-    setSort(newValue);
+  const handleBranchChange = (branch) => {
+    setFilters((prev) => ({
+      ...prev,
+      branch: prev.branch.includes(branch)
+        ? prev.branch.filter((b) => b !== branch)
+        : [...prev.branch, branch],
+    }));
   };
-  const handleSpecialtyChange = (specialtyId) => {
-    const newSelectedSpecialty = selectedSpecialty === specialtyId ? null : specialtyId;
-    setSelectedSpecialty(newSelectedSpecialty);
-    onSpecialtyChange(newSelectedSpecialty);
+
+  const handleSortChange = (sort) => {
+    setFilters((prev) => ({
+      ...prev,
+      sort: prev.sort === sort ? "" : sort,
+    }));
+  };
+
+  const handleGenderChange = (gender) => {
+    setFilters((prev) => ({
+      ...prev,
+      gender: prev.gender.includes(gender)
+        ? prev.gender.filter((g) => g !== gender)
+        : [...prev.gender, gender],
+    }));
+  };
+  const handleSpecialtyChange = (specialty) => {
+    setFilters((prev) => ({
+      ...prev,
+      specialty: prev.specialty.includes(specialty)
+        ? prev.specialty.filter((s) => s !== specialty)
+        : [...prev.specialty, specialty],
+    }));
+  };
+
+  const handleFilterApply = () => {
+    onFilterApply(filters);
+    console.log(filters);
   };
 
   const {
     data: specialties,
-    error,
-    isLoading,
+    error: specialtiesError,
+    isLoading: specialtiesLoading,
   } = useQuery({
     queryKey: ["specialties"],
     queryFn: () => getAllSpecialties(),
   });
-  if (isLoading)
+
+  const {
+    data: branches,
+    error: branchesError,
+    isLoading: branchesLoading,
+  } = useQuery({
+    queryKey: ["branches"],
+    queryFn: () => getAllBranches(),
+  });
+  if (specialtiesLoading || branchesLoading)
     return (
       <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
         <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
@@ -111,13 +160,13 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
       </div>
     );
 
-  if (error) return <div>Error loading specialties</div>;
+  if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
       <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
-          <p className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
+          <p  onClick={handleResetFilters} className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
             Làm mới
           </p>
         </div>
@@ -129,7 +178,7 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-lowest"
-                checked={sortValue === "price"}
+                checked={filters.sort === "price"}
                 onCheckedChange={() => handleSortChange("price")}
               />
               <label
@@ -142,7 +191,7 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-highest"
-                checked={sortValue === "-price"}
+                checked={filters.sort === "-price"}
                 onCheckedChange={() => handleSortChange("-price")}
               />
               <label
@@ -191,13 +240,12 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
                       className="flex items-center space-x-2"
                     >
                       <Checkbox
-                        checked={selectedSpecialty === specialty._id}
+                        checked={filters.specialty.includes(specialty._id)}
                         onCheckedChange={() =>
                           handleSpecialtyChange(specialty._id)
                         }
                         id={`checkbox-${specialty._id}`}
                       />
-
                       <label
                         htmlFor={`checkbox-${specialty._id}`}
                         className="text-sm font-normal text-gray-600"
@@ -216,24 +264,21 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-1" />
-              <label
-                htmlFor="checkbox-default-1"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                ĐA KHOA 179
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-2" />
-              <label
-                htmlFor="checkbox-default-2"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                ĐA KHOA DIAMOND
-              </label>
-            </div>
+            {branches.map((branch) => (
+              <div key={branch._id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`checkbox-${branch._id}`}
+                  checked={filters.branch.includes(branch._id)}
+                  onCheckedChange={() => handleBranchChange(branch._id)}
+                />
+                <label
+                  htmlFor={`checkbox-${branch._id}`}
+                  className="text-sm font-normal leading-4 text-gray-600"
+                >
+                  {branch.name}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
         <div className="mb-3 border-b pb-1">
@@ -242,7 +287,11 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
           </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-3" />
+              <Checkbox
+                id="checkbox-default-3"
+                checked={filters.gender.includes("Nam")}
+                onCheckedChange={() => handleGenderChange("Nam")}
+              />
               <label
                 htmlFor="checkbox-default-3"
                 className="text-sm font-normal leading-4 text-gray-600"
@@ -251,7 +300,11 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-4" />
+              <Checkbox
+                id="checkbox-default-4"
+                checked={filters.gender.includes("Nữ")}
+                onCheckedChange={() => handleGenderChange("Nữ")}
+              />
               <label
                 htmlFor="checkbox-default-4"
                 className="text-sm font-normal leading-4 text-gray-600"
@@ -261,8 +314,10 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
             </div>
           </div>
         </div>
-
-        <button className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm">
+        <button
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm"
+          onClick={handleFilterApply}
+        >
           <svg
             width="17"
             height="16"
@@ -286,7 +341,7 @@ const SidebarFilter = ({ setSort, onSpecialtyChange }) => {
 };
 
 SidebarFilter.propTypes = {
-  setSort: PropTypes.func.isRequired,
-  onSpecialtyChange: PropTypes.func.isRequired,
+  onFilterApply: PropTypes.func.isRequired,
 };
+
 export default SidebarFilter;

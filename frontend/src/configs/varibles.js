@@ -18,6 +18,8 @@ const API_URL_GET_SPECIALTY_WITH_SERVICES = `${API_URL}/specialties/specialties-
 
 // doctors
 const API_URL_GET_ALL_DOCTORS = `${API_URL}/doctors`;
+// branches
+const API_URL_GET_ALL_BRANCHES = `${API_URL}/branches`;
 
 // news
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
@@ -38,4 +40,5 @@ export {
   API_URL_GET_ALL_NEWS,
   API_URL_GET_SPECIALTY_WITH_SERVICES,
   API_URL_POST_CONTACT,
+  API_URL_GET_ALL_BRANCHES
 };
