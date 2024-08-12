@@ -1,5 +1,6 @@
 import { Skeleton } from "@/components/ui/Skeleton";
-import Service from "../product/Package";
+import PackageProduct from "../product/Package";
+import ServiceProduct from "../product/Service";
 import PropTypes from "prop-types";
 import {
   Carousel,
@@ -9,18 +10,29 @@ import {
   CarouselPrevious,
 } from "@/components/ui/Carousel";
 
-const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
+const PackageServiceOther = ({ medicalPackageSpecialty, isLoading, serviceSpecialty }) => {
+
+  const renderSkeletons = () => (
+    <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <Skeleton key={index} className="h-64 w-full" />
+      ))}
+    </div>
+  );
+
+  const renderCarouselItems = (items, Component) => (
+    items.map((item) => (
+      <CarouselItem key={item._id} className="p-2 md:basis-1/2 lg:basis-1/4">
+        <Component {...item} />
+      </CarouselItem>
+    ))
+  );
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-7xl p-4">
-        <h1 className="my-6 text-center text-2xl font-bold">
-          Các gói khám khác
-        </h1>
-        <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-64 w-full" />
-          ))}
-        </div>
+        <h1 className="my-6 text-center text-2xl font-bold">Các gói khám khác</h1>
+        {renderSkeletons()}
       </div>
     );
   }
@@ -28,23 +40,11 @@ const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
   return (
     <div className="mx-auto max-w-7xl p-4">
       <h1 className="my-6 text-center text-2xl font-bold">Các gói khám khác</h1>
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="ml-1 md:m-0">
-          {medicalPackageSpecialty &&
-            medicalPackageSpecialty.map((medicalPackage) => (
-              <CarouselItem
-                key={medicalPackage._id}
-                className="p-2 md:basis-1/2 lg:basis-1/4"
-              >
-                <Service key={medicalPackage._id} {...medicalPackage} />
-              </CarouselItem>
-            ))}
+      <Carousel opts={{ align: "start", loop: true }} className="w-full">
+        <CarouselContent className="md:m-0 ml-1">
+          {medicalPackageSpecialty && medicalPackageSpecialty.length > 0
+            ? renderCarouselItems(medicalPackageSpecialty, PackageProduct)
+            : renderCarouselItems(serviceSpecialty, ServiceProduct)}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
@@ -54,8 +54,14 @@ const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
 };
 
 PackageServiceOther.propTypes = {
-  isLoading: PropTypes.bool,
+  isLoading: PropTypes.bool.isRequired,
   medicalPackageSpecialty: PropTypes.array,
+  serviceSpecialty: PropTypes.array,
+};
+
+PackageServiceOther.defaultProps = {
+  medicalPackageSpecialty: [],
+  serviceSpecialty: [],
 };
 
 export default PackageServiceOther;

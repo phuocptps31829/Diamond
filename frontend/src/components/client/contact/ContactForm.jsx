@@ -4,7 +4,7 @@ import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactSchema } from "@/zods/contact";
-import { useToast } from "@/hook/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 import { postContact } from "@/services/contactApi";
 

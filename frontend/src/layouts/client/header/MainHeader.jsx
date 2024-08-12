@@ -9,38 +9,38 @@ export default function MainHeader() {
     {
       id: 1,
       name: "Gói khám",
-      to: "/category-service",
+      to: "/package",
     },
     {
       id: 2,
+      name: "Dịch vụ",
+      to: "/service",
+    },
+    {
+      id: 3,
       name: "Chuyên khoa",
       to: "/specialties",
     },
     {
-      id: 3,
+      id: 4,
       name: "Bác sĩ",
       to: "/doctors",
     },
     {
-      id: 4,
+      id: 5,
       name: "Tin tức",
       to: "/news",
     },
     {
-      id: 5,
+      id: 6,
       name: "Liên hệ",
       to: "/contact",
-    },
-    {
-      id: 6,
-      name: "Về chúng tôi",
-      to: "/about-us",
     },
   ];
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between p-3 sm:px-10 lg:py-4">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5 lg:py-4">
         <Link to={"/"} className="relative w-44 items-center">
           <img
             src="https://ykhoadiamond.com/images/icons/logo.png"
