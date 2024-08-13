@@ -1,105 +1,206 @@
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaKey } from "react-icons/fa";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "@/zods/account";
-import InputCustom from "@/components/ui/InputCustom";
-import { Button } from "@/components/ui/Button";
+import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
+import { useMutation } from "@tanstack/react-query";
+import OtpInput from "react-otp-input";
+import { useNavigate } from "react-router-dom";
+import { otpUserVerification } from "@/services/authApi";
 
 export default function AccurancyComponent() {
-  const { handleSubmit,
-    control,
-    formState: { errors }
-  } = useForm({
-    resolver: zodResolver(accountSchema),
-    defaultValues: {
-      authCode: "",
-    },
-  });
-  const onSubmit = (data) => {
-    console.log(data);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const inputRefs = useRef([]);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otpToken, setOtpToken] = useState("");
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+
+  useEffect(() => {
+    const phoneNumber = localStorage.getItem("phoneNumber");
+    setPhoneNumber(phoneNumber);
+    const otpToken = localStorage.getItem("otpToken");
+    setOtpToken(otpToken);
+  }, []);
+
+  const handleChange = (value, index) => {
+    const newOtp = [...otp];
+    newOtp[index] = value;
+
+    setOtp(newOtp);
+
+    if (value && index < inputRefs.current.length - 1) {
+      inputRefs.current[index + 1].focus();
+    }
   };
 
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+      const newOtp = [...otp];
+      newOtp[index] = "";
+      setOtp(newOtp);
+
+      if (index > 0) {
+        inputRefs.current[index - 1].focus();
+      }
+    }
+  };
+
+  const mutation = useMutation({
+    mutationFn: otpUserVerification,
+    onSuccess: () => {
+      toast({
+        variant: "success",
+        title: "Xác thực thành công!",
+        description: "Bạn đã xác thực tài khoản thành công.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      setOtp(new Array(6).fill(""));
+      navigate("/login");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toast({
+        variant: "destructive",
+        title: "Xác thực thất bại!",
+        description: errorMessage,
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    },
+  });
+
+  const handleSubmit = () => {
+    const otpValue = otp.join("");
+
+    if (otpValue.length < 6) {
+      toast({
+        variant: "destructive",
+        title: "Xác thực thất bại!",
+        description: "Vui lòng nhập đủ 6 số.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+
+    console.log(otpValue, typeof otpValue);
+
+    const data = {
+      OTP: otpValue,
+      otpToken: otpToken,
+    };
+
+    console.log("data: ", data);
+
+    mutation.mutate(data);
+  };
+
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
   return (
-    <div className="flex items-center justify-center h-auto bg-gray-100 py-20 px-2 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */ }
-          <div className="bg-white py-16 md:py-20 px-5 md:px-11 shadow-lg">
-            <h1 className="text-4xl md:text-5xl font-bold mb-2 text-center">Xác thực tài khoản</h1>
-            <p className="mb-6 text-center text-sm text-gray-400">Xác thực tài khoản để hoàn tất quá trình đăng kí</p>
+          {/* FORM */}
+          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
+            <h1 className="mb-4 text-center text-4xl font-bold md:text-5xl">
+              Xác thực tài khoản
+            </h1>
+            <p className="mb-2 text-center text-sm text-gray-700">
+              Vui lòng nhập mã 6 số đã gửi cho bạn qua số điện thoại
+            </p>
 
-            <form onSubmit={ handleSubmit(onSubmit) }>
-              <div className="mb-2 relative">
-                <label htmlFor="authCode" className="block text-gray-700 font-semibold">Mã xác thực:</label>
-                <div className="relative">
-                  <InputCustom
-                    className="col-span-1 sm:col-span-1 "
-                    placeholder="Nhập mã xác thực"
-                    name="authCode"
-                    type="text"
-                    id="authCode"
-                    icon={ <FaKey></FaKey> }
-                    control={ control }
-                    errors={ errors }
+            <p className="mb-4 text-center text-sm text-gray-600">
+              Số điện thoại:{" "}
+              <strong className="text-primary-500">
+                {formatPhoneNumber(phoneNumber)}
+              </strong>
+            </p>
+            <div className="relative mb-2">
+              <OtpInput
+                value={otp.join("")}
+                onChange={(value) => handleChange(value, otp.length)}
+                numInputs={6}
+                renderInput={(props, index) => (
+                  <input
+                    {...props}
+                    value={otp[index]}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onChange={(e) => handleChange(e.target.value, index)}
+                    className="h-10 flex-1 rounded-md border bg-[#e1e1e1] text-center text-xl focus:outline-none focus:ring-2 focus:ring-primary-500 sm:h-16"
                   />
+                )}
+                containerStyle="flex justify-center space-x-2 sm:space-x-5"
+              />
+            </div>
+            <span className="my-5 flex items-center justify-between text-sm">
+              <p>Mã OTP sẽ hết hạn sau 5 phút</p>{" "}
+              <button className="hover:text-primary-400">Gửi lại mã OTP</button>
+            </span>
 
-                </div>
-              </div>
+            <button
+              onClick={handleSubmit}
+              className="my-4 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-3 text-xl font-semibold text-white hover:bg-primary-500"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Đang xử lí" : "Xác thực"}
+              {mutation.isPending && (
+                <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              )}
+            </button>
 
-              <div className="my-2 text-sm">
-                <p>
-                  Gửi lại mã xác thực sau
-                  <strong className="ml-1 text-primary-500">
-                    30 giây
-                  </strong>
-                </p>
-              </div>
+            <div className="my-2 flex items-center">
+              <div className="flex-grow border-t border-gray-300"></div>
+              <span className="mx-4 text-sm text-gray-800">
+                Hoặc tiếp tục với
+              </span>
+              <div className="flex-grow border-t border-gray-300"></div>
+            </div>
 
-              <div className="text-center">
-                <Button
-                type="submit"
-                size="full"
-                variant="primary"
-                >Xác thực tài khoản
-              </Button>
-              </div>
+            {/* GG - FB LOGIN */}
+            <div className="block justify-center md:flex md:space-x-2">
+              <button
+                type="button"
+                className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
+              >
+                <img
+                  src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png"
+                  className="mr-2 w-7 md:mr-2"
+                  alt="Google icon"
+                />
+                <span className="mr-4 block md:mr-0">Tài khoản Google</span>
+              </button>
+              <button
+                type="button"
+                className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-2 py-1 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 md:flex-1 md:px-1 md:py-1"
+              >
+                <img
+                  src="https://static.vecteezy.com/system/resources/previews/018/930/698/original/facebook-logo-facebook-icon-transparent-free-png.png"
+                  className="mr-0 w-12 md:mr-0"
+                  alt="Facebook icon"
+                />
+                <span className="block">Tài khoản Facebook</span>
+              </button>
+            </div>
 
-              <div className="flex items-center my-2">
-                <div className="flex-grow border-t border-gray-300"></div>
-                <span className="mx-4 text-gray-800 text-sm">Hoặc tiếp tục với</span>
-                <div className="flex-grow border-t border-gray-300"></div>
-              </div>
-
-              {/* GG - FB LOGIN */ }
-              <div className="block md:flex justify-center md:space-x-2">
-                <button
-                  type="button"
-                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
-                  <img src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png" className="w-7 mr-2 md:mr-2" alt="Google icon" />
-                  <span className="block mr-4 md:mr-0">
-                    Tài khoản Google
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-1 md:py-1 px-2 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 my-2">
-                  <img src="https://static.vecteezy.com/system/resources/previews/018/930/698/original/facebook-logo-facebook-icon-transparent-free-png.png" className="w-12 mr-0 md:mr-0" alt="Facebook icon" />
-                  <span className="block">
-                    Tài khoản Facebook
-                  </span>
-                </button>
-              </div>
-
-              <div className="flex flex-col items-center mt-3 mb-10">
-                <p className="text-center">
-                  Bạn đã có tài khoản?
-                  <Link to={ '/login' } className="block md:inline text-primary-500 font-medium ml-1 hover:text-primary-800 hover:font-semibold">
-                    Đăng nhập ngay!
-                  </Link>
-                </p>
-              </div>
-            </form>
+            <div className="mb-10 mt-3 flex flex-col items-center">
+              <p className="text-center">
+                Bạn đã có tài khoản?
+                <Link
+                  to={"/login"}
+                  className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
+                >
+                  Đăng nhập ngay!
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>

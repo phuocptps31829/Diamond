@@ -24,7 +24,7 @@ export default function ServiceList({
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex h-full flex-col p-3 md:p-5">
+      <div className="flex h-full flex-col p-3 md:p-5 md:pt-2">
         <Link
           to={`/detail-service/${_id}`}
           className="grow py-2 text-sm font-bold md:text-xl"

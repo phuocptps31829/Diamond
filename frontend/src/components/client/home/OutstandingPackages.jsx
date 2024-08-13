@@ -47,13 +47,15 @@ export default function OutstandingPackages() {
                 key={index}
               >
                 <div className="group block h-full w-full overflow-hidden">
-                  <div className="h-[250px] w-full">
+                  <div className="h-[210px] w-full">
                     <Skeleton className="block h-full w-full object-cover" />
                   </div>
                 </div>
                 <div className="flex h-full flex-col p-3 md:p-5">
                   <Skeleton className="mb-1 h-[12px] w-2/5 rounded-md" />
                   <Skeleton className="h-[20px] w-full grow rounded-md" />
+                  <hr className="md:mt-3" />
+                  <Skeleton className="my-2 h-[30px] w-full rounded-md" />
                   <hr className="mb-1 md:mb-3" />
                   <div className="flex items-center justify-between">
                     <div className="flex gap-[3px] text-[8px] opacity-70 md:text-[10px]">

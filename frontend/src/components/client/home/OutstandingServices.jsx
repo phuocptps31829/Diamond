@@ -47,7 +47,7 @@ export default function OutstandingServices() {
                 key={index}
               >
                 <div className="group block h-full w-full overflow-hidden">
-                  <div className="h-[250px] w-full">
+                  <div className="h-[210px] w-full">
                     <Skeleton className="block h-full w-full object-cover" />
                   </div>
                 </div>
