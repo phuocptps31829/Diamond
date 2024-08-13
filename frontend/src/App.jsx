@@ -25,6 +25,8 @@ import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 import NotFound from "@/components/client/notFound";
+import { store } from "./redux/store";
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter([
   {
@@ -145,8 +147,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+
+
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
+    </Provider>
+  );
 }
 
 export default App;

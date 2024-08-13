@@ -6,9 +6,11 @@ import { FaBriefcaseMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoMdContacts } from "react-icons/io";
 import { LiaInfoSolid } from "react-icons/lia";
 import { NavbarContext } from "../../../contexts/NavBarContext";
+import { useSelector } from "react-redux";
 export default function NavigationBarMobile() {
   const { isNavbarVisible, setIsNavbarVisible, toggleNavbar } =
     useContext(NavbarContext);
+  const userProfile = useSelector((state) => state.auth.userProfile);
 
   const menuItems = [
     {
@@ -74,22 +76,46 @@ export default function NavigationBarMobile() {
         </div>
         <div id="mobile-menu">
           <div className="bg-white py-5">
-            <div className="m-4 mt-0 flex items-center justify-between space-x-3">
-              <Link
-                onClick={() => setIsNavbarVisible(false)}
-                to="/register"
-                className="w-full rounded px-4 py-2 text-center text-blue-500 shadow-sm shadow-zinc-400"
-              >
-                Đăng ký
-              </Link>
-              <Link
-                onClick={() => setIsNavbarVisible(false)}
-                to="/login"
-                className="w-full rounded bg-blue-500 px-4 py-2 text-center text-white"
-              >
-                Đăng nhập
-              </Link>
-            </div>
+            {userProfile ? (
+              <div className="m-4 mt-0 flex flex-col items-center justify-between space-x-3">
+                <span className="text-sm mb-4">Xin chào, <strong>{userProfile.fullName}</strong> </span>
+                <div className="flex w-full items-center justify-center space-x-3">
+                <Link
+                    onClick={() => setIsNavbarVisible(false)}
+                    to="/user-profile"
+                    className="w-full rounded bg-blue-500 px-4 py-2 text-center text-white"
+                  >
+                    Thông tin
+                  </Link>
+                  <Link
+                    onClick={() => setIsNavbarVisible(false)}
+                    to="/logout"
+                    className="w-full rounded px-4 py-2 text-center text-blue-500 shadow-sm shadow-zinc-400"
+                  >
+                   Đăng xuất
+                  </Link>
+                 
+                </div>
+              </div>
+            ) : (
+              <div className="m-4 mt-0 flex items-center justify-between space-x-3">
+                <Link
+                  onClick={() => setIsNavbarVisible(false)}
+                  to="/register"
+                  className="w-full rounded px-4 py-2 text-center text-blue-500 shadow-sm shadow-zinc-400"
+                >
+                  Đăng ký
+                </Link>
+                <Link
+                  onClick={() => setIsNavbarVisible(false)}
+                  to="/login"
+                  className="w-full rounded bg-blue-500 px-4 py-2 text-center text-white"
+                >
+                  Đăng nhập
+                </Link>
+              </div>
+            )}
+
             <ul className="my-1 divide-y divide-slate-200 sm:my-4">
               {menuItems.map((item, index) => (
                 <li className="py-4" key={index}>
