@@ -36,8 +36,12 @@ const getAllServices = async (req, res, next) => {
         if (gender) {
             pipeline.push({
                 $match: {
-                    "ApplicableObjectInfo.gender": gender,
-                    "ApplicableObjectInfo.isDeleted": false,
+                    $or: [
+                        { "ApplicableObjectInfo.gender": gender },
+                        { "ApplicableObjectInfo": { $exists: true, $size: 0 } },
+                        { "ApplicableObjectInfo": { $exists: false } }
+                    ]
+
                 }
             });
         }
