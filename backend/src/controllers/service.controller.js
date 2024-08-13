@@ -5,59 +5,73 @@ const mongoose = require("mongoose");
 const getAllServices = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
-
-        const totalRecords = await ServiceModel.countDocuments({
-            isDeleted: false,
-        });
-
-        const services = await ServiceModel
-            // .find({
-            //     isDeleted: false,
-            // })
-            // .skip(skip)
-            // .limit(limitDocuments)
-            // .sort(sortOptions);;
-            .aggregate([
-                {
-                    $lookup: {
-                        from: 'Clinic', // Tên collection phòng khám
-                        localField: 'specialtyId',
-                        foreignField: 'specialtyId',
-                        as: 'clinics'
-                    }
-                },
-                {
-                    $unwind: {
-                        path: '$clinics',
-                        preserveNullAndEmptyArrays: true
-                    }
+        let { branchID, specialtyID, gender } = req.checkValueQuery;
+        // console.log(branchID);
+        const pipeline = [
+            {
+                $match: {
+                    isDeleted: false,
+                    ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } })
                 }
-                // ,
-                // {
-                //     $match: {
-                //         'clinics.specialtyID': mongoose.Types.ObjectId('669e86f57fe9668357fcaead'), // Lọc theo branchId
+            },
+            {
+                $lookup: {
+                    from: "Clinic",
+                    localField: "specialtyID",
+                    foreignField: "specialtyID",
+                    as: "clinicInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "ApplicableObject",
+                    localField: "_id",
+                    foreignField: "serviceID",
+                    as: "ApplicableObjectInfo"
+                }
+            }
+        ];
 
-                //         // isDeleted: false // Nếu bạn cần lọc các dịch vụ không bị xóa
-                //     }
-                // }
-                // },
-                // { $unwind: '$clinics' },
-                // {
-                //     $lookup: {
-                //         from: 'Branch', // Tên collection chi nhánh
-                //         localField: 'clinics.branchID',
-                //         foreignField: '_id',
-                //         as: 'branches'
-                //     }
-                // },
-                // {
-                //     $project: {
-                //         _id: 0,
-                //         serviceName: '$name',
-                //         branches: '$branches'
-                //     }
-                // }
-            ]);
+
+        if (gender) {
+            pipeline.push({
+                $match: {
+                    "ApplicableObjectInfo.gender": gender,
+                    "ApplicableObjectInfo.isDeleted": false,
+                }
+            });
+        }
+        if (branchID) {
+            pipeline.push({
+                $match: {
+                    "clinicInfo.branchID": { $all: branchID.map(id => new mongoose.Types.ObjectId(id)) },
+                    "clinicInfo.isDeleted": false,
+                }
+            });
+        }
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+        const totalRecords = await ServiceModel.aggregate(countPipeline);
+
+        if (sortOptions && !Object.keys(sortOptions).length === 0) {
+            pipeline.push({
+                $sort: sortOptions
+            });
+        }
+
+        pipeline.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        );
+        const services = await ServiceModel.aggregate(pipeline);
+
         if (!services.length) {
             createError(404, 'No services found.');
         }

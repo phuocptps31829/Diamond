@@ -322,10 +322,7 @@ const forgotPassword = async (req, res, next) => {
 
 const googleCallback = async (req, res, next) => {
     try {
-        const patient = await PatientModel.findOne({
-            userID: req.user._id
-        });
-        const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
+        const { accessToken, refreshToken } = generateAccessRefreshToken(req.user);
 
         const user = await UserModel.findOne({
             email: req.user.email
@@ -348,10 +345,8 @@ const googleCallback = async (req, res, next) => {
 
 const facebookCallback = async (req, res, next) => {
     try {
-        const patient = await PatientModel.findOne({
-            userID: req.user._id
-        });
-        const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
+        const { accessToken, refreshToken } = generateAccessRefreshToken(req.user);
+        console.log(accessToken);
         const user = await UserModel.findOne({
             email: req.user.email
         });

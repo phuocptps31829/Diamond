@@ -19,7 +19,6 @@ const checkValidId = (req, res, next) => {
         next(error);
     }
 };
-
 const checkValueQuery = (req, res, next) => {
     try {
         let { branchID = null, specialtyID = null, gender = null } = req.query;
@@ -118,7 +117,7 @@ const isCreatePatient = (req, res, next) => {
 
 module.exports = {
     checkValidId,
+    checkValueQuery,
     checkQueryParams,
-    isCreatePatient,
-    checkValueQuery
+    isCreatePatient
 };
