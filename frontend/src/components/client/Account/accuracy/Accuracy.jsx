@@ -56,6 +56,8 @@ export default function AccurancyComponent() {
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       setOtp(new Array(6).fill(""));
+      localStorage.removeItem("phoneNumber");
+      localStorage.removeItem("otpToken");
       navigate("/login");
     },
     onError: (error) => {
