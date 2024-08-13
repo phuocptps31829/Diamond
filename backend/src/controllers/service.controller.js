@@ -5,12 +5,14 @@ const getAllServices = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
         let { branchID, specialtyID, gender } = req.checkValueQuery;
-
+        // branchID = ['66a203bde028832983cfdf14', '66b8f3659efeb97ec8cfccd8'];
+        specialtyID = ['669e86f57fe9668357fcaead', '669f6399c8418d73666cd1d8'];
+        gender = 'Nữ';
         const pipeline = [
             {
                 $match: {
                     isDeleted: false,
-                    ...(specialtyID && { specialtyID: new mongoose.Types.ObjectId(specialtyID) })
+                    ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } })
                 }
             },
             {
@@ -43,7 +45,7 @@ const getAllServices = async (req, res, next) => {
         if (branchID) {
             pipeline.push({
                 $match: {
-                    "clinicInfo.branchID": new mongoose.Types.ObjectId(branchID),
+                    "clinicInfo.branchID": { $all: branchID.map(id => new mongoose.Types.ObjectId(id)) },
                     "clinicInfo.isDeleted": false,
                 }
             });
