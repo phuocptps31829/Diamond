@@ -34,7 +34,28 @@ const sendEmail = async (email, subject, text, attachments = []) => {
     }
 };
 
-const sendOTP = () => {
+function getAccessToken() {
+
+    const apiKeySid = process.env.API_KEY_SID;
+    const apiKeySecret = process.env.API_KEY_SECRET;
+
+    const now = Math.floor(Date.now() / 1000);
+    const exp = now + 3600;
+
+    const header = { cty: "stringee-api;v=1" };
+    const payload = {
+        jti: apiKeySid + "-" + now,
+        iss: apiKeySid,
+        exp: exp,
+        rest_api: 1
+    };
+
+    const token = jwt.sign(payload, apiKeySecret, { algorithm: 'HS256', header: header });
+    return token;
+}
+
+const sendOTP = async ({ phoneNumber }) => {
+
     const OTP = otpGenerator.generate(6, {
         digits: true,
         lowerCaseAlphabets: false,
@@ -42,6 +63,44 @@ const sendOTP = () => {
         upperCaseAlphabets: false
     });
 
+    const talkOTP = OTP.split('').join('... ');
+    const newPhoneNumber = await phoneNumber.substring(1);
+    const options = {
+        method: 'POST',
+        url: process.env.URL_CALL,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-STRINGEE-AUTH': getAccessToken(),  // Thêm tiêu đề xác thực
+        },
+        data: {
+            "from": {
+                "type": "external",
+                "number": process.env.PHONE_NUMBER,
+                "alias": "STRINGEE_NUMBER"
+            },
+            "to": [
+                {
+                    "type": "external",
+                    "number": '84' + newPhoneNumber,
+                    "alias": "TO_NUMBER"
+                }
+            ],
+            "answer_url": process.env.ANSWER_URL,
+            "actions": [
+                {
+                    "action": "talk",
+                    "text": "Mã OTP của bạn là:..." + talkOTP + "... Xin nhắc lại... Mã OTP của bạn là:..." + talkOTP
+                }
+            ]
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+    }
     console.log("OTP is: ", OTP);
     return OTP;
 };
@@ -49,11 +108,10 @@ const sendOTP = () => {
 const generateAccessRefreshToken = user => {
     const accessToken = jwt.sign(
         {
-            id: user._id,
-            isAdmin: user.isAdmin
+            id: user._id
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '5m' }
     );
 
     const refreshToken = jwt.sign(
@@ -74,10 +132,10 @@ const generateOTPToken = ({ fullName, phoneNumber, password }) => {
             fullName,
             phoneNumber,
             password,
-            expiresIn: Date.now() + 20000
+            expiresIn: Date.now() + 300000
         },
         'secret-key',
-        { expiresIn: '60s' }
+        { expiresIn: '5m' }
     );
 
     return otpToken;

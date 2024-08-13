@@ -145,6 +145,115 @@ router.post(
     authController.login
 );
 
+/**
+ * @openapi
+ * '/api/v1/auth/forgot-password/send-otp/{phone}':
+ *   post:
+ *     tags:
+ *     - Auth Routes
+ *     summary: send OTP to the phone
+ *     parameters:
+ *      - in: path
+ *        name: phone
+ *        required: true
+ *        description: Contract phone number
+ *        schema:
+ *          type: string
+ *     responses:
+ *       '200':
+ *         $ref: '#/components/responses/200'
+ *       '400':
+ *         $ref: '#/components/responses/400'
+ *       '404':
+ *         $ref: '#/components/responses/404'
+ *       '500':
+ *         $ref: '#/components/responses/500'
+ */
+
+router.post(
+    '/forgot-password/send-otp/:phone',
+    authController.sendOTPForgotPassword
+);
+
+/**
+ * @openapi
+ * '/api/v1/auth/forgot-password/check-otp':
+ *  post:
+ *     tags:
+ *     - Auth Routes
+ *     summary: Check OTP 
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - OTP
+ *              - otpToken
+ *            properties:
+ *              OTP:
+ *                type: string
+ *              otpToken:
+ *                type: string
+ *     responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+
+router.post(
+    '/forgot-password/check-otp',
+    authMiddleware.verifyOTP,
+    authController.checkOTPForgotPassword
+);
+
+/**
+ * @openapi
+ * '/api/v1/auth/forgot-password/reset-pass-word':
+ *  put:
+ *     tags:
+ *     - Auth Routes
+ *     summary: Check OTP 
+ *     requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *           schema:
+ *            type: object
+ *            required:
+ *              - OTP
+ *              - otpToken
+ *              - password
+ *            properties:
+ *              OTP:
+ *                type: string
+ *              otpToken:
+ *                type: string
+ *              password:
+ *                type: string
+ *     responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+
+router.put(
+    '/forgot-password/reset-pass-word',
+    authMiddleware.verifyOTP,
+    authController.forgotPassword
+);
+
 // router.put(
 //     '/forgot-password/:email',
 //     authController.forgotPassword

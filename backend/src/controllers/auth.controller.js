@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user.model');
+const PatientModel = require('../models/patient.model');
 const OtpModel = require('../models/otp.model');
 const { createError,
     saveRefreshToken,
@@ -49,7 +50,7 @@ const createOTP = async (req, res, next) => {
         console.log({ ...req.body });
 
         await checkPhoneNumberAndEmail(req.body, false);
-        const OTP = sendOTP();
+        const OTP = await sendOTP({ ...req.body });
 
         const hashedOTP = await hashValue(OTP);
 
@@ -87,7 +88,10 @@ const login = async (req, res, next) => {
             createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
         }
 
-        const { accessToken, refreshToken } = generateAccessRefreshToken(user);
+        const patient = await PatientModel.findOne({
+            userID: user._id
+        });
+        const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
 
         // user.refreshToken = {
         //     token: refreshToken,
@@ -241,30 +245,75 @@ const refreshToken = async (req, res, next) => {
 //     }
 // };
 
-const forgotPassword = async (req, res, next) => {
+const sendOTPForgotPassword = async (req, res, next) => {
     try {
-        const { email } = req.params;
+        const { phone } = req.params;
 
-        const userFound = await UserModel.findOne({ email: email, isActivated: true });
+        const userFound = await UserModel.findOne({ phoneNumber: phone, isActivated: true });
 
         if (!userFound) {
-            createError(404, "Email not found.");
+            createError(404, "Phone number not found.");
         }
 
-        const passCode = Date.now().toString().slice(-10);
-        const hashedPassword = await hashPassword(passCode);
+        const OTP = await sendOTP({ phoneNumber: phone });
 
-        await sendEmail(
-            email,
-            "RECOVER YOUR PASSWORD",
-            "Your new password is here: " + passCode
-            + " .Please use it to change your password in profile."
+        const hashedOTP = await hashValue(OTP);
+
+        await OtpModel.create({
+            otp: hashedOTP,
+            phoneNumber: phone
+        });
+
+        const otpToken = generateOTPToken({
+            fullName: userFound.fullName,
+            phoneNumber: userFound.phoneNumber,
+            password: userFound.password
+        });
+
+        return res.status(201).json({
+            message: 'New OTP is created successfully.',
+            otpToken
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const checkOTPForgotPassword = async (req, res, next) => {
+    try {
+
+        const { OTP, otpToken } = req.body;
+        return res.status(201).json({
+            message: 'OTP is correct',
+            data: { OTP, otpToken }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+const forgotPassword = async (req, res, next) => {
+    try {
+
+        const { phoneNumber } = req.newUser;
+
+        const userFound = await UserModel.findOne({ phoneNumber, isActivated: true });
+
+        if (!userFound) {
+            createError(404, "Phone number not found.");
+        }
+        const hashedPassword = await hashValue(req.body.password);
+
+        const newUser = await UserModel.findOneAndUpdate(
+            { phoneNumber },
+            { $set: { password: hashedPassword } },
+            { new: true }
         );
-
-        await UserModel.findOneAndUpdate({ email: email }, { password: hashedPassword });
-
-        return res.status(200).json({
-            message: 'Email sent.',
+        console.log(newUser);
+        return res.status(201).json({
+            message: 'Updated user successfully',
+            user: newUser
         });
     } catch (error) {
         next(error);
@@ -326,6 +375,8 @@ module.exports = {
     createOTP,
     // updateProfile,
     forgotPassword,
+    sendOTPForgotPassword,
+    checkOTPForgotPassword
     // changeRole,
     // changePassword
 };

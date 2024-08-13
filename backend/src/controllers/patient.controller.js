@@ -31,20 +31,35 @@ const getAllPatients = async (req, res, next) => {
         next(error);
     }
 };
+
 const getPatientById = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const idParams = req.params?.id;
+        const idMid = req.user?.id;
 
-        const Patients = await Patient.findById(id).populate({
-            path: 'userID'
-        });
+        console.log(idParams, idMid);
 
-        if (!Patients) {
-            createError(404, 'News not found.');
+        const patient = await Patient
+            .findById(idParams || idMid)
+            .populate({
+                path: 'userID',
+                select: '-_id'
+            });
+
+        if (!patient) {
+            createError(404, 'Patient not found.');
         }
+
+        const patientObj = patient.toObject();
+        const userObj = patientObj.userID;
+        delete patientObj['userID'];
+
         return res.status(200).json({
-            message: 'News retrieved successfully.',
-            data: Patients
+            message: 'Patient retrieved successfully.',
+            data: {
+                ...patientObj,
+                ...userObj
+            }
         });
     } catch (error) {
         next(error);

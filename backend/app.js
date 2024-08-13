@@ -24,6 +24,7 @@ const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
+const contactRoutes = require('./src/routes/contact.route');
 const passportMiddleWare = require('./src/middlewares/passport.middleware');
 
 const app = express();
@@ -67,6 +68,7 @@ app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/patients', patientsRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/contact', contactRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
@@ -91,6 +93,18 @@ app.use((err, req, res, next) => {
         errorMessage = err.message || 'Bad request';
         return res.status(statusCode).json({
             error: errorMessage
+        });
+    }
+
+    if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({
+            error: "Token hết hạn"
+        });
+    }
+
+    if (err.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            error: "Token không đúng"
         });
     }
 
