@@ -26,6 +26,26 @@ const medicalPackageValidator = require('../validations/medical-package.validati
  *        name: sort
  *        schema:
  *          type: string
+ *      - in: query
+ *        name: gender
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -37,6 +57,7 @@ const medicalPackageValidator = require('../validations/medical-package.validati
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
+    helperMiddleware.checkValueQuery,
     medicalPackageController.getAllMedicalPackages
 );
 

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const MedicalPackageModel = require('../models/medical-package.model');
 const ServiceModel = require('../models/service.model');
 const { createError, errorValidator } = require("../utils/helper.util");
@@ -5,11 +6,9 @@ const { createError, errorValidator } = require("../utils/helper.util");
 const getAllMedicalPackages = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
-        const totalRecords = await MedicalPackageModel.countDocuments({
-            isDeleted: false,
-        });
+        let { branchID, specialtyID, gender } = req.checkValueQuery;
 
-        const medicalPackages = await MedicalPackageModel.aggregate([
+        const pipeline = [
             {
                 $unwind: '$services'
             },
@@ -30,23 +29,81 @@ const getAllMedicalPackages = async (req, res, next) => {
                     orderCount: { $first: '$orderCount' }
                 }
             },
-            {
-                $sort: {
-                    minDiscountPrice: sortOptions['discountPrice']
-                }
-            },
+            // ...(sortOptions['discountPrice'] ? [{
+            //     $sort: {
+            //         minDiscountPrice: sortOptions['discountPrice']
+            //     }
+            // }] : []),
+            ...(sortOptions && Object.keys(sortOptions).length ?
+                sortOptions['discountPrice'] ? [{
+                    $sort: {
+                        minDiscountPrice: sortOptions['discountPrice']
+                    }
+                }] : [{
+                    $sort: sortOptions
+                }] : []),
             {
                 $project: {
                     minDiscountPrice: 0
                 }
             },
             {
-                $limit: limitDocuments
+                $lookup: {
+                    from: "Clinic",
+                    localField: "specialtyID",
+                    foreignField: "specialtyID",
+                    as: "clinicInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "ApplicableObject",
+                    localField: "_id",
+                    foreignField: "medicalPackageID",
+                    as: "ApplicableObjectInfo"
+                }
+            },
+            {
+                $match: {
+                    isDeleted: false,
+                    ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
+                }
             },
             {
                 $skip: skip
+            },
+            {
+                $limit: limitDocuments
             }
-        ]);
+        ];
+
+
+        if (gender) {
+            pipeline.push({
+                $match: {
+                    "ApplicableObjectInfo.gender": gender,
+                    "ApplicableObjectInfo.isDeleted": false,
+                }
+            });
+        }
+
+        if (branchID) {
+            pipeline.push({
+                $match: {
+                    "clinicInfo.branchID": { $all: branchID.map(id => new mongoose.Types.ObjectId(id)) },
+                    "clinicInfo.isDeleted": false,
+                }
+            });
+        }
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+
+        const totalRecords = await ServiceModel.aggregate(countPipeline);
+
+        const medicalPackages = await MedicalPackageModel.aggregate(pipeline);
 
         if (!medicalPackages.length) {
             createError(404, 'No medical packages found.');
@@ -54,31 +111,6 @@ const getAllMedicalPackages = async (req, res, next) => {
 
         return res.status(200).json({
             page: page || 1,
-            message: 'Medical packages retrieved successfully.',
-            data: medicalPackages,
-            totalRecords
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-const getMedicalPackagesByFilter = async (req, res, next) => {
-    try {
-        const totalRecords = await MedicalPackageModel.countDocuments({
-            isDeleted: false,
-        });
-        const medicalPackages = await MedicalPackageModel
-            .find({
-                isDeleted: false,
-            });
-
-        if (!medicalPackages.length) {
-            createError(404, 'No medical packages found.');
-        }
-
-        return res.status(200).json({
-            page: 1,
             message: 'Medical packages retrieved successfully.',
             data: medicalPackages,
             totalRecords
