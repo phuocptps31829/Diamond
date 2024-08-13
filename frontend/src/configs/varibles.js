@@ -15,15 +15,21 @@ const API_URL_GET_ALL_SPECIALTIES = `${API_URL}/specialties`;
 const API_URL_GET_SPECIALTY_BY_ID = `${API_URL}/specialties`;
 const API_URL_GET_SPECIALTY_WITH_SERVICES = `${API_URL}/specialties/specialties-with-services`;
 
-
 // doctors
 const API_URL_GET_ALL_DOCTORS = `${API_URL}/doctors`;
+// branches
+const API_URL_GET_ALL_BRANCHES = `${API_URL}/branches`;
 
 // news
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 
 //contact
 const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
+
+// auth
+const API_LOGIN_GOOGLE = `http://api.cosstewn.io.vn/api/v1/auth/google`;
+const API_VERIFY_OTP = `${API_URL}/patients/add`;
+const API_REGISTER_SEND_OTP = `${API_URL}/auth/register`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -38,4 +44,8 @@ export {
   API_URL_GET_ALL_NEWS,
   API_URL_GET_SPECIALTY_WITH_SERVICES,
   API_URL_POST_CONTACT,
+  API_URL_GET_ALL_BRANCHES,
+  API_LOGIN_GOOGLE,
+  API_VERIFY_OTP,
+  API_REGISTER_SEND_OTP,
 };

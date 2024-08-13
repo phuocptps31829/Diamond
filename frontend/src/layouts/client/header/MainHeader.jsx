@@ -9,12 +9,12 @@ export default function MainHeader() {
     {
       id: 1,
       name: "Gói khám",
-      to: "/package",
+      to: "/packages",
     },
     {
       id: 2,
       name: "Dịch vụ",
-      to: "/service",
+      to: "/services",
     },
     {
       id: 3,
@@ -40,7 +40,7 @@ export default function MainHeader() {
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between p-3 sm:px-10 lg:py-4">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5 lg:py-4">
         <Link to={"/"} className="relative w-44 items-center">
           <img
             src="https://ykhoadiamond.com/images/icons/logo.png"

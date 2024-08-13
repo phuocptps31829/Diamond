@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceProduct({
+export default function ServiceList({
   image,
   name,
   price,
@@ -16,8 +16,7 @@ export default function ServiceProduct({
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={`/detail-service/${_id}`}
-        
-        className="group block h-full w-full overflow-hidden"
+        className="group block min-h-[125px] w-full overflow-hidden sm:min-h-[210px]"
       >
         <img
           src={image}
@@ -25,25 +24,25 @@ export default function ServiceProduct({
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex h-full flex-col p-3 md:p-5">
+      <div className="flex h-full flex-col p-3 md:p-5 md:pt-2">
         <Link
           to={`/detail-service/${_id}`}
-          className="grow text-sm font-bold md:text-xl"
+          className="grow py-2 text-sm font-bold md:text-xl"
         >
           {name}
         </Link>
         <hr className="mb-1" />
-        <div className="flex items-center space-x-2 py-2">
-          <span className="text-lg font-semibold text-primary-500">
-            {price.toLocaleString()}₫
+        <div className="flex items-center space-x-2 py-1">
+          <span className="text-xs font-semibold text-primary-500 sm:text-lg">
+            {price.toLocaleString()} ₫
           </span>
-          <span className="text-sm text-gray-400 line-through">
+          <span className="text-[10px] text-gray-400 line-through sm:text-sm">
             {discountPrice.toLocaleString()}₫
           </span>
         </div>
 
         <hr className="mb-1" />
-        <div className="mt-2 flex items-center justify-between">
+        <div className="flex items-center justify-between sm:mt-2">
           <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
             <FaHeart />
             <FaHeart />
@@ -63,7 +62,7 @@ export default function ServiceProduct({
   );
 }
 
-ServiceProduct.propTypes = {
+ServiceList.propTypes = {
   image: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   discountPrice: PropTypes.number.isRequired,
