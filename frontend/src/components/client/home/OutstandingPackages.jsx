@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import PackageProduct from "../product/Package";
+import PackageList from "../product/Package";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
@@ -47,13 +47,15 @@ export default function OutstandingPackages() {
                 key={index}
               >
                 <div className="group block h-full w-full overflow-hidden">
-                  <div className="h-[250px] w-full">
+                  <div className="h-[210px] w-full">
                     <Skeleton className="block h-full w-full object-cover" />
                   </div>
                 </div>
                 <div className="flex h-full flex-col p-3 md:p-5">
                   <Skeleton className="mb-1 h-[12px] w-2/5 rounded-md" />
                   <Skeleton className="h-[20px] w-full grow rounded-md" />
+                  <hr className="md:mt-3" />
+                  <Skeleton className="my-2 h-[30px] w-full rounded-md" />
                   <hr className="mb-1 md:mb-3" />
                   <div className="flex items-center justify-between">
                     <div className="flex gap-[3px] text-[8px] opacity-70 md:text-[10px]">
@@ -86,12 +88,12 @@ export default function OutstandingPackages() {
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
             {OutstandingMedicalPackages.map((medicalPackage) => {
               return (
-                <PackageProduct key={medicalPackage._id} {...medicalPackage} />
+                <PackageList key={medicalPackage._id} {...medicalPackage} />
               );
             })}
           </div>
           <Link
-            to="/category-service"
+            to="/packages"
             className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border border-primary-500 py-2 text-[12px] font-semibold uppercase text-primary-500 hover:bg-primary-500 hover:text-white md:w-[40%] md:text-[14px]"
           >
             Xem tất cả <AiOutlineDoubleRight />

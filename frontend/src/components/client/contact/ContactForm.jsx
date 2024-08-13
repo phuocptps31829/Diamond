@@ -45,7 +45,6 @@ export default function ContactForm() {
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       reset();
-      console.log("Mutation object after submit:", mutation);
     },
     onError: (error) => {
       toast({
@@ -58,9 +57,7 @@ export default function ContactForm() {
   });
 
   const onSubmit = (data) => {
-    console.log("Mutation object before submit:", mutation); // Kiểm tra toàn bộ đối tượng mutation
     mutation.mutate(data);
-    // Kiểm tra toàn bộ đối tượng mutation
   };
 
   return (
@@ -144,7 +141,9 @@ export default function ContactForm() {
               disabled={mutation.isPending}
             >
               {mutation.isPending ? "Đang gửi" : "Gửi ngay"}
-             
+              {mutation.isPending && (
+                <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              )}
             </button>
           </form>
         </div>

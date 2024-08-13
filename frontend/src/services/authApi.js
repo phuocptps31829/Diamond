@@ -1,4 +1,4 @@
-import { API_GET_PROFILE_PATIENTS } from "@/configs/varibles";
+import { API_GET_PROFILE_PATIENTS, API_VERIFY_OTP, API_REGISTER_SEND_OTP } from "@/configs/varibles";
 import axios from "axios";
 
 export const getProfilePatients = async (accessToken) => {
@@ -11,7 +11,28 @@ export const getProfilePatients = async (accessToken) => {
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
-    console.error(error);
+    console.error("Failed to fetch profile patients:", error);
+    throw error;
+  }
+};
+
+export const otpUserVerification = async (data) => {
+  try {
+    const res = await axios.post(API_VERIFY_OTP, data);
+    return res.data.data;
+  } catch (error) {
+    console.error("Failed to verify OTP:", error);
+    throw error;
+  }
+};
+
+export const registerSendOtp = async (data) => {
+  try {
+    const res = await axios.post(API_REGISTER_SEND_OTP, data);
+    console.log("res.data: ", res.data);
+    return res.data;
+  } catch (error) {
+    console.error("Failed to send OTP:", error);
     throw error;
   }
 };
