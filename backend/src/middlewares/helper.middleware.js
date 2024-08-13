@@ -20,6 +20,45 @@ const checkValidId = (req, res, next) => {
     }
 };
 
+const checkValueQuery = (req, res, next) => {
+    try {
+        let { branchID = null, specialtyID = null, gender = null } = req.query;
+
+        if (branchID && !Array.isArray(branchID)) {
+            branchID = [branchID];
+        }
+
+        if (specialtyID && !Array.isArray(specialtyID)) {
+            specialtyID = [specialtyID];
+        }
+
+        if (branchID) {
+            branchID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid branchID: ${id}`);
+                }
+            });
+        }
+
+        if (specialtyID) {
+            specialtyID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid branchID: ${id}`);
+                }
+            });
+        }
+        req.checkValueQuery = {
+            branchID,
+            specialtyID,
+            gender
+        };
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 const checkQueryParams = (req, res, next) => {
     try {
         let { page, limit, sort } = req.query;
@@ -80,5 +119,6 @@ const isCreatePatient = (req, res, next) => {
 module.exports = {
     checkValidId,
     checkQueryParams,
-    isCreatePatient
+    isCreatePatient,
+    checkValueQuery
 };
