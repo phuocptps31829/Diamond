@@ -26,6 +26,18 @@ const serviceValidator = require('../validations/service.validation');
  *        name: sort
  *        schema:
  *          type: string
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: gender
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -36,6 +48,7 @@ const serviceValidator = require('../validations/service.validation');
 */
 router.get(
     '/',
+    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     serviceController.getAllServices
 );

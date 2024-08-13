@@ -38,11 +38,10 @@ const verifyAdmin = (req, res, next) => {
 const verifyOTP = async (req, res, next) => {
     const { otpToken, OTP } = req.body;
 
-    if (!otpToken || !OTP) {
-        createError(403, 'Thiếu token hoặc OTP.');
-    }
-
     try {
+        if (!otpToken || !OTP) {
+            createError(403, 'Thiếu token hoặc OTP.');
+        }
         const verifiedToken = jwt.verify(otpToken, 'secret-key');
 
         const { phoneNumber, fullName, password } = verifiedToken;

@@ -3,11 +3,17 @@ const { checkIsExistID } = require('../utils/database.util');
 
 const ApplicableObjectModel = require('../models/applicable-object.model');
 const MedicalPackageModel = require('../models/medical-package.model');
+const ServiceModel = require('../models/service.model');
 
 const applicableObjectValidator = checkSchema({
     medicalPackageID: {
         customSanitizer: {
             options: (id) => checkIsExistID(MedicalPackageModel, id),
+        }
+    },
+    serviceID: {
+        customSanitizer: {
+            options: (id) => checkIsExistID(ServiceModel, id),
         }
     },
     gender: {

@@ -83,11 +83,14 @@ router.get(
  *            type: object
  *            required:
  *              - medicalPackageID
+ *              - serviceID
  *              - gender
  *              - age
  *              - isMarried
  *            properties:
  *              medicalPackageID:
+ *                type: string
+ *              serviceID: 
  *                type: string
  *              gender:
  *                type: string
