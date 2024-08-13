@@ -215,7 +215,7 @@ router.post(
 
 /**
  * @openapi
- * '/api/v1/auth/forgot-password/reset-password':
+ * '/api/v1/auth/forgot-password/reset-pass-word':
  *  put:
  *     tags:
  *     - Auth Routes
@@ -249,7 +249,7 @@ router.post(
  */
 
 router.put(
-    '/forgot-password/reset-password',
+    '/forgot-password/reset-pass-word',
     authMiddleware.verifyOTP,
     authController.forgotPassword
 );

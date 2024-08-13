@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const UserModel = require('../models/user.model');
+const PatientModel = require('../models/patient.model');
 const OtpModel = require('../models/otp.model');
 const { createError,
     saveRefreshToken,
@@ -87,7 +88,10 @@ const login = async (req, res, next) => {
             createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
         }
 
-        const { accessToken, refreshToken } = generateAccessRefreshToken(user);
+        const patient = await PatientModel.findOne({
+            userID: user._id
+        });
+        const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
 
         // user.refreshToken = {
         //     token: refreshToken,

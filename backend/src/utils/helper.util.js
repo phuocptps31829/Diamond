@@ -109,11 +109,10 @@ const sendOTP = async ({ phoneNumber }) => {
 const generateAccessRefreshToken = user => {
     const accessToken = jwt.sign(
         {
-            id: user._id,
-            isAdmin: user.isAdmin
+            id: user._id
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '5m' }
     );
 
     const refreshToken = jwt.sign(

@@ -15,7 +15,6 @@ import UserProfileLayout from "./pages/client/UserProfile";
 import MedicalRecords from "./components/client/infomationUser/MedicalRecords";
 import UserInfoForm from "./components/client/infomationUser/UserInfoForm";
 import AppointmentHistory from "./components/client/infomationUser/AppointmentHistory";
-
 import Login from "./pages/client/Login";
 import Register from "./pages/client/Register";
 import Accurancy from "./pages/client/Accuracy";
@@ -25,6 +24,8 @@ import ChangePass from "./pages/client/ChangePass";
 import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
+import NotFound from "@/components/client/notFound";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,11 +40,19 @@ const router = createBrowserRouter([
         element: <SpecialtiesCategory />,
       },
       {
-        path: "category-service",
+        path: "service/:id?",
         element: <CategoryService />,
       },
       {
-        path: "detail-service/:id",
+        path: "package/:id?",
+        element: <CategoryService />,
+      },
+      {
+        path: "detail-service/:serviceId",
+        element: <DetailService />,
+      },
+      {
+        path: "detail-package/:packageId",
         element: <DetailService />,
       },
       {
@@ -113,8 +122,8 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        path: '/accuracy',
-        element: <Accurancy />
+        path: "/accuracy",
+        element: <Accurancy />,
       },
       {
         path: "/forget-password",
@@ -128,12 +137,16 @@ const router = createBrowserRouter([
         path: "/change-password",
         element: <ChangePass />,
       },
+      {
+        path: "*",
+        element: <NotFound />,
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={ router }></RouterProvider>;
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;

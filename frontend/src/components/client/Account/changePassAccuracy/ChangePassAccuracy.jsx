@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { FaKey } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import InputCustom from "@/components/ui/InputCustom";
+import { Button } from "@/components/ui/Button";
 
 export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();
@@ -60,9 +61,12 @@ export default function ChangePassAccuracyComponent() {
               </div>
 
               <div className="text-center">
-                <button type="submit" className="font-bold text-2xl w-full bg-primary-500 text-white py-2 px-4 rounded-md hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                  Xác thực tài khoản
-                </button>
+                <Button
+                type="submit"
+                size="full"
+                variant="primary"
+                >Xác thực tài khoản
+              </Button>
               </div>
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-300"></div>

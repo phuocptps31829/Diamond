@@ -1,13 +1,12 @@
 const ServiceModel = require('../models/service.model');
 const { createError, errorValidator } = require("../utils/helper.util");
 const mongoose = require("mongoose");
+
 const getAllServices = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
         let { branchID, specialtyID, gender } = req.checkValueQuery;
-        // branchID = ['66a203bde028832983cfdf14', '66b8f3659efeb97ec8cfccd8'];
-        specialtyID = ['669e86f57fe9668357fcaead', '669f6399c8418d73666cd1d8'];
-        gender = 'Nữ';
+        // console.log(branchID);
         const pipeline = [
             {
                 $match: {

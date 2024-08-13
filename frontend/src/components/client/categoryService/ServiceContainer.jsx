@@ -1,38 +1,78 @@
-import { useQuery } from "@tanstack/react-query";
-import Service from "../product/Service";
+import { useMatch } from 'react-router-dom';
+import PackageProduct from "../product/Package";
+import ServiceProduct from "../product/Service";
 import SidebarFilter from "./SidebarFilter";
-import Loading from "@/components/ui/Loading";
-import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { getAllServices, getServiceBySpecialty } from '@/services/servicesApi';
+import { getAllMedicalPackages, getMedicalPackageBySpecialty } from '@/services/medicalPackagesApi';
+import NotFound from '../notFound';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 const ServiceContainer = () => {
-  const {
-    data: medicalPackages,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["medical-packages"],
-    queryFn: getAllMedicalPackages,
+  const page = useState(1)[0];
+  const [limit] = useState(10);
+  const [sort, setSort] = useState('');
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState(null);
+
+  const isServiceRoute = useMatch("/service");
+  const isPackageRoute = useMatch("/package");
+  const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
+
+  const handleSpecialtyChange = (id) => {
+    setSelectedSpecialtyId(id);
+  };
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: [type, selectedSpecialtyId, page, sort],
+    queryFn: () => {
+      if (type === "service") {
+        return selectedSpecialtyId
+          ? getServiceBySpecialty(selectedSpecialtyId, page, limit, sort)
+          : getAllServices(page, limit, sort);
+      } else if (type === "package") {
+        return selectedSpecialtyId
+          ? getMedicalPackageBySpecialty(selectedSpecialtyId, page, limit, sort)
+          : getAllMedicalPackages(page, limit, sort);
+      }
+    },
+    enabled: !!type,
   });
 
-  if (isLoading)
-    return (
-      <div>
-        <Loading />
-      </div>
+  if (!type) return <NotFound />;
+
+  const renderContent = () => {
+    if (isLoading) {
+      return Array(6)
+        .fill(null)
+        .map((_, index) => <Skeleton key={index} className="h-80 w-full" />);
+    }
+
+    if (error) {
+      return <NotFound />;
+    }
+
+    if (!data || data.length === 0) {
+      return <p>No Product !!</p>;
+    }
+
+    return data.map((item) =>
+      type === "package" ? (
+        <PackageProduct key={item._id} {...item} />
+      ) : (
+        <ServiceProduct key={item._id} {...item} />
+      )
     );
-  if (error) return <div>Error loading services</div>;
+  };
 
   return (
     <section className="relative mx-auto max-w-screen-2xl py-3">
       <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
         <div className="grid grid-cols-12 md:gap-7">
-          <SidebarFilter />
+          <SidebarFilter setSort={setSort} onSpecialtyChange={handleSpecialtyChange} />
           <div className="col-span-12 mt-7 md:col-span-9">
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {console.log(medicalPackages)}
-              {medicalPackages.map((medicalPackage) => {
-                return <Service key={medicalPackage._id} {...medicalPackage} />;
-              })}
+              {renderContent()}
             </div>
           </div>
         </div>

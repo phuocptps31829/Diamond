@@ -6,22 +6,17 @@ const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) {
-        createError(401, 'Không có quyền truy cập.');
-    }
-
     try {
-        const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        if (!token) {
+            createError(401, 'Không có quyền truy cập.');
+        }
 
-        req.user = { id: verifiedUser.id, isAdmin: verifiedUser.isAdmin };
+        const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        req.user = { id: verifiedUser.id };
 
         next();
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            createError(401, 'Token hết hạn.');
-        }
-
-        createError(403, 'Token không hợp lệ.');
+        next(error);
     }
 };
 
@@ -37,7 +32,6 @@ const verifyAdmin = (req, res, next) => {
 
 const verifyOTP = async (req, res, next) => {
     const { otpToken, OTP } = req.body;
-
     try {
         if (!otpToken || !OTP) {
             createError(403, 'Thiếu token hoặc OTP.');
@@ -48,7 +42,6 @@ const verifyOTP = async (req, res, next) => {
         const otpHolder = await OtpModel.find({ phoneNumber });
 
         if (!otpHolder.length) {
-            console.log(1)
             createError(401, 'Token hết hạn.');
         }
 
@@ -64,12 +57,9 @@ const verifyOTP = async (req, res, next) => {
         console.log('new', phoneNumber, password, fullName);
         next();
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            createError(401, 'Token hết hạn.');
-            console.log(2)
-        }
         next(error);
         console.log(error);
+        console.log('err name', error.name);
     }
 };
 

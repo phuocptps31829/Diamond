@@ -24,8 +24,8 @@ const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
-const passportMiddleWare = require('./src/middlewares/passport.middleware');
 const contactRoutes = require('./src/routes/contact.route');
+const passportMiddleWare = require('./src/middlewares/passport.middleware');
 const app = express();
 
 // app.use((req, res, next) => {
@@ -94,9 +94,15 @@ app.use((err, req, res, next) => {
         });
     }
 
-    if (err.name === 'JsonwebTokenError') {
+    if (err.name === 'TokenExpiredError') {
         return res.status(401).json({
-            error: 'Token không đúng'
+            error: "Token hết hạn"
+        });
+    }
+
+    if (err.name === 'JsonWebTokenError') {
+        return res.status(401).json({
+            error: "Token không đúng"
         });
     }
 

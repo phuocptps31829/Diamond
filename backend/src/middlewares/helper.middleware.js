@@ -23,6 +23,29 @@ const checkValueQuery = (req, res, next) => {
     try {
         let { branchID = null, specialtyID = null, gender = null } = req.query;
 
+        if (branchID && !Array.isArray(branchID)) {
+            branchID = [branchID];
+        }
+
+        if (specialtyID && !Array.isArray(specialtyID)) {
+            specialtyID = [specialtyID];
+        }
+
+        if (branchID) {
+            branchID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid branchID: ${id}`);
+                }
+            });
+        }
+
+        if (specialtyID) {
+            specialtyID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid branchID: ${id}`);
+                }
+            });
+        }
         req.checkValueQuery = {
             branchID,
             specialtyID,

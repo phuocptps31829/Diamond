@@ -5,17 +5,48 @@ const { createError, errorValidator } = require("../utils/helper.util");
 const getAllMedicalPackages = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
-
         const totalRecords = await MedicalPackageModel.countDocuments({
             isDeleted: false,
         });
-        const medicalPackages = await MedicalPackageModel
-            .find({
-                isDeleted: false,
-            })
-            .skip(skip)
-            .limit(limitDocuments)
-            .sort(sortOptions);
+
+        const medicalPackages = await MedicalPackageModel.aggregate([
+            {
+                $unwind: '$services'
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    shortDescription: { $first: '$shortDescription' },
+                    details: { $first: '$details' },
+                    specialtyID: { $first: '$specialtyID' },
+                    services: { $push: '$services' },
+                    minDiscountPrice: { $min: '$services.discountPrice' },
+                    isHidden: { $first: '$isHidden' },
+                    isDeleted: { $first: '$isDeleted' },
+                    createdAt: { $first: '$createdAt' },
+                    updatedAt: { $first: '$updatedAt' },
+                    image: { $first: '$image' },
+                    orderCount: { $first: '$orderCount' }
+                }
+            },
+            {
+                $sort: {
+                    minDiscountPrice: sortOptions['discountPrice']
+                }
+            },
+            {
+                $project: {
+                    minDiscountPrice: 0
+                }
+            },
+            {
+                $limit: limitDocuments
+            },
+            {
+                $skip: skip
+            }
+        ]);
 
         if (!medicalPackages.length) {
             createError(404, 'No medical packages found.');
@@ -40,7 +71,7 @@ const getMedicalPackagesByFilter = async (req, res, next) => {
         const medicalPackages = await MedicalPackageModel
             .find({
                 isDeleted: false,
-            })
+            });
 
         if (!medicalPackages.length) {
             createError(404, 'No medical packages found.');
@@ -97,7 +128,7 @@ const getMedicalPackageById = async (req, res, next) => {
         const medicalPackage = await MedicalPackageModel.findOne({
             _id: id,
             isDeleted: false,
-        })
+        });
 
         if (!medicalPackage) {
             createError(404, 'Medical package not found.');
@@ -106,7 +137,7 @@ const getMedicalPackageById = async (req, res, next) => {
         // sắp xếp lại array services theo thứ tự giảm dần của mảng servicesID
         const arrayServices = medicalPackage.services.sort((a, b) => {
             return b.servicesID.length - a.servicesID.length;
-        })
+        });
 
         // Lấy tất cả các service có trong mảng dày nhất
         const services = await ServiceModel.find({
@@ -119,7 +150,7 @@ const getMedicalPackageById = async (req, res, next) => {
         const newMedicalPackage = {
             ...medicalPackage.toObject(),
             allServices: services
-        }
+        };
 
         return res.status(200).json({
             message: 'Medical package retrieved successfully.',
