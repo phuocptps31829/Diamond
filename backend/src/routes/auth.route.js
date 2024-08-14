@@ -3,8 +3,8 @@ const router = express.Router();
 const passport = require('passport');
 
 const userValidator = require('../validations/user.validation');
+const authValidator = require('../validations/auth.validation');
 const authController = require('../controllers/auth.controller');
-const helperMiddleware = require('../middlewares/helper.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
@@ -105,7 +105,7 @@ router.get(
  */
 router.post(
     '/register',
-    userValidator.userValidator,
+    authValidator.registerValidator,
     authController.createOTP
 );
 
@@ -142,6 +142,7 @@ router.post(
  */
 router.post(
     '/login',
+    authValidator.loginValidator,
     authController.login
 );
 
@@ -261,12 +262,14 @@ router.put(
 
 router.post(
     '/refresh-token',
+    authMiddleware.verifyRefreshToken,
     authController.refreshToken
 );
 
 router.post(
     '/logout',
-    authMiddleware.verifyToken,
+    authMiddleware.verifyAccessToken,
+    authMiddleware.verifyRefreshToken,
     authController.logout
 );
 

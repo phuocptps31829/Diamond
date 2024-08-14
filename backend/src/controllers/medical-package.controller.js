@@ -101,7 +101,7 @@ const getAllMedicalPackages = async (req, res, next) => {
             $count: "totalRecords"
         });
 
-        const totalRecords = await ServiceModel.aggregate(countPipeline);
+        const totalRecords = await MedicalPackageModel.aggregate(countPipeline);
 
         const medicalPackages = await MedicalPackageModel.aggregate(pipeline);
 

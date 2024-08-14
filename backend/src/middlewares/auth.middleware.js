@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
 const OtpModel = require('../models/otp.model');
+const RevokedTokenModel = require('../models/revoked-token');
 const { createError, compareHashedValue } = require('../utils/helper.util');
 
-const verifyToken = (req, res, next) => {
+const verifyAccessToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -12,6 +13,40 @@ const verifyToken = (req, res, next) => {
         }
 
         const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        req.user = { id: verifiedUser.id };
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
+const verifyRefreshToken = async (req, res, next) => {
+    try {
+        const refreshToken = req.cookies.refreshToken;
+
+        if (!refreshToken) {
+            createError(403, 'No refresh token found.');
+        }
+
+        const revokedToken = await RevokedTokenModel.findOne({
+            token: refreshToken
+        });
+
+        if (revokedToken) {
+            createError(403, 'Refresh token is expired.');
+        }
+
+        const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+
+        if (!verifiedUser) {
+            createError(403, 'Invalid refresh token.');
+        }
+
+        await RevokedTokenModel.create({
+            token: refreshToken
+        });
+
         req.user = { id: verifiedUser.id };
 
         next();
@@ -37,13 +72,20 @@ const verifyOTP = async (req, res, next) => {
             createError(403, 'Thiếu token hoặc OTP.');
         }
 
-        const verifiedToken = jwt.verify(otpToken, 'secret-key');
+        const revokedToken = await RevokedTokenModel.findOne({
+            token: otpToken
+        });
+
+        if (revokedToken) {
+            createError(401, 'Token hết hạn.');
+        }
+
+        const verifiedToken = jwt.verify(otpToken, process.env.OTP_TOKEN_SECRET);
 
         const { phoneNumber, fullName, password } = verifiedToken;
         const otpHolder = await OtpModel.find({ phoneNumber });
 
         if (!otpHolder.length) {
-            console.log(1);
             createError(401, 'Token hết hạn.');
         }
 
@@ -55,18 +97,21 @@ const verifyOTP = async (req, res, next) => {
             createError(403, 'OTP không đúng.');
         }
 
+        await RevokedTokenModel.create({
+            token: otpToken
+        });
+
         req.newUser = { phoneNumber, password, fullName };
-        console.log('new', phoneNumber, password, fullName);
         next();
     } catch (error) {
         next(error);
         console.log(error);
-        console.log('err name', error.name);
     }
 };
 
 module.exports = {
-    verifyToken,
+    verifyAccessToken,
+    verifyRefreshToken,
     verifyAdmin,
     verifyOTP
 };
