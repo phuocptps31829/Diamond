@@ -10,21 +10,30 @@ import { setUserProfile } from "@/redux/authSlice";
 export default function AppLayout() {
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.auth.userProfile);
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!userProfile) {
-        const accessToken = localStorage.getItem("accessToken");
-        try {
-          const userData = await getProfilePatients(accessToken);
-          dispatch(setUserProfile(userData));
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-        }
-      }
-    };
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
-    fetchUserProfile();
-  }, [userProfile, dispatch]);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessTokenUrl = urlParams.get("accessToken");
+
+    if (accessTokenUrl) {
+      localStorage.setItem("accessToken", accessTokenUrl);
+      location.href = "/user-profile";
+    } else {
+      const fetchUserProfile = async () => {
+        if (!userProfile && accessToken) {
+          try {
+            const userData = await getProfilePatients(accessToken);
+            dispatch(setUserProfile(userData));
+          } catch (error) {
+            console.error("Failed to fetch user profile:", error);
+          }
+        }
+      };
+
+      fetchUserProfile();
+    }
+  }, [userProfile, dispatch, accessToken]);
 
   return (
     <>

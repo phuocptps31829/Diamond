@@ -32,6 +32,7 @@ const API_GET_PROFILE_PATIENTS = `${API_URL}/patients/profile`;
 
 const API_VERIFY_OTP = `${API_URL}/patients/add`;
 const API_REGISTER_SEND_OTP = `${API_URL}/auth/register`;
+const API_LOGIN = `${API_URL}/auth/login`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -51,4 +52,5 @@ export {
   API_GET_PROFILE_PATIENTS,
   API_VERIFY_OTP,
   API_REGISTER_SEND_OTP,
+  API_LOGIN,
 };

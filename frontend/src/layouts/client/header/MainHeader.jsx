@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,7 +48,6 @@ const dataNav = [
 export default function MainHeader() {
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
-
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">

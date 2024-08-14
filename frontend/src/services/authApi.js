@@ -1,4 +1,9 @@
-import { API_GET_PROFILE_PATIENTS, API_VERIFY_OTP, API_REGISTER_SEND_OTP } from "@/configs/varibles";
+import {
+  API_GET_PROFILE_PATIENTS,
+  API_VERIFY_OTP,
+  API_REGISTER_SEND_OTP,
+  API_LOGIN,
+} from "@/configs/varibles";
 import axios from "axios";
 
 export const getProfilePatients = async (accessToken) => {
@@ -29,10 +34,19 @@ export const otpUserVerification = async (data) => {
 export const registerSendOtp = async (data) => {
   try {
     const res = await axios.post(API_REGISTER_SEND_OTP, data);
-    console.log("res.data: ", res.data);
     return res.data;
   } catch (error) {
     console.error("Failed to send OTP:", error);
+    throw error;
+  }
+};
+
+export const login = async (data) => {
+  try {
+    const res = await axios.post(API_LOGIN, data);
+    return res.data;
+  } catch (error) {
+    console.error("Failed to login:", error);
     throw error;
   }
 };
