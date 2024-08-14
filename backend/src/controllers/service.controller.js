@@ -6,7 +6,7 @@ const getAllServices = async (req, res, next) => {
     try {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
         let { branchID, specialtyID, gender } = req.checkValueQuery;
-        // console.log(branchID);
+        console.log(sortOptions);
         const pipeline = [
             {
                 $match: {
@@ -41,7 +41,6 @@ const getAllServices = async (req, res, next) => {
                         { "ApplicableObjectInfo": { $exists: true, $size: 0 } },
                         { "ApplicableObjectInfo": { $exists: false } }
                     ]
-
                 }
             });
         }
@@ -60,7 +59,7 @@ const getAllServices = async (req, res, next) => {
         });
         const totalRecords = await ServiceModel.aggregate(countPipeline);
 
-        if (sortOptions && !Object.keys(sortOptions).length === 0) {
+        if (sortOptions && Object.keys(sortOptions).length > 0) {
             pipeline.push({
                 $sort: sortOptions
             });

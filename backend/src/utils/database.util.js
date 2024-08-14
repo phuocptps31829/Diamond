@@ -50,17 +50,15 @@ const createUserGoogleFacebook = async (body) => {
 
         if (lastPatient.length) {
             lastPatientCode = +lastPatient[0].patientCode.slice(2).toString();
-            console.log(lastPatientCode);
         } else {
             lastPatientCode = "BN1";
         }
 
-        console.log(newUser);
         const newPatient = await PatientModel.create({
             userID: newUser._id,
             patientCode: lastPatient.length ? 'BN' + (lastPatientCode + 1) : lastPatientCode
         });
-        console.log(newPatient);
+
         return newPatient;
     } catch (error) {
         createError(500, error?.message || '');

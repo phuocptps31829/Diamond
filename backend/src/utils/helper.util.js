@@ -11,7 +11,7 @@ const createError = (statusCode, message) => {
     throw new createHttpError(statusCode, message);
 };
 
-const sendEmail = async (email, subject, text, attachments = []) => {
+const sendEmail = async (email, subject, html, attachments = []) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -26,7 +26,7 @@ const sendEmail = async (email, subject, text, attachments = []) => {
             from: process.env.EMAIL_SEND,
             to: email,
             subject: subject,
-            text: text,
+            html: html,
             attachments: attachments
         });
     } catch (error) {
@@ -121,7 +121,7 @@ const generateAccessRefreshToken = user => {
             isAdmin: user.isAdmin
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '2d' }
+        { expiresIn: '7d' }
     );
 
     return { accessToken, refreshToken };
@@ -135,7 +135,7 @@ const generateOTPToken = ({ fullName, phoneNumber, password }) => {
             password,
             expiresIn: Date.now() + 300000
         },
-        'secret-key',
+        process.env.OTP_TOKEN_SECRET,
         { expiresIn: '5m' }
     );
 
@@ -181,6 +181,48 @@ const checkValidObjectId = (id, type) => {
     return id;
 };
 
+const isValidPhoneNumber = (phoneNumber) => {
+    return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phoneNumber);
+};
+
+const isValidEmail = (email) => {
+    return (/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/).test(email);
+};
+
+const checkPhoneNumberAndEmail = async (phoneNumber, email, Model, isEmailRequired) => {
+    if (!phoneNumber || !phoneNumber.trim()) {
+        createError(400, 'Phone number is required');
+    }
+
+    if (isEmailRequired) {
+        if ((!email) || !email.trim() === '') {
+            createError(400, 'Email is required');
+        }
+    }
+
+    if (email && email.trim() !== '') {
+        if (!isValidEmail(email)) {
+            createError(400, 'Email không hợp lệ');
+        }
+
+        const getExistingUserByEmail = await Model.findOne({ email });
+        if (getExistingUserByEmail) {
+            createError(409, 'Email đã tồn tại');
+        }
+    }
+
+    if (phoneNumber && phoneNumber.trim() !== '') {
+        if (!isValidPhoneNumber(phoneNumber)) {
+            createError(400, 'Số điện thoại không hợp lệ');
+        }
+
+        const getExistingUserByPhoneNumber = await Model.findOne({ phoneNumber });
+        if (getExistingUserByPhoneNumber) {
+            createError(409, 'Số điện thoại đã tồn tại');
+        }
+    }
+};
+
 module.exports = {
     createError,
     sendEmail,
@@ -191,5 +233,6 @@ module.exports = {
     errorValidator,
     checkValidObjectId,
     sendOTP,
-    generateOTPToken
+    generateOTPToken,
+    checkPhoneNumberAndEmail
 };

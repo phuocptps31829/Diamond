@@ -42,7 +42,7 @@ const checkValueQuery = (req, res, next) => {
         if (specialtyID) {
             specialtyID.forEach(id => {
                 if (!mongoose.isValidObjectId(id)) {
-                    createError(400, `Invalid branchID: ${id}`);
+                    createError(400, `Invalid specialtyID: ${id}`);
                 }
             });
         }

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 export default function TopHeader() {
   return (
     <div className="hidden bg-primary-500 md:block">
-      <div className="mx-auto flex h-8 max-w-screen-xl items-center justify-between px-3 text-white sm:px-10">
+      <div className="mx-auto flex h-8 max-w-screen-xl items-center justify-between px-3 text-white sm:px-5">
         <div className="group relative flex h-full items-center gap-2 bg-orange-500 px-3 text-sm hover:cursor-pointer">
           <MdAddLocation className="text-xl" /> Hệ thống phòng khám
           <FaAngleDown />

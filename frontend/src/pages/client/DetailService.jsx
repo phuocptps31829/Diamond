@@ -26,8 +26,7 @@ const DetailService = () => {
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
     queryKey: ["medical-packages", id],
-    queryFn: () =>
-      packageId ? getMedicalPackageById(id) : Promise.resolve(null),
+    queryFn: () => getMedicalPackageById(id),
     enabled: !!packageId,
   });
 
@@ -38,7 +37,8 @@ const DetailService = () => {
     isLoading: isLoadingService,
   } = useQuery({
     queryKey: ["service", id],
-    queryFn: () => (serviceId ? getServiceById(id) : Promise.resolve(null)),
+    queryFn: () => getServiceById(id),
+
     enabled: !!serviceId,
   });
 
@@ -61,45 +61,47 @@ const DetailService = () => {
     enabled: !!service?.specialtyID,
   });
 
-  if (errorMedicalPackage || errorMedicalPackageSpecialty || errorService || errorServiceSpecialty) {
+  if (
+    errorMedicalPackage ||
+    errorMedicalPackageSpecialty ||
+    errorService ||
+    errorServiceSpecialty
+  ) {
     return <NotFound />;
   }
 
-  const contentToRender = service || medicalPackage;
-
+  
+  const isLoading =
+    isLoadingMedicalPackage ||
+    isLoadingService ||
+    isLoadingMedicalPackageSpecialty ||
+    isLoadingServiceSpecialty;
   return (
     <div className="bg-bg-gray p-8">
-      {contentToRender && (
-        <>
-          <ServiceDetail
-            medicalPackage={medicalPackage}
-            service={service}
-            isLoading={isLoadingMedicalPackage || isLoadingService}
-          />
-          <DescriptionService
-            medicalPackage={medicalPackage}
-            service={service}
-            isLoading={isLoadingMedicalPackage || isLoadingService}
-          />
-          {!service && (
-            <MedicalPackageService
-              medicalPackage={medicalPackage}
-              service={service}
-              isLoading={isLoadingMedicalPackage || isLoadingService}
-            />
-          )}
+      <ServiceDetail
+        medicalPackage={medicalPackage}
+        service={service}
+        isLoading={isLoading}
+      />
+      <DescriptionService
+        medicalPackage={medicalPackage}
+        service={service}
+        isLoading={isLoading}
+      />
+      {!service && (
+        <MedicalPackageService
+          medicalPackage={medicalPackage}
+          service={service}
+          isLoading={isLoading}
+        />
+      )}
 
-          <Rules />
-          <PackageServiceOther
-            serviceSpecialty={serviceSpecialty}
-            medicalPackageSpecialty={medicalPackageSpecialty}
-            isLoading={isLoadingMedicalPackageSpecialty || isLoadingServiceSpecialty}
-          />
-        </>
-      )}
-      {!contentToRender && !isLoadingMedicalPackage && !isLoadingService && (
-        <NotFound />
-      )}
+      <Rules />
+      <PackageServiceOther
+        serviceSpecialty={serviceSpecialty}
+        medicalPackageSpecialty={medicalPackageSpecialty}
+        isLoading={isLoading}
+      />
     </div>
   );
 };

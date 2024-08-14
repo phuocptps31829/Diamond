@@ -8,7 +8,6 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useQuery } from "@tanstack/react-query";
 import { getAllSpecialties } from "@/services/specialtiesApi";
-import Loading from "@/components/ui/Loading";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function Specialty() {

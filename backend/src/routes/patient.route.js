@@ -59,7 +59,7 @@ router.get(
 */
 router.get(
     '/profile',
-    authMiddleware.verifyToken,
+    authMiddleware.verifyAccessToken,
     patientController.getPatientById
 );
 

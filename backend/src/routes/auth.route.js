@@ -3,8 +3,8 @@ const router = express.Router();
 const passport = require('passport');
 
 const userValidator = require('../validations/user.validation');
+const authValidator = require('../validations/auth.validation');
 const authController = require('../controllers/auth.controller');
-const helperMiddleware = require('../middlewares/helper.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
@@ -105,7 +105,8 @@ router.get(
  */
 router.post(
     '/register',
-    userValidator.userValidator,
+    authMiddleware.resendOTP,
+    authValidator.registerValidator,
     authController.createOTP
 );
 
@@ -142,6 +143,7 @@ router.post(
  */
 router.post(
     '/login',
+    authValidator.loginValidator,
     authController.login
 );
 
@@ -215,7 +217,7 @@ router.post(
 
 /**
  * @openapi
- * '/api/v1/auth/forgot-password/reset-pass-word':
+ * '/api/v1/auth/forgot-password/reset-password':
  *  put:
  *     tags:
  *     - Auth Routes
@@ -249,7 +251,7 @@ router.post(
  */
 
 router.put(
-    '/forgot-password/reset-pass-word',
+    '/forgot-password/reset-password',
     authMiddleware.verifyOTP,
     authController.forgotPassword
 );
@@ -261,12 +263,14 @@ router.put(
 
 router.post(
     '/refresh-token',
+    authMiddleware.verifyRefreshToken,
     authController.refreshToken
 );
 
 router.post(
     '/logout',
-    authMiddleware.verifyToken,
+    authMiddleware.verifyAccessToken,
+    authMiddleware.verifyRefreshToken,
     authController.logout
 );
 

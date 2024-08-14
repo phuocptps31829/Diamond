@@ -14,4 +14,11 @@ const otpSchema = new mongoose.Schema({
 }
 );
 
+otpSchema.methods.isExpired = function () {
+    const time = 60 * 1000;
+    const currentTime = Date.now();
+    return (currentTime - this.time.getTime()) < time;
+};
+
+
 module.exports = mongoose.model('OTP', otpSchema);

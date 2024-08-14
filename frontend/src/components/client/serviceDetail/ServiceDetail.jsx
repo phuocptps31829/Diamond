@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/Button";
 import { ToastAction } from "@/components/ui/Toast";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/useToast";
 import { AiOutlineSchedule } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 
 const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
+  
   const { toast } = useToast();
   const [selectedService, setSelectedService] = useState(null);
 
@@ -16,7 +17,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     }
   }, [medicalPackage]);
 
-  if (isLoading || (!medicalPackage && !service)) {
+  if (isLoading) {
     return (
       <div className="mx-auto max-w-screen-2xl pb-4">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
@@ -63,7 +64,9 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
 
   const renderMedicalPackageDetails = () => (
     <>
-      <h3 className="mb-4 text-xl font-bold md:text-3xl">{medicalPackage.name}</h3>
+      <h3 className="mb-4 text-xl font-bold md:text-3xl">
+        {medicalPackage.name}
+      </h3>
       <div className="my-4 flex items-center gap-2">
         <AiOutlineSchedule size={25} />
         <span className="text-sm font-bold !text-gray-700">
