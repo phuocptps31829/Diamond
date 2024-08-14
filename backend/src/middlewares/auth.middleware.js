@@ -66,14 +66,17 @@ const verifyAdmin = (req, res, next) => {
 };
 
 const resendOTP = async (req, res, next) => {
-    const { phoneNumber } = req.body;
-
+    let { phoneNumber } = req.body;
+    const { phone } = req.params;
     try {
+        if (phone) {
+            phoneNumber = phone
+        }
         const checkPhoneNumber = await OtpModel.findOne({ phoneNumber });
+        console.log(checkPhoneNumber)
         if (!checkPhoneNumber) {
             return next();
         }
-
         if (checkPhoneNumber.isExpired()) {
             createError(401, 'Yêu cầu gửi OTP quá nhiều.');
         }

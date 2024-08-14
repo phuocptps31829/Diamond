@@ -174,6 +174,7 @@ router.post(
 
 router.post(
     '/forgot-password/send-otp/:phone',
+    authMiddleware.resendOTP,
     authController.sendOTPForgotPassword
 );
 
