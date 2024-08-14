@@ -28,6 +28,8 @@ const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
 
 // auth
 const API_LOGIN_GOOGLE = `http://api.cosstewn.io.vn/api/v1/auth/google`;
+const API_GET_PROFILE_PATIENTS = `${API_URL}/patients/profile`;
+
 const API_VERIFY_OTP = `${API_URL}/patients/add`;
 const API_REGISTER_SEND_OTP = `${API_URL}/auth/register`;
 
@@ -46,6 +48,7 @@ export {
   API_URL_POST_CONTACT,
   API_URL_GET_ALL_BRANCHES,
   API_LOGIN_GOOGLE,
+  API_GET_PROFILE_PATIENTS,
   API_VERIFY_OTP,
   API_REGISTER_SEND_OTP,
 };

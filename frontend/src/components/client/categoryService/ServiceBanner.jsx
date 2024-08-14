@@ -10,6 +10,13 @@ const ServiceBanner = () => {
     : isServiceRoute
     ? "Dịch vụ khám sức khỏe"
     : "Dịch vụ";
+    
+  const des = isPackageRoute
+  ? " Đăng ký gói khám sức khỏe để nhận ưu đãi hấp dẫn từ chúng tôi"
+  : isServiceRoute
+  ? "  Đăng ký dịch vụ khám sức khỏe để nhận ưu đãi hấp dẫn từ chúng tôi"
+  : "Dịch vụ";
+
 
   return (
     <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[20vw]">
@@ -24,7 +31,7 @@ const ServiceBanner = () => {
             {title}
           </h1>
           <h4 className="px-5 text-[14px] font-medium sm:px-20 sm:text-[18px]">
-            Đăng ký gói khám sức khỏe để nhận ưu đãi hấp dẫn từ chúng tôi
+           {des}
           </h4>
         </div>
       </div>

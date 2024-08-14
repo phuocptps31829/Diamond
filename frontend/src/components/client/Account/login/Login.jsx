@@ -13,7 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import { Button } from "@/components/ui/Button";
 import { API_LOGIN_GOOGLE } from "@/configs/varibles";
+
 export default function LoginComponent() {
+ 
   const {
     handleSubmit,
     formState: { errors },
@@ -32,6 +34,8 @@ export default function LoginComponent() {
   const handleLoginGoogle = async () => {
     window.location.href = API_LOGIN_GOOGLE;
   };
+
+
 
   return (
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
