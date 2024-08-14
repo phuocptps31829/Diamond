@@ -4,12 +4,16 @@ import {
   API_URL_GET_SERVICE_BY_SPECIALTIES,
 } from "@/configs/varibles";
 import axios from "axios";
-export const getAllServices = async (page, limit, sort) => {
+export const getAllServices = async (filter) => {
   try {
+    const {  page, limit, sort, gender, branch, specialtyID } = filter;
     const params = {
       ...(page !== undefined && page !== null && { page }),
       ...(limit !== undefined && limit !== null && { limit }),
       ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+      ...(gender !== undefined && gender !== null && gender.length > 0 && { gender }),
+      ...(branch !== undefined && branch !== null && branch.length > 0 && { branch }),
+      ...(specialtyID !== undefined && specialtyID !== null && specialtyID.length > 0 && { specialtyID }),
     };
 
     const res = await axios.get(API_URL_GET_ALL_SERVICES, {
