@@ -62,6 +62,31 @@ export default function LoginComponent() {
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
       <div className="w-full max-w-screen-xl px-10 py-5">
         <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* ADS BANNER */}
+          <div className="hidden bg-gray-200 shadow-lg md:block">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+              plugins={[
+                Autoplay({
+                  delay: 3500,
+                  stopOnInteraction: false,
+                  stopOnMouseEnter: false,
+                }),
+              ]}
+            >
+              <CarouselContent>
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <CarouselItem key={index} className="pl-4">
+                    <AdsProduct />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
           {/* FORM */}
           <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
@@ -187,31 +212,6 @@ export default function LoginComponent() {
                 </p>
               </div>
             </form>
-          </div>
-          {/* ADS BANNER */}
-          <div className="hidden bg-gray-200 shadow-lg md:block">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
-              plugins={[
-                Autoplay({
-                  delay: 3500,
-                  stopOnInteraction: false,
-                  stopOnMouseEnter: false,
-                }),
-              ]}
-            >
-              <CarouselContent>
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <CarouselItem key={index} className="pl-4">
-                    <AdsProduct />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
           </div>
         </div>
       </div>

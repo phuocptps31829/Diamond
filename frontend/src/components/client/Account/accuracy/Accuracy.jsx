@@ -162,7 +162,7 @@ export default function AccurancyComponent() {
       toast({
         variant: "destructive",
         title: "Gửi lại mã OTP thất bại!",
-        description: "Sau 5 phút mới có thể gửi lại mã OTP.",
+        description: "Sau 1 phút 30 giây mới có thể gửi lại mã OTP.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       return;
