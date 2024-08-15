@@ -11,11 +11,14 @@ import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
-import { Button } from "@/components/ui/Button";
 import { API_LOGIN_GOOGLE } from "@/configs/varibles";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/services/authApi";
 
 export default function LoginComponent() {
- 
+  const { toast } = useToast();
   const {
     handleSubmit,
     formState: { errors },
@@ -28,14 +31,32 @@ export default function LoginComponent() {
     },
   });
 
+  const mutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      location.href = `/user-profile?accessToken=${data.accessToken}`;
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toast({
+        variant: "destructive",
+        title: "Đăng nhập thất bại!",
+        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    },
+  });
+
   const onSubmit = (data) => {
-    console.log(data);
+    mutation.mutate(data);
   };
+
   const handleLoginGoogle = async () => {
     window.location.href = API_LOGIN_GOOGLE;
   };
-
-
 
   return (
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
@@ -58,9 +79,6 @@ export default function LoginComponent() {
                   Số điện thoại:
                 </label>
                 <div className="relative">
-                  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <FaPhone className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span> */}
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Nhập số điện thoại"
@@ -81,9 +99,6 @@ export default function LoginComponent() {
                   Mật khẩu:
                 </label>
                 <div className="relative">
-                  {/* <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                    <FaLock className="text-gray-400 w-4 md:w-5 h-4 md:h-5" />
-                  </span> */}
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Mật khẩu"
@@ -117,11 +132,16 @@ export default function LoginComponent() {
                   Quên mật khẩu?
                 </Link>
               </div>
-              <div className="text-center">
-                <Button size="full" variant="primary">
-                  Đăng nhập
-                </Button>
-              </div>
+              <button
+                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
+                // disabled={mutation.isPending}
+              >
+                {/* {mutation.isPending ? "Đang xử lí" : "Đăng ký"}
+                {mutation.isPending && (
+                  <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                )} */}
+                Đăng nhập
+              </button>
               <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-300"></div>
                 <span className="mx-4 text-sm text-gray-800">

@@ -43,8 +43,9 @@ export default function RegisterComponent() {
         description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      console.log("data", data.otpToken);
-      localStorage.setItem("otpToken", data.otpToken);
+      const currentTime = new Date().getTime();
+      sessionStorage.setItem("otpSentTime", currentTime);
+      sessionStorage.setItem("otpToken", data.otpToken);
       navigate("/accuracy");
     },
     onError: (error) => {
@@ -58,7 +59,9 @@ export default function RegisterComponent() {
         description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      localStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("password");
     },
   });
 
@@ -71,7 +74,9 @@ export default function RegisterComponent() {
       phoneNumber,
     };
 
-    localStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("fullName", fullName);
+    sessionStorage.setItem("password", password);
     mutation.mutate(dataSend);
   };
 
