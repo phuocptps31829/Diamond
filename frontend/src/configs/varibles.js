@@ -36,6 +36,7 @@ const API_LOGIN = `${API_URL}/auth/login`;
 const API_SEND_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/send-otp`;
 const API_CHECK_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/check-otp`;
 const API_CHANGE_PASSWORD = `${API_URL}/auth/forgot-password/reset-password`;
+const API_LOGOUT = `${API_URL}/auth/logout`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -59,4 +60,5 @@ export {
   API_SEND_OTP_FORGOT_PASSWORD,
   API_CHECK_OTP_FORGOT_PASSWORD,
   API_CHANGE_PASSWORD,
+  API_LOGOUT,
 };

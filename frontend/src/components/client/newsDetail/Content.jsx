@@ -30,7 +30,7 @@ export default function ContentNews({
             item.specialtyID === news.specialtyID && item._id !== news._id,
         ),
       );
-      setLatestNews(allNews.filter((item) => item._id !== news._id));
+      setLatestNews(allNews.reverse().filter((item) => item._id !== news._id));
     }
   }, [allNews, isLoadingAllNews, news?._id, news?.specialtyID]);
 

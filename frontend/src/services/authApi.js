@@ -6,6 +6,7 @@ import {
   API_SEND_OTP_FORGOT_PASSWORD,
   API_CHECK_OTP_FORGOT_PASSWORD,
   API_CHANGE_PASSWORD,
+  API_LOGOUT,
 } from "@/configs/varibles";
 import axios from "axios";
 
@@ -47,6 +48,7 @@ export const registerSendOtp = async (data) => {
 export const login = async (data) => {
   try {
     const res = await axios.post(API_LOGIN, data);
+    console.log(res.data.data);
     return res.data.data;
   } catch (error) {
     console.error("Failed to login:", error);
@@ -82,6 +84,20 @@ export const changePasswordForgot = async (data) => {
     return res.data;
   } catch (error) {
     console.error("Failed to change password:", error);
+    throw error;
+  }
+};
+
+export const logoutApi = async (accessToken) => {
+  try {
+    const res = await axios.post(API_LOGOUT, null, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Failed to logout:", error);
     throw error;
   }
 };
