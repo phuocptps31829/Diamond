@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ServiceList from "../product/Service";
+import ServiceItem from "../product/Service";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
@@ -90,7 +90,7 @@ export default function OutstandingServices() {
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
             {OutstandingMedicalPackages.map((medicalPackage) => {
               return (
-                <ServiceList key={medicalPackage._id} {...medicalPackage} />
+                <ServiceItem key={medicalPackage._id} {...medicalPackage} />
               );
             })}
           </div>
