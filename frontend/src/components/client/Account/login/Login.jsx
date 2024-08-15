@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/Button";
 import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 
 export default function LoginComponent() {
- 
+
   const {
     handleSubmit,
     formState: { errors },
@@ -41,7 +41,32 @@ export default function LoginComponent() {
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
       <div className="w-full max-w-screen-xl px-10 py-5">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* FORM */}
+          {/* ADS BANNER */ }
+          <div className="hidden bg-gray-200 shadow-lg md:block">
+            <Carousel
+              opts={ {
+                align: "start",
+                loop: true,
+              } }
+              className="w-full"
+              plugins={ [
+                Autoplay({
+                  delay: 3500,
+                  stopOnInteraction: false,
+                  stopOnMouseEnter: false,
+                }),
+              ] }
+            >
+              <CarouselContent>
+                { Array.from({ length: 12 }).map((_, index) => (
+                  <CarouselItem key={ index } className="pl-4">
+                    <AdsProduct />
+                  </CarouselItem>
+                )) }
+              </CarouselContent>
+            </Carousel>
+          </div>
+          {/* FORM */ }
           <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Đăng nhập
@@ -49,7 +74,7 @@ export default function LoginComponent() {
             <p className="mb-6 text-center text-sm text-gray-400">
               Đăng nhập với số điện thoại và mật khẩu
             </p>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2">
                 <label
                   htmlFor="phone"
@@ -67,9 +92,9 @@ export default function LoginComponent() {
                     name="phoneNumber"
                     type="text"
                     id="phoneNumber"
-                    icon={<FaPhoneAlt></FaPhoneAlt>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaPhoneAlt></FaPhoneAlt> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -90,9 +115,9 @@ export default function LoginComponent() {
                     name="password"
                     type="password"
                     id="password"
-                    icon={<FaLock></FaLock>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -129,10 +154,10 @@ export default function LoginComponent() {
                 </span>
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
-                  onClick={handleLoginGoogle}
+                  onClick={ handleLoginGoogle }
                   type="button"
                   className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
                 >
@@ -159,7 +184,7 @@ export default function LoginComponent() {
                 <p className="text-center">
                   Bạn chưa có tài khoản?
                   <Link
-                    to={"/register"}
+                    to={ "/register" }
                     className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                   >
                     Đăng kí ngay!
@@ -167,31 +192,6 @@ export default function LoginComponent() {
                 </p>
               </div>
             </form>
-          </div>
-          {/* ADS BANNER */}
-          <div className="hidden bg-gray-200 shadow-lg md:block">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
-              plugins={[
-                Autoplay({
-                  delay: 3500,
-                  stopOnInteraction: false,
-                  stopOnMouseEnter: false,
-                }),
-              ]}
-            >
-              <CarouselContent>
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <CarouselItem key={index} className="pl-4">
-                    <AdsProduct />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
           </div>
         </div>
       </div>

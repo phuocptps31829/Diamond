@@ -29,7 +29,9 @@ const medicalPackageValidator = require('../validations/medical-package.validati
  *      - in: query
  *        name: gender
  *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: string
  *      - in: query
  *        name: branchID
  *        schema:

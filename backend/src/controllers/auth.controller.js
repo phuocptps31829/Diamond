@@ -17,8 +17,8 @@ const createOTP = async (req, res, next) => {
         errorValidator(req, res);
 
         await checkPhoneNumberAndEmail(req.body.phoneNumber, req.body.email, UserModel, false);
-        const OTP = await sendOTP({ ...req.body });
 
+        const OTP = await sendOTP({ ...req.body });
         const hashedOTP = await hashValue(OTP);
 
         await OtpModel.create({
@@ -144,7 +144,15 @@ const sendOTPForgotPassword = async (req, res, next) => {
 const checkOTPForgotPassword = async (req, res, next) => {
     try {
 
-        const { OTP, otpToken } = req.body;
+        const { OTP } = req.body;
+        const { phoneNumber, password, fullName } = req.newUser;
+
+        const otpToken = generateOTPToken({
+            fullName: fullName,
+            phoneNumber: phoneNumber,
+            password: password
+        });
+
         return res.status(201).json({
             message: 'OTP is correct',
             data: { OTP, otpToken }

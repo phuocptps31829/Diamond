@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 const createHttpError = require('http-errors');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
+const axios = require('axios');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 

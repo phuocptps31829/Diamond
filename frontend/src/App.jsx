@@ -147,8 +147,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-
-
 function App() {
   return (
     <Provider store={store}>

@@ -69,6 +69,7 @@ const getAllMedicalPackages = async (req, res, next) => {
                     ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
                 }
             },
+
             {
                 $skip: skip
             },
@@ -77,12 +78,14 @@ const getAllMedicalPackages = async (req, res, next) => {
             }
         ];
 
-
         if (gender) {
             pipeline.push({
                 $match: {
-                    "ApplicableObjectInfo.gender": gender,
-                    "ApplicableObjectInfo.isDeleted": false,
+                    $or: [
+                        { "ApplicableObjectInfo.gender": gender },
+                        { "ApplicableObjectInfo": { $exists: true, $size: 0 } },
+                        { "ApplicableObjectInfo": { $exists: false } }
+                    ]
                 }
             });
         }
