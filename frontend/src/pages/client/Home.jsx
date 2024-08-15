@@ -6,34 +6,10 @@ import Introduce from "../../components/client/home/Introduce";
 import News from "../../components/client/home/News";
 import Collaborate from "../../components/client/home/Collaborate";
 import useScrollToTop from "@/hooks/useScrollToTop";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setUserProfile } from "@/redux/authSlice";
-import { getProfilePatients } from "@/services/authApi";
+
 export default function Home() {
-  const dispatch = useDispatch();
   useScrollToTop();
-  
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get("accessToken");
-  
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
-  
-        try {
-          const userData = await getProfilePatients(accessToken);
-          
-          dispatch(setUserProfile(userData));
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-        }
-      }
-    };
-  
-    fetchProfile();
-  }, [dispatch]);
+
   return (
     <div className="bg-[#E8F2F7]">
       <Banner />
