@@ -56,7 +56,7 @@ const getAllServices = async (req, res, next) => {
         });
         const totalRecords = await ServiceModel.aggregate(countPipeline);
 
-        if (sortOptions && !Object.keys(sortOptions).length === 0) {
+        if (sortOptions && Object.keys(sortOptions).length > 0) {
             pipeline.push({
                 $sort: sortOptions
             });
@@ -215,5 +215,4 @@ module.exports = {
     updateService,
     deleteService,
     getAllServicesBySpecialtyId,
-
 };
