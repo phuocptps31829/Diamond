@@ -144,7 +144,15 @@ const sendOTPForgotPassword = async (req, res, next) => {
 const checkOTPForgotPassword = async (req, res, next) => {
     try {
 
-        const { OTP, otpToken } = req.body;
+        const { OTP } = req.body;
+        const { phoneNumber, password, fullName } = req.newUser;
+
+        const otpToken = generateOTPToken({
+            fullName: fullName,
+            phoneNumber: phoneNumber,
+            password: password
+        });
+
         return res.status(201).json({
             message: 'OTP is correct',
             data: { OTP, otpToken }

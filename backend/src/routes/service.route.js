@@ -29,7 +29,10 @@ const serviceValidator = require('../validations/service.validation');
  *      - in: query
  *        name: gender
  *        schema:
- *          type: string
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
  *      - in: query
  *        name: branchID
  *        schema:

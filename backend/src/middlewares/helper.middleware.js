@@ -23,6 +23,14 @@ const checkValueQuery = (req, res, next) => {
     try {
         let { branchID = null, specialtyID = null, gender = null } = req.query;
 
+        if (Array.isArray(gender)) {
+            if (gender.includes('Nam') && gender.includes('Nữ')) {
+                gender = null;
+            } else {
+                gender = gender[0];
+            }
+        }
+
         if (branchID && !Array.isArray(branchID)) {
             branchID = [branchID];
         }
