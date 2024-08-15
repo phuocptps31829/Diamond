@@ -17,10 +17,11 @@ export default function Home() {
   useEffect(() => {
     const fetchProfile = async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const accessToken = urlParams.get("accessToken");
+      const accessTokenUrl = urlParams.get("accessToken");
   
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
+      if (accessTokenUrl) {
+       const accessToken = localStorage.setItem("accessToken", accessTokenUrl);
+
   
         try {
           const userData = await getProfilePatients(accessToken);

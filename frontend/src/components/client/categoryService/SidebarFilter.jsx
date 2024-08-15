@@ -2,71 +2,140 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/Skeleton";
+
 import PropTypes from "prop-types";
 import { getAllBranches } from "@/services/branchesApi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const SidebarFilter = ({ onFilterApply }) => {
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
     sort: "",
-    specialty: [],
+    specialtyID: [],
     branch: [],
-    gender: [],
+    gender: "",
   });
+
   const handleResetFilters = () => {
-    setFilters({
+    const resetFilters = {
+      page: 1,
+      limit: 10,
       sort: "",
-      specialty: [],
+      specialtyID: [],
       branch: [],
-      gender: [],
-    });
+      gender: "",
+    };
+    setFilters(resetFilters);
+    setSearchParams({});
+    onFilterApply(resetFilters);
   };
+
   useEffect(() => {
-    handleResetFilters();
-  }, [location.pathname]);
+    const specialties = searchParams.getAll("specialtyID");
+    const branches = searchParams.getAll("branch");
+    const gender = decodeURIComponent(searchParams.get("gender") || "");
+    const sort = searchParams.get("sort") || "";
+  
+    const newFilters = {
+      page: 1,
+      limit: 10,
+      sort,
+      specialtyID: specialties,
+      branch: branches,
+      gender,
+    };
+  
+    if (specialties.length > 0) {
+      const updatedFilters = {
+        ...newFilters,
+        specialtyID: [...new Set([...newFilters.specialtyID, ...specialties])],
+      };
+      onFilterApply(updatedFilters);
+      setFilters((prev) => ({
+        ...prev,
+        specialtyID: updatedFilters.specialtyID,
+      }));
+    } else {
+      setFilters(newFilters);
+    }
+  }, [location.search]);
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
 
   const handleBranchChange = (branch) => {
-    setFilters((prev) => ({
-      ...prev,
-      branch: prev.branch.includes(branch)
+    setFilters((prev) => {
+      const newBranches = prev.branch.includes(branch)
         ? prev.branch.filter((b) => b !== branch)
-        : [...prev.branch, branch],
-    }));
+        : [...prev.branch, branch];
+      return { ...prev, branch: newBranches };
+    });
   };
 
   const handleSortChange = (sort) => {
-    setFilters((prev) => ({
-      ...prev,
-      sort: prev.sort === sort ? "" : sort,
-    }));
+    setFilters((prev) => {
+      const newSort = prev.sort === sort ? "" : sort;
+      return { ...prev, sort: newSort };
+    });
   };
 
   const handleGenderChange = (gender) => {
-    setFilters((prev) => ({
-      ...prev,
-      gender: prev.gender.includes(gender)
-        ? prev.gender.filter((g) => g !== gender)
-        : [...prev.gender, gender],
-    }));
+    setFilters((prev) => {
+      const newGender = prev.gender === gender ? "" : gender;
+      return { ...prev, gender: newGender };
+    });
   };
+
   const handleSpecialtyChange = (specialty) => {
-    setFilters((prev) => ({
-      ...prev,
-      specialty: prev.specialty.includes(specialty)
-        ? prev.specialty.filter((s) => s !== specialty)
-        : [...prev.specialty, specialty],
-    }));
+    setFilters((prev) => {
+      const newSpecialties = prev.specialtyID.includes(specialty)
+        ? prev.specialtyID.filter((s) => s !== specialty)
+        : [...prev.specialtyID, specialty];
+      return { ...prev, specialtyID: newSpecialties };
+    });
   };
 
   const handleFilterApply = () => {
-    onFilterApply(filters);
-    console.log(filters);
+    const appliedFilters = Object.entries(filters).reduce(
+      (acc, [key, value]) => {
+        if (
+          (Array.isArray(value) && value.length > 0) ||
+          (!Array.isArray(value) && value)
+        ) {
+          acc[key] = value;
+        }
+        return acc;
+      },
+      {},
+    );
+
+    setSearchParams((params) => {
+      const updatedParams = new URLSearchParams(params);
+      Object.entries(filters).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          updatedParams.delete(key);
+          if (value.length > 0) {
+            value.forEach((v) => updatedParams.append(key, v));
+          }
+        } else {
+          if (value) {
+            updatedParams.set(key, value);
+          } else {
+            updatedParams.delete(key);
+          }
+        }
+      });
+      return updatedParams;
+    });
+
+    onFilterApply(appliedFilters);
+    console.log(appliedFilters);
   };
 
   const {
@@ -89,7 +158,7 @@ const SidebarFilter = ({ onFilterApply }) => {
   if (specialtiesLoading || branchesLoading)
     return (
       <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
-        <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
+        <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
           <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
             <Skeleton className="h-6 w-24" />
             <Skeleton className="h-4 w-16" />
@@ -168,7 +237,7 @@ const SidebarFilter = ({ onFilterApply }) => {
   if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
-      <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
+      <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
           <p
@@ -186,8 +255,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-lowest"
-                checked={filters.sort === "price"}
-                onCheckedChange={() => handleSortChange("price")}
+                checked={filters.sort === "discountPrice"}
+                onCheckedChange={() => handleSortChange("discountPrice")}
               />
               <label
                 htmlFor="checkbox-lowest"
@@ -199,8 +268,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-highest"
-                checked={filters.sort === "-price"}
-                onCheckedChange={() => handleSortChange("-price")}
+                checked={filters.sort === "-discountPrice"}
+                onCheckedChange={() => handleSortChange("-discountPrice")}
               />
               <label
                 htmlFor="checkbox-highest"
@@ -248,7 +317,7 @@ const SidebarFilter = ({ onFilterApply }) => {
                       className="flex items-center space-x-2"
                     >
                       <Checkbox
-                        checked={filters.specialty.includes(specialty._id)}
+                        checked={filters.specialtyID.includes(specialty._id)}
                         onCheckedChange={() =>
                           handleSpecialtyChange(specialty._id)
                         }
@@ -296,26 +365,26 @@ const SidebarFilter = ({ onFilterApply }) => {
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
               <Checkbox
-                id="checkbox-default-3"
-                checked={filters.gender.includes("Nam")}
+                id="checkbox-male"
+                checked={filters.gender === "Nam"}
                 onCheckedChange={() => handleGenderChange("Nam")}
               />
               <label
-                htmlFor="checkbox-default-3"
-                className="text-sm font-normal leading-4 text-gray-600"
+                htmlFor="checkbox-male"
+                className="text-sm font-normal text-gray-600"
               >
                 Nam
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
-                id="checkbox-default-4"
-                checked={filters.gender.includes("Nữ")}
+                id="checkbox-female"
+                checked={filters.gender === "Nữ"}
                 onCheckedChange={() => handleGenderChange("Nữ")}
               />
               <label
-                htmlFor="checkbox-default-4"
-                className="text-sm font-normal leading-4 text-gray-600"
+                htmlFor="checkbox-female"
+                className="text-sm font-normal text-gray-600"
               >
                 Nữ
               </label>

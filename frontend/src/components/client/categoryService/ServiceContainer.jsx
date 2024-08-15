@@ -1,84 +1,65 @@
-import { useMatch, useLocation } from "react-router-dom";
-
-import SidebarFilter from "./SidebarFilter";
+import { useMatch } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getAllServices } from "@/services/servicesApi";
 import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
 import NotFound from "../notFound";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import PackageList from "../product/Package";
 import ServiceList from "../product/Service";
+import notFoundImg from "@/assets/images/undraw_Empty_re_opql.png";
 
-const ServiceContainer = () => {
-  const [page] = useState(1);
-  const [limit] = useState(10);
-  const [sort, setSort] = useState("");
-
-  const queryClient = useQueryClient();
-  const location = useLocation();
-
-  const isServiceRoute = useMatch("/service/:id?");
-  const isPackageRoute = useMatch("/package/:id?");
+const ServiceContainer = ({ filters }) => {
+  const isServiceRoute = useMatch("/services/:specialtyId?");
+  const isPackageRoute = useMatch("/packages/:specialtyId?");
   const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
 
-  useEffect(() => {
-    queryClient.clear();
-  }, [location.pathname, queryClient]);
-
   const { data, error, isLoading } = useQuery({
-    queryKey: [type, page, sort],
+    queryKey: [type, filters],
     queryFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 4000));
       if (type === "service") {
-        return await getAllServices(page, limit, sort);
+        return await getAllServices(filters);
       } else if (type === "package") {
-        return await getAllMedicalPackages(page, limit, sort);
+        return await getAllMedicalPackages(filters);
       }
     },
     enabled: !!type,
   });
+
   if (isLoading) {
     return (
-      <section className="relative mx-auto max-w-screen-2xl py-3">
-        <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
-          <div className="grid grid-cols-12 md:gap-7">
-            <div className="col-span-10 mt-7 md:col-span-12">
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                {Array(12)
-                  .fill(null)
-                  .map((_, index) => (
-                    <Skeleton key={index} className="h-80 w-full" />
-                  ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <>
+        {Array(12)
+          .fill(null)
+          .map((_, index) => (
+            <Skeleton key={index} className="h-80 w-full" />
+          ))}
+      </>
     );
   }
 
-  if (error) return <NotFound />;
-
-  const handleFilterApply = (filters) => {
-    console.log(filters);
-  };
-
-  return (
-    <section className="relative mx-auto max-w-screen-2xl py-3">
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-8">
-        <div className="grid grid-cols-12 md:gap-7">
-          <SidebarFilter onFilterApply={handleFilterApply} />
-          <div className="col-span-12 mt-7 md:col-span-9">
-            <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {type === "package"
-                ? data.map((item) => <PackageList key={item._id} {...item} />)
-                : data.map((item) => <ServiceList key={item._id} {...item} />)}
-            </div>
-          </div>
-        </div>
+  if (error) {
+    return (
+      <div className="col-span-3 flex flex-col items-center justify-center p-4">
+        <img
+          src={notFoundImg}
+          alt="Not Found"
+          className="w-full max-w-xs md:max-w-md lg:max-w-lg rounded-md"
+        />
+        <h1 className="mt-4 text-center text-lg font-semibold text-gray-700">
+          {type === "package"
+            ? "Gói khám không tồn tại"
+            : "Dịch vụ không tồn tại"}
+        </h1>
       </div>
-    </section>
+    );
+  }
+  return (
+    <>
+      {" "}
+      {type === "package"
+        ? data.map((item) => <PackageList key={item._id} {...item} />)
+        : data.map((item) => <ServiceList key={item._id} {...item} />)}
+    </>
   );
 };
 
