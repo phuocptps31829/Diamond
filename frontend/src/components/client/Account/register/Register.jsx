@@ -43,8 +43,9 @@ export default function RegisterComponent() {
         description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      console.log("data", data.otpToken);
-      localStorage.setItem("otpToken", data.otpToken);
+      const currentTime = new Date().getTime();
+      sessionStorage.setItem("otpSentTime", currentTime);
+      sessionStorage.setItem("otpToken", data.otpToken);
       navigate("/accuracy");
     },
     onError: (error) => {
@@ -58,7 +59,9 @@ export default function RegisterComponent() {
         description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      localStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("password");
     },
   });
 
@@ -71,7 +74,9 @@ export default function RegisterComponent() {
       phoneNumber,
     };
 
-    localStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("fullName", fullName);
+    sessionStorage.setItem("password", password);
     mutation.mutate(dataSend);
   };
 
@@ -106,7 +111,7 @@ export default function RegisterComponent() {
           </div>
 
           {/* FORM */}
-          <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10">
+          <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10 border-l">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Đăng kí tài khoản
             </h1>
@@ -122,7 +127,7 @@ export default function RegisterComponent() {
                 >
                   Họ và tên:
                 </label>
-                <div className="relative">
+                <div className="relative">  
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Nhập tên của bạn"

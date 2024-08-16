@@ -9,28 +9,6 @@ import useScrollToTop from "@/hooks/useScrollToTop";
 
 export default function Home() {
   useScrollToTop();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const accessTokenUrl = urlParams.get("accessToken");
-
-      if (accessTokenUrl) {
-        const accessToken = localStorage.setItem("accessToken", accessTokenUrl);
-
-
-        try {
-          const userData = await getProfilePatients(accessToken);
-
-          dispatch(setUserProfile(userData));
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-        }
-      }
-    };
-
-    fetchProfile();
-  }, [dispatch]);
   return (
     <div className="bg-[#E8F2F7]">
       <Banner />

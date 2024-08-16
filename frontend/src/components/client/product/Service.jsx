@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function ServiceList({
+export default function ServiceItem({
   image,
   name,
   price,
@@ -62,7 +62,7 @@ export default function ServiceList({
   );
 }
 
-ServiceList.propTypes = {
+ServiceItem.propTypes = {
   image: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   discountPrice: PropTypes.number.isRequired,
