@@ -1,7 +1,7 @@
 import SupportService from "@/components/client/categoryService/SupportService";
 import ServiceBanner from "../../components/client/categoryService/ServiceBanner";
 import useScrollToTop from "@/hooks/useScrollToTop";
-import ServicesPage from "@/components/client/categoryService/ServicesPage";
+import ServicesContainer from "@/components/client/categoryService/ServicesContainer";
 
 const CategoryService = () => {
   useScrollToTop();
@@ -10,7 +10,7 @@ const CategoryService = () => {
     <div className="bg-bg-gray">
       <ServiceBanner />
       <SupportService />
-      <ServicesPage />
+      <ServicesContainer />
     </div>
   );
 };

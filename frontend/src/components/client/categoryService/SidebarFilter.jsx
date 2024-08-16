@@ -14,22 +14,18 @@ const SidebarFilter = ({ onFilterApply }) => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
-    page: 1,
-    limit: 10,
     sort: "",
     specialtyID: [],
     branch: [],
-    gender: "",
+    gender: [],
   });
 
   const handleResetFilters = () => {
     const resetFilters = {
-      page: 1,
-      limit: 10,
       sort: "",
       specialtyID: [],
       branch: [],
-      gender: "",
+      gender: [],
     };
     setFilters(resetFilters);
     setSearchParams({});
@@ -39,32 +35,30 @@ const SidebarFilter = ({ onFilterApply }) => {
   useEffect(() => {
     const specialties = searchParams.getAll("specialtyID");
     const branches = searchParams.getAll("branch");
-    const gender = decodeURIComponent(searchParams.get("gender") || "");
+    const gender = searchParams.getAll("gender").map(decodeURIComponent);
     const sort = searchParams.get("sort") || "";
-  
+
     const newFilters = {
-      page: 1,
-      limit: 10,
       sort,
       specialtyID: specialties,
       branch: branches,
       gender,
     };
-  
+
     if (specialties.length > 0) {
       const updatedFilters = {
         ...newFilters,
-        specialtyID: [...new Set([...newFilters.specialtyID, ...specialties])],
+        specialtyID: [...new Set(specialties)],
       };
+
+      setFilters(updatedFilters);
       onFilterApply(updatedFilters);
-      setFilters((prev) => ({
-        ...prev,
-        specialtyID: updatedFilters.specialtyID,
-      }));
     } else {
       setFilters(newFilters);
+      onFilterApply(newFilters);
     }
   }, [location.search]);
+
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
@@ -87,7 +81,9 @@ const SidebarFilter = ({ onFilterApply }) => {
 
   const handleGenderChange = (gender) => {
     setFilters((prev) => {
-      const newGender = prev.gender === gender ? "" : gender;
+      const newGender = prev.gender.includes(gender)
+        ? prev.gender.filter((g) => g !== gender)
+        : [...prev.gender, gender];
       return { ...prev, gender: newGender };
     });
   };
@@ -134,7 +130,6 @@ const SidebarFilter = ({ onFilterApply }) => {
       return updatedParams;
     });
 
-    onFilterApply(appliedFilters);
     console.log(appliedFilters);
   };
 
@@ -366,7 +361,7 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-male"
-                checked={filters.gender === "Nam"}
+                checked={filters.gender.includes("Nam")}
                 onCheckedChange={() => handleGenderChange("Nam")}
               />
               <label
@@ -379,7 +374,7 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-female"
-                checked={filters.gender === "Nữ"}
+                checked={filters.gender.includes("Nữ")}
                 onCheckedChange={() => handleGenderChange("Nữ")}
               />
               <label
