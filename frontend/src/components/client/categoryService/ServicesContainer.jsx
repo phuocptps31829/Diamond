@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { useMatch } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useMatch, useLocation, useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getAllServices } from "@/services/servicesApi";
 import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
 import notFoundImg from "@/assets/images/undraw_Empty_re_opql.png";
-import SidebarFilter from "./SidebarFilter";
 import {
   Pagination,
   PaginationContent,
@@ -17,23 +16,41 @@ import {
 } from "@/components/ui/Pagination";
 import PackageItem from "../product/Package";
 import ServiceItem from "../product/Service";
+import SidebarFilter from "../categoryService/SidebarFilter";
 
 const ServicesContainer = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const queryParams = new URLSearchParams(location.search);
+  const currentPage = parseInt(queryParams.get("page")) || 1;
+  const currentLimit = parseInt(queryParams.get("limit")) || 3;
+
   const [filters, setFilters] = useState({
-    page: 1,
-    limit: 3,
+    page: currentPage,
+    limit: currentLimit,
     sort: "",
     specialtyID: [],
     branch: [],
     gender: [],
   });
 
+  useEffect(() => {
+    setFilters(prevFilters => ({ ...prevFilters, page: currentPage, limit: currentLimit }));
+  }, [currentPage, currentLimit]);
+
   const handleFilterApply = (newFilters) => {
-    setFilters({ ...filters, ...newFilters, page: 1 });
+    
+    const updatedFilters = { ...filters, ...newFilters };
+    setFilters(updatedFilters);
+    
+    navigate(`${location.pathname}?page=${updatedFilters.page}&limit=${updatedFilters.limit}`);
   };
 
   const handlePageChange = (newPage) => {
-    setFilters((prevFilters) => ({ ...prevFilters, page: newPage }));
+    const updatedFilters = { ...filters, page: newPage };
+    setFilters(updatedFilters);
+    navigate(`${location.pathname}?page=${newPage}&limit=${filters.limit}`);
   };
 
   const isServiceRoute = useMatch("/services/:specialtyId?");
@@ -55,7 +72,6 @@ const ServicesContainer = () => {
   const totalItems = data?.totalRecords?.[0]?.totalRecords || 0;
   const limit = filters.limit;
   const totalPages = Math.ceil(totalItems / limit);
-  const currentPage = filters.page;
 
   return (
     <section className="relative mx-auto max-w-screen-2xl py-3">
@@ -92,10 +108,10 @@ const ServicesContainer = () => {
                 <>
                   {type === "package"
                     ? data.data.map((item) => (
-                        <PackageItem key={item._id} {...item} />
+                        <PackageItem key={item._id} {...item}  />
                       ))
                     : data.data.map((item) => (
-                        <ServiceItem key={item._id} {...item} />
+                        <ServiceItem key={item._id} {...item}  />
                       ))}
                 </>
               )}

@@ -22,12 +22,13 @@ export default function OutstandingServices() {
 
   useEffect(() => {
     if (!loadingMedicalService) {
-      const sortedMedicalPackages = medicalServices.sort(
+      const sortedMedicalPackages = medicalServices.data.sort(
         (a, b) => b.orderCount - a.orderCount,
       );
       setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));
     }
   }, [loadingMedicalService, medicalServices]);
+console.log(OutstandingMedicalPackages);
 
   return (
     <div className="mx-auto my-5 max-w-screen-xl md:my-10">
