@@ -152,7 +152,7 @@ const SidebarFilter = ({ onFilterApply }) => {
   });
   if (specialtiesLoading || branchesLoading)
     return (
-      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
+      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 ">
         <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
           <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
             <Skeleton className="h-6 w-24" />
@@ -231,7 +231,7 @@ const SidebarFilter = ({ onFilterApply }) => {
 
   if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
-    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
+    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 ">
       <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>

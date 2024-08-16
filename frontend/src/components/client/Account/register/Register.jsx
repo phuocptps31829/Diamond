@@ -43,8 +43,9 @@ export default function RegisterComponent() {
         description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      console.log("data", data.otpToken);
-      localStorage.setItem("otpToken", data.otpToken);
+      const currentTime = new Date().getTime();
+      sessionStorage.setItem("otpSentTime", currentTime);
+      sessionStorage.setItem("otpToken", data.otpToken);
       navigate("/accuracy");
     },
     onError: (error) => {
@@ -58,7 +59,9 @@ export default function RegisterComponent() {
         description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
-      localStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("password");
     },
   });
 
@@ -71,7 +74,9 @@ export default function RegisterComponent() {
       phoneNumber,
     };
 
-    localStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("fullName", fullName);
+    sessionStorage.setItem("password", password);
     mutation.mutate(dataSend);
   };
 
@@ -79,6 +84,32 @@ export default function RegisterComponent() {
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
       <div className="w-full max-w-screen-xl px-10 py-5">
         <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* ADS BANNER */}
+          <div className="hidden bg-white shadow-lg md:block">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+              plugins={[
+                Autoplay({
+                  delay: 3500,
+                  stopOnInteraction: false,
+                  stopOnMouseEnter: false,
+                }),
+              ]}
+            >
+              <CarouselContent>
+                {Array.from({ length: 12 }).map((_, index) => (
+                  <CarouselItem key={index} className="pl-4">
+                    <AdsProduct />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
+
           {/* FORM */}
           <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
@@ -226,31 +257,6 @@ export default function RegisterComponent() {
                 </p>
               </div>
             </form>
-          </div>
-          {/* ADS BANNER */}
-          <div className="hidden bg-white shadow-lg md:block">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
-              plugins={[
-                Autoplay({
-                  delay: 3500,
-                  stopOnInteraction: false,
-                  stopOnMouseEnter: false,
-                }),
-              ]}
-            >
-              <CarouselContent>
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <CarouselItem key={index} className="pl-4">
-                    <AdsProduct />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
           </div>
         </div>
       </div>

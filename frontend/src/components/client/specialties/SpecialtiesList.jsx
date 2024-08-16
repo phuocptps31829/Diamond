@@ -5,8 +5,8 @@ import { Skeleton } from "@/components/ui/Skeleton"; // Ensure you import the Sk
 const SpecialtiesList = ({ specialties, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
-        <div className="mx-auto w-full md:w-5/6">
+      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10 ">
+        <div className="mx-auto w-full ">
           <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
             Chọn một chuyên khoa:
           </h1>
@@ -21,8 +21,8 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
-      <div className="mx-auto w-full md:w-5/6">
+    <div className="container mx-auto max-w-screen-xl py-5 lg:py-10 md:px-4">
+      <div className="mx-auto w-full ">
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>

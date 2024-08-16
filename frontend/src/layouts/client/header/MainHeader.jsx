@@ -2,7 +2,13 @@ import { useContext } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
-import {  useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserProfile, logoutAction } from "@/redux/authSlice";
+import { logoutApi } from "@/services/authApi";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +19,7 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
+
 const dataNav = [
   {
     id: 1,
@@ -46,9 +53,49 @@ const dataNav = [
   },
 ];
 export default function MainHeader() {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const dispatch = useDispatch();
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
 
+  // const mutation = useMutation({
+  //   mutationFn: logutApi,
+  //   onSuccess: () => {
+  //     toast({
+  //       title: "Đăng xuất thành công",
+  //       description: "Hẹn gặp lại bạn!",
+  //       status: "success",
+  //       action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+  //     });
+  //   },
+  //   onError: (error) => {
+  //     const errorMessage =
+  //       error.response?.data?.error ||
+  //       error.message ||
+  //       "Đã xảy ra lỗi, vui lòng thử lại.";
+  //     toast({
+  //       title: "Đăng xuất thất bại",
+  //       description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
+  //       status: "error",
+  //       action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+  //     });
+  //   },
+  // });
+
+  const handleLogout = () => {
+    // const accessToken = localStorage.getItem("accessToken");
+    // mutation.mutate(accessToken);
+    dispatch(logoutAction());
+    toast({
+      variant: "success",
+      title: "Đăng xuất thành công!",
+      description: "Hẹn gặp lại bạn!",
+      status: "success",
+      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+    });
+    navigate("/");
+  };
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
@@ -99,7 +146,9 @@ export default function MainHeader() {
                       <Link to={"/user-profile"}>Thông tin</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout}>
+                      Đăng xuất
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (

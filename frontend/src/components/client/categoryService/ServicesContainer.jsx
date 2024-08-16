@@ -4,8 +4,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { getAllServices } from "@/services/servicesApi";
 import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
-import PackageList from "../product/Package";
-import ServiceList from "../product/Service";
 import notFoundImg from "@/assets/images/undraw_Empty_re_opql.png";
 import SidebarFilter from "./SidebarFilter";
 import {
@@ -17,6 +15,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
+import PackageItem from "../product/Package";
+import ServiceItem from "../product/Service";
 
 const ServicesContainer = () => {
   const [filters, setFilters] = useState({
@@ -53,18 +53,13 @@ const ServicesContainer = () => {
   });
 
   const totalItems = data?.totalRecords?.[0]?.totalRecords || 0;
-  console.log("totalItems", totalItems);
   const limit = filters.limit;
-  console.log("limit", limit);
-
   const totalPages = Math.ceil(totalItems / limit);
-  console.log("totalPages", totalPages);
-
   const currentPage = filters.page;
 
   return (
     <section className="relative mx-auto max-w-screen-2xl py-3">
-      <div className="mx-auto w-full max-w-7xl px-4 md:px-0">
+      <div className="mx-auto w-full max-w-[83rem] px-4 md:px-0">
         <div className="grid grid-cols-12 md:gap-7">
           <div className="col-span-12 mt-7 md:col-span-3">
             <SidebarFilter onFilterApply={handleFilterApply} />
@@ -97,10 +92,10 @@ const ServicesContainer = () => {
                 <>
                   {type === "package"
                     ? data.data.map((item) => (
-                        <PackageList key={item._id} {...item} />
+                        <PackageItem key={item._id} {...item} />
                       ))
                     : data.data.map((item) => (
-                        <ServiceList key={item._id} {...item} />
+                        <ServiceItem key={item._id} {...item} />
                       ))}
                 </>
               )}

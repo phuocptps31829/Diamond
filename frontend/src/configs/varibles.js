@@ -32,6 +32,11 @@ const API_GET_PROFILE_PATIENTS = `${API_URL}/patients/profile`;
 
 const API_VERIFY_OTP = `${API_URL}/patients/add`;
 const API_REGISTER_SEND_OTP = `${API_URL}/auth/register`;
+const API_LOGIN = `${API_URL}/auth/login`;
+const API_SEND_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/send-otp`;
+const API_CHECK_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/check-otp`;
+const API_CHANGE_PASSWORD = `${API_URL}/auth/forgot-password/reset-password`;
+const API_LOGOUT = `${API_URL}/auth/logout`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -51,4 +56,9 @@ export {
   API_GET_PROFILE_PATIENTS,
   API_VERIFY_OTP,
   API_REGISTER_SEND_OTP,
+  API_LOGIN,
+  API_SEND_OTP_FORGOT_PASSWORD,
+  API_CHECK_OTP_FORGOT_PASSWORD,
+  API_CHANGE_PASSWORD,
+  API_LOGOUT,
 };
