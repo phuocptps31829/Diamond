@@ -113,7 +113,9 @@ export default function LoginComponent() {
                   type="button"
                   className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2"
                 >
-                  <img src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png" className="w-7 mr-2 md:mr-2" alt="Google icon" />
+                  <img 
+                  src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg" 
+                  className="w-7 mr-2 md:mr-2" alt="Google icon" />
                   <span className="block mr-4 md:mr-0">
                     Tài khoản Google
                   </span>

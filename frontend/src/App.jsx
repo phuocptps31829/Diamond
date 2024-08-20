@@ -25,6 +25,9 @@ import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 import NotFound from "@/components/client/notFound";
+import PackageBooking from "./pages/client/PackageBooking";
+import ServicesBooking from "./pages/client/ServicesBooking";
+import CheckOut from "./pages/client/CheckOut";
 
 const router = createBrowserRouter([
   {
@@ -108,6 +111,18 @@ const router = createBrowserRouter([
             element: <ChangePassword />,
           },
         ],
+      },
+      {
+        path: "package-booking",
+        element: <PackageBooking/>
+      },
+      {
+        path: "services-booking",
+        element: <ServicesBooking/>
+      },
+      {
+        path: "checkout",
+        element: <CheckOut/>
       },
       {
         path: "/login",
