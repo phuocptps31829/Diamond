@@ -28,6 +28,8 @@ import NotFound from "@/components/client/notFound";
 import PackageBooking from "./pages/client/PackageBooking";
 import ServicesBooking from "./pages/client/ServicesBooking";
 import CheckOut from "./pages/client/CheckOut";
+import { store } from "./redux/store";
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter([
   {
@@ -43,15 +45,19 @@ const router = createBrowserRouter([
         element: <SpecialtiesCategory />,
       },
       {
-        path: "category-service/:id?",
+        path: "services/:id?",
         element: <CategoryService />,
       },
       {
-        path: "detail-service/:id",
+        path: "packages/:id?",
+        element: <CategoryService />,
+      },
+      {
+        path: "detail-service/:serviceId",
         element: <DetailService />,
       },
       {
-        path: "detail-package/:id",
+        path: "detail-package/:packageId",
         element: <DetailService />,
       },
       {
@@ -157,7 +163,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
+    </Provider>
+  );
 }
 
 export default App;

@@ -26,20 +26,36 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>
-        <div className="grid grid-cols-2 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
+        <div className="grid grid-cols-1 gap-4 rounded-lg border bg-white p-6 sm:grid-cols-3 lg:grid-cols-4 lg:p-6">
           {specialties.map((item) => (
             <div
               key={item._id}
-              className="relative max-w-full rounded-lg  bg-white shadow dark:border-gray-700 dark:bg-gray-800 h-48"
+              className="group relative h-48 max-w-full rounded-lg bg-white shadow dark:border-gray-700 dark:bg-gray-800"
             >
-              <Link to={`/category-service/${item._id}`}>
-                <img className="rounded-lg h-full object-cover" src={item.image} alt={item.name} />
-                <div className="absolute inset-0 top-28 flex items-center justify-center md:top-24">
-                  <h5 className="w-full bg-white bg-opacity-10 py-1 text-center text-sm font-semibold tracking-tight text-white backdrop-blur md:text-2xl">
-                    {item.name}
-                  </h5>
-                </div>
-              </Link>
+              <div className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+                <Link
+                 to={`/services/${item._id}`}
+                  className="flex h-8 w-24  cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
+                >
+                  Dịch vụ
+                </Link>
+                <Link
+                   to={`/packages/${item._id}`}
+                  className="flex h-8 w-24 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-3 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
+                >
+                 Gói khám
+                </Link>
+              </div>
+              <img
+                className="h-full w-full rounded-lg object-cover"
+                src={item.image}
+                alt={item.name}
+              />
+              <div className="absolute inset-0 top-28 flex items-center justify-center md:top-24">
+                <h5 className="w-full bg-white bg-opacity-10 py-1 text-center text-sm font-semibold tracking-tight text-white backdrop-blur md:text-2xl">
+                  {item.name}
+                </h5>
+              </div>
             </div>
           ))}
         </div>
@@ -47,9 +63,8 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
     </div>
   );
 };
-
 SpecialtiesList.propTypes = {
-  specialties: PropTypes.object,
+  specialties: PropTypes.array,
   isLoading: PropTypes.bool,
 };
 

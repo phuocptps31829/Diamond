@@ -11,20 +11,35 @@ import {
 } from "@/services/medicalPackagesApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
-
-// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { getServiceById, getServiceBySpecialty } from "@/services/servicesApi";
 
 const DetailService = () => {
   useScrollToTop();
 
-  const { id } = useParams();
+  const { serviceId, packageId } = useParams();
+  const id = serviceId || packageId;
+
+  // Fetch medical package if packageId is present
   const {
     data: medicalPackage,
     error: errorMedicalPackage,
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
     queryKey: ["medical-packages", id],
-    queryFn:  () => getMedicalPackageById(id),
+    queryFn: () => getMedicalPackageById(id),
+    enabled: !!packageId,
+  });
+
+  // Fetch service if serviceId is present
+  const {
+    data: service,
+    error: errorService,
+    isLoading: isLoadingService,
+  } = useQuery({
+    queryKey: ["service", id],
+    queryFn: () => getServiceById(id),
+
+    enabled: !!serviceId,
   });
 
   const {
@@ -36,29 +51,56 @@ const DetailService = () => {
     queryFn: () => getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
     enabled: !!medicalPackage?.specialtyID,
   });
+  const {
+    data: serviceSpecialty,
+    error: errorServiceSpecialty,
+    isLoading: isLoadingServiceSpecialty,
+  } = useQuery({
+    queryKey: ["service-specialty", service?.specialtyID],
+    queryFn: () => getServiceBySpecialty(service?.specialtyID),
+    enabled: !!service?.specialtyID,
+  });
 
-  if (errorMedicalPackage || errorMedicalPackageSpecialty) {
+  if (
+    errorMedicalPackage ||
+    errorMedicalPackageSpecialty ||
+    errorService ||
+    errorServiceSpecialty
+  ) {
     return <NotFound />;
   }
 
+  
+  const isLoading =
+    isLoadingMedicalPackage ||
+    isLoadingService ||
+    isLoadingMedicalPackageSpecialty ||
+    isLoadingServiceSpecialty;
   return (
     <div className="bg-bg-gray p-8">
       <ServiceDetail
         medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
+        service={service}
+        isLoading={isLoading}
       />
       <DescriptionService
         medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
+        service={service}
+        isLoading={isLoading}
       />
-      <MedicalPackageService
-        medicalPackage={medicalPackage}
-        isLoading={isLoadingMedicalPackage}
-      />
+      {!service && (
+        <MedicalPackageService
+          medicalPackage={medicalPackage}
+          service={service}
+          isLoading={isLoading}
+        />
+      )}
+
       <Rules />
       <PackageServiceOther
+        serviceSpecialty={serviceSpecialty}
         medicalPackageSpecialty={medicalPackageSpecialty}
-        isLoading={isLoadingMedicalPackageSpecialty}
+        isLoading={isLoading}
       />
     </div>
   );

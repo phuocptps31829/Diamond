@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import NewsProduct from "../product/News";
+import NewsItem from "../product/News";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Carousel,
@@ -66,7 +66,7 @@ export default function NewsBelow({ news, isLoading }) {
                   key={index}
                   className="pl-4 sm:basis-1/2 lg:basis-1/3"
                 >
-                  <NewsProduct {...newsItem} />
+                  <NewsItem {...newsItem} />
                 </CarouselItem>
               ))}
         </CarouselContent>

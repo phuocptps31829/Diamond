@@ -6,13 +6,14 @@ export default function Banner() {
     <div className="relative h-[55vw] w-full text-primary-500 md:h-[36vw]">
       <img src={banner} alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
-        <div className="font-medium text-primary-500 md:text-[25px]">
+        <div className="mb-2 font-medium text-primary-500 sm:mb-0 md:text-[25px]">
           Nền tảng công nghệ
         </div>
-        <div className="max-w-[260px] text-center text-[24px] font-bold text-primary-950 md:max-w-full md:text-left md:text-[36px]">
-          Kết nối người dân với Cơ sở - Dịch vụ Y tế
+        <div className="flex max-w-[260px] flex-col text-center text-[20px] md:gap-[10px] text-primary-950 md:flex-row md:max-w-full md:text-left sm:text-[25px] md:text-[36px]">
+          <p className="font-bold whitespace-nowrap">Kết nối người dân với </p>
+          <p className="font-bold whitespace-nowrap"> Cơ sở - Dịch vụ Y tế</p>
         </div>
-        <div className="mt-6 flex w-[65%] max-w-[835px] items-center rounded-full bg-white p-2 px-5 md:w-[55%]">
+        <div className="mt-3 flex w-[65%] max-w-[835px] items-center rounded-full bg-white p-2 px-5 sm:mt-6 md:w-[55%]">
           <CiSearch className="text-2xl" />
           <input
             type="text"

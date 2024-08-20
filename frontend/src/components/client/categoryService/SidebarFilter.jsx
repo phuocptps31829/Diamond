@@ -1,32 +1,180 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/Skeleton";
+import PropTypes from "prop-types";
+import { getAllBranches } from "@/services/branchesApi";
+import { useLocation } from "react-router-dom";
 
-const SidebarFilter = () => {
+const SidebarFilter = ({ onFilterApply }) => {
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [filters, setFilters] = useState({
+    sort: "",
+    specialty: [],
+    branch: [],
+    gender: [],
+  });
+  const handleResetFilters = () => {
+    setFilters({
+      sort: "",
+      specialty: [],
+      branch: [],
+      gender: [],
+    });
+  };
+  useEffect(() => {
+    handleResetFilters();
+  }, [location.pathname]);
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleBranchChange = (branch) => {
+    setFilters((prev) => ({
+      ...prev,
+      branch: prev.branch.includes(branch)
+        ? prev.branch.filter((b) => b !== branch)
+        : [...prev.branch, branch],
+    }));
+  };
+
+  const handleSortChange = (sort) => {
+    setFilters((prev) => ({
+      ...prev,
+      sort: prev.sort === sort ? "" : sort,
+    }));
+  };
+
+  const handleGenderChange = (gender) => {
+    setFilters((prev) => ({
+      ...prev,
+      gender: prev.gender.includes(gender)
+        ? prev.gender.filter((g) => g !== gender)
+        : [...prev.gender, gender],
+    }));
+  };
+  const handleSpecialtyChange = (specialty) => {
+    setFilters((prev) => ({
+      ...prev,
+      specialty: prev.specialty.includes(specialty)
+        ? prev.specialty.filter((s) => s !== specialty)
+        : [...prev.specialty, specialty],
+    }));
+  };
+
+  const handleFilterApply = () => {
+    onFilterApply(filters);
+    console.log(filters);
+  };
+
   const {
     data: specialties,
-    error,
-    isLoading,
+    error: specialtiesError,
+    isLoading: specialtiesLoading,
   } = useQuery({
     queryKey: ["specialties"],
     queryFn: () => getAllSpecialties(),
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading specialties</div>;
+  const {
+    data: branches,
+    error: branchesError,
+    isLoading: branchesLoading,
+  } = useQuery({
+    queryKey: ["branches"],
+    queryFn: () => getAllBranches(),
+  });
+  if (specialtiesLoading || branchesLoading)
+    return (
+      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
+        <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
+          <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-4 w-16" />
+          </div>
+
+          <div className="mb-3 gap-2 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-32" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-20" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 w-full border-b pb-2">
+            <div className="grid grid-cols-1 gap-5 sm:gap-9">
+              <div className="accordion">
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-5 w-28" />
+                  <Skeleton className="h-4 w-4" />
+                </div>
+                <div
+                  className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                >
+                  <div className="box mt-5 flex flex-col gap-2">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-4 w-28" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-24" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-3 border-b pb-1">
+            <Skeleton className="mb-5 h-5 w-20" />
+            <div className="box mb-3 flex flex-col gap-2">
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Skeleton className="h-4 w-4" />
+                <Skeleton className="h-4 w-16" />
+              </div>
+            </div>
+          </div>
+
+          <Skeleton className="h-10 w-full rounded-full" />
+        </div>
+      </div>
+    );
+
+  if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 md:max-w-72">
       <div className="box mt-7 w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
-          <p className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600">
+          <p
+            onClick={handleResetFilters}
+            className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
+          >
             Làm mới
           </p>
         </div>
@@ -36,7 +184,11 @@ const SidebarFilter = () => {
           </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-lowest" />
+              <Checkbox
+                id="checkbox-lowest"
+                checked={filters.sort === "price"}
+                onCheckedChange={() => handleSortChange("price")}
+              />
               <label
                 htmlFor="checkbox-lowest"
                 className="text-sm font-normal text-gray-600"
@@ -45,7 +197,11 @@ const SidebarFilter = () => {
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-highest" />
+              <Checkbox
+                id="checkbox-highest"
+                checked={filters.sort === "-price"}
+                onCheckedChange={() => handleSortChange("-price")}
+              />
               <label
                 htmlFor="checkbox-highest"
                 className="text-sm font-normal text-gray-600"
@@ -91,7 +247,13 @@ const SidebarFilter = () => {
                       key={specialty._id}
                       className="flex items-center space-x-2"
                     >
-                      <Checkbox id={`checkbox-${specialty._id}`} />
+                      <Checkbox
+                        checked={filters.specialty.includes(specialty._id)}
+                        onCheckedChange={() =>
+                          handleSpecialtyChange(specialty._id)
+                        }
+                        id={`checkbox-${specialty._id}`}
+                      />
                       <label
                         htmlFor={`checkbox-${specialty._id}`}
                         className="text-sm font-normal text-gray-600"
@@ -110,50 +272,21 @@ const SidebarFilter = () => {
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-1" />
-              <label
-                htmlFor="checkbox-default-1"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                ĐA KHOA 179
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-2" />
-              <label
-                htmlFor="checkbox-default-2"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                ĐA KHOA DIAMOND
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-3 border-b pb-1">
-          <p className="mb-3 text-base font-medium leading-6 text-black">
-            Loại
-          </p>
-          <div className="box mb-3 flex flex-col gap-2">
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-3" />
-              <label
-                htmlFor="checkbox-default-3"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                Gói khám
-              </label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-default-4" />
-              <label
-                htmlFor="checkbox-default-4"
-                className="text-sm font-normal leading-4 text-gray-600"
-              >
-                Dịch vụ
-              </label>
-            </div>
+            {branches.map((branch) => (
+              <div key={branch._id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`checkbox-${branch._id}`}
+                  checked={filters.branch.includes(branch._id)}
+                  onCheckedChange={() => handleBranchChange(branch._id)}
+                />
+                <label
+                  htmlFor={`checkbox-${branch._id}`}
+                  className="text-sm font-normal leading-4 text-gray-600"
+                >
+                  {branch.name}
+                </label>
+              </div>
+            ))}
           </div>
         </div>
         <div className="mb-3 border-b pb-1">
@@ -162,18 +295,26 @@ const SidebarFilter = () => {
           </p>
           <div className="box mb-3 flex flex-col gap-2">
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-gt-1" />
+              <Checkbox
+                id="checkbox-default-3"
+                checked={filters.gender.includes("Nam")}
+                onCheckedChange={() => handleGenderChange("Nam")}
+              />
               <label
-                htmlFor="checkbox-gt-1"
+                htmlFor="checkbox-default-3"
                 className="text-sm font-normal leading-4 text-gray-600"
               >
                 Nam
               </label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="checkbox-gt-2" />
+              <Checkbox
+                id="checkbox-default-4"
+                checked={filters.gender.includes("Nữ")}
+                onCheckedChange={() => handleGenderChange("Nữ")}
+              />
               <label
-                htmlFor="checkbox-gt-2"
+                htmlFor="checkbox-default-4"
                 className="text-sm font-normal leading-4 text-gray-600"
               >
                 Nữ
@@ -181,8 +322,10 @@ const SidebarFilter = () => {
             </div>
           </div>
         </div>
-
-        <button className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm">
+        <button
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm"
+          onClick={handleFilterApply}
+        >
           <svg
             width="17"
             height="16"
@@ -203,6 +346,11 @@ const SidebarFilter = () => {
       </div>
     </div>
   );
+};
+
+SidebarFilter.propTypes = {
+  onFilterApply: PropTypes.func.isRequired,
+  onResetFilters: PropTypes.func,
 };
 
 export default SidebarFilter;

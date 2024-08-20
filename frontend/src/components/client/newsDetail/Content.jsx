@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
-import NewsProduct from "../product/News";
+import NewsItem from "../product/News";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Carousel,
@@ -30,7 +30,7 @@ export default function ContentNews({
             item.specialtyID === news.specialtyID && item._id !== news._id,
         ),
       );
-      setLatestNews(allNews.filter((item) => item._id !== news._id));
+      setLatestNews(allNews.reverse().filter((item) => item._id !== news._id));
     }
   }, [allNews, isLoadingAllNews, news?._id, news?.specialtyID]);
 
@@ -226,7 +226,7 @@ export default function ContentNews({
                     key={index}
                     className="pl-4 sm:basis-1/2 lg:basis-1/3"
                   >
-                    <NewsProduct {...items} />
+                    <NewsItem {...items} />
                   </CarouselItem>
                 ))}
           </CarouselContent>

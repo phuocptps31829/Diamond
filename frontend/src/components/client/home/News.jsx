@@ -9,7 +9,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { AiOutlineDoubleRight } from "react-icons/ai";
-import NewsProduct from "../product/News";
+import NewsItem from "../product/News";
 import { getAllNews } from "@/services/newsApi";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -281,7 +281,7 @@ export default function News() {
                     key={index}
                     className="pl-4 sm:basis-1/2 lg:basis-1/3"
                   >
-                    <NewsProduct {...news} />
+                    <NewsItem {...news} />
                   </CarouselItem>
                 ))}
           </CarouselContent>

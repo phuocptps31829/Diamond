@@ -1,5 +1,4 @@
 import { Skeleton } from "@/components/ui/Skeleton";
-import Service from "../product/Package";
 import PropTypes from "prop-types";
 import {
   Carousel,
@@ -8,8 +7,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/Carousel";
+import PackageList from "../product/Package";
+import ServiceList from "../product/Service";
 
-const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
+const PackageServiceOther = ({
+  medicalPackageSpecialty,
+  isLoading,
+  serviceSpecialty,
+}) => {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-7xl p-4">
@@ -28,23 +33,19 @@ const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
   return (
     <div className="mx-auto max-w-7xl p-4">
       <h1 className="my-6 text-center text-2xl font-bold">Các gói khám khác</h1>
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-        }}
-        className="w-full"
-      >
+      <Carousel opts={{ align: "start", loop: true }} className="w-full">
         <CarouselContent className="ml-1 md:m-0">
-          {medicalPackageSpecialty &&
-            medicalPackageSpecialty.map((medicalPackage) => (
-              <CarouselItem
-                key={medicalPackage._id}
-                className="p-2 md:basis-1/2 lg:basis-1/4"
-              >
-                <Service key={medicalPackage._id} {...medicalPackage} />
-              </CarouselItem>
-            ))}
+          {medicalPackageSpecialty && medicalPackageSpecialty.length > 0
+            ? medicalPackageSpecialty.map((item) => (
+                <CarouselItem key={item._id} className="p-2 md:basis-1/2 lg:basis-1/4">
+                  <PackageList {...item} />
+                </CarouselItem>
+              ))
+            : serviceSpecialty.map((item) => (
+                <CarouselItem key={item._id} className="p-2 md:basis-1/2 lg:basis-1/4">
+                  <ServiceList {...item} />
+                </CarouselItem>
+              ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
@@ -54,8 +55,14 @@ const PackageServiceOther = ({ medicalPackageSpecialty, isLoading }) => {
 };
 
 PackageServiceOther.propTypes = {
-  isLoading: PropTypes.bool,
+  isLoading: PropTypes.bool.isRequired,
   medicalPackageSpecialty: PropTypes.array,
+  serviceSpecialty: PropTypes.array,
+};
+
+PackageServiceOther.defaultProps = {
+  medicalPackageSpecialty: [],
+  serviceSpecialty: [],
 };
 
 export default PackageServiceOther;

@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDoctors } from "@/services/doctorsApi";
-import { getAllSpecialties } from "@/services/specialties";
-import DoctorProduct from "../product/Doctor";
+import { getAllSpecialties } from "@/services/specialtiesApi";
+import DoctorItem from "../product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function ListDoctors() {
@@ -166,7 +166,7 @@ export default function ListDoctors() {
         <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
           {currentRecords.map((doctor) => {
             return (
-              <DoctorProduct
+              <DoctorItem
                 key={doctor._id}
                 {...doctor}
                 specialtyName={specialtyMap[doctor.specialtyID]}
