@@ -8,10 +8,9 @@ import { getAllBranches } from "@/services/branchesApi";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-const SidebarFilter = ({ onFilterApply }) => {
+const SidebarFilter = ({ onFilterApply, parentFilters }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState({
     sort: "",
@@ -33,19 +32,25 @@ const SidebarFilter = ({ onFilterApply }) => {
   };
 
   useEffect(() => {
+    const page = searchParams.get("page") || 1;
+    const limit = searchParams.get("limit") || 3;
     const specialties = searchParams.getAll("specialtyID");
     const branches = searchParams.getAll("branch");
     const gender = searchParams.getAll("gender").map(decodeURIComponent);
     const sort = searchParams.get("sort") || "";
 
     const newFilters = {
+      page,
+      limit,
       sort,
-      specialtyID: specialties,
-      branch: branches,
-      gender,
+      specialtyID: specialties[0] || !specialties.length ? specialties : [],
+      branch: branches[0] || !branches.length ? branches : [],
+      gender: gender[0] || !gender.length ? gender : [],
     };
 
-    if (specialties.length > 0) {
+    console.log('new', newFilters);
+
+    if (specialties.length > 0 && specialties[0]) {
       const updatedFilters = {
         ...newFilters,
         specialtyID: [...new Set(specialties)],
@@ -54,10 +59,11 @@ const SidebarFilter = ({ onFilterApply }) => {
       setFilters(updatedFilters);
       onFilterApply(updatedFilters);
     } else {
+      console.log(newFilters);
       setFilters(newFilters);
       onFilterApply(newFilters);
     }
-  }, [location.search]);
+  }, [location.search, searchParams]);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -98,6 +104,7 @@ const SidebarFilter = ({ onFilterApply }) => {
   };
 
   const handleFilterApply = () => {
+    console.log(filters);
     const appliedFilters = Object.entries(filters).reduce(
       (acc, [key, value]) => {
         if (
@@ -129,6 +136,8 @@ const SidebarFilter = ({ onFilterApply }) => {
       });
       return updatedParams;
     });
+    onFilterApply(appliedFilters);
+
 
     console.log(appliedFilters);
   };
@@ -181,15 +190,15 @@ const SidebarFilter = ({ onFilterApply }) => {
                   <Skeleton className="h-4 w-4" />
                 </div>
                 <div
-                  className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                  className={ ` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out` }
                 >
                   <div className="box mt-5 flex flex-col gap-2">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <div key={index} className="flex items-center space-x-2">
+                    { Array.from({ length: 5 }).map((_, index) => (
+                      <div key={ index } className="flex items-center space-x-2">
                         <Skeleton className="h-4 w-4" />
                         <Skeleton className="h-4 w-28" />
                       </div>
-                    ))}
+                    )) }
                   </div>
                 </div>
               </div>
@@ -236,7 +245,7 @@ const SidebarFilter = ({ onFilterApply }) => {
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
           <p
-            onClick={handleResetFilters}
+            onClick={ handleResetFilters }
             className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
           >
             Làm mới
@@ -250,8 +259,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-lowest"
-                checked={filters.sort === "discountPrice"}
-                onCheckedChange={() => handleSortChange("discountPrice")}
+                checked={ filters.sort === "discountPrice" }
+                onCheckedChange={ () => handleSortChange("discountPrice") }
               />
               <label
                 htmlFor="checkbox-lowest"
@@ -263,8 +272,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-highest"
-                checked={filters.sort === "-discountPrice"}
-                onCheckedChange={() => handleSortChange("-discountPrice")}
+                checked={ filters.sort === "-discountPrice" }
+                onCheckedChange={ () => handleSortChange("-discountPrice") }
               />
               <label
                 htmlFor="checkbox-highest"
@@ -280,13 +289,13 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="accordion">
               <button
                 className="inline-flex w-full items-center justify-between leading-8 text-gray-600 transition duration-500 hover:text-primary-600 active:text-primary-600"
-                onClick={toggleAccordion}
+                onClick={ toggleAccordion }
               >
                 <h5 className="text-base font-medium text-gray-900">
                   Chuyên khoa
                 </h5>
                 <svg
-                  className={`text-gray-900 transition duration-500 group-hover:text-primary-600 ${isOpen ? "rotate-180" : ""}`}
+                  className={ `text-gray-900 transition duration-500 group-hover:text-primary-600 ${isOpen ? "rotate-180" : ""}` }
                   width="22"
                   height="22"
                   viewBox="0 0 22 22"
@@ -303,29 +312,29 @@ const SidebarFilter = ({ onFilterApply }) => {
                 </svg>
               </button>
               <div
-                className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                className={ ` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out` }
               >
                 <div className="box mt-5 flex flex-col gap-2">
-                  {specialties.map((specialty) => (
+                  { specialties.map((specialty) => (
                     <div
-                      key={specialty._id}
+                      key={ specialty._id }
                       className="flex items-center space-x-2"
                     >
                       <Checkbox
-                        checked={filters.specialtyID.includes(specialty._id)}
-                        onCheckedChange={() =>
+                        checked={ filters.specialtyID.includes(specialty._id) }
+                        onCheckedChange={ () =>
                           handleSpecialtyChange(specialty._id)
                         }
-                        id={`checkbox-${specialty._id}`}
+                        id={ `checkbox-${specialty._id}` }
                       />
                       <label
-                        htmlFor={`checkbox-${specialty._id}`}
+                        htmlFor={ `checkbox-${specialty._id}` }
                         className="text-sm font-normal text-gray-600"
                       >
-                        {specialty.name}
+                        { specialty.name }
                       </label>
                     </div>
-                  ))}
+                  )) }
                 </div>
               </div>
             </div>
@@ -336,21 +345,21 @@ const SidebarFilter = ({ onFilterApply }) => {
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
-            {branches.map((branch) => (
-              <div key={branch._id} className="flex items-center space-x-2">
+            { branches.map((branch) => (
+              <div key={ branch._id } className="flex items-center space-x-2">
                 <Checkbox
-                  id={`checkbox-${branch._id}`}
-                  checked={filters.branch.includes(branch._id)}
-                  onCheckedChange={() => handleBranchChange(branch._id)}
+                  id={ `checkbox-${branch._id}` }
+                  checked={ filters.branch.includes(branch._id) }
+                  onCheckedChange={ () => handleBranchChange(branch._id) }
                 />
                 <label
-                  htmlFor={`checkbox-${branch._id}`}
+                  htmlFor={ `checkbox-${branch._id}` }
                   className="text-sm font-normal leading-4 text-gray-600"
                 >
-                  {branch.name}
+                  { branch.name }
                 </label>
               </div>
-            ))}
+            )) }
           </div>
         </div>
         <div className="mb-3 border-b pb-1">
@@ -361,8 +370,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-male"
-                checked={filters.gender.includes("Nam")}
-                onCheckedChange={() => handleGenderChange("Nam")}
+                checked={ filters.gender.includes("Nam") }
+                onCheckedChange={ () => handleGenderChange("Nam") }
               />
               <label
                 htmlFor="checkbox-male"
@@ -374,8 +383,8 @@ const SidebarFilter = ({ onFilterApply }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-female"
-                checked={filters.gender.includes("Nữ")}
-                onCheckedChange={() => handleGenderChange("Nữ")}
+                checked={ filters.gender.includes("Nữ") }
+                onCheckedChange={ () => handleGenderChange("Nữ") }
               />
               <label
                 htmlFor="checkbox-female"
@@ -388,7 +397,7 @@ const SidebarFilter = ({ onFilterApply }) => {
         </div>
         <button
           className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm"
-          onClick={handleFilterApply}
+          onClick={ handleFilterApply }
         >
           <svg
             width="17"
