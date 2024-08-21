@@ -13,6 +13,19 @@ const applicableObjectValidator = require('../validations/applicable-object.vali
  *    tags:
  *    - Applicable object Routes
  *    summary: Get all applicable objects
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,6 +36,7 @@ const applicableObjectValidator = require('../validations/applicable-object.vali
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     applicableObjectController.getAllApplicableObjects
 );
 
@@ -69,11 +83,14 @@ router.get(
  *            type: object
  *            required:
  *              - medicalPackageID
+ *              - serviceID
  *              - gender
  *              - age
  *              - isMarried
  *            properties:
  *              medicalPackageID:
+ *                type: string
+ *              serviceID: 
  *                type: string
  *              gender:
  *                type: string

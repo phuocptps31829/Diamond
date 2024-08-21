@@ -13,6 +13,19 @@ const branchValidator = require('../validations/branch.validation');
  *    tags:
  *    - Branch Routes
  *    summary: Get all branches
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'

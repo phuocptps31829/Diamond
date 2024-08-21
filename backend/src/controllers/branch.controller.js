@@ -3,16 +3,22 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllBranches = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await BranchModel.countDocuments({ isDeleted: false });
 
-        const branches = await BranchModel.find({ isDeleted: false });
+        const branches = await BranchModel
+            .find({ isDeleted: false })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!branches.length) {
             createError(404, "No branches found.");
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Branches retrieved successfully.',
             data: branches,
             totalRecords

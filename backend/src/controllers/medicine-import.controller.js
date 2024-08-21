@@ -3,19 +3,25 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllMedicineImports = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await MedicineImportModel.countDocuments({
             isDeleted: false,
         });
-        const medicineImports = await MedicineImportModel.find({
-            isDeleted: false,
-        });
+        const medicineImports = await MedicineImportModel
+            .find({
+                isDeleted: false,
+            })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!medicineImports.length) {
             createError(404, 'No medical packages found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Medical packages retrieved successfully.',
             data: medicineImports,
             totalRecords

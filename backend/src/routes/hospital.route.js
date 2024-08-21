@@ -13,6 +13,19 @@ const hospitalValidator = require('../validations/hospital.validation');
  *    tags:
  *    - Hospital Routes
  *    summary: Get all hospital
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -23,6 +36,7 @@ const hospitalValidator = require('../validations/hospital.validation');
 */
 router.get(
     '/',
+    helperMiddleware.checkQueryParams,
     hospitalController.getAllHospitals
 );
 

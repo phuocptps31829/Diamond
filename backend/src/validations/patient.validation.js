@@ -1,15 +1,6 @@
-const e = require("express");
 const { checkSchema } = require("express-validator");
-const { checkIsExistID } = require('../utils/database.util');
-
-const UserModel = require('../models/user.model');
 
 const patientValidator = checkSchema({
-    userID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(UserModel, id),
-        }
-    },
     patientCode: {
         exists: {
             errorMessage: "Patient code is required",

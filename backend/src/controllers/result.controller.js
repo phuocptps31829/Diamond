@@ -3,16 +3,22 @@ const { createError, errorValidator } = require('../utils/helper.util');
 
 const getAllResults = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await ResultModel.countDocuments({ isDeleted: false });
 
-        const results = await ResultModel.find({ isDeleted: false });
+        const results = await ResultModel
+            .find({ isDeleted: false })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!results.length) {
             createError(404, "No results found.");
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Results retrieved successfully.',
             data: results,
             totalRecords

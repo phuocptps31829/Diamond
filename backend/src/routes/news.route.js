@@ -13,6 +13,19 @@ const router = express.Router();
  *    tags:
  *    - News Routes
  *    summary: Get all news (?page=1&limit=10&sort=1)
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -71,7 +84,8 @@ router.get(
  *            required:
  *              - specialtyID
  *              - title
- *              - images
+ *              - shortDescription
+ *              - image
  *              - content
  *              - author
  *              - viewCount
@@ -81,6 +95,8 @@ router.get(
  *                type: string
  *                description: The ID of the specialty placing the news
  *              title:
+ *                type: string
+ *              shortDescription:
  *                type: string
  *              images:
  *                type: string
@@ -133,7 +149,8 @@ router.post(
  *            required:
  *              - specialtyID
  *              - title
- *              - images
+ *              - shortDescription
+ *              - image
  *              - content
  *              - author
  *              - viewCount
@@ -142,6 +159,8 @@ router.post(
  *              specialtyID:
  *                type: string
  *              title:
+ *                type: string
+ *              shortDescription:
  *                type: string
  *              images:
  *                type: string

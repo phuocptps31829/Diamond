@@ -13,6 +13,19 @@ const clinicValidator = require('../validations/clinic.validation');
  *    tags:
  *    - Clinic Routes
  *    summary: Get all clinics
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'

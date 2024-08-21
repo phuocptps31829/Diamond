@@ -3,13 +3,69 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllSpecialties = async (req, res, next) => {
     try {
+        const {
+            limitDocuments,
+            page,
+            skip,
+            sortOptions
+        } = req.customQueries;
+
         const totalRecords = await SpecialtyModel.countDocuments({
             isDeleted: false,
         });
-        const specialties = await SpecialtyModel.find({
+        const specialties = await SpecialtyModel
+            .find({ isDeleted: false })
+            .limit(limitDocuments)
+            .skip(skip)
+            .sort(sortOptions);
+
+        if (!specialties.length) {
+            createError(404, 'No specialties found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'Specialties retrieved successfully.',
+            data: specialties,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllSpecialtiesWithServices = async (req, res, next) => {
+    try {
+        const totalRecords = await SpecialtyModel.countDocuments({
             isDeleted: false,
         });
+        const specialties = await SpecialtyModel.aggregate([
+            {
+                $match: { isDeleted: false }
 
+            }, {
+                $lookup: {
+                    from: 'Service',
+                    localField: '_id',
+                    foreignField: 'specialtyID',
+                    as: 'services'
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    name: 1,
+                    image: 1,
+                    services: {
+                        $map: {
+                            input: '$services',
+                            as: 'service',
+                            in: { _id: "$$service._id", name: '$$service.name', price: "$$service.price" } // Lấy trường name của Service và đổi tên thành serviceName
+                        }
+                    }
+                }
+            }
+        ])
         if (!specialties.length) {
             createError(404, 'No specialties found.');
         }
@@ -118,5 +174,6 @@ module.exports = {
     getSpecialtyById,
     createSpecialty,
     updateSpecialty,
-    deleteSpecialty
+    deleteSpecialty,
+    getAllSpecialtiesWithServices
 };

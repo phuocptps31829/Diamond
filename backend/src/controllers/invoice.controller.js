@@ -3,16 +3,22 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllInvoices = async (req, res, next) => {
     try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+
         const totalRecords = await InvoiceModel.countDocuments({ isDeleted: false });
 
-        const invoices = await InvoiceModel.find({ isDeleted: false });
+        const invoices = await InvoiceModel
+            .find({ isDeleted: false })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
 
         if (!invoices.length) {
             createError(404, "No invoices found.");
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'Invoices retrieved successfully.',
             data: invoices,
             totalRecords
