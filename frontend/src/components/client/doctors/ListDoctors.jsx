@@ -24,8 +24,12 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function ListDoctors() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
-  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [selectedGender, setSelectedGender] = useState("");
   const [specialtyMap, setSpecialtyMap] = useState({});
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [currentRecords, setCurrentRecords] = useState([]);
+  const [totalPages, setTotalPages] = useState(0);
+
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -59,9 +63,36 @@ export default function ListDoctors() {
     }
   }, [specialties]);
 
+  useEffect(() => {
+    if (doctors) {
+      const filtered = doctors.filter((doctor) => {
+        const matchesSpecialty =
+          selectedSpecialty === "" || doctor.specialtyID === selectedSpecialty;
+        const matchesGender =
+          selectedGender === "" || doctor.userID.gender === selectedGender;
+        return matchesSpecialty && matchesGender;
+      });
+      setFilteredDoctors(filtered);
+    }
+  }, [doctors, selectedSpecialty, selectedGender]);
+
+  useEffect(() => {
+    if (filteredDoctors) {
+      const recordsPerPage = 4;
+      const indexOfLastRecord = currentPage * recordsPerPage;
+      const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+      const current = filteredDoctors.slice(
+        indexOfFirstRecord,
+        indexOfLastRecord,
+      );
+      setCurrentRecords(current);
+      setTotalPages(Math.ceil(filteredDoctors.length / recordsPerPage));
+    }
+  }, [filteredDoctors, currentPage]);
+
   if (loadingDoctors || loadingSpecialties) {
     return (
-      <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
+      <div className="mx-auto w-full max-w-screen-xl p-5 md:p-5">
         <div className="flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
           <h2 className="text-xl font-semibold">
             <Skeleton className="h-[24px] w-[250px]" />
@@ -108,26 +139,20 @@ export default function ListDoctors() {
 
   const handleSpecialtyChange = (value) => {
     setSelectedSpecialty(value);
-    setSelectedDoctor("");
+    navigate(`/doctors?page=1`);
   };
 
   const handleDoctorChange = (value) => {
-    setSelectedDoctor(value);
-    setSelectedSpecialty("");
+    setSelectedGender(value);
+    navigate(`/doctors?page=1`);
   };
 
   const handlePageChange = (page) => {
     navigate(`/doctors?page=${page}`);
   };
 
-  const recordsPerPage = 4;
-  const indexOfLastRecord = currentPage * recordsPerPage;
-  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = doctors.slice(indexOfFirstRecord, indexOfLastRecord);
-  const totalPages = Math.ceil(doctors.length / recordsPerPage);
-
   return (
-    <div className="mx-auto w-full max-w-screen-xl p-5 md:p-9">
+    <div className="mx-auto w-full max-w-screen-xl p-4 md:p-5">
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp theo:</h2>
         <div className="flex flex-row items-center justify-center gap-3">
@@ -146,16 +171,13 @@ export default function ListDoctors() {
               ))}
             </SelectContent>
           </Select>
-          <Select value={selectedDoctor} onValueChange={handleDoctorChange}>
+          <Select value={selectedGender} onValueChange={handleDoctorChange}>
             <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
-              <SelectValue placeholder="Chọn bác sĩ" />
+              <SelectValue placeholder="Chọn giới tính" />
             </SelectTrigger>
             <SelectContent>
-              {doctors?.map((doctor) => (
-                <SelectItem key={doctor._id} value={doctor._id}>
-                  {doctor.userID.fullName}
-                </SelectItem>
-              ))}
+              <SelectItem value="Nam">Nam</SelectItem>
+              <SelectItem value="Nữ">Nữ</SelectItem>
             </SelectContent>
           </Select>
         </div>

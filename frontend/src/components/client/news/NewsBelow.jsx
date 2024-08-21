@@ -12,7 +12,7 @@ import Autoplay from "embla-carousel-autoplay";
 
 export default function NewsBelow({ news, isLoading }) {
   return (
-    <div className="mx-auto max-w-screen-xl p-3">
+    <div className="mx-auto max-w-screen-xl p-4 lg:p-6">
       <h2 className="relative flex text-[24px] font-bold uppercase">
         <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
         <span className="sm:text-md pl-5 text-[18px]">Tin tức khác</span>

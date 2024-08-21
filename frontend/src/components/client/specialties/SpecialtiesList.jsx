@@ -32,7 +32,7 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
               key={item._id}
               className="group relative h-48 max-w-full rounded-lg bg-white shadow dark:border-gray-700 dark:bg-gray-800"
             >
-              <div className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              <div className="absolute inset-0 flex cursor-pointer items-center z-50 justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <Link
                  to={`/services?specialtyID=${item._id}`}
                   className="flex h-8 w-24  cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
