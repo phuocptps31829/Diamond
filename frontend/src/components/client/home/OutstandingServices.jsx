@@ -22,7 +22,7 @@ export default function OutstandingServices() {
 
   useEffect(() => {
     if (!loadingMedicalService) {
-      const sortedMedicalPackages = medicalServices.sort(
+      const sortedMedicalPackages = medicalServices.data.sort(
         (a, b) => b.orderCount - a.orderCount,
       );
       setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));

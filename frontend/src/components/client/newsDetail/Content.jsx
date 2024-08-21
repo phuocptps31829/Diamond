@@ -35,7 +35,7 @@ export default function ContentNews({
   }, [allNews, isLoadingAllNews, news?._id, news?.specialtyID]);
 
   return (
-    <div className="mx-auto max-w-screen-xl p-3">
+    <div className="mx-auto max-w-screen-xl p-4 md:p-5">
       <div className="flex gap-10">
         {isLoading || isLoadingAllNews ? (
           <div className="mx-auto min-w-[800px]">
