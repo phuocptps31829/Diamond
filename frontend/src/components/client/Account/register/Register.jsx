@@ -111,7 +111,7 @@ export default function RegisterComponent() {
           </div>
 
           {/* FORM */}
-          <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10">
+          <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10 border-l">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Đăng kí tài khoản
             </h1>
@@ -127,7 +127,7 @@ export default function RegisterComponent() {
                 >
                   Họ và tên:
                 </label>
-                <div className="relative">
+                <div className="relative">  
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Nhập tên của bạn"

@@ -15,6 +15,19 @@ const router = express.Router();
  *    tags:
  *    - Doctor Routes
  *    summary: Get all doctor (?page=1&limit=10&sort=1)
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -55,6 +68,35 @@ router.get(
     '/:id',
     helperMiddleware.checkValidId,
     doctorController.getDoctorById
+);
+
+/**
+ * @openapi
+ * '/api/v1/doctors/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get doctor by specialty id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: doctor id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkValidId,
+    helperMiddleware.checkQueryParams,
+    doctorController.getAllDoctorsBySpecialtyId
 );
 
 /**

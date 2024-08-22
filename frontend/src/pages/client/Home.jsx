@@ -9,7 +9,6 @@ import useScrollToTop from "@/hooks/useScrollToTop";
 
 export default function Home() {
   useScrollToTop();
-
   return (
     <div className="bg-[#E8F2F7]">
       <Banner />

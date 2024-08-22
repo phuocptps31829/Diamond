@@ -1,21 +1,152 @@
+const mongoose = require('mongoose');
 const MedicalPackageModel = require('../models/medical-package.model');
+const ServiceModel = require('../models/service.model');
 const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllMedicalPackages = async (req, res, next) => {
     try {
-        const totalRecords = await MedicalPackageModel.countDocuments({
-            isDeleted: false,
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        let { branchID, specialtyID, gender } = req.checkValueQuery;
+
+        const pipeline = [
+            {
+                $unwind: '$services'
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    shortDescription: { $first: '$shortDescription' },
+                    details: { $first: '$details' },
+                    specialtyID: { $first: '$specialtyID' },
+                    services: { $push: '$services' },
+                    minDiscountPrice: { $min: '$services.discountPrice' },
+                    isHidden: { $first: '$isHidden' },
+                    isDeleted: { $first: '$isDeleted' },
+                    createdAt: { $first: '$createdAt' },
+                    updatedAt: { $first: '$updatedAt' },
+                    image: { $first: '$image' },
+                    orderCount: { $first: '$orderCount' }
+                }
+            },
+            // ...(sortOptions['discountPrice'] ? [{
+            //     $sort: {
+            //         minDiscountPrice: sortOptions['discountPrice']
+            //     }
+            // }] : []),
+            ...(sortOptions && Object.keys(sortOptions).length ?
+                sortOptions['discountPrice'] ? [{
+                    $sort: {
+                        minDiscountPrice: sortOptions['discountPrice']
+                    }
+                }] : [{
+                    $sort: sortOptions
+                }] : []),
+            {
+                $project: {
+                    minDiscountPrice: 0
+                }
+            },
+            {
+                $lookup: {
+                    from: "Clinic",
+                    localField: "specialtyID",
+                    foreignField: "specialtyID",
+                    as: "clinicInfo"
+                }
+            },
+            {
+                $lookup: {
+                    from: "ApplicableObject",
+                    localField: "_id",
+                    foreignField: "medicalPackageID",
+                    as: "ApplicableObjectInfo"
+                }
+            },
+            {
+                $match: {
+                    isDeleted: false,
+                    ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
+                }
+            },
+
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        ];
+
+        if (gender) {
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { "ApplicableObjectInfo.gender": gender },
+                        { "ApplicableObjectInfo": { $exists: true, $size: 0 } },
+                        { "ApplicableObjectInfo": { $exists: false } }
+                    ]
+                }
+            });
+        }
+
+        if (branchID) {
+            pipeline.push({
+                $match: {
+                    "clinicInfo.branchID": { $all: branchID.map(id => new mongoose.Types.ObjectId(id)) },
+                    "clinicInfo.isDeleted": false,
+                }
+            });
+        }
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
         });
-        const medicalPackages = await MedicalPackageModel.find({
-            isDeleted: false,
-        });
+
+        const totalRecords = await MedicalPackageModel.aggregate(countPipeline);
+
+        const medicalPackages = await MedicalPackageModel.aggregate(pipeline);
 
         if (!medicalPackages.length) {
             createError(404, 'No medical packages found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
+            message: 'Medical packages retrieved successfully.',
+            data: medicalPackages,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllMedicalPackagesBySpecialtyId = async (req, res, next) => {
+    try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        const { id } = req.params;
+
+        const totalRecords = await MedicalPackageModel.countDocuments({
+            isDeleted: false,
+            specialtyID: id,
+        });
+        const medicalPackages = await MedicalPackageModel
+            .find({
+                isDeleted: false,
+                specialtyID: id,
+            })
+            .skip(skip)
+            .limit(limitDocuments)
+            .sort(sortOptions);
+
+        if (!medicalPackages.length) {
+            createError(404, 'No medical packages found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
             message: 'Medical packages retrieved successfully.',
             data: medicalPackages,
             totalRecords
@@ -38,9 +169,27 @@ const getMedicalPackageById = async (req, res, next) => {
             createError(404, 'Medical package not found.');
         }
 
+        // sắp xếp lại array services theo thứ tự giảm dần của mảng servicesID
+        const arrayServices = medicalPackage.services.sort((a, b) => {
+            return b.servicesID.length - a.servicesID.length;
+        });
+
+        // Lấy tất cả các service có trong mảng dày nhất
+        const services = await ServiceModel.find({
+            _id: { $in: arrayServices[0].servicesID },
+            isDeleted: false,
+        }, {
+            _id: 1, name: 1
+        });
+
+        const newMedicalPackage = {
+            ...medicalPackage.toObject(),
+            allServices: services
+        };
+
         return res.status(200).json({
             message: 'Medical package retrieved successfully.',
-            data: medicalPackage,
+            data: newMedicalPackage,
         });
     } catch (error) {
         next(error);
@@ -118,5 +267,6 @@ module.exports = {
     getMedicalPackageById,
     createMedicalPackage,
     updateMedicalPackage,
-    deleteMedicalPackage
+    deleteMedicalPackage,
+    getAllMedicalPackagesBySpecialtyId
 };

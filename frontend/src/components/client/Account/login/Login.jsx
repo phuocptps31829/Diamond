@@ -88,7 +88,7 @@ export default function LoginComponent() {
             </Carousel>
           </div>
           {/* FORM */}
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
+          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20 border-l">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Đăng nhập
             </h1>

@@ -17,11 +17,11 @@ export default function NewsProduct({
         to={`/news-detail/${_id}`}
         className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid"
       >
-        <div className="h-[250px] w-full">
+        <div className="h-[250px] w-full rounded-lg">
           <img
             src={image}
             alt=""
-            className="block h-full w-full object-cover"
+            className="block h-full w-full rounded-lg object-cover"
           />
         </div>
         <div className="p-5">

@@ -19,10 +19,11 @@ export default function OutstandingPackages() {
     queryKey: ["medical-packages"],
     queryFn: getAllMedicalPackages,
   });
+  
 
   useEffect(() => {
     if (!loadingMedicalPackages) {
-      const sortedMedicalPackages = medicalPackages.sort(
+      const sortedMedicalPackages = medicalPackages.data.sort(
         (a, b) => b.orderCount - a.orderCount,
       );
       setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));

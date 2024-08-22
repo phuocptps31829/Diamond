@@ -6,6 +6,11 @@ const applicableObjectSchema = new mongoose.Schema({
         ref: 'MedicalPackage',
         required: true
     },
+    serviceID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'MedicalPackage',
+        required: true
+    },
     gender: {
         type: String,
         trim: true,

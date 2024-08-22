@@ -19,6 +19,53 @@ const checkValidId = (req, res, next) => {
         next(error);
     }
 };
+const checkValueQuery = (req, res, next) => {
+    try {
+        let { branchID = null, specialtyID = null, gender = null } = req.query;
+
+        if (Array.isArray(gender)) {
+            if (gender.includes('Nam') && gender.includes('Nữ')) {
+                gender = null;
+            } else {
+                gender = gender[0];
+            }
+        }
+
+        if (branchID && !Array.isArray(branchID)) {
+            branchID = [branchID];
+        }
+
+        if (specialtyID && !Array.isArray(specialtyID)) {
+            specialtyID = [specialtyID];
+        }
+
+        if (branchID) {
+            branchID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid branchID: ${id}`);
+                }
+            });
+        }
+
+        if (specialtyID) {
+            specialtyID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid specialtyID: ${id}`);
+                }
+            });
+        }
+        req.checkValueQuery = {
+            branchID,
+            specialtyID,
+            gender
+        };
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 const checkQueryParams = (req, res, next) => {
     try {
         let { page, limit, sort } = req.query;
@@ -31,20 +78,20 @@ const checkQueryParams = (req, res, next) => {
         limit = Array.isArray(limit) ? limit[0] : limit;
         sort = Array.isArray(sort) ? sort[0] : sort;
 
-        if (page && limit) {
-            limitDocuments = parseInt(limit);
-            skip = (parseInt(page) - 1) * limitDocuments;
+        page = parseInt(page);
+        limit = parseInt(limit);
+
+        if (isNaN(page) || page <= 0) {
+            page = 1;
         }
 
-        if (!page && limit) {
-            limitDocuments = parseInt(limit);
-            skip = 0;
+        if (isNaN(limit) || limit <= 0) {
+            console.log(true);
+            limit = 10;
         }
 
-        if (page && !limit) {
-            limitDocuments = 10;
-            skip = (parseInt(page) - 1) * limitDocuments;
-        }
+        limitDocuments = limit;
+        skip = (page - 1) * limitDocuments;
 
         if (sort) {
             if (sort.startsWith('-')) {
@@ -66,7 +113,19 @@ const checkQueryParams = (req, res, next) => {
         next(error);
     }
 };
+
+const isCreatePatient = (req, res, next) => {
+    try {
+        req.isCreateDoctor = false;
+        next();
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     checkValidId,
-    checkQueryParams
+    checkValueQuery,
+    checkQueryParams,
+    isCreatePatient
 };

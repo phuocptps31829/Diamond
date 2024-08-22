@@ -25,11 +25,11 @@ const TrustedSafety = () => {
 
     return (
         <div className="mx-auto w-full max-w-screen-2xl bg-white py-11">
-            <div className="container mx-auto w-5/6 max-w-screen-2xl p-4 text-center sm:p-10">
+            <div className=" mx-auto  max-w-screen-2xl py-4 text-center sm:py-10 w-[83rem]">
                 <h2 className="mb-8 text-2xl font-semibold sm:text-4xl">
                     Tin Cậy Và An Toàn
                 </h2>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-24 sm:grid-cols-2 md:grid-cols-3">
                     { items.map((item, index) => (
                         <div key={ index } className="flex flex-col items-center">
                             <img

@@ -15,18 +15,10 @@ const userValidator = checkSchema({
             errorMessage: "Phone number should be a string",
         },
     },
-
     email: {
         optional: true,
         isString: {
             errorMessage: "Email should be a string",
-        },
-    },
-    custom: {
-        options: (value, { req }) => {
-            if (!req.body.phoneNumber && !req.body.email) {
-                throw new Error('Either phone number or email is required');
-            } return true;
         },
     },
     dateOfBirth: {
@@ -62,6 +54,10 @@ const userValidator = checkSchema({
         isString: {
             errorMessage: "Password should be a string",
         },
+        isLength: {
+            errorMessage: 'Password should be at least 6 chars long',
+            options: { min: 6 }
+        },
     },
     avatar: {
         optional: true,
@@ -73,14 +69,6 @@ const userValidator = checkSchema({
         optional: true,
         isNumeric: {
             errorMessage: "Citizen identification number should be a number",
-        },
-    },
-    isActivated: {
-        exists: {
-            errorMessage: "Is activated is required",
-        },
-        isBoolean: {
-            errorMessage: "Is activated should be a boolean",
         },
     },
 });

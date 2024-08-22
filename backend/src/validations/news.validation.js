@@ -19,6 +19,15 @@ const newsValidator = checkSchema({
         },
         trim: true
     },
+    shortDescription: {
+        exists: {
+            errorMessage: 'Short description is required'
+        },
+        isString: {
+            errorMessage: 'Short description should be a string'
+        },
+        trim: true
+    },
     image: {
         exists: {
             errorMessage: 'Image is required'

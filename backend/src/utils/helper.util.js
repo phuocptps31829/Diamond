@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const createHttpError = require('http-errors');
 const bcrypt = require('bcrypt');
+const otpGenerator = require('otp-generator');
+const axios = require('axios');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
@@ -9,7 +11,7 @@ const createError = (statusCode, message) => {
     throw new createHttpError(statusCode, message);
 };
 
-const sendEmail = async (email, subject, text, attachments = []) => {
+const sendEmail = async (email, subject, html, attachments = []) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -24,7 +26,7 @@ const sendEmail = async (email, subject, text, attachments = []) => {
             from: process.env.EMAIL_SEND,
             to: email,
             subject: subject,
-            text: text,
+            html: html,
             attachments: attachments
         });
     } catch (error) {
@@ -33,14 +35,84 @@ const sendEmail = async (email, subject, text, attachments = []) => {
     }
 };
 
+function getAccessToken() {
+
+    const apiKeySid = process.env.API_KEY_SID;
+    const apiKeySecret = process.env.API_KEY_SECRET;
+
+    const now = Math.floor(Date.now() / 1000);
+    const exp = now + 3600;
+
+    const header = { cty: "stringee-api;v=1" };
+    const payload = {
+        jti: apiKeySid + "-" + now,
+        iss: apiKeySid,
+        exp: exp,
+        rest_api: 1
+    };
+
+    const token = jwt.sign(payload, apiKeySecret, { algorithm: 'HS256', header: header });
+    return token;
+}
+
+const sendOTP = async ({ phoneNumber }) => {
+
+    const OTP = otpGenerator.generate(6, {
+        digits: true,
+        lowerCaseAlphabets: false,
+        specialChars: false,
+        upperCaseAlphabets: false
+    });
+
+    const talkOTP = OTP.split('').join('... ');
+    const newPhoneNumber = await phoneNumber.substring(1);
+    const options = {
+        method: 'POST',
+        url: process.env.URL_CALL,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-STRINGEE-AUTH': getAccessToken(),  // Thêm tiêu đề xác thực
+        },
+        data: {
+            "from": {
+                "type": "external",
+                "number": process.env.PHONE_NUMBER,
+                "alias": "STRINGEE_NUMBER"
+            },
+            "to": [
+                {
+                    "type": "external",
+                    "number": '84' + newPhoneNumber,
+                    "alias": "TO_NUMBER"
+                }
+            ],
+            "answer_url": process.env.ANSWER_URL,
+            "actions": [
+                {
+                    "action": "talk",
+                    "text": "Mã OTP của bạn là:..." + talkOTP + "... Xin nhắc lại... Mã OTP của bạn là:..." + talkOTP
+                }
+            ]
+        }
+    };
+
+    try {
+        const response = await axios.request(options);
+        console.log(response.data);
+    } catch (error) {
+        console.error(error);
+    }
+    console.log("OTP is: ", OTP);
+    return OTP;
+};
+
 const generateAccessRefreshToken = user => {
     const accessToken = jwt.sign(
         {
-            id: user._id,
-            isAdmin: user.isAdmin
+            id: user._id
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '10s' }
+        { expiresIn: '5m' }
     );
 
     const refreshToken = jwt.sign(
@@ -49,10 +121,25 @@ const generateAccessRefreshToken = user => {
             isAdmin: user.isAdmin
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: '2d' }
+        { expiresIn: '7d' }
     );
 
     return { accessToken, refreshToken };
+};
+
+const generateOTPToken = ({ fullName, phoneNumber, password }) => {
+    const otpToken = jwt.sign(
+        {
+            fullName,
+            phoneNumber,
+            password,
+            expiresIn: Date.now() + 300000
+        },
+        process.env.OTP_TOKEN_SECRET,
+        { expiresIn: '5m' }
+    );
+
+    return otpToken;
 };
 
 const saveRefreshToken = (refreshToken, res) => {
@@ -64,15 +151,15 @@ const saveRefreshToken = (refreshToken, res) => {
     });
 };
 
-const comparePassword = async (password, hashedPassword) => {
-    const validPassword = await bcrypt.compare(password, hashedPassword);
-    return validPassword;
+const compareHashedValue = async (value, hashedValue) => {
+    const valid = await bcrypt.compare(value, hashedValue);
+    return valid;
 };
 
-const hashPassword = async (password) => {
+const hashValue = async (value) => {
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword;
+    const hashedValue = await bcrypt.hash(value, salt);
+    return hashedValue;
 };
 
 const errorValidator = (req, res) => {
@@ -94,13 +181,58 @@ const checkValidObjectId = (id, type) => {
     return id;
 };
 
+const isValidPhoneNumber = (phoneNumber) => {
+    return /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phoneNumber);
+};
+
+const isValidEmail = (email) => {
+    return (/^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/).test(email);
+};
+
+const checkPhoneNumberAndEmail = async (phoneNumber, email, Model, isEmailRequired) => {
+    if (!phoneNumber || !phoneNumber.trim()) {
+        createError(400, 'Phone number is required');
+    }
+
+    if (isEmailRequired) {
+        if ((!email) || !email.trim() === '') {
+            createError(400, 'Email is required');
+        }
+    }
+
+    if (email && email.trim() !== '') {
+        if (!isValidEmail(email)) {
+            createError(400, 'Email không hợp lệ');
+        }
+
+        const getExistingUserByEmail = await Model.findOne({ email });
+        if (getExistingUserByEmail) {
+            createError(409, 'Email đã tồn tại');
+        }
+    }
+
+    if (phoneNumber && phoneNumber.trim() !== '') {
+        if (!isValidPhoneNumber(phoneNumber)) {
+            createError(400, 'Số điện thoại không hợp lệ');
+        }
+
+        const getExistingUserByPhoneNumber = await Model.findOne({ phoneNumber });
+        if (getExistingUserByPhoneNumber) {
+            createError(409, 'Số điện thoại đã tồn tại');
+        }
+    }
+};
+
 module.exports = {
     createError,
     sendEmail,
     generateAccessRefreshToken,
     saveRefreshToken,
-    comparePassword,
-    hashPassword,
+    compareHashedValue,
+    hashValue,
     errorValidator,
-    checkValidObjectId
+    checkValidObjectId,
+    sendOTP,
+    generateOTPToken,
+    checkPhoneNumberAndEmail
 };
