@@ -128,7 +128,7 @@ export default function ForgetComponent() {
                   className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
                 >
                   <img
-                    src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png"
+                    src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg"
                     className="mr-2 w-7 md:mr-2"
                     alt="Google icon"
                   />

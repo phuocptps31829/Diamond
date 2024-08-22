@@ -1,5 +1,5 @@
 
-import ChangePassAccuracyComponent from "../../components/client/Account/changePassAccuracy/ChangePassAccuracy";
+import ChangePassAccuracyComponent from "../../components/client/account/ChangePassAccuracy";
 import useScrollToTop from "@/hooks/useScrollToTop";
 export default function ChangePassAccuracy() {
     useScrollToTop();

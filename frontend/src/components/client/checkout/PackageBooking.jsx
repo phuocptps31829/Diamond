@@ -1,0 +1,182 @@
+import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { FaSearch } from "react-icons/fa";
+import { Input } from '@/components/ui/Input';
+
+const packages = [
+  {
+    title: "GÓI KHÁM TỔNG QUÁT NAM",
+    image: "https://img.ykhoadiamond.com/Uploads/PackageBox/05082023/a96a507c-8fee-493b-b7c2-53a710af9135.jpg",
+    price: "2.000.000VND",
+    description:"Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...",
+  },
+  {
+    title: "GÓI KHÁM TỔNG QUÁT NỮ",
+    image: "https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg",
+    price: "2.000.000VND",
+    description:"Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...",
+  },
+  {
+    title: "GÓI TẦM SOÁT UNG THƯ",
+    image: "https://img.ykhoadiamond.com/uploads/package/28032023/2f3b7bea-caeb-4e42-a3e8-fa85007a9408.jpg",
+    price: "2.000.000VND",
+    description:"Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...",
+  },
+  {
+    title: "SỨC KHỎE HẬU COVID-19",
+    image: "https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg",
+    price: "2.000.000VND",
+    description:"Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...",
+  },
+  {
+    title: "GÓI KHÁM TỔNG QUÁT NAM",
+    image: "https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg",
+    price: "2.000.000VND",
+    description:"Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...",
+  }
+];
+
+export default function Form() {
+  return (
+    <div className='flex flex-col mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 border shadow-gray rounded-md'>
+    <div className='container mx-auto flex flex-col md:flex-row gap-5 px-3'>
+      {/* Select Services */}
+      <div className='flex flex-col gap-[20px] w-full max-w-[440px] px-2'>
+        <div className='flex justify-between'>
+          <p className='font-semibold'>Chọn gói khám</p>
+          <p className='font-light'>Đã chọn 1 gói khám</p>
+        </div>
+        <div className="relative">
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <Input className="pl-10" placeholder="Tìm kiếm gói khám..." />
+        </div>
+
+        {/* Package List with Scroll */}
+        <div className='overflow-y-auto h-[340px] md:h-[560px]'>
+          {packages.map((pkg, index) => (
+            <div key={index} className='px-4 py-3 border border-primary-500 rounded-lg relative mb-3'>
+              <Checkbox id={`checkbox-gt-${index}`} className="absolute top-1/2 right-5" />
+              <div className='flex mb-2'>
+                <img
+                  src={pkg.image}
+                  className='w-[98px] h-[51px]'
+                  alt={`Image of ${pkg.title}`}
+                />
+                <div className='ml-2'>
+                  <p className='font-bold text-[13px] md:text-[17px]'>{pkg.title}</p>
+                  <span className='text-[12px] md:text-sm'>Tiêu chuẩn</span>
+                </div>
+              </div>
+              <div>
+                <p>
+                  Giá: <span>{pkg.price}</span>
+                </p>
+                <p className='w-full max-w-[330px] font-light text-[12px] md:text-[15px] text-justify'>
+                  {pkg.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+        {/* Form */}
+        <div className='w-full md:ml-auto p-4 pt-0'>
+          <p className='text-xl font-bold mb-4'>Thông tin đặt lịch khám</p>
+          <form>
+            <div className='flex flex-col gap-4'>
+              {/* Hàng đầu tiên */}
+              <div className='flex flex-col md:flex-row gap-4'>
+                <div className='flex-1'>
+                  <select id="khoa" className='w-full p-3 border rounded'>
+                    <option value="">Chọn khoa</option>
+                    {/* Thêm các option */}
+                  </select>
+                </div>
+                <div className='flex-1'>
+                  <select id="bacsi" className='w-full p-3 border rounded'>
+                    <option value="">Chọn bác sĩ</option>
+                    {/* Thêm các option */}
+                  </select>
+                </div>
+              </div>
+
+              {/* Hàng thứ hai */}
+              <div className='flex flex-col md:flex-row gap-4'>
+                <div className='flex-1'>
+                  <input type="time" id="gio" className='w-full p-3 border rounded' />
+                </div>
+                <div className='flex-1'>
+                  <select id="phongkham" className='w-full p-3 border rounded'>
+                    <option value="">Chọn phòng khám</option>
+                    {/* Thêm các option */}
+                  </select>
+                </div>
+              </div>
+
+              {/* Hàng thứ ba */}
+              <div className='flex-1'>
+                <input type="date" id="ngay" className='w-full p-3 border rounded' />
+              </div>
+
+              {/* Thông tin người khám */}
+              <div className='bg-gray-500/30 px-5 py-6 pt-2 rounded-md'>
+                <p className='text-xl font-bold mt-6 mb-4'>Thông tin người khám</p>
+
+                {/* Hàng 1 */}
+                <div className='mb-4'>
+                  <label htmlFor="hoten" className='block mb-1'>Họ và tên</label>
+                  <input type="text" id="hoten" className='w-full p-2 border rounded' />
+                </div>
+
+                {/* Hàng 2 */}
+                <div className='flex flex-col md:flex-row gap-4'>
+                  <div className='flex-1'>
+                    <label htmlFor="email" className='block mb-1'>Email</label>
+                    <input type="email" id="email" className='w-full p-2 border rounded' />
+                  </div>
+                  <div className='flex-1'>
+                    <label htmlFor="sdt" className='block mb-1'>Số điện thoại</label>
+                    <input type="tel" id="sdt" className='w-full p-2 border rounded' />
+                  </div>
+                </div>
+
+                {/* Hàng 3 */}
+                <div className='flex flex-col md:flex-row gap-4'>
+                  <div className='flex-1'>
+                    <label htmlFor="gioitinh" className='block mb-1'>Giới tính</label>
+                    <select id="gioitinh" className='w-full p-2 border rounded'>
+                      <option value="male">Nam</option>
+                      <option value="female">Nữ</option>
+                      <option value="other">Khác</option>
+                    </select>
+                  </div>
+                  <div className='flex-1'>
+                    <label htmlFor="tuoi" className='block mb-1'>Tuổi</label>
+                    <input type="number" id="tuoi" className='w-full p-2 border rounded' />
+                  </div>
+                </div>
+
+                {/* Phương thức thanh toán */}
+                <div className='mt-4'>
+                  <p className='text-xl font-bold mt-6 mb-4'>Phương thức thanh toán</p>
+                  <div className='flex items-center'>
+                    <Checkbox id="payment1" className="mr-2" />
+                    <label htmlFor="payment1">Thanh toán tại phòng khám</label>
+                  </div>
+                  <div className='flex items-center'>
+                    <Checkbox id="payment2" className="mr-2" />
+                    <label htmlFor="payment2">Chuyển khoản</label>
+                  </div>
+                </div>
+
+                {/* Button */}
+                <Button className='mt-6'>Tiếp tục</Button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

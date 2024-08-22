@@ -1,4 +1,3 @@
-import AdsProduct from "../../product/Ads";
 import {
   Carousel,
   CarouselContent,
@@ -6,35 +5,48 @@ import {
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
-import { FaPhoneAlt, FaLock } from "react-icons/fa";
+import { FaPhoneAlt, FaLock, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "@/zods/account";
-import { API_LOGIN_GOOGLE } from "@/configs/varibles";
+import InputCustom from "@/components/ui/InputCustom";
+import { registerSchema } from "@/zods/register";
+import AdsProduct from "../product/Ads";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "@/services/authApi";
+import { registerSendOtp } from "@/services/authApi";
 
-export default function LoginComponent() {
+export default function RegisterComponent() {
   const { toast } = useToast();
+  const navigate = useNavigate();
+
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm({
-    resolver: zodResolver(accountSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       phoneNumber: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: login,
+    mutationFn: registerSendOtp,
     onSuccess: (data) => {
-      location.href = `/user-profile?accessToken=${data.accessToken}`;
+      toast({
+        variant: "success",
+        title: "Gửi mã OTP thành công!",
+        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      const currentTime = new Date().getTime();
+      sessionStorage.setItem("otpSentTime", currentTime);
+      sessionStorage.setItem("otpToken", data.otpToken);
+      navigate("/accuracy");
     },
     onError: (error) => {
       const errorMessage =
@@ -43,19 +55,29 @@ export default function LoginComponent() {
         "Đã xảy ra lỗi, vui lòng thử lại.";
       toast({
         variant: "destructive",
-        title: "Đăng nhập thất bại!",
+        title: "Gửi mã OTP thất bại!",
         description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("password");
     },
   });
 
   const onSubmit = (data) => {
-    mutation.mutate(data);
-  };
+    const { phoneNumber, password, fullName } = data;
 
-  const handleLoginGoogle = async () => {
-    window.location.href = API_LOGIN_GOOGLE;
+    const dataSend = {
+      fullName,
+      password,
+      phoneNumber,
+    };
+
+    sessionStorage.setItem("phoneNumber", phoneNumber);
+    sessionStorage.setItem("fullName", fullName);
+    sessionStorage.setItem("password", password);
+    mutation.mutate(dataSend);
   };
 
   return (
@@ -63,7 +85,7 @@ export default function LoginComponent() {
       <div className="w-full max-w-screen-xl px-10 py-5">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* ADS BANNER */}
-          <div className="hidden bg-gray-200 shadow-lg md:block">
+          <div className="hidden bg-white shadow-lg md:block">
             <Carousel
               opts={{
                 align: "start",
@@ -87,15 +109,37 @@ export default function LoginComponent() {
               </CarouselContent>
             </Carousel>
           </div>
+
           {/* FORM */}
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20 border-l">
+          <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10 border-l">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
-              Đăng nhập
+              Đăng kí tài khoản
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">
-              Đăng nhập với số điện thoại và mật khẩu
+              Đăng kí ngay để sử dụng dịch vụ
             </p>
+
             <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="mb-2">
+                <label
+                  htmlFor="phone"
+                  className="block font-semibold text-gray-700"
+                >
+                  Họ và tên:
+                </label>
+                <div className="relative">  
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1"
+                    placeholder="Nhập tên của bạn"
+                    name="fullName"
+                    type="text"
+                    id="fullName"
+                    icon={<FaUser></FaUser>}
+                    control={control}
+                    errors={errors}
+                  />
+                </div>
+              </div>
               <div className="mb-2">
                 <label
                   htmlFor="phone"
@@ -126,7 +170,7 @@ export default function LoginComponent() {
                 <div className="relative">
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
-                    placeholder="Mật khẩu"
+                    placeholder="Nhập mật khẩu"
                     name="password"
                     type="password"
                     id="password"
@@ -136,37 +180,37 @@ export default function LoginComponent() {
                   />
                 </div>
               </div>
-              <div className="my-3 flex items-center justify-between">
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
-                  />
-                  <label
-                    htmlFor="remember"
-                    className="ml-2 block text-sm text-gray-700"
-                  >
-                    Ghi nhớ tôi
-                  </label>
-                </div>
-                <Link
-                  to="/forget-password"
-                  className="text-sm font-bold italic text-primary-500 hover:underline"
+              <div className="mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block font-semibold text-gray-700"
                 >
-                  Quên mật khẩu?
-                </Link>
+                  Nhập lại mật khẩu:
+                </label>
+                <div className="relative">
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1"
+                    placeholder="Nhập lại mật khẩu"
+                    name="confirmPassword"
+                    type="password"
+                    id="confirmPassword"
+                    icon={<FaLock></FaLock>}
+                    control={control}
+                    errors={errors}
+                  />
+                </div>
               </div>
+
               <button
                 className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
-                // disabled={mutation.isPending}
+                disabled={mutation.isPending}
               >
-                {/* {mutation.isPending ? "Đang xử lí" : "Đăng ký"}
+                {mutation.isPending ? "Đang xử lí" : "Đăng ký"}
                 {mutation.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )} */}
-                Đăng nhập
+                )}
               </button>
+
               <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-300"></div>
                 <span className="mx-4 text-sm text-gray-800">
@@ -174,16 +218,13 @@ export default function LoginComponent() {
                 </span>
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
+
               {/* GG - FB LOGIN */}
               <div className="block justify-center md:flex md:space-x-2">
                 <button
-                  onClick={handleLoginGoogle}
                   type="button"
-                  className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
-                >
-                  <img 
-                  src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg" 
-                  className="w-7 mr-2 md:mr-2" alt="Google icon" />
+                  className="flex w-[100%] bg-gray-500 items-center justify-center flex-2 md:flex-1 bg-customGray-50 bg-opacity-40 text-black py-3 px-4 md:px-1 rounded-lg hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 my-2">
+                  <img src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg" className="w-7 mr-2 md:mr-2" alt="Google icon" />
                   <span className="block mr-4 md:mr-0">
                     Tài khoản Google
                   </span>
@@ -200,14 +241,15 @@ export default function LoginComponent() {
                   <span className="block">Tài khoản Facebook</span>
                 </button>
               </div>
+
               <div className="mb-10 mt-3 flex flex-col items-center">
                 <p className="text-center">
-                  Bạn chưa có tài khoản?
+                  Bạn đã có tài khoản?
                   <Link
-                    to={"/register"}
+                    to={"/login"}
                     className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                   >
-                    Đăng kí ngay!
+                    Đăng nhập ngay!
                   </Link>
                 </p>
               </div>

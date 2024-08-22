@@ -1,4 +1,4 @@
-import Form from '@/components/client/booking/services/Form'
+import Form from '@/components/client/checkout/ServicesBooking'
 import Collaborate from '@/components/client/home/Collaborate'
 
 export default function ServicesBooking(){

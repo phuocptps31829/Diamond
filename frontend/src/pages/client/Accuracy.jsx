@@ -1,4 +1,4 @@
-import AccuracyComponent from "../../components/client/Account/accuracy/Accuracy";
+import AccuracyComponent from "../../components/client/account/Accuracy";
 import useScrollToTop from "@/hooks/useScrollToTop";
 export default function Accurancy() {
   useScrollToTop();
