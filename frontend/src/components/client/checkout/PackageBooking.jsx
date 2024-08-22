@@ -38,10 +38,10 @@ const packages = [
 
 export default function Form() {
   return (
-    <div className='flex flex-col mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 border shadow-gray rounded-md'>
-    <div className='container mx-auto flex flex-col md:flex-row gap-5 px-3'>
+    <div className='flex flex-col mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 '>
+    <div className='container mx-auto flex flex-col md:flex-row gap-5 px-5 py-5 border shadow-gray rounded-md'>
       {/* Select Services */}
-      <div className='flex flex-col gap-[20px] w-full max-w-[440px] px-2'>
+      <div className='flex flex-col gap-[20px] w-full px-2'>
         <div className='flex justify-between'>
           <p className='font-semibold'>Chọn gói khám</p>
           <p className='font-light'>Đã chọn 1 gói khám</p>
@@ -52,7 +52,7 @@ export default function Form() {
         </div>
 
         {/* Package List with Scroll */}
-        <div className='overflow-y-auto h-[340px] md:h-[560px]'>
+        <div className='overflow-y-auto h-[340px] md:h-[750px]'>
           {packages.map((pkg, index) => (
             <div key={index} className='px-4 py-3 border border-primary-500 rounded-lg relative mb-3'>
               <Checkbox id={`checkbox-gt-${index}`} className="absolute top-1/2 right-5" />
@@ -104,7 +104,10 @@ export default function Form() {
               {/* Hàng thứ hai */}
               <div className='flex flex-col md:flex-row gap-4'>
                 <div className='flex-1'>
-                  <input type="time" id="gio" className='w-full p-3 border rounded' />
+                <select id="time" className='w-full p-3 border rounded'>
+                    <option value="" className=''>Thời gian khám</option>
+                    {/* Thêm các option */}
+                  </select>
                 </div>
                 <div className='flex-1'>
                   <select id="phongkham" className='w-full p-3 border rounded'>
@@ -152,26 +155,48 @@ export default function Form() {
                     </select>
                   </div>
                   <div className='flex-1'>
-                    <label htmlFor="tuoi" className='block mb-1'>Tuổi</label>
-                    <input type="number" id="tuoi" className='w-full p-2 border rounded' />
+                    <label htmlFor="ngaysinh" className='block mb-1'>Ngày sinh</label>
+                    <input type="date" id="ngaysinh" className='w-full p-2 border rounded' />
                   </div>
                 </div>
 
-                {/* Phương thức thanh toán */}
-                <div className='mt-4'>
-                  <p className='text-xl font-bold mt-6 mb-4'>Phương thức thanh toán</p>
-                  <div className='flex items-center'>
-                    <Checkbox id="payment1" className="mr-2" />
-                    <label htmlFor="payment1">Thanh toán tại phòng khám</label>
+                {/* Hàng 4 */}
+                <div className='flex flex-col md:flex-row gap-4 mb-4'>
+                  <div className='flex-1'>
+                    <label htmlFor="nghenghiep" className='block mb-1'>Nghề nghiệp</label>
+                    <input type="text" id="nghenghiep" className='w-full p-2 border rounded' />
                   </div>
-                  <div className='flex items-center'>
-                    <Checkbox id="payment2" className="mr-2" />
-                    <label htmlFor="payment2">Chuyển khoản</label>
+                  <div className='flex-1'>
+                    <label htmlFor="dantoc" className='block mb-1'>Dân tộc</label>
+                    <input type="text" id="dantoc" className='w-full p-2 border rounded' />
                   </div>
                 </div>
 
+                <div className='flex flex-col md:flex-row gap-4 mb-4'>
+                  <div className='flex-1'>
+                    <label htmlFor="so-cccd" className='block mb-1'>Số CCCD</label>
+                    <input type="text" id="so-cccd" className='w-full p-2 border rounded' />
+                  </div>
+                  <div className='flex-1'>
+                    <label htmlFor="so-bhyt" className='block mb-1'>Số BHYT</label>
+                    <input type="text" id="so-bhyt" className='w-full p-2 border rounded' />
+                  </div>
+                </div>
+
+                {/* Hàng 6 */}
+                <div className='mb-2'>
+                  <label htmlFor="diachi" className='block mb-1'>Địa chỉ</label>
+                  <input type="text" id="diachi" className='w-full p-2 border rounded' />
+                </div>
                 {/* Button */}
-                <Button className='mt-6'>Tiếp tục</Button>
+                <div className='mt-3 flex justify-end gap-3'>
+                <Button size="lg" variant="outline">
+                  Trở lại
+                </Button>
+                <Button size="lg" variant="primary">
+                  Tiếp tục
+                </Button>
+              </div>
               </div>
             </div>
           </form>

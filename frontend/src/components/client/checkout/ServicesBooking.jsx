@@ -26,10 +26,11 @@ const services = [
 
 export default function Form() {
   return (
-    <div className='flex flex-col mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 border shadow-gray rounded-md'>
-      <div className='container mx-auto flex flex-col md:flex-row gap-5 px-3'>
+    <div className='mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 '>
+
+      <div className='container mx-auto flex flex-col md:flex-row gap-5 px-5 py-5 border shadow-gray rounded-md'>
         {/* Select Services */}
-        <div className='flex flex-col gap-[20px] w-full max-w-[440px] px-2'>
+        <div className='flex flex-col gap-[20px] w-full px-2'>
           <div className='flex justify-between'>
             <p className='font-semibold'>Chọn dịch vụ</p>
             <p className='font-light'>Đã chọn 1 dịch vụ</p>
@@ -75,7 +76,10 @@ export default function Form() {
               {/* Hàng thứ hai */}
               <div className='flex flex-col md:flex-row gap-4'>
                 <div className='flex-1'>
-                  <input type="time" id="gio" className='w-full p-3 border rounded' />
+                <select id="time" className='w-full p-3 border rounded'>
+                    <option value="">Chọn giờ khám</option>
+                    {/* Thêm các option */}
+                  </select>
                 </div>
                 <div className='flex-1'>
                   <input type="date" id="ngay" className='w-full p-3 border rounded' />
