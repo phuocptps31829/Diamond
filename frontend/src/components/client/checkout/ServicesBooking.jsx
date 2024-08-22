@@ -40,7 +40,7 @@ export default function Form() {
           </div>
 
           {/* Services List */}
-          <div className='overflow-y-auto h-[240px] md:max-h-[560px]  '>
+          <div className='overflow-y-auto h-[240px] md:h-[680px]'>
             {services.map((svc, index) => (
               <div key={index} className='px-3 py-2 md:py-3 mb-1 border border-primary-500 rounded-lg relative flex items-center'>
                 <div className='flex mb-2 items-center gap-4'>
