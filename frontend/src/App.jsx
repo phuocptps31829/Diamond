@@ -27,7 +27,8 @@ import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecor
 import NotFound from "@/components/client/notFound";
 import PackageBooking from "./pages/client/PackageBooking";
 import ServicesBooking from "./pages/client/ServicesBooking";
-import CheckOut from "./pages/client/CheckOut";
+import PKCheckOut from "./pages/client/PKBookingPayment";
+import SVCheckOut from "./pages/client/SVBookingPayment";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 
@@ -127,8 +128,12 @@ const router = createBrowserRouter([
         element: <ServicesBooking/>
       },
       {
-        path: "checkout",
-        element: <CheckOut/>
+        path: "package-booking-checkout",
+        element: <PKCheckOut/>
+      },
+      {
+        path: "services-booking-checkout",
+        element: <SVCheckOut/>
       },
       {
         path: "/login",

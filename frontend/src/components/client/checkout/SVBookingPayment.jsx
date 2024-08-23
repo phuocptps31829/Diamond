@@ -7,18 +7,18 @@ export default function Form() {
         <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
             <h1 className='font-bold text-[22px] md:text-[32px]'>Thông tin đặt lịch khám</h1>
-            <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng gói khám:</strong> 1 gói khám</span>
+            <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> 1 dịch vụ</span>
           </div>
           <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-7'>
             <div className='mb-4 md:mb-0'>
               <p className='mb-1 text-[16px] md:text-[20px]'><strong>Chi nhánh: </strong>ĐA KHOA DIAMOND</p>
               <p className='mb-1'><strong>Ngày khám: </strong>18/08/2024</p>
               <p className='mb-1'><strong>Giờ khám: </strong>08:30</p>
-              <p className='mb-1'><strong>Bác sĩ: </strong>Nguyễn Ngọc Chính</p>
-              <p className='mb-1'><strong>Phòng khám: </strong>Khoa ngoại - Phòng T081</p>
+
             </div>
             <div className='w-full md:w-[50%]'>
-              <p>Gói khám của bạn:</p>
+              <p>Dịch vụ của bạn:</p>
+              {/* Services list */}
               <div className='px-3 py-3 md:px-4 md:py-3 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
@@ -28,18 +28,21 @@ export default function Form() {
                   />
                   <div className='ml-2 flex flex-col'>
                     <a href='/' className='font-bold text-[12px] sm:text-[16px] md:text-[22px] '>SỨC KHỎE HẬU COVID-19</a>
-                    <span className='text-[12px] sm:text-[14px] md:text-[18px]'>Tiêu chuẩn</span>
                   </div>
                 </div>
-                <div>
-                  <p className='text-[14px] md:text-[15px] sm:block hidden'>
-                    <strong>Giá: </strong><span className='text-black/60'>2.000.000VND</span>
-                  </p>
-                  <p className='font-light text-[12px] md:text-[15px] text-justify sm:block hidden'>
-                    Medpro trở thành công ty cung cấp giải pháp công nghệ hàng đầu tại Việt Nam giúp kết nối các dịch vụ y tế đến rộng...
-                  </p>
+              </div>
+              <div className='px-3 py-3 md:px-4 md:py-3 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
+                <div className='flex flex-row md:flex-row items-center'>
+                  <img
+                    src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
+                    className='w-[60px] md:w-[120px] sm:w-[80px]'
+                    alt='Sức Khỏe Hậu COVID-19'
+                  />
+                  <div className='ml-2 flex flex-col'>
+                    <a href='/' className='font-bold text-[12px] sm:text-[16px] md:text-[22px] '>SỨC KHỎE HẬU COVID-19</a>
+                  </div>
                 </div>
-            </div>
+              </div>
 
             </div>
           </div>
