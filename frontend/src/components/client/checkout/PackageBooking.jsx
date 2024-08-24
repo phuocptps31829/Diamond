@@ -13,6 +13,7 @@ import SelectDepartment from './select/department';
 import SelectDate from './select/date';
 import SelectBirthDate from './select/birthday';
 import SelectGender from './select/gender';
+import SelectEthnic from './select/ethnicity';
 const packages = [
   {
     title: "GÓI KHÁM TỔNG QUÁT NAM",
@@ -57,7 +58,7 @@ export default function Form() {
       email: "",
       phoneNumber: "",
       job: "",
-      nation: "",
+      ethnicity: "",
       cccd: "",
       bhyt: "",
       address: "",
@@ -245,16 +246,12 @@ export default function Form() {
                     />
                   </div>
                   <div className='flex-1'>
-                    <label htmlFor="nation" className='block mb-1'>Quốc tịch:</label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1 "
-                      placeholder="Nhập quốc tịch của bạn"
-                      name="nation"
-                      type="text"
-                      id="nation"
-                      control={control}
-                      errors={errors}
-                    />
+                    <label htmlFor="ethnicity" className='block mb-2'>Dân tộc:</label>
+                      <SelectEthnic
+                        control={control}
+                        name="ethnicity"
+                        errors={errors}
+                      />
                   </div>
                 </div>
 
