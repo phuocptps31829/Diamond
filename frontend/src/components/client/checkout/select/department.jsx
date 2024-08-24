@@ -41,22 +41,23 @@ export default function SelectDepartment({ control, name, errors }) {
                                 role="combobox"
                                 aria-expanded={open}
                                 className={cn(
-                                    "w-full justify-between py-5",
+                                    "w-full justify-between py-[21px]",
                                     errors[name] && "border-red-500"
                                 )}
                             >
                                 {field.value
                                     ? departments.find((department) => department.value === field.value)?.label
-                                    : "Chọn khoa"}
+                                    :<span className='text-gray-600'>Chọn khoa</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0">
+                        <PopoverContent className="p-0 ">
                             <Command>
                                 <CommandInput placeholder="Nhập tên khoa" />
-                                <CommandList>
+                                <CommandList className=''>
                                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
-                                    <CommandGroup>
+                                    <CommandGroup
+                                    >
                                         {departments.map((department) => (
                                             <CommandItem
                                                 key={department.value}

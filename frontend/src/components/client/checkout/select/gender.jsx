@@ -48,17 +48,17 @@ export default function SelectGender({ control, name, errors }) {
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className={cn("w-full justify-between py-6", 
+                                className={cn("w-full justify-between py-[21px]", 
                                 errors[name] && "")}
                             >
                                 {field.value
                                     ? genders.find((gender) => gender.value === field.value)?.name
-                                    : "Chọn giới tính"}
-                                <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
+                                    : <span className='text-gray-600'>Chọn giới tính</span>}
+                                <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50 " />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0">
-                            <Command className='text-left'>
+                        <PopoverContent className="p-0 ">
+                            <Command className='text-left '>
                                 <CommandList >
                                     <CommandGroup >
                                         {genders.map((gender) => (

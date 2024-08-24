@@ -28,7 +28,7 @@ export const bookingSchema = z.object({
     .string()
     .min(1, "Nghề nghiệp không được để trống!"),
 
-  nation: z
+  ethnicity: z
     .string()
     .min(1, "Dân tộc không được để trống!"),
 
