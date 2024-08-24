@@ -19,27 +19,27 @@ export default function Form() {
             <div className='w-full md:w-[50%]'>
               <p>Dịch vụ của bạn:</p>
               {/* Services list */}
-              <div className='px-3 py-3 md:px-4 md:py-3 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
+              <div className='px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
                     src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
-                    className='w-[60px] md:w-[120px] sm:w-[80px]'
+                    className='w-[60px] md:w-[110px] sm:w-[80px]'
                     alt='Sức Khỏe Hậu COVID-19'
                   />
-                  <div className='ml-2 flex flex-col'>
-                    <a href='/' className='font-bold text-[12px] sm:text-[16px] md:text-[22px] '>SỨC KHỎE HẬU COVID-19</a>
+                  <div className='ml-3 flex flex-col'>
+                    <a href='/' className='font-bold text-[12px] sm:text-[16px] md:text-[18px] '>SỨC KHỎE HẬU COVID-19</a>
                   </div>
                 </div>
               </div>
-              <div className='px-3 py-3 md:px-4 md:py-3 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
+              <div className='px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
                     src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
-                    className='w-[60px] md:w-[120px] sm:w-[80px]'
+                    className='w-[60px] md:w-[100px] sm:w-[75px]'
                     alt='Sức Khỏe Hậu COVID-19'
                   />
-                  <div className='ml-2 flex flex-col'>
-                    <a href='/' className='font-bold text-[12px] sm:text-[16px] md:text-[22px] '>SỨC KHỎE HẬU COVID-19</a>
+                  <div className='ml-3 flex flex-col'>
+                    <a href='/' className='font-bold text-[13px] sm:text-[16px] md:text-[18px] '>SỨC KHỎE HẬU COVID-19</a>
                   </div>
                 </div>
               </div>

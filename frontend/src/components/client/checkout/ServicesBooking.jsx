@@ -6,7 +6,11 @@ import InputCustom from "@/components/ui/InputCustom";
 import { bookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import SelectTime from './select/time';
+import SelectDepartment from './select/department';
+import SelectDate from './select/date';
+import SelectBirthDate from './select/birthday';
+import SelectGender from './select/gender';
 const services = [
   {
     title: 'Điện tim thường'
@@ -27,7 +31,6 @@ const services = [
     title: 'Kiểm tra huyết áp'
   }
 ];
-
 export default function Form() {
   const {
     handleSubmit,
@@ -43,14 +46,16 @@ export default function Form() {
       nation: "",
       cccd: "",
       bhyt: "",
-      address: ""
+      address: "",
+      department: "",
+      doctor: "",
+      time: "",
+      room: "",
+      date:"",
+      birthDate:"",
+      gender:"",
     },
   });
-  const onSubmit = (data) => {
-    console.log("Form data:", data);
-  };
-
-
   return (
     <div className='mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 '>
 
@@ -67,19 +72,21 @@ export default function Form() {
           </div>
 
           {/* Services List */}
-          <div className='overflow-y-auto h-[240px] md:h-[680px]'>
+          <div className='overflow-y-auto h-[185px] sm:h-[215px] md:h-[680px]'>
             {services.map((svc, index) => (
-              <div key={index} className='px-3 py-2 md:py-3 mb-1 border border-primary-500 rounded-lg relative flex items-center'>
+              <label key={index}>
+              <div className='px-3 py-2 md:py-3 mb-1 border border-primary-500 rounded-lg relative flex items-center'>
                 <div className='flex items-center gap-4'>
                   <img
                     src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
-                    className='w-[98px] h-[51px]'
+                    className='md:w-[100px] sm:w-[75px] w-[60px]'
                     alt={`Image of ${svc.title}`}
                   />
-                  <p className='font-bold text-[13px] md:text-[17px]'>{svc.title}</p>
+                  <p className='font-bold text-[13px] sm:text-[16px] md:text-[18px]'>{svc.title}</p>
                 </div>
                 <Checkbox id={`checkbox-svc-${index}`} className="absolute right-5 top-1/2 transform -translate-y-1/2" />
               </div>
+              </label>
             ))}
           </div>
         </div>
@@ -87,28 +94,34 @@ export default function Form() {
         {/* Form */}
         <div className='w-full md:ml-auto p-4 pt-0'>
           <p className='text-xl font-bold mb-4'>Thông tin đặt lịch khám</p>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit()}>
             <div className='flex flex-col gap-4'>
               {/* Hàng đầu tiên */}
               <div className='flex flex-col md:flex-row gap-4'>
                 <div className='flex-1'>
-                  <select id="khoa" className='w-full p-3 border rounded'>
-                    <option value="">Chọn khoa</option>
-                    {/* Thêm các option */}
-                  </select>
+                <SelectDepartment
+                    control={control}
+                    name="department"
+                    errors={errors}
+                  />
                 </div>
               </div>
 
               {/* Hàng thứ hai */}
               <div className='flex flex-col md:flex-row gap-4'>
                 <div className='flex-1'>
-                <select id="time" className='w-full p-3 border rounded'>
-                    <option value="">Chọn giờ khám</option>
-                    {/* Thêm các option */}
-                  </select>
+                <SelectTime
+                  control={control}
+                  name="time"
+                  errors={errors}
+                  />
                 </div>
                 <div className='flex-1'>
-                  <input type="date" id="ngay" className='w-full p-3 border rounded' />
+                <SelectDate
+                  control={control}
+                  name="date"
+                  errors={errors}
+                />
                 </div>
               </div>
 
@@ -163,16 +176,19 @@ export default function Form() {
                 <div className='flex flex-col md:flex-row gap-4 mb-4'>
                   <div className='flex-1'>
                     <label htmlFor="gioitinh" className='block mb-1'>Giới tính</label>
-                    <select id="gioitinh" className='w-full p-2 border rounded'>
-                      <option value="">Chọn giới tính</option>
-                      <option value="nam">Nam</option>
-                      <option value="nu">Nữ</option>
-                      <option value="khac">Khác</option>
-                    </select>
+                    <SelectGender
+                      control={control}
+                      name="gender"
+                      errors={errors}
+                    />
                   </div>
                   <div className='flex-1'>
                     <label htmlFor="ngaysinh" className='block mb-1'>Ngày sinh</label>
-                    <input type="date" id="ngaysinh" className='w-full p-2 border rounded' />
+                    <SelectBirthDate
+                      control={control}
+                      name="birthDate"
+                      errors={errors}
+                  />
                   </div>
                 </div>
 
@@ -257,7 +273,7 @@ export default function Form() {
                 <Button size="lg" variant="outline">
                   Trở lại
                 </Button>
-                <button className='h-10 rounded-md px-8 bg-primary-500 text-white  rounded-md hover:bg-primary-600 '>
+                <button className='h-10 px-8 bg-primary-500 text-white  rounded-md hover:bg-primary-600 '>
                   Tiếp tục
                 </button>
               </div>
