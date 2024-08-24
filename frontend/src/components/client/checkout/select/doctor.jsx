@@ -61,12 +61,12 @@ export default function SelectDoctor({ control, name, errors }) {
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className={cn("w-full justify-between py-5", 
+                                className={cn("w-full justify-between py-[21px]", 
                                 errors[name] && "border-red-500")}
                             >
                                 {field.value
                                     ? doctors.find((doctor) => doctor.value === field.value)?.name
-                                    : "Chọn bác sĩ"}
+                                    : <span className='text-gray-600'>Chọn bác sĩ</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>

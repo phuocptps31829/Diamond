@@ -70,12 +70,12 @@ const rooms = [
                           variant="outline"
                           role="combobox"
                           aria-expanded={open}
-                          className={cn("w-full justify-between py-5", 
+                          className={cn("w-full justify-between py-[21px]", 
                           errors[name] && "border-red-500")}
                       >
                           {field.value
                               ? rooms.find((room) => room.value === field.value)?.name
-                              : "Chọn phòng khám"}
+                              : <span className='text-gray-600'>Chọn phòng khám</span>}
                           <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                       </Button>
                   </PopoverTrigger>

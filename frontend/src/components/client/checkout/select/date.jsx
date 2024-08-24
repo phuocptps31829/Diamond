@@ -29,7 +29,7 @@ export default function SelectDate({ control, name, errors }) {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-full justify-start text-left font-normal py-6",
+                  "w-full justify-start text-left font-normal py-[21px]",
                   !field.value && "text-muted-foreground",
                   errors[name] && "border-red-500"
                 )}

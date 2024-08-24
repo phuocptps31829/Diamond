@@ -247,7 +247,7 @@ export default function Form() {
                   <div className='flex-1'>
                     <label htmlFor="nation" className='block mb-1'>Quốc tịch:</label>
                     <InputCustom
-                      className="col-span-1 sm:col-span-1"
+                      className="col-span-1 sm:col-span-1 "
                       placeholder="Nhập quốc tịch của bạn"
                       name="nation"
                       type="text"

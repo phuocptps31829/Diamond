@@ -30,17 +30,20 @@ export default function SelectBirthDate({ control, name, errors }) {
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-full justify-start text-left font-normal py-6",
+                  "w-full justify-start text-left font-normal py-[21px]",
                   !field.value && "text-muted-foreground",
                   errors[name] && ""
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {field.value ? format(new Date(field.value), "PPP") : <span>Chọn ngày sinh</span>}
+                <CalendarIcon className="mr-2 h-4 w-4 
+                
+                " />
+                {field.value ? format(new Date(field.value), "PPP") : <span className='text-gray-600'>Chọn ngày sinh</span>}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
+            <PopoverContent className="w-auto p-0 ">
               <Calendar
+              
                 mode="single"
                 selected={field.value ? new Date(field.value) : null}
                 onSelect={(selectedDate) => {

@@ -60,7 +60,7 @@ function InputCustom({
             placeholder={placeholder}
             min={min}
             max={max}
-            className={`h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${
+            className={`placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${
               icon ? "pl-10" : "pl-5"
             }`}
           />
