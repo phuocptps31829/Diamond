@@ -38,7 +38,7 @@ export default function SelectBirthDate({ control, name, errors }) {
                 <CalendarIcon className="mr-2 h-4 w-4 
                 
                 " />
-                {field.value ? format(new Date(field.value), "PPP") : <span className='text-gray-600'>Chọn ngày sinh</span>}
+                {field.value ? format(new Date(field.value), "PPP") : <span className='text-[#838A94]'>Chọn ngày sinh</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 ">

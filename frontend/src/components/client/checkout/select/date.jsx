@@ -35,7 +35,7 @@ export default function SelectDate({ control, name, errors }) {
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
-                {field.value ? format(new Date(field.value), "PPP") : <span>Chọn ngày khám</span>}
+                {field.value ? format(new Date(field.value), "PPP") : <span className='text-[#838A94]'>Chọn ngày khám</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">

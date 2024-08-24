@@ -47,7 +47,7 @@ export default function SelectDepartment({ control, name, errors }) {
                             >
                                 {field.value
                                     ? departments.find((department) => department.value === field.value)?.label
-                                    :<span className='text-gray-600'>Chọn khoa</span>}
+                                    :<span className='text-[#838A94]'>Chọn khoa</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>

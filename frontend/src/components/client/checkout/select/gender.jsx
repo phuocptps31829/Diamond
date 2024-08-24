@@ -53,7 +53,7 @@ export default function SelectGender({ control, name, errors }) {
                             >
                                 {field.value
                                     ? genders.find((gender) => gender.value === field.value)?.name
-                                    : <span className='text-gray-600'>Chọn giới tính</span>}
+                                    : <span className='text-[#838A94]'>Chọn giới tính</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50 " />
                             </Button>
                         </PopoverTrigger>
