@@ -45,4 +45,20 @@ export const bookingSchema = z.object({
   address: z
     .string()
     .min(1, "Địa chỉ không được để trống!"),
+
+  department: z
+    .string().min(1, "Khoa khám không được để trống!"),
+
+  doctor: z
+    .string().min(1, "Bác sĩ không được để trống!"),
+
+  time: z
+    .string().min(1, "Thời gian khám không được để trống!"),
+
+  room: z
+    .string().min(1, "Phòng khám không được để trống!"),
+
+  date: z
+    .string().min(1, "Ngày khám không được để trống!")
+
 });
