@@ -83,7 +83,7 @@ function InputCustom({
           )}
         </div>
         {error && (
-          <small className="mt-2 text-sm text-red-400 block">
+          <small className="mt-1 text-sm text-red-500 block">
             {error.message}
           </small>
         )}
