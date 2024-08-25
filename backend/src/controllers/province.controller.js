@@ -42,7 +42,7 @@ const getDistrictsByProvinceId = async (req, res, next) => {
             page: 1,
             message: 'Districts retrieved successfully.',
             data: districts[0].districts,
-            totalRecords: districts.length
+            totalRecords: districts[0].districts.length
         });
     } catch (error) {
         next(error);
@@ -64,11 +64,12 @@ const getWardsByDistrictId = async (req, res, next) => {
                     }
                 },
                 {
-                    "$unwind": "$districts.wards"
+                    "$unwind": "$districts.wards",
                 },
                 {
                     "$project": {
-                        "wards": "$districts.wards"
+                        "_id": "$districts.wards._id",
+                        "name": "$districts.wards.name",
                     }
                 }
             ]);
