@@ -8,12 +8,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectDoctor from './select/doctor';
 import SelectTime from './select/time';
-import SelectRoom from './select/room';
 import SelectDepartment from './select/department';
 import SelectDate from './select/date';
 import SelectBirthDate from './select/birthday';
 import SelectGender from './select/gender';
 import SelectEthnic from './select/ethnicity';
+import { SelectDistrict, SelectProvince, SelectWard } from './select/SelectLocation';
+import { useState } from 'react';
 const packages = [
   {
     title: "GÓI KHÁM TỔNG QUÁT NAM",
@@ -47,10 +48,13 @@ const packages = [
   }
 ];
 export default function Form() {
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue
   } = useForm({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -86,10 +90,10 @@ export default function Form() {
           </div>
 
           {/* Package List with Scroll */}
-          <div className='overflow-y-auto h-[340px] md:h-[750px]'>
+          <div className='overflow-y-auto h-[340px] md:h-[750px] scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 px-2'>
             {packages.map((pkg, index) => (
               <label key={index}>
-                <div className='px-4 py-3 border border-primary-500 rounded-lg relative mb-3'>
+                <div className='px-4 py-3 border border-primary-500 rounded-lg relative mb-3 '>
                   <Checkbox id={`checkbox-gt-${index}`} className="absolute top-1/2 right-5" />
                   <div className='flex mb-2'>
                     <img
@@ -149,16 +153,7 @@ export default function Form() {
                    errors={errors}
                   />
                 </div>
-                {/* Select room */}
-                <div className='flex-1'>
-                  <SelectRoom
-                   control={control}
-                   name="room"
-                   errors={errors}
-                  />
-                </div>
-              </div>
-
+               
               {/* Date */}
               <div className='flex-1'>
                 <SelectDate
@@ -167,6 +162,8 @@ export default function Form() {
                 errors={errors}
                 />
               </div>
+              </div>
+
 
               {/* Thông tin người khám */}
               <p className='text-xl font-bold mt-2'>Thông tin người khám</p>
@@ -282,7 +279,38 @@ export default function Form() {
                     />
                   </div>
                 </div>
-
+                <div className="mb-4 flex flex-col items-center justify-between gap-2 md:flex-row">
+                  <div className="w-full flex-1 md:w-[180px]">
+                    <SelectProvince
+                      control={control}
+                      name="province"
+                      errors={errors}
+                      onProvinceChange={(provinceId) => {
+                        setSelectedProvinceId(provinceId);
+                        setSelectedDistrictId(null);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full flex-1 md:w-[190px]">
+                    <SelectDistrict
+                      control={control}
+                      name="district"
+                      errors={errors}
+                      provinceId={selectedProvinceId}
+                      onDistrictChange={setSelectedDistrictId}
+                      setValue={setValue}
+                    />
+                  </div>
+                  <div className="w-full flex-1 md:w-[180px]">
+                    <SelectWard
+                      control={control}
+                      name="ward"
+                      errors={errors}
+                      setValue={setValue}
+                      districtId={selectedDistrictId}
+                    />
+                  </div>
+                </div>
                 {/* Hàng 5 */}
                 <div className='mb-4'>
                   <label htmlFor="address" className='block mb-1'>Địa chỉ:</label>

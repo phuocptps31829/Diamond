@@ -16,21 +16,13 @@ export const bookingSchema = z.object({
     .min(10, "Số điện thoại phải có ít nhất 10 ký tự")
     .regex(/^\d+$/, "Số điện thoại chỉ được chứa các chữ số"),
 
-  gender: z
-    .string()
-    .min(1, "Giới tính không được để trống!"),
+  gender: z.string().min(1, "Giới tính không được để trống!"),
 
-  birthDate: z
-    .string()
-    .min(1, "Ngày sinh không được để trống!"),
+  birthDate: z.string().min(1, "Ngày sinh không được để trống!"),
 
-  job: z
-    .string()
-    .min(1, "Nghề nghiệp không được để trống!"),
+  job: z.string().min(1, "Nghề nghiệp không được để trống!"),
 
-  ethnicity: z
-    .string()
-    .min(1, "Dân tộc không được để trống!"),
+  ethnicity: z.string().min(1, "Dân tộc không được để trống!"),
 
   cccd: z
     .string()
@@ -42,23 +34,17 @@ export const bookingSchema = z.object({
     .min(1, "Số BHYT không được để trống!")
     .regex(/^\d+$/, "Số BHYT chỉ được chứa các chữ số"),
 
-  address: z
-    .string()
-    .min(1, "Địa chỉ không được để trống!"),
+  address: z.string().min(1, "Địa chỉ không được để trống!"),
 
-  department: z
-    .string().min(1, "Khoa khám không được để trống!"),
+  department: z.string().min(1, "Khoa khám không được để trống!"),
 
-  doctor: z
-    .string().min(1, "Bác sĩ không được để trống!"),
+  doctor: z.string().min(1, "Bác sĩ không được để trống!"),
 
-  time: z
-    .string().min(1, "Thời gian khám không được để trống!"),
+  time: z.string().min(1, "Thời gian khám không được để trống!"),
 
-  room: z
-    .string().min(1, "Phòng khám không được để trống!"),
-
-  date: z
-    .string().min(1, "Ngày khám không được để trống!")
+  date: z.string().min(1, "Ngày khám không được để trống!"),
+  province: z.union([z.string().min(1, "Không được để trống!"), z.number()]),
+  district: z.union([z.string().min(1, "Không được để trống!"), z.number(), z.null()]),
+  ward: z.union([z.string().min(1, "Không được để trống!"), z.number(), z.null()]),
 
 });

@@ -1,42 +1,60 @@
-import { Button } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
+import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { FaSearch } from "react-icons/fa";
-import { Input } from '@/components/ui/Input';
+import { Input } from "@/components/ui/Input";
 import InputCustom from "@/components/ui/InputCustom";
 import { bookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SelectTime from './select/time';
-import SelectDepartment from './select/department';
-import SelectDate from './select/date';
-import SelectBirthDate from './select/birthday';
-import SelectGender from './select/gender';
-import SelectEthnic from './select/ethnicity';
+import SelectTime from "./select/time";
+import SelectDepartment from "./select/department";
+import SelectDate from "./select/date";
+import SelectBirthDate from "./select/birthday";
+import SelectGender from "./select/gender";
+import SelectEthnic from "./select/ethnicity";
+import { useState } from "react";
+import {
+  SelectDistrict,
+  SelectProvince,
+  SelectWard,
+} from "./select/SelectLocation";
+
 const services = [
   {
-    title: 'Điện tim thường'
+    title: "Điện tim thường",
   },
   {
-    title: 'Siêu âm tuyến giáp'
+    title: "Siêu âm tuyến giáp",
   },
   {
-    title: 'Lấy dị vật tai'
+    title: "Lấy dị vật tai",
   },
   {
-    title: 'Khâu vết rách vành tai'
+    title: "Khâu vết rách vành tai",
   },
   {
-    title: 'Khám tổng quát'
+    title: "Khám tổng quát",
   },
   {
-    title: 'Kiểm tra huyết áp'
-  }
+    title: "Kiểm tra huyết áp",
+  },
+  {
+    title: "Kiểm tra huyết áp",
+  },  {
+    title: "Kiểm tra huyết áp",
+  },  {
+    title: "Kiểm tra huyết áp",
+  },
 ];
+
 export default function Form() {
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
@@ -52,55 +70,62 @@ export default function Form() {
       doctor: "",
       time: "",
       room: "",
-      date:"",
-      birthDate:"",
-      gender:"",
+      date: "",
+      birthDate: "",
+      gender: "",
+      province: "",
+      district: "",
+      ward: "",
     },
   });
   return (
-    <div className='mx-auto mt-5 max-w-screen-xl px-0 py-3 md:px-5 md:py-5 md:mt-10 '>
-
-      <div className='container mx-auto flex flex-col md:flex-row gap-5 px-5 py-5 border shadow-gray rounded-md'>
+    <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
+      <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
         {/* Select Services */}
-        <div className='flex flex-col gap-[20px] w-full px-2'>
-          <div className='flex justify-between'>
-            <p className='font-semibold'>Chọn dịch vụ</p>
-            <p className='font-light'>Đã chọn 1 dịch vụ</p>
+        <div className="flex w-full flex-col gap-[20px] px-2">
+          <div className="flex justify-between">
+            <p className="font-semibold">Chọn dịch vụ</p>
+            <p className="font-light">Đã chọn 1 dịch vụ</p>
           </div>
           <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500" />
             <Input className="pl-10" placeholder="Tìm kiếm dịch vụ..." />
           </div>
 
           {/* Services List */}
-          <div className='overflow-y-auto h-[185px] sm:h-[215px] md:h-[680px]'>
+          <div className="h-[185px] overflow-y-auto sm:h-[215px] md:h-[680px] scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 px-2">
             {services.map((svc, index) => (
               <label key={index}>
-              <div className='px-3 py-2 md:py-3 mb-1 border border-primary-500 rounded-lg relative flex items-center'>
-                <div className='flex items-center gap-4'>
-                  <img
-                    src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
-                    className='md:w-[100px] sm:w-[75px] w-[60px]'
-                    alt={`Image of ${svc.title}`}
+                <div className="relative mb-1 flex items-center rounded-lg border border-primary-500 px-3 py-2 md:py-3">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                      className="w-[60px] sm:w-[75px] md:w-[100px]"
+                      alt={`Image of ${svc.title}`}
+                    />
+                    <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
+                      {svc.title}
+                    </p>
+                  </div>
+                  <Checkbox
+                    id={`checkbox-svc-${index}`}
+                    className="absolute right-5 top-1/2 -translate-y-1/2 transform"
                   />
-                  <p className='font-bold text-[13px] sm:text-[16px] md:text-[18px]'>{svc.title}</p>
                 </div>
-                <Checkbox id={`checkbox-svc-${index}`} className="absolute right-5 top-1/2 transform -translate-y-1/2" />
-              </div>
               </label>
             ))}
           </div>
         </div>
 
         {/* Form */}
-        <div className='w-full md:ml-auto p-4 pt-0'>
-          <p className='text-xl font-bold mb-4'>Thông tin đặt lịch khám</p>
+        <div className="w-full p-4 pt-0 md:ml-auto">
+          <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
           <form onSubmit={handleSubmit()}>
-            <div className='flex flex-col gap-4'>
+            <div className="flex flex-col gap-4">
               {/* Hàng đầu tiên */}
-              <div className='flex flex-col md:flex-row gap-4'>
-                <div className='flex-1'>
-                <SelectDepartment
+              <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex-1">
+                  <SelectDepartment
                     control={control}
                     name="department"
                     errors={errors}
@@ -109,29 +134,23 @@ export default function Form() {
               </div>
 
               {/* Hàng thứ hai */}
-              <div className='flex flex-col md:flex-row gap-4'>
-                <div className='flex-1'>
-                <SelectTime
-                  control={control}
-                  name="time"
-                  errors={errors}
-                  />
+              <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex-1">
+                  <SelectTime control={control} name="time" errors={errors} />
                 </div>
-                <div className='flex-1'>
-                <SelectDate
-                  control={control}
-                  name="date"
-                  errors={errors}
-                />
+                <div className="flex-1">
+                  <SelectDate control={control} name="date" errors={errors} />
                 </div>
               </div>
 
               {/* Thông tin người khám */}
-              <p className='text-xl font-bold mt-2'>Thông tin người khám</p>
-              <div className='bg-gray-500/30 px-5 py-6 pt-2 rounded-md'>
+              <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
+              <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
                 {/* Hàng 1 */}
-                <div className='mb-4'>
-                  <label htmlFor="hoten" className='block mb-1'>Họ và tên:</label>
+                <div className="mb-4">
+                  <label htmlFor="hoten" className="mb-1 block">
+                    Họ và tên:
+                  </label>
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Nhập tên của bạn"
@@ -142,116 +161,162 @@ export default function Form() {
                     errors={errors}
                   />
                 </div>
-
                 {/* Hàng 2 */}
-                <div className='flex flex-col md:flex-row gap-4 mb-4'>
-                  <div className='flex-1'>
-                    <label htmlFor="email" className='block mb-1'>Email:</label>
+                <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1">
+                    <label htmlFor="email" className="mb-1 block">
+                      Email:
+                    </label>
                     {/* <input type="email" id="email" className='w-full p-2 border rounded' /> */}
                     <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập email của bạn"
-                    name="email"
-                    type="text"
-                    id="email"
-                    control={control}
-                    errors={errors}
-                  />
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nhập email của bạn"
+                      name="email"
+                      type="text"
+                      id="email"
+                      control={control}
+                      errors={errors}
+                    />
                   </div>
-                  <div className='flex-1'>
-                    <label htmlFor="sdt" className='block mb-1'>Số điện thoại</label>
+                  <div className="flex-1">
+                    <label htmlFor="sdt" className="mb-1 block">
+                      Số điện thoại
+                    </label>
                     {/* <input type="tel" id="sdt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập số điện thoại"
-                    name="phoneNumber"
-                    type="text"
-                    id="phoneNumber"
-                    control={control}
-                    errors={errors}
-                  />
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nhập số điện thoại"
+                      name="phoneNumber"
+                      type="text"
+                      id="phoneNumber"
+                      control={control}
+                      errors={errors}
+                    />
                   </div>
                 </div>
-
                 {/* Hàng 3 */}
-                <div className='flex flex-col md:flex-row gap-4 mb-4'>
-                  <div className='flex-1'>
-                    <label htmlFor="gioitinh" className='block mb-1'>Giới tính</label>
+                <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1">
+                    <label htmlFor="gioitinh" className="mb-1 block">
+                      Giới tính
+                    </label>
                     <SelectGender
                       control={control}
                       name="gender"
                       errors={errors}
                     />
                   </div>
-                  <div className='flex-1'>
-                    <label htmlFor="ngaysinh" className='block mb-1'>Ngày sinh</label>
+                  <div className="flex-1">
+                    <label htmlFor="ngaysinh" className="mb-1 block">
+                      Ngày sinh
+                    </label>
                     <SelectBirthDate
                       control={control}
                       name="birthDate"
                       errors={errors}
-                  />
+                    />
                   </div>
                 </div>
-
                 {/* Hàng 4 */}
-                <div className='flex flex-col md:flex-row gap-4 mb-4'>
-                  <div className='flex-1'>
-                    <label htmlFor="nghenghiep" className='block mb-1'>Nghề nghiệp:</label>
+                <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1">
+                    <label htmlFor="nghenghiep" className="mb-1 block">
+                      Nghề nghiệp:
+                    </label>
                     {/* <input type="text" id="nghenghiep" className='w-full p-2 border rounded' /> */}
                     <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nghề nghiệp"
-                    name="job"
-                    type="text"
-                    id="job"
-                    control={control}
-                    errors={errors}
-                  />
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nghề nghiệp"
+                      name="job"
+                      type="text"
+                      id="job"
+                      control={control}
+                      errors={errors}
+                    />
                   </div>
-                  <div className='flex-1'>
-                    <label htmlFor="dantoc" className='block mb-2'>Dân tộc</label>
+                  <div className="flex-1">
+                    <label htmlFor="dantoc" className="mb-2 block">
+                      Dân tộc
+                    </label>
                     {/* <input type="text" id="dantoc" className='w-full p-2 border rounded' /> */}
                     <SelectEthnic
-                        control={control}
-                        name="ethnicity"
-                        errors={errors}
-                      />
+                      control={control}
+                      name="ethnicity"
+                      errors={errors}
+                    />
                   </div>
                 </div>
-
                 {/* Hàng 5 */}
-                <div className='flex flex-col md:flex-row gap-4 mb-4'>
-                  <div className='flex-1'>
-                    <label htmlFor="so-cccd" className='block mb-1'>Số CCCD</label>
+                <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                  <div className="flex-1">
+                    <label htmlFor="so-cccd" className="mb-1 block">
+                      Số CCCD
+                    </label>
                     {/* <input type="text" id="so-cccd" className='w-full p-2 border rounded' /> */}
                     <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập số CCCD"
-                    name="cccd"
-                    type="text"
-                    id="cccd"
-                    control={control}
-                    errors={errors}
-                  />
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nhập số CCCD"
+                      name="cccd"
+                      type="text"
+                      id="cccd"
+                      control={control}
+                      errors={errors}
+                    />
                   </div>
-                  <div className='flex-1'>
-                    <label htmlFor="so-bhyt" className='block mb-1'>Số BHYT</label>
+                  <div className="flex-1">
+                    <label htmlFor="so-bhyt" className="mb-1 block">
+                      Số BHYT
+                    </label>
                     {/* <input type="text" id="so-bhyt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập số BHYT"
-                    name="bhyt"
-                    type="text"
-                    id="bhyt"
-                    control={control}
-                    errors={errors}
-                  />
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nhập số BHYT"
+                      name="bhyt"
+                      type="text"
+                      id="bhyt"
+                      control={control}
+                      errors={errors}
+                    />
+                  </div>
+                </div>
+                <div className="mb-4 flex flex-col items-center justify-between gap-2 md:flex-row">
+                  <div className="w-full flex-1 md:w-[180px]">
+                    <SelectProvince
+                      control={control}
+                      name="province"
+                      errors={errors}
+                      onProvinceChange={(provinceId) => {
+                        setSelectedProvinceId(provinceId);
+                        setSelectedDistrictId(null);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full flex-1 md:w-[190px]">
+                    <SelectDistrict
+                      control={control}
+                      name="district"
+                      errors={errors}
+                      provinceId={selectedProvinceId}
+                      onDistrictChange={setSelectedDistrictId}
+                      setValue={setValue}
+                    />
+                  </div>
+                  <div className="w-full flex-1 md:w-[180px]">
+                    <SelectWard
+                      control={control}
+                      name="ward"
+                      errors={errors}
+                      setValue={setValue}
+                      districtId={selectedDistrictId}
+                    />
                   </div>
                 </div>
 
                 {/* Hàng 6 */}
-                <div className='mb-2'>
-                  <label htmlFor="diachi" className='block mb-1'>Địa chỉ</label>
+                <div className="mb-2">
+                  <label htmlFor="diachi" className="mb-1 block">
+                    Địa chỉ
+                  </label>
                   {/* <input type="text" id="diachi" className='w-full p-2 border rounded' /> */}
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
@@ -266,11 +331,11 @@ export default function Form() {
               </div>
 
               {/* Nút tiếp tục */}
-              <div className='mt-3 flex justify-end gap-3'>
+              <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
                   Trở lại
                 </Button>
-                <button className='h-10 px-8 bg-primary-500 text-white  rounded-md hover:bg-primary-600 '>
+                <button className="h-10 rounded-md bg-primary-500 px-8 text-white hover:bg-primary-600">
                   Tiếp tục
                 </button>
               </div>

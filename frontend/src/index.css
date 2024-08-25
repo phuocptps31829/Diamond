@@ -67,6 +67,20 @@
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrollbar-thumb-primary-500::-webkit-scrollbar-thumb {
+    background-color: theme('colors.primary.500');
+    border-radius: 3px;
+  }
+
+  .scrollbar-track-gray-200::-webkit-scrollbar-track {
+    background-color: theme('colors.gray.200');
+  }
+}
 * {
   font-family: "Be Vietnam Pro", sans-serif;
   font-weight: 500;
@@ -399,4 +413,8 @@
 }
 .render-details {
   line-height: 2;
+}
+.popover-content-width-same-as-its-trigger {
+  width: var(--radix-popover-trigger-width);
+  max-height: var(--radix-popover-content-available-height);
 }

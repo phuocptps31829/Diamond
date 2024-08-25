@@ -28,7 +28,7 @@ export default function SelectDepartment({ control, name, errors }) {
     const [open, setOpen] = React.useState(false);
     
     return (
-        <div>
+        <div className=''>
             <Controller
                 control={control}
                 name={name}
@@ -51,7 +51,7 @@ export default function SelectDepartment({ control, name, errors }) {
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0 ">
+                        <PopoverContent className="p-0 popover-content-width-same-as-its-trigger">
                             <Command>
                                 <CommandInput placeholder="Nhập tên khoa" />
                                 <CommandList className=''>
