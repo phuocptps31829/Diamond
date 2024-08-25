@@ -268,12 +268,28 @@ router.post(
     authController.refreshToken
 );
 
+/**
+ * @openapi
+ * '/api/v1/auth/logout':
+ *  post:
+ *     tags:
+ *     - Auth Routes
+ *     summary: Logout user
+ *     responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
 router.post(
     '/logout',
     authMiddleware.verifyAccessToken,
     authMiddleware.verifyRefreshToken,
     authController.logout
 );
-
 
 module.exports = router;
