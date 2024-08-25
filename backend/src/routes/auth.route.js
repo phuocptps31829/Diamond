@@ -149,7 +149,6 @@ router.post(
 
 /**
  * @openapi
-<<<<<<< HEAD
  * '/api/v1/auth/logout':
  *  post:
  *     tags:
@@ -174,8 +173,6 @@ router.post(
 
 /**
  * @openapi
-=======
->>>>>>> 6ca4a9e698fd347db0a708bd1ff47b81cda34bc5
  * '/api/v1/auth/forgot-password/send-otp/{phone}':
  *   post:
  *     tags:
@@ -294,16 +291,5 @@ router.post(
     authMiddleware.verifyRefreshToken,
     authController.refreshToken
 );
-
-<<<<<<< HEAD
-=======
-router.post(
-    '/logout',
-    authMiddleware.verifyAccessToken,
-    authMiddleware.verifyRefreshToken,
-    authController.logout
-);
-
->>>>>>> 6ca4a9e698fd347db0a708bd1ff47b81cda34bc5
 
 module.exports = router;
