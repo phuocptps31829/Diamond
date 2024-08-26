@@ -2,7 +2,8 @@ const { checkSchema } = require('express-validator');
 const { checkIsExistID } = require('../utils/database.util');
 
 const patientModel = require('../models/patient.model');
-const doctorModel = require('../models/patient.model');
+const doctorModel = require('../models/doctor.model');
+const clinicModel = require('../models/clinic.model');
 
 const appointmentValidator = checkSchema({
     patientID: {
@@ -16,12 +17,9 @@ const appointmentValidator = checkSchema({
         }
     },
     clinicID: {
-        exists: {
-            errorMessage: 'Clinic ID is required'
+        customSanitizer: {
+            options: (id) => checkIsExistID(clinicModel, id),
         },
-        isMongoId: {
-            errorMessage: 'Invalid Clinic ID'
-        }
     },
     serviceID: {
         optional: true,
@@ -63,7 +61,7 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Status is not valid'
         }
     },
-    isService: {
+    isHelp: {
         exists: {
             errorMessage: 'Appointment or Service?'
         },

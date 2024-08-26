@@ -37,7 +37,7 @@ const getDistrictsByProvinceId = async (req, res, next) => {
         if (!districts.length) {
             createError(404, "No districts found.");
         }
-
+        console.log(districts[0].districts.length);
         return res.status(200).json({
             page: 1,
             message: 'Districts retrieved successfully.',

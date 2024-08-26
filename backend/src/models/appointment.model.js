@@ -31,8 +31,8 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isService: {
-        type: Boolean,
+    isHelp: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Appointment',
         required: true
     },
     paymentMethod: {
