@@ -31,7 +31,7 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isService: {
+    isHelp: {
         type: Boolean,
         required: true
     },

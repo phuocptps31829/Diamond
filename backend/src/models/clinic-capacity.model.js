@@ -11,11 +11,13 @@ const clinicCapacitySchema = new mongoose.Schema({
         ref: 'Clinic',
         required: true
     },
-    appointmentIDs: {
-        type: Array,
-        trim: true,
-        required: true
-    },
+    appointments: [{
+        appointmentID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Clinic',
+            required: true,
+        }
+    }],
     isDeleted: {
         type: Boolean,
         default: false

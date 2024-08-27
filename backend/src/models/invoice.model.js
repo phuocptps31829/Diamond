@@ -23,6 +23,10 @@ const invoiceSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    arisePrice: {
+        type: Number,
+        required: false
+    },
     isDeleted: {
         type: Boolean,
         default: false
