@@ -1,19 +1,11 @@
 const { checkSchema } = require("express-validator");
-const { checkIsExistID } = require('../utils/database.util');
-
-const PatientModel = require('../models/patient.model');
-const PrescriptionModel = require('../models/prescription.model');
 
 const invoiceValidator = checkSchema({
-    patientID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(PatientModel, id),
-        }
-    },
     prescriptionID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(PrescriptionModel, id),
-        }
+        optional: true,
+        isMongoId: {
+            errorMessage: "Invalid prescriptionID",
+        },
     },
     appointmentID: {
         optional: true,

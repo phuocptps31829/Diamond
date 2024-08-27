@@ -300,7 +300,6 @@ const momoPaymentCallback = async (req, res, next) => {
         });
 
         const newInvoice = await InvoiceModel.create({
-            patientID: appointmentData.patientID,
             appointmentID: newAppointment._id,
             price: +amount,
         });
