@@ -9,21 +9,26 @@ const workScheduleValidator = checkSchema({
             options: (id) => checkIsExistID(DoctorModel, id),
         }
     },
-    detail: {
+    day: {
+        optional: true,
+        isISO8601: {
+            errorMessage: "Invalid day time format",
+        },
+    },
+    'details.*.clinicID': {
         exists: {
-            errorMessage: "Detail is required",
+            errorMessage: 'Clinic ID is required'
         },
-        isObject: {
-            errorMessage: "Detail should be an object",
-        },
-        customSanitizer: {
-            options: (value) => {
-                if (!value.day || !value.hour) {
-                    throw new Error("Detail should have day and hour");
-                }
-                return true;
-            },
-        },
+        isMongoId: {
+            errorMessage: 'Invalid clinic ID'
+        }
+    },
+    'details.*.hour': {
+        optional: true,
+        matches: {
+            options: [/^([01]\d|2[0-3]):([0-5]\d)-([01]\d|2[0-3]):([0-5]\d)$/],
+            errorMessage: "Invalid time format. The correct format is HH:mm-HH:mm."
+        }
     },
 });
 

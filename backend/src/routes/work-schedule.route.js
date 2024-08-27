@@ -2,17 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 
-const serviceController = require('../controllers/service.controller');
+const workScheduleController = require('../controllers/work-schedule.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
-const serviceValidator = require('../validations/service.validation');
+const workScheduleValidator = require('../validations/work-schedule.validation');
 
 /**
  * @openapi
- * '/api/v1/services':
+ * '/api/v1/work-schedules/':
  *  get:
  *    tags:
- *    - Service Routes
- *    summary: Get all services
+ *    - Work schedule Routes
+ *    summary: Get all work schedules
  *    parameters:
  *      - in: query
  *        name: page
@@ -59,51 +59,23 @@ const serviceValidator = require('../validations/service.validation');
 */
 router.get(
     '/',
-    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    serviceController.getAllServices
+    workScheduleController.getAllWorkSchedule
 );
+
 
 /**
  * @openapi
- * '/api/v1/services/{id}':
+ * '/api/v1/work-schedules/doctor/{id}':
  *  get:
  *    tags:
- *    - Service Routes
- *    summary: Get service by id
+ *    - Work schedule Routes
+ *    summary: Get WorkSchedule by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Service id
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        $ref: '#/components/responses/200'
- *      '404':
- *        $ref: '#/components/responses/404'
- *      '500':
- *        $ref: '#/components/responses/500'
-*/
-router.get(
-    '/:id',
-    helperMiddleware.checkValidId,
-    serviceController.getServiceById
-);
-
-/**
- * @openapi
- * '/api/v1/services/specialty/{id}':
- *  get:
- *    tags:
- *    - Service Routes
- *    summary: Get service by specialty id
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        description: Service id
+ *        description: Doctor id
  *        schema:
  *          type: string
  *      - in: query
@@ -118,6 +90,13 @@ router.get(
  *        name: sort
  *        schema:
  *          type: string
+ *      - in: query
+ *        name: gender
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -127,19 +106,47 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/specialty/:id',
+    '/doctor/:id',
     helperMiddleware.checkValidId,
     helperMiddleware.checkQueryParams,
-    serviceController.getAllServicesBySpecialtyId
+    workScheduleController.getAllWorkScheduleWithDoctor
 );
 
 /**
  * @openapi
- * '/api/v1/services/add':
+ * '/api/v1/work-schedules/{id}':
+ *  get:
+ *    tags:
+ *    - Work schedule Routes
+ *    summary: Get workSchedule by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: workSchedule id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/:id',
+    helperMiddleware.checkValidId,
+    workScheduleController.getWorkScheduleById
+);
+
+/**
+ * @openapi
+ * '/api/v1/work-schedules/add':
  *  post:
  *    tags:
- *    - Service Routes
- *    summary: Add a new service
+ *    - Work schedule Routes
+ *    summary: Add a new workSchedule
  *    requestBody:
  *      required: true
  *      content:
@@ -147,28 +154,23 @@ router.get(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyID
- *              - name
- *              - images
- *              - price
- *              - discountPrice
- *              - shortDescription
+ *              - doctorID
+ *              - day
  *              - details
  *            properties:
- *              specialtyID:
+ *              doctorID:
  *                type: string
- *              name:
- *                type: string
- *              images:
- *                type: string
- *              price:
- *                type: number
- *              discountPrice:
- *                type: number
- *              shortDescription:
+ *              day:
  *                type: string
  *              details:
- *                type: string
+ *                type: array
+ *                items: 
+ *                  type: object
+ *                  properties: 
+ *                    clinicID: 
+ *                      type: string
+ *                    hour: 
+ *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -183,22 +185,22 @@ router.get(
 */
 router.post(
     '/add',
-    serviceValidator.serviceValidator,
-    serviceController.createService
+    workScheduleValidator.workScheduleValidator,
+    workScheduleController.createWorkSchedule
 );
 
 /**
  * @openapi
- * '/api/v1/services/update/{id}':
+ * '/api/v1/work-schedules/update/{id}':
  *  put:
  *    tags:
- *    - Service Routes
- *    summary: Update service by id
+ *    - Work schedule Routes
+ *    summary: Update workSchedule by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Service id
+ *        description: WorkSchedule id
  *        schema:
  *          type: string
  *    requestBody:
@@ -208,28 +210,23 @@ router.post(
  *          schema:
  *            type: object
  *            required:
- *              - specialtyID
- *              - name
- *              - images
- *              - price
- *              - discountPrice
- *              - shortDescription
+ *              - doctorID
+ *              - day
  *              - details
  *            properties:
- *              specialtyID:
+ *              doctorID:
  *                type: string
- *              name:
- *                type: string
- *              images:
- *                type: string
- *              price:
- *                type: number
- *              discountPrice:
- *                type: number
- *              shortDescription:
+ *              day:
  *                type: string
  *              details:
- *                type: string
+ *                type: array
+ *                items: 
+ *                  type: object
+ *                  properties: 
+ *                    clinicID: 
+ *                      type: string
+ *                    hour: 
+ *                      type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -245,22 +242,22 @@ router.post(
 router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
-    serviceValidator.serviceValidator,
-    serviceController.updateService
+    workScheduleValidator.workScheduleValidator,
+    workScheduleController.updateWorkSchedule
 );
 
 /**
  * @openapi
- * '/api/v1/services/delete/{id}':
+ * '/api/v1/work-schedules/delete/{id}':
  *  delete:
  *    tags:
- *    - Service Routes
- *    summary: Delete service by id
+ *    - Work schedule Routes
+ *    summary: Delete work schedule  by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: ID of the service to delete
+ *        description: ID of the work schedule to delete
  *        schema:
  *          type: string
  *    responses:
@@ -274,7 +271,7 @@ router.put(
 router.delete(
     '/delete/:id',
     helperMiddleware.checkValidId,
-    serviceController.deleteService
+    workScheduleController.deleteWorkSchedule
 );
 
 module.exports = router;
