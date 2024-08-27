@@ -27,12 +27,12 @@ const invoiceValidator = checkSchema({
             errorMessage: "Invalid Service ID",
         },
     },
-    totalPrice: {
+    price: {
         exists: {
-            errorMessage: "Total price is required",
+            errorMessage: "Price is required",
         },
         isNumeric: {
-            errorMessage: "Total price should be a number",
+            errorMessage: "Price should be a number",
         },
     },
 });

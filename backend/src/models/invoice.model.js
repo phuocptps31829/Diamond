@@ -17,11 +17,13 @@ const invoiceSchema = new mongoose.Schema({
     prescriptionID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Prescription',
-        required: true
     },
-    totalPrice: {
+    price: {
         type: Number,
         required: true
+    },
+    arisePrice: {
+        type: Number,
     },
     isDeleted: {
         type: Boolean,

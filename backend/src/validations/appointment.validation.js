@@ -69,24 +69,6 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Appointment or Service should be a boolean'
         }
     },
-    'paymentMethod.method': {
-        optional: true,
-        isString: {
-            errorMessage: 'Payment method should be a string'
-        }
-    },
-    'paymentMethod.token': {
-        optional: true,
-        isString: {
-            errorMessage: 'Payment token should be a string'
-        }
-    },
-    'paymentMethod.isPaid': {
-        optional: true,
-        isBoolean: {
-            errorMessage: 'Payment status should be a boolean'
-        }
-    },
 });
 
 module.exports = {

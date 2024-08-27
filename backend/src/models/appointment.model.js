@@ -33,13 +33,12 @@ const appointmentSchema = new mongoose.Schema({
     },
     isHelp: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Appointment',
-        required: true
     },
     paymentMethod: {
         method: {
             type: String,
         },
-        token: {
+        signature: {
             type: String,
         },
         isPaid: {
@@ -48,7 +47,7 @@ const appointmentSchema = new mongoose.Schema({
     },
     isDeleted: {
         type: Boolean,
-        required: true
+        default: false
     },
 }, {
     collection: 'Appointment',
