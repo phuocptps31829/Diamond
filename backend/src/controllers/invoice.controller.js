@@ -109,18 +109,17 @@ const zaloPayPayment = async (req, res, next) => {
         redirecturl: 'https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox'
     };
 
-    const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
     const order = {
         app_id: zaloPayConfig.app_id,
         app_trans_id: `${moment().format('YYMMDD')}_${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
         app_user: "user123",
         app_time: Date.now(), // miliseconds
-        item: JSON.stringify(items),
+        item: JSON.stringify(req.body),
         embed_data: JSON.stringify(embed_data),
         amount: 50000,
         description: `Lazada - Payment for the order #${transID}`,
-        bank_code: "zalopayapp",
+        bank_code: "",
         callback_url: 'https://82dc-2402-800-63a6-ea68-2994-7694-13e8-ebfa.ngrok-free.app/payment/zalopay-callback'
     };
 
@@ -192,7 +191,7 @@ const momoPayment = async (req, res, next) => {
     var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
     var ipnUrl = 'https://82dc-2402-800-63a6-ea68-2994-7694-13e8-ebfa.ngrok-free.app/api/v1/invoices/payment/momo/callback';
     var requestType = "captureWallet";
-    var amount = '50000';
+    var amount = +req.body.price;
     var orderId = partnerCode + new Date().getTime();
     var requestId = orderId;
     var extraData = JSON.stringify(req.body);
@@ -311,6 +310,176 @@ const momoPaymentCallback = async (req, res, next) => {
     }
 };
 
+const vnpayCF = {
+    "vnp_TmnCode": "D3YA7VY9",
+    "vnp_HashSecret": "EAORMTHRBZJXXRNELCEUSIEOCEMWKKHQ",
+    "vnp_Url": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
+    "vnp_Api": "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction",
+    "vnp_ReturnUrl": "https://3558-2402-800-63a6-ea68-2994-7694-13e8-ebfa.ngrok-free.app/api/v1/invoices/payment/vnpay_ipn"
+};
+
+const vnpayPayment = async (req, res, next) => {
+    process.env.TZ = 'Asia/Ho_Chi_Minh';
+
+    let date = new Date();
+    let createDate = moment(date).format('YYYYMMDDHHmmss');
+
+    let ipAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+    let tmnCode = vnpayCF.vnp_TmnCode;
+    let secretKey = vnpayCF.vnp_HashSecret;
+    let vnpUrl = vnpayCF.vnp_Url;
+    let returnUrl = vnpayCF.vnp_ReturnUrl;
+    let orderId = moment(date).format('DDHHmmss');
+    let amount = 10000;
+    let bankCode = "NCB";
+
+    // let locale = req.body.language;
+    // if (locale === null || locale === '') {
+    //     locale = 'vn';
+    // }
+
+    let currCode = 'VND';
+    let vnp_Params = {};
+    vnp_Params['vnp_Version'] = '2.1.0';
+    vnp_Params['vnp_Command'] = 'pay';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_Locale'] = 'vn';
+    vnp_Params['vnp_CurrCode'] = currCode;
+    vnp_Params['vnp_TxnRef'] = orderId;
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
+    vnp_Params['vnp_OrderType'] = 'other';
+    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    vnp_Params['vnp_IpAddr'] = ipAddr;
+    vnp_Params['vnp_CreateDate'] = createDate;
+    if (bankCode !== null && bankCode !== '') {
+        vnp_Params['vnp_BankCode'] = bankCode;
+    }
+
+    console.log('vnp1', vnp_Params);
+    vnp_Params = sortObject(vnp_Params);
+
+    let querystring = require('qs');
+    let signData = querystring.stringify(vnp_Params, { encode: false });
+    let crypto = require("crypto");
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+    vnp_Params['vnp_SecureHash'] = signed;
+    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+
+    try {
+        return res.status(200).json({
+            message: 'VNpay payment successfully',
+            data: vnpUrl
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const vnpayIPN = async (req, res, next) => {
+    var vnp_Params = req.query;
+    var secureHash = vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+    // vnp_Params['vnp_Command'] = 'pay';
+
+    vnp_Params = sortObject(vnp_Params);
+    var secretKey = vnpayCF.vnp_HashSecret;
+    var querystring = require('qs');
+    var signData = querystring.stringify(vnp_Params, { encode: false });
+    var crypto = require("crypto");
+    var hmac = crypto.createHmac("sha512", secretKey);
+    var signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+
+
+    if (secureHash === signed) {
+        var orderId = vnp_Params['vnp_TxnRef'];
+        var rspCode = vnp_Params['vnp_ResponseCode'];
+        //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
+        try {
+            const options = {
+                method: "POST",
+                url: vnpayCF.vnp_Api,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({ RspCode: '00', Message: 'success' }),
+            };
+
+            const data = await axios.post(options);
+
+            console.log(data);
+            return res.status(200).json({
+                message: 'vnpagy cc successfully',
+                data
+            });
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+    else {
+        res.status(200).json({ RspCode: '97', Message: 'Fail checksum' });
+    }
+};
+
+const vnpayReturn = async (req, res, next) => {
+    try {
+        let vnp_Params = req.query;
+        // vnp_Params['vnp_Command'] = 'pay';
+        let secureHash = vnp_Params['vnp_SecureHash'];
+
+        delete vnp_Params['vnp_SecureHash'];
+        delete vnp_Params['vnp_SecureHashType'];
+
+        vnp_Params = sortObject(vnp_Params);
+
+        let tmnCode = vnpayCF.vnp_TmnCode;
+        let secretKey = vnpayCF.vnp_HashSecret;
+        console.log('vnp2', vnp_Params);
+
+        let querystring = require('qs');
+        let signData = querystring.stringify(vnp_Params, { encode: false });
+        let crypto = require("crypto");
+        let hmac = crypto.createHmac("sha512", secretKey);
+        let signed = hmac.update(new Buffer(signData, 'utf-8')).digest("hex");
+        console.log('s', signed);
+        console.log('su', secureHash);
+        if (secureHash === signed) {
+            return res.status(200).json({
+                message: 'DBDBDB',
+            });
+        } else {
+            return res.status(200).json({
+                message: 'CCCCCC',
+            });
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+function sortObject(obj) {
+    let sorted = {};
+    let str = [];
+    let key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            str.push(encodeURIComponent(key));
+        }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+}
+
 module.exports = {
     getAllInvoices,
     getInvoiceByID,
@@ -319,5 +488,8 @@ module.exports = {
     zaloPayPayment,
     zaloPayCallback,
     momoPayment,
-    momoPaymentCallback
+    momoPaymentCallback,
+    vnpayPayment,
+    vnpayIPN,
+    vnpayReturn
 };
