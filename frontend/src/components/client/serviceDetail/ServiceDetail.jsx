@@ -1,21 +1,43 @@
 import { Button } from "@/components/ui/Button";
-import { ToastAction } from "@/components/ui/Toast";
-import { useToast } from "@/hooks/useToast";
 import { AiOutlineSchedule } from "react-icons/ai";
 import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import { addToCart } from "@/redux/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
-  
-  const { toast } = useToast();
   const [selectedService, setSelectedService] = useState(null);
-
+  const servicesInStore = useSelector((state) => state.cart.cart);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(() => {
     if (medicalPackage?.services?.length > 0) {
       setSelectedService(medicalPackage.services[0]);
     }
   }, [medicalPackage]);
+
+  const serviceToCheck = service || selectedService;
+  const isInCart = servicesInStore.some(
+    (item) => item.id === serviceToCheck?._id,
+  );
+
+  const serviceData = {
+    id: serviceToCheck?._id,
+    name: serviceToCheck?.name,
+  };
+
+  const handleAddToCart = () => {
+    if (isInCart) {
+      navigate("/services-booking");
+    } else {
+      dispatch(addToCart(serviceData));
+      navigate("/services-booking");
+     
+    }
+  };
 
   if (isLoading) {
     return (
@@ -43,78 +65,6 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     );
   }
 
-  const renderServiceDetails = () => (
-    <>
-      <h3 className="mb-4 text-xl font-bold md:text-3xl">{service.name}</h3>
-      <div className="my-4 flex items-center gap-2">
-        <AiOutlineSchedule size={25} />
-        <span className="text-sm font-bold !text-gray-700">
-          {service.orderCount} lượt đặt lịch
-        </span>
-      </div>
-      <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-600">
-        {service.shortDescription}
-      </p>
-      <span className="mb-6 block text-lg font-medium">
-        <strong className="font-semibold">Giá:</strong>{" "}
-        {service.price.toLocaleString()} đ
-      </span>
-    </>
-  );
-
-  const renderMedicalPackageDetails = () => (
-    <>
-      <h3 className="mb-4 text-xl font-bold md:text-3xl">
-        {medicalPackage.name}
-      </h3>
-      <div className="my-4 flex items-center gap-2">
-        <AiOutlineSchedule size={25} />
-        <span className="text-sm font-bold !text-gray-700">
-          {medicalPackage.orderCount} lượt đặt lịch
-        </span>
-      </div>
-      <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-600">
-        {medicalPackage.shortDescription}
-      </p>
-      <div className="mb-3">
-        <h2 className="mb-4 font-medium">Chọn gói khám:</h2>
-        <div className="my-3 flex items-center justify-center gap-3">
-          {medicalPackage.services
-            .slice()
-            .reverse()
-            .map((service) => (
-              <div key={service._id} className="relative">
-                <input
-                  className="peer hidden"
-                  id={`radio_${service._id}`}
-                  type="radio"
-                  name="radio"
-                  onChange={() => setSelectedService(service)}
-                  value={service._id}
-                  checked={selectedService?._id === service._id}
-                />
-                <label
-                  className="cursor-pointer select-none rounded-lg border border-gray-300 p-2 peer-checked:border-primary-600 peer-checked:bg-gray-50 peer-checked:outline-2"
-                  htmlFor={`radio_${service._id}`}
-                >
-                  <span className="text-base font-medium">
-                    {service.levelName}
-                  </span>
-                </label>
-              </div>
-            ))}
-        </div>
-      </div>
-      <span className="mb-6 block text-lg font-medium">
-        <strong className="font-semibold">Giá:</strong>{" "}
-        {selectedService?.price
-          ? selectedService.price.toLocaleString()
-          : "N/A"}{" "}
-        đ
-      </span>
-    </>
-  );
-
   return (
     <div className="mx-auto max-w-screen-2xl pb-4">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
@@ -126,22 +76,85 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
           />
         </div>
         <div className="flex flex-col items-start justify-center text-start">
-          {service ? renderServiceDetails() : renderMedicalPackageDetails()}
+          {service ? (
+            <>
+              <h3 className="mb-4 text-xl font-bold md:text-3xl">
+                {service.name}
+              </h3>
+              <div className="my-4 flex items-center gap-2">
+                <AiOutlineSchedule size={25} />
+                <span className="text-sm font-bold !text-gray-700">
+                  {service.orderCount} lượt đặt lịch
+                </span>
+              </div>
+              <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-600">
+                {service.shortDescription}
+              </p>
+              <span className="mb-6 block text-lg font-medium">
+                <strong className="font-semibold">Giá:</strong>{" "}
+                {service.price.toLocaleString()} đ
+              </span>
+            </>
+          ) : (
+            <>
+              <h3 className="mb-4 text-xl font-bold md:text-3xl">
+                {medicalPackage.name}
+              </h3>
+              <div className="my-4 flex items-center gap-2">
+                <AiOutlineSchedule size={25} />
+                <span className="text-sm font-bold !text-gray-700">
+                  {medicalPackage.orderCount} lượt đặt lịch
+                </span>
+              </div>
+              <p className="mb-4 text-justify text-sm font-normal leading-[27px] text-gray-600">
+                {medicalPackage.shortDescription}
+              </p>
+              <div className="mb-3">
+                <h2 className="mb-4 font-medium">Chọn gói khám:</h2>
+                <div className="my-3 flex items-center justify-center gap-3">
+                  {medicalPackage.services
+                    .slice()
+                    .reverse()
+                    .map((service) => (
+                      <div key={service._id} className="relative">
+                        <input
+                          className="peer hidden"
+                          id={`radio_${service._id}`}
+                          type="radio"
+                          name="radio"
+                          onChange={() => setSelectedService(service)}
+                          value={service._id}
+                          checked={selectedService?._id === service._id}
+                        />
+                        <label
+                          className="cursor-pointer select-none rounded-lg border border-gray-300 p-2 peer-checked:border-primary-600 peer-checked:bg-gray-50 peer-checked:outline-2"
+                          htmlFor={`radio_${service._id}`}
+                        >
+                          <span className="text-base font-medium">
+                            {service.levelName}
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                </div>
+              </div>
+              <span className="mb-6 block text-lg font-medium">
+                <strong className="font-semibold">Giá:</strong>{" "}
+                {selectedService?.price
+                  ? selectedService.price.toLocaleString()
+                  : "N/A"}{" "}
+                đ
+              </span>
+            </>
+          )}
           <div className="mb-4 flex w-full items-center gap-3">
             <Button
               className="w-full"
               size="lg"
               variant="custom"
-              onClick={() => {
-                toast({
-                  variant: "success",
-                  title: "Đặt lịch thành công!",
-                  description: "Chúng tôi sẽ liên hệ với bạn sớm nhất.",
-                  action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-                });
-              }}
+              onClick={handleAddToCart}
             >
-              Đặt lịch ngay
+              {isInCart ? "Thanh toán ngay" : "Đặt lịch ngay"}
             </Button>
           </div>
         </div>

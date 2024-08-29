@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
@@ -18,8 +17,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { getProvinces, getDistricts, getWards } from "@/services/provincesApi";
 
-const token = "2355ce9f-0954-11ef-be92-2ad6ca7ca6ac";
 
 export function SelectProvince({ control, name, errors, onProvinceChange }) {
   const [open, setOpen] = React.useState(false);
@@ -31,11 +30,9 @@ export function SelectProvince({ control, name, errors, onProvinceChange }) {
 
   const fetchProvinces = async () => {
     try {
-      const response = await axios.get(
-        "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
-        { headers: { token } },
-      );
-      setProvinces(response.data.data);
+      const response = await getProvinces();
+
+      setProvinces(response);
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
@@ -63,8 +60,8 @@ export function SelectProvince({ control, name, errors, onProvinceChange }) {
                   <>
                     {
                       provinces.find(
-                        (province) => province.ProvinceID === field.value,
-                      )?.ProvinceName
+                        (province) => province._id === field.value,
+                      )?.name
                     }
                   </>
                 ) : (
@@ -81,16 +78,16 @@ export function SelectProvince({ control, name, errors, onProvinceChange }) {
                   <CommandGroup>
                     {provinces.map((province) => (
                       <CommandItem
-                        key={province.ProvinceID}
-                        value={province.ProvinceName}
+                        key={province._id}
+                        value={province.name}
                         onSelect={(currentValue) => {
                           const selectedProvince = provinces.find(
                             (province) =>
-                              province.ProvinceName === currentValue,
+                              province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince.ProvinceID);
-                            onProvinceChange(selectedProvince.ProvinceID);
+                            field.onChange(selectedProvince._id);
+                            onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
                         }}
@@ -98,12 +95,12 @@ export function SelectProvince({ control, name, errors, onProvinceChange }) {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === province.ProvinceID
+                            field.value === province._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
                         />
-                        {province.ProvinceName}
+                        {province.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -145,11 +142,9 @@ export function SelectDistrict({
 
   const fetchDistricts = async (provinceId) => {
     try {
-      const response = await axios.get(
-        `https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${provinceId}`,
-        { headers: { token } },
-      );
-      setDistricts(response.data.data);
+      const response = await getDistricts(provinceId);
+      
+      setDistricts(response);
     } catch (error) {
       console.error("Error fetching districts:", error);
     }
@@ -175,8 +170,8 @@ export function SelectDistrict({
               >
                 {field.value && districts.length > 0 ? (
                   districts.find(
-                    (district) => district.DistrictID === field.value,
-                  )?.DistrictName
+                    (district) => district._id === field.value,
+                  )?.name
                 ) : (
                   <span className="text-gray-600">Chọn quận/huyện</span>
                 )}
@@ -191,16 +186,16 @@ export function SelectDistrict({
                   <CommandGroup>
                     {districts.map((district) => (
                       <CommandItem
-                        key={district.DistrictID}
-                        value={district.DistrictName}
+                        key={district._id}
+                        value={district.name}
                         onSelect={(currentValue) => {
                           const selectedDistrict = districts.find(
                             (district) =>
-                              district.DistrictName === currentValue,
+                              district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict.DistrictID);
-                            onDistrictChange(selectedDistrict.DistrictID);
+                            field.onChange(selectedDistrict._id);
+                            onDistrictChange(selectedDistrict._id);
                           }
                           setOpen(false);
                         }}
@@ -208,12 +203,12 @@ export function SelectDistrict({
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === district.DistrictID
+                            field.value === district._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
                         />
-                        {district.DistrictName}
+                        {district.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -246,11 +241,8 @@ export function SelectWard({ control, name, errors, districtId, setValue }) {
 
   const fetchWards = async (districtId) => {
     try {
-      const response = await axios.get(
-        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${districtId}`,
-        { headers: { token } },
-      );
-      setWards(response.data.data);
+      const response = await getWards(districtId);
+      setWards(response);
     } catch (error) {
       console.error("Error fetching wards:", error);
     }
@@ -275,7 +267,7 @@ export function SelectWard({ control, name, errors, districtId, setValue }) {
                 )}
               >
                 {field.value && wards.length > 0 ? (
-                  wards.find((ward) => ward.WardCode === field.value)?.WardName
+                  wards.find((ward) => ward._id === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn phường/xã</span>
                 )}
@@ -290,14 +282,14 @@ export function SelectWard({ control, name, errors, districtId, setValue }) {
                   <CommandGroup>
                     {wards.map((ward) => (
                       <CommandItem
-                        key={ward.WardCode}
-                        value={ward.WardName}
+                        key={ward._id}
+                        value={ward.name}
                         onSelect={(currentValue) => {
                           const selectedWard = wards.find(
-                            (ward) => ward.WardName === currentValue,
+                            (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard.WardCode);
+                            field.onChange(selectedWard._id);
                           }
                           setOpen(false);
                         }}
@@ -305,12 +297,12 @@ export function SelectWard({ control, name, errors, districtId, setValue }) {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === ward.WardCode
+                            field.value === ward._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
                         />
-                        {ward.WardName}
+                        {ward.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>

@@ -3,6 +3,19 @@ import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
+import { IoMdAdd } from "react-icons/io";
+import { ImBin } from "react-icons/im";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "@/redux/cartSlice";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@radix-ui/react-toast";
+import { useEffect, useState } from "react";
 
 export default function ServiceItem({
   image,
@@ -12,6 +25,37 @@ export default function ServiceItem({
   orderCount,
   _id,
 }) {
+  const dispatch = useDispatch();
+  const { toast } = useToast();
+  const cartItems = useSelector((state) => state.cart.cart);
+  const [isInCart, setIsInCart] = useState(false);
+
+  useEffect(() => {
+    const productExists = cartItems.some((item) => item.id === _id);
+    setIsInCart(productExists);
+  }, [cartItems, _id]);
+
+  const handleAddClick = () => {
+    if (!isInCart) {
+      dispatch(addToCart({ id: _id, name }));
+      toast({
+        variant: "success",
+        title: "Thêm dịch vụ vào giỏ hàng thành công!",
+        description: "Vui lòng xem chi tiết dịch vụ ở giỏ hàng.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    } else {
+      dispatch(removeFromCart(_id));
+      setIsInCart(false);
+      toast({
+        variant: "success",
+        title: "Đã xóa dịch vụ khỏi giỏ hàng!",
+        description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    }
+  };
+
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
@@ -54,8 +98,36 @@ export default function ServiceItem({
             <SiTicktick /> {orderCount}
           </div>
         </div>
-        <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
-          Đặt ngay <AiOutlineDoubleRight />
+        <div className="mt-2 flex w-full items-center justify-center gap-2">
+          <Link
+            to={`/detail-service/${_id}`}
+            className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
+          >
+            Chi tiết <AiOutlineDoubleRight />
+          </Link>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger className="h-full flex-[3] items-center justify-center">
+                <button
+                  onClick={handleAddClick}
+                  className={`group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${
+                    isInCart
+                      ? "bg-red-500 text-white"
+                      : "bg-primary-500 text-primary-500"
+                  }`}
+                >
+                  {isInCart ? (
+                    <ImBin className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
+                  ) : (
+                    <IoMdAdd className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isInCart ? "Xóa khỏi giỏ hàng" : "Thêm giỏ hàng"}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </div>

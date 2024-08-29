@@ -2,8 +2,8 @@ import { Button } from '@/components/ui/Button';
 
 export default function Form() {
   return (
-    <div className='mx-auto mt-5 max-w-screen-xl px-4 py-3 md:px-5 md:py-5 md:mt-10'>
-      <div className='container mx-auto gap-5 px-10 py-5 pb-10 border shadow-gray rounded-md'>
+    <div className='mx-auto mt-5 max-w-screen-xl px-4 py-3 md:px-5 md:py-5 md:mt-10 '>
+      <div className='container mx-auto gap-5 px-10 py-5 pb-10 border shadow-gray rounded-md '>
         <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
             <h1 className='font-bold text-[22px] md:text-[32px]'>Thông tin đặt lịch khám</h1>

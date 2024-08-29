@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getProfilePatients } from "@/services/authApi";
 import { setUserProfile } from "@/redux/authSlice";
+import Balloon from "@/components/ui/Ballon";
 
 export default function AppLayout() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ export default function AppLayout() {
       <Header />
       <Toaster />
       <Outlet />
+      <Balloon/>
       <Footer />
     </>
   );

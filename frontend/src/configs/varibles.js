@@ -38,6 +38,13 @@ const API_CHECK_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/check-otp
 const API_CHANGE_PASSWORD = `${API_URL}/auth/forgot-password/reset-password`;
 const API_LOGOUT = `${API_URL}/auth/logout`;
 
+// Provinces
+const API_PROVINCES = `${API_URL}/provinces`;
+const API_DISTRICTS = `${API_URL}/provinces/districts`;
+const API_WARDS = `${API_URL}/provinces/wards`;
+
+
+
 export {
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
@@ -61,4 +68,7 @@ export {
   API_CHECK_OTP_FORGOT_PASSWORD,
   API_CHANGE_PASSWORD,
   API_LOGOUT,
+  API_PROVINCES,
+  API_DISTRICTS,
+  API_WARDS
 };

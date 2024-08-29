@@ -1,55 +1,42 @@
 import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
-import { FaSearch } from "react-icons/fa";
-import { Input } from "@/components/ui/Input";
+
 import InputCustom from "@/components/ui/InputCustom";
 import { bookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import SelectTime from "./select/time";
-import SelectDepartment from "./select/department";
-import SelectDate from "./select/date";
-import SelectBirthDate from "./select/birthday";
-import SelectGender from "./select/gender";
-import SelectEthnic from "./select/ethnicity";
+import SelectTime from "./select/SelectTime";
+import SelectDepartment from "./select/SelectDepartment";
+import SelectDate from "./select/SelectDate";
+import SelectBirthDate from "./select/SelectBirthday";
+import SelectGender from "./select/SelectGender";
+import SelectEthnic from "./select/SelectEthnicity";
 import { useState } from "react";
 import {
   SelectDistrict,
   SelectProvince,
   SelectWard,
 } from "./select/SelectLocation";
-
-const services = [
-  {
-    title: "Điện tim thường",
-  },
-  {
-    title: "Siêu âm tuyến giáp",
-  },
-  {
-    title: "Lấy dị vật tai",
-  },
-  {
-    title: "Khâu vết rách vành tai",
-  },
-  {
-    title: "Khám tổng quát",
-  },
-  {
-    title: "Kiểm tra huyết áp",
-  },
-  {
-    title: "Kiểm tra huyết áp",
-  },  {
-    title: "Kiểm tra huyết áp",
-  },  {
-    title: "Kiểm tra huyết áp",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { IoTrashBinOutline } from "react-icons/io5";
+import { removeFromCart } from "@/redux/cartSlice";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export default function Form() {
+  const services = useSelector((state) => state.cart.cart);
+  const dispatch = useDispatch();
+  const { toast } = useToast();
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+  const handleRemoveItem = (id)=> {
+dispatch(removeFromCart(id));
+toast({
+  variant: "success",
+  title: "Đã xóa dịch vụ khỏi giỏ hàng!",
+  description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
+  action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+});
+  }
   const {
     handleSubmit,
     formState: { errors },
@@ -85,35 +72,37 @@ export default function Form() {
         <div className="flex w-full flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
-            <p className="font-light">Đã chọn 1 dịch vụ</p>
-          </div>
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500" />
-            <Input className="pl-10" placeholder="Tìm kiếm dịch vụ..." />
+            <p className="font-light">Đã chọn {services.length} dịch vụ</p>
           </div>
 
-          {/* Services List */}
-          <div className="h-[185px] overflow-y-auto sm:h-[215px] md:h-[680px] scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 px-2">
-            {services.map((svc, index) => (
-              <label key={index}>
-                <div className="relative mb-1 flex items-center rounded-lg border border-primary-500 px-3 py-2 md:py-3">
-                  <div className="flex items-center gap-4">
-                    <img
-                      src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
-                      className="w-[60px] sm:w-[75px] md:w-[100px]"
-                      alt={`Image of ${svc.title}`}
-                    />
-                    <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                      {svc.title}
-                    </p>
-                  </div>
-                  <Checkbox
-                    id={`checkbox-svc-${index}`}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 transform"
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 sm:h-[215px] md:h-[680px]">
+          {services.length > 0 ? (
+            services.map((svc) => (
+              <div
+                key={svc.id}
+                className="mb-3 flex items-center justify-between rounded-lg border border-primary-500 px-3 py-2 md:py-3"
+              >
+                <div className="flex items-center gap-4">
+                  <img
+                    src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                    className="w-[60px] sm:w-[75px] md:w-[100px]"
+                    alt={`Image of ${svc.name}`}
                   />
+                  <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
+                    {svc.name}
+                  </p>
                 </div>
-              </label>
-            ))}
+                <IoTrashBinOutline
+                  onClick={() => handleRemoveItem(svc.id)}
+                  className="mx-5 cursor-pointer text-2xl text-primary-500 duration-300 hover:text-red-600"
+                />
+              </div>
+            ))
+          ) : (
+            <div className="flex justify-center items-center h-full">
+            <p className="text-center text-gray-500">Chưa có dịch vụ được chọn</p>
+          </div>
+          )}
           </div>
         </div>
 
@@ -136,10 +125,10 @@ export default function Form() {
               {/* Hàng thứ hai */}
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
-                  <SelectTime control={control} name="time" errors={errors} />
+                  <SelectDate control={control} name="date" errors={errors} />
                 </div>
                 <div className="flex-1">
-                  <SelectDate control={control} name="date" errors={errors} />
+                  <SelectTime control={control} name="time" errors={errors} />
                 </div>
               </div>
 
@@ -279,54 +268,56 @@ export default function Form() {
                     />
                   </div>
                 </div>
-                <div className="mb-4 flex flex-col items-center justify-between gap-2 md:flex-row">
-                  <div className="w-full flex-1 md:w-[180px]">
-                    <SelectProvince
-                      control={control}
-                      name="province"
-                      errors={errors}
-                      onProvinceChange={(provinceId) => {
-                        setSelectedProvinceId(provinceId);
-                        setSelectedDistrictId(null);
-                      }}
-                    />
-                  </div>
-                  <div className="w-full flex-1 md:w-[190px]">
-                    <SelectDistrict
-                      control={control}
-                      name="district"
-                      errors={errors}
-                      provinceId={selectedProvinceId}
-                      onDistrictChange={setSelectedDistrictId}
-                      setValue={setValue}
-                    />
-                  </div>
-                  <div className="w-full flex-1 md:w-[180px]">
-                    <SelectWard
-                      control={control}
-                      name="ward"
-                      errors={errors}
-                      setValue={setValue}
-                      districtId={selectedDistrictId}
-                    />
-                  </div>
-                </div>
-
-                {/* Hàng 6 */}
-                <div className="mb-2">
-                  <label htmlFor="diachi" className="mb-1 block">
-                    Địa chỉ
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="address" className="mb-1 block">
+                    Địa chỉ:
                   </label>
-                  {/* <input type="text" id="diachi" className='w-full p-2 border rounded' /> */}
-                  <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập địa chỉ"
-                    name="address"
-                    type="text"
-                    id="address"
-                    control={control}
-                    errors={errors}
-                  />
+                  <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
+                    <div className="w-full flex-1 md:w-[200px]">
+                      <SelectProvince
+                        control={control}
+                        name="province"
+                        errors={errors}
+                        onProvinceChange={(provinceId) => {
+                          setSelectedProvinceId(provinceId);
+                          setSelectedDistrictId(null);
+                        }}
+                      />
+                    </div>
+                    <div className="w-full flex-1 md:w-[200px]">
+                      <SelectDistrict
+                        control={control}
+                        name="district"
+                        errors={errors}
+                        provinceId={selectedProvinceId}
+                        onDistrictChange={setSelectedDistrictId}
+                        setValue={setValue}
+                      />
+                    </div>
+                    <div className="w-full flex-1 md:w-[200px]">
+                      <SelectWard
+                        control={control}
+                        name="ward"
+                        errors={errors}
+                        setValue={setValue}
+                        districtId={selectedDistrictId}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Hàng 6 */}
+                  <div className="mb-2">
+                    {/* <input type="text" id="diachi" className='w-full p-2 border rounded' /> */}
+                    <InputCustom
+                      className="col-span-1 sm:col-span-1"
+                      placeholder="Nhập địa chỉ"
+                      name="address"
+                      type="text"
+                      id="address"
+                      control={control}
+                      errors={errors}
+                    />
+                  </div>
                 </div>
               </div>
 
