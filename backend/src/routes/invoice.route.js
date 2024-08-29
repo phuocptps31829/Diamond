@@ -132,7 +132,7 @@ router.post(
  */
 router.post(
     '/payment/momo',
-    appointmentValidator.appointmentValidator,
+    // appointmentValidator.appointmentValidator,
     invoiceController.momoPayment
 );
 
@@ -141,6 +141,29 @@ router.post(
     invoiceController.momoPaymentCallback
 );
 
+/** 
+* @openapi
+ * '/api/v1/invoices/payment/momo_refund':
+ *  post:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Refund MOMO 
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.post(
+    '/payment/momo_refund',
+    invoiceController.momoRefund
+);
 
 /** 
 * @openapi
@@ -208,6 +231,30 @@ router.get(
 router.get(
     '/payment/vnpay_return',
     invoiceController.vnpayReturn
+);
+
+/** 
+* @openapi
+ * '/api/v1/invoices/payment/vnpay_refund':
+ *  post:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Refund VNPAY 
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.post(
+    '/payment/vnpay_refund',
+    invoiceController.vnpayRefund
 );
 
 module.exports = router;
