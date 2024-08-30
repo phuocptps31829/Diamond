@@ -31,9 +31,9 @@ const services = [
 
 const SupportService = () => {
     return (
-        <div className="mx-auto w-full max-w-7xl px-4 pt-6 md:px-8">
-            <div className="h-auto w-full rounded-md bg-primary-500 p-3">
-                <div className="flex flex-col items-start justify-start gap-5 md:flex-row md:items-center md:justify-center md:gap-6">
+        <div className="mx-auto w-full max-w-[83rem] md:px-0 px-4 pt-6 ">
+            <div className="h-auto w-full rounded-md bg-primary-500 py-3 px-6">
+                <div className="flex flex-col items-start justify-start gap-5 md:flex-row md:items-center md:justify-between md:gap-6">
                     { services.map((service, index) => (
                         <a href={ service.link } key={ index }>
                             <div className="flex items-center gap-2">
