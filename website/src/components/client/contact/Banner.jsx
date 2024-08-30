@@ -3,7 +3,7 @@ import banner from "../../../assets/images/contactBanner.jpg";
 export default function BannerContact() {
   return (
     <>
-      <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[20vw]">
+      <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[12vw]">
         <img
           src={banner}
           alt="Doctor delivering great news"
