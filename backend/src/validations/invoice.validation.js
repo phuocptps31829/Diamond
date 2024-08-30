@@ -1,19 +1,11 @@
 const { checkSchema } = require("express-validator");
-const { checkIsExistID } = require('../utils/database.util');
-
-const PatientModel = require('../models/patient.model');
-const PrescriptionModel = require('../models/prescription.model');
 
 const invoiceValidator = checkSchema({
-    patientID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(PatientModel, id),
-        }
-    },
     prescriptionID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(PrescriptionModel, id),
-        }
+        optional: true,
+        isMongoId: {
+            errorMessage: "Invalid prescriptionID",
+        },
     },
     appointmentID: {
         optional: true,
@@ -27,12 +19,12 @@ const invoiceValidator = checkSchema({
             errorMessage: "Invalid Service ID",
         },
     },
-    totalPrice: {
+    price: {
         exists: {
-            errorMessage: "Total price is required",
+            errorMessage: "Price is required",
         },
         isNumeric: {
-            errorMessage: "Total price should be a number",
+            errorMessage: "Price should be a number",
         },
     },
 });
