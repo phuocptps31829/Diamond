@@ -5,18 +5,14 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
         required: true
     },
-    doctorID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Doctor',
-        required: true
-    },
     serviceID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Service',
     },
     medicalPackageID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'MedicalPackage',
     },
-    clinicID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Clinic',
+    workScheduleID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'WorkSchedule',
         required: true
     },
     type: {
@@ -34,15 +30,15 @@ const appointmentSchema = new mongoose.Schema({
     isHelp: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Appointment',
     },
-    paymentMethod: {
+    payment: {
         method: {
             type: String,
         },
-        signature: {
+        refundCode: {
             type: String,
         },
-        isPaid: {
-            type: Boolean,
+        status: {
+            type: String,
         },
     },
     isDeleted: {

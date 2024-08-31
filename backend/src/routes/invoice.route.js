@@ -93,29 +93,27 @@ router.post(
  *            type: object
  *            required:
  *              - patientID
- *              - doctorID
- *              - clinicID
+ *              - workScheduleID
  *              - type
  *              - time
  *              - status
+ *              - price
  *              - paymentMethod
  *            properties:
  *              patientID:
  *                type: string
- *              doctorID:
+ *              workScheduleID:
  *                type: string
  *              serviceID:
  *                type: string
  *              medicalPackageID:
  *                type: string
- *              clinicID:
- *                type: string
  *              type:
  *                type: string
  *              time:
  *                type: string
- *              status:
- *                type: string
+ *              price:
+ *                type: number
  *              isHelp:
  *                type: string
  *    responses:
@@ -180,29 +178,27 @@ router.post(
  *            type: object
  *            required:
  *              - patientID
- *              - doctorID
- *              - clinicID
+ *              - workScheduleID
  *              - type
  *              - time
  *              - status
+ *              - price
  *              - paymentMethod
  *            properties:
  *              patientID:
  *                type: string
- *              doctorID:
+ *              workScheduleID:
  *                type: string
  *              serviceID:
  *                type: string
  *              medicalPackageID:
  *                type: string
- *              clinicID:
- *                type: string
  *              type:
  *                type: string
  *              time:
  *                type: string
- *              status:
- *                type: string
+ *              price:
+ *                type: number
  *              isHelp:
  *                type: string
  *    responses:

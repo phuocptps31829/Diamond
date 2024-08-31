@@ -1,25 +1,19 @@
 const { checkSchema } = require('express-validator');
 const { checkIsExistID } = require('../utils/database.util');
 
-const patientModel = require('../models/patient.model');
-const doctorModel = require('../models/doctor.model');
-const clinicModel = require('../models/clinic.model');
+const PatientModel = require('../models/patient.model');
+const WorkScheduleModel = require('../models/work-schedule.model');
 
 const appointmentValidator = checkSchema({
     patientID: {
         customSanitizer: {
-            options: (id) => checkIsExistID(patientModel, id),
+            options: (id) => checkIsExistID(PatientModel, id),
         }
     },
-    doctorID: {
+    workScheduleID: {
         customSanitizer: {
-            options: (id) => checkIsExistID(doctorModel, id),
+            options: (id) => checkIsExistID(WorkScheduleModel, id),
         }
-    },
-    clinicID: {
-        customSanitizer: {
-            options: (id) => checkIsExistID(clinicModel, id),
-        },
     },
     serviceID: {
         optional: true,
@@ -47,6 +41,14 @@ const appointmentValidator = checkSchema({
         },
         isISO8601: {
             errorMessage: 'Invalid appointment time format'
+        }
+    },
+    price: {
+        exists: {
+            errorMessage: 'Price time is required'
+        },
+        isNumeric: {
+            errorMessage: 'Price type should be a number'
         }
     },
     status: {
