@@ -1,16 +1,12 @@
-const axios = require('axios').default; // npm install axios
-const CryptoJS = require('crypto-js'); // npm install crypto-js
-const moment = require('moment'); // npm install moment
-const InvoiceModel = require('../models/invoice.model');
-const { createError, errorValidator } = require("../utils/helper.util");
-const AppointmentModel = require('../models/appointment.model');
+const qs = require('qs');
+const crypto = require('crypto');
+const axios = require('axios').default;
+const CryptoJS = require('crypto-js');
+const moment = require('moment');
 
-const zaloPayConfig = {
-    app_id: "554",
-    key1: "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn",
-    key2: "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny",
-    endpoint: "https://sb-openapi.zalopay.vn/v2/create"
-};
+const InvoiceModel = require('../models/invoice.model');
+const AppointmentModel = require('../models/appointment.model');
+const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllInvoices = async (req, res, next) => {
     try {
@@ -106,30 +102,29 @@ const updateInvoice = async (req, res, next) => {
 
 const zaloPayPayment = async (req, res, next) => {
     const embed_data = {
-        redirecturl: 'https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox'
+        redirecturl: process.env.ZALO_PAY_REDIRECT_URL
     };
 
-    const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
     const order = {
-        app_id: zaloPayConfig.app_id,
+        app_id: process.env.ZALO_PAY_APP_ID,
         app_trans_id: `${moment().format('YYMMDD')}_${transID}`, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
         app_user: "user123",
         app_time: Date.now(), // miliseconds
-        item: JSON.stringify(items),
+        item: JSON.stringify(req.body),
         embed_data: JSON.stringify(embed_data),
         amount: 50000,
         description: `Lazada - Payment for the order #${transID}`,
-        bank_code: "zalopayapp",
-        callback_url: 'https://82dc-2402-800-63a6-ea68-2994-7694-13e8-ebfa.ngrok-free.app/payment/zalopay-callback'
+        bank_code: "",
+        callback_url: process.env.ZALO_PAY_CALLBACK_URL
     };
 
     // appid|app_trans_id|appuser|amount|apptime|embeddata|item
-    const data = zaloPayConfig.app_id + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
-    order.mac = CryptoJS.HmacSHA256(data, zaloPayConfig.key1).toString();
+    const data = process.env.ZALO_PAY_APP_ID + "|" + order.app_trans_id + "|" + order.app_user + "|" + order.amount + "|" + order.app_time + "|" + order.embed_data + "|" + order.item;
+    order.mac = CryptoJS.HmacSHA256(data, process.env.ZALO_PAY_KEY_1).toString();
 
     try {
-        const response = await axios.post(zaloPayConfig.endpoint, null, { params: order });
+        const response = await axios.post(process.env.ZALO_PAY_ENTPOINT, null, { params: order });
 
         const result = response.data;
         console.log(result);
@@ -150,7 +145,7 @@ const zaloPayCallback = async (req, res, next) => {
         let dataStr = req.body.data;
         let reqMac = req.body.mac;
 
-        let mac = CryptoJS.HmacSHA256(dataStr, zaloPayConfig.key2).toString();
+        let mac = CryptoJS.HmacSHA256(dataStr, process.env.ZALO_PAY_KEY_2).toString();
         console.log("mac =", mac);
 
 
@@ -163,7 +158,7 @@ const zaloPayCallback = async (req, res, next) => {
         else {
             // thanh toán thành công
             // merchant cập nhật trạng thái cho đơn hàng
-            let dataJson = JSON.parse(dataStr, zaloPayConfig.key2);
+            let dataJson = JSON.parse(dataStr, process.env.ZALO_PAY_KEY_2);
             console.log("update order's status = success where app_trans_id =", dataJson["app_trans_id"]);
 
             result.return_code = 1;
@@ -184,31 +179,32 @@ const zaloPayCallback = async (req, res, next) => {
 const momoPayment = async (req, res, next) => {
     //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
     console.log('before', req.body);
+    errorValidator(req, res);
     //parameters
-    var accessKey = 'F8BBA842ECF85';
-    var secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
-    var orderInfo = 'Thanh toán với MoMo';
-    var partnerCode = 'MOMO';
-    var redirectUrl = 'https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b';
-    var ipnUrl = 'https://82dc-2402-800-63a6-ea68-2994-7694-13e8-ebfa.ngrok-free.app/api/v1/invoices/payment/momo/callback';
-    var requestType = "captureWallet";
-    var amount = '50000';
-    var orderId = partnerCode + new Date().getTime();
-    var requestId = orderId;
-    var extraData = JSON.stringify(req.body);
-    var orderGroupId = '';
-    var autoCapture = true;
-    var lang = 'vi';
+    const accessKey = process.env.MOMO_ACCESS_KEY;
+    const secretKey = process.env.MOMO_SECRET_KEY;
+    const orderInfo = 'Thanh toán với MoMo';
+    const partnerCode = 'MOMO';
+    const redirectUrl = process.env.MOMO_CALLBACK_URL;
+    const ipnUrl = process.env.MOMO_CALLBACK_URL;
+    const requestType = "captureWallet";
+    const amount = +10000;
+    const orderId = partnerCode + new Date().getTime();
+    const requestId = orderId;
+    const extraData = JSON.stringify(req.body);
+    const orderGroupId = '';
+    const autoCapture = true;
+    const lang = 'vi';
 
     //before sign HMAC SHA256 with format
     //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
-    var rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
+    const rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&extraData=" + extraData + "&ipnUrl=" + ipnUrl + "&orderId=" + orderId + "&orderInfo=" + orderInfo + "&partnerCode=" + partnerCode + "&redirectUrl=" + redirectUrl + "&requestId=" + requestId + "&requestType=" + requestType;
     //puts raw signature
     console.log("--------------------RAW SIGNATURE----------------");
     console.log(rawSignature);
     //signature
-    const crypto = require('crypto');
-    var signature = crypto.createHmac('sha256', secretKey)
+
+    const signature = crypto.createHmac('sha256', secretKey)
         .update(rawSignature)
         .digest('hex');
     console.log("--------------------SIGNATURE----------------");
@@ -234,7 +230,7 @@ const momoPayment = async (req, res, next) => {
     });
     const options = {
         method: "POST",
-        url: "https://test-payment.momo.vn/v2/gateway/api/create",
+        url: process.env.MOMO_CREATE_URL,
         headers: {
             "Content-Type": "application/json",
             "Content-Length": Buffer.byteLength(requestBody)
@@ -285,7 +281,7 @@ const momoPaymentCallback = async (req, res, next) => {
         if (req.body.resultCode !== 0) {
             createError(400, "Paid fail.");
         }
-
+        console.log(req.body.transId);
         const { amount, signature, extraData } = req.body;
 
         const appointmentData = JSON.parse(extraData);
@@ -293,7 +289,7 @@ const momoPaymentCallback = async (req, res, next) => {
         const newAppointment = await AppointmentModel.create({
             ...appointmentData,
             paymentMethod: {
-                method: "MoMo",
+                method: "MOMO",
                 signature: signature,
                 isPaid: true
             }
@@ -304,12 +300,320 @@ const momoPaymentCallback = async (req, res, next) => {
             price: +amount,
         });
 
-        console.log('newap', newAppointment);
-        console.log('newin', newInvoice);
+        return res.status(201).json({
+            message: "Appointment created successfully",
+            data: {
+                ...newAppointment.toObject(),
+                invoice: {
+                    ...newInvoice.toObject()
+                }
+            }
+        });
     } catch (error) {
         next(error);
     }
 };
+
+const momoRefund = async (req, res, next) => {
+    const accessKey = process.env.MOMO_ACCESS_KEY;
+    const secretKey = process.env.MOMO_SECRET_KEY;
+    const partnerCode = 'MOMO';
+    const amount = 40000;
+    const orderId = new Date().getTime();
+    const requestId = orderId + 1;
+    const description = 'hi';
+    const transId = 4108080069;
+
+    const rawSignature = "accessKey=" + accessKey + "&amount=" + amount + "&description=" + description + "&orderId=" + orderId + "&partnerCode=" + partnerCode + "&requestId=" + requestId + "&transId=" + transId;
+
+    const signature = crypto.createHmac('sha256', secretKey)
+        .update(rawSignature)
+        .digest('hex');
+    const requestBody = {
+        "partnerCode": partnerCode,
+        "orderId": orderId,
+        "requestId": requestId,
+        "amount": amount,
+        "transId": transId,
+        "lang": "vi",
+        "description": description,
+        "signature": signature
+    };
+    try {
+        const data = await axios({
+            url: process.env.MOMO_REFUND_URL,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(requestBody)
+        });
+        console.log(data);
+        return res.status(201).json({
+            message: "Refund MOMO successfully",
+            data: data.data
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+let vnpayAppointmentData = {};
+const vnpayPayment = async (req, res, next) => {
+    errorValidator(req, res);
+
+    process.env.TZ = 'Asia/Ho_Chi_Minh';
+
+    let date = new Date();
+    let createDate = moment(date).format('YYYYMMDDHHmmss');
+
+    let ipAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+    let tmnCode = process.env.VNPAY_TMNCODE;
+    let secretKey = process.env.VNPAY_HASH_SECRET;
+    let vnpUrl = process.env.VNPAY_CREATE_URL;
+    let returnUrl = process.env.VNPAY_RETURN_URL;
+    let orderId = moment(date).format('DDHHmmss');
+    let amount = 10000;
+    let bankCode = "NCB";
+
+    // let locale = req.body.language;
+    // if (locale === null || locale === '') {
+    //     locale = 'vn';
+    // }
+
+    let currCode = 'VND';
+    let vnp_Params = {};
+    vnp_Params['vnp_Version'] = '2.1.0';
+    vnp_Params['vnp_Command'] = 'pay';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_Locale'] = 'vn';
+    vnp_Params['vnp_CurrCode'] = currCode;
+    vnp_Params['vnp_TxnRef'] = orderId;
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
+    vnp_Params['vnp_OrderType'] = 'other';
+    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    vnp_Params['vnp_IpAddr'] = ipAddr;
+    vnp_Params['vnp_CreateDate'] = createDate;
+    if (bankCode !== null && bankCode !== '') {
+        vnp_Params['vnp_BankCode'] = bankCode;
+    }
+
+    vnp_Params = sortObject(vnp_Params);
+
+    let signData = qs.stringify(vnp_Params, { encode: false });
+
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
+    vnp_Params['vnp_SecureHash'] = signed;
+    vnpUrl += '?' + qs.stringify(vnp_Params, { encode: false });
+
+    try {
+        vnpayAppointmentData = {
+            ...req.body,
+            paymentMethod: {
+                method: "VNPAY",
+                signature: signed,
+                isPaid: true
+            },
+            tempPrice: 4000
+        };
+
+        return res.status(200).json({
+            message: 'VNpay payment successfully',
+            data: vnpUrl
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const vnpayIPN = async (req, res, next) => {
+    const vnp_Params = req.query;
+    const secureHash = vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHash'];
+    delete vnp_Params['vnp_SecureHashType'];
+    vnp_Params['vnp_Command'] = 'pay';
+    console.log('day ne');
+    vnp_Params = sortObject(vnp_Params);
+    const secretKey = process.env.VNPAY_HASH_SECRET;
+    const qs = require('qs');
+    const signData = qs.stringify(vnp_Params, { encode: false });
+
+    const hmac = crypto.createHmac("sha512", secretKey);
+    const signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
+
+    if (secureHash === signed) {
+        const orderId = vnp_Params['vnp_TxnRef'];
+        const rspCode = vnp_Params['vnp_ResponseCode'];
+        console.log(rspCode);
+        //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
+        try {
+            const options = {
+                method: "POST",
+                url: process.env.VNPAY_TRANSACTION_URL,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({ RspCode: '00', Message: 'success' }),
+            };
+
+            const data = await axios(options);
+
+            console.log(data);
+            return res.status(200).json({
+                message: 'vnpagy cc successfully',
+                data
+            });
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
+    else {
+        res.status(200).json({ RspCode: '97', Message: 'Fail checksum' });
+    }
+};
+
+const vnpayReturn = async (req, res, next) => {
+    try {
+        let vnp_Params = req.query;
+        // vnp_Params['vnp_Command'] = 'pay';
+        let secureHash = vnp_Params['vnp_SecureHash'];
+
+        delete vnp_Params['vnp_SecureHash'];
+        delete vnp_Params['vnp_SecureHashType'];
+
+        vnp_Params = sortObject(vnp_Params);
+
+        let tmnCode = process.env.VNPAY_TMNCODE;
+        let secretKey = process.env.VNPAY_HASH_SECRET;
+
+
+        let signData = qs.stringify(vnp_Params, { encode: false });
+        let crypto = require("crypto");
+        let hmac = crypto.createHmac("sha512", secretKey);
+        let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
+
+        if (secureHash === signed) {
+            const newAppointment = await AppointmentModel.create(vnpayAppointmentData);
+
+            const newInvoice = await InvoiceModel.create({
+                appointmentID: newAppointment._id,
+                price: +vnpayAppointmentData.tempPrice,
+            });
+
+            return res.status(201).json({
+                message: "Appointment created successfully",
+                data: {
+                    ...newAppointment.toObject(),
+                    invoice: {
+                        ...newInvoice.toObject()
+                    }
+                }
+            });
+        } else {
+            createError(400, "Signs not match");
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const vnpayRefund = async (req, res, next) => {
+    process.env.TZ = 'Asia/Ho_Chi_Minh';
+    let date = new Date();
+
+    let vnp_TmnCode = process.env.VNPAY_TMNCODE;
+    let secretKey = process.env.VNPAY_HASH_SECRET;
+    let vnp_Api = process.env.VNPAY_TRANSACTION_URL;
+
+    let vnp_TxnRef = 'qq';
+    let vnp_TransactionDate = moment(date).format('yyyyMMddHHmmss');;
+    let vnp_Amount = 4000 * 100;
+    let vnp_TransactionType = '02';
+    let vnp_CreateBy = 'chinhdep trai';
+
+    let currCode = 'VND';
+
+    let vnp_RequestId = moment(date).format('HHmmss');
+    let vnp_Version = '2.1.0';
+    let vnp_Command = 'refund';
+    let vnp_OrderInfo = 'Hoan tien GD ma:' + vnp_TxnRef;
+
+    let vnp_IpAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+
+    let vnp_CreateDate = moment(date).format('YYYYMMDDHHmmss');
+
+    let vnp_TransactionNo = '0';
+
+    let data = vnp_RequestId + "|" + vnp_Version + "|" + vnp_Command + "|" + vnp_TmnCode + "|" + vnp_TransactionType + "|" + vnp_TxnRef + "|" + vnp_Amount + "|" + vnp_TransactionNo + "|" + vnp_TransactionDate + "|" + vnp_CreateBy + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo;
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let vnp_SecureHash = hmac.update(new Buffer.from(data, 'utf-8')).digest("hex");
+
+    let dataObj = {
+        'vnp_RequestId': vnp_RequestId,
+        'vnp_Version': vnp_Version,
+        'vnp_Command': vnp_Command,
+        'vnp_TmnCode': vnp_TmnCode,
+        'vnp_TransactionType': vnp_TransactionType,
+        'vnp_TxnRef': vnp_TxnRef,
+        'vnp_Amount': vnp_Amount,
+        'vnp_TransactionNo': vnp_TransactionNo,
+        'vnp_CreateBy': vnp_CreateBy,
+        'vnp_OrderInfo': vnp_OrderInfo,
+        'vnp_TransactionDate': vnp_TransactionDate,
+        'vnp_CreateDate': vnp_CreateDate,
+        'vnp_IpAddr': vnp_IpAddr,
+        'vnp_SecureHash': vnp_SecureHash
+    };
+
+    try {
+        const options = {
+            url: process.env.VNPAY_TRANSACTION_URL,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data: JSON.stringify(dataObj)
+        };
+
+        const data = await axios(options);
+
+        return res.status(201).json({
+            message: "Refund VNPAY successfully",
+            data: data.data
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+function sortObject(obj) {
+    let sorted = {};
+    let str = [];
+    let key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            str.push(encodeURIComponent(key));
+        }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+}
 
 module.exports = {
     getAllInvoices,
@@ -319,5 +623,10 @@ module.exports = {
     zaloPayPayment,
     zaloPayCallback,
     momoPayment,
-    momoPaymentCallback
+    momoPaymentCallback,
+    vnpayPayment,
+    vnpayIPN,
+    vnpayReturn,
+    vnpayRefund,
+    momoRefund
 };
