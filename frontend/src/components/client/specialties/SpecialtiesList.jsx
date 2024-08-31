@@ -5,8 +5,8 @@ import { Skeleton } from "@/components/ui/Skeleton"; // Ensure you import the Sk
 const SpecialtiesList = ({ specialties, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
-        <div className="mx-auto w-full md:w-5/6">
+      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10 ">
+        <div className="mx-auto w-full ">
           <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
             Chọn một chuyên khoa:
           </h1>
@@ -21,8 +21,8 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
-      <div className="mx-auto w-full md:w-5/6">
+    <div className="container mx-auto max-w-screen-xl py-5 lg:py-10 md:px-4">
+      <div className="mx-auto w-full ">
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Chọn một chuyên khoa:
         </h1>
@@ -32,15 +32,15 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
               key={item._id}
               className="group relative h-48 max-w-full rounded-lg bg-white shadow dark:border-gray-700 dark:bg-gray-800"
             >
-              <div className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              <div className="absolute inset-0 flex cursor-pointer items-center z-50 justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <Link
-                 to={`/services/${item._id}`}
+                 to={`/services?specialtyID=${item._id}`}
                   className="flex h-8 w-24  cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
                 >
                   Dịch vụ
                 </Link>
                 <Link
-                   to={`/packages/${item._id}`}
+                   to={`/packages?specialtyID=${item._id}`}
                   className="flex h-8 w-24 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-3 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
                 >
                  Gói khám

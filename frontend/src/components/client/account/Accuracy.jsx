@@ -6,7 +6,9 @@ import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
-import { otpUserVerification } from "@/services/authApi";
+import { otpUserVerification, registerSendOtp } from "@/services/authApi";
+import NotFound from "@/components/client/notFound";
+import { formatTime } from "@/utils/formatTime";
 
 export default function AccurancyComponent() {
   const { toast } = useToast();
@@ -14,14 +16,37 @@ export default function AccurancyComponent() {
   const inputRefs = useRef([]);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otpToken, setOtpToken] = useState("");
+  const [sendOtpAgain, setSendOtpAgain] = useState(true);
   const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
-    const phoneNumber = localStorage.getItem("phoneNumber");
-    setPhoneNumber(phoneNumber);
-    const otpToken = localStorage.getItem("otpToken");
-    setOtpToken(otpToken);
-  }, []);
+    if (sendOtpAgain) {
+      const phoneNumber = sessionStorage.getItem("phoneNumber");
+      setPhoneNumber(phoneNumber);
+      const otpToken = sessionStorage.getItem("otpToken");
+      setOtpToken(otpToken);
+
+      const otpSentTime = sessionStorage.getItem("otpSentTime");
+      const currentTime = new Date().getTime();
+      const timeElapsed = (currentTime - otpSentTime) / 1000; // Thời gian đã trôi qua tính bằng giây
+      const otpExpiration = 90; // Thời gian hết hạn OTP (300 giây = 5 phút)
+      const timeRemaining = Math.max(otpExpiration - timeElapsed, 0);
+      setTimeLeft(timeRemaining);
+    }
+
+    setSendOtpAgain(false);
+  }, [sendOtpAgain]);
+
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timerId = setInterval(() => {
+        setTimeLeft((prev) => Math.max(prev - 1, 0));
+      }, 1000);
+
+      return () => clearInterval(timerId);
+    }
+  }, [timeLeft]);
 
   const handleChange = (value, index) => {
     const newOtp = [...otp];
@@ -56,8 +81,11 @@ export default function AccurancyComponent() {
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       setOtp(new Array(6).fill(""));
-      localStorage.removeItem("phoneNumber");
-      localStorage.removeItem("otpToken");
+      sessionStorage.removeItem("phoneNumber");
+      sessionStorage.removeItem("otpToken");
+      sessionStorage.removeItem("otpSentTime");
+      sessionStorage.removeItem("fullName");
+      sessionStorage.removeItem("password");
       navigate("/login");
     },
     onError: (error) => {
@@ -69,6 +97,34 @@ export default function AccurancyComponent() {
         variant: "destructive",
         title: "Xác thực thất bại!",
         description: errorMessage,
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    },
+  });
+
+  const mutationSendOtpAgain = useMutation({
+    mutationFn: registerSendOtp,
+    onSuccess: (data) => {
+      toast({
+        variant: "success",
+        title: "Gửi lại mã OTP thành công!",
+        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      sessionStorage.setItem("otpToken", data.otpToken);
+      const currentTime = new Date().getTime();
+      sessionStorage.setItem("otpSentTime", currentTime);
+      setSendOtpAgain(true);
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.error ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toast({
+        variant: "destructive",
+        title: "Gửi mã OTP thất bại!",
+        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
     },
@@ -87,14 +143,10 @@ export default function AccurancyComponent() {
       return;
     }
 
-    console.log(otpValue, typeof otpValue);
-
     const data = {
       OTP: otpValue,
       otpToken: otpToken,
     };
-
-    console.log("data: ", data);
 
     mutation.mutate(data);
   };
@@ -104,6 +156,30 @@ export default function AccurancyComponent() {
       inputRefs.current[0].focus();
     }
   }, []);
+
+  const handleSendAgainOtp = () => {
+    if (timeLeft > 0) {
+      toast({
+        variant: "destructive",
+        title: "Gửi lại mã OTP thất bại!",
+        description: "Sau 1 phút 30 giây mới có thể gửi lại mã OTP.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+
+    const dataSend = {
+      fullName: sessionStorage.getItem("fullName"),
+      password: sessionStorage.getItem("password"),
+      phoneNumber: phoneNumber,
+    };
+
+    mutationSendOtpAgain.mutate(dataSend);
+  };
+
+  if (!phoneNumber || !otpToken) {
+    return <NotFound />;
+  }
 
   return (
     <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
@@ -143,8 +219,24 @@ export default function AccurancyComponent() {
               />
             </div>
             <span className="my-5 flex items-center justify-between text-sm">
-              <p>Mã OTP sẽ hết hạn sau 5 phút</p>{" "}
-              <button className="hover:text-primary-400">Gửi lại mã OTP</button>
+              <p>
+                Yêu cầu mã OTP mới sau:{" "}
+                <span className="font-bold text-primary-500">
+                  {formatTime(timeLeft)}
+                </span>
+              </p>
+              <button
+                className="flex items-center gap-2 hover:text-primary-400"
+                onClick={handleSendAgainOtp}
+                disabled={mutationSendOtpAgain.isPending}
+              >
+                {mutationSendOtpAgain.isPending
+                  ? "Đang xử lí"
+                  : "Gửi lại mã OTP"}
+                {mutation.isPending && (
+                  <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                )}
+              </button>
             </span>
 
             <button

@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
+const appointmentValidator = require('../validations/appointment.validation');
 const invoiceController = require('../controllers/invoice.controller');
 
 /**
@@ -65,6 +66,79 @@ router.get(
     '/:id',
     helperMiddleware.checkValidId,
     invoiceController.getInvoiceByID
+);
+
+router.post(
+    '/payment/zalopay',
+    invoiceController.zaloPayPayment
+);
+
+router.post(
+    '/payment/zalopay/callback',
+    invoiceController.zaloPayCallback
+);
+
+/** 
+* @openapi
+ * '/api/v1/invoices/payment/momo':
+ *  post:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Add new appointment momo method
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            required:
+ *              - patientID
+ *              - doctorID
+ *              - clinicID
+ *              - type
+ *              - time
+ *              - status
+ *              - paymentMethod
+ *            properties:
+ *              patientID:
+ *                type: string
+ *              doctorID:
+ *                type: string
+ *              serviceID:
+ *                type: string
+ *              medicalPackageID:
+ *                type: string
+ *              clinicID:
+ *                type: string
+ *              type:
+ *                type: string
+ *              time:
+ *                type: string
+ *              status:
+ *                type: string
+ *              isHelp:
+ *                type: string
+ *    responses:
+ *      '201':
+ *        $ref: '#/components/responses/201'
+ *      '401':
+ *        $ref: '#/components/responses/401'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '409':
+ *        $ref: '#/components/responses/409'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+router.post(
+    '/payment/momo',
+    appointmentValidator.appointmentValidator,
+    invoiceController.momoPayment
+);
+
+router.post(
+    '/payment/momo/callback',
+    invoiceController.momoPaymentCallback
 );
 
 module.exports = router;

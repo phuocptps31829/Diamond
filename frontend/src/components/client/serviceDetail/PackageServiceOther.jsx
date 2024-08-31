@@ -7,8 +7,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/Carousel";
-import PackageList from "../product/Package";
-import ServiceList from "../product/Service";
+import PackageItem from "../product/Package";
+import ServiceItem from "../product/Service";
+
 
 const PackageServiceOther = ({
   medicalPackageSpecialty,
@@ -38,12 +39,12 @@ const PackageServiceOther = ({
           {medicalPackageSpecialty && medicalPackageSpecialty.length > 0
             ? medicalPackageSpecialty.map((item) => (
                 <CarouselItem key={item._id} className="p-2 md:basis-1/2 lg:basis-1/4">
-                  <PackageList {...item} />
+                  <PackageItem {...item} />
                 </CarouselItem>
               ))
             : serviceSpecialty.map((item) => (
                 <CarouselItem key={item._id} className="p-2 md:basis-1/2 lg:basis-1/4">
-                  <ServiceList {...item} />
+                  <ServiceItem {...item} />
                 </CarouselItem>
               ))}
         </CarouselContent>

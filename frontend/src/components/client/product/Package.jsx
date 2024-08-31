@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 
-export default function PackageList({
+export default function PackageItem({
   image,
   services,
   name,
@@ -69,7 +69,7 @@ export default function PackageList({
   );
 }
 
-PackageList.propTypes = {
+PackageItem.propTypes = {
   image: PropTypes.string.isRequired,
   services: PropTypes.arrayOf(
     PropTypes.shape({

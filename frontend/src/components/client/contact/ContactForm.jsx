@@ -61,7 +61,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl p-5 md:p-10">
+    <div className="mx-auto w-full max-w-screen-xl p-4 md:p-5">
       <div className="flex flex-col rounded-lg bg-white">
         <div className="flex flex-col gap-5 p-[30px] lg:flex-row lg:gap-0">
           <div className="flex flex-col gap-5 lg:max-w-[35%]">

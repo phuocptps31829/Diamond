@@ -1,5 +1,6 @@
 const WorkScheduleModel = require('../models/work-schedule.model');
 const { createError, errorValidator } = require("../utils/helper.util");
+const mongoose = require("mongoose");
 
 const getAllWorkSchedule = async (req, res, next) => {
     try {
@@ -13,6 +14,7 @@ const getAllWorkSchedule = async (req, res, next) => {
         const totalRecords = await WorkScheduleModel.countDocuments({
             isDeleted: false,
         });
+
         const workSchedule = await WorkScheduleModel
             .find({ isDeleted: false })
             .limit(limitDocuments)
@@ -37,6 +39,7 @@ const getAllWorkSchedule = async (req, res, next) => {
 const getAllWorkScheduleWithDoctor = async (req, res, next) => {
     try {
         const { id } = req.params;
+
         const {
             limitDocuments,
             page,
@@ -44,28 +47,293 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
             sortOptions
         } = req.customQueries;
 
-        const totalRecords = await WorkScheduleModel.countDocuments({
-            isDeleted: false,
-        });
+        let { startDay, endDay, branchID } = req.checkValueQuery;
 
-        const workSchedule = await WorkScheduleModel
-            .find({
-                isDeleted: false,
-                doctorID: id,
-            })
-            .skip(skip)
-            .limit(limitDocuments)
-            .sort(sortOptions);
+        const pipeline = [
+            {
+                $match: {
+                    isDeleted: false,
+                    doctorID: new mongoose.Types.ObjectId(id)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Clinic',
+                    localField: 'clinicID',
+                    foreignField: '_id',
+                    as: 'clinics'
+                }
+            },
+            {
+                $addFields: {
+                    hasCompleteDetails: {
+                        $not: {
+                            $in: [
+                                null,
+                                {
+                                    $map: {
+                                        input: "$detail",
+                                        as: "item",
+                                        in: "$$item.appointmentID"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                $match: {
+                    hasCompleteDetails: false
+                }
+            },
+            {
+                $group: {
+                    _id: { day: "$day" },
+                    clinicID: { $first: "$clinicID" },
+                    doctorID: { $first: "$doctorID" },
+                    details: { $push: "$detail" },
+                    isDeleted: { $first: "$isDeleted" },
+                    createdAt: { $first: "$createdAt" },
+                    updatedAt: { $first: "$updatedAt" },
+                    clinics: { $first: "$clinics" },
+                    hasCompleteDetails: { $first: "$hasCompleteDetails" }
+                }
+            },
+            {
+                $addFields: {
+                    detail: {
+                        $reduce: {
+                            input: "$details",
+                            initialValue: [],
+                            in: { $concatArrays: ["$$value", "$$this"] }
+                        }
+                    }
+                }
+            },
+        ];
+
+        if (startDay) {
+            pipeline.push({
+                $match: {
+                    day: { $gte: startDay },
+                }
+            });
+        }
+
+        if (endDay) {
+            pipeline.push({
+                $match: {
+                    day: { $lte: endDay },
+                }
+            });
+        }
+        if (branchID) {
+            pipeline.push({
+                $match: {
+                    'clinics.branchID': new mongoose.Types.ObjectId(branchID[0])
+                }
+            });
+        }
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+        const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
+
+        console.log(totalRecords);
+        if (sortOptions && Object.keys(sortOptions).length > 0) {
+            pipeline.push({
+                $sort: sortOptions
+            });
+        }
+
+        pipeline.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        );
+
+        const workSchedule = await WorkScheduleModel.aggregate(pipeline);
 
         if (!workSchedule.length) {
-            createError(404, 'No workSchedule found.');
+            createError(404, 'No work schedule found.');
         }
 
         return res.status(200).json({
-            page: 1,
+            page: page || 1,
             message: 'WorkSchedule retrieved successfully.',
             data: workSchedule,
             totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllWorkScheduleWithBranch = async (req, res, next) => {
+    try {
+        const {
+            limitDocuments,
+            page,
+            skip,
+            sortOptions
+        } = req.customQueries;
+
+        let { startDay, endDay, branchID, specialtyID } = req.checkValueQuery;
+
+        const pipeline = [
+            {
+                $match: {
+                    isDeleted: false,
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Clinic',
+                    localField: 'clinicID',
+                    foreignField: '_id',
+                    as: 'clinics'
+                }
+            },
+            {
+                $addFields: {
+                    hasCompleteDetails: {
+                        $not: {
+                            $in: [
+                                null,
+                                {
+                                    $map: {
+                                        input: "$detail",
+                                        as: "item",
+                                        in: "$$item.appointmentID"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            {
+                $match: {
+                    hasCompleteDetails: false
+                }
+            },
+            {
+                $group: {
+                    _id: { day: "$day" },
+                    clinicID: { $push: "$clinicID" },
+                    doctorIDs: { $push: "$doctorID" },
+                    details: { $push: "$detail" },
+                    isDeleted: { $first: "$isDeleted" },
+                    createdAt: { $first: "$createdAt" },
+                    updatedAt: { $first: "$updatedAt" },
+                    clinics: { $first: "$clinics" },
+                    hasCompleteDetails: { $first: "$hasCompleteDetails" },
+                }
+            },
+            {
+                $addFields: {
+                    detail: {
+                        $reduce: {
+                            input: "$details",
+                            initialValue: [],
+                            in: { $concatArrays: ["$$value", "$$this"] }
+                        }
+                    }
+                }
+            },
+        ];
+
+        if (startDay) {
+            pipeline.push({
+                $match: {
+                    day: { $gte: startDay },
+                }
+            });
+        }
+
+        if (endDay) {
+            pipeline.push({
+                $match: {
+                    day: { $lte: endDay },
+                }
+            });
+        }
+        if (branchID && specialtyID) {
+            pipeline.push({
+                $match: {
+                    'clinics.branchID': new mongoose.Types.ObjectId(branchID[0]),
+                    'clinics.specialtyID': new mongoose.Types.ObjectId(specialtyID[0]),
+                }
+            });
+        }
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+        const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
+
+        console.log(totalRecords);
+        if (sortOptions && Object.keys(sortOptions).length > 0) {
+            pipeline.push({
+                $sort: sortOptions
+            });
+        }
+
+        pipeline.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        );
+
+        const workSchedule = await WorkScheduleModel.aggregate(pipeline);
+
+        if (!workSchedule.length) {
+            createError(404, 'No work schedule found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'WorkSchedule retrieved successfully.',
+            data: workSchedule,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getWorkScheduleByDetailId = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const workSchedule = await WorkScheduleModel
+            .findOne({
+                'detail._id': id,
+                isDeleted: false,
+            })
+            .populate({
+                path: 'doctorID',
+                isDeleted: false,
+            })
+
+
+        if (!workSchedule) {
+            createError(404, 'WorkSchedule not found.');
+        }
+
+        return res.status(200).json({
+            message: 'WorkSchedule retrieved successfully.',
+            data: workSchedule,
         });
     } catch (error) {
         next(error);
@@ -166,5 +434,7 @@ module.exports = {
     createWorkSchedule,
     updateWorkSchedule,
     deleteWorkSchedule,
-    getAllWorkScheduleWithDoctor
+    getAllWorkScheduleWithDoctor,
+    getAllWorkScheduleWithBranch,
+    getWorkScheduleByDetailId
 };

@@ -10,17 +10,21 @@ const workScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    details: [{
-        clinicID: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Clinic',
-            required: true,
-        },
+    clinicID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Clinic',
+        required: true,
+    },
+    detail: [{
         hour: {
             type: String,
             trim: true,
             required: true
-        }
+        },
+        appointmentID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Appointment',
+        },
     }],
     isDeleted: {
         type: Boolean,

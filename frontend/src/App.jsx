@@ -25,6 +25,10 @@ import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 import NotFound from "@/components/client/notFound";
+import PackageBooking from "./pages/client/PackageBooking";
+import ServicesBooking from "./pages/client/ServicesBooking";
+import PKCheckOut from "./pages/client/PKBookingPayment";
+import SVCheckOut from "./pages/client/SVBookingPayment";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 
@@ -42,11 +46,11 @@ const router = createBrowserRouter([
         element: <SpecialtiesCategory />,
       },
       {
-        path: "services/:id?",
+        path: "services/:specialtyId?",
         element: <CategoryService />,
       },
       {
-        path: "packages/:id?",
+        path: "packages/:specialtyId?",
         element: <CategoryService />,
       },
       {
@@ -114,6 +118,22 @@ const router = createBrowserRouter([
             element: <ChangePassword />,
           },
         ],
+      },
+      {
+        path: "package-booking",
+        element: <PackageBooking/>
+      },
+      {
+        path: "services-booking",
+        element: <ServicesBooking/>
+      },
+      {
+        path: "package-booking-checkout",
+        element: <PKCheckOut/>
+      },
+      {
+        path: "services-booking-checkout",
+        element: <SVCheckOut/>
       },
       {
         path: "/login",

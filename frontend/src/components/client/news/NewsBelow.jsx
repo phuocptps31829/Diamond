@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import NewsProduct from "../product/News";
+import NewsItem from "../product/News";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Carousel,
@@ -12,7 +12,7 @@ import Autoplay from "embla-carousel-autoplay";
 
 export default function NewsBelow({ news, isLoading }) {
   return (
-    <div className="mx-auto max-w-screen-xl p-3">
+    <div className="mx-auto max-w-screen-xl p-4 lg:p-6">
       <h2 className="relative flex text-[24px] font-bold uppercase">
         <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
         <span className="sm:text-md pl-5 text-[18px]">Tin tức khác</span>
@@ -66,7 +66,7 @@ export default function NewsBelow({ news, isLoading }) {
                   key={index}
                   className="pl-4 sm:basis-1/2 lg:basis-1/3"
                 >
-                  <NewsProduct {...newsItem} />
+                  <NewsItem {...newsItem} />
                 </CarouselItem>
               ))}
         </CarouselContent>

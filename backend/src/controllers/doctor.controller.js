@@ -1,5 +1,6 @@
 const DoctorModel = require('../models/doctor.model');
 const { createError, errorValidator } = require("../utils/helper.util");
+const mongoose = require("mongoose");
 
 const getAllDoctors = async (req, res, next) => {
     try {
@@ -66,6 +67,88 @@ const getAllDoctorsBySpecialtyId = async (req, res, next) => {
     }
 };
 
+const getDoctorByBranchIdAndDoctorId = async (req, res, next) => {
+    try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        const { branchID, specialtyID } = req.body;
+
+        const totalRecords = await DoctorModel.countDocuments()
+
+        const doctors = await DoctorModel
+            .aggregate([
+                {
+                    $lookup: {
+                        from: 'Clinic',
+                        localField: 'specialtyID',
+                        foreignField: 'specialtyID',
+                        as: 'clinics'
+                    }
+                },
+                {
+                    $match: {
+                        'clinics.branchID': new mongoose.Types.ObjectId(branchID),
+                        '_id': new mongoose.Types.ObjectId(specialtyID),
+                    }
+                },
+            ]);
+
+
+        if (!doctors.length) {
+            createError(404, 'No doctor found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'Doctor retrieved successfully.',
+            data: doctors,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getAllDoctorsByBranchId = async (req, res, next) => {
+    try {
+        let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+        const { branchID, specialtyID } = req.body;
+
+        const totalRecords = await DoctorModel.countDocuments()
+
+        console.log({ branchID, specialtyID });
+        const doctors = await DoctorModel
+            .aggregate([
+                {
+                    $lookup: {
+                        from: 'Clinic',
+                        localField: 'specialtyID',
+                        foreignField: 'specialtyID',
+                        as: 'clinics'
+                    }
+                },
+                {
+                    $match: {
+                        'clinics.branchID': new mongoose.Types.ObjectId(branchID),
+                        'specialtyID': new mongoose.Types.ObjectId(specialtyID),
+                    }
+                },
+            ]);
+
+
+        if (!doctors.length) {
+            createError(404, 'No doctor found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'Doctor retrieved successfully.',
+            data: doctors,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 const getDoctorById = async (req, res, next) => {
     try {
         const { id } = req.params;
@@ -143,5 +226,7 @@ module.exports = {
     updateDoctor,
     getDoctorById,
     deleteDoctor,
-    getAllDoctorsBySpecialtyId
+    getAllDoctorsBySpecialtyId,
+    getAllDoctorsByBranchId,
+    getDoctorByBranchIdAndDoctorId
 };

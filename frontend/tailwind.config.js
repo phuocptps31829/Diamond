@@ -19,7 +19,10 @@ module.exports = {
     extend: {
       boxShadow: {
         custom:
-          "-2px -2px 5px rgba(109, 142, 195, .5), 3px 3px 10px rgba(109, 142, 196, .2)",
+
+          "-2px -2px 5px 5px rgba(109, 142, 195, .5), 3px 3px 10px rgba(109, 142, 196, .2)",
+        gray: 
+          "0px 0px 10px rgba(186, 186, 186, 0.7)",
       },
       colors: {
         border: "hsl(var(--border))",

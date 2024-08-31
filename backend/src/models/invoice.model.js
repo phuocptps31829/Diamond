@@ -1,11 +1,6 @@
 const mongoose = require("mongoose");
 
 const invoiceSchema = new mongoose.Schema({
-    patientID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Patient',
-        required: true
-    },
     serviceID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Service',
@@ -17,15 +12,13 @@ const invoiceSchema = new mongoose.Schema({
     prescriptionID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Prescription',
-        required: true
     },
-    totalPrice: {
+    price: {
         type: Number,
         required: true
     },
     arisePrice: {
         type: Number,
-        required: false
     },
     isDeleted: {
         type: Boolean,

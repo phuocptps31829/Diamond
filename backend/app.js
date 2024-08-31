@@ -9,7 +9,6 @@ const { createError } = require('./src/utils/helper.util');
 const newsRoutes = require('./src/routes/news.route');
 const doctorRoutes = require('./src/routes/doctor.route');
 const workScheduleRoutes = require('./src/routes/work-schedule.route');
-const clinicCapacityRoutes = require('./src/routes/clinic-capacity.route');
 
 const authRoutes = require('./src/routes/auth.route');
 const medicalPackageRoutes = require('./src/routes/medical-package.route');
@@ -27,6 +26,7 @@ const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
 const contactRoutes = require('./src/routes/contact.route');
+const provinceRoutes = require('./src/routes/province.route');
 const passportMiddleWare = require('./src/middlewares/passport.middleware');
 const app = express();
 
@@ -71,7 +71,6 @@ app.use('/api/v1/patients', patientsRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/work-schedules', workScheduleRoutes);
-app.use('/api/v1/clinic-capacity', clinicCapacityRoutes);
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
 });
