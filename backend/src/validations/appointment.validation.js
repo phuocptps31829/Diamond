@@ -59,16 +59,8 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Status should be a string'
         },
         isIn: {
-            options: [['Đã xác nhận', 'Đã hủy', 'Đang chờ', 'Đã khám']],
+            options: [['Đã xác nhận', 'Đã hủy', 'Chờ xác nhận', 'Đã khám']],
             errorMessage: 'Status is not valid'
-        }
-    },
-    isHelp: {
-        exists: {
-            errorMessage: 'Appointment or Service?'
-        },
-        isBoolean: {
-            errorMessage: 'Appointment or Service should be a boolean'
         }
     },
 });

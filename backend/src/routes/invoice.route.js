@@ -114,8 +114,38 @@ router.post(
  *                type: string
  *              price:
  *                type: number
- *              isHelp:
- *                type: string
+ *              appointmentHelpUser:
+ *                type: object
+ *                properties:
+ *                  fullName:
+ *                    type: string
+ *                  phoneNumber:
+ *                    type: string
+ *                  email:
+ *                    type: string
+ *                  gender:
+ *                    type: string
+ *                  dateOfBirth:
+ *                    type: string
+ *                  address:
+ *                    type: object
+ *                    properties:
+ *                      province:
+ *                        type: string
+ *                      district:
+ *                        type: string
+ *                      ward:
+ *                        type: string
+ *                      street:
+ *                        type: string
+ *                  citizenIdentificationNumber:
+ *                    type: number
+ *                  occupation:
+ *                    type: string
+ *                  ethnic:
+ *                    type: string
+ *                  password:
+ *                    type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -130,7 +160,7 @@ router.post(
  */
 router.post(
     '/payment/momo',
-    // appointmentValidator.appointmentValidator,
+    appointmentValidator.appointmentValidator,
     invoiceController.momoPayment
 );
 
@@ -199,8 +229,38 @@ router.post(
  *                type: string
  *              price:
  *                type: number
- *              isHelp:
- *                type: string
+ *              appointmentHelpUser:
+ *                type: object
+ *                properties:
+ *                  fullName:
+ *                    type: string
+ *                  phoneNumber:
+ *                    type: string
+ *                  email:
+ *                    type: string
+ *                  gender:
+ *                    type: string
+ *                  dateOfBirth:
+ *                    type: string
+ *                  address:
+ *                    type: object
+ *                    properties:
+ *                      province:
+ *                        type: string
+ *                      district:
+ *                        type: string
+ *                      ward:
+ *                        type: string
+ *                      street:
+ *                        type: string
+ *                  citizenIdentificationNumber:
+ *                    type: number
+ *                  occupation:
+ *                    type: string
+ *                  ethnic:
+ *                    type: string
+ *                  password:
+ *                    type: string
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -215,7 +275,7 @@ router.post(
  */
 router.post(
     '/payment/vnpay',
-    // appointmentValidator.appointmentValidator,
+    appointmentValidator.appointmentValidator,
     invoiceController.vnpayPayment
 );
 

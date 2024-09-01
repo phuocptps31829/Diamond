@@ -27,7 +27,7 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isHelp: {
+    appointmentHelpID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Appointment',
     },
     payment: {

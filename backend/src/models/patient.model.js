@@ -34,7 +34,8 @@ const patientSchema = new mongoose.Schema({
         note: {
             type: String
         },
-    }]
+    }],
+    relatedPatientsID: [mongoose.Schema.Types.ObjectId]
 }, {
     collection: 'Patient',
     timestamps: true

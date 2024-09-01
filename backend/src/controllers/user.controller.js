@@ -5,14 +5,16 @@ const { createError, errorValidator, hashValue } = require("../utils/helper.util
 
 const createUser = async (req, res, next) => {
     try {
-        console.log(req.newUser);
         errorValidator(req, res);
+
+        const newUserData = req.newUser || req.body;
+        console.log(newUserData);
 
         // Gửi otp và xác thực nếu thành công mới tạo tài khoản
 
-        const hashedPassword = await hashValue(req.newUser.password);
+        const hashedPassword = await hashValue(newUserData?.password || 'matkhaugiup');
         const newUser = await UserModel.create({
-            ...req.newUser,
+            ...newUserData,
             password: hashedPassword,
             isActivated: true
         });
