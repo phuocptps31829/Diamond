@@ -1,5 +1,5 @@
 const WorkScheduleModel = require('../models/work-schedule.model');
-const { createError, errorValidator } = require("../utils/helper.util");
+const { createError, errorValidator, timeDivision } = require("../utils/helper.util");
 const mongoose = require("mongoose");
 
 const getAllWorkSchedule = async (req, res, next) => {
@@ -65,52 +65,23 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'Appointment',
+                    localField: '_id',
+                    foreignField: 'workScheduleID',
+                    as: 'appointments'
+                }
+            },
+            {
                 $addFields: {
-                    hasCompleteDetails: {
-                        $not: {
-                            $in: [
-                                null,
-                                {
-                                    $map: {
-                                        input: "$detail",
-                                        as: "item",
-                                        in: "$$item.appointmentID"
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    appointmentsCount: { $size: "$appointments" }
                 }
             },
             {
                 $match: {
-                    hasCompleteDetails: false
+                    appointmentsCount: { $lte: 10 }
                 }
-            },
-            {
-                $group: {
-                    _id: { day: "$day" },
-                    clinicID: { $first: "$clinicID" },
-                    doctorID: { $first: "$doctorID" },
-                    details: { $push: "$detail" },
-                    isDeleted: { $first: "$isDeleted" },
-                    createdAt: { $first: "$createdAt" },
-                    updatedAt: { $first: "$updatedAt" },
-                    clinics: { $first: "$clinics" },
-                    hasCompleteDetails: { $first: "$hasCompleteDetails" }
-                }
-            },
-            {
-                $addFields: {
-                    detail: {
-                        $reduce: {
-                            input: "$details",
-                            initialValue: [],
-                            in: { $concatArrays: ["$$value", "$$this"] }
-                        }
-                    }
-                }
-            },
+            }
         ];
 
         if (startDay) {
@@ -136,10 +107,25 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
             });
         }
 
+        pipeline.push({
+            $group: {
+                _id: { day: "$day" },
+                doctorID: { $first: "$doctorID" },
+                hour: {
+                    $push: {
+                        time: "$hour",
+                        workScheduleID: "$_id",
+                        clinicID: "$clinicID"
+                    }
+                },
+            }
+        });
+
         const countPipeline = [...pipeline];
         countPipeline.push({
             $count: "totalRecords"
         });
+
         const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
 
         console.log(totalRecords);
@@ -159,6 +145,20 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
         );
 
         const workSchedule = await WorkScheduleModel.aggregate(pipeline);
+
+        workSchedule.forEach(element => {
+
+            element.hour = element.hour.map(item => {
+
+                const arrTime = timeDivision(item.time.startTime, item.time.endTime);
+
+                return {
+                    ...item,
+                    time: arrTime
+                };
+            });
+
+        });
 
         if (!workSchedule.length) {
             createError(404, 'No work schedule found.');
@@ -201,52 +201,24 @@ const getAllWorkScheduleWithBranch = async (req, res, next) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'Appointment',
+                    localField: '_id',
+                    foreignField: 'workScheduleID',
+                    as: 'appointments'
+                }
+            },
+            {
                 $addFields: {
-                    hasCompleteDetails: {
-                        $not: {
-                            $in: [
-                                null,
-                                {
-                                    $map: {
-                                        input: "$detail",
-                                        as: "item",
-                                        in: "$$item.appointmentID"
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                    appointmentsCount: { $size: "$appointments" }
                 }
             },
             {
                 $match: {
-                    hasCompleteDetails: false
+                    appointmentsCount: { $lte: 10 }
                 }
-            },
-            {
-                $group: {
-                    _id: { day: "$day" },
-                    clinicID: { $push: "$clinicID" },
-                    doctorIDs: { $push: "$doctorID" },
-                    details: { $push: "$detail" },
-                    isDeleted: { $first: "$isDeleted" },
-                    createdAt: { $first: "$createdAt" },
-                    updatedAt: { $first: "$updatedAt" },
-                    clinics: { $first: "$clinics" },
-                    hasCompleteDetails: { $first: "$hasCompleteDetails" },
-                }
-            },
-            {
-                $addFields: {
-                    detail: {
-                        $reduce: {
-                            input: "$details",
-                            initialValue: [],
-                            in: { $concatArrays: ["$$value", "$$this"] }
-                        }
-                    }
-                }
-            },
+            }
+
         ];
 
         if (startDay) {
@@ -272,7 +244,19 @@ const getAllWorkScheduleWithBranch = async (req, res, next) => {
                 }
             });
         }
-
+        pipeline.push({
+            $group: {
+                _id: { day: "$day" },
+                doctorID: { $first: "$doctorID" },
+                hour: {
+                    $push: {
+                        time: "$hour",
+                        workScheduleID: "$_id",
+                        clinicID: "$clinicID"
+                    }
+                },
+            }
+        });
         const countPipeline = [...pipeline];
         countPipeline.push({
             $count: "totalRecords"
@@ -296,7 +280,19 @@ const getAllWorkScheduleWithBranch = async (req, res, next) => {
         );
 
         const workSchedule = await WorkScheduleModel.aggregate(pipeline);
+        // workSchedule.forEach(element => {
 
+        //     element.hour = element.hour.map(item => {
+
+        //         const arrTime = timeDivision(item.time.startTime, item.time.endTime);
+
+        //         return {
+        //             ...item,
+        //             time: arrTime
+        //         };
+        //     });
+
+        // });
         if (!workSchedule.length) {
             createError(404, 'No work schedule found.');
         }
@@ -344,10 +340,38 @@ const getWorkScheduleById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const workSchedule = await WorkScheduleModel.findOne({
-            _id: id,
-            isDeleted: false,
-        });
+        const workSchedule = await WorkScheduleModel
+            .aggregate(
+                [{
+                    $match: {
+                        '_id': new mongoose.Types.ObjectId(id),
+                        'isDeleted': false
+                    }
+                }, {
+                    $lookup: {
+                        from: 'Clinic',
+                        localField: 'clinicID',
+                        foreignField: '_id',
+                        as: 'clinics'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'Doctor',
+                        localField: 'doctorID',
+                        foreignField: '_id',
+                        as: 'doctors'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'User',
+                        localField: 'doctors.userID',
+                        foreignField: '_id',
+                        as: 'users'
+                    }
+                }]
+            );
 
         if (!workSchedule) {
             createError(404, 'WorkSchedule not found.');

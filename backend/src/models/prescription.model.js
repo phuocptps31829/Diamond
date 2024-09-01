@@ -7,9 +7,9 @@ const prescriptionSchema = new mongoose.Schema({
         required: true
     },
     medicines: [{
-        medicineImportID: {
+        medicineID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'MedicineImport',
+            ref: 'Medicine',
             required: true,
         },
         quantity: {

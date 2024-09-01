@@ -223,7 +223,7 @@ router.get(
  *            required:
  *              - doctorID
  *              - day
- *              - detail
+ *              - hour
  *            properties:
  *              doctorID:
  *                type: string
@@ -231,14 +231,12 @@ router.get(
  *                type: string
  *              clinicID: 
  *                type: string
- *              detail:
- *                type: array
- *                items:          
- *                  type: object
- *                  properties:
- *                    appointmentID:
- *                      type: string
- *                    hour:
+ *              hour:
+ *                type: object
+ *                properties:
+ *                  startTime:
+ *                    type: string
+ *                  endTime:
  *                      type: string
  *    responses:
  *      '201':
@@ -282,7 +280,7 @@ router.post(
  *            required:
  *              - doctorID
  *              - day
- *              - details
+ *              - hour
  *            properties:
  *              doctorID:
  *                type: string
@@ -290,14 +288,14 @@ router.post(
  *                type: string
  *              clinicID: 
  *                type: string
- *              detail:
- *                type: array
+ *              hour:
+ *                type: object
  *                items:          
  *                  type: object
  *                  properties:
- *                    appointmentID:
+ *                    startTime:
  *                      type: string
- *                    hour:
+ *                    endTime:
  *                      type: string
  *    responses:
  *      '201':

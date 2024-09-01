@@ -24,24 +24,20 @@ const workScheduleValidator = checkSchema({
             errorMessage: 'Invalid clinic ID'
         }
     },
-    'detail.hour': {
+    'hour.startTime': {
         optional: true,
         matches: {
-            options: [/^([01]\d|2[0-3]):([0-5]\d)-([01]\d|2[0-3]):([0-5]\d)$/],
-            errorMessage: "Invalid time format. The correct format is HH:mm-HH:mm."
+            options: [/^([01]\d|2[0-3]):([0-5]\d)$/],
+            errorMessage: "Invalid time format. The correct format is HH:mm."
         }
     },
-    'detail.appointmentID': {
-        customSanitizer: {
-            options: (id) => {
-                if (id && id.trim() !== '') {
-                    return checkIsExistID(AppointmentModel, id);
-                }
-                return id;
-            },
-        },
-        optional: { options: { nullable: true, checkFalsy: true } },
-    },
+    'hour.endTime': {
+        optional: true,
+        matches: {
+            options: [/^([01]\d|2[0-3]):([0-5]\d)$/],
+            errorMessage: "Invalid time format. The correct format is HH:mm."
+        }
+    }
 });
 
 module.exports = {

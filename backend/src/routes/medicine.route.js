@@ -91,6 +91,7 @@ router.get(
  *              - type
  *              - instruction
  *              - note
+ *              - price
  *            properties:
  *              medicineCategoryID:
  *                type: string
@@ -110,6 +111,8 @@ router.get(
  *                type: string
  *              note:
  *                type: string
+ *              price:
+ *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
@@ -158,6 +161,7 @@ router.post(
  *              - type
  *              - instruction
  *              - note
+ *              - price
  *            properties:
  *              medicineCategoryID:
  *                type: string
@@ -177,6 +181,8 @@ router.post(
  *                type: string
  *              note:
  *                type: string
+ *              price:
+ *                type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'
