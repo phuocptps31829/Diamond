@@ -101,6 +101,80 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/doctors/branch':
+ *  post:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get doctors by branch ID and specialty ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              branchID:
+ *                type: string
+ *                description: ID of the branch
+ *              specialtyID:
+ *                type: string
+ *                description: ID of the specialty
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+
+router.post(
+    '/branch',
+    helperMiddleware.checkQueryParams,
+    doctorController.getAllDoctorsByBranchId
+);
+
+/**
+ * @openapi
+ * '/api/v1/doctors/branch-doctor':
+ *  post:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get doctors by branch ID and specialty ID
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              branchID:
+ *                type: string
+ *                description: ID of the branch
+ *              doctorID:
+ *                type: string
+ *                description: ID of the doctor
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '400':
+ *        $ref: '#/components/responses/400'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+ */
+
+router.post(
+    '/branch-doctor',
+    helperMiddleware.checkQueryParams,
+    doctorController.getDoctorByBranchIdAndDoctorId
+);
+
+/**
+ * @openapi
  * '/api/v1/doctors/add':
  *  post:
  *    tags:

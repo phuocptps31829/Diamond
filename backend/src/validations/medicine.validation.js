@@ -1,7 +1,7 @@
 const { checkSchema } = require('express-validator');
 const { checkIsExistID } = require('../utils/database.util');
 const MedicineModel = require('../models/medicine.model');
-const MedicineCategoryModel = require('../models/medicine.model');
+const MedicineCategoryModel = require('../models/medicine-category.model');
 
 const medicineValidator = checkSchema({
     medicineCategoryID: {
@@ -80,7 +80,15 @@ const medicineValidator = checkSchema({
             errorMessage: 'Note should be a string'
         },
         trim: true
-    }
+    },
+    price: {
+        exists: {
+            errorMessage: 'Price is required'
+        },
+        isNumeric: {
+            errorMessage: 'Price should be a number'
+        }
+    },
 
 });
 

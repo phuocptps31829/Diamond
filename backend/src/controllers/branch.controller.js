@@ -1,5 +1,6 @@
 const BranchModel = require('../models/branch.model');
 const { createError, errorValidator } = require("../utils/helper.util");
+const mongoose = require("mongoose");
 
 const getAllBranches = async (req, res, next) => {
     try {
@@ -36,6 +37,42 @@ const getBranchByID = async (req, res, next) => {
             isDeleted: false,
             _id: id
         });
+
+        if (!branch) {
+            createError(404, "Branch not found.");
+        }
+
+        return res.status(200).json({
+            message: 'Branch retrieved successfully.',
+            data: branch,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getBranchBySpecialtyID = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'Clinic',
+                    localField: '_id',
+                    foreignField: 'branchID',
+                    as: 'clinics'
+                }
+            },
+            {
+                $match: {
+                    'clinics.specialtyID': new mongoose.Types.ObjectId(id)
+                }
+            }
+        ];
+
+        const branch = await BranchModel.aggregate(pipeline);
+
 
         if (!branch) {
             createError(404, "Branch not found.");
@@ -121,5 +158,6 @@ module.exports = {
     getBranchByID,
     createBranch,
     updateBranch,
-    deleteBranch
+    deleteBranch,
+    getBranchBySpecialtyID
 };

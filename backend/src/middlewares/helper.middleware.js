@@ -21,7 +21,29 @@ const checkValidId = (req, res, next) => {
 };
 const checkValueQuery = (req, res, next) => {
     try {
-        let { branchID = null, specialtyID = null, gender = null } = req.query;
+        let { branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null } = req.query;
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (startDay) {
+            if (!dateRegex.test(startDay)) {
+                createError(400, `Invalid start day format. Expected format is YYYY-MM-DD.`);
+            }
+        }
+
+        if (endDay) {
+            if (!dateRegex.test(endDay)) {
+                createError(400, `Invalid end day format. Expected format is YYYY-MM-DD.`);
+            }
+        }
+
+        if (startDay && endDay) {
+            const startDate = new Date(startDay);
+            const endDate = new Date(endDay);
+
+            if (endDate < startDate) {
+                createError(400, `The end day (${endDay}) must be greater than or equal to the start day (${startDay})`);
+            }
+        }
 
         if (Array.isArray(gender)) {
             if (gender.includes('Nam') && gender.includes('Nữ')) {
@@ -57,7 +79,9 @@ const checkValueQuery = (req, res, next) => {
         req.checkValueQuery = {
             branchID,
             specialtyID,
-            gender
+            gender,
+            startDay,
+            endDay,
         };
 
         next();
