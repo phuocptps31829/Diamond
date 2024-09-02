@@ -105,20 +105,28 @@ router.get(
  *  post:
  *    tags:
  *    - Doctor Routes
- *    summary: Get doctors by branch ID and specialty ID
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              branchID:
- *                type: string
- *                description: ID of the branch
- *              specialtyID:
- *                type: string
- *                description: ID of the specialty
+ *    summary: Get doctor by specialty id and branch id
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -132,6 +140,7 @@ router.get(
 
 router.post(
     '/branch',
+    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     doctorController.getAllDoctorsByBranchId
 );

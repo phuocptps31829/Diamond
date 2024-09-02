@@ -43,18 +43,12 @@ router.get(
 
 /**
  * @openapi
- * '/api/v1/work-schedules/doctor/{id}':
+ * '/api/v1/work-schedules/doctor':
  *  get:
  *    tags:
  *    - Work schedule Routes
  *    summary: Get Work schedule by id
  *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        description: Doctor id
- *        schema:
- *          type: string
  *      - in: query
  *        name: page
  *        schema:
@@ -76,6 +70,10 @@ router.get(
  *        schema:
  *          type: string
  *      - in: query
+ *        name: doctorID
+ *        schema:
+ *          type: string
+ *      - in: query
  *        name: branchID
  *        schema:
  *          type: string
@@ -88,7 +86,7 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/doctor/:id',
+    '/doctor',
     helperMiddleware.checkValidId,
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

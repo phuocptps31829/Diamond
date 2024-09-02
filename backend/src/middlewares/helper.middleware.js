@@ -21,7 +21,7 @@ const checkValidId = (req, res, next) => {
 };
 const checkValueQuery = (req, res, next) => {
     try {
-        let { branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null } = req.query;
+        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null } = req.query;
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
         if (startDay) {
@@ -61,6 +61,18 @@ const checkValueQuery = (req, res, next) => {
             specialtyID = [specialtyID];
         }
 
+        if (doctorID && !Array.isArray(doctorID)) {
+            doctorID = [doctorID];
+        }
+
+        if (doctorID) {
+            doctorID.forEach(id => {
+                if (!mongoose.isValidObjectId(id)) {
+                    createError(400, `Invalid doctorID: ${id}`);
+                }
+            });
+        }
+
         if (branchID) {
             branchID.forEach(id => {
                 if (!mongoose.isValidObjectId(id)) {
@@ -76,7 +88,9 @@ const checkValueQuery = (req, res, next) => {
                 }
             });
         }
+
         req.checkValueQuery = {
+            doctorID,
             branchID,
             specialtyID,
             gender,
