@@ -2,29 +2,29 @@ const { checkSchema } = require('express-validator');
 const { checkIsExistID } = require('../utils/database.util');
 
 const PatientModel = require('../models/patient.model');
+const ServiceModel = require('../models/service.model');
+const MedicalPackageModel = require('../models/medical-package.model');
 const WorkScheduleModel = require('../models/work-schedule.model');
 
 const appointmentValidator = checkSchema({
     patientID: {
         customSanitizer: {
-            options: (id) => checkIsExistID(PatientModel, id),
+            options: (id) => checkIsExistID(PatientModel, id, true),
         }
     },
     workScheduleID: {
         customSanitizer: {
-            options: (id) => checkIsExistID(WorkScheduleModel, id),
+            options: (id) => checkIsExistID(WorkScheduleModel, id, true),
         }
     },
     serviceID: {
-        optional: true,
-        isMongoId: {
-            errorMessage: 'Invalid Service ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(ServiceModel, id),
         }
     },
     medicalPackageID: {
-        optional: true,
-        isMongoId: {
-            errorMessage: 'Invalid Medical Package ID'
+        customSanitizer: {
+            options: (id) => checkIsExistID(MedicalPackageModel, id),
         }
     },
     type: {

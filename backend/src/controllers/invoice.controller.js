@@ -338,6 +338,36 @@ const momoPaymentCallback = async (req, res, next) => {
             appointmentHelpID
         });
 
+        const appointmentIDsInDay = await AppointmentModel
+            .find({
+                time: {
+                    $gte: `${newAppointment.time.slice(0, 10)}T00:00:00.000Z`,
+                    $lt: `${newAppointment.time.slice(0, 10)}T23:59:59.999Z`
+                }
+            })
+            .select("_id");
+
+        console.log(appointmentIDsInDay);
+
+        const lastOrderNumberInDay = await OrderNumberModel
+            .find({
+                appointmentID: {
+                    $in: appointmentIDsInDay.map(id => new mongoose.Types.ObjectId(id))
+                }
+            })
+            .sort({ number: -1 })
+            .limit(1);
+
+        console.log("last", lastOrderNumberInDay);
+
+        const newOrderNumber = await OrderNumberModel.create({
+            appointmentID: appointmentHelpID || newAppointment._id,
+            number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
+            priority: 0
+        });
+
+        console.log('newor', newOrderNumber);
+
         const newInvoice = await InvoiceModel.create({
             appointmentID: newAppointment._id,
             price: +amount,
@@ -595,7 +625,7 @@ const vnpayReturn = async (req, res, next) => {
 
             const newOrderNumber = await OrderNumberModel.create({
                 appointmentID: appointmentHelpID || newAppointment._id,
-                number: +lastOrderNumberInDay[0].number + 1,
+                number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
                 priority: 0
             });
 
