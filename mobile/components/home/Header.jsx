@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -74,6 +75,7 @@ const buttons = [
 ];
 
 const Header = () => {
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
@@ -133,7 +135,7 @@ const Header = () => {
             <TouchableOpacity
               className="bg-[#00000096] black w-8 h-8 rounded-full flex justify-center items-center"
               onPress={() => {
-                console.log("Button pressed!");
+                router.push("/Notification");
               }}
             >
               <Text className="text-white">

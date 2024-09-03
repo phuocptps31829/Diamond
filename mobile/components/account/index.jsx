@@ -4,7 +4,7 @@ import MenuList from "./MenuList";
 
 const Account = () => {
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <UserProfileHeader />
       <MenuList />
     </ScrollView>

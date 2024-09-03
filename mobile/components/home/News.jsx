@@ -1,6 +1,8 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 const News = () => {
+  const router = useRouter();
   return (
     <View className="p-4">
       <View className="flex items-center justify-between flex-row">
@@ -8,7 +10,7 @@ const News = () => {
         <TouchableOpacity
           className="flex-columns items-center justify-center gap-2"
           onPress={() => {
-            console.log("Button pressed!");
+            router.push("/News");
           }}
         >
           <Text className="text-blue-500 font-semibold underline">
@@ -18,7 +20,7 @@ const News = () => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          console.log("Button pressed!");
+          router.push("/DetailNews");
         }}
       >
         <Image
@@ -36,7 +38,7 @@ const News = () => {
           key={index}
           className="h-[100px] flex-row bg-white rounded-lg mt-6 shadow-sm"
           onPress={() => {
-            console.log("Button pressed!");
+            router.push("/DetailNews");
           }}
         >
           <Image
@@ -74,7 +76,7 @@ const News = () => {
               <TouchableOpacity
                 className="bg-[#007BBB] px-4 py-1 rounded-[99px]"
                 onPress={() => {
-                  console.log("Button pressed!");
+                  router.push("/DetailNews");
                 }}
               >
                 <Text className="text-white">Chi tiết</Text>
