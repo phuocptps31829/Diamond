@@ -4,7 +4,7 @@ import MenuList from "./MenuList";
 
 const Account = () => {
   return (
-    <ScrollView className="bg-[#E8F2F7]" showsVerticalScrollIndicator={false}>
+    <ScrollView>
       <UserProfileHeader />
       <MenuList />
     </ScrollView>
