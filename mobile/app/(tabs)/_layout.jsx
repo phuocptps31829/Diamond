@@ -16,7 +16,7 @@ const TabIcon = ({ image, color, name, focused }) => {
         <Image
           source={{ uri: image }}
           style={{
-            tintColor: name === "Trang chủ" ? "#FFFF" : color,
+            tintColor: name === "Trang chủ" ? "#ffff" : color,
           }}
           className={`${name === "Trang chủ" ? " " : "w-8 h-8"} w-8 h-8`}
         />
@@ -111,7 +111,7 @@ const TabsLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="user"
+          name="account"
           options={{
             title: "User",
             headerShown: false,
