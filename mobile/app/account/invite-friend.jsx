@@ -1,8 +1,7 @@
-import { Stack } from "expo-router";
-import { Text, View } from "react-native";
+import InviteFriend from "../../components/account/InviteFriend";
 
-const InviteFriend = () => {
-  return <Text>HI</Text>;
+const InviteFriendScreen = () => {
+  return <InviteFriend />;
 };
 
-export default InviteFriend;
+export default InviteFriendScreen;

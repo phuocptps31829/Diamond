@@ -3,25 +3,18 @@ import HeaderScreen from "../../components/ui/HeaderScreen";
 
 const AccountLayout = () => {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "#007BBB",
-        },
-        headerTintColor: "#ffffff",
-      }}
-    >
+    <Stack>
       <Stack.Screen
         name="change-password"
-        options={{
+        options={ {
           header: () => <HeaderScreen title="Thay đổi mật khẩu" />,
-        }}
+        } }
       />
       <Stack.Screen
         name="invite-friend"
-        options={{
+        options={ {
           header: () => <HeaderScreen title="Giới thiệu bạn bè" />,
-        }}
+        } }
       />
     </Stack>
   );
