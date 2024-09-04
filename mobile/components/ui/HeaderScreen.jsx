@@ -12,11 +12,11 @@ const HeaderScreen = ({ title }) => {
       <TouchableOpacity onPress={ () => router.back() }>
         <Ionicons
           name="chevron-back-outline"
-          size={ 28 }
+          size={ 26 }
           color="white"
         />
       </TouchableOpacity>
-      <Text className="text-lg text-white font-semibold">{ title }</Text>
+      <Text className="text-[15px] text-white font-semibold">{ title }</Text>
       <View className="opacity-0">
         <MaterialIcons name="navigate-next" size={ 28 } color="black" />
       </View>

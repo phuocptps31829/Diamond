@@ -6,60 +6,66 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={ {
+        options={{
           title: "Home pageeees",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        } }
+        }}
       />
       <Stack.Screen
         name="(tabs)"
-        options={ {
+        options={{
           title: "Tab",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        } }
+        }}
       />
       <Stack.Screen
         name="account"
-        options={ {
+        options={{
           title: "Account",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        } }
+        }}
       />
       <Stack.Screen
         name="News"
-        options={ {
+        options={{
           header: () => <HeaderScreen title="Tin tức và sự kiện" />,
-        } }
+        }}
       />
       <Stack.Screen
         name="DetailNews"
-        options={ {
+        options={{
           header: () => <HeaderScreen title="Y học - Sức khỏe" />,
-        } }
+        }}
       />
       <Stack.Screen
         name="Notification"
-        options={ {
+        options={{
           header: () => <HeaderScreen title="Thông báo" />,
-        } }
+        }}
       />
       <Stack.Screen
         name="doctor-ai"
-        options={ {
+        options={{
           header: () => <HeaderScreen title="Bác sĩ AI" />,
-        } }
+        }}
+      />
+      <Stack.Screen
+        name="ClinicSystem"
+        options={{
+          header: () => <HeaderScreen title="Hệ thống phòng khám" />,
+        }}
       />
     </Stack>
   );

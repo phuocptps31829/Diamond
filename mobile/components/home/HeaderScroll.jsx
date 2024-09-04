@@ -1,40 +1,11 @@
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
-const buttons = [
-  {
-    id: 1,
-    icon: <AntDesign name="calendar" size={15} color="white" />,
-    title: "Đặt hẹn",
-    colorOne: "#0E7999",
-    colorTwo: "#9789CD",
-  },
-  {
-    id: 2,
-    icon: <FontAwesome6 name="hospital-user" size={15} color="white" />,
-    title: "Bệnh án điện tử",
-    colorOne: "#93C4FC",
-    colorTwo: "#D8C3FC",
-  },
-  {
-    id: 3,
-    icon: <FontAwesome5 name="hospital" size={15} color="white" />,
-    title: "Hệ thống PK",
-    colorOne: "#009BAC",
-    colorTwo: "#007A96",
-  },
-  {
-    id: 4,
-    icon: <FontAwesome5 name="robot" size={15} color="white" />,
-    title: "Bác sĩ AI",
-    colorOne: "#FCA381",
-    colorTwo: "#F7CF67",
-  },
-];
+import { buttons } from "../../constants/nav-home-buttons";
+
 const HeaderScroll = ({ showView }) => {
+  const router = useRouter();
   return (
     <>
       <View className="absolute z-50">
@@ -47,9 +18,7 @@ const HeaderScroll = ({ showView }) => {
             {buttons.map((item) => (
               <TouchableOpacity
                 className="flex-columns items-center justify-center gap-2"
-                onPress={() => {
-                  console.log("Button pressed!");
-                }}
+                onPress={() => router.push(item.navigateTo)}
               >
                 <LinearGradient
                   colors={[item.colorOne, item.colorTwo]}
