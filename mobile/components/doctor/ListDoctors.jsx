@@ -75,7 +75,7 @@ const ListDoctors = () => {
             >
               <Pressable
                 onPress={() => {
-                  router.push("/DetailDoctor");
+                  router.push("/detail-doctor");
                 }}
               >
                 <Image
@@ -87,7 +87,7 @@ const ListDoctors = () => {
                 <Pressable
                   className="space-y-1"
                   onPress={() => {
-                    router.push("/DetailDoctor");
+                    router.push("/detail-doctor");
                   }}
                 >
                   <Text className="font-bold">BS. {item.name}</Text>
@@ -98,7 +98,7 @@ const ListDoctors = () => {
                 <View className="flex-row items-center justify-between">
                   <Pressable
                     onPress={() => {
-                      router.push("/DetailDoctor");
+                      router.push("/detail-doctor");
                     }}
                   >
                     <Text className="text-blue-500 text-[12px] font-semibold italic">
@@ -108,7 +108,7 @@ const ListDoctors = () => {
                   <Pressable
                     className="self-end border border-blue-500 px-4 py-2 rounded-[999px]"
                     onPress={() => {
-                      router.push("/DetailDoctor");
+                      router.push("/detail-doctor");
                     }}
                   >
                     <Text className="font-semibold text-[12px]">
