@@ -9,12 +9,12 @@ const HeaderScreen = ({ title }) => {
 
   return (
     <View className="flex px-4 justify-between bg-primary-500 items-center flex-row pt-16 pb-4">
-      <TouchableOpacity onPress={() => router.back()}>
-        <Ionicons name="chevron-back-outline" size={26} color="white" />
+      <TouchableOpacity onPress={ () => router.back() }>
+        <Ionicons name="chevron-back-outline" size={ 26 } color="white" />
       </TouchableOpacity>
-      <Text className="text-[15px] text-white font-semibold">{title}</Text>
+      <Text className="text-base text-white font-semibold">{ title }</Text>
       <View className="opacity-0">
-        <MaterialIcons name="navigate-next" size={28} color="black" />
+        <MaterialIcons name="navigate-next" size={ 26 } color="black" />
       </View>
     </View>
   );

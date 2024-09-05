@@ -1,6 +1,4 @@
-import { Stack } from "expo-router";
-import { View } from "react-native";
-import ChangePassword from "../../components/account/change-password";
+import ChangePassword from "../../components/account/ChangePassword";
 
 const ChangePasswordScreen = () => {
   return <ChangePassword />;

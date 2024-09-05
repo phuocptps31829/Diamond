@@ -7,13 +7,13 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 export const menuItems = [
     {
         icon: <FontAwesome name="history" size={ 24 } color="#FBCC50" />,
-        text: "Lịch sử khám",
-        navigateTo: '/account/change-password',
+        text: "Lịch sử đặt khám",
+        navigateTo: '/account/history-appointment',
     },
     {
         icon: <FontAwesome5 name="file-medical-alt" size={ 24 } color="#FBCC50" />,
         text: "Bệnh án điện tử",
-        navigateTo: '/account/change-password',
+        navigateTo: '/account/medical-record',
     },
     {
         icon: <FontAwesome6 name="house-medical-flag" size={ 24 } color="#FBCC50" />,
