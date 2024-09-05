@@ -17,7 +17,7 @@ const Index = () => {
   return (
     <ScrollView
       className="bg-white"
-      contentContainerStyle={{
+      contentContainerStyle={{  
         height: "100%",
       }}
     >

@@ -5,6 +5,7 @@ import {
   Image,
   useWindowDimensions,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useRef, useEffect } from "react";
@@ -47,13 +48,14 @@ const Header = () => {
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
   return (
     <>
+      <StatusBar barStyle="light-content" />
       <View className="bg-[#007BBB] w-screen pb-14 rounded-b-[30px] relative mb-12">
         <View className="mt-14 flex-row justify-between items-center w-full px-4">
           <View className="flex-row items-center gap-3">
             <Image
-              source={ {
+              source={{
                 uri: "https://s.pro.vn/qNZX",
-              } }
+              }}
               className="w-[45px] h-[45px] rounded-full"
             />
             <View className="space-y-1">
@@ -64,73 +66,74 @@ const Header = () => {
           <View className="flex-row gap-2">
             <TouchableOpacity
               className="bg-[#00000096] black w-8 h-8 rounded-full flex justify-center items-center"
-              onPress={ () => {
+              onPress={() => {
                 console.log("Button pressed!");
-              } }
+              }}
             >
               <Text className="text-white">
-                <Ionicons name="calendar" size={ 15 } color="white" />
+                <Ionicons name="calendar" size={15} color="white" />
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               className="bg-[#00000096] black w-8 h-8 rounded-full flex justify-center items-center"
-              onPress={ () => {
+              onPress={() => {
                 router.push("/Notification");
-              } }
+              }}
             >
               <Text className="text-white">
-                <FontAwesome name="bell" size={ 15 } color="white" />
+                <FontAwesome name="bell" size={15} color="white" />
               </Text>
             </TouchableOpacity>
           </View>
         </View>
         <View className="relative">
           <FlatList
-            ref={ flatListRef }
-            data={ itemsBanner }
+            ref={flatListRef}
+            data={itemsBanner}
             className="mt-6"
-            renderItem={ ({ item }) => (
-              <View style={ [{ width: width }] } className="px-4">
+            renderItem={({ item }) => (
+              <View style={[{ width: width }]} className="px-4">
                 <Image
-                  source={ {
+                  source={{
                     uri: item.image,
-                  } }
-                  style={ [{ height: 170, borderRadius: 20 }] }
+                  }}
+                  style={[{ height: 170, borderRadius: 20 }]}
                 />
               </View>
-            ) }
+            )}
             horizontal
-            showsHorizontalScrollIndicator={ false }
+            showsHorizontalScrollIndicator={false}
             pagingEnabled
-            onViewableItemsChanged={ onViewRef.current }
-            viewabilityConfig={ viewConfigRef.current }
+            onViewableItemsChanged={onViewRef.current}
+            viewabilityConfig={viewConfigRef.current}
           />
           <View className="absolute flex-row gap-1 bottom-2 w-full justify-center items-center">
-            { itemsBanner.map((_, index) => (
+            {itemsBanner.map((_, index) => (
               <View
-                key={ index }
-                className={ `w-2 h-2 rounded-full ${index === currentIndex ? "bg-[#007BBB]" : "bg-white"
-                  }` }
+                key={index}
+                className={`w-2 h-2 rounded-full ${
+                  index === currentIndex ? "bg-[#007BBB]" : "bg-white"
+                }`}
               />
-            )) }
+            ))}
           </View>
         </View>
         <View className="absolute w-full px-4 -bottom-10 left-0 ">
           <View className="w-full bg-white rounded-lg p-3 px-4 shadow-sm flex-row justify-between ">
-            { buttons.map((item) => (
+            {buttons.map((item) => (
               <TouchableOpacity
                 className="flex-columns items-center justify-center gap-2"
-                onPress={ () => router.push(item.navigateTo) }
+                onPress={() => router.push(item.navigateTo)}
               >
                 <LinearGradient
-                  colors={ [item.colorOne, item.colorTwo] }
+                  colors={[item.colorOne, item.colorTwo]}
                   className="rounded-md h-[32px] w-[35px] justify-center items-center"
                 >
-                  { item.icon }
+                  {item.icon}
                 </LinearGradient>
-                <Text className="font-semibold text-[11px]">{ item.title }</Text>
+                <Text className="font-semibold text-[11px]">{item.title}</Text>
               </TouchableOpacity>
-            )) }
+            ))}
           </View>
         </View>
       </View>

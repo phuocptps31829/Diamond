@@ -38,6 +38,17 @@ export default function RootLayout() {
         }}
       />
       <Stack.Screen
+        name="Doctor"
+        options={{
+          title: "Doctor",
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: "blue",
+          },
+          headerTintColor: "white",
+        }}
+      />
+      <Stack.Screen
         name="News"
         options={{
           header: () => <HeaderScreen title="Tin tức và sự kiện" />,
