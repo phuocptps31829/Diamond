@@ -91,8 +91,8 @@ const Header = () => {
             ref={flatListRef}
             data={itemsBanner}
             className="mt-6"
-            renderItem={({ item }) => (
-              <View style={[{ width: width }]} className="px-4">
+            renderItem={({ item, index }) => (
+              <View style={[{ width: width }]} className="px-4" key={index}>
                 <Image
                   source={{
                     uri: item.image,
@@ -120,8 +120,9 @@ const Header = () => {
         </View>
         <View className="absolute w-full px-4 -bottom-10 left-0 ">
           <View className="w-full bg-white rounded-lg p-3 px-4 shadow-sm flex-row justify-between ">
-            {buttons.map((item) => (
+            {buttons.map((item, index) => (
               <TouchableOpacity
+                key={index}
                 className="flex-columns items-center justify-center gap-2"
                 onPress={() => router.push(item.navigateTo)}
               >

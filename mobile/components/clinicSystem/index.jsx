@@ -4,6 +4,7 @@ import WorldMap from "./MapView";
 import Clinics from "./Clinics";
 import GoThereButton from "./GoThereButton";
 import MyLocationButton from "./MyLocationButton";
+import { Platform, Linking } from "react-native";
 
 const dataClinic = [
   {
@@ -72,6 +73,7 @@ const ClinicMapSystem = () => {
   }, []);
 
   const handleZoomToCurrentLocation = () => {
+    console.log("Zoom to current location");
     if (location) {
       mapRef.current.animateToRegion(location, 2000);
     }

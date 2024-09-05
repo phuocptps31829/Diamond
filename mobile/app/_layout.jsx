@@ -78,6 +78,12 @@ export default function RootLayout() {
           header: () => <HeaderScreen title="Hệ thống phòng khám" />,
         }}
       />
+      <Stack.Screen
+        name="DetailDoctor"
+        options={{
+          header: () => <HeaderScreen title="Thông tin Bác sĩ" />,
+        }}
+      />
     </Stack>
   );
 }
