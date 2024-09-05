@@ -565,8 +565,7 @@ const vnpayReturn = async (req, res, next) => {
         let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
 
         if (secureHash === signed) {
-            let appointmentHelpID = null;
-            console.log(vnpayAppointmentData.appointmentHelpUser);
+            let newAppointment = null;
             if (vnpayAppointmentData.appointmentHelpUser) {
                 const newPatient = await axios.post(
                     process.env.SERVER_LOCAL_API_URL + '/patients/add-full-info',
@@ -579,13 +578,12 @@ const vnpayReturn = async (req, res, next) => {
                 );
 
                 console.log("datat", newPatient.data.data);
-                const newAppointmentHelp = await AppointmentModel.create({
+                newAppointment = await AppointmentModel.create({
                     ...vnpayAppointmentData,
                     patientID: newPatient.data.data._id,
-                    appointmentHelpID: null
+                    patientHelpID: vnpayAppointmentData.patientID
                 });
-                appointmentHelpID = newAppointmentHelp._id;
-                console.log('for help', newAppointmentHelp);
+                console.log('for help', newAppointment);
 
                 const updatedPatient = await PatientModel.findByIdAndUpdate(
                     vnpayAppointmentData.patientID,
@@ -594,12 +592,11 @@ const vnpayReturn = async (req, res, next) => {
                 );
 
                 console.log('update', updatedPatient);
+            } else {
+                newAppointment = await AppointmentModel.create({
+                    ...vnpayAppointmentData
+                });
             }
-
-            const newAppointment = await AppointmentModel.create({
-                ...vnpayAppointmentData,
-                appointmentHelpID
-            });
 
             const appointmentIDsInDay = await AppointmentModel
                 .find({
@@ -624,7 +621,7 @@ const vnpayReturn = async (req, res, next) => {
             console.log("last", lastOrderNumberInDay);
 
             const newOrderNumber = await OrderNumberModel.create({
-                appointmentID: appointmentHelpID || newAppointment._id,
+                appointmentID: newAppointment._id,
                 number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
                 priority: 0
             });
