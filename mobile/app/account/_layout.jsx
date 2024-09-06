@@ -16,6 +16,24 @@ const AccountLayout = () => {
           header: () => <HeaderScreen title="Giới thiệu bạn bè" />,
         } }
       />
+      <Stack.Screen
+        name="history-appointment"
+        options={ {
+          header: () => <HeaderScreen title="Lịch sử đặt khám" />,
+        } }
+      />
+      <Stack.Screen
+        name="medical-record"
+        options={ {
+          header: () => <HeaderScreen title="Bệnh án điện tử" />,
+        } }
+      />
+      <Stack.Screen
+        name="member"
+        options={ {
+          header: () => <HeaderScreen title="Thành viên" />,
+        } }
+      />
     </Stack>
   );
 };

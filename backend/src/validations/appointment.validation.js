@@ -27,6 +27,11 @@ const appointmentValidator = checkSchema({
             options: (id) => checkIsExistID(MedicalPackageModel, id),
         }
     },
+    patientHelpID: {
+        customSanitizer: {
+            options: (id) => checkIsExistID(PatientModel, id),
+        }
+    },
     type: {
         exists: {
             errorMessage: 'Appointment type is required'
