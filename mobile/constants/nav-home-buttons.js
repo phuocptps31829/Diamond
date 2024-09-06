@@ -25,7 +25,7 @@ export const buttons = [
     title: "Hệ thống PK",
     colorOne: "#009BAC",
     colorTwo: "#007A96",
-    navigateTo: "ClinicSystem",
+    navigateTo: "clinic-system",
   },
   {
     id: 4,

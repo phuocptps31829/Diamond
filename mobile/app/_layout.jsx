@@ -49,19 +49,19 @@ export default function RootLayout() {
         } }
       />
       <Stack.Screen
-        name="News"
+        name="news"
         options={ {
           header: () => <HeaderScreen title="Tin tức và sự kiện" />,
         } }
       />
       <Stack.Screen
-        name="DetailNews"
+        name="detail-news"
         options={ {
           header: () => <HeaderScreen title="Y học - Sức khỏe" />,
         } }
       />
       <Stack.Screen
-        name="Notification"
+        name="notification"
         options={ {
           header: () => <HeaderScreen title="Thông báo" />,
         } }
@@ -79,9 +79,21 @@ export default function RootLayout() {
         } }
       />
       <Stack.Screen
-        name="ClinicSystem"
+        name="member"
+        options={ {
+          header: () => <HeaderScreen title="Lịch sử đặt khám" />,
+        } }
+      />
+      <Stack.Screen
+        name="clinic-system"
         options={ {
           header: () => <HeaderScreen title="Hệ thống phòng khám" />,
+        } }
+      />
+      <Stack.Screen
+        name="detail-doctor"
+        options={ {
+          header: () => <HeaderScreen title="Thông tin Bác sĩ" />,
         } }
       />
     </Stack>
