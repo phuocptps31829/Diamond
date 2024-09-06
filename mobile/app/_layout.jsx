@@ -79,12 +79,6 @@ export default function RootLayout() {
         } }
       />
       <Stack.Screen
-        name="member"
-        options={ {
-          header: () => <HeaderScreen title="Lịch sử đặt khám" />,
-        } }
-      />
-      <Stack.Screen
         name="clinic-system"
         options={ {
           header: () => <HeaderScreen title="Hệ thống phòng khám" />,
