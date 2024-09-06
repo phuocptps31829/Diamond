@@ -48,7 +48,7 @@ const Specialty = () => {
         className="w-full mt-2"
         renderItem={({ item }) => (
           <TouchableOpacity
-            className="flex-columngap-2 relative flex-1 m-2 rounded-[15px] overflow-hidden"
+            className="flex-column gap-2 relative flex-1 m-2 rounded-[15px] overflow-hidden"
             onPress={() => {
               console.log("Button pressed!");
             }}

@@ -56,11 +56,6 @@ const ListDoctors = () => {
   const router = useRouter();
   return (
     <>
-      <View className="flex px-4 justify-between bg-primary-500 items-center flex-row pt-16 pb-4">
-        <Text className="text-white font-semibold w-full text-center text-[15px]">
-          Đội ngũ Bác sĩ
-        </Text>
-      </View>
       <ScrollView
         className="bg-white p-4 "
         showsVerticalScrollIndicator={false}
