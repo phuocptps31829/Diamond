@@ -16,6 +16,7 @@ import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
+import { setBookingDetails } from "@/redux/BookingSlice";
 
 export default function ServiceItem({
   image,
@@ -24,6 +25,7 @@ export default function ServiceItem({
   discountPrice,
   orderCount,
   _id,
+  specialtyID,
 }) {
   const dispatch = useDispatch();
   const { toast } = useToast();
@@ -37,7 +39,19 @@ export default function ServiceItem({
 
   const handleAddClick = () => {
     if (!isInCart) {
-      dispatch(addToCart({ id: _id, name }));
+      dispatch(addToCart({ id: _id, name ,specialtyID }));
+      dispatch( setBookingDetails({
+        serviceId: _id,
+        bookingDetail: {
+          specialtyID,
+          selectedBranchId:  "",
+          selectedDoctorId: "",
+          selectedWorkScheduleId: "",
+          selectedDate:  "",
+          selectedTime: "",
+          clinic: "",
+        },
+      }))
       toast({
         variant: "success",
         title: "Thêm dịch vụ vào giỏ hàng thành công!",
@@ -141,4 +155,5 @@ ServiceItem.propTypes = {
   name: PropTypes.string.isRequired,
   orderCount: PropTypes.number.isRequired,
   _id: PropTypes.string.isRequired,
+  specialtyID: PropTypes.string.isRequired,
 };

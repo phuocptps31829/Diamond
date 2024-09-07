@@ -16,27 +16,95 @@ import {
   SelectProvince,
   SelectWard,
 } from "./select/SelectLocation";
+
 import { useDispatch, useSelector } from "react-redux";
-import { IoTrashBinOutline } from "react-icons/io5";
 import { removeFromCart } from "@/redux/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
+import SelectDoctor from "./select/SelectDoctor";
+import { IoMdRemove } from "react-icons/io";
+import { setBookingDetails } from "@/redux/BookingSlice";
 
 export default function Form() {
   const services = useSelector((state) => state.cart.cart);
+  const bookingDetails = useSelector(
+    (state) => state.infoBooking.bookingDetails,
+  );
+  console.log("Booking details: ", bookingDetails);
+
   const dispatch = useDispatch();
   const { toast } = useToast();
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
-  const handleRemoveItem = (id)=> {
-dispatch(removeFromCart(id));
-toast({
-  variant: "success",
-  title: "Đã xóa dịch vụ khỏi giỏ hàng!",
-  description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
-  action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-});
-  }
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedBranchId, setSelectedBranchId] = useState(null);
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [selectedWorkScheduleId, setSelectedWorkScheduleId] = useState(null);
+  const [selectedClinic, setSelectedClinic] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const handleRemoveItem = (id) => {
+    dispatch(removeFromCart(id));
+    toast({
+      variant: "success",
+      title: "Đã xóa dịch vụ khỏi giỏ hàng!",
+      description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
+      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+    });
+  };
+
+  const handleServiceSelect = async (serviceId, isChecked) => {
+    if (isChecked) {
+      const service = bookingDetails.find(
+        (service) => service.serviceId === serviceId,
+      );
+
+      if (service) {
+        setSelectedService(service);
+
+        setValue("department", service.bookingDetail.selectedBranchId);
+        setValue("doctor", service.bookingDetail.selectedDoctorId);
+        setValue("time", service.bookingDetail.selectedTime);
+        setValue("date", service.bookingDetail.selectedDate);
+        setValue("room", service.bookingDetail.clinic.name || "Hãy chọn giờ khám");
+      }
+    } else {
+      setSelectedService(null);
+    }
+  };
+  const handleSaveData = (e) => {
+    console.log(selectedDate);
+    
+    e.preventDefault();
+    dispatch(
+      setBookingDetails({
+        serviceId: selectedService.serviceId,
+        bookingDetail: {
+          specialtyID: selectedService.bookingDetail.specialtyID, 
+          selectedBranchId: selectedBranchId || "", 
+          selectedDoctorId: selectedDoctorId || "", 
+          selectedWorkScheduleId: selectedWorkScheduleId || "", 
+          selectedDate: selectedDate || "",
+          selectedTime: selectedTime || "", 
+          clinic: selectedClinic || "",
+        },
+      }),
+    );
+    toast({
+      variant: "success",
+      title: "Lưu thành công!",
+      description: "Thông tin đặt lịch đã được lưu thành công.",
+      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+    });
+  };
+  const handleTimeChange = (workScheduleID, clinic, time) => {
+    console.log("Selected Work Schedule ID:", workScheduleID);
+    setSelectedWorkScheduleId(workScheduleID);
+    console.log("Selected Clinic:", clinic);
+    setSelectedClinic(clinic);
+    setSelectedTime(time);
+  };
+
   const {
     handleSubmit,
     formState: { errors },
@@ -65,6 +133,7 @@ toast({
       ward: "",
     },
   });
+
   return (
     <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
       <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
@@ -75,34 +144,74 @@ toast({
             <p className="font-light">Đã chọn {services.length} dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 sm:h-[215px] md:h-[680px]">
-          {services.length > 0 ? (
-            services.map((svc) => (
-              <div
-                key={svc.id}
-                className="mb-3 flex items-center justify-between rounded-lg border border-primary-500 px-3 py-2 md:py-3"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
-                    className="w-[60px] sm:w-[75px] md:w-[100px]"
-                    alt={`Image of ${svc.name}`}
-                  />
-                  <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                    {svc.name}
-                  </p>
-                </div>
-                <IoTrashBinOutline
-                  onClick={() => handleRemoveItem(svc.id)}
-                  className="mx-5 cursor-pointer text-2xl text-primary-500 duration-300 hover:text-red-600"
-                />
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4 sm:h-[215px] md:h-[680px]">
+            {services.length > 0 ? (
+              services.map((svc) => {
+                const bookingDetail = bookingDetails.find(
+                  (detail) => detail.serviceId === svc.id,
+                );
+                const isServiceSelected = !!bookingDetail;
+                const hasEmptyFields = bookingDetail
+                  ? Object.values(bookingDetail.bookingDetail).some(
+                      (value) => !value,
+                    )
+                  : false;
+
+                return (
+                  <div className="relative py-3" key={svc.id}>
+                    <input
+                      className="peer hidden"
+                      id={`radio_${svc.id}`}
+                      type="radio"
+                      name="radio"
+                      onChange={(e) =>
+                        handleServiceSelect(svc.id, e.target.checked)
+                      }
+                    />
+                    <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white peer-checked:border-gray-700"></span>
+                    <label
+                      className="flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline peer-checked:outline-gray-700"
+                      htmlFor={`radio_${svc.id}`}
+                    >
+                      <div className="flex items-center gap-4">
+                        <img
+                          src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                          className="w-[60px] sm:w-[75px] md:w-[100px]"
+                          alt={`Image of ${svc.name}`}
+                        />
+                        <div className="flex flex-col">
+                          <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
+                            {svc.name}
+                          </p>
+                          {isServiceSelected && (
+                            <span
+                              className={`text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold`}
+                            >
+                              {hasEmptyFields
+                                ? "Xem lại thông tin (còn trống)"
+                                : "Xem lại thông tin"}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </label>
+
+                    <div className="absolute -right-2 top-0 rounded-full bg-red-600 p-1 shadow-lg">
+                      <IoMdRemove
+                        onClick={() => handleRemoveItem(svc.id)}
+                        className="transform cursor-pointer text-lg text-white transition-transform hover:scale-110"
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-center text-gray-500">
+                  Chưa có dịch vụ được chọn
+                </p>
               </div>
-            ))
-          ) : (
-            <div className="flex justify-center items-center h-full">
-            <p className="text-center text-gray-500">Chưa có dịch vụ được chọn</p>
-          </div>
-          )}
+            )}
           </div>
         </div>
 
@@ -114,21 +223,87 @@ toast({
               {/* Hàng đầu tiên */}
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
+                  {/* Khoa khám */}
                   <SelectDepartment
                     control={control}
                     name="department"
                     errors={errors}
+                    specialtyID={
+                      selectedService?.bookingDetail?.specialtyID || ""
+                    }
+                    setValue={setValue}
+                    onChange={(specialtyID) => {
+                      setSelectedBranchId(specialtyID);
+                    }}
+                  />
+                </div>
+                <div className="flex-1">
+                  <SelectDoctor
+                    control={control}
+                    name="doctor"
+                    errors={errors}
+                    branchId={selectedBranchId}
+                    setValue={setValue}
+                    specialtyID={
+                      selectedService?.bookingDetail?.specialtyID || ""
+                    }
+                    onChange={(doctorId,doctorName) => {
+                      setSelectedDoctorId(doctorId,doctorName);
+                    }}
                   />
                 </div>
               </div>
 
-              {/* Hàng thứ hai */}
+              {/* Selet time */}
               <div className="flex flex-col gap-4 md:flex-row">
+                {/* Date */}
+
                 <div className="flex-1">
-                  <SelectDate control={control} name="date" errors={errors} />
+                  <SelectDate
+                    control={control}
+                    name="date"
+                    doctorId={selectedDoctorId}
+                    branchId={selectedBranchId}
+                    errors={errors}
+                    setValue={setValue}
+                    onChange={(date) => {
+                      setSelectedDate(date);
+                    }}
+                  />
                 </div>
                 <div className="flex-1">
-                  <SelectTime control={control} name="time" errors={errors} />
+                  <SelectTime
+                    control={control}
+                    name="time"
+                    doctorId={selectedDoctorId}
+                    branchId={selectedBranchId}
+                    errors={errors}
+                    setValue={setValue}
+                    onChange={handleTimeChange}
+                    date={selectedDate}
+                  />
+                </div>
+              </div>
+              <div className="mb-2">
+                <label htmlFor="room" className="mb-1 block">
+                  Phòng khám:
+                </label>
+
+                <div className="flex items-center gap-2 justify-center ">
+                  {" "}
+                  <InputCustom
+                    className="col-span-1 sm:col-span-1"
+                    name="room"
+                    type="text"
+                    id="room"
+                    placeholder={"Hãy chọn giờ khám"}
+                    control={control}
+                    errors={errors}
+                    disabled={true}
+                  />
+                  <Button size="lg" variant="custom" className="mt-2" onClick={handleSaveData}>
+                    Lưu
+                  </Button>
                 </div>
               </div>
 
@@ -150,31 +325,30 @@ toast({
                     errors={errors}
                   />
                 </div>
+
                 {/* Hàng 2 */}
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="email" className="mb-1 block">
                       Email:
                     </label>
-                    {/* <input type="email" id="email" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
                       placeholder="Nhập email của bạn"
                       name="email"
-                      type="text"
+                      type="email"
                       id="email"
                       control={control}
                       errors={errors}
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="sdt" className="mb-1 block">
-                      Số điện thoại
+                    <label htmlFor="phone" className="mb-1 block">
+                      Số điện thoại:
                     </label>
-                    {/* <input type="tel" id="sdt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số điện thoại"
+                      placeholder="Nhập số điện thoại của bạn"
                       name="phoneNumber"
                       type="text"
                       id="phoneNumber"
@@ -183,7 +357,7 @@ toast({
                     />
                   </div>
                 </div>
-                {/* Hàng 3 */}
+
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="gioitinh" className="mb-1 block">
@@ -206,16 +380,15 @@ toast({
                     />
                   </div>
                 </div>
-                {/* Hàng 4 */}
+                {/* Hàng 3 */}
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
-                    <label htmlFor="nghenghiep" className="mb-1 block">
+                    <label htmlFor="job" className="mb-1 block">
                       Nghề nghiệp:
                     </label>
-                    {/* <input type="text" id="nghenghiep" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nghề nghiệp"
+                      placeholder="Nhập nghề nghiệp của bạn"
                       name="job"
                       type="text"
                       id="job"
@@ -224,10 +397,9 @@ toast({
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="dantoc" className="mb-2 block">
-                      Dân tộc
+                    <label htmlFor="ethnicity" className="mb-2 block">
+                      Dân tộc:
                     </label>
-                    {/* <input type="text" id="dantoc" className='w-full p-2 border rounded' /> */}
                     <SelectEthnic
                       control={control}
                       name="ethnicity"
@@ -235,16 +407,16 @@ toast({
                     />
                   </div>
                 </div>
-                {/* Hàng 5 */}
+
+                {/* Hàng 4 */}
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
-                    <label htmlFor="so-cccd" className="mb-1 block">
-                      Số CCCD
+                    <label htmlFor="cccd" className="mb-1 block">
+                      CCCD/CMND:
                     </label>
-                    {/* <input type="text" id="so-cccd" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số CCCD"
+                      placeholder="Nhập CCCD/CMND của bạn"
                       name="cccd"
                       type="text"
                       id="cccd"
@@ -253,13 +425,12 @@ toast({
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="so-bhyt" className="mb-1 block">
-                      Số BHYT
+                    <label htmlFor="bhyt" className="mb-1 block">
+                      Bảo hiểm y tế:
                     </label>
-                    {/* <input type="text" id="so-bhyt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số BHYT"
+                      placeholder="Nhập BHYT của bạn"
                       name="bhyt"
                       type="text"
                       id="bhyt"
@@ -272,7 +443,8 @@ toast({
                   <label htmlFor="address" className="mb-1 block">
                     Địa chỉ:
                   </label>
-                  <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
+
+                  <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectProvince
                         control={control}
@@ -304,13 +476,11 @@ toast({
                       />
                     </div>
                   </div>
-
-                  {/* Hàng 6 */}
-                  <div className="mb-2">
-                    {/* <input type="text" id="diachi" className='w-full p-2 border rounded' /> */}
+                  {/* Hàng 5 */}
+                  <div className="mb-4">
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập địa chỉ"
+                      placeholder="Nhập địa chỉ cụ thể của bạn"
                       name="address"
                       type="text"
                       id="address"
@@ -319,9 +489,9 @@ toast({
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Nút tiếp tục */}
+                {/* Button */}
+              </div>
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
                   Trở lại
