@@ -1,48 +1,10 @@
 import { Text, FlatList, TouchableOpacity, Image } from "react-native";
 
-const packages = [
-  {
-    id: 1,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 2,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 3,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 4,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 5,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 6,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-  {
-    id: 7,
-    image: "https://ykhoadiamond.com/images/thumbs/goikham-dich-vu.jpg",
-    name: "Điện tim thường",
-  },
-];
-
-const ListService = () => {
+const ListService = ({ listServices }) => {
   return (
     <>
       <FlatList
-        data={packages}
+        data={listServices}
         className="w-full mt-2"
         contentContainerStyle={{ paddingHorizontal: 10 }}
         renderItem={({ item, index }) => (
@@ -55,7 +17,7 @@ const ListService = () => {
           >
             <Image
               source={{
-                uri: item.image,
+                uri: item?.image,
               }}
               className="h-[110px]"
             />
@@ -64,7 +26,7 @@ const ListService = () => {
               numberOfLines={1}
               ellipsizeMode="tail"
             >
-              {item.name}
+              {item?.name}
             </Text>
           </TouchableOpacity>
         )}

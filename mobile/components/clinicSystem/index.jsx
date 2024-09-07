@@ -4,7 +4,7 @@ import WorldMap from "./MapView";
 import Clinics from "./Clinics";
 import GoThereButton from "./GoThereButton";
 import MyLocationButton from "./MyLocationButton";
-import { Platform, Linking} from "react-native";
+import { Platform, Linking } from "react-native";
 
 const dataClinic = [
   {

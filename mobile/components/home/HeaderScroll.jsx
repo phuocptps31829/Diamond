@@ -15,8 +15,9 @@ const HeaderScroll = ({ showView }) => {
           }`}
         >
           <View className="w-full bg-white rounded-lg p-3 px-4 shadow-sm flex-row justify-between ">
-            {buttons.map((item) => (
+            {buttons.map((item, index) => (
               <TouchableOpacity
+                key={index}
                 className="flex-columns items-center justify-center gap-2"
                 onPress={() => router.push(item.navigateTo)}
               >
