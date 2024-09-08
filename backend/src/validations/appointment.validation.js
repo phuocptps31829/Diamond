@@ -12,27 +12,27 @@ const appointmentValidator = checkSchema({
             options: (id) => checkIsExistID(PatientModel, id, true),
         }
     },
-    workScheduleID: {
+    "data.*.workScheduleID": {
         customSanitizer: {
             options: (id) => checkIsExistID(WorkScheduleModel, id, true),
         }
     },
-    serviceID: {
+    "data.*.serviceID": {
         customSanitizer: {
             options: (id) => checkIsExistID(ServiceModel, id),
         }
     },
-    medicalPackageID: {
+    "data.*.medicalPackageID": {
         customSanitizer: {
             options: (id) => checkIsExistID(MedicalPackageModel, id),
         }
     },
-    patientHelpID: {
+    "data.*.patientHelpID": {
         customSanitizer: {
             options: (id) => checkIsExistID(PatientModel, id),
         }
     },
-    type: {
+    "data.*.type": {
         exists: {
             errorMessage: 'Appointment type is required'
         },
@@ -40,7 +40,7 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Appointment type should be a string'
         },
     },
-    time: {
+    "data.*.time": {
         exists: {
             errorMessage: 'Appointment time is required'
         },
@@ -48,7 +48,7 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Invalid appointment time format'
         }
     },
-    price: {
+    "data.*.price": {
         exists: {
             errorMessage: 'Price time is required'
         },
@@ -56,7 +56,7 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Price type should be a number'
         }
     },
-    status: {
+    "data.*.status": {
         exists: {
             errorMessage: 'Status is required'
         },
