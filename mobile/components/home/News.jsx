@@ -22,7 +22,10 @@ const News = ({ listNews }) => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          router.push("/detail-news");
+          router.push({
+            pathname: "/detail-news",
+            params: { id: listNews[0]._id },
+          });
         }}
       >
         <Image
@@ -40,7 +43,10 @@ const News = ({ listNews }) => {
           key={index}
           className="h-[100px] flex-row bg-white rounded-lg mt-6 shadow-sm"
           onPress={() => {
-            router.push("/detail-news");
+            router.push({
+              pathname: "/detail-news",
+              params: { id: item._id },
+            });
           }}
         >
           <Image
@@ -62,7 +68,10 @@ const News = ({ listNews }) => {
               <TouchableOpacity
                 className="bg-[#007BBB] px-4 py-1 rounded-[99px]"
                 onPress={() => {
-                  router.push("/detail-news");
+                  router.push({
+                    pathname: "/detail-news",
+                    params: { id: item._id },
+                  });
                 }}
               >
                 <Text className="text-white">Chi tiết</Text>
