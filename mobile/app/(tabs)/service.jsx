@@ -1,12 +1,7 @@
-import { Text, View } from "react-native";
-import React from "react";
+import Service from "../../components/service";
 
-const Service = () => {
-  return (
-    <View>
-      <Text>Service</Text>
-    </View>
-  );
+const ServiceTab = () => {
+  return <Service />;
 };
 
-export default Service;
+export default ServiceTab;

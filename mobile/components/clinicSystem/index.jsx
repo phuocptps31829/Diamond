@@ -73,7 +73,7 @@ const ClinicMapSystem = () => {
   }, []);
 
   const handleZoomToCurrentLocation = () => {
-    console.log("Zoom to current location");
+    console.log(location);
     if (location) {
       mapRef.current.animateToRegion(location, 2000);
     }
@@ -94,6 +94,7 @@ const ClinicMapSystem = () => {
       />
       <GoThereButton handleGetDirections={handleGetDirections} />
       <MyLocationButton
+        location={location}
         handleZoomToCurrentLocation={handleZoomToCurrentLocation}
       />
     </>

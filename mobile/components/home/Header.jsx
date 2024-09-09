@@ -77,7 +77,7 @@ const Header = () => {
             <TouchableOpacity
               className="bg-[#00000096] black w-8 h-8 rounded-full flex justify-center items-center"
               onPress={() => {
-                router.push("/Notification");
+                router.push("/notification");
               }}
             >
               <Text className="text-white">
