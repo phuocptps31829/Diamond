@@ -1,4 +1,4 @@
-import { API_URL_GET_ALL_DOCTORS } from "../configs/varibles";
+import { API_URL_GET_ALL_DOCTORS } from "../configs/variables";
 import axios from "axios";
 
 export const getAllDoctors = async () => {

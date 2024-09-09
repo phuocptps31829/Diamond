@@ -1,4 +1,4 @@
-import { API_URL_GET_ALL_NEWS } from "../configs/varibles";
+import { API_URL_GET_ALL_NEWS } from "../configs/variables";
 import axios from "axios";
 
 export const getAllNews = async () => {

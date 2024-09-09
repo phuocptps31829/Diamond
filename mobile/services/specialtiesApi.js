@@ -2,7 +2,7 @@ import {
   API_URL_GET_ALL_SPECIALTIES,
   API_URL_GET_SPECIALTY_WITH_SERVICES,
   API_URL_GET_SPECIALTY_BY_ID,
-} from "../configs/varibles";
+} from "../configs/variables";
 import axios from "axios";
 
 export const getAllSpecialties = async () => {
