@@ -19,7 +19,10 @@ const ListDoctors = ({ listDoctors }) => {
             >
               <Pressable
                 onPress={() => {
-                  router.push("/detail-doctor");
+                  router.push({
+                    pathname: "/detail-doctor",
+                    params: { id: item._id },
+                  });
                 }}
               >
                 <Image
@@ -31,7 +34,10 @@ const ListDoctors = ({ listDoctors }) => {
                 <Pressable
                   className="space-y-1"
                   onPress={() => {
-                    router.push("/detail-doctor");
+                    router.push({
+                      pathname: "/detail-doctor",
+                      params: { id: item._id },
+                    });
                   }}
                 >
                   <Text className="font-bold">BS. {item.userID.fullName}</Text>
@@ -42,7 +48,10 @@ const ListDoctors = ({ listDoctors }) => {
                 <View className="flex-row items-center justify-between">
                   <Pressable
                     onPress={() => {
-                      router.push("/detail-doctor");
+                      router.push({
+                        pathname: "/detail-doctor",
+                        params: { id: item._id },
+                      });
                     }}
                   >
                     <Text className="text-blue-500 text-[12px] font-semibold italic">
@@ -52,7 +61,10 @@ const ListDoctors = ({ listDoctors }) => {
                   <Pressable
                     className="self-end border border-blue-500 px-4 py-2 rounded-[999px]"
                     onPress={() => {
-                      router.push("/detail-doctor");
+                      router.push({
+                        pathname: "/detail-doctor",
+                        params: { id: item._id },
+                      });
                     }}
                   >
                     <Text className="font-semibold text-[12px]">
