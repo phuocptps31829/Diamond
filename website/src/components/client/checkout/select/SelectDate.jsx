@@ -20,7 +20,7 @@ export default function SelectDate({
   errors,
   doctorId,
   branchId,
-  
+  disabled,
   onChange,
   setValue
 }) {
@@ -68,6 +68,7 @@ export default function SelectDate({
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
+                  disabled={disabled}
                   className={cn(
                     "w-full justify-start py-[21px] text-left font-normal",
                     !field.value && "text-muted-foreground",
@@ -84,6 +85,7 @@ export default function SelectDate({
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
+                
                   mode="single"
                   selected={field.value ? new Date(field.value) : null}
                   onSelect={(selectedDate) => {
@@ -94,7 +96,7 @@ export default function SelectDate({
                     }
                   }}
                   initialFocus
-                  disabled={(date) => !isDateAvailable(date)}
+                  disabled={(date) => !isDateAvailable(date) || disabled}
                   modifiers={{
                     available: (date) => isDateAvailable(date),
                   }}

@@ -37,7 +37,6 @@ export default function SelectDepartment({ control, name, errors, specialtyID,on
         fetchDepartments();
     }, [specialtyID]);
     useEffect(() => {
-       onChange("")
         setValue(name, ""); 
       }, [ setValue, name]);
     return (
@@ -58,6 +57,7 @@ export default function SelectDepartment({ control, name, errors, specialtyID,on
                                     errors[name] && "border-red-500"
                                 )}
                             >
+                               
                                 {field.value
                                     ? departments.find((department) => department._id === field.value)?.name 
                                     : <span className='text-gray-600'>Chọn khoa</span>}
@@ -78,6 +78,7 @@ export default function SelectDepartment({ control, name, errors, specialtyID,on
                 
                                                     field.onChange(currentValue === field.value ? "" : currentValue);
                                                     onChange(currentValue);
+                                                    
                                                     setOpen(false);
                                                 }}
                                             >

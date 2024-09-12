@@ -19,18 +19,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
 
-const getTimesForDate = (options, date) => {
-  const dayData = options.find((item) => item._id.day === date);
-  if (!dayData) return [];
 
-  return dayData.hour.flatMap((hourData) =>
-    hourData.time.map((time) => ({
-      time,
-      workScheduleID: hourData.workScheduleID,
-      clinic: hourData.clinicID[0],
-    }))
-  );
-};
 
 export default function SelectTime({
   control,
@@ -52,26 +41,27 @@ export default function SelectTime({
         const data = await getWorkSchedulesByDoctors(doctorId, branchId);
         setOptions(data);
         
+        const selectedSchedule = data.find(schedule => schedule._id.day === date);
+        
+        if (selectedSchedule) {
+          const availableTimes = selectedSchedule.hour.flatMap(hourObj => 
+            hourObj.time.map(time => ({
+              time,
+              workScheduleID: hourObj.workScheduleID,
+              clinic: hourObj.clinicID[0]
+            }))
+          );
+          setTimes(availableTimes);
+        } else {
+          setTimes([]);
+        }
       } catch (error) {
         console.error("Failed to fetch available dates:", error);
       }
     };
 
     fetchDates();
-  }, [date]);
-
-  useEffect(() => {
-    if (date && options.length > 0) {
-      const timesForDate = getTimesForDate(options, date);
-      setTimes(timesForDate);
-    } else {
-      setTimes([]);
-    }
-  }, [date, options]);
-  useEffect(() => {
-    setValue(name, ""); 
-    onChange("", "", "");
-  }, [doctorId, branchId, setValue, name,date]);
+  }, [date, doctorId, branchId]);
 
   return (
     <div>
@@ -92,10 +82,7 @@ export default function SelectTime({
                 )}
               >
                 {field.value ? (
-                  times.find((timeObj) => timeObj.time === field.value)
-                    ?.time || (
-                    <span className="text-gray-600">Chọn giờ khám</span>
-                  )
+                  times.find((timeObj) => timeObj.time === field.value)?.time
                 ) : (
                   <span className="text-gray-600">Chọn giờ khám</span>
                 )}

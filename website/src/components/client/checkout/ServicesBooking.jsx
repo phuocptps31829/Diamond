@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 
 import InputCustom from "@/components/ui/InputCustom";
-import { bookingSchema } from "@/zods/booking";
+import { otherBookingSchema, selfBookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectTime from "./select/SelectTime";
@@ -10,7 +10,7 @@ import SelectDate from "./select/SelectDate";
 import SelectBirthDate from "./select/SelectBirthday";
 import SelectGender from "./select/SelectGender";
 import SelectEthnic from "./select/SelectEthnicity";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SelectDistrict,
   SelectProvince,
@@ -23,10 +23,24 @@ import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
 import SelectDoctor from "./select/SelectDoctor";
 import { IoMdRemove } from "react-icons/io";
-import { setBookingDetails } from "@/redux/BookingSlice";
-
+import { Switch } from "@/components/ui/Switch";
+import {
+  clearBookingDetails,
+  removeItemInfo,
+  saveBookingInfo,
+  setBookingDetails,
+} from "@/redux/bookingSlice";
+import { useNavigate } from "react-router-dom";
+import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
 export default function Form() {
+  const navigate = useNavigate();
+  const [isBlocking, setIsBlocking] = useNavigationPrompt(
+    "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+  );
+
   const services = useSelector((state) => state.cart.cart);
+  const profile = useSelector((state) => state.auth.userProfile);
+
   const bookingDetails = useSelector(
     (state) => state.infoBooking.bookingDetails,
   );
@@ -34,6 +48,7 @@ export default function Form() {
 
   const dispatch = useDispatch();
   const { toast } = useToast();
+  const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
@@ -43,8 +58,10 @@ export default function Form() {
   const [selectedClinic, setSelectedClinic] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
+    dispatch(removeItemInfo(id));
     toast({
       variant: "success",
       title: "Đã xóa dịch vụ khỏi giỏ hàng!",
@@ -55,6 +72,7 @@ export default function Form() {
 
   const handleServiceSelect = async (serviceId, isChecked) => {
     if (isChecked) {
+      setIsBlocking(true);
       const service = bookingDetails.find(
         (service) => service.serviceId === serviceId,
       );
@@ -66,73 +84,216 @@ export default function Form() {
         setValue("doctor", service.bookingDetail.selectedDoctorId);
         setValue("time", service.bookingDetail.selectedTime);
         setValue("date", service.bookingDetail.selectedDate);
-        setValue("room", service.bookingDetail.clinic.name || "Hãy chọn giờ khám");
+        setValue(
+          "room",
+          service.bookingDetail.clinic.name || "Hãy chọn giờ khám",
+        );
       }
     } else {
       setSelectedService(null);
     }
   };
+  console.log(selectedService);
+
   const handleSaveData = (e) => {
-    console.log(selectedDate);
-    
     e.preventDefault();
-    dispatch(
-      setBookingDetails({
-        serviceId: selectedService.serviceId,
-        bookingDetail: {
-          specialtyID: selectedService.bookingDetail.specialtyID, 
-          selectedBranchId: selectedBranchId || "", 
-          selectedDoctorId: selectedDoctorId || "", 
-          selectedWorkScheduleId: selectedWorkScheduleId || "", 
-          selectedDate: selectedDate || "",
-          selectedTime: selectedTime || "", 
-          clinic: selectedClinic || "",
-        },
-      }),
-    );
-    toast({
-      variant: "success",
-      title: "Lưu thành công!",
-      description: "Thông tin đặt lịch đã được lưu thành công.",
-      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-    });
+    handleSubmit((data) => {
+      dispatch(
+        setBookingDetails({
+          serviceId: selectedService.serviceId,
+          bookingDetail: {
+            specialtyID: data.specialtyID,
+            selectedBranchId: data.selectedBranchId,
+            selectedDoctorId: data.selectedDoctorId,
+            selectedWorkScheduleId: data.selectedWorkScheduleId,
+            selectedDate: data.selectedDate,
+            price: data.price,
+            selectedTime: data.selectedTime,
+            clinic: data.clinic,
+          },
+        }),
+      );
+
+      toast({
+        variant: "success",
+        title: "Lưu thành công!",
+        description: "Thông tin đặt lịch đã được lưu thành công.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    })(e);
   };
   const handleTimeChange = (workScheduleID, clinic, time) => {
     console.log("Selected Work Schedule ID:", workScheduleID);
     setSelectedWorkScheduleId(workScheduleID);
-    console.log("Selected Clinic:", clinic);
     setSelectedClinic(clinic);
     setSelectedTime(time);
   };
+
+  useEffect(() => {
+    return () => {
+      setIsBlocking(false);
+      setSelectedService(null);
+      setSelectedBranchId(null);
+      setSelectedDoctorId(null);
+      setSelectedWorkScheduleId(null);
+      setSelectedClinic(null);
+      setSelectedDate(null);
+      setSelectedTime(null);
+      dispatch(clearBookingDetails());
+    };
+  }, [setIsBlocking]);
+  useEffect(() => {
+    const handleBeforeRemove = (event) => {
+      event.preventDefault();
+
+      const userConfirmed = window.confirm(
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+      );
+
+      if (userConfirmed) {
+        navigate(event.detail.href);
+      }
+    };
+
+    window.addEventListener("beforeRemove", handleBeforeRemove);
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeRemove", handleBeforeRemove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [navigate]);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
+    getValues,
+    reset,
   } = useForm({
-    resolver: zodResolver(bookingSchema),
+    resolver: zodResolver(
+      isBookingForOthers ? otherBookingSchema : selfBookingSchema,
+    ),
     defaultValues: {
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      job: "",
-      ethnicity: "",
-      cccd: "",
-      bhyt: "",
-      address: "",
+      fullName: profile?.fullName || "",
+      email: profile?.email || "",
+      phoneNumber: profile?.phoneNumber || "",
+      job: profile?.job || "",
+      ethnicity: profile?.ethnicity || "",
+      cccd: profile?.cccd || "",
+      bhyt: profile?.bhyt || "",
+      address: profile?.address || "",
       department: "",
       doctor: "",
       time: "",
       room: "",
       date: "",
-      birthDate: "",
-      gender: "",
-      province: "",
-      district: "",
-      ward: "",
+      birthDate: profile?.birthDate || "",
+      gender: profile?.gender || "",
+      province: profile?.province || "",
+      district: profile?.district || "",
+      ward: profile?.ward || "",
     },
   });
+
+  const handleSwitchChange = (checked) => {
+    setIsBookingForOthers(checked);
+    const currentValues = getValues();
+    if (checked) {
+      reset({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        job: "",
+        ethnicity: "",
+        cccd: "",
+        bhyt: "",
+        address: "",
+        birthDate: "",
+        gender: "",
+        province: "",
+        district: "",
+        ward: "",
+        department: currentValues.department,
+        doctor: currentValues.doctor,
+        time: currentValues.time,
+        room: currentValues.room,
+        date: currentValues.date,
+      });
+    } else {
+      reset({
+        fullName: profile?.fullName || "",
+        email: profile?.email || "",
+        phoneNumber: profile?.phoneNumber || "",
+        job: profile?.job || "",
+        ethnicity: profile?.ethnicity || "",
+        cccd: profile?.cccd || "",
+        bhyt: profile?.bhyt || "",
+        address: profile?.address || "",
+        birthDate: profile?.birthDate || "",
+        gender: profile?.gender || "",
+        province: profile?.province || "",
+        district: profile?.district || "",
+        ward: profile?.ward || "",
+        department: currentValues.department,
+        doctor: currentValues.doctor,
+        time: currentValues.time,
+        room: currentValues.room,
+        date: currentValues.date,
+      });
+    }
+  };
+  const onSubmit = (data, event) => {
+    event.preventDefault();
+    const combinedDateTime = `${selectedDate}T${selectedTime}:00.000Z`;
+
+    const bookingInfo = {
+      patientID: profile?.id || "66afa9556d138253c13a840b",
+      appointmentHelpUser: isBookingForOthers
+        ? {
+            fullName: data.fullName,
+            phoneNumber: data.phoneNumber,
+            email: data.email,
+            gender: data.gender,
+            dateOfBirth: data.birthDate,
+            address: {
+              province: data.province,
+              district: data.district,
+              ward: data.ward,
+              street: data.address,
+            },
+            citizenIdentificationNumber: data.cccd,
+            occupation: data.job,
+            ethnic: data.ethnicity,
+            password: "string",
+          }
+        : undefined,
+      data: bookingDetails.map((detail) => ({
+        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
+        serviceID: detail.serviceId,
+        type: "Khám lần 1",
+        time: combinedDateTime,
+        status: "Chờ xác nhận",
+        price: detail.bookingDetail.price,
+      })),
+    };
+    setIsBlocking(false);
+    dispatch(saveBookingInfo(bookingInfo));
+    setShouldNavigate(true);
+  };
+  useEffect(() => {
+    if (!isBlocking && shouldNavigate) {
+      navigate("/services-booking-checkout");
+    }
+  }, [isBlocking, shouldNavigate, navigate]);
 
   return (
     <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
@@ -218,7 +379,7 @@ export default function Form() {
         {/* Form */}
         <div className="w-full p-4 pt-0 md:ml-auto">
           <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
-          <form onSubmit={handleSubmit()}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-4">
               {/* Hàng đầu tiên */}
               <div className="flex flex-col gap-4 md:flex-row">
@@ -232,8 +393,8 @@ export default function Form() {
                       selectedService?.bookingDetail?.specialtyID || ""
                     }
                     setValue={setValue}
-                    onChange={(specialtyID) => {
-                      setSelectedBranchId(specialtyID);
+                    onChange={(branchID) => {
+                      setSelectedBranchId(branchID);
                     }}
                   />
                 </div>
@@ -247,8 +408,8 @@ export default function Form() {
                     specialtyID={
                       selectedService?.bookingDetail?.specialtyID || ""
                     }
-                    onChange={(doctorId,doctorName) => {
-                      setSelectedDoctorId(doctorId,doctorName);
+                    onChange={(doctorId, doctorName) => {
+                      setSelectedDoctorId(doctorId, doctorName);
                     }}
                   />
                 </div>
@@ -289,7 +450,7 @@ export default function Form() {
                   Phòng khám:
                 </label>
 
-                <div className="flex items-center gap-2 justify-center ">
+                <div className="flex items-center justify-center gap-2">
                   {" "}
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
@@ -301,7 +462,12 @@ export default function Form() {
                     errors={errors}
                     disabled={true}
                   />
-                  <Button size="lg" variant="custom" className="mt-2" onClick={handleSaveData}>
+                  <Button
+                    size="lg"
+                    variant="custom"
+                    className="mt-2"
+                    onClick={handleSaveData}
+                  >
                     Lưu
                   </Button>
                 </div>
@@ -309,6 +475,17 @@ export default function Form() {
 
               {/* Thông tin người khám */}
               <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
+              <div className="flex items-center">
+                <label htmlFor="bookingForOthers" className="mr-2">
+                  Đặt hộ người khác:
+                </label>
+                <Switch
+                  id="bookingForOthers"
+                  checked={isBookingForOthers}
+                  onCheckedChange={handleSwitchChange}
+                />
+              </div>
+
               <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
                 {/* Hàng 1 */}
                 <div className="mb-4">
@@ -496,7 +673,10 @@ export default function Form() {
                 <Button size="lg" variant="outline">
                   Trở lại
                 </Button>
-                <button className="h-10 rounded-md bg-primary-500 px-8 text-white hover:bg-primary-600">
+                <button
+                  type="submit"
+                  className="h-10 rounded-md bg-primary-500 px-8 text-white hover:bg-primary-600"
+                >
                   Tiếp tục
                 </button>
               </div>

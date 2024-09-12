@@ -16,7 +16,7 @@ import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
-import { setBookingDetails } from "@/redux/BookingSlice";
+import { removeItemInfo, setBookingDetails } from "@/redux/bookingSlice";
 
 export default function ServiceItem({
   image,
@@ -39,19 +39,23 @@ export default function ServiceItem({
 
   const handleAddClick = () => {
     if (!isInCart) {
-      dispatch(addToCart({ id: _id, name ,specialtyID }));
-      dispatch( setBookingDetails({
-        serviceId: _id,
-        bookingDetail: {
-          specialtyID,
-          selectedBranchId:  "",
-          selectedDoctorId: "",
-          selectedWorkScheduleId: "",
-          selectedDate:  "",
-          selectedTime: "",
-          clinic: "",
-        },
-      }))
+      dispatch(addToCart({ id: _id, name, specialtyID, price }));
+      dispatch(
+        setBookingDetails({
+          serviceId: _id,
+          bookingDetail: {
+            specialtyID,
+            price: price || 0,
+            selectedBranchId: "",
+            selectedDoctorId: "",
+            selectedWorkScheduleId: "",
+            selectedDate: "",
+            selectedTime: "",
+            clinic: "",
+          },
+        }),
+      );
+
       toast({
         variant: "success",
         title: "Thêm dịch vụ vào giỏ hàng thành công!",
@@ -60,6 +64,8 @@ export default function ServiceItem({
       });
     } else {
       dispatch(removeFromCart(_id));
+    dispatch(removeItemInfo(_id));
+
       setIsInCart(false);
       toast({
         variant: "success",

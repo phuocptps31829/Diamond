@@ -30,7 +30,6 @@ export default function SelectDoctor({
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-  const [selectedDoctorName, setSelectedDoctorName] = useState("");
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -44,10 +43,9 @@ export default function SelectDoctor({
 
     fetchDoctors();
   }, [branchId, specialtyID]);
-
   useEffect(() => {
-    setValue(name, "");
     onChange("");
+    setValue(name, "");
   }, [setValue, name]);
 
   return (
@@ -57,25 +55,10 @@ export default function SelectDoctor({
         name={name}
         rules={{ required: "Vui lòng chọn bác sĩ" }}
         render={({ field }) => {
-          useEffect(() => {
-            if (field.value && options.length > 0) {
-              const selectedDoctor = options.find((doctor) => doctor._id === field.value);
-              console.log(field.value);
-              console.log(options);
-              
-              
-              console.log(selectedDoctor);
-              
-              if (selectedDoctor) {
-                setSelectedDoctorName(selectedDoctor.doctor.users[0].fullName);
-              } else {
-                setSelectedDoctorName("");
-              }
-            } else {
-              setSelectedDoctorName("");
-            }
-          }, [field.value, options]);
-
+         
+          
+          
+          
           return (
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
@@ -88,10 +71,11 @@ export default function SelectDoctor({
                     errors[name] && "border-red-500",
                   )}
                 >
-                  {selectedDoctorName ? (
-                    selectedDoctorName
+                  {field.value ? (
+                    options.find((doctor) => doctor._id === field.value)?.doctor
+                      .users[0].fullName
                   ) : (
-                    <span className="text-gray-600">Chọn bác sĩ</span>
+                    <span className="text-gray-600">Chọn khoa</span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                 </Button>
