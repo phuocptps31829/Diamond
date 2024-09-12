@@ -66,6 +66,7 @@ app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/patients', patientsRoutes);
+app.use('/api/v1/provinces', provinceRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/work-schedules', workScheduleRoutes);

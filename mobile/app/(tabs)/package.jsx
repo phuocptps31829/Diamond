@@ -1,12 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import Packge from "../../components/package";
 
-const Create = () => {
-  return (
-    <View>
-      <Text>Create</Text>
-    </View>
-  )
-}
+const PackageTab = () => {
+  return <Packge />;
+};
 
-export default Create
+export default PackageTab;

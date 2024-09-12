@@ -208,27 +208,10 @@ router.post(
  *            type: object
  *            required:
  *              - patientID
- *              - workScheduleID
- *              - type
- *              - time
- *              - status
- *              - price
- *              - paymentMethod
+ *              - data
  *            properties:
  *              patientID:
  *                type: string
- *              workScheduleID:
- *                type: string
- *              serviceID:
- *                type: string
- *              medicalPackageID:
- *                type: string
- *              type:
- *                type: string
- *              time:
- *                type: string
- *              price:
- *                type: number
  *              appointmentHelpUser:
  *                type: object
  *                properties:
@@ -261,6 +244,23 @@ router.post(
  *                    type: string
  *                  password:
  *                    type: string
+ *              data:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  properties:
+ *                    workScheduleID:
+ *                      type: string
+ *                    serviceID:
+ *                      type: string
+ *                    medicalPackageID:
+ *                      type: string
+ *                    type:
+ *                      type: string
+ *                    time:
+ *                      type: string
+ *                    price:
+ *                      type: number
  *    responses:
  *      '201':
  *        $ref: '#/components/responses/201'

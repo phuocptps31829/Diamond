@@ -3,22 +3,27 @@ const { createError, hashValue } = require("./helper.util");
 const UserModel = require("../models/user.model");
 const PatientModel = require("../models/patient.model");
 
-const checkIsExistID = async (model, id) => {
-    if (!id) {
-        createError(400, `${model.modelName} ID is required`);
+const checkIsExistID = async (model, id, mustCheck = false) => {
+    if (mustCheck) {
+        if (!id) {
+            createError(400, `${model.modelName} ID is required`);
+        }
     }
 
-    if (!isValidObjectId(id)) {
-        createError(400, `${model.modelName} ID is not valid`);
+    if (id) {
+        if (!isValidObjectId(id)) {
+            createError(400, `${model.modelName} ID is not valid`);
+        }
+
+        const existedData = await model.findOne({ _id: id });
+
+        if (!existedData) {
+            createError(404, `${model.modelName} ID not found`);
+        }
+        return id;
     }
 
-    const existedData = await model.findOne({ _id: id });
-
-    if (!existedData) {
-        createError(404, `${model.modelName} ID not found`);
-    }
-
-    return id;
+    return null;
 };
 
 const getExistingUserByEmail = async email => {

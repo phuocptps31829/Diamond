@@ -1,12 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import Doctor from "../../components/doctor";
 
-const Profile = () => {
-  return (
-    <View>
-      <Text>Profile</Text>
-    </View>
-  );
+const DoctorTab = () => {
+  return <Doctor />;
 };
 
-export default Profile;
+export default DoctorTab;

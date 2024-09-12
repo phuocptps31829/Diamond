@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const invoiceSchema = new mongoose.Schema({
-    serviceID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Service',
-    },
     appointmentID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',

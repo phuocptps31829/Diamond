@@ -27,8 +27,8 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    appointmentHelpID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Appointment',
+    patientHelpID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
     },
     payment: {
         method: {
