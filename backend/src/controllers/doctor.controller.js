@@ -113,32 +113,59 @@ const getAllDoctorsByBranchId = async (req, res, next) => {
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
         let { branchID, specialtyID } = req.checkValueQuery;
 
-        const totalRecords = await DoctorModel.countDocuments()
-
-        const pipeline = [{
-            $lookup: {
-                from: 'Clinic',
-                localField: 'specialtyID',
-                foreignField: 'specialtyID',
-                as: 'clinics'
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'WorkSchedule',
+                    localField: '_id',
+                    foreignField: 'doctorID',
+                    as: 'workSchedules'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Clinic',
+                    localField: 'workSchedules.clinicID',
+                    foreignField: '_id',
+                    as: 'clinics'
+                }
+            },
+            {
+                $match: {
+                    'clinics.branchID': new mongoose.Types.ObjectId(branchID[0]),
+                    'specialtyID': new mongoose.Types.ObjectId(specialtyID[0]),
+                }
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'userID',
+                    foreignField: '_id',
+                    as: 'users'
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    doctor: { $first: '$$ROOT' },
+                }
+            },
+            {
+                $project: {
+                    "doctor.users.password": 0, 
+                    "doctor.detail": 0     
+                }
             }
-        },
-        {
-            $lookup: {
-                from: 'User',
-                localField: 'userID',
-                foreignField: '_id',
-                as: 'users'
-            }
-        },
-        {
-            $match: {
-                'clinics.branchID': new mongoose.Types.ObjectId(branchID[0]),
-                'specialtyID': new mongoose.Types.ObjectId(specialtyID[0]),
-            }
-        },
         ];
 
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+
+        const totalRecords = await DoctorModel.aggregate(countPipeline);
+
+        console.log(totalRecords);
         if (sortOptions && Object.keys(sortOptions).length > 0) {
             pipeline.push({
                 $sort: sortOptions

@@ -171,7 +171,7 @@ router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
     specialtyValidator.specialtyValidator,
-    specialtyController.createSpecialty
+    specialtyController.updateSpecialty
 );
 
 /**

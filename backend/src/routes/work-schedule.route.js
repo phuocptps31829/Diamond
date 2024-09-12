@@ -87,7 +87,6 @@ router.get(
 */
 router.get(
     '/doctor',
-    helperMiddleware.checkValidId,
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     workScheduleController.getAllWorkScheduleWithDoctor
