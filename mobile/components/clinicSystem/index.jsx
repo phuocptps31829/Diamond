@@ -1,10 +1,11 @@
 import { useRef, useState, useEffect } from "react";
-import * as Location from "expo-location";
 import WorldMap from "./MapView";
 import Clinics from "./Clinics";
 import GoThereButton from "./GoThereButton";
 import MyLocationButton from "./MyLocationButton";
 import { Platform, Linking } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDistance } from "geolib";
 
 const dataClinic = [
   {
@@ -42,6 +43,7 @@ const ClinicMapSystem = () => {
   const [location, setLocation] = useState(null);
   const [region, setRegion] = useState(dataClinic[0].location);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [km, setKm] = useState(null);
 
   const handleGetDirections = () => {
     const url = Platform.select({
@@ -56,24 +58,39 @@ const ClinicMapSystem = () => {
 
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Quyền truy cập vị trí bị từ chối");
-        return;
+      const storedLocation = await AsyncStorage.getItem("userLocation");
+      if (storedLocation) {
+        setLocation({
+          latitude: JSON.parse(storedLocation).latitude,
+          longitude: JSON.parse(storedLocation).longitude,
+          latitudeDelta: JSON.parse(storedLocation).latitudeDelta,
+          longitudeDelta: JSON.parse(storedLocation).longitudeDelta,
+        });
       }
-
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation({
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      });
     })();
   }, []);
 
+  useEffect(() => {
+    if (location) {
+      const distance = getDistance(
+        {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
+        {
+          latitude: dataClinic[0].location.latitude,
+          longitude: dataClinic[0].location.longitude,
+        }
+      );
+
+      const distanceInKm = distance / 1000;
+      const roundedDistance = Math.floor(distanceInKm);
+
+      setKm(roundedDistance);
+    }
+  }, [location]);
+
   const handleZoomToCurrentLocation = () => {
-    console.log(location);
     if (location) {
       mapRef.current.animateToRegion(location, 2000);
     }
@@ -83,14 +100,38 @@ const ClinicMapSystem = () => {
     mapRef.current.animateToRegion(dataClinic[index].location, 2000);
     setRegion(dataClinic[index].location);
     setActiveIndex(index);
+
+    if (location) {
+      const distance = getDistance(
+        {
+          latitude: location.latitude,
+          longitude: location.longitude,
+        },
+        {
+          latitude: dataClinic[index].location.latitude,
+          longitude: dataClinic[index].location.longitude,
+        }
+      );
+
+      const distanceInKm = distance / 1000;
+      const roundedDistance = Math.floor(distanceInKm);
+
+      setKm(roundedDistance);
+    }
   };
   return (
     <>
-      <WorldMap mapRef={mapRef} dataClinic={dataClinic} />
+      <WorldMap
+        mapRef={mapRef}
+        dataClinic={dataClinic}
+        currentLocation={location}
+        selectedClinicLocation={region}
+      />
       <Clinics
         dataClinic={dataClinic}
         activeIndex={activeIndex}
         handleZoomToClinic={handleZoomToClinic}
+        km={km}
       />
       <GoThereButton handleGetDirections={handleGetDirections} />
       <MyLocationButton

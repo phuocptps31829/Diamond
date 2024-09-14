@@ -1,7 +1,12 @@
 import { Text, View, Platform } from "react-native";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker, Callout, Polyline } from "react-native-maps";
 
-const WorldMap = ({ mapRef, dataClinic }) => {
+const WorldMap = ({
+  mapRef,
+  dataClinic,
+  currentLocation,
+  selectedClinicLocation,
+}) => {
   return (
     <View className="flex-1">
       <MapView
@@ -25,6 +30,24 @@ const WorldMap = ({ mapRef, dataClinic }) => {
             </Callout>
           </Marker>
         ))}
+
+        {/* Vẽ đường nếu có vị trí hiện tại và phòng khám được chọn */}
+        {currentLocation && selectedClinicLocation && (
+          <Polyline
+            coordinates={[
+              {
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+              },
+              {
+                latitude: selectedClinicLocation.latitude,
+                longitude: selectedClinicLocation.longitude,
+              },
+            ]}
+            strokeColor="blue"
+            strokeWidth={5}
+          />
+        )}
       </MapView>
     </View>
   );
