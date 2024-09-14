@@ -31,10 +31,11 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
 
   const handleAddToCart = () => {
     if (isInCart) {
-      navigate("/services-booking");
-    } else {
       dispatch(addToCart(serviceData));
       navigate("/services-booking");
+    } else {
+      navigate("/package-booking");
+   
      
     }
   };

@@ -237,7 +237,7 @@ const ethnicGroups = [
     }
 ];
 
-export default function SelectEthnic({ control, name, errors }) {
+export default function SelectEthnic({ control, name, errors, disabled }) {
     const [open, setOpen] = React.useState(false);
 
 
@@ -253,6 +253,8 @@ export default function SelectEthnic({ control, name, errors }) {
                             <Button
                                 variant="outline"
                                 role="combobox"
+                                disabled={disabled}
+
                                 aria-expanded={ open }
                                 className={ cn("w-full justify-between py-[21px]",
                                     errors[name] && "") }
@@ -272,6 +274,7 @@ export default function SelectEthnic({ control, name, errors }) {
                                         { ethnicGroups.map((ethnic) => (
                                             <CommandItem
                                                 key={ ethnic.value }
+
                                                 value={ ethnic.value }
                                                 onSelect={ (currentValue) => {
                                                     field.onChange(currentValue);

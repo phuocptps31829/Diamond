@@ -123,19 +123,19 @@ const router = createBrowserRouter([
       },
       {
         path: "package-booking",
-        element: <PackageBooking />
+        element: <PackageBooking />,
       },
       {
         path: "services-booking",
-        element: <ServicesBooking />
+        element: <ServicesBooking />,
       },
       {
         path: "package-booking-checkout",
-        element: <PKCheckOut />
+        element: <PKCheckOut />,
       },
       {
         path: "services-booking-checkout",
-        element: <SVCheckOut />
+        element: <SVCheckOut />,
       },
       {
         path: "/login",

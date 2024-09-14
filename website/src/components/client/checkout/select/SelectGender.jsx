@@ -15,6 +15,7 @@ import {
     CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
+
 // Value
 const genders = [
     {
@@ -29,31 +30,31 @@ const genders = [
         name: "Khác",
         value: "other"
     },
-
 ];
-export default function SelectGender({ control, name, errors }) {
-    const [open, setOpen] = React.useState(false);
 
+export default function SelectGender({ control, name, errors, disabled }) {
+    const [open, setOpen] = React.useState(false);
 
     return (
         <div>
             <Controller
-                control={ control }
-                name={ name }
-                rules={ { required: "Chọn giới tính" } }
-                render={ ({ field }) => (
-                    <Popover open={ open } onOpenChange={ setOpen }>
+                control={control}
+                name={name}
+                rules={{ required: "Chọn giới tính" }}
+                render={({ field }) => (
+                    <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
                                 role="combobox"
-                                aria-expanded={ open }
-                                className={ cn("w-full justify-between py-[21px]",
-                                    errors[name] && "") }
+                                aria-expanded={open}
+                                className={cn("w-full justify-between py-[21px]",
+                                    errors[name] && "")}
+                                disabled={disabled}
                             >
-                                { field.value
+                                {field.value
                                     ? genders.find((gender) => gender.value === field.value)?.name
-                                    : <span className='text-gray-600'>Chọn giới tính</span> }
+                                    : <span className='text-gray-600'>Chọn giới tính</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50 " />
                             </Button>
                         </PopoverTrigger>
@@ -61,32 +62,35 @@ export default function SelectGender({ control, name, errors }) {
                             <Command className='text-left '>
                                 <CommandList >
                                     <CommandGroup >
-                                        { genders.map((gender) => (
+                                        {genders.map((gender) => (
                                             <CommandItem
-                                                key={ gender.value }
-                                                value={ gender.value }
-                                                onSelect={ (currentValue) => {
-                                                    field.onChange(currentValue);
-                                                    setOpen(false);
-                                                } }
+                                                key={gender.value}
+                                                value={gender.value}
+                                                onSelect={(currentValue) => {
+                                                    if (!disabled) {
+                                                        field.onChange(currentValue);
+                                                        setOpen(false);
+                                                    }
+                                                }}
+                                                disabled={disabled}
                                             >
                                                 <Check
-                                                    className={ cn(
+                                                    className={cn(
                                                         "mr-2 h-4 w-4",
                                                         field.value === gender.value ? "opacity-100" : "opacity-0"
-                                                    ) }
+                                                    )}
                                                 />
-                                                { gender.name }
+                                                {gender.name}
                                             </CommandItem>
-                                        )) }
+                                        ))}
                                     </CommandGroup>
                                 </CommandList>
                             </Command>
                         </PopoverContent>
                     </Popover>
-                ) }
+                )}
             />
-            { errors[name] && (<span className="text-red-500 text-sm">{ errors[name].message }</span>) }
+            {errors[name] && (<span className="text-red-500 text-sm">{errors[name].message}</span>)}
         </div>
     );
 }

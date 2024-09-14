@@ -11,13 +11,13 @@ const Sidebar = ({ isOpen }) => {
                 !isOpen ? "w-[90px]" : "w-72 !no-scrollbar"
             ) }
         >
-            <div className="relative h-full flex flex-col px-3 py-4 overflow-y-auto shadow-md dark:shadow-zinc-800">
-                <button>
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                        <IoDiamond />
+            <div className="relative h-full flex flex-col py-4 overflow-y-auto shadow-md dark:shadow-zinc-800">
+                <div className='border-b-2 border-zinc-400 pb-4' >
+                    <Link href="/dashboard" className="flex items-center gap-2 justify-center">
+                        <IoDiamond className='text-2xl me-2' />
                         <h1
                             className={ cn(
-                                "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
+                                "font-bold whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300 text-2xl",
                                 !isOpen
                                     ? "-translate-x-96 opacity-0 hidden"
                                     : "translate-x-0 opacity-100"
@@ -26,7 +26,7 @@ const Sidebar = ({ isOpen }) => {
                             Diamond
                         </h1>
                     </Link>
-                </button>
+                </div>
                 <Menu isOpen={ isOpen } />
             </div>
         </aside>

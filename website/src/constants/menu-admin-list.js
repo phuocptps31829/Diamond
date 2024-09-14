@@ -1,6 +1,3 @@
-import { RxDashboard } from "react-icons/rx";
-import { FaUserDoctor } from "react-icons/fa6";
-
 export const getMenuList = pathname => [
     {
         groupLabel: "",
@@ -9,20 +6,20 @@ export const getMenuList = pathname => [
                 href: "/admin/dashboard",
                 label: "Thống kê",
                 active: pathname.includes("/admin/dashboard"),
-                icon: RxDashboard,
+                icon: "RxDashboard",
                 submenus: [
                     {
                         href: "/admin/dashboard",
                         label: "Thống kê",
                         active: pathname.includes("/admin/dashboard"),
-                        icon: RxDashboard,
+                        icon: "RxDashboard",
                         submenus: []
                     },
                     {
                         href: "/admin/dashboard",
                         label: "Thống kê",
                         active: pathname.includes("/admin/dashboard"),
-                        icon: RxDashboard,
+                        icon: "RxDashboard",
                         submenus: []
                     }
                 ]
@@ -36,7 +33,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Nhân viên",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -59,7 +56,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Bệnh nhân",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -82,7 +79,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Nhân viên",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -105,7 +102,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Lịch đặt khám",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -128,7 +125,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Lịch làm việc",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -151,7 +148,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Chi nhánh",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -174,7 +171,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Phòng khám",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -197,7 +194,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Tin tức",
                 active: pathname === "/admin/doctors/list",
-                icon: FaUserDoctor,
+                icon: "FaUserDoctor",
                 submenus: [
                     {
                         href: "/admin/doctors/list",

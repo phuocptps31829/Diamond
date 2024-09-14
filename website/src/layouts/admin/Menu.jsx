@@ -7,15 +7,18 @@ import { TooltipContent } from '@radix-ui/react-tooltip';
 import { cn } from '@/lib/utils';
 import CollapseMenuButton from './CollapseMenuButton';
 
+import * as IconRX from "react-icons/rx";
+import * as IconFA6 from "react-icons/fa6";
+
 const Menu = ({ isOpen }) => {
     const location = useLocation();
     const menuList = getMenuList(location.pathname);
 
     return (
         <ScrollArea className="[&>div>div[style]]:!block">
-            <nav className="mt-8 h-full w-full">
-                <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-2">
-                    { menuList.map(({ groupLabel, menus }, index) => <li className={ cn("w-full", groupLabel ? "pt-5" : "") } key={ index }>
+            <nav className="mt-2 h-full w-full no-scrollbar">
+                <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
+                    { menuList.map(({ groupLabel, menus }, index) => <li className={ cn("w-full pl-4", groupLabel ? "pt-4" : "") } key={ index }>
                         { (isOpen && groupLabel) || isOpen === undefined ? (
                             <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
                                 { groupLabel }
@@ -51,7 +54,7 @@ const Menu = ({ isOpen }) => {
                                                             <span
                                                                 className={ cn(isOpen === false ? "" : "mr-4") }
                                                             >
-                                                                <Icon size={ 18 } />
+                                                                <Icon />
                                                             </span>
                                                             <p
                                                                 className={ cn(
