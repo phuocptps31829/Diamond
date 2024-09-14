@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
+import RenderHtml from "react-native-render-html";
+import { useWindowDimensions } from "react-native";
 
-const DoctorInformation = () => {
+const DoctorInformation = ({ doctor }) => {
+  const { width } = useWindowDimensions();
   const [showInfor, setShowInfor] = useState(0);
 
   const handleShowInfor = (index) => {
@@ -13,11 +16,13 @@ const DoctorInformation = () => {
       <View className="flex-col justify-center items-center gap-2 mt-4">
         <Image
           source={{
-            uri: "https://img.ykhoadiamond.com/uploads/doctor/20032023/a543a4b9-55d9-422e-8937-2bc74ca6d1b4.jpg",
+            uri: doctor?.userID?.avatar,
           }}
           className="w-[100px] h-[100px] rounded-full"
         />
-        <Text className="font-semibold text-[15px]">BS. Đỗ Thị Phong Lan</Text>
+        <Text className="font-semibold text-[15px]">
+          BS. {doctor?.userID?.fullName}
+        </Text>
         <Text className="text-gray-400 font-semibold">Bác sĩ</Text>
       </View>
       <View className="flex-row bg-[#f1ce6fa0] p-[5px] m-4 rounded-md">
@@ -56,36 +61,17 @@ const DoctorInformation = () => {
             showInfor === 0 ? "flex" : "hidden"
           } p-4 space-y-2 pb-20`}
         >
-          {Array.from({ length: 8 }).map((_, index) => (
-            <View key={index}>
-              <Text className="font-semibold text-base mb-1">Trường y:</Text>
-              <View className="flex-row">
-                <Text className="mr-2 text-[20px]">•</Text>
-                <Text className="leading-5 list-decimal">
-                  Bác sĩ y khoa, Đại học Y Dược, Thành phố Hồ Chí Minh, Việt
-                  Nam, 2002
-                </Text>
-              </View>
-            </View>
-          ))}
+          <RenderHtml
+            contentWidth={width}
+            source={{ html: doctor?.certification }}
+          />
         </View>
         <View
           className={`${
             showInfor === 1 ? "flex" : "hidden"
           } space-y-2 p-4 pb-20`}
         >
-          {Array.from({ length: 2 }).map((_, index) => (
-            <View key={index}>
-              <Text className="font-semibold text-base mb-1">Kinh nghiệm:</Text>
-              <View className="flex-row">
-                <Text className="mr-2 text-[20px]">•</Text>
-                <Text className="leading-5 list-decimal flex-1">
-                  Kinh nghiệm hơn 5 năm làm bác sĩ khoa ngoại, 3 năm làm bác sĩ
-                  nội thần kinh
-                </Text>
-              </View>
-            </View>
-          ))}
+          <RenderHtml contentWidth={width} source={{ html: doctor?.detail }} />
         </View>
       </ScrollView>
       <View className="absolute bottom-7 flex justify-center items-center w-full">

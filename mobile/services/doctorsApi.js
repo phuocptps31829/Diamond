@@ -14,7 +14,6 @@ export const getAllDoctors = async () => {
 export const getDoctorById = async (id) => {
   try {
     const res = await axios.get(`${API_URL_GET_ALL_DOCTORS}/${id}`);
-    console.log(res.data.data);
     return res.data.data;
   } catch (error) {
     console.error(error);
