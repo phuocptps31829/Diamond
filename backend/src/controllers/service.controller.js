@@ -218,5 +218,4 @@ module.exports = {
     updateService,
     deleteService,
     getAllServicesBySpecialtyId,
-
 };

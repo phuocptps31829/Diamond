@@ -1,41 +1,38 @@
 const { checkSchema } = require('express-validator');
 const { checkIsExistID } = require('../utils/database.util');
 
-const patientModel = require('../models/patient.model');
-const doctorModel = require('../models/patient.model');
+const PatientModel = require('../models/patient.model');
+const ServiceModel = require('../models/service.model');
+const MedicalPackageModel = require('../models/medical-package.model');
+const WorkScheduleModel = require('../models/work-schedule.model');
 
 const appointmentValidator = checkSchema({
     patientID: {
         customSanitizer: {
-            options: (id) => checkIsExistID(patientModel, id),
+            options: (id) => checkIsExistID(PatientModel, id, true),
         }
     },
-    doctorID: {
+    "data.*.workScheduleID": {
         customSanitizer: {
-            options: (id) => checkIsExistID(doctorModel, id),
+            options: (id) => checkIsExistID(WorkScheduleModel, id, true),
         }
     },
-    clinicID: {
-        exists: {
-            errorMessage: 'Clinic ID is required'
-        },
-        isMongoId: {
-            errorMessage: 'Invalid Clinic ID'
+    "data.*.serviceID": {
+        customSanitizer: {
+            options: (id) => checkIsExistID(ServiceModel, id),
         }
     },
-    serviceID: {
-        optional: true,
-        isMongoId: {
-            errorMessage: 'Invalid Service ID'
+    "data.*.medicalPackageID": {
+        customSanitizer: {
+            options: (id) => checkIsExistID(MedicalPackageModel, id),
         }
     },
-    medicalPackageID: {
-        optional: true,
-        isMongoId: {
-            errorMessage: 'Invalid Medical Package ID'
+    "data.*.patientHelpID": {
+        customSanitizer: {
+            options: (id) => checkIsExistID(PatientModel, id),
         }
     },
-    type: {
+    "data.*.type": {
         exists: {
             errorMessage: 'Appointment type is required'
         },
@@ -43,7 +40,7 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Appointment type should be a string'
         },
     },
-    time: {
+    "data.*.time": {
         exists: {
             errorMessage: 'Appointment time is required'
         },
@@ -51,7 +48,15 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Invalid appointment time format'
         }
     },
-    status: {
+    "data.*.price": {
+        exists: {
+            errorMessage: 'Price time is required'
+        },
+        isNumeric: {
+            errorMessage: 'Price type should be a number'
+        }
+    },
+    "data.*.status": {
         exists: {
             errorMessage: 'Status is required'
         },
@@ -59,34 +64,8 @@ const appointmentValidator = checkSchema({
             errorMessage: 'Status should be a string'
         },
         isIn: {
-            options: [['Đã xác nhận', 'Đã hủy', 'Đang chờ', 'Đã khám']],
+            options: [['Đã xác nhận', 'Đã hủy', 'Chờ xác nhận', 'Đã khám']],
             errorMessage: 'Status is not valid'
-        }
-    },
-    isService: {
-        exists: {
-            errorMessage: 'Appointment or Service?'
-        },
-        isBoolean: {
-            errorMessage: 'Appointment or Service should be a boolean'
-        }
-    },
-    'paymentMethod.method': {
-        optional: true,
-        isString: {
-            errorMessage: 'Payment method should be a string'
-        }
-    },
-    'paymentMethod.token': {
-        optional: true,
-        isString: {
-            errorMessage: 'Payment token should be a string'
-        }
-    },
-    'paymentMethod.isPaid': {
-        optional: true,
-        isBoolean: {
-            errorMessage: 'Payment status should be a boolean'
         }
     },
 });

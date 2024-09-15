@@ -20,5 +20,4 @@ otpSchema.methods.isExpired = function () {
     return (currentTime - this.time.getTime()) < time;
 };
 
-
 module.exports = mongoose.model('OTP', otpSchema);

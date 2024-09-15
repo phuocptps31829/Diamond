@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer');
 const createHttpError = require('http-errors');
 const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
-const axios = require('axios');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
@@ -222,6 +221,28 @@ const checkPhoneNumberAndEmail = async (phoneNumber, email, Model, isEmailRequir
         }
     }
 };
+function timeDivision(startTime, endTime) {
+    const result = [];
+
+    const [startHour, startMinute] = startTime.split(":").map(Number);
+    const [endHour, endMinute] = endTime.split(":").map(Number);
+
+    let startMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
+
+    startMinutes = Math.ceil(startMinutes / 30) * 30;
+
+    while (startMinutes < endMinutes) {
+
+        const hours = Math.floor(startMinutes / 60).toString().padStart(2, '0');
+        const minutes = (startMinutes % 60).toString().padStart(2, '0');
+        result.push(`${hours}:${minutes}`);
+
+        startMinutes += 30;
+    }
+
+    return result;
+}
 
 module.exports = {
     createError,
@@ -234,5 +255,6 @@ module.exports = {
     checkValidObjectId,
     sendOTP,
     generateOTPToken,
-    checkPhoneNumberAndEmail
+    checkPhoneNumberAndEmail,
+    timeDivision
 };

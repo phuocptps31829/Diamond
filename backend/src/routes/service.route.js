@@ -246,7 +246,7 @@ router.put(
     '/update/:id',
     helperMiddleware.checkValidId,
     serviceValidator.serviceValidator,
-    serviceController.createService
+    serviceController.updateService
 );
 
 /**
