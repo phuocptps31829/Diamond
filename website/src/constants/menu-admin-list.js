@@ -1,3 +1,13 @@
+import { RxDashboard } from "react-icons/rx";
+import { FaUserDoctor } from "react-icons/fa6";
+import { IoPeopleSharp } from "react-icons/io5";
+import { FaUsers } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
+import { FaCalendarPlus } from "react-icons/fa";
+import { FaClinicMedical } from "react-icons/fa";
+import { LuNewspaper } from "react-icons/lu";
+import { FcDepartment } from "react-icons/fc";
+
 export const getMenuList = pathname => [
     {
         groupLabel: "",
@@ -6,20 +16,18 @@ export const getMenuList = pathname => [
                 href: "/admin/dashboard",
                 label: "Thống kê",
                 active: pathname.includes("/admin/dashboard"),
-                icon: "RxDashboard",
+                icon: RxDashboard,
                 submenus: [
                     {
                         href: "/admin/dashboard",
                         label: "Thống kê",
                         active: pathname.includes("/admin/dashboard"),
-                        icon: "RxDashboard",
                         submenus: []
                     },
                     {
-                        href: "/admin/dashboard",
+                        href: "/admin/dashboard2",
                         label: "Thống kê",
-                        active: pathname.includes("/admin/dashboard"),
-                        icon: "RxDashboard",
+                        active: pathname.includes("/admin/dashboard2"),
                         submenus: []
                     }
                 ]
@@ -31,13 +39,13 @@ export const getMenuList = pathname => [
         menus: [
             {
                 href: "",
-                label: "Nhân viên",
+                label: "Bác sĩ",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FaUserDoctor,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
-                        label: "Danh sách nhân viên",
+                        label: "Danh sách bác sĩ",
                         active: pathname === "/admin/doctors/list"
                     },
                     {
@@ -56,7 +64,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Bệnh nhân",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: IoPeopleSharp,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -79,7 +87,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Nhân viên",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FaUsers,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -102,7 +110,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Lịch đặt khám",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FaCalendarAlt,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -125,7 +133,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Lịch làm việc",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FaCalendarPlus,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -148,7 +156,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Chi nhánh",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FcDepartment,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -171,7 +179,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Phòng khám",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: FaClinicMedical,
                 submenus: [
                     {
                         href: "/admin/doctors/list",
@@ -194,7 +202,7 @@ export const getMenuList = pathname => [
                 href: "",
                 label: "Tin tức",
                 active: pathname === "/admin/doctors/list",
-                icon: "FaUserDoctor",
+                icon: LuNewspaper,
                 submenus: [
                     {
                         href: "/admin/doctors/list",

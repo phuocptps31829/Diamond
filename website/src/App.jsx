@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/client/AppLayout";
 import Home from "./pages/client/Home";
 import SpecialtiesCategory from "./pages/client/Specialties";
@@ -173,6 +173,18 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
+        element: <Navigate to="dashboard" />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />
+      },
+      {
+        path: 'doctors/list',
+        element: <Dashboard />
+      },
+      {
+        path: 'patients/list',
         element: <Dashboard />
       }
     ]

@@ -6,9 +6,7 @@ import { Ellipsis } from 'lucide-react';
 import { TooltipContent } from '@radix-ui/react-tooltip';
 import { cn } from '@/lib/utils';
 import CollapseMenuButton from './CollapseMenuButton';
-
-import * as IconRX from "react-icons/rx";
-import * as IconFA6 from "react-icons/fa6";
+import { Button } from '@/components/ui/Button';
 
 const Menu = ({ isOpen }) => {
     const location = useLocation();
@@ -17,8 +15,8 @@ const Menu = ({ isOpen }) => {
     return (
         <ScrollArea className="[&>div>div[style]]:!block">
             <nav className="mt-2 h-full w-full no-scrollbar">
-                <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-4">
-                    { menuList.map(({ groupLabel, menus }, index) => <li className={ cn("w-full pl-4", groupLabel ? "pt-4" : "") } key={ index }>
+                <ul className="flex flex-col min-h-[calc(100vh-48px-36px-16px-32px)] lg:min-h-[calc(100vh-32px-40px-32px)] items-start space-y-1 px-5">
+                    { menuList.map(({ groupLabel, menus }, index) => <li className={ cn("w-full ", groupLabel ? "pt-4" : "") } key={ index }>
                         { (isOpen && groupLabel) || isOpen === undefined ? (
                             <p className="text-sm font-medium text-muted-foreground px-4 pb-2 max-w-[248px] truncate">
                                 { groupLabel }
@@ -37,7 +35,7 @@ const Menu = ({ isOpen }) => {
                                 </Tooltip>
                             </TooltipProvider>
                         ) : (
-                            <p className="pb-2"></p>
+                            <p className="pb-0"></p>
                         ) }
                         { menus.map(
                             ({ href, label, icon: Icon, active, submenus }, index) =>
@@ -46,15 +44,16 @@ const Menu = ({ isOpen }) => {
                                         <TooltipProvider disableHoverableContent>
                                             <Tooltip delayDuration={ 100 }>
                                                 <TooltipTrigger asChild>
-                                                    <button
-
+                                                    <Button
+                                                        variant={ active ? "secondary" : "ghost" }
                                                         className="w-full justify-start h-10 mb-1"
+                                                        asChild
                                                     >
                                                         <Link href={ href }>
                                                             <span
                                                                 className={ cn(isOpen === false ? "" : "mr-4") }
                                                             >
-                                                                <Icon />
+                                                                <Icon size={ 18 } />
                                                             </span>
                                                             <p
                                                                 className={ cn(
@@ -67,7 +66,7 @@ const Menu = ({ isOpen }) => {
                                                                 { label }
                                                             </p>
                                                         </Link>
-                                                    </button>
+                                                    </Button>
                                                 </TooltipTrigger>
                                                 { isOpen === false && (
                                                     <TooltipContent side="right">
