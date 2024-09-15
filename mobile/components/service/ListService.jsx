@@ -1,6 +1,8 @@
 import { Text, FlatList, TouchableOpacity, Image } from "react-native";
+import { useWindowDimensions } from "react-native";
 
 const ListService = ({ listServices }) => {
+  const { width } = useWindowDimensions();
   return (
     <>
       <FlatList
@@ -10,7 +12,10 @@ const ListService = ({ listServices }) => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             key={index}
-            className="flex-column max-w-[170px] relative bg-white flex-1 m-1 rounded-[10px] overflow-hidden"
+            style={{
+              maxWidth: width / 2 - 18,
+            }}
+            className="flex-column relative bg-white flex-1 m-1 rounded-[10px] overflow-hidden"
             onPress={() => {
               console.log("Button pressed!");
             }}
