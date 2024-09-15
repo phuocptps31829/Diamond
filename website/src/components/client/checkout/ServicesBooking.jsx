@@ -44,9 +44,9 @@ export default function Form() {
   const bookingDetails = useSelector(
     (state) => state.infoBooking.bookingDetails,
   );
-  console.log("Booking details: ", bookingDetails);
 
   const dispatch = useDispatch();
+
   const { toast } = useToast();
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
@@ -93,23 +93,22 @@ export default function Form() {
       setSelectedService(null);
     }
   };
-  console.log(selectedService);
 
   const handleSaveData = (e) => {
     e.preventDefault();
-    handleSubmit((data) => {
+    handleSubmit(() => {
       dispatch(
         setBookingDetails({
           serviceId: selectedService.serviceId,
           bookingDetail: {
-            specialtyID: data.specialtyID,
-            selectedBranchId: data.selectedBranchId,
-            selectedDoctorId: data.selectedDoctorId,
-            selectedWorkScheduleId: data.selectedWorkScheduleId,
-            selectedDate: data.selectedDate,
-            price: data.price,
-            selectedTime: data.selectedTime,
-            clinic: data.clinic,
+            specialtyID: selectedService.bookingDetail.specialtyID,
+            selectedBranchId: selectedBranchId,
+            selectedDoctorId: selectedDoctorId,
+            selectedWorkScheduleId: selectedWorkScheduleId,
+            selectedDate: selectedDate,
+            price: selectedService.bookingDetail.price,
+            selectedTime: selectedTime,
+            clinic: selectedClinic,
           },
         }),
       );
@@ -123,7 +122,6 @@ export default function Form() {
     })(e);
   };
   const handleTimeChange = (workScheduleID, clinic, time) => {
-    console.log("Selected Work Schedule ID:", workScheduleID);
     setSelectedWorkScheduleId(workScheduleID);
     setSelectedClinic(clinic);
     setSelectedTime(time);
@@ -251,12 +249,24 @@ export default function Form() {
       });
     }
   };
+
   const onSubmit = (data, event) => {
     event.preventDefault();
+
+    if (!profile) {
+      toast({
+        variant: "error",
+        title: "Thanh toán thất bại!",
+        description: "Vui lòng đăng nhập để tiếp tục.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+
     const combinedDateTime = `${selectedDate}T${selectedTime}:00.000Z`;
 
     const bookingInfo = {
-      patientID: profile?.id || "66afa9556d138253c13a840b",
+      patientID: profile.id,
       appointmentHelpUser: isBookingForOthers
         ? {
             fullName: data.fullName,

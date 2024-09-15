@@ -22,16 +22,18 @@ export default function SelectDate({
   branchId,
   disabled,
   onChange,
-  setValue
+  setValue,
 }) {
   const [availableDates, setAvailableDates] = useState([]);
 
   useEffect(() => {
+    if (!doctorId || !branchId) return;
+
     const fetchDates = async () => {
       try {
         const data = await getWorkSchedulesByDoctors(doctorId, branchId);
         const dates = data.map((option) =>
-          parse(option._id.day, "yyyy-MM-dd", new Date())
+          parse(option._id.day, "yyyy-MM-dd", new Date()),
         );
         setAvailableDates(dates);
       } catch (error) {
@@ -44,15 +46,15 @@ export default function SelectDate({
 
   useEffect(() => {
     onChange("");
-    setValue(name, ""); 
-  }, [doctorId, branchId, setValue, name]);
+    setValue(name, "");
+  }, [branchId, doctorId, setValue, name]);
 
   const isDateAvailable = (date) => {
     return availableDates.some(
       (availableDate) =>
         availableDate.getDate() === date.getDate() &&
         availableDate.getMonth() === date.getMonth() &&
-        availableDate.getFullYear() === date.getFullYear()
+        availableDate.getFullYear() === date.getFullYear(),
     );
   };
 
@@ -72,7 +74,7 @@ export default function SelectDate({
                   className={cn(
                     "w-full justify-start py-[21px] text-left font-normal",
                     !field.value && "text-muted-foreground",
-                    errors[name] && "border-red-500"
+                    errors[name] && "border-red-500",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -85,7 +87,6 @@ export default function SelectDate({
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
-                
                   mode="single"
                   selected={field.value ? new Date(field.value) : null}
                   onSelect={(selectedDate) => {
