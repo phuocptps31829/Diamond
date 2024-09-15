@@ -1,7 +1,11 @@
 import News from "../components/news";
 
 const NewsTab = () => {
-  return <News />;
+  return (
+    <>
+      <News />
+    </>
+  );
 };
 
 export default NewsTab;
