@@ -42,6 +42,34 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/branches/specialty/{id}':
+ *  get:
+ *    tags:
+ *    - Branch Routes
+ *    summary: Get branch by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Branch id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/specialty/:id',
+    helperMiddleware.checkValidId,
+    branchController.getBranchBySpecialtyID
+);
+
+/**
+ * @openapi
  * '/api/v1/branches/{id}':
  *  get:
  *    tags:

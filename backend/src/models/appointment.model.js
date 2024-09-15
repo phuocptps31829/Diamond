@@ -5,18 +5,14 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
         required: true
     },
-    doctorID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Doctor',
-        required: true
-    },
     serviceID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Service',
     },
     medicalPackageID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'MedicalPackage',
     },
-    clinicID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Clinic',
+    workScheduleID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'WorkSchedule',
         required: true
     },
     type: {
@@ -31,24 +27,23 @@ const appointmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isService: {
-        type: Boolean,
-        required: true
+    patientHelpID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
     },
-    paymentMethod: {
+    payment: {
         method: {
             type: String,
         },
-        token: {
+        refundCode: {
             type: String,
         },
-        isPaid: {
-            type: Boolean,
+        status: {
+            type: String,
         },
     },
     isDeleted: {
         type: Boolean,
-        required: true
+        default: false
     },
 }, {
     collection: 'Appointment',

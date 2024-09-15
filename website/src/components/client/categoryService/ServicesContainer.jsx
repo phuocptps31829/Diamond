@@ -75,7 +75,7 @@ const ServicesContainer = () => {
       })
       .join('&'));
     setFilters(updatedFilters);
-    
+
   };
 
   const isServiceRoute = useMatch("/services/:specialtyId?");
@@ -99,8 +99,8 @@ const ServicesContainer = () => {
   const totalPages = Math.ceil(totalItems / limit);
 
   return (
-    <section className="relative mx-auto max-w-screen-2xl py-3">
-      <div className="mx-auto w-full max-w-[83rem] px-4 md:px-0">
+    <section className="relative mx-auto max-w-screen-xl md:px-5 py-3">
+      <div className="mx-auto w-full px-4 md:px-0">
         <div className="grid grid-cols-12 md:gap-7">
           <div className="col-span-12 mt-7 md:col-span-3">
             <SidebarFilter onFilterApply={ handleFilterApply } parentFilters={ filters } />
@@ -156,12 +156,12 @@ const ServicesContainer = () => {
               />
             </PaginationItem>
             { Array.from({ length: totalPages }).map((_, index) => {
-              
+
               return (
                 <PaginationItem key={ index }>
                   <PaginationLink
-                    onClick={() => handlePageChange(index + 1)}
-                    isActive={filters.page === index + 1}
+                    onClick={ () => handlePageChange(index + 1) }
+                    isActive={ filters.page === index + 1 }
                   >
                     { index + 1 }
                   </PaginationLink>

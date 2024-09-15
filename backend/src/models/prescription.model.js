@@ -7,9 +7,9 @@ const prescriptionSchema = new mongoose.Schema({
         required: true
     },
     medicines: [{
-        medicineImportID: {
+        medicineID: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'MedicineImport',
+            ref: 'Medicine',
             required: true,
         },
         quantity: {
@@ -20,12 +20,12 @@ const prescriptionSchema = new mongoose.Schema({
             type: String,
             trim: true,
             required: true
-        },
-        isDeleted: {
-            type: Boolean,
-            default: false
         }
-    }]
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    }
 }, {
     collection: 'Prescription',
     timestamps: true
