@@ -13,22 +13,20 @@ export const getMenuList = pathname => [
         groupLabel: "",
         menus: [
             {
-                href: "/admin/dashboard",
+                href: "",
                 label: "Thống kê",
-                active: pathname.includes("/admin/dashboard"),
+                active: pathname === "/admin/dashboard",
                 icon: RxDashboard,
                 submenus: [
                     {
                         href: "/admin/dashboard",
                         label: "Thống kê",
                         active: pathname.includes("/admin/dashboard"),
-                        submenus: []
                     },
                     {
                         href: "/admin/dashboard2",
                         label: "Thống kê",
                         active: pathname.includes("/admin/dashboard2"),
-                        submenus: []
                     }
                 ]
             }
@@ -130,20 +128,20 @@ export const getMenuList = pathname => [
         groupLabel: "",
         menus: [
             {
-                href: "",
+                href: '',
                 label: "Lịch làm việc",
-                active: pathname === "/admin/doctors/list",
+                active: pathname.includes("/admin/schedules/list"),
                 icon: FaCalendarPlus,
                 submenus: [
                     {
-                        href: "/admin/doctors/list",
+                        href: "/admin/schedules/list",
                         label: "Danh sách lịch làm việc",
-                        active: pathname === "/admin/doctors/list"
+                        active: pathname === "/admin/schedules/list"
                     },
                     {
-                        href: "/admin/doctors/create",
+                        href: "/admin/schedules/create",
                         label: "Thêm lịch làm việc",
-                        active: pathname === "/admin/doctors/create"
+                        active: pathname === "/admin/schedules/create"
                     }
                 ]
             },
