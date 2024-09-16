@@ -20,7 +20,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { getProvinces, getDistricts, getWards } from "@/services/provincesApi";
 
 
-export function SelectProvince({ control, name, errors, onProvinceChange }) {
+export function SelectProvince({ control, name, errors, onProvinceChange, disabled }) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
 
@@ -50,6 +50,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange }) {
               <Button
                 variant="outline"
                 role="combobox"
+                disabled={ disabled }
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -124,6 +125,7 @@ export function SelectDistrict({
   provinceId,
   onDistrictChange,
   setValue,
+  disabled
 }) {
   const [open, setOpen] = React.useState(false);
   const [districts, setDistricts] = useState([]);
@@ -162,6 +164,8 @@ export function SelectDistrict({
               <Button
                 variant="outline"
                 role="combobox"
+                disabled={ disabled }
+
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -225,7 +229,7 @@ export function SelectDistrict({
   );
 }
 
-export function SelectWard({ control, name, errors, districtId, setValue }) {
+export function SelectWard({ control, name, errors, districtId, setValue,disabled }) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
@@ -260,6 +264,8 @@ export function SelectWard({ control, name, errors, districtId, setValue }) {
               <Button
                 variant="outline"
                 role="combobox"
+                disabled={ disabled }
+
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",

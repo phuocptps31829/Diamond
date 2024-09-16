@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const bookingSchema = z.object({
+export const otherBookingSchema = z.object({
   fullName: z
     .string()
     .min(1, "Tên không được để trống!")
@@ -44,7 +44,23 @@ export const bookingSchema = z.object({
 
   date: z.string().min(1, "Ngày khám không được để trống!"),
   province: z.union([z.string().min(1, "Không được để trống!"), z.number()]),
-  district: z.union([z.string().min(1, "Không được để trống!"), z.number(), z.null()]),
-  ward: z.union([z.string().min(1, "Không được để trống!"), z.number(), z.null()]),
+  district: z.union([
+    z.string().min(1, "Không được để trống!"),
+    z.number(),
+    z.null(),
+  ]),
+  ward: z.union([
+    z.string().min(1, "Không được để trống!"),
+    z.number(),
+    z.null(),
+  ]),
+});
 
+export const selfBookingSchema = z.object({
+  department: z.string().min(1, "Khoa khám không được để trống!"),
+  date: z.string().min(1, "Ngày khám không được để trống!"),
+
+  doctor: z.string().min(1, "Bác sĩ không được để trống!"),
+
+  time: z.string().min(1, "Thời gian khám không được để trống!"),
 });
