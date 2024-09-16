@@ -41,7 +41,7 @@ const infoBookingSlice = createSlice({
     },
     removeItemInfo: (state, action) => {
       state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId !== action.payload
+        (detail) => detail.serviceId !== action.payload,
       );
     },
     clearBookingDetails: (state) => {
@@ -65,5 +65,10 @@ const infoBookingSlice = createSlice({
   },
 });
 
-export const { setBookingDetails, removeItemInfo, clearBookingDetails ,saveBookingInfo} = infoBookingSlice.actions;
+export const {
+  setBookingDetails,
+  removeItemInfo,
+  clearBookingDetails,
+  saveBookingInfo,
+} = infoBookingSlice.actions;
 export default infoBookingSlice.reducer;
