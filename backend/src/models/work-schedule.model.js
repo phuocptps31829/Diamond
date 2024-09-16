@@ -15,11 +15,6 @@ const workScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    clinicID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Clinic',
-        required: true,
-    },
     hour: {
         startTime: {
             type: String,
