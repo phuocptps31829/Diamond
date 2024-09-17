@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 const cartData = JSON.parse(localStorage.getItem("cart")) || [];
-console.log(cartData);
 
 const formattedCart = cartData.map((item) => {
   return {
