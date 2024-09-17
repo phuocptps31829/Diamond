@@ -16,7 +16,7 @@ import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
-import { removeItemInfo, setBookingDetails } from "@/redux/bookingSlice";
+import { removeItemInfo, initBookingDetails } from "@/redux/bookingSlice";
 
 export default function ServiceItem({
   image,
@@ -41,7 +41,7 @@ export default function ServiceItem({
     if (!isInCart) {
       dispatch(addToCart({ id: _id, name, specialtyID, price }));
       dispatch(
-        setBookingDetails({
+        initBookingDetails({
           serviceId: _id,
           bookingDetail: {
             specialtyID,
@@ -64,7 +64,7 @@ export default function ServiceItem({
       });
     } else {
       dispatch(removeFromCart(_id));
-    dispatch(removeItemInfo(_id));
+      dispatch(removeItemInfo(_id));
 
       setIsInCart(false);
       toast({
@@ -79,29 +79,29 @@ export default function ServiceItem({
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to={`/detail-service/${_id}`}
+        to={ `/detail-service/${_id}` }
         className="group block min-h-[125px] w-full overflow-hidden sm:min-h-[210px]"
       >
         <img
-          src={image}
-          alt={name}
+          src={ image }
+          alt={ name }
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
       <div className="flex h-full flex-col p-3 md:p-5 md:pt-2">
         <Link
-          to={`/detail-service/${_id}`}
+          to={ `/detail-service/${_id}` }
           className="grow py-2 text-sm font-bold md:text-xl"
         >
-          {name}
+          { name }
         </Link>
         <hr className="mb-1" />
         <div className="flex items-center space-x-2 py-1">
           <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-            {price.toLocaleString()} ₫
+            { price.toLocaleString() } ₫
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            {discountPrice.toLocaleString()}₫
+            { discountPrice.toLocaleString() }₫
           </span>
         </div>
 
@@ -115,12 +115,12 @@ export default function ServiceItem({
             <FaHeart />
           </div>
           <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-            <SiTicktick /> {orderCount}
+            <SiTicktick /> { orderCount }
           </div>
         </div>
         <div className="mt-2 flex w-full items-center justify-center gap-2">
           <Link
-            to={`/detail-service/${_id}`}
+            to={ `/detail-service/${_id}` }
             className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
           >
             Chi tiết <AiOutlineDoubleRight />
@@ -129,22 +129,21 @@ export default function ServiceItem({
             <Tooltip>
               <TooltipTrigger className="h-full flex-[3] items-center justify-center">
                 <button
-                  onClick={handleAddClick}
-                  className={`group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${
-                    isInCart
-                      ? "bg-red-500 text-white"
-                      : "bg-primary-500 text-primary-500"
-                  }`}
+                  onClick={ handleAddClick }
+                  className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
+                    ? "bg-red-500 text-white"
+                    : "bg-primary-500 text-primary-500"
+                    }` }
                 >
-                  {isInCart ? (
+                  { isInCart ? (
                     <ImBin className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
                   ) : (
                     <IoMdAdd className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
-                  )}
+                  ) }
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{isInCart ? "Xóa khỏi giỏ hàng" : "Thêm giỏ hàng"}</p>
+                <p>{ isInCart ? "Xóa khỏi giỏ hàng" : "Thêm giỏ hàng" }</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

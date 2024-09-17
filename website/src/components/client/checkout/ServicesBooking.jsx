@@ -28,15 +28,16 @@ import {
   clearBookingDetails,
   removeItemInfo,
   saveBookingInfo,
-  setBookingDetails,
+  changeBookingDetails,
 } from "@/redux/bookingSlice";
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
+
 export default function Form() {
   const navigate = useNavigate();
-  const [isBlocking, setIsBlocking] = useNavigationPrompt(
-    "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
-  );
+  // const [isBlocking, setIsBlocking] = useNavigationPrompt(
+  //   "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+  // );
 
   const services = useSelector((state) => state.cart.cart);
   const profile = useSelector((state) => state.auth.userProfile);
@@ -52,13 +53,17 @@ export default function Form() {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
-  const [selectedBranchId, setSelectedBranchId] = useState(null);
-  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
-  const [selectedWorkScheduleId, setSelectedWorkScheduleId] = useState(null);
-  const [selectedClinic, setSelectedClinic] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
+
+  const [bookingDetailsLocal, setBookingDetailsLocal] = useState({
+    selectedWorkScheduleId: null,
+    selectedClinic: null,
+    selectedTime: null,
+    selectedDate: null,
+    selectedBranchId: null,
+    selectedDoctorId: null
+  });
+
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
     dispatch(removeItemInfo(id));
@@ -72,7 +77,7 @@ export default function Form() {
 
   const handleServiceSelect = async (serviceId, isChecked) => {
     if (isChecked) {
-      setIsBlocking(true);
+      // setIsBlocking(true);
       const service = bookingDetails.find(
         (service) => service.serviceId === serviceId,
       );
@@ -80,94 +85,80 @@ export default function Form() {
       if (service) {
         setSelectedService(service);
 
-        setValue("department", service.bookingDetail.selectedBranchId);
-        setValue("doctor", service.bookingDetail.selectedDoctorId);
-        setValue("time", service.bookingDetail.selectedTime);
-        setValue("date", service.bookingDetail.selectedDate);
-        setValue(
-          "room",
-          service.bookingDetail.clinic.name || "Hãy chọn giờ khám",
-        );
+        setValue("department", service.bookingDetail?.selectedBranchId);
+        setValue("doctor", service.bookingDetail?.selectedDoctorId);
+        setValue("time", service.bookingDetail?.selectedTime);
+        setValue("date", service.bookingDetail?.selectedDate);
+        setValue("room", service.bookingDetail?.clinic.name);
       }
     } else {
       setSelectedService(null);
     }
   };
 
-  const handleSaveData = (e) => {
-    e.preventDefault();
-    handleSubmit(() => {
-      dispatch(
-        setBookingDetails({
-          serviceId: selectedService.serviceId,
-          bookingDetail: {
-            specialtyID: selectedService.bookingDetail.specialtyID,
-            selectedBranchId: selectedBranchId,
-            selectedDoctorId: selectedDoctorId,
-            selectedWorkScheduleId: selectedWorkScheduleId,
-            selectedDate: selectedDate,
-            price: selectedService.bookingDetail.price,
-            selectedTime: selectedTime,
-            clinic: selectedClinic,
-          },
-        }),
-      );
-
-      toast({
-        variant: "success",
-        title: "Lưu thành công!",
-        description: "Thông tin đặt lịch đã được lưu thành công.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
-    })(e);
-  };
-  const handleTimeChange = (workScheduleID, clinic, time) => {
-    setSelectedWorkScheduleId(workScheduleID);
-    setSelectedClinic(clinic);
-    setSelectedTime(time);
+  const handleChangeBranch = (branchId) => {
+    console.log('branchId', branchId);
+    setBookingDetailsLocal(prev => ({
+      ...prev,
+      selectedBranchId: branchId
+    }));
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService.serviceId,
+        newChange: {
+          selectedBranchId: branchId
+        }
+      }));
   };
 
-  useEffect(() => {
-    return () => {
-      setIsBlocking(false);
-      setSelectedService(null);
-      setSelectedBranchId(null);
-      setSelectedDoctorId(null);
-      setSelectedWorkScheduleId(null);
-      setSelectedClinic(null);
-      setSelectedDate(null);
-      setSelectedTime(null);
-      dispatch(clearBookingDetails());
-    };
-  }, [setIsBlocking]);
-  useEffect(() => {
-    const handleBeforeRemove = (event) => {
-      event.preventDefault();
+  const handleChangeDoctor = (doctorId) => {
+    console.log('doctorId', doctorId);
+    setBookingDetailsLocal(prev => ({
+      ...prev,
+      selectedDoctorId: doctorId
+    }));
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedDoctorId: doctorId
+        }
+      }));
+  };
 
-      const userConfirmed = window.confirm(
-        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
-      );
+  const handleChangeDate = (date) => {
+    console.log('date', date);
+    setBookingDetailsLocal(prev => ({
+      ...prev,
+      selectedDate: date
+    }));
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedDate: date,
+        }
+      }));
+  };
 
-      if (userConfirmed) {
-        navigate(event.detail.href);
-      }
-    };
-
-    window.addEventListener("beforeRemove", handleBeforeRemove);
-
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue =
-        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.";
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeRemove", handleBeforeRemove);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [navigate]);
+  const handleChangeTime = (workScheduleID, clinic, time) => {
+    console.log('time', workScheduleID, clinic, time);
+    setBookingDetailsLocal(prev => ({
+      ...prev,
+      selectedClinic: clinic?.name,
+      selectedWorkScheduleId: workScheduleID,
+      selectedTime: time,
+    }));
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedTime: time,
+          selectedWorkScheduleId: workScheduleID,
+          clinic: clinic?.name
+        }
+      }));
+  };
 
   const {
     handleSubmit,
@@ -263,28 +254,28 @@ export default function Form() {
       return;
     }
 
-    const combinedDateTime = `${selectedDate}T${selectedTime}:00.000Z`;
+    const combinedDateTime = `${bookingDetailsLocal.selectedDate}T${bookingDetailsLocal.selectedTime}:00.000Z`;
 
     const bookingInfo = {
       patientID: profile.id,
       appointmentHelpUser: isBookingForOthers
         ? {
-            fullName: data.fullName,
-            phoneNumber: data.phoneNumber,
-            email: data.email,
-            gender: data.gender,
-            dateOfBirth: data.birthDate,
-            address: {
-              province: data.province,
-              district: data.district,
-              ward: data.ward,
-              street: data.address,
-            },
-            citizenIdentificationNumber: data.cccd,
-            occupation: data.job,
-            ethnic: data.ethnicity,
-            password: "string",
-          }
+          fullName: data.fullName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+          gender: data.gender,
+          dateOfBirth: data.birthDate,
+          address: {
+            province: data.province,
+            district: data.district,
+            ward: data.ward,
+            street: data.address,
+          },
+          citizenIdentificationNumber: data.cccd,
+          occupation: data.job,
+          ethnic: data.ethnicity,
+          password: "string",
+        }
         : undefined,
       data: bookingDetails.map((detail) => ({
         workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
@@ -295,28 +286,28 @@ export default function Form() {
         price: detail.bookingDetail.price,
       })),
     };
-    setIsBlocking(false);
+    // setIsBlocking(false);
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
   };
-  useEffect(() => {
-    if (!isBlocking && shouldNavigate) {
-      navigate("/services-booking-checkout");
-    }
-  }, [isBlocking, shouldNavigate, navigate]);
+  // useEffect(() => {
+  //   if (!isBlocking && shouldNavigate) {
+  //     navigate("/services-booking-checkout");
+  //   }
+  // }, [isBlocking, shouldNavigate, navigate]);
 
   return (
     <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
       <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
-        {/* Select Services */}
+        {/* Select Services */ }
         <div className="flex w-full flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
-            <p className="font-light">Đã chọn {services.length} dịch vụ</p>
+            <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
           <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4 sm:h-[215px] md:h-[680px]">
-            {services.length > 0 ? (
+            { services.length > 0 ? (
               services.map((svc) => {
                 const bookingDetail = bookingDetails.find(
                   (detail) => detail.serviceId === svc.id,
@@ -324,52 +315,52 @@ export default function Form() {
                 const isServiceSelected = !!bookingDetail;
                 const hasEmptyFields = bookingDetail
                   ? Object.values(bookingDetail.bookingDetail).some(
-                      (value) => !value,
-                    )
+                    (value) => !value,
+                  )
                   : false;
 
                 return (
-                  <div className="relative py-3" key={svc.id}>
+                  <div className="relative py-3" key={ svc.id }>
                     <input
                       className="peer hidden"
-                      id={`radio_${svc.id}`}
+                      id={ `radio_${svc.id}` }
                       type="radio"
                       name="radio"
-                      onChange={(e) =>
+                      onChange={ (e) =>
                         handleServiceSelect(svc.id, e.target.checked)
                       }
                     />
                     <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white peer-checked:border-gray-700"></span>
                     <label
                       className="flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline peer-checked:outline-gray-700"
-                      htmlFor={`radio_${svc.id}`}
+                      htmlFor={ `radio_${svc.id}` }
                     >
                       <div className="flex items-center gap-4">
                         <img
                           src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
                           className="w-[60px] sm:w-[75px] md:w-[100px]"
-                          alt={`Image of ${svc.name}`}
+                          alt={ `Image of ${svc.name}` }
                         />
                         <div className="flex flex-col">
                           <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                            {svc.name}
+                            { svc.name }
                           </p>
-                          {isServiceSelected && (
+                          { isServiceSelected && (
                             <span
-                              className={`text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold`}
+                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold` }
                             >
-                              {hasEmptyFields
+                              { hasEmptyFields
                                 ? "Xem lại thông tin (còn trống)"
-                                : "Xem lại thông tin"}
+                                : "Xem lại thông tin" }
                             </span>
-                          )}
+                          ) }
                         </div>
                       </div>
                     </label>
 
                     <div className="absolute -right-2 top-0 rounded-full bg-red-600 p-1 shadow-lg">
                       <IoMdRemove
-                        onClick={() => handleRemoveItem(svc.id)}
+                        onClick={ () => handleRemoveItem(svc.id) }
                         className="transform cursor-pointer text-lg text-white transition-transform hover:scale-110"
                       />
                     </div>
@@ -382,76 +373,78 @@ export default function Form() {
                   Chưa có dịch vụ được chọn
                 </p>
               </div>
-            )}
+            ) }
           </div>
         </div>
 
-        {/* Form */}
+        {/* Form */ }
         <div className="w-full p-4 pt-0 md:ml-auto">
           <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={ handleSubmit(onSubmit) }>
             <div className="flex flex-col gap-4">
-              {/* Hàng đầu tiên */}
+              {/* Hàng đầu tiên */ }
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
-                  {/* Khoa khám */}
+                  {/* Chi nhánh khám */ }
                   <SelectDepartment
-                    control={control}
+                    control={ control }
                     name="department"
-                    errors={errors}
+                    selectedServiceID={ selectedService?.serviceId }
+                    errors={ errors }
                     specialtyID={
                       selectedService?.bookingDetail?.specialtyID || ""
                     }
-                    setValue={setValue}
-                    onChange={(branchID) => {
-                      setSelectedBranchId(branchID);
-                    }}
+                    setValue={ setValue }
+                    onChange={ (branchID) => {
+                      handleChangeBranch(branchID);
+                    } }
                   />
                 </div>
                 <div className="flex-1">
                   <SelectDoctor
-                    control={control}
+                    control={ control }
                     name="doctor"
-                    errors={errors}
-                    branchId={selectedBranchId}
-                    setValue={setValue}
+                    errors={ errors }
+                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    setValue={ setValue }
                     specialtyID={
                       selectedService?.bookingDetail?.specialtyID || ""
                     }
-                    onChange={(doctorId, doctorName) => {
-                      setSelectedDoctorId(doctorId, doctorName);
-                    }}
+                    onChange={ (doctorId) => {
+                      handleChangeDoctor(doctorId);
+                    } }
+                    selectedServiceID={ selectedService?.serviceId }
                   />
                 </div>
               </div>
 
-              {/* Selet time */}
+              {/* Selet time */ }
               <div className="flex flex-col gap-4 md:flex-row">
-                {/* Date */}
+                {/* Date */ }
 
                 <div className="flex-1">
                   <SelectDate
-                    control={control}
+                    control={ control }
                     name="date"
-                    doctorId={selectedDoctorId}
-                    branchId={selectedBranchId}
-                    errors={errors}
-                    setValue={setValue}
-                    onChange={(date) => {
-                      setSelectedDate(date);
-                    }}
+                    doctorId={ bookingDetailsLocal.selectedDoctorId }
+                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ (date) => {
+                      handleChangeDate(date);
+                    } }
                   />
                 </div>
                 <div className="flex-1">
                   <SelectTime
-                    control={control}
+                    control={ control }
                     name="time"
-                    doctorId={selectedDoctorId}
-                    branchId={selectedBranchId}
-                    errors={errors}
-                    setValue={setValue}
-                    onChange={handleTimeChange}
-                    date={selectedDate}
+                    doctorId={ bookingDetailsLocal.selectedDoctorId }
+                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ handleChangeTime }
+                    date={ bookingDetailsLocal.selectedDate }
                   />
                 </div>
               </div>
@@ -461,29 +454,16 @@ export default function Form() {
                 </label>
 
                 <div className="flex items-center justify-center gap-2">
-                  {" "}
-                  <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    name="room"
-                    type="text"
-                    id="room"
-                    placeholder={"Hãy chọn giờ khám"}
-                    control={control}
-                    errors={errors}
-                    disabled={true}
+                  { " " }
+                  <input
+                    value={ bookingDetailsLocal?.selectedClinic ?? "" }
+                    disabled={ true }
+                    className={ `placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto pl-5` }
                   />
-                  <Button
-                    size="lg"
-                    variant="custom"
-                    className="mt-2"
-                    onClick={handleSaveData}
-                  >
-                    Lưu
-                  </Button>
                 </div>
               </div>
 
-              {/* Thông tin người khám */}
+              {/* Thông tin người khám */ }
               <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
               <div className="flex items-center">
                 <label htmlFor="bookingForOthers" className="mr-2">
@@ -491,13 +471,13 @@ export default function Form() {
                 </label>
                 <Switch
                   id="bookingForOthers"
-                  checked={isBookingForOthers}
-                  onCheckedChange={handleSwitchChange}
+                  checked={ isBookingForOthers }
+                  onCheckedChange={ handleSwitchChange }
                 />
               </div>
 
               <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
-                {/* Hàng 1 */}
+                {/* Hàng 1 */ }
                 <div className="mb-4">
                   <label htmlFor="hoten" className="mb-1 block">
                     Họ và tên:
@@ -508,12 +488,12 @@ export default function Form() {
                     name="fullName"
                     type="text"
                     id="fullName"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
-                {/* Hàng 2 */}
+                {/* Hàng 2 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="email" className="mb-1 block">
@@ -525,8 +505,8 @@ export default function Form() {
                       name="email"
                       type="email"
                       id="email"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -539,8 +519,8 @@ export default function Form() {
                       name="phoneNumber"
                       type="text"
                       id="phoneNumber"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
@@ -551,9 +531,9 @@ export default function Form() {
                       Giới tính
                     </label>
                     <SelectGender
-                      control={control}
+                      control={ control }
                       name="gender"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -561,13 +541,13 @@ export default function Form() {
                       Ngày sinh
                     </label>
                     <SelectBirthDate
-                      control={control}
+                      control={ control }
                       name="birthDate"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
-                {/* Hàng 3 */}
+                {/* Hàng 3 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="job" className="mb-1 block">
@@ -579,8 +559,8 @@ export default function Form() {
                       name="job"
                       type="text"
                       id="job"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -588,14 +568,14 @@ export default function Form() {
                       Dân tộc:
                     </label>
                     <SelectEthnic
-                      control={control}
+                      control={ control }
                       name="ethnicity"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
 
-                {/* Hàng 4 */}
+                {/* Hàng 4 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="cccd" className="mb-1 block">
@@ -607,8 +587,8 @@ export default function Form() {
                       name="cccd"
                       type="text"
                       id="cccd"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -621,8 +601,8 @@ export default function Form() {
                       name="bhyt"
                       type="text"
                       id="bhyt"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
@@ -634,36 +614,36 @@ export default function Form() {
                   <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectProvince
-                        control={control}
+                        control={ control }
                         name="province"
-                        errors={errors}
-                        onProvinceChange={(provinceId) => {
+                        errors={ errors }
+                        onProvinceChange={ (provinceId) => {
                           setSelectedProvinceId(provinceId);
                           setSelectedDistrictId(null);
-                        }}
+                        } }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectDistrict
-                        control={control}
+                        control={ control }
                         name="district"
-                        errors={errors}
-                        provinceId={selectedProvinceId}
-                        onDistrictChange={setSelectedDistrictId}
-                        setValue={setValue}
+                        errors={ errors }
+                        provinceId={ selectedProvinceId }
+                        onDistrictChange={ setSelectedDistrictId }
+                        setValue={ setValue }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectWard
-                        control={control}
+                        control={ control }
                         name="ward"
-                        errors={errors}
-                        setValue={setValue}
-                        districtId={selectedDistrictId}
+                        errors={ errors }
+                        setValue={ setValue }
+                        districtId={ selectedDistrictId }
                       />
                     </div>
                   </div>
-                  {/* Hàng 5 */}
+                  {/* Hàng 5 */ }
                   <div className="mb-4">
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
@@ -671,13 +651,13 @@ export default function Form() {
                       name="address"
                       type="text"
                       id="address"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
 
-                {/* Button */}
+                {/* Button */ }
               </div>
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">

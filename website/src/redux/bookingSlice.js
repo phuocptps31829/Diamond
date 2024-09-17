@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-const cartData = JSON.parse(localStorage.getItem("cart")) || [];
 
+const cartData = JSON.parse(localStorage.getItem("cart")) || [];
+console.log('cartInit', cartData);
 const formattedCart = cartData.map((item) => {
   return {
     serviceId: item.id,
@@ -17,14 +18,37 @@ const formattedCart = cartData.map((item) => {
   };
 });
 
+const initialState = {
+  bookingDetails: formattedCart,
+  bookingInfoCheckout: null,
+};
+
+console.log(initialState);
+
 const infoBookingSlice = createSlice({
   name: "infoBooking",
-  initialState: {
-    bookingDetails: formattedCart,
-    bookingInfoCheckout: null,
-  },
+  initialState,
   reducers: {
-    setBookingDetails: (state, action) => {
+    changeBookingDetails: (state, action) => {
+      // state.bookingDetails = state.bookingDetails.filter(
+      //   (detail) => detail.serviceId != null,
+      // );
+      console.log(action.payload);
+      const existingIndex = state.bookingDetails.findIndex(
+        (detail) => detail.serviceId === action.payload.serviceId,
+      );
+
+      if (existingIndex >= 0) {
+        state.bookingDetails[existingIndex] = {
+          ...state.bookingDetails[existingIndex],
+          bookingDetail: {
+            ...state.bookingDetails[existingIndex].bookingDetail,
+            ...action.payload.newChange
+          }
+        };
+      }
+    },
+    initBookingDetails: (state, action) => {
       state.bookingDetails = state.bookingDetails.filter(
         (detail) => detail.serviceId != null,
       );
@@ -62,8 +86,11 @@ const infoBookingSlice = createSlice({
     saveBookingInfo: (state, action) => {
       state.bookingInfoCheckout = action.payload;
     },
+    setCurIdSelected: (state, action) => {
+      state.curIdSelected = action.payload;
+    }
   },
 });
 
-export const { setBookingDetails, removeItemInfo, clearBookingDetails ,saveBookingInfo} = infoBookingSlice.actions;
+export const { changeBookingDetails, removeItemInfo, clearBookingDetails, saveBookingInfo, initBookingDetails } = infoBookingSlice.actions;
 export default infoBookingSlice.reducer;

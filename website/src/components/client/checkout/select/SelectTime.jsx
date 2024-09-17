@@ -65,37 +65,37 @@ export default function SelectTime({
     fetchDates();
   }, [date, doctorId, branchId]);
 
-  useEffect(() => {
-    onChange("");
-    setValue(name, "");
-  }, [branchId, doctorId, setValue, name]);
+  // useEffect(() => {
+  //   onChange("");
+  //   setValue(name, "");
+  // }, [branchId, doctorId, setValue, name]);
   return (
     <div>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Vui lòng chọn thời gian!" }}
-        render={({ field }) => {
+        control={ control }
+        name={ name }
+        rules={ { required: "Vui lòng chọn thời gian!" } }
+        render={ ({ field }) => {
           console.log("Field value:", field.value);
           console.log("Times:", times);
 
           return (
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={ open } onOpenChange={ setOpen }>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
-                  aria-expanded={open}
-                  className={cn(
+                  aria-expanded={ open }
+                  className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500",
-                  )}
+                  ) }
                 >
-                  {field.value ? (
+                  { field.value ? (
                     times.find((timeObj) => timeObj.time === field.value)?.time
                   ) : (
                     <span className="text-gray-600">Chọn giờ khám</span>
-                  )}
+                  ) }
                   <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -105,38 +105,38 @@ export default function SelectTime({
                   <CommandList>
                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
                     <CommandGroup>
-                      {times.map(({ time, workScheduleID, clinic }) => (
+                      { times.map(({ time, workScheduleID, clinic }) => (
                         <CommandItem
-                          key={time}
-                          value={time}
-                          onSelect={(currentValue) => {
+                          key={ time }
+                          value={ time }
+                          onSelect={ (currentValue) => {
                             field.onChange(currentValue);
                             onChange(workScheduleID, clinic, time);
                             setOpen(false);
-                          }}
+                          } }
                         >
                           <Check
-                            className={cn(
+                            className={ cn(
                               "mr-2 h-4 w-4",
                               field.value === time
                                 ? "opacity-100"
                                 : "opacity-0",
-                            )}
+                            ) }
                           />
-                          {time}
+                          { time }
                         </CommandItem>
-                      ))}
+                      )) }
                     </CommandGroup>
                   </CommandList>
                 </Command>
               </PopoverContent>
             </Popover>
           );
-        }}
+        } }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }
