@@ -33,6 +33,7 @@ export default function SelectTime({
   const [times, setTimes] = useState([]);
   const [options, setOptions] = useState([]);
 
+  console.log(doctorId, branchId, date);
   useEffect(() => {
     const fetchDates = async () => {
       if (!doctorId || !branchId) return;

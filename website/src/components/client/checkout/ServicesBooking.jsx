@@ -33,36 +33,27 @@ import {
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
 
+const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
+
 export default function Form() {
-  const navigate = useNavigate();
-  // const [isBlocking, setIsBlocking] = useNavigationPrompt(
-  //   "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
-  // );
-
-  const services = useSelector((state) => state.cart.cart);
-  const profile = useSelector((state) => state.auth.userProfile);
-
-  const bookingDetails = useSelector(
-    (state) => state.infoBooking.bookingDetails,
-  );
-
-  const dispatch = useDispatch();
-
-  const { toast } = useToast();
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [isBlocking, setIsBlocking] = useNavigationPrompt(
+    "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+  );
 
-  const [bookingDetailsLocal, setBookingDetailsLocal] = useState({
-    selectedWorkScheduleId: null,
-    selectedClinic: null,
-    selectedTime: null,
-    selectedDate: null,
-    selectedBranchId: null,
-    selectedDoctorId: null
-  });
+  const services = useSelector((state) => state.cart.cart);
+  const profile = useSelector((state) => state.auth.userProfile);
+  const bookingDetails = useSelector(
+    (state) => state.infoBooking.bookingDetails,
+  );
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
@@ -75,9 +66,15 @@ export default function Form() {
     });
   };
 
+  const getCurSelectedService = () => {
+    return bookingDetails.find(
+      (service) => service.serviceId === selectedService?.serviceId,
+    );
+  };
+
   const handleServiceSelect = async (serviceId, isChecked) => {
     if (isChecked) {
-      // setIsBlocking(true);
+      setIsBlocking(true);
       const service = bookingDetails.find(
         (service) => service.serviceId === serviceId,
       );
@@ -98,63 +95,66 @@ export default function Form() {
 
   const handleChangeBranch = (branchId) => {
     console.log('branchId', branchId);
-    setBookingDetailsLocal(prev => ({
-      ...prev,
-      selectedBranchId: branchId
-    }));
     dispatch(
       changeBookingDetails({
         serviceId: selectedService.serviceId,
         newChange: {
-          selectedBranchId: branchId
+          selectedBranchId: branchId,
+          selectedDoctorId: "",
+          selectedWorkScheduleId: "",
+          selectedDate: "",
+          selectedTime: "",
+          clinic: "",
         }
       }));
+    setValue("doctor", "");
+    setValue("time", "");
+    setValue("date", "");
+    setValue("room", "");
   };
 
   const handleChangeDoctor = (doctorId) => {
     console.log('doctorId', doctorId);
-    setBookingDetailsLocal(prev => ({
-      ...prev,
-      selectedDoctorId: doctorId
-    }));
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
-          selectedDoctorId: doctorId
+          selectedDoctorId: doctorId,
+          selectedWorkScheduleId: "",
+          selectedDate: "",
+          selectedTime: "",
+          clinic: "",
         }
       }));
+    setValue("time", "");
+    setValue("date", "");
+    setValue("room", "");
   };
 
   const handleChangeDate = (date) => {
     console.log('date', date);
-    setBookingDetailsLocal(prev => ({
-      ...prev,
-      selectedDate: date
-    }));
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
           selectedDate: date,
+          selectedWorkScheduleId: "",
+          selectedTime: "",
+          clinic: "",
         }
       }));
+    setValue("time", "");
+    setValue("room", "");
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
     console.log('time', workScheduleID, clinic, time);
-    setBookingDetailsLocal(prev => ({
-      ...prev,
-      selectedClinic: clinic?.name,
-      selectedWorkScheduleId: workScheduleID,
-      selectedTime: time,
-    }));
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
-          selectedTime: time,
           selectedWorkScheduleId: workScheduleID,
+          selectedTime: time,
           clinic: clinic?.name
         }
       }));
@@ -254,8 +254,6 @@ export default function Form() {
       return;
     }
 
-    const combinedDateTime = `${bookingDetailsLocal.selectedDate}T${bookingDetailsLocal.selectedTime}:00.000Z`;
-
     const bookingInfo = {
       patientID: profile.id,
       appointmentHelpUser: isBookingForOthers
@@ -281,7 +279,7 @@ export default function Form() {
         workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
         serviceID: detail.serviceId,
         type: "Khám lần 1",
-        time: combinedDateTime,
+        time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
         status: "Chờ xác nhận",
         price: detail.bookingDetail.price,
       })),
@@ -290,11 +288,41 @@ export default function Form() {
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
   };
-  // useEffect(() => {
-  //   if (!isBlocking && shouldNavigate) {
-  //     navigate("/services-booking-checkout");
-  //   }
-  // }, [isBlocking, shouldNavigate, navigate]);
+
+  useEffect(() => {
+    const handleBeforeRemove = (event) => {
+      event.preventDefault();
+
+      const userConfirmed = window.confirm(
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+      );
+
+      if (userConfirmed) {
+        navigate(event.detail.href);
+      }
+    };
+
+    window.addEventListener("beforeRemove", handleBeforeRemove);
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeRemove", handleBeforeRemove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!isBlocking && shouldNavigate) {
+      navigate("/services-booking-checkout");
+    }
+  }, [isBlocking, shouldNavigate, navigate]);
 
   return (
     <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
@@ -405,7 +433,7 @@ export default function Form() {
                     control={ control }
                     name="doctor"
                     errors={ errors }
-                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     setValue={ setValue }
                     specialtyID={
                       selectedService?.bookingDetail?.specialtyID || ""
@@ -426,8 +454,8 @@ export default function Form() {
                   <SelectDate
                     control={ control }
                     name="date"
-                    doctorId={ bookingDetailsLocal.selectedDoctorId }
-                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ (date) => {
@@ -439,12 +467,12 @@ export default function Form() {
                   <SelectTime
                     control={ control }
                     name="time"
-                    doctorId={ bookingDetailsLocal.selectedDoctorId }
-                    branchId={ bookingDetailsLocal.selectedBranchId }
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ handleChangeTime }
-                    date={ bookingDetailsLocal.selectedDate }
+                    date={ getCurSelectedService()?.bookingDetail?.selectedDate }
                   />
                 </div>
               </div>
@@ -456,7 +484,7 @@ export default function Form() {
                 <div className="flex items-center justify-center gap-2">
                   { " " }
                   <input
-                    value={ bookingDetailsLocal?.selectedClinic ?? "" }
+                    value={ getCurSelectedService()?.bookingDetail?.clinic ?? "" }
                     disabled={ true }
                     className={ `placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto pl-5` }
                   />

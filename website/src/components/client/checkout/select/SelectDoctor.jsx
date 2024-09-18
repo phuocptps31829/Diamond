@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getDoctorsByBranch } from "@/services/doctorsApi";
+import { useDispatch, useSelector } from "react-redux";
+import { changeBookingDetails } from "@/redux/bookingSlice";
 
 export default function SelectDoctor({
   control,
@@ -26,7 +28,6 @@ export default function SelectDoctor({
   branchId,
   onChange,
   specialtyID,
-  selectedServiceID,
   setValue,
 }) {
   const [open, setOpen] = useState(false);
@@ -47,11 +48,6 @@ export default function SelectDoctor({
 
     fetchDoctors();
   }, [branchId, specialtyID]);
-
-  // useEffect(() => {
-  //   onChange("");
-  //   setValue(name, "");
-  // }, [specialtyID, selectedServiceID, branchId, setValue, name]);
 
   return (
     <div>
