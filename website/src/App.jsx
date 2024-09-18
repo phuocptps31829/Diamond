@@ -191,6 +191,10 @@ const router = createBrowserRouter([
       {
         path: 'schedules/list',
         element: <SchedulesPage />
+      },
+      {
+        path: 'schedules/create',
+        element: <SchedulesPage />
       }
     ]
   }
