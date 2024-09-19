@@ -26,6 +26,7 @@ const invoiceRoutes = require('./src/routes/invoice.route');
 const patientsRoutes = require('./src/routes/patient.route');
 const contactRoutes = require('./src/routes/contact.route');
 const provinceRoutes = require('./src/routes/province.route');
+const appointmentRoutes = require('./src/routes/appointment.route');
 const passportMiddleWare = require('./src/middlewares/passport.middleware');
 const app = express();
 
@@ -70,6 +71,7 @@ app.use('/api/v1/provinces', provinceRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/work-schedules', workScheduleRoutes);
+app.use('/api/v1/appointments', appointmentRoutes);
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
 });
