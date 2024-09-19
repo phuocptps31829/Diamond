@@ -21,8 +21,14 @@ const checkValidId = (req, res, next) => {
 };
 const checkValueQuery = (req, res, next) => {
     try {
-        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null } = req.query;
+        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null, date = null } = req.query;
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+
+        if (date) {
+            if (!dateRegex.test(date)) {
+                createError(400, `Invalid start day format. Expected format is YYYY-MM-DD.`);
+            }
+        }
 
         if (startDay) {
             if (!dateRegex.test(startDay)) {
@@ -96,6 +102,7 @@ const checkValueQuery = (req, res, next) => {
             gender,
             startDay,
             endDay,
+            date
         };
 
         next();

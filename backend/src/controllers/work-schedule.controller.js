@@ -44,13 +44,12 @@ const getAllWorkScheduleOfDoctor = async (req, res, next) => {
             sortOptions
         } = req.customQueries;
 
-        let { doctorID, startDay, endDay } = req.checkValueQuery;
+        let { doctorID, date } = req.checkValueQuery;
 
         const pipeline = [
             {
                 $match: {
-                    isDeleted: false,
-                    doctorID: new mongoose.Types.ObjectId(doctorID[0])
+                    isDeleted: false
                 }
             },
             {
@@ -95,36 +94,27 @@ const getAllWorkScheduleOfDoctor = async (req, res, next) => {
             }
         ];
 
-        if (startDay) {
+        if (date) {
             pipeline.push({
                 $match: {
-                    day: { $gte: startDay },
+                    day: date,
                 }
             });
         }
-
-        if (endDay) {
-            pipeline.push({
-                $match: {
-                    day: { $lte: endDay },
-                }
-            });
-        }
-
-        pipeline.push({
-            $group: {
-                _id: { day: "$day" },
-                doctorID: { $first: "$doctorID" },
-                hour: {
-                    $push: {
-                        time: "$hour",
-                        workScheduleID: "$_id",
-                        clinicID: "$clinics",
-                        branchID: "$branch",
-                    }
-                },
-            }
-        });
+        // pipeline.push({
+        //     $group: {
+        //         _id: { day: "$day" },
+        //         doctorID: { $first: "$doctorID" },
+        //         hour: {
+        //             $push: {
+        //                 time: "$hour",
+        //                 workScheduleID: "$_id",
+        //                 clinicID: "$clinics",
+        //                 branchID: "$branch",
+        //             }
+        //         },
+        //     }
+        // });
 
         const countPipeline = [...pipeline];
         countPipeline.push({

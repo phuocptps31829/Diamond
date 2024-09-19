@@ -42,7 +42,7 @@ router.get(
 
 /**
  * @openapi
- * '/api/v1/work-schedules/get-work-schedule':
+ * '/api/v1/work-schedules/get-by-date':
  *  get:
  *    tags:
  *    - Work schedule Routes
@@ -61,15 +61,7 @@ router.get(
  *        schema:
  *          type: string
  *      - in: query
- *        name: startDay
- *        schema:
- *          type: string
- *      - in: query
- *        name: endDay
- *        schema:
- *          type: string
- *      - in: query
- *        name: doctorID
+ *        name: date
  *        schema:
  *          type: string
  *    responses:
@@ -81,7 +73,7 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/get-work-schedule',
+    '/get-by-date',
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     workScheduleController.getAllWorkScheduleOfDoctor
