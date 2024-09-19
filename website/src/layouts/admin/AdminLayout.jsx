@@ -20,7 +20,7 @@ export default function AdminLayout() {
             >
                 <div>
                     <Header isOpen={ isOpen } onToggleOpen={ setIsOpen } />
-                    <div className="container pt-8 pb-8 px-4 sm:px-8">
+                    <div className="pt-4 pb-10 px-4 sm:px-8">
                         <Outlet />
                     </div>
                 </div>

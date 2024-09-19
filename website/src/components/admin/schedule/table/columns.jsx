@@ -10,6 +10,7 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { BsCalendarDate } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 export const columnsSchedule = [
     {
@@ -116,9 +117,9 @@ export const columnsSchedule = [
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <BsCalendarDate className="text-[15px]" />
-                            <span>
+                            <Link to="/admin/schedules/details">
                                 Chi tiết
-                            </span>
+                            </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <FiEdit className="text-[15px]" />

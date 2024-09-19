@@ -33,7 +33,8 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import AdminLayout from "./layouts/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
-import SchedulesPage from "./components/admin/schedule";
+import ScheduleTablePage from "./pages/admin/ScheduleTable";
+import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
 
 const router = createBrowserRouter([
   {
@@ -190,11 +191,15 @@ const router = createBrowserRouter([
       },
       {
         path: 'schedules/list',
-        element: <SchedulesPage />
+        element: <ScheduleTablePage />
       },
+      // {
+      //   path: 'schedules/create',
+      //   element: <SchedulesPage />
+      // },
       {
-        path: 'schedules/create',
-        element: <SchedulesPage />
+        path: 'schedules/details',
+        element: <ScheduleDetailsPage />
       }
     ]
   }

@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import {
     flexRender,
     getCoreRowModel,
@@ -62,7 +59,7 @@ export default function DataTableSchedule() {
     });
 
     return (
-        <div className="w-full">
+        <div className="w-full p-4 bg-white rounded-sm">
             <div className="flex items-center py-4">
                 <Input
                     placeholder="Filter emails..."
