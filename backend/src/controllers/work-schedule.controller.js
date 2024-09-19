@@ -35,6 +35,136 @@ const getAllWorkSchedule = async (req, res, next) => {
         next(error);
     }
 };
+const getAllWorkScheduleOfDoctor = async (req, res, next) => {
+    try {
+        const {
+            limitDocuments,
+            page,
+            skip,
+            sortOptions
+        } = req.customQueries;
+
+        let { doctorID, startDay, endDay } = req.checkValueQuery;
+
+        const pipeline = [
+            {
+                $match: {
+                    isDeleted: false,
+                    doctorID: new mongoose.Types.ObjectId(doctorID[0])
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Clinic',
+                    let: { clinicID: '$clinicID' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$clinicID'] } } },
+                        { $project: { _id: 1, name: 1, branchID: 1, specialtyID: 1 } }
+                    ],
+                    as: 'clinics'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Branch',
+                    let: { branchID: { $arrayElemAt: ['$clinics.branchID', 0] } },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$_id', '$$branchID'] } } },
+                        { $project: { _id: 1, name: 1, workingTime: 1 } }
+                    ],
+                    as: 'branch'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Appointment',
+                    localField: '_id',
+                    foreignField: 'workScheduleID',
+                    as: 'appointments'
+                }
+            },
+            {
+                $addFields: {
+                    appointmentsCount: { $size: "$appointments" }
+                }
+            },
+            {
+                $match: {
+                    appointmentsCount: { $lte: 9 }
+                }
+            }
+        ];
+
+        if (startDay) {
+            pipeline.push({
+                $match: {
+                    day: { $gte: startDay },
+                }
+            });
+        }
+
+        if (endDay) {
+            pipeline.push({
+                $match: {
+                    day: { $lte: endDay },
+                }
+            });
+        }
+
+        pipeline.push({
+            $group: {
+                _id: { day: "$day" },
+                doctorID: { $first: "$doctorID" },
+                hour: {
+                    $push: {
+                        time: "$hour",
+                        workScheduleID: "$_id",
+                        clinicID: "$clinics",
+                        branchID: "$branch",
+                    }
+                },
+            }
+        });
+
+        const countPipeline = [...pipeline];
+        countPipeline.push({
+            $count: "totalRecords"
+        });
+
+        const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
+
+        console.log(totalRecords);
+        if (sortOptions && Object.keys(sortOptions).length > 0) {
+            pipeline.push({
+                $sort: sortOptions
+            });
+        }
+
+        pipeline.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        );
+
+        const workSchedule = await WorkScheduleModel.aggregate(pipeline);
+
+        if (!workSchedule.length) {
+            createError(404, 'No work schedule found.');
+        }
+
+        return res.status(200).json({
+            page: page || 1,
+            message: 'WorkSchedule retrieved successfully.',
+            data: workSchedule,
+            totalRecords
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 const getAllWorkScheduleWithDoctor = async (req, res, next) => {
     try {
@@ -60,6 +190,14 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
                     localField: 'clinicID',
                     foreignField: '_id',
                     as: 'clinics'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Branch',
+                    localField: 'clinics.branchID',
+                    foreignField: '_id',
+                    as: 'branch'
                 }
             },
             {
@@ -457,6 +595,7 @@ module.exports = {
     updateWorkSchedule,
     deleteWorkSchedule,
     getAllWorkScheduleWithDoctor,
+    getAllWorkScheduleOfDoctor,
     getAllWorkScheduleWithBranch,
     getWorkScheduleByDetailId
 };
