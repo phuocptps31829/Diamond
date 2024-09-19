@@ -11,6 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { BsCalendarDate } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 
 export const columnsSchedule = [
     {
@@ -44,12 +45,20 @@ export const columnsSchedule = [
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
+
                     Họ và tên
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{ row.getValue("name") }</div>,
+        cell: ({ row }) => <div className="lowercase flex items-center gap-3">
+            <Avatar className="size-8">
+                <img src={ row.original.avatar } alt={ row.getValue("name") } />
+            </Avatar>
+            <span className="w-full whitespace-nowrap">
+                { row.getValue("name") }
+            </span>
+        </div>,
     },
     {
         accessorKey: "branch",
@@ -115,12 +124,12 @@ export const columnsSchedule = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
-                        <DropdownMenuItem className="w-fit flex items-center gap-2">
-                            <BsCalendarDate className="text-[15px]" />
-                            <Link to="/admin/schedules/details">
+                        <Link to="/admin/schedules/details">
+                            <DropdownMenuItem className="w-fit flex items-center gap-2">
+                                <BsCalendarDate className="text-[15px]" />
                                 Chi tiết
-                            </Link>
-                        </DropdownMenuItem>
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <FiEdit className="text-[15px]" />
                             <span>
@@ -143,7 +152,7 @@ export const columnsSchedule = [
 export const mockData = [
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Nguyễn Văn A",
         branch: "Chi nhánh Hà Nội",
         date: "Monday",
@@ -151,7 +160,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Trần Thị B",
         branch: "Chi nhánh TP. Hồ Chí Minh",
         date: "Tuesday",
@@ -159,7 +168,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Lê Văn C",
         branch: "Chi nhánh Đà Nẵng",
         date: "Wednesday",
@@ -167,7 +176,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Phạm Thị D",
         branch: "Chi nhánh Cần Thơ",
         date: "Thursday",
@@ -175,7 +184,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Hoàng Văn E",
         branch: "Chi nhánh Hải Phòng",
         date: "Friday",
@@ -183,7 +192,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Vũ Thị F",
         branch: "Chi nhánh Nha Trang",
         date: "Monday",
@@ -191,7 +200,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Đỗ Văn G",
         branch: "Chi nhánh Huế",
         date: "Tuesday",
@@ -199,7 +208,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Ngô Thị H",
         branch: "Chi nhánh Vũng Tàu",
         date: "Wednesday",
@@ -207,7 +216,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Bùi Văn I",
         branch: "Chi nhánh Bình Dương",
         date: "Thursday",
@@ -215,7 +224,7 @@ export const mockData = [
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Lý Thị K",
         branch: "Chi nhánh Đồng Nai",
         date: "Friday",

@@ -1,12 +1,12 @@
 import CalendarSchedule from "@/components/admin/schedule/details";
+import ClinicSelect from "@/components/admin/schedule/select/ClinicSelect";
+import TimeSelect from "@/components/admin/schedule/select/TimeSelect";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { Button } from "@/components/ui/Button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/Command";
+
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 import InputCustom from "@/components/ui/InputCustom";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
-import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown } from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -28,7 +28,6 @@ const ScheduleDetailsPage = () => {
         startTime: '',
         endTime: '',
     });
-    const [isOpenSelect, setIsOpenSelect] = useState(false);
 
     console.log(infoForm);
 
@@ -77,82 +76,11 @@ const ScheduleDetailsPage = () => {
                             />
                         </div>
                         <div>
-                            <label
-                                className="mb-2 block text-sm font-medium leading-none text-black"
-                                htmlFor=""
-                            >
-                                Phòng khám
-                            </label>
-                            <Popover open={ isOpenSelect } onOpenChange={ setIsOpenSelect }>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        role="combobox"
-                                        aria-expanded={ open }
-                                        className={ cn(
-                                            "w-full justify-between py-[21px]",
-                                            // errors[name] && "border-red-500",
-                                        ) }
-                                    >
-                                        {/* { field.value ? (
-                                            options.find((doctor) => doctor._id === field.value)?.doctor
-                                                .users[0].fullName
-                                        ) : ( */}
-                                        <span className="text-gray-600">Chọn phòng khám</span>
-                                        {/* ) } */ }
-                                        <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-                                    <Command>
-                                        <CommandInput placeholder="Nhập tên phòng khám" />
-                                        <CommandList>
-                                            <CommandEmpty>Không tìm thấy!</CommandEmpty>
-                                            <CommandGroup>
-                                                { ["A", "B"].map((doctor) => (
-                                                    <CommandItem
-                                                        key={ doctor }
-                                                        value={ doctor }
-                                                    //   onSelect={ (currentValue) => {
-                                                    //     field.onChange(currentValue);
-                                                    //     onChange(currentValue);
-                                                    //     setOpen(false);
-                                                    //   } }
-                                                    >
-                                                        <Check
-                                                            className={ cn(
-                                                                "mr-2 h-4 w-4",
-                                                                //   field.value === doctor
-                                                                //     ? "opacity-100"
-                                                                //     : "opacity-0",
-                                                            ) }
-                                                        />
-                                                        {/* { doctor.doctor.users[0].fullName } */ }
-                                                    </CommandItem>
-                                                )) }
-                                            </CommandGroup>
-                                        </CommandList>
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
+                            <ClinicSelect />
                         </div>
                         <div className="grid grid-cols-2 items-center gap-3">
-                            <InputCustom
-                                name="startTime"
-                                label="Giờ bắt đầu"
-                                value={ infoForm.startTime }
-                                control={ control }
-                                type="text"
-                                errors={ errors }
-                            />
-                            <InputCustom
-                                name="endTime"
-                                label="Giờ kết thúc"
-                                value={ infoForm.endTime }
-                                control={ control }
-                                type="text"
-                                errors={ errors }
-                            />
+                            <TimeSelect label="Giờ bắt đầu" type="giờ bắt đầu" />
+                            <TimeSelect label="Giờ kết thúc" type="giờ kết thúc" />
                         </div>
                     </div>
                     <DialogFooter>
