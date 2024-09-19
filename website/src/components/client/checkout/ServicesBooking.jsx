@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/Button";
 
 import InputCustom from "@/components/ui/InputCustom";
-import { bookingSchema } from "@/zods/booking";
+import { otherBookingSchema, selfBookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectTime from "./select/SelectTime";
@@ -10,132 +10,502 @@ import SelectDate from "./select/SelectDate";
 import SelectBirthDate from "./select/SelectBirthday";
 import SelectGender from "./select/SelectGender";
 import SelectEthnic from "./select/SelectEthnicity";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   SelectDistrict,
   SelectProvince,
   SelectWard,
 } from "./select/SelectLocation";
+
 import { useDispatch, useSelector } from "react-redux";
-import { IoTrashBinOutline } from "react-icons/io5";
 import { removeFromCart } from "@/redux/cartSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@radix-ui/react-toast";
+import SelectDoctor from "./select/SelectDoctor";
+import { IoMdRemove } from "react-icons/io";
+import { Switch } from "@/components/ui/Switch";
+import {
+  clearBookingDetails,
+  removeItemInfo,
+  saveBookingInfo,
+  changeBookingDetails,
+} from "@/redux/bookingSlice";
+import { useNavigate } from "react-router-dom";
+import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
+
+const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
 export default function Form() {
-  const services = useSelector((state) => state.cart.cart);
-  const dispatch = useDispatch();
-  const { toast } = useToast();
+  const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
-  const handleRemoveItem = (id)=> {
-dispatch(removeFromCart(id));
-toast({
-  variant: "success",
-  title: "Đã xóa dịch vụ khỏi giỏ hàng!",
-  description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
-  action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-});
-  }
+  const [selectedService, setSelectedService] = useState(null);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [isBlocking, setIsBlocking] = useNavigationPrompt(
+    "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+  );
+
+  const services = useSelector((state) => state.cart.cart);
+  const profile = useSelector((state) => state.auth.userProfile);
+  const bookingDetails = useSelector(
+    (state) => state.infoBooking.bookingDetails,
+  );
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { toast } = useToast();
+
+  const handleRemoveItem = (id) => {
+    dispatch(removeFromCart(id));
+    dispatch(removeItemInfo(id));
+    toast({
+      variant: "success",
+      title: "Đã xóa dịch vụ khỏi giỏ hàng!",
+      description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
+      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+    });
+  };
+
+  const getCurSelectedService = () => {
+    return bookingDetails.find(
+      (service) => service.serviceId === selectedService?.serviceId,
+    );
+  };
+
+  const handleServiceSelect = async (serviceId, isChecked) => {
+    if (isChecked) {
+      setIsBlocking(true);
+      const service = bookingDetails.find(
+        (service) => service.serviceId === serviceId,
+      );
+
+      if (service) {
+        setSelectedService(service);
+
+        setValue("department", service.bookingDetail?.selectedBranchId);
+        setValue("doctor", service.bookingDetail?.selectedDoctorId);
+        setValue("time", service.bookingDetail?.selectedTime);
+        setValue("date", service.bookingDetail?.selectedDate);
+        setValue("room", service.bookingDetail?.clinic.name);
+      }
+    } else {
+      setSelectedService(null);
+    }
+  };
+
+  const handleChangeBranch = (branchId) => {
+    console.log('branchId', branchId);
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService.serviceId,
+        newChange: {
+          selectedBranchId: branchId,
+          selectedDoctorId: "",
+          selectedWorkScheduleId: "",
+          selectedDate: "",
+          selectedTime: "",
+          clinic: "",
+        }
+      }));
+    setValue("doctor", "");
+    setValue("time", "");
+    setValue("date", "");
+    setValue("room", "");
+  };
+
+  const handleChangeDoctor = (doctorId) => {
+    console.log('doctorId', doctorId);
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedDoctorId: doctorId,
+          selectedWorkScheduleId: "",
+          selectedDate: "",
+          selectedTime: "",
+          clinic: "",
+        }
+      }));
+    setValue("time", "");
+    setValue("date", "");
+    setValue("room", "");
+  };
+
+  const handleChangeDate = (date) => {
+    console.log('date', date);
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedDate: date,
+          selectedWorkScheduleId: "",
+          selectedTime: "",
+          clinic: "",
+        }
+      }));
+    setValue("time", "");
+    setValue("room", "");
+  };
+
+  const handleChangeTime = (workScheduleID, clinic, time) => {
+    console.log('time', workScheduleID, clinic, time);
+    dispatch(
+      changeBookingDetails({
+        serviceId: selectedService?.serviceId,
+        newChange: {
+          selectedWorkScheduleId: workScheduleID,
+          selectedTime: time,
+          clinic: clinic?.name
+        }
+      }));
+  };
+
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
+    getValues,
+    reset,
   } = useForm({
-    resolver: zodResolver(bookingSchema),
+    resolver: zodResolver(
+      isBookingForOthers ? otherBookingSchema : selfBookingSchema,
+    ),
     defaultValues: {
-      fullName: "",
-      email: "",
-      phoneNumber: "",
-      job: "",
-      ethnicity: "",
-      cccd: "",
-      bhyt: "",
-      address: "",
+      fullName: profile?.fullName || "",
+      email: profile?.email || "",
+      phoneNumber: profile?.phoneNumber || "",
+      job: profile?.job || "",
+      ethnicity: profile?.ethnicity || "",
+      cccd: profile?.cccd || "",
+      bhyt: profile?.bhyt || "",
+      address: profile?.address || "",
       department: "",
       doctor: "",
       time: "",
       room: "",
       date: "",
-      birthDate: "",
-      gender: "",
-      province: "",
-      district: "",
-      ward: "",
+      birthDate: profile?.birthDate || "",
+      gender: profile?.gender || "",
+      province: profile?.province || "",
+      district: profile?.district || "",
+      ward: profile?.ward || "",
     },
   });
+
+  const handleSwitchChange = (checked) => {
+    setIsBookingForOthers(checked);
+    const currentValues = getValues();
+    if (checked) {
+      reset({
+        fullName: "",
+        email: "",
+        phoneNumber: "",
+        job: "",
+        ethnicity: "",
+        cccd: "",
+        bhyt: "",
+        address: "",
+        birthDate: "",
+        gender: "",
+        province: "",
+        district: "",
+        ward: "",
+        department: currentValues.department,
+        doctor: currentValues.doctor,
+        time: currentValues.time,
+        room: currentValues.room,
+        date: currentValues.date,
+      });
+    } else {
+      reset({
+        fullName: profile?.fullName || "",
+        email: profile?.email || "",
+        phoneNumber: profile?.phoneNumber || "",
+        job: profile?.job || "",
+        ethnicity: profile?.ethnicity || "",
+        cccd: profile?.cccd || "",
+        bhyt: profile?.bhyt || "",
+        address: profile?.address || "",
+        birthDate: profile?.birthDate || "",
+        gender: profile?.gender || "",
+        province: profile?.province || "",
+        district: profile?.district || "",
+        ward: profile?.ward || "",
+        department: currentValues.department,
+        doctor: currentValues.doctor,
+        time: currentValues.time,
+        room: currentValues.room,
+        date: currentValues.date,
+      });
+    }
+  };
+
+  const onSubmit = (data, event) => {
+    event.preventDefault();
+
+    if (!profile) {
+      toast({
+        variant: "error",
+        title: "Thanh toán thất bại!",
+        description: "Vui lòng đăng nhập để tiếp tục.",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+
+    const bookingInfo = {
+      patientID: profile.id,
+      appointmentHelpUser: isBookingForOthers
+        ? {
+          fullName: data.fullName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+          gender: data.gender,
+          dateOfBirth: data.birthDate,
+          address: {
+            province: data.province,
+            district: data.district,
+            ward: data.ward,
+            street: data.address,
+          },
+          citizenIdentificationNumber: data.cccd,
+          occupation: data.job,
+          ethnic: data.ethnicity,
+          password: "string",
+        }
+        : undefined,
+      data: bookingDetails.map((detail) => ({
+        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
+        serviceID: detail.serviceId,
+        type: "Khám lần 1",
+        time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
+        status: "Chờ xác nhận",
+        price: detail.bookingDetail.price,
+      })),
+    };
+    // setIsBlocking(false);
+    dispatch(saveBookingInfo(bookingInfo));
+    setShouldNavigate(true);
+  };
+
+  useEffect(() => {
+    const handleBeforeRemove = (event) => {
+      event.preventDefault();
+
+      const userConfirmed = window.confirm(
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
+      );
+
+      if (userConfirmed) {
+        navigate(event.detail.href);
+      }
+    };
+
+    window.addEventListener("beforeRemove", handleBeforeRemove);
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue =
+        "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeRemove", handleBeforeRemove);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!isBlocking && shouldNavigate) {
+      navigate("/services-booking-checkout");
+    }
+  }, [isBlocking, shouldNavigate, navigate]);
+
   return (
     <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
       <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
-        {/* Select Services */}
+        {/* Select Services */ }
         <div className="flex w-full flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
-            <p className="font-light">Đã chọn {services.length} dịch vụ</p>
+            <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 sm:h-[215px] md:h-[680px]">
-          {services.length > 0 ? (
-            services.map((svc) => (
-              <div
-                key={svc.id}
-                className="mb-3 flex items-center justify-between rounded-lg border border-primary-500 px-3 py-2 md:py-3"
-              >
-                <div className="flex items-center gap-4">
-                  <img
-                    src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
-                    className="w-[60px] sm:w-[75px] md:w-[100px]"
-                    alt={`Image of ${svc.name}`}
-                  />
-                  <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                    {svc.name}
-                  </p>
-                </div>
-                <IoTrashBinOutline
-                  onClick={() => handleRemoveItem(svc.id)}
-                  className="mx-5 cursor-pointer text-2xl text-primary-500 duration-300 hover:text-red-600"
-                />
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4 sm:h-[215px] md:h-[680px]">
+            { services.length > 0 ? (
+              services.map((svc) => {
+                const bookingDetail = bookingDetails.find(
+                  (detail) => detail.serviceId === svc.id,
+                );
+                const isServiceSelected = !!bookingDetail;
+                const hasEmptyFields = bookingDetail
+                  ? Object.values(bookingDetail.bookingDetail).some(
+                    (value) => !value,
+                  )
+                  : false;
+
+                return (
+                  <div className="relative py-3" key={ svc.id }>
+                    <input
+                      className="peer hidden"
+                      id={ `radio_${svc.id}` }
+                      type="radio"
+                      name="radio"
+                      onChange={ (e) =>
+                        handleServiceSelect(svc.id, e.target.checked)
+                      }
+                    />
+                    <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white peer-checked:border-gray-700"></span>
+                    <label
+                      className="flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline peer-checked:outline-gray-700"
+                      htmlFor={ `radio_${svc.id}` }
+                    >
+                      <div className="flex items-center gap-4">
+                        <img
+                          src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                          className="w-[60px] sm:w-[75px] md:w-[100px]"
+                          alt={ `Image of ${svc.name}` }
+                        />
+                        <div className="flex flex-col">
+                          <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
+                            { svc.name }
+                          </p>
+                          { isServiceSelected && (
+                            <span
+                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold` }
+                            >
+                              { hasEmptyFields
+                                ? "Xem lại thông tin (còn trống)"
+                                : "Xem lại thông tin" }
+                            </span>
+                          ) }
+                        </div>
+                      </div>
+                    </label>
+
+                    <div className="absolute -right-2 top-0 rounded-full bg-red-600 p-1 shadow-lg">
+                      <IoMdRemove
+                        onClick={ () => handleRemoveItem(svc.id) }
+                        className="transform cursor-pointer text-lg text-white transition-transform hover:scale-110"
+                      />
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-center text-gray-500">
+                  Chưa có dịch vụ được chọn
+                </p>
               </div>
-            ))
-          ) : (
-            <div className="flex justify-center items-center h-full">
-            <p className="text-center text-gray-500">Chưa có dịch vụ được chọn</p>
-          </div>
-          )}
+            ) }
           </div>
         </div>
 
-        {/* Form */}
+        {/* Form */ }
         <div className="w-full p-4 pt-0 md:ml-auto">
           <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
-          <form onSubmit={handleSubmit()}>
+          <form onSubmit={ handleSubmit(onSubmit) }>
             <div className="flex flex-col gap-4">
-              {/* Hàng đầu tiên */}
+              {/* Hàng đầu tiên */ }
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
+                  {/* Chi nhánh khám */ }
                   <SelectDepartment
-                    control={control}
+                    control={ control }
                     name="department"
-                    errors={errors}
+                    selectedServiceID={ selectedService?.serviceId }
+                    errors={ errors }
+                    specialtyID={
+                      selectedService?.bookingDetail?.specialtyID || ""
+                    }
+                    setValue={ setValue }
+                    onChange={ (branchID) => {
+                      handleChangeBranch(branchID);
+                    } }
+                  />
+                </div>
+                <div className="flex-1">
+                  <SelectDoctor
+                    control={ control }
+                    name="doctor"
+                    errors={ errors }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
+                    setValue={ setValue }
+                    specialtyID={
+                      selectedService?.bookingDetail?.specialtyID || ""
+                    }
+                    onChange={ (doctorId) => {
+                      handleChangeDoctor(doctorId);
+                    } }
+                    selectedServiceID={ selectedService?.serviceId }
                   />
                 </div>
               </div>
 
-              {/* Hàng thứ hai */}
+              {/* Selet time */ }
               <div className="flex flex-col gap-4 md:flex-row">
+                {/* Date */ }
+
                 <div className="flex-1">
-                  <SelectDate control={control} name="date" errors={errors} />
+                  <SelectDate
+                    control={ control }
+                    name="date"
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ (date) => {
+                      handleChangeDate(date);
+                    } }
+                  />
                 </div>
                 <div className="flex-1">
-                  <SelectTime control={control} name="time" errors={errors} />
+                  <SelectTime
+                    control={ control }
+                    name="time"
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ handleChangeTime }
+                    date={ getCurSelectedService()?.bookingDetail?.selectedDate }
+                  />
+                </div>
+              </div>
+              <div className="mb-2">
+                <label htmlFor="room" className="mb-1 block">
+                  Phòng khám:
+                </label>
+
+                <div className="flex items-center justify-center gap-2">
+                  { " " }
+                  <input
+                    value={ getCurSelectedService()?.bookingDetail?.clinic ?? "" }
+                    disabled={ true }
+                    className={ `placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto pl-5` }
+                  />
                 </div>
               </div>
 
-              {/* Thông tin người khám */}
+              {/* Thông tin người khám */ }
               <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
+              <div className="flex items-center">
+                <label htmlFor="bookingForOthers" className="mr-2">
+                  Đặt hộ người khác:
+                </label>
+                <Switch
+                  id="bookingForOthers"
+                  checked={ isBookingForOthers }
+                  onCheckedChange={ handleSwitchChange }
+                />
+              </div>
+
               <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
-                {/* Hàng 1 */}
+                {/* Hàng 1 */ }
                 <div className="mb-4">
                   <label htmlFor="hoten" className="mb-1 block">
                     Họ và tên:
@@ -146,53 +516,52 @@ toast({
                     name="fullName"
                     type="text"
                     id="fullName"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
-                {/* Hàng 2 */}
+
+                {/* Hàng 2 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="email" className="mb-1 block">
                       Email:
                     </label>
-                    {/* <input type="email" id="email" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
                       placeholder="Nhập email của bạn"
                       name="email"
-                      type="text"
+                      type="email"
                       id="email"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="sdt" className="mb-1 block">
-                      Số điện thoại
+                    <label htmlFor="phone" className="mb-1 block">
+                      Số điện thoại:
                     </label>
-                    {/* <input type="tel" id="sdt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số điện thoại"
+                      placeholder="Nhập số điện thoại của bạn"
                       name="phoneNumber"
                       type="text"
                       id="phoneNumber"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
-                {/* Hàng 3 */}
+
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="gioitinh" className="mb-1 block">
                       Giới tính
                     </label>
                     <SelectGender
-                      control={control}
+                      control={ control }
                       name="gender"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -200,71 +569,68 @@ toast({
                       Ngày sinh
                     </label>
                     <SelectBirthDate
-                      control={control}
+                      control={ control }
                       name="birthDate"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
-                {/* Hàng 4 */}
+                {/* Hàng 3 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
-                    <label htmlFor="nghenghiep" className="mb-1 block">
+                    <label htmlFor="job" className="mb-1 block">
                       Nghề nghiệp:
                     </label>
-                    {/* <input type="text" id="nghenghiep" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nghề nghiệp"
+                      placeholder="Nhập nghề nghiệp của bạn"
                       name="job"
                       type="text"
                       id="job"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="dantoc" className="mb-2 block">
-                      Dân tộc
+                    <label htmlFor="ethnicity" className="mb-2 block">
+                      Dân tộc:
                     </label>
-                    {/* <input type="text" id="dantoc" className='w-full p-2 border rounded' /> */}
                     <SelectEthnic
-                      control={control}
+                      control={ control }
                       name="ethnicity"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
-                {/* Hàng 5 */}
+
+                {/* Hàng 4 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
-                    <label htmlFor="so-cccd" className="mb-1 block">
-                      Số CCCD
+                    <label htmlFor="cccd" className="mb-1 block">
+                      CCCD/CMND:
                     </label>
-                    {/* <input type="text" id="so-cccd" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số CCCD"
+                      placeholder="Nhập CCCD/CMND của bạn"
                       name="cccd"
                       type="text"
                       id="cccd"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
-                    <label htmlFor="so-bhyt" className="mb-1 block">
-                      Số BHYT
+                    <label htmlFor="bhyt" className="mb-1 block">
+                      Bảo hiểm y tế:
                     </label>
-                    {/* <input type="text" id="so-bhyt" className='w-full p-2 border rounded' /> */}
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số BHYT"
+                      placeholder="Nhập BHYT của bạn"
                       name="bhyt"
                       type="text"
                       id="bhyt"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
@@ -272,61 +638,63 @@ toast({
                   <label htmlFor="address" className="mb-1 block">
                     Địa chỉ:
                   </label>
-                  <div className="mb-2 flex flex-col items-center justify-between gap-4 md:flex-row">
+
+                  <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectProvince
-                        control={control}
+                        control={ control }
                         name="province"
-                        errors={errors}
-                        onProvinceChange={(provinceId) => {
+                        errors={ errors }
+                        onProvinceChange={ (provinceId) => {
                           setSelectedProvinceId(provinceId);
                           setSelectedDistrictId(null);
-                        }}
+                        } }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectDistrict
-                        control={control}
+                        control={ control }
                         name="district"
-                        errors={errors}
-                        provinceId={selectedProvinceId}
-                        onDistrictChange={setSelectedDistrictId}
-                        setValue={setValue}
+                        errors={ errors }
+                        provinceId={ selectedProvinceId }
+                        onDistrictChange={ setSelectedDistrictId }
+                        setValue={ setValue }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectWard
-                        control={control}
+                        control={ control }
                         name="ward"
-                        errors={errors}
-                        setValue={setValue}
-                        districtId={selectedDistrictId}
+                        errors={ errors }
+                        setValue={ setValue }
+                        districtId={ selectedDistrictId }
                       />
                     </div>
                   </div>
-
-                  {/* Hàng 6 */}
-                  <div className="mb-2">
-                    {/* <input type="text" id="diachi" className='w-full p-2 border rounded' /> */}
+                  {/* Hàng 5 */ }
+                  <div className="mb-4">
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập địa chỉ"
+                      placeholder="Nhập địa chỉ cụ thể của bạn"
                       name="address"
                       type="text"
                       id="address"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Nút tiếp tục */}
+                {/* Button */ }
+              </div>
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
                   Trở lại
                 </Button>
-                <button className="h-10 rounded-md bg-primary-500 px-8 text-white hover:bg-primary-600">
+                <button
+                  type="submit"
+                  className="h-10 rounded-md bg-primary-500 px-8 text-white hover:bg-primary-600"
+                >
                   Tiếp tục
                 </button>
               </div>

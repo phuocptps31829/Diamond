@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import AppLayout from "./layouts/client/AppLayout";
 import Home from "./pages/client/Home";
 import SpecialtiesCategory from "./pages/client/Specialties";
@@ -31,6 +31,10 @@ import PKCheckOut from "./pages/client/PKBookingPayment";
 import SVCheckOut from "./pages/client/SVBookingPayment";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
+import AdminLayout from "./layouts/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import ScheduleTablePage from "./pages/admin/ScheduleTable";
+import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
 
 const router = createBrowserRouter([
   {
@@ -121,19 +125,19 @@ const router = createBrowserRouter([
       },
       {
         path: "package-booking",
-        element: <PackageBooking/>
+        element: <PackageBooking />,
       },
       {
         path: "services-booking",
-        element: <ServicesBooking/>
+        element: <ServicesBooking />,
       },
       {
         path: "package-booking-checkout",
-        element: <PKCheckOut/>
+        element: <PKCheckOut />,
       },
       {
         path: "services-booking-checkout",
-        element: <SVCheckOut/>
+        element: <SVCheckOut />,
       },
       {
         path: "/login",
@@ -165,12 +169,46 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '',
+        element: <Navigate to="dashboard" />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard />
+      },
+      {
+        path: 'doctors/list',
+        element: <Dashboard />
+      },
+      {
+        path: 'patients/list',
+        element: <Dashboard />
+      },
+      {
+        path: 'schedules/list',
+        element: <ScheduleTablePage />
+      },
+      // {
+      //   path: 'schedules/create',
+      //   element: <SchedulesPage />
+      // },
+      {
+        path: 'schedules/details',
+        element: <ScheduleDetailsPage />
+      }
+    ]
+  }
 ]);
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }

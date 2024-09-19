@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import React from "react";
+import { useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -8,8 +8,44 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Location from "expo-location";
 
 const Index = () => {
+  const storeLocation = async (currentLocation) => {
+    try {
+      await AsyncStorage.setItem(
+        "userLocation",
+        JSON.stringify(currentLocation)
+      );
+    } catch (error) {
+      console.error("Failed to save location", error);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const storedLocation = await AsyncStorage.getItem("userLocation");
+
+      if (!storedLocation) {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+          return;
+        }
+
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        const locationData = {
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+        storeLocation(locationData);
+      }
+    })();
+  }, []);
+
   const handleSubmitLogin = () => {
     router.push("home");
   };
@@ -17,7 +53,7 @@ const Index = () => {
   return (
     <ScrollView
       className="bg-white"
-      contentContainerStyle={{  
+      contentContainerStyle={{
         height: "100%",
       }}
     >

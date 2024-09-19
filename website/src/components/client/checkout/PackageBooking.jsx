@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { FaSearch } from "react-icons/fa";
 import { Input } from "@/components/ui/Input";
 import InputCustom from "@/components/ui/InputCustom";
-import { bookingSchema } from "@/zods/booking";
+import { otherBookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectDoctor from "./select/SelectDoctor";
@@ -64,13 +64,14 @@ const packages = [
 export default function Form() {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
   } = useForm({
-    resolver: zodResolver(bookingSchema),
+    resolver: zodResolver(otherBookingSchema),
     defaultValues: {
       fullName: "",
       email: "",
@@ -168,7 +169,9 @@ export default function Form() {
                 {/* Date */}
 
                 <div className="flex-1">
-                  <SelectDate control={control} name="date" errors={errors} />
+                  <SelectDate control={control} name="date" errors={errors}    onChange={(date) => {
+                      setSelectedDate(date);
+                    }} />
                 </div>
                 <div className="flex-1">
                   <SelectTime control={control} name="time" errors={errors} />

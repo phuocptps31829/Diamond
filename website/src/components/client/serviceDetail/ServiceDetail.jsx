@@ -30,15 +30,13 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   };
 
   const handleAddToCart = () => {
-    if (isInCart) {
-      navigate("/services-booking");
-    } else {
+    if (!isInCart) {
       dispatch(addToCart(serviceData));
       navigate("/services-booking");
-     
+    } else {
+      navigate("/package-booking");
     }
   };
-
   if (isLoading) {
     return (
       <div className="mx-auto max-w-screen-2xl pb-4">
