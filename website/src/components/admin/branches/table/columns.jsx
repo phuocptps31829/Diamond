@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import {
   Dialog,
@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
+import { ArrowUpDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +19,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Link } from "react-router-dom";
-import { MoreHorizontal } from "lucide-react";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
@@ -55,7 +55,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Tên chi nhánh
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -77,7 +77,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Giờ làm việc
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -99,7 +99,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Hotline
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -119,7 +119,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Địa chỉ
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -139,7 +139,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Hình ảnh
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -179,17 +179,17 @@ export const columns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
               <span className="sr-only">Open menu</span>
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-            <DropdownMenuItem className="w-fit flex items-center gap-2">
+            <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
               <Link to="/admin/branches/edit/123">Sửa</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="w-fit flex items-center gap-2">
+            <DropdownMenuItem className="flex w-fit items-center gap-2">
               <RiDeleteBin6Line className="text-[15px]" />
               <span>Xóa</span>
             </DropdownMenuItem>

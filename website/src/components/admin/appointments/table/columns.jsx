@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { CaretSortIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import { BiDetail } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { ArrowUpDown } from "lucide-react";
 
 export const columns = [
   {
@@ -48,7 +49,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Bệnh nhân
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -73,7 +74,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Bác sĩ
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -95,7 +96,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Dịch vụ/Gói khám
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -117,7 +118,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Loại khám
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -139,7 +140,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Thời gian khám
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -161,7 +162,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Trạng thái
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
@@ -183,7 +184,7 @@ export const columns = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Thanh toán
-          <CaretSortIcon className="ml-2 h-4 w-4" />
+          <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
