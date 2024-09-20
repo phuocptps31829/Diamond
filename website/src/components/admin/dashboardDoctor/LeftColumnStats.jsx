@@ -29,44 +29,44 @@ export default function LeftColumnStats() {
   return (
     <div className="h-full">
       <div className="relative flex w-full rounded-md bg-white">
-        {stats.map((stat, idx) => (
-          <div key={idx} className="flex flex-1 items-center p-5 px-8">
+        { stats.map((stat, idx) => (
+          <div key={ idx } className="flex flex-1 items-center p-5 px-8">
             <div
-              className={`flex h-[60px] w-[60px] items-center justify-center rounded-lg p-3`}
-              style={{ backgroundColor: stat.bgColor }}
+              className={ `flex h-[60px] w-[60px] items-center justify-center rounded-lg p-3` }
+              style={ { backgroundColor: stat.bgColor } }
             >
-              <stat.icon color="white" size={30} />
+              <stat.icon color="white" size={ 30 } />
             </div>
             <div className="ml-3 flex flex-col">
               <div className="flex items-center text-[26px] text-primary-500">
                 <AnimatedValue
-                  value={stat.mainValue}
-                  isCurrency={stat.id === 2}
+                  value={ stat.mainValue }
+                  isCurrency={ stat.id === 2 }
                 />
-                {stat.secondaryValue && (
+                { stat.secondaryValue && (
                   <span className="text-[18px] text-[#D6D6DA]">
-                    {stat.secondaryValue}
+                    { stat.secondaryValue }
                   </span>
-                )}
+                ) }
               </div>
-              <h3 className="font-semibold">{stat.title}</h3>
+              <h3 className="font-semibold">{ stat.title }</h3>
             </div>
             <div className="flex h-full flex-1 justify-center">
               <span
                 className="h-fit rounded-[99px] p-1 px-2 text-[11px]"
-                style={{
+                style={ {
                   backgroundColor: stat.percentageBg,
                   color: stat.percentageColor,
-                }}
+                } }
               >
-                {stat.percentage}
+                { stat.percentage }
               </span>
             </div>
-            {idx === 0 && (
+            { idx === 0 && (
               <div className="absolute right-1/2 top-1/2 h-10 w-[3px] -translate-y-1/2 transform rounded-lg bg-primary-200"></div>
-            )}
+            ) }
           </div>
-        ))}
+        )) }
       </div>
       <div className="mt-6 flex-1 rounded-md bg-white px-6 py-4 shadow-sm">
         <div className="mb-2 flex items-center justify-between">

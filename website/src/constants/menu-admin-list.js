@@ -130,18 +130,18 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Lịch làm việc",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/schedules/list",
         icon: FaCalendarPlus,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/schedules/list",
             label: "Danh sách lịch làm việc",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/schedules/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/schedules/details",
             label: "Thêm lịch làm việc",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/schedules/details",
           },
         ],
       },
