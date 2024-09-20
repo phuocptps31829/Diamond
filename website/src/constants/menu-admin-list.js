@@ -6,7 +6,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
-import { FaHospital } from "react-icons/fa";
+import { FcDepartment } from "react-icons/fc";
 
 export const getMenuList = (pathname) => [
   {
@@ -107,18 +107,20 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Lịch đặt khám",
-        active: pathname === "/admin/doctors/list",
+        active:
+          pathname === "/admin/appointments/list " ||
+          pathname === "/admin/appointments/create",
         icon: FaCalendarAlt,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/appointments/list",
             label: "Danh sách lịch đặt",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/appointments/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/appointments/create",
             label: "Thêm lịch đặt",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/appointments/create",
           },
         ],
       },
@@ -153,18 +155,20 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Chi nhánh",
-        active: pathname === "/admin/doctors/list",
-        icon: FaHospital,
+        active:
+          pathname === "/admin/branches/list" ||
+          pathname === "/admin/branches/create",
+        icon: FcDepartment,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/branches/list",
             label: "Danh sách chi nhánh",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/branches/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/branches/create",
             label: "Thêm chi nhánh",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/branches/create",
           },
         ],
       },
@@ -199,18 +203,19 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Tin tức",
-        active: pathname === "/admin/doctors/list",
+        active:
+          pathname === "/admin/news/list" || pathname === "/admin/news/create",
         icon: LuNewspaper,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/news/list",
             label: "Danh sách tin tức",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/news/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/news/create",
             label: "Thêm tin tức",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/news/create",
           },
         ],
       },

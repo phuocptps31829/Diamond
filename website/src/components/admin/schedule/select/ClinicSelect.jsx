@@ -43,7 +43,7 @@ const ClinicSelect = () => {
                         <CommandList>
                             <CommandEmpty>Không tìm thấy!</CommandEmpty>
                             <CommandGroup>
-                                { ["A", "B"].map((doctor) => (
+                                { ["A - Gò Vấp", "B -Tân Bình"].map((doctor) => (
                                     <CommandItem
                                         key={ doctor }
                                         value={ doctor }

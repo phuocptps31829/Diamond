@@ -46,6 +46,13 @@ import StaffList from "./pages/admin/StaffList";
 import AddDoctor from "./pages/admin/AddDoctor";
 import AddStaff from "./pages/admin/AddStaff";
 import AddPatient from "./pages/admin/AddPatient";
+import NewsListPage from "./pages/admin/News";
+import NewsFormPage from "./pages/admin/News/form";
+import BranchesListPage from "./pages/admin/Branches";
+import BranchesFormPage from "./pages/admin/Branches/form";
+import AppointmentsListPage from "./pages/admin/Appointments";
+import AppointmentsFormPage from "./pages/admin/Appointments/form";
+import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 
 const router = createBrowserRouter([
   {
@@ -228,14 +235,59 @@ const router = createBrowserRouter([
         path: "staffs/create",
         element: <AddStaff />,
       },
+      {
+        path: "patients/list",
+        element: <Dashboard />,
+      },
+      {
+        path: "news/list",
+        element: <NewsListPage />,
+      },
+      {
+        path: "news/create",
+        element: <NewsFormPage />,
+      },
+      {
+        path: "news/edit/:id",
+        element: <NewsFormPage />,
+      },
+      {
+        path: "branches/list",
+        element: <BranchesListPage />,
+      },
+      {
+        path: "branches/create",
+        element: <BranchesFormPage />,
+      },
+      {
+        path: "branches/edit/:id",
+        element: <BranchesFormPage />,
+      },
+      {
+        path: "appointments/list",
+        element: <AppointmentsListPage />,
+      },
+      {
+        path: "appointments/create",
+        element: <AppointmentsFormPage />,
+      },
+      {
+        path: "appointments/detail/:id",
+        element: <AppointmentsDetailPage />,
+      },
+
+      {
+        path: "appointments/edit/:id",
+        element: <AppointmentsFormPage />,
+      },
     ],
   },
 ]);
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }
