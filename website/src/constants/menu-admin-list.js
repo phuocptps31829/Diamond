@@ -13,9 +13,9 @@ export const getMenuList = (pathname) => [
     groupLabel: "",
     menus: [
       {
-        href: "",
+        href: "/admin/dashboard",
         label: "Thống kê",
-        active: pathname === "/admin/dashboard",
+        active: pathname.includes("/admin/dashboard"),
         icon: RxDashboard,
         submenus: [
           {
@@ -61,18 +61,18 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Bệnh nhân",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/patients/list",
         icon: IoPeopleSharp,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/patients/list",
             label: "Danh sách bệnh nhân",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/patients/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/patients/create",
             label: "Thêm bệnh nhân",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/patients/create",
           },
         ],
       },
@@ -84,18 +84,18 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Nhân viên",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/staffs/list",
         icon: FaUsers,
         submenus: [
           {
-            href: "/admin/doctors/list",
+            href: "/admin/staffs/list",
             label: "Danh sách nhân viên",
-            active: pathname === "/admin/doctors/list",
+            active: pathname === "/admin/staffs/list",
           },
           {
-            href: "/admin/doctors/create",
+            href: "/admin/staffs/create",
             label: "Thêm nhân viên",
-            active: pathname === "/admin/doctors/create",
+            active: pathname === "/admin/staffs/create",
           },
         ],
       },
@@ -130,18 +130,18 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Lịch làm việc",
-        active: pathname.includes("/admin/schedules/list"),
+        active: pathname === "/admin/doctors/list",
         icon: FaCalendarPlus,
         submenus: [
           {
-            href: "/admin/schedules/list",
+            href: "/admin/doctors/list",
             label: "Danh sách lịch làm việc",
-            active: pathname === "/admin/schedules/list",
+            active: pathname === "/admin/doctors/list",
           },
           {
-            href: "/admin/schedules/create",
+            href: "/admin/doctors/create",
             label: "Thêm lịch làm việc",
-            active: pathname === "/admin/schedules/create",
+            active: pathname === "/admin/doctors/create",
           },
         ],
       },

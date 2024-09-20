@@ -145,9 +145,9 @@ const CollapseMenuButton = ({
           {label}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {submenus.map(({ href, label }, index) => (
+        {submenus.map(({ href, label, active }, index) => (
           <DropdownMenuItem key={index} asChild>
-            <Link className="cursor-pointer" to={href}>
+            <Link className={`${active ? "text-primary-500" : ""} cursor-pointer`} to={href}>
               <p className="max-w-[180px] truncate">{label}</p>
             </Link>
           </DropdownMenuItem>

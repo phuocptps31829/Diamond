@@ -122,9 +122,9 @@ export default function BottomLists() {
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
                             {idx === 0 ? (
-                              <MdOutlineDone className="mr-1" />
+                              <MdOutlineDone className="mr-2" size={18} />
                             ) : (
-                              <FaHourglassStart className="mr-1" />
+                              <FaHourglassStart className="mr-2" size={18} />
                             )}
                             <span>{idx === 0 ? "Hoàn thành" : "Bắt đầu"}</span>
                           </MenubarItem>

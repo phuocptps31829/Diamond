@@ -13,9 +13,8 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
-import { AiFillDelete } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
-import { FaEdit } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 
 export default function BottomLists() {
   return (
@@ -52,11 +51,8 @@ export default function BottomLists() {
                         </MenubarTrigger>
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEdit className="mr-1" /> <span>Chỉnh sửa</span>
-                          </MenubarItem>
-                          <MenubarItem className="cursor-pointer text-[13px]">
-                            <AiFillDelete className="mr-1" />{" "}
-                            <span>Xóa bỏ</span>
+                            <FaEye className="mr-2" size={18} />{" "}
+                            <span>Xem chi tiết</span>
                           </MenubarItem>
                         </MenubarContent>
                       </MenubarMenu>
@@ -113,11 +109,8 @@ export default function BottomLists() {
                         </MenubarTrigger>
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEdit className="mr-1" /> <span>Chỉnh sửa</span>
-                          </MenubarItem>
-                          <MenubarItem className="cursor-pointer text-[13px]">
-                            <AiFillDelete className="mr-1" />{" "}
-                            <span>Xóa bỏ</span>
+                            <FaEye className="mr-2" size={18} />{" "}
+                            <span>Xem chi tiết</span>
                           </MenubarItem>
                         </MenubarContent>
                       </MenubarMenu>

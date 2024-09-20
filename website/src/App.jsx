@@ -40,6 +40,12 @@ import Dashboard from "./pages/admin/Dashboard";
 import ScheduleTablePage from "./pages/admin/ScheduleTable";
 import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
 import DoctorDashboard from "./pages/admin/DoctorDashboard";
+import DoctorList from "./pages/admin/DoctorList";
+import PatientList from "./pages/admin/PatientList";
+import StaffList from "./pages/admin/StaffList";
+import AddDoctor from "./pages/admin/AddDoctor";
+import AddStaff from "./pages/admin/AddStaff";
+import AddPatient from "./pages/admin/AddPatient";
 
 const router = createBrowserRouter([
   {
@@ -191,29 +197,45 @@ const router = createBrowserRouter([
         element: <DoctorDashboard />,
       },
       {
+        path: "schedules/list",
+        element: <ScheduleTablePage />,
+      },
+      {
+        path: "schedules/details",
+        element: <ScheduleDetailsPage />,
+      },
+      {
         path: "doctors/list",
-        element: <Dashboard />,
+        element: <DoctorList />,
       },
       {
-        path: 'schedules/list',
-        element: <ScheduleTablePage />
+        path: "doctors/create",
+        element: <AddDoctor />,
       },
-      // {
-      //   path: 'schedules/create',
-      //   element: <SchedulesPage />
-      // },
       {
-        path: 'schedules/details',
-        element: <ScheduleDetailsPage />
-      }
-    ]
-  }
+        path: "patients/list",
+        element: <PatientList />,
+      },
+      {
+        path: "patients/create",
+        element: <AddPatient />,
+      },
+      {
+        path: "staffs/list",
+        element: <StaffList />,
+      },
+      {
+        path: "staffs/create",
+        element: <AddStaff />,
+      },
+    ],
+  },
 ]);
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }
