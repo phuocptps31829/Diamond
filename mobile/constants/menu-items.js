@@ -18,7 +18,7 @@ export const menuItems = [
     {
         icon: <FontAwesome6 name="house-medical-flag" size={ 24 } color="#FBCC50" />,
         text: "Trung tâm hỗ trợ",
-        navigateTo: '/account/change-password',
+        navigateTo: 'https://zalo.me/0916512235',
     },
     {
         icon: <Fontisto name="unlocked" size={ 24 } color="#FBCC50" />,
@@ -28,7 +28,7 @@ export const menuItems = [
     {
         icon: <MaterialIcons name="policy" size={ 28 } color="#FBCC50" />,
         text: "Chính sách quyền riêng tư",
-        navigateTo: '/account/change-password',
+        navigateTo: 'https://cosstewn.io.vn/',
     },
     {
         icon: <FontAwesome5 name="user-friends" size={ 20 } color="#FBCC50" />,

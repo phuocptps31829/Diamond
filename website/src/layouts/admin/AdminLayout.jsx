@@ -1,9 +1,34 @@
+import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import { useState } from "react";
+import Header from "./Header";
+
 export default function AdminLayout() {
-    return (
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <>
+      <Sidebar isOpen={isOpen} onToggleOpen={setIsOpen} />
+      <main
+        className={cn(
+          "min-h-[calc(100vh_-_56px)] bg-[#F4F4F5] transition-[margin-left] duration-300 ease-in-out dark:bg-zinc-900",
+          !isOpen ? "lg:ml-[90px]" : "lg:ml-72",
+        )}
+      >
         <div>
-            AdminLayout
+          <Header isOpen={isOpen} onToggleOpen={setIsOpen} />
+          <div className="container px-4 pb-8 pt-8 sm:px-8">
+            <Outlet />
+          </div>
         </div>
-    );
+      </main>
+      <footer
+        className={cn(
+          "transition-[margin-left] duration-300 ease-in-out",
+          !isOpen ? "lg:ml-[90px]" : "lg:ml-72",
+        )}
+      ></footer>
+    </>
+  );
 }
-
-

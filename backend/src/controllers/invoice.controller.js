@@ -265,30 +265,30 @@ const momoPaymentCallback = async (req, res, next) => {
         //   }
 
         // {
-        //     "patientID": "66afa9556d138253c13a840b",
-        //     "workScheduleID": "66cf53bd99d5cbb097472d70",
-        //     "medicalPackageID": "669f725b253dce8de433cd3c",
-        //     "type": "Khám lần 1",
-        //     "time": "2024-07-23T09:05:31.473+00:00",
-        //     "status": "Chờ xác nhận",
-        //     "price": 433344,
-        //     "appointmentHelpUser": {
-        //         "fullName": "help",
-        //         "phoneNumber": "string",
-        //         "email": "string",
-        //         "gender": "string",
-        //         "dateOfBirth": "2024-08-04T16:16:21.586Z",
-        //         "address": {
-        //           "province": "string",
-        //           "district": "string",
-        //           "ward": "string",
-        //           "street": "string"
-        //         },
-        //         "citizenIdentificationNumber": 0,
-        //         "occupation": "string",
-        //         "ethnic": "string",
-        //         "password": "string"
-        //     }
+        // "patientID": "66afa9556d138253c13a840b",
+        // "workScheduleID": "66cf53bd99d5cbb097472d70",
+        // "medicalPackageID": "669f725b253dce8de433cd3c",
+        // "type": "Khám lần 1",
+        // "time": "2024-07-23T09:05:31.473+00:00",
+        // "status": "Chờ xác nhận",
+        // "price": 433344,
+        // "appointmentHelpUser": {
+        //     "fullName": "help",
+        //     "phoneNumber": "string",
+        //     "email": "string",
+        //     "gender": "string",
+        //     "dateOfBirth": "2024-08-04T16:16:21.586Z",
+        //     "address": {
+        //       "province": "string",
+        //       "district": "string",
+        //       "ward": "string",
+        //       "street": "string"
+        //     },
+        //     "citizenIdentificationNumber": 0,
+        //     "occupation": "string",
+        //     "ethnic": "string",
+        //     "password": "string"
+        // }
         //   }
         if (req.body.resultCode !== 0) {
             createError(400, "Paid fail.");
@@ -481,16 +481,17 @@ const vnpayPayment = async (req, res, next) => {
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + qs.stringify(vnp_Params, { encode: false });
 
-        vnpayAppointmentData = {
-            ...req.body,
-            payment: {
-                method: "VNPAY",
-                refundCode: signed,
-                status: "Đã thanh toán"
-            },
-            price: req.body.price
-        };
-
+        // vnpayAppointmentData = {
+        //     ...req.body,
+        //     payment: {
+        //         method: "VNPAY",
+        //         refundCode: signed,
+        //         status: "Đã thanh toán"
+        //     },
+        //     price: req.body.price
+        // };
+        vnpayAppointmentData = req.body;
+        console.log(vnpayAppointmentData);
         // return res.redirect(vnpUrl);
 
         return res.status(200).json({
@@ -565,9 +566,11 @@ const vnpayReturn = async (req, res, next) => {
         let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
 
         if (secureHash === signed) {
-            let newAppointment = null;
+            let newAppointmentssssss = null;
+
+            let newPatient = null;
             if (vnpayAppointmentData.appointmentHelpUser) {
-                const newPatient = await axios.post(
+                newPatient = await axios.post(
                     process.env.SERVER_LOCAL_API_URL + '/patients/add-full-info',
                     JSON.stringify(vnpayAppointmentData.appointmentHelpUser),
                     {
@@ -577,72 +580,77 @@ const vnpayReturn = async (req, res, next) => {
                     }
                 );
 
-                console.log("datat", newPatient.data.data);
-                newAppointment = await AppointmentModel.create({
-                    ...vnpayAppointmentData,
-                    patientID: newPatient.data.data._id,
-                    patientHelpID: vnpayAppointmentData.patientID
-                });
-                console.log('for help', newAppointment);
-
-                const updatedPatient = await PatientModel.findByIdAndUpdate(
-                    vnpayAppointmentData.patientID,
-                    { $push: { relatedPatientsID: newPatient.data.data._id } },
-                    { new: true }
-                );
-
-                console.log('update', updatedPatient);
-            } else {
-                newAppointment = await AppointmentModel.create({
-                    ...vnpayAppointmentData
-                });
+                console.log("new pa", newPatient.data.data);
             }
 
-            const appointmentIDsInDay = await AppointmentModel
-                .find({
-                    time: {
-                        $gte: `${newAppointment.time.slice(0, 10)}T00:00:00.000Z`,
-                        $lt: `${newAppointment.time.slice(0, 10)}T23:59:59.999Z`
-                    }
-                })
-                .select("_id");
+            ///
+            for (const appointment of vnpayAppointmentData.data) {
+                let newAppointment = null;
+                if (newPatient) {
+                    newAppointment = await AppointmentModel.create({
+                        ...appointment,
+                        patientID: newPatient.data.data._id,
+                        patientHelpID: vnpayAppointmentData.patientID
+                    });
+                    console.log('for help', newAppointment);
 
-            console.log(appointmentIDsInDay);
+                    const updatedPatient = await PatientModel.findByIdAndUpdate(
+                        vnpayAppointmentData.patientID,
+                        { $push: { relatedPatientsID: newPatient.data.data._id } },
+                        { new: true }
+                    );
 
-            const lastOrderNumberInDay = await OrderNumberModel
-                .find({
-                    appointmentID: {
-                        $in: appointmentIDsInDay.map(id => new mongoose.Types.ObjectId(id))
-                    }
-                })
-                .sort({ number: -1 })
-                .limit(1);
+                    console.log('update', updatedPatient);
+                } else {
+                    newAppointment = await AppointmentModel.create({
+                        ...appointment,
+                        patientID: vnpayAppointmentData.patientID,
+                    });
 
-            console.log("last", lastOrderNumberInDay);
+                    console.log('for you', newAppointment);
 
-            const newOrderNumber = await OrderNumberModel.create({
-                appointmentID: newAppointment._id,
-                number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
-                priority: 0
-            });
+                }
 
-            console.log('newor', newOrderNumber);
+                const appointmentIDsInDay = await AppointmentModel
+                    .find({
+                        time: {
+                            $gte: `${newAppointment.time.slice(0, 10)}T00:00:00.000Z`,
+                            $lt: `${newAppointment.time.slice(0, 10)}T23:59:59.999Z`
+                        }
+                    })
+                    .select("_id");
 
-            console.log('for you', newAppointment);
+                console.log('inday', appointmentIDsInDay);
 
-            const newInvoice = await InvoiceModel.create({
-                appointmentID: newAppointment._id,
-                price: +vnpayAppointmentData.price,
-            });
+                const lastOrderNumberInDay = await OrderNumberModel
+                    .find({
+                        appointmentID: {
+                            $in: appointmentIDsInDay.map(id => new mongoose.Types.ObjectId(id))
+                        }
+                    })
+                    .sort({ number: -1 })
+                    .limit(1);
+
+                console.log("last", lastOrderNumberInDay);
+
+                const newOrderNumber = await OrderNumberModel.create({
+                    appointmentID: newAppointment._id,
+                    number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
+                    priority: 0
+                });
+
+                console.log('newor', newOrderNumber);
+
+                const newInvoice = await InvoiceModel.create({
+                    appointmentID: newAppointment._id,
+                    price: +appointment.price,
+                });
+
+                console.log('newin', newInvoice);
+            }
 
             return res.status(201).json({
                 message: "Appointment created successfully",
-                data: {
-                    ...newAppointment.toObject(),
-                    invoice: {
-                        ...newInvoice.toObject()
-                    }
-                }
             });
         } else {
             createError(400, "Signs not match");
@@ -754,3 +762,35 @@ module.exports = {
     vnpayRefund,
     momoRefund
 };
+
+
+// {
+//     "patientID": "66afa9556d138253c13a840b",
+//     "appointmentHelpUser": {
+//         "fullName": "help",
+//         "phoneNumber": "string",
+//         "email": "string",
+//         "gender": "string",
+//         "dateOfBirth": "2024-08-04T16:16:21.586Z",
+//         "address": {
+//             "province": "string",
+//             "district": "string",
+//             "ward": "string",
+//             "street": "string"
+//         },
+//         "citizenIdentificationNumber": 0,
+//         "occupation": "string",
+//         "ethnic": "string",
+//         "password": "string"
+//     },
+//     "data": [
+//         {
+//             "workScheduleID": "66cf53bd99d5cbb097472d70",
+//             "medicalPackageID": "669f725b253dce8de433cd3c",
+//             "type": "Khám lần 1",
+//             "time": "2024-07-23T09:05:31.473+00:00",
+//             "status": "Chờ xác nhận",
+//             "price": 433344,
+//         }
+//     ]
+// }

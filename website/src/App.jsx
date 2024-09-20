@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import AppLayout from "./layouts/client/AppLayout";
 import Home from "./pages/client/Home";
 import SpecialtiesCategory from "./pages/client/Specialties";
@@ -31,6 +35,10 @@ import PKCheckOut from "./pages/client/PKBookingPayment";
 import SVCheckOut from "./pages/client/SVBookingPayment";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
+import AdminLayout from "./layouts/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import DoctorDashboard from "./pages/admin/DoctorDashboard";
+import SchedulesPage from "./components/admin/schedule";
 
 const router = createBrowserRouter([
   {
@@ -162,6 +170,36 @@ const router = createBrowserRouter([
       {
         path: "*",
         element: <NotFound />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "",
+        element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "doctordashboard",
+        element: <DoctorDashboard />,
+      },
+      {
+        path: "doctors/list",
+        element: <Dashboard />,
+      },
+      {
+        path: "patients/list",
+        element: <Dashboard />,
+      },
+      {
+        path: "schedules/list",
+        element: <SchedulesPage />,
       },
     ],
   },

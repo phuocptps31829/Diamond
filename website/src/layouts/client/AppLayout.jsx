@@ -44,7 +44,6 @@ export default function AppLayout() {
       <Outlet />
       <Balloon />;
       <BalloonMessage />
-
       <Footer />
     </>
   );

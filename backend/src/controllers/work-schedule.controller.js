@@ -38,8 +38,6 @@ const getAllWorkSchedule = async (req, res, next) => {
 
 const getAllWorkScheduleWithDoctor = async (req, res, next) => {
     try {
-        const { id } = req.params;
-
         const {
             limitDocuments,
             page,
@@ -47,13 +45,13 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
             sortOptions
         } = req.customQueries;
 
-        let { startDay, endDay, branchID } = req.checkValueQuery;
+        let { doctorID, startDay, endDay, branchID } = req.checkValueQuery;
 
         const pipeline = [
             {
                 $match: {
                     isDeleted: false,
-                    doctorID: new mongoose.Types.ObjectId(id)
+                    doctorID: new mongoose.Types.ObjectId(doctorID[0])
                 }
             },
             {
@@ -79,7 +77,7 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
             },
             {
                 $match: {
-                    appointmentsCount: { $lte: 10 }
+                    appointmentsCount: { $lte: 9 }
                 }
             }
         ];
@@ -115,7 +113,7 @@ const getAllWorkScheduleWithDoctor = async (req, res, next) => {
                     $push: {
                         time: "$hour",
                         workScheduleID: "$_id",
-                        clinicID: "$clinicID"
+                        clinicID: "$clinics"
                     }
                 },
             }

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import RenderHtml from "react-native-render-html";
 
 const Content = ({ content }) => {
@@ -79,10 +79,14 @@ const Content = ({ content }) => {
     },
   };
 
+  // Do dữ liệu chứ k sao
+
+  const { width } = useWindowDimensions();
+
   return (
     <>
       <View className="px-4 w-full">
-        <RenderHtml source={content} tagsStyles={tagsStyles} />
+        <RenderHtml source={ content } contentWidth={ width } />
       </View>
     </>
   );
