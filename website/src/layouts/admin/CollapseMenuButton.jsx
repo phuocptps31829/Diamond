@@ -65,13 +65,13 @@ const CollapseMenuButton = ({
                 </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down">
-                { submenus.map(({ href, label, active }, index) => (
+            { submenus.map(({ href, label, active }, index) => (
                     <Button
                         key={ index }
                         variant={ active ? "secondary" : "ghost" }
                         className="w-full justify-start h-10 mb-1"
                     >
-                        <Link href={ href } className="w-full flex items-center">
+                        <Link to={ href } className="w-full flex items-center">
                             <span className="mr-4 ml-2">
                                 <Dot size={ 18 } />
                             </span>
@@ -128,7 +128,7 @@ const CollapseMenuButton = ({
                 <DropdownMenuSeparator />
                 { submenus.map(({ href, label }, index) => (
                     <DropdownMenuItem key={ index } asChild>
-                        <Link className="cursor-pointer" href={ href }>
+                        <Link className="cursor-pointer" to={ href }>
                             <p className="max-w-[180px] truncate">{ label }</p>
                         </Link>
                     </DropdownMenuItem>

@@ -648,7 +648,6 @@ export default function Form() {
                         control={control}
                         name="ward"
                         errors={errors}
-                        setValue={setValue}
                         districtId={selectedDistrictId}
                       />
                     </div>

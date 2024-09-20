@@ -63,16 +63,16 @@ export const getMenuList = pathname => [
             {
                 href: "",
                 label: "Bệnh nhân",
-                active: pathname === "/admin/doctors/list",
+                active: pathname === "/admin/patients/list",
                 icon: IoPeopleSharp,
                 submenus: [
                     {
-                        href: "/admin/doctors/list",
+                        href: "/admin/patients/list",
                         label: "Danh sách bệnh nhân",
                         active: pathname === "/admin/doctors/list"
                     },
                     {
-                        href: "/admin/doctors/create",
+                        href: "/admin/patients/create",
                         label: "Thêm bệnh nhân",
                         active: pathname === "/admin/doctors/create"
                     }
@@ -86,16 +86,16 @@ export const getMenuList = pathname => [
             {
                 href: "",
                 label: "Nhân viên",
-                active: pathname === "/admin/doctors/list",
+                active: pathname === "/admin/staffs/list",
                 icon: FaUsers,
                 submenus: [
                     {
-                        href: "/admin/doctors/list",
+                        href: "/admin/staffs/list",
                         label: "Danh sách nhân viên",
                         active: pathname === "/admin/doctors/list"
                     },
                     {
-                        href: "/admin/doctors/create",
+                        href: "/admin/staffs/create",
                         label: "Thêm nhân viên",
                         active: pathname === "/admin/doctors/create"
                     }

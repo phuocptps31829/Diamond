@@ -33,6 +33,12 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import AdminLayout from "./layouts/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
+import DoctorList from "./pages/admin/DoctorList";
+import PatientList from "./pages/admin/PatientList";
+import StaffList from "./pages/admin/StaffList";
+import AddDoctor from "./pages/admin/AddDoctor";
+import AddStaff from "./pages/admin/AddStaff";
+import AddPatient from "./pages/admin/AddPatient";
 
 const router = createBrowserRouter([
   {
@@ -181,11 +187,27 @@ const router = createBrowserRouter([
       },
       {
         path: 'doctors/list',
-        element: <Dashboard />
+        element: <DoctorList/>
+      },
+      {
+        path: 'doctors/create',
+        element: <AddDoctor/>
       },
       {
         path: 'patients/list',
-        element: <Dashboard />
+        element: <PatientList />
+      },
+      {
+        path: 'patients/create',
+        element: <AddPatient />
+      },
+      {
+        path: 'staffs/list',
+        element: <StaffList/>
+      },
+      {
+        path: 'staffs/create',
+        element: <AddStaff/>
       }
     ]
   }

@@ -34,7 +34,7 @@ function InputCustom({
   return (
     <div className={`w-full ${className}`}>
       <label
-        className="mb-2 block text-sm font-medium leading-none text-black"
+        className=" mb-2 block text-sm font-medium leading-none text-black"
         htmlFor={`${name}Input`}
       >
         {label}

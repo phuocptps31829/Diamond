@@ -1,0 +1,23 @@
+import { z } from "zod";
+
+export const doctorSchema = z.object({
+  doctorName: z.string().min(1, "Tên bác sĩ không được để trống"),
+  phone: z.string().min(1, "Số điện thoại không được để trống"),
+  email: z.string().email("Email không hợp lệ"),
+  birthDate: z.date().min(new Date(), "Ngày sinh không được để trống"),
+  gender: z.string().min(1, "Giới tính không được để trống"),
+  chungchi: z.string().min(1, "Chứng chỉ làm việc không được để trống"),
+  trinhdo: z.string().min(1, "Trình độ chuyên môn không được để trống"),
+  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  department: z.string().nonempty("Khoa không được để trống"),
+  specialty: z.string().nonempty("Chuyên khoa không được để trống"),
+  confirmPassword: z.string().min(6, "Nhập lại mật khẩu phải có ít nhất 6 ký tự"),
+  experienceYears: z.string().min(1, "Số năm kinh nghiệm không được để trống"),
+  province: z.string().min(1, "Tỉnh/Thành phố không được để trống"),
+  district: z.string().min(1, "Quận/Huyện không được để trống"),
+  ward: z.string().min(1, "Phường/Xã không được để trống"),
+  ethnicity: z.string().min(1, "Dân tộc không được để trống"),
+  address: z.string().min(1, "Địa chỉ thường trú không được để trống"),
+  details: z.string().min(1, "Chi tiết về bác sĩ không được để trống"),
+  status: z.string().min(1, "Trạng thái tài khoản không được để trống"),
+});
