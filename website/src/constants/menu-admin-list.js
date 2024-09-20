@@ -182,12 +182,12 @@ export const getMenuList = pathname => [
                 icon: FaClinicMedical,
                 submenus: [
                     {
-                        href: "/admin/doctors/list",
+                        href: "/admin/clinics/list",
                         label: "Danh sách phòng khám",
                         active: pathname === "/admin/doctors/list"
                     },
                     {
-                        href: "/admin/doctors/create",
+                        href: "/admin/clinics/create",
                         label: "Thêm phòng khám",
                         active: pathname === "/admin/doctors/create"
                     }

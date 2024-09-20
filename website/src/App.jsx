@@ -39,6 +39,8 @@ import StaffList from "./pages/admin/StaffList";
 import AddDoctor from "./pages/admin/AddDoctor";
 import AddStaff from "./pages/admin/AddStaff";
 import AddPatient from "./pages/admin/AddPatient";
+import ClinicList from "./pages/admin/ClinicList";
+import AddClinic from "./pages/admin/AddClinic";
 
 const router = createBrowserRouter([
   {
@@ -208,6 +210,14 @@ const router = createBrowserRouter([
       {
         path: 'staffs/create',
         element: <AddStaff/>
+      },
+      {
+        path: 'clinics/list',
+        element: <ClinicList/>
+      },
+      {
+        path: 'clinics/create',
+        element: <AddClinic/>
       }
     ]
   }

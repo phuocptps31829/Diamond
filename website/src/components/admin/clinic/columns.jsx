@@ -42,81 +42,56 @@ export const columnsSchedule = [
                 
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Tên nhân viên
+                Tên phòng khám
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
         cell: ({ row }) => <div className="font-medium flex items-center py-4 gap-3">
-            <img
-                  src="https://cdn.pixabay.com/photo/2024/03/25/18/35/ai-generated-8655320_640.png"
-                  className="w-[35px] rounded-lg"
-                  alt="doctor"
-            />
-            {row.original.name}
+                {row.original.name}
         </div>,
     },
     {
-        accessorKey: "position",
+        accessorKey: "specialty",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Chức vụ
-                <ArrowUpDown className="ml-2 h-4 w-4 " />
+                Chuyên khoa
+                <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.position}</div>,
+        cell: ({ row }) => <div className="">{row.original.specialty}</div>,
     },
     {
-        accessorKey: "phoneNumber",
+        accessorKey: "branch",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Số điện thoại
+                Chi nhánh
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="text-primary-500 pl-3">{row.original.phoneNumber}</div>,
+        cell: ({ row }) => <div className="">{row.original.branch}</div>,
     },
+
     {
-        accessorKey: "email",
+        accessorKey: "address",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
                 onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Email
+                Địa chỉ
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.email}</div>,
-    },
-    {
-        accessorKey: "status",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base "
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Trạng thái
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => {
-            const status = row.original.status;
-            return (
-                <div className={status === "1" ? "text-green-500" : "text-red-500"}>
-                    {status === "1" ? "Đang hoạt động" : "Đang khóa"}
-                </div>
-            );
-        },
+        cell: ({ row }) => <div className="">{row.original.address}</div>,
     },
     {
         id: "actions",
@@ -124,7 +99,6 @@ export const columnsSchedule = [
         cell: ({ row }) => {
             const payment = row.original;
             console.log(payment);
-            
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

@@ -114,48 +114,6 @@ export const columnsSchedule = [
         cell: ({ row }) => <div className="">{row.original.email}</div>,
     },
     {
-        accessorKey: "birthDate",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Ngày sinh
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="">{row.original.birthDate}</div>,
-    },
-    {
-        accessorKey: "gender",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-center w-full text-base"
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Giới tính
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="text-center ">{row.original.gender}</div>,
-    },
-    {
-        accessorKey: "address",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Địa chỉ
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="">{row.original.address}</div>,
-    },
-    {
         accessorKey: "status",
         header: ({ column }) => (
             <Button
