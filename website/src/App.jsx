@@ -1,4 +1,8 @@
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import AppLayout from "./layouts/client/AppLayout";
 import Home from "./pages/client/Home";
 import SpecialtiesCategory from "./pages/client/Specialties";
@@ -35,6 +39,7 @@ import AdminLayout from "./layouts/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ScheduleTablePage from "./pages/admin/ScheduleTable";
 import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
+import DoctorDashboard from "./pages/admin/DoctorDashboard";
 
 const router = createBrowserRouter([
   {
@@ -174,20 +179,20 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       {
-        path: '',
-        element: <Navigate to="dashboard" />
+        path: "",
+        element: <Navigate to="dashboard" />,
       },
       {
-        path: 'dashboard',
-        element: <Dashboard />
+        path: "dashboard",
+        element: <Dashboard />,
       },
       {
-        path: 'doctors/list',
-        element: <Dashboard />
+        path: "doctordashboard",
+        element: <DoctorDashboard />,
       },
       {
-        path: 'patients/list',
-        element: <Dashboard />
+        path: "doctors/list",
+        element: <Dashboard />,
       },
       {
         path: 'schedules/list',

@@ -1,64 +1,114 @@
 import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/Avatar";
+import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../components/ui/DropdownMenu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../components/ui/Tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../components/ui/DropdownMenu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../components/ui/Tooltip";
 import { LayoutGrid, LogOut, User } from "lucide-react";
+import { IoMdMailUnread } from "react-icons/io";
+import { FaBell } from "react-icons/fa";
 
 const UserNav = () => {
-    return (
-        <DropdownMenu>
-            <TooltipProvider disableHoverableContent>
-                <Tooltip delayDuration={ 100 }>
-                    <TooltipTrigger asChild>
-                        <DropdownMenuTrigger asChild>
-                            <Button
-                                variant="outline"
-                                className="relative h-8 w-8 rounded-full"
-                            >
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src="#" alt="Avatar" />
-                                    <AvatarFallback className="bg-transparent">JD</AvatarFallback>
-                                </Avatar>
-                            </Button>
-                        </DropdownMenuTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">Hồ sơ</TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
+  return (
+    <>
+      <div className="mr-2 flex items-center gap-6">
+        <button className="relative">
+          <span className="absolute -right-1 flex h-3 w-3">
+            <span
+              className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+              style={{ animationDuration: "2s" }}
+            ></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+          </span>
+          <IoMdMailUnread size={25} color="#007BBB" />
+        </button>
+        <button className="relative">
+          <span className="absolute right-0 flex h-3 w-3">
+            <span
+              className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+              style={{ animationDuration: "2s" }}
+            ></span>
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+          </span>
+          <FaBell size={25} color="#007BBB" />
+        </button>
+      </div>
+      <DropdownMenu>
+        <TooltipProvider disableHoverableContent>
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="flex items-center space-x-2 border-none bg-transparent shadow-none"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-primary-500">
+                      NgChinh
+                    </span>
+                    <span className="text-right text-[13px] font-light text-primary-300">
+                      Admin
+                    </span>
+                  </div>
+                  <Avatar>
+                    <img
+                      src="https://github.com/shadcn.png"
+                      alt="Doctor"
+                      className="h-10 w-10 rounded-full"
+                    />
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Hồ sơ</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">Nguyen Chinh</p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                            chinhnguyen@example.com
-                        </p>
-                    </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link href="/dashboard" className="flex items-center">
-                            <LayoutGrid className="w-4 h-4 mr-3 text-muted-foreground" />
-                            Dashboard
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="hover:cursor-pointer" asChild>
-                        <Link href="/account" className="flex items-center">
-                            <User className="w-4 h-4 mr-3 text-muted-foreground" />
-                            Account
-                        </Link>
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="hover:cursor-pointer" onClick={ () => { } }>
-                    <LogOut className="w-4 h-4 mr-3 text-muted-foreground" />
-                    Sign out
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    );
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">Nguyen Chinh</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                chinhnguyen@example.com
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem className="hover:cursor-pointer" asChild>
+              <Link href="/dashboard" className="flex items-center">
+                <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
+                Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="hover:cursor-pointer" asChild>
+              <Link href="/account" className="flex items-center">
+                <User className="mr-3 h-4 w-4 text-muted-foreground" />
+                Account
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+            <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
+            Sign out
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
 };
 
 export default UserNav;

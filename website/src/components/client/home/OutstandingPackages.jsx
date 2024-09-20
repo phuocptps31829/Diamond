@@ -17,7 +17,7 @@ export default function OutstandingPackages() {
     isLoading: loadingMedicalPackages,
   } = useQuery({
     queryKey: ["medical-packages"],
-    queryFn: getAllMedicalPackages,
+    queryFn: getAllMedicalPackages, 
   });
   
 
