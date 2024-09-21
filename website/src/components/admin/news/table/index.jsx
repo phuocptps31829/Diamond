@@ -55,7 +55,7 @@ export default function DataTable({ data, columns }) {
 
   return (
     <div className="bg-white w-[100%] px-5 py-2 rounded-lg ">
-      <div className="flex h-[65px]">
+      <div className="flex h-[80px]">
         <form className="mr-1 flex">
           <div className="mb-2 ">
             <div className="relative w-[300px] mr-1">

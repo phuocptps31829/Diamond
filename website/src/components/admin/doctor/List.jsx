@@ -196,7 +196,6 @@ export default function List() {
     <div className="bg-white w-[100%] px-6 py-3 rounded-lg ">
       {/* Search */ }
       <div className="flex h-[80px]">
-        <h1 className="mr-2 bg-white h-fit mt-4 text-lg">Danh sách bác sĩ</h1>
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
           <div className="mb-2 ">
             <div className="relative w-[300px] mr-1">
