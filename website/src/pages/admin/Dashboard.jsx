@@ -8,7 +8,7 @@ const breadcrumbData = [
     title: 'Thống kê'
   },
   {
-    href: '/admin/schedules/details',
+    href: '/admin/dashboard',
     title: 'Thống kê quản trị'
   },
 ];

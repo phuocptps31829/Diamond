@@ -51,7 +51,7 @@ export default function DataTable({ data, columns }) {
   });
 
   return (
-    <div className="bg-white w-[100%] px-6 py-3 rounded-lg shadow-gray h-dvh">
+    <div className="bg-white w-[100%] px-6 py-3 rounded-lg h-dvh">
       {/* Search */ }
       <div className="flex h-[80px]">
         <form className="mr-1 flex">

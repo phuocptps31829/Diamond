@@ -12,8 +12,8 @@ const BreadcrumbCustom = ({ data }) => {
         <Breadcrumb className="mb-4">
             <BreadcrumbList>
                 { data.map((d, i) => <BreadcrumbItem key={ i } className="gap-2.5">
-                    { d.href ? <Link className={ `text-lg ${i === 0 ? 'text-primary-500' : ''}` } to={ d.href }>{ d.title }</Link> : <BreadcrumbItem className="text-lg">
-                        <BreadcrumbPage className={ `text-lg font-medium ${i === 0 ? 'text-primary-500' : ''}` }>
+                    { d.href ? <Link className={ `text-base ${i === 0 ? 'text-primary-500' : ''}` } to={ d.href }>{ d.title }</Link> : <BreadcrumbItem className="text-base">
+                        <BreadcrumbPage className={ `text-base font-medium ${i === 0 ? 'text-primary-500' : ''}` }>
                             { d.title }
                         </BreadcrumbPage>
                     </BreadcrumbItem> }

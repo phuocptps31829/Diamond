@@ -193,7 +193,7 @@ export default function List() {
     },
   });
   return (
-    <div className="bg-white w-[100%] px-6 py-3 rounded-lg shadow-gray ">
+    <div className="bg-white w-[100%] px-6 py-3 rounded-lg ">
       {/* Search */ }
       <div className="flex h-[80px]">
         <h1 className="mr-2 bg-white h-fit mt-4 text-lg">Danh sách bác sĩ</h1>
