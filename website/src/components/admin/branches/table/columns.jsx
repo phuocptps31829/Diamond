@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import {
   Dialog,
@@ -31,14 +31,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -48,21 +48,19 @@ export const columns = [
   {
     accessorKey: "branch_name",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tên chi nhánh
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Tên chi nhánh
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full max-w-[270px]">
+      <div className="w-full max-w-[270px]">
         <span className="w-full whitespace-nowrap">
-          {row.original.branch_name}
+          { row.original.branch_name }
         </span>
       </div>
     ),
@@ -70,21 +68,20 @@ export const columns = [
   {
     accessorKey: "working_hours",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Giờ làm việc
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Giờ làm việc
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full">
+      <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.working_hours}
+          { row.original.working_hours }
         </span>
       </div>
     ),
@@ -92,69 +89,66 @@ export const columns = [
   {
     accessorKey: "hotline",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Hotline
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Hotline
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full max-w-[270px] text-primary-500">
-        {row.original.hotline}
+      <div className="w-full max-w-[270px] text-primary-500">
+        { row.original.hotline }
       </div>
     ),
   },
   {
     accessorKey: "address",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Địa chỉ
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Địa chỉ
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full">
-        <span className="w-full whitespace-nowrap">{row.original.address}</span>
+      <div className="w-full">
+        <span className="w-full whitespace-nowrap">{ row.original.address }</span>
       </div>
     ),
   },
   {
     accessorKey: "image",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Hình ảnh
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Hình ảnh
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => {
       const [open, setOpen] = useState(false);
 
       return (
         <>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={ open } onOpenChange={ setOpen }>
             <DialogTrigger asChild>
               <img
-                src={row.original.image}
+                src={ row.original.image }
                 alt="thumbnail"
-                width={60}
-                height={60}
+                width={ 60 }
+                height={ 60 }
                 className="cursor-pointer"
               />
             </DialogTrigger>
@@ -163,7 +157,7 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={row.original.image}
+                src={ row.original.image }
                 alt="large-thumbnail w-full h-auto"
               />
             </DialogContent>

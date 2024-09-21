@@ -7,7 +7,7 @@ const AppointmentsDetailAdmin = () => {
       <h1 className="mb-3 text-2xl font-bold">Chi tiết lịch đặt</h1>
       <div className="w-full">
         <Patient />
-        <BookingInfo/>
+        <BookingInfo />
       </div>
     </div>
   );

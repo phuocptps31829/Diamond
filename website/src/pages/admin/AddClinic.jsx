@@ -1,21 +1,21 @@
-import List from "@/components/admin/doctor/List";
+import Form from "@/components/admin/clinic/AddClinic";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 
 const breadcrumbData = [
     {
-        title: 'Bác sĩ'
+        title: 'Phòng khám'
     },
     {
-        href: '/admin/doctors/list',
-        title: 'Danh sách bác sĩ'
+        href: '/admin/clinics/list',
+        title: 'Thêm phòng khám'
     },
 ];
 
-export default function DoctorList() {
+export default function AddClinic() {
     return (
         <>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <List />
+            <Form />
         </>
     );
 }

@@ -53,6 +53,8 @@ import BranchesFormPage from "./pages/admin/Branches/form";
 import AppointmentsListPage from "./pages/admin/Appointments";
 import AppointmentsFormPage from "./pages/admin/Appointments/form";
 import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
+import ClinicList from "./pages/admin/ClinicList";
+import AddClinic from "./pages/admin/AddClinic";
 
 const router = createBrowserRouter([
   {
@@ -280,6 +282,18 @@ const router = createBrowserRouter([
         path: "appointments/edit/:id",
         element: <AppointmentsFormPage />,
       },
+      {
+        path: 'staffs/create',
+        element: <AddStaff />
+      },
+      {
+        path: 'clinics/list',
+        element: <ClinicList />
+      },
+      {
+        path: 'clinics/create',
+        element: <AddClinic />
+      }
     ],
   },
 ]);

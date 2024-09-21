@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
@@ -25,14 +25,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -44,9 +44,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left ml-2">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bệnh nhân
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -54,13 +54,15 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 flex w-full items-center">
-        <Avatar className="size-8">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-        </Avatar>
-        <span className="ml-2 w-full whitespace-nowrap">
-          {row.original.patient}
-        </span>
+      <div className="font-medium flex items-center py-3 gap-3">
+        <div className="ml-2 flex w-full items-center">
+          <Avatar className="size-8">
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+          </Avatar>
+          <span className="ml-2 w-full whitespace-nowrap">
+            { row.original.patient }
+          </span>
+        </div>
       </div>
     ),
   },
@@ -69,9 +71,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bác sĩ
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -81,7 +83,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.doctor}
+          { row.original.doctor }
         </span>
       </div>
     ),
@@ -91,9 +93,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Dịch vụ/Gói khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -103,7 +105,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className=" w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.service}
+          { row.original.service }
         </span>
       </div>
     ),
@@ -113,9 +115,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Loại khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -125,7 +127,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className=" w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.examType}
+          { row.original.examType }
         </span>
       </div>
     ),
@@ -135,9 +137,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thời gian khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -147,7 +149,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className=" w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.examTime}
+          { row.original.examTime }
         </span>
       </div>
     ),
@@ -157,9 +159,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -169,7 +171,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className=" w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.status}
+          { row.original.status }
         </span>
       </div>
     ),
@@ -179,9 +181,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -191,7 +193,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className=" w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.payment}
+          { row.original.payment }
         </span>
       </div>
     ),
@@ -203,14 +205,15 @@ export const columns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button className="px-0 text-base"
+              variant="ghost" className="h-8 w-8 p-0 rotate-90">
               <span className="sr-only">Open menu</span>
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-          <DropdownMenuItem className="w-full flex items-center gap-2">
-              <BiDetail  className="text-[15px]" />
+            <DropdownMenuItem className="w-full flex items-center gap-2">
+              <BiDetail className="text-[15px]" />
               <Link to="/admin/appointments/detail/123">Chi tiết</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="w-full flex items-center gap-2">

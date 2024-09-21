@@ -41,7 +41,7 @@ export const columnsSchedule = [
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -65,7 +65,7 @@ export const columnsSchedule = [
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -81,7 +81,7 @@ export const columnsSchedule = [
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -90,14 +90,14 @@ export const columnsSchedule = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{ row.getValue("date") }</div>,
+        cell: ({ row }) => <div className="font-medium flex items-center py-4 gap-3">{ row.getValue("date") }</div>,
     },
     {
         accessorKey: "time",
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >

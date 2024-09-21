@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import {  DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import {
   Dialog,
@@ -31,22 +31,22 @@ const DetailsCell = ({ details }) => {
   };
 
   return (
-    <Collapsible open={isExpanded} onOpenChange={toggleExpand}>
+    <Collapsible open={ isExpanded } onOpenChange={ toggleExpand }>
       <div className="w-[300px]">
         <span>
-          {isExpanded
+          { isExpanded
             ? details
             : details.length > maxLength
               ? `${details.substring(0, maxLength)}...`
-              : details}
+              : details }
         </span>
-        {details.length > maxLength && (
+        { details.length > maxLength && (
           <CollapsibleTrigger asChild>
             <button className="ml-2 text-blue-500">
-              {isExpanded ? "Thu gọn" : "Xem thêm"}
+              { isExpanded ? "Thu gọn" : "Xem thêm" }
             </button>
           </CollapsibleTrigger>
-        )}
+        ) }
       </div>
     </Collapsible>
   );
@@ -60,14 +60,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -79,9 +79,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Tiêu đề
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -89,8 +89,8 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full max-w-[270px]">
-        <span className="block w-[300px]">{row.original.title}</span>
+      <div className="font-medium flex items-center py-4 gap-3">
+        <span className="block w-[300px]">{ row.original.title }</span>
       </div>
     ),
   },
@@ -99,9 +99,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Chuyên khoa
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -109,8 +109,8 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full max-w-[270px]">
-        <span className="block w-[90px]">{row.original.special}</span>
+      <div className="w-full max-w-[270px]">
+        <span className="block w-[90px]">{ row.original.special }</span>
       </div>
     ),
   },
@@ -119,9 +119,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Hình ảnh
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -133,13 +133,13 @@ export const columns = [
 
       return (
         <>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={ open } onOpenChange={ setOpen }>
             <DialogTrigger asChild>
               <img
-                src={row.original.image}
+                src={ row.original.image }
                 alt="thumbnail"
-                width={60}
-                height={60}
+                width={ 60 }
+                height={ 60 }
                 className="cursor-pointer"
               />
             </DialogTrigger>
@@ -148,7 +148,7 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={row.original.image}
+                src={ row.original.image }
                 alt="large-thumbnail w-full h-auto"
               />
             </DialogContent>
@@ -162,9 +162,9 @@ export const columns = [
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Tác giả
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -172,55 +172,19 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="ml-2 w-full max-w-[270px]">
-        <span className="w-full whitespace-nowrap">{row.original.author}</span>
+      <div className="w-full max-w-[270px]">
+        <span className="w-full whitespace-nowrap">{ row.original.author }</span>
       </div>
     ),
-  },
-  {
-    accessorKey: "views",
-    header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Lượt xem
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="w-1/2 text-center text-primary-500">
-        {row.original.views}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "details",
-    header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nội dung
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => <DetailsCell details={row.original.details} />,
   },
   {
     accessorKey: "status",
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
+          className="px-0 text-base"
           variant="ghost"
-          className="p-0 text-sm text-black"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />

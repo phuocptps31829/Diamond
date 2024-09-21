@@ -19,132 +19,42 @@ import {
 } from "@/components/ui/Table";
 import { columnsSchedule } from "./columns";
 import { useForm } from "react-hook-form";
-import { doctorSchema } from "@/zods/doctor";
+import { clinicSchema } from "@/zods/clinic";
 import InputCustom from "@/components/ui/InputCustom";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const doctorsData = [
+const clinicsData = [
   {
-    id: 1,
-    name: "BS.Hà Anh Tuấn",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Răng hàm mặt",
-    phone: "09.321.123.321",
-    email: "haanhtuan123@gmail.com",
-    birthDate: "01/01/1999",
-    gender: "Nam",
-    address: "SQR/312, CVPM Quang Trung, Q12",
-    status: "1",
+    name: "Phòng khám đa khoa Diamond",
+    specialty: "Sức khỏe tổng quát",
+    branch: "Đa khoa Diamond",
+    address: "179 - 181 Võ Thị Sáu, P.Võ Thị Sáu, Q.3, HCM"
   },
   {
-    id: 2,
-    name: "BS.Võ Đức Tài",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Tai chân miệng",
-    phone: "09.432.234.432",
-    email: "vductai234@gmail.com",
-    birthDate: "15/02/1985",
-    gender: "Nam",
-    address: "Số 21, Đường Nguyễn Tri Phương, Q10",
-    status: "1",
-  },
-  {
-    id: 3,
-    name: "BS.Trần Thị Mai",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Nội khoa",
-    phone: "09.543.345.543",
-    email: "tranmaimai@gmail.com",
-    birthDate: "25/03/1992",
-    gender: "Nữ",
-    address: "Tòa nhà Central Plaza, Q7",
-    status: "0",
-  },
-  {
-    id: 4,
-    name: "BS.Nguyễn Văn An",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Sản phụ khoa",
-    phone: "09.654.456.654",
-    email: "nguyenan654@gmail.com",
-    birthDate: "30/04/1988",
-    gender: "Nam",
-    address: "Khu đô thị Phú Mỹ Hưng, Q7",
-    status: "1",
-  },
-  {
-    id: 5,
-    name: "BS.Lê Thị Yến",
-    avatar: 'https://github.com/shadcn.png',
+    name: "Phòng khám đa khoa Hòa Hảo",
     specialty: "Tim mạch",
-    phone: "09.765.567.765",
-    email: "lethiyen765@gmail.com",
-    birthDate: "10/05/1989",
-    gender: "Nữ",
-    address: "Chung cư Skyline, Q2",
-    status: "1",
+    branch: "Đa khoa Hòa Hảo",
+    address: "254 Hòa Hảo, P.4, Q.10, HCM"
   },
   {
-    id: 6,
-    name: "BS.Nguyễn Minh Tuấn",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Da liễu",
-    phone: "09.876.678.876",
-    email: "nguyenminhtuan876@gmail.com",
-    birthDate: "20/06/1991",
-    gender: "Nam",
-    address: "Số 56, Đường Lê Lợi, Q1",
-    status: "0",
-  },
-  {
-    id: 7,
-    name: "BS.Trịnh Văn Hòa",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Y học cổ truyền",
-    phone: "09.987.789.987",
-    email: "trinhvanhoa987@gmail.com",
-    birthDate: "05/07/1987",
-    gender: "Nam",
-    address: "Tòa nhà Garden Plaza, Q4",
-    status: "1",
-  },
-  {
-    id: 8,
-    name: "BS.Hoàng Thị Lan",
-    avatar: 'https://github.com/shadcn.png',
+    name: "Phòng khám Quốc tế Vinmec",
     specialty: "Nhi khoa",
-    phone: "09.098.890.098",
-    email: "hoangthilan098@gmail.com",
-    birthDate: "15/08/1990",
-    gender: "Nữ",
-    address: "Số 78, Đường Nguyễn Văn Cừ, Q5",
-    status: "0",
+    branch: "Vinmec Central Park",
+    address: "208 Nguyễn Hữu Cảnh, P.22, Q.Bình Thạnh, HCM"
   },
   {
-    id: 9,
-    name: "BS.Lương Văn Bình",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Chấn thương chỉnh hình",
-    phone: "09.109.901.109",
-    email: "luongvanbinh109@gmail.com",
-    birthDate: "25/09/1986",
-    gender: "Nam",
-    address: "Khu dân cư An Phú, Q7",
-    status: "1",
+    name: "Phòng khám đa khoa Medic",
+    specialty: "Chẩn đoán hình ảnh",
+    branch: "Đa khoa Medic",
+    address: "42 Hoàng Văn Thụ, P.9, Q.Phú Nhuận, HCM"
   },
   {
-    id: 10,
-    name: "BS.Trương Thị Ngọc",
-    avatar: 'https://github.com/shadcn.png',
-    specialty: "Hô hấp",
-    phone: "09.210.012.210",
-    email: "truongthinhoc210@gmail.com",
-    birthDate: "30/10/1993",
-    gender: "Nữ",
-    address: "Chung cư Thái Bình, Q3",
-    status: "1",
+    name: "Phòng khám đa khoa Phước An",
+    specialty: "Tai mũi họng",
+    branch: "Đa khoa Phước An",
+    address: "133 - 135 Lý Chính Thắng, P.7, Q.3, HCM"
   }
 ];
 
@@ -154,9 +64,9 @@ export default function List() {
     formState: { errors },
     control,
   } = useForm({
-    resolver: zodResolver(doctorSchema),
+    resolver: zodResolver(clinicSchema),
     defaultValues: {
-      doctorName: "",
+      roomName: "",
     },
   });
   const [sorting, setSorting] = React.useState([]);
@@ -169,9 +79,9 @@ export default function List() {
     React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data: doctorsData,
+    data: clinicsData,
     columns: columnsSchedule,
-    pageCount: Math.ceil(doctorsData.length / 8),
+    pageCount: Math.ceil(clinicsData.length / 8),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -196,16 +106,15 @@ export default function List() {
     <div className="bg-white w-[100%] px-6 py-3 rounded-lg shadow-gray ">
       {/* Search */ }
       <div className="flex h-[80px]">
-        <h1 className="mr-2 bg-white h-fit mt-4 text-lg">Danh sách bác sĩ</h1>
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
           <div className="mb-2 ">
             <div className="relative w-[300px] mr-1">
               <InputCustom
                 className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm bác sĩ"
-                name="doctorName"
+                placeholder="Tìm kiếm phòng"
+                name="roomName"
                 type="text"
-                id="doctorName"
+                id="roomName"
                 icon={ <FaSearch></FaSearch> }
                 control={ control }
                 errors={ errors }

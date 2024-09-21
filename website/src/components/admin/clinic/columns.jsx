@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import { Avatar } from "@/components/ui/Avatar";
 
 export const columnsSchedule = [
     {
@@ -20,14 +19,14 @@ export const columnsSchedule = [
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && "indeterminate")
                 }
-                onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
         cell: ({ row }) => (
             <Checkbox
-                checked={ row.getIsSelected() }
-                onCheckedChange={ (value) => row.toggleSelected(!!value) }
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
             />
         ),
@@ -40,100 +39,59 @@ export const columnsSchedule = [
             <Button
                 className="px-0 text-base"
                 variant="ghost"
+                
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Tên phòng khám
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="font-medium flex items-center py-4 gap-3">
+                {row.original.name}
+        </div>,
+    },
+    {
+        accessorKey: "specialty",
+        header: ({ column }) => (
+            <Button
+                className="px-0 text-base"
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Chuyên khoa
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="">{row.original.specialty}</div>,
+    },
+    {
+        accessorKey: "branch",
+        header: ({ column }) => (
+            <Button
+                className="px-0 text-base"
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+                Chi nhánh
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="">{row.original.branch}</div>,
+    },
 
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+    {
+        accessorKey: "address",
+        header: ({ column }) => (
+            <Button
+                className="px-0 text-base"
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
-                Tên bệnh nhân
+                Địa chỉ
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="lowercase flex items-center py-4 gap-3">
-            <Avatar className="size-8">
-                <img src={ row.original.avatar } alt={ row.getValue("name") } />
-            </Avatar>
-            <span className="w-full whitespace-nowrap">
-                { row.getValue("name") }
-            </span>
-        </div>
-    },
-    {
-        accessorKey: "patientCode",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Mã BN
-                <ArrowUpDown className="ml-2 h-4 w-4 " />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="">{ row.original.patientCode }</div>,
-    },
-
-
-    {
-        accessorKey: "job",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Công việc
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.job }</div>,
-    },
-    {
-        accessorKey: "nation",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Dân tộc
-                <ArrowUpDown className="ml-2 h-4 w-4 " />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="pl-4">{ row.original.nation }</div>,
-    },
-    {
-        accessorKey: "email",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Email
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="">{ row.original.email }</div>,
-    },
-    {
-        accessorKey: "status",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Trạng thái
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-            </Button>
-        ),
-        cell: ({ row }) => {
-            const status = row.original.status;
-            return (
-                <div className={ status === "1" ? "text-green-500" : "text-red-500" }>
-                    { status === "1" ? "Đang hoạt động" : "Đang khóa" }
-                </div>
-            );
-        },
+        cell: ({ row }) => <div className="">{row.original.address}</div>,
     },
     {
         id: "actions",
@@ -141,7 +99,6 @@ export const columnsSchedule = [
         cell: ({ row }) => {
             const payment = row.original;
             console.log(payment);
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

@@ -254,6 +254,8 @@ export default function Form() {
       return;
     }
 
+    console.log(data);
+
     const bookingInfo = {
       patientID: profile.id,
       appointmentHelpUser: isBookingForOthers
