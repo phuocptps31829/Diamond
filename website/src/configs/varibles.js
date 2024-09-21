@@ -43,6 +43,7 @@ const API_SEND_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/send-otp`;
 const API_CHECK_OTP_FORGOT_PASSWORD = `${API_URL}/auth/forgot-password/check-otp`;
 const API_CHANGE_PASSWORD = `${API_URL}/auth/forgot-password/reset-password`;
 const API_LOGOUT = `${API_URL}/auth/logout`;
+const API_REFRESH_TOKEN = `${API_URL}/auth/refresh-token`;
 
 // Provinces
 const API_PROVINCES = `${API_URL}/provinces`;
@@ -70,6 +71,7 @@ export {
   API_VERIFY_OTP,
   API_REGISTER_SEND_OTP,
   API_LOGIN,
+  API_REFRESH_TOKEN,
   API_SEND_OTP_FORGOT_PASSWORD,
   API_CHECK_OTP_FORGOT_PASSWORD,
   API_CHANGE_PASSWORD,

@@ -7,16 +7,14 @@ import {
   API_CHECK_OTP_FORGOT_PASSWORD,
   API_CHANGE_PASSWORD,
   API_LOGOUT,
+  API_REFRESH_TOKEN,
 } from "@/configs/varibles";
-import axios from "axios";
+import { axiosInstance } from "./axiosInstance";
 
-export const getProfilePatients = async (accessToken) => {
+
+export const getProfilePatients = async () => {
   try {
-    const res = await axios.get(API_GET_PROFILE_PATIENTS, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const res = await axiosInstance.get(API_GET_PROFILE_PATIENTS);
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
@@ -27,7 +25,7 @@ export const getProfilePatients = async (accessToken) => {
 
 export const otpUserVerification = async (data) => {
   try {
-    const res = await axios.post(API_VERIFY_OTP, data);
+    const res = await axiosInstance.post(API_VERIFY_OTP, data);
     return res.data.data;
   } catch (error) {
     console.error("Failed to verify OTP:", error);
@@ -37,7 +35,7 @@ export const otpUserVerification = async (data) => {
 
 export const registerSendOtp = async (data) => {
   try {
-    const res = await axios.post(API_REGISTER_SEND_OTP, data);
+    const res = await axiosInstance.post(API_REGISTER_SEND_OTP, data);
     return res.data;
   } catch (error) {
     console.error("Failed to send OTP:", error);
@@ -47,7 +45,7 @@ export const registerSendOtp = async (data) => {
 
 export const login = async (data) => {
   try {
-    const res = await axios.post(API_LOGIN, data);
+    const res = await axiosInstance.post(API_LOGIN, data);
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
@@ -58,7 +56,7 @@ export const login = async (data) => {
 
 export const sendOtpForgotPassword = async (phone) => {
   try {
-    const res = await axios.post(`${API_SEND_OTP_FORGOT_PASSWORD}/${phone}`);
+    const res = await axiosInstance.post(`${API_SEND_OTP_FORGOT_PASSWORD}/${phone}`);
     console.log(res.data);
     return res.data;
   } catch (error) {
@@ -69,7 +67,7 @@ export const sendOtpForgotPassword = async (phone) => {
 
 export const checkOtpForgotPassword = async (data) => {
   try {
-    const res = await axios.post(API_CHECK_OTP_FORGOT_PASSWORD, data);
+    const res = await axiosInstance.post(API_CHECK_OTP_FORGOT_PASSWORD, data);
     return res.data.data;
   } catch (error) {
     console.error("Failed to check OTP:", error);
@@ -79,7 +77,7 @@ export const checkOtpForgotPassword = async (data) => {
 
 export const changePasswordForgot = async (data) => {
   try {
-    const res = await axios.put(API_CHANGE_PASSWORD, data);
+    const res = await axiosInstance.put(API_CHANGE_PASSWORD, data);
     console.log(res.data);
     return res.data;
   } catch (error) {
@@ -90,11 +88,26 @@ export const changePasswordForgot = async (data) => {
 
 export const logoutApi = async (accessToken) => {
   try {
-    const res = await axios.post(API_LOGOUT, null, {
+    const res = await axiosInstance.post(API_LOGOUT, {}, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    return res.data;
+  } catch (error) {
+    console.error("Failed to logout:", error);
+    throw error;
+  }
+};
+
+export const refreshTokenApi = async (refreshToken) => {
+  try {
+    const res = await axiosInstance.post(API_REFRESH_TOKEN, {}, {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
+    console.log(res);
     return res.data;
   } catch (error) {
     console.error("Failed to logout:", error);

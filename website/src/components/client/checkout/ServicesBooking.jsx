@@ -101,7 +101,7 @@ export default function Form() {
         newChange: {
           selectedBranchId: branchId,
           selectedDoctorId: "",
-          selectedWorkScheduleId: "",
+          selectedWorkSchedulesId: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -120,7 +120,7 @@ export default function Form() {
         serviceId: selectedService?.serviceId,
         newChange: {
           selectedDoctorId: doctorId,
-          selectedWorkScheduleId: "",
+          selectedWorkSchedulesId: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -138,7 +138,7 @@ export default function Form() {
         serviceId: selectedService?.serviceId,
         newChange: {
           selectedDate: date,
-          selectedWorkScheduleId: "",
+          selectedWorkSchedulesId: "",
           selectedTime: "",
           clinic: "",
         }
@@ -153,7 +153,7 @@ export default function Form() {
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
-          selectedWorkScheduleId: workScheduleID,
+          selectedWorkSchedulesId: workScheduleID,
           selectedTime: time,
           clinic: clinic?.name
         }
@@ -278,7 +278,7 @@ export default function Form() {
         }
         : undefined,
       data: bookingDetails.map((detail) => ({
-        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
+        workScheduleID: detail.bookingDetail.selectedWorkSchedulesId,
         serviceID: detail.serviceId,
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
@@ -360,9 +360,9 @@ export default function Form() {
                         handleServiceSelect(svc.id, e.target.checked)
                       }
                     />
-                    <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white peer-checked:border-gray-700"></span>
+                    <span className={ `absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white ${hasEmptyFields ? 'peer-checked:border-red-500' : 'peer-checked:border-[#0067e2]'}` }></span>
                     <label
-                      className="flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline peer-checked:outline-gray-700"
+                      className={ `flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline ${hasEmptyFields ? "peer-checked:outline-red-500" : "peer-checked:outline-primary-500"} ${hasEmptyFields ? "outline-red-500" : "outline-primary-500"}` }
                       htmlFor={ `radio_${svc.id}` }
                     >
                       <div className="flex items-center gap-4">
@@ -377,7 +377,7 @@ export default function Form() {
                           </p>
                           { isServiceSelected && (
                             <span
-                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold` }
+                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-primary-500"} font-semibold` }
                             >
                               { hasEmptyFields
                                 ? "Xem lại thông tin (còn trống)"

@@ -448,3 +448,7 @@
   text-wrap: wrap;
   align-items: start;
 }
+
+.sx__calendar {
+  border: none;
+}

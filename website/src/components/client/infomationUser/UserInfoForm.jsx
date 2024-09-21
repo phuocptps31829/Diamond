@@ -17,14 +17,14 @@ const UserInfoForm = () => {
   const profile = useSelector((state) => state.auth.userProfile);
   const token = localStorage.getItem("accessToken");
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: "userProfile",
-    queryFn: () => getProfilePatients(token),
-    enabled: !!token && !!profile,
-    onSuccess: (data) => {
-      dispatch(setUserProfile(data));
-    },
-  });
+  // const { data, error, isLoading } = useQuery({
+  //   queryKey: "userProfile",
+  //   queryFn: () => getProfilePatients(token),
+  //   enabled: !!token && !!profile,
+  //   onSuccess: (data) => {
+  //     dispatch(setUserProfile(data));
+  //   },
+  // });
   // console.log(data);
 
   const {
@@ -59,8 +59,8 @@ const UserInfoForm = () => {
     console.log(data);
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching profile data.</p>;
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error fetching profile data.</p>;
 
   return (
     <div className="w-full p-6">

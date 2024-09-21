@@ -63,7 +63,7 @@ export default function DataTableSchedule() {
 
     return (
         <div className="w-full p-4 bg-white rounded-sm">
-            <div className="flex h-[65px]">
+            <div className="flex h-[80px]">
                 <form className="mr-1 flex">
                     <div className="mb-2 ">
                         <div className="relative w-[300px] mr-1">
