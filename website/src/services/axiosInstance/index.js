@@ -28,7 +28,6 @@ axiosInstance.interceptors.response.use(res => res, async err => {
 
         try {
             const refreshToken = Cookies.get('refreshToken');
-
             const response = await refreshTokenApi(refreshToken);
 
             Cookies.set('accessToken', response.data.accessToken.token, {

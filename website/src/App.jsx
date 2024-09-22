@@ -55,6 +55,7 @@ import AppointmentsFormPage from "./pages/admin/Appointments/form";
 import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 import ClinicList from "./pages/admin/ClinicList";
 import AddClinic from "./pages/admin/AddClinic";
+import ProtectContainer from "./layouts/protect/ProtectContainer";
 
 const router = createBrowserRouter([
   {
@@ -115,7 +116,9 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: <UserProfileLayout />,
+        element: <ProtectContainer>
+          <UserProfileLayout />
+        </ProtectContainer>,
         children: [
           {
             path: "",
@@ -145,19 +148,27 @@ const router = createBrowserRouter([
       },
       {
         path: "package-booking",
-        element: <PackageBooking />,
+        element: <ProtectContainer>
+          <PackageBooking />
+        </ProtectContainer>,
       },
       {
         path: "services-booking",
-        element: <ServicesBooking />,
+        element: <ProtectContainer>
+          <ServicesBooking />
+        </ProtectContainer>,
       },
       {
         path: "package-booking-checkout",
-        element: <PKCheckOut />,
+        element: <ProtectContainer>
+          <PKCheckOut />
+        </ProtectContainer>,
       },
       {
         path: "services-booking-checkout",
-        element: <SVCheckOut />,
+        element: <ProtectContainer>
+          <SVCheckOut />
+        </ProtectContainer>,
       },
       {
         path: "/login",

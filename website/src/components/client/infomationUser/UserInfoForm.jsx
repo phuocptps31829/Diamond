@@ -11,26 +11,24 @@ import { useQuery } from "@tanstack/react-query";
 import { setUserProfile } from "@/redux/authSlice";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/Input";
+import Cookies from "js-cookie";
 
 const UserInfoForm = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.auth.userProfile);
-  const token = localStorage.getItem("accessToken");
 
-  // const { data, error, isLoading } = useQuery({
-  //   queryKey: "userProfile",
-  //   queryFn: () => getProfilePatients(token),
-  //   enabled: !!token && !!profile,
-  //   onSuccess: (data) => {
-  //     dispatch(setUserProfile(data));
-  //   },
-  // });
-  // console.log(data);
+  const { data: profileFetched, error, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: () => getProfilePatients(),
+    enabled: !!profile
+  });
+  console.log(profileFetched);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
     reset,
   } = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -47,12 +45,17 @@ const UserInfoForm = () => {
     },
   });
 
-
   useEffect(() => {
-    if (profile) {
-      reset(profile);
-    }
-  }, [profile, reset]);
+    dispatch(setUserProfile(profileFetched));
+
+    setValue('fullName', profileFetched?.fullName);
+    setValue('phoneNumber', profileFetched?.phoneNumber);
+    setValue('email', profileFetched?.email);
+    setValue('occupation', profileFetched?.occupation);
+    setValue('birthDate', profileFetched?.birthDate);
+    setValue('ethnicity', profileFetched?.ethnicity);
+    setValue('insuranceNumber', profileFetched?.insuranceNumber);
+  }, [profileFetched, dispatch, setValue]);
 
   const onSubmit = (data) => {
     console.log("Form submitted");

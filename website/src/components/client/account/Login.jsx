@@ -5,7 +5,7 @@ import {
   CarouselItem,
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPhoneAlt, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
@@ -21,6 +21,7 @@ import { useCookies } from "react-cookie";
 export default function LoginComponent() {
   const { toast } = useToast();
   const [, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const navigate = useNavigate();
 
   const {
     handleSubmit,
@@ -37,7 +38,6 @@ export default function LoginComponent() {
   const mutation = useMutation({
     mutationFn: login,
     onSuccess: (data) => {
-      location.href = `/user-profile?accessToken=${data.accessToken}`;
       console.log(data);
       setCookie(
         "accessToken",
@@ -51,6 +51,7 @@ export default function LoginComponent() {
         {
           expires: new Date(data.refreshToken.exp)
         });
+      navigate('/user-profile');
     },
     onError: (error) => {
       console.log(error);
@@ -76,11 +77,11 @@ export default function LoginComponent() {
   };
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
-      <div className="w-full max-w-screen-xl px-10 py-5">
-        <div className="grid grid-cols-1 md:grid-cols-2">
+    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-3 md:px-3">
+      <div className="max-w-screen-xl py-5 px-3 md:px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-fit">
           {/* ADS BANNER */ }
-          <div className="hidden bg-gray-200 shadow-lg md:block">
+          <div className="hidden bg-gray-200 shadow-lg md:block overflow-hidden">
             <Carousel
               opts={ {
                 align: "start",
@@ -97,7 +98,7 @@ export default function LoginComponent() {
             >
               <CarouselContent>
                 { Array.from({ length: 12 }).map((_, index) => (
-                  <CarouselItem key={ index } className="pl-4">
+                  <CarouselItem key={ index } className="pl-4 h-full">
                     <AdsProduct />
                   </CarouselItem>
                 )) }
@@ -105,8 +106,8 @@ export default function LoginComponent() {
             </Carousel>
           </div>
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20 border-l">
-            <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
+          <div className="bg-white px-5 py-4 shadow-lg md:px-11 md:py-10 border-l">
+            <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl">
               Đăng nhập
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">

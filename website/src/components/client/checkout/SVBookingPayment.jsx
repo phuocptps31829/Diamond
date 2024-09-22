@@ -1,6 +1,27 @@
 import { Button } from '@/components/ui/Button';
+import { createAppointment } from '@/services/appointmentApi';
+import { useMutation } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
 
 export default function Form() {
+  const bookingInfoCheckout = useSelector((state) => state.infoBooking.bookingInfoCheckout);
+
+  const { mutate } = useMutation({
+    mutationFn: createAppointment,
+    onSuccess: (data) => {
+      console.log(data);
+      location.href = data.data;
+    },
+    onError: (error) => {
+      console.log(error);
+    }
+  });
+
+  const handleSubmitCheckout = () => {
+    mutate(bookingInfoCheckout);
+  };
+
+
   return (
     <div className='mx-auto mt-5 max-w-screen-xl px-4 py-3 md:px-5 md:py-5 md:mt-10 '>
       <div className='container mx-auto gap-5 px-10 py-5 pb-10 border shadow-gray rounded-md '>
@@ -18,7 +39,7 @@ export default function Form() {
             </div>
             <div className='w-full md:w-[50%]'>
               <p>Dịch vụ của bạn:</p>
-              {/* Services list */}
+              {/* Services list */ }
               <div className='px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
@@ -66,7 +87,7 @@ export default function Form() {
           </div>
         </div>
         <hr />
-        {/* Thanh toán */}
+        {/* Thanh toán */ }
         <div className='mt-6'>
           <h1 className='font-bold text-[24px] md:text-[32px] mb-5'>Phương thức thanh toán</h1>
           <div className='flex flex-col md:flex-row justify-between gap-4'>
@@ -112,7 +133,7 @@ export default function Form() {
         <p className='text-red-600 italic mt-4 text-[16px] md:text-xl'>
           ! Trường hợp khách hàng có người thân hỗ trợ đặt lịch, bệnh án sẽ không được cập nhật liên tục.
         </p>
-        {/* Nút tiếp tục */}
+        {/* Nút tiếp tục */ }
         <div className='mt-7'>
           <p className='flex justify-end text-xl md:text-2xl'>
             Tổng tiền:
@@ -124,7 +145,7 @@ export default function Form() {
             <Button className='sm:h-10 rounded-md sm:px-8' size="default" variant="outline">
               Trở lại
             </Button>
-            <Button className='sm:h-10 rounded-md sm:px-8' size="default" variant="primary">
+            <Button onClick={ handleSubmitCheckout } className='sm:h-10 rounded-md sm:px-8' size="default" variant="primary">
               Tiến hành thanh toán
             </Button>
           </div>

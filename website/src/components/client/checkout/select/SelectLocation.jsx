@@ -229,7 +229,7 @@ export function SelectDistrict({
   );
 }
 
-export function SelectWard({ control, name, errors, districtId, setValue,disabled }) {
+export function SelectWard({ control, name, errors, districtId, setValue, disabled }) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
