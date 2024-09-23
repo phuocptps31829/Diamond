@@ -51,7 +51,8 @@ const API_DISTRICTS = `${API_URL}/provinces/districts`;
 const API_WARDS = `${API_URL}/provinces/wards`;
 
 // Appointments
-const API_CREATE_APPOINTMENT = `${API_URL}/invoices/payment/vnpay`;
+const API_CREATE_APPOINTMENT_VNPAY = `${API_URL}/invoices/payment/vnpay`;
+const API_CREATE_APPOINTMENT_MOMO = `${API_URL}/invoices/payment/momo`;
 
 export {
   API_URL_GET_ALL_SERVICES,
@@ -83,5 +84,6 @@ export {
   API_URL_GET_ALL_DOCTORS_BY_BRANCHES,
   API_URL_GET_ALL_BRANCHES_BY_SPECIALTY,
   API_URL_GET_WORK_SCHEDULES_BY_DOCTOR,
-  API_CREATE_APPOINTMENT
+  API_CREATE_APPOINTMENT_VNPAY,
+  API_CREATE_APPOINTMENT_MOMO
 };

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 
 export default function Form() {
   const bookingInfoCheckout = useSelector((state) => state.infoBooking.bookingInfoCheckout);
+  const profileCustomer = useSelector((state) => state.auth.userProfile);
 
   const { mutate } = useMutation({
     mutationFn: createAppointment,
@@ -27,7 +28,7 @@ export default function Form() {
       <div className='container mx-auto gap-5 px-10 py-5 pb-10 border shadow-gray rounded-md '>
         <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
-            <h1 className='font-bold text-[22px] md:text-[32px]'>Thông tin đặt lịch khám</h1>
+            <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
             <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> 1 dịch vụ</span>
           </div>
           <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-7'>
@@ -38,9 +39,9 @@ export default function Form() {
 
             </div>
             <div className='w-full md:w-[50%]'>
-              <p>Dịch vụ của bạn:</p>
+              <p>Dịch vụ đã chọn:</p>
               {/* Services list */ }
-              <div className='px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
+              <div className='mt-2 px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
                     src='https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg'
@@ -69,30 +70,35 @@ export default function Form() {
           </div>
         </div>
         <hr />
-        <h1 className='font-bold text-[24px] md:text-[32px] my-6'>Thông tin người đặt</h1>
+        <h1 className='font-bold text-[16px] md:text-[24px] my-6'>Thông tin người khám</h1>
         <div className='flex flex-col md:flex-row justify-between mb-7'>
-          <div className='text-[16px] md:text-[20px] w-full md:w-[48%] mb-0 md:mb-4'>
-            <p className='mb-2'><strong>Họ tên: </strong>Nguyễn Văn A</p>
-            <p className='mb-2'><strong>Email: </strong>vinh@gmail.com</p>
-            <p className='mb-2'><strong>Số điện thoại: </strong>0325717890</p>
-            <p className='mb-2'><strong>Giới tính: </strong>Nam</p>
-            <p className='mb-2'><strong>Ngày sinh: </strong>25/01/2004</p>
-            <p className='mb-2'><strong>Địa chỉ: </strong>328-329 Chung cư Tô Kí</p>
+          <div className='text-[14px] md:text-[18px] w-full md:w-[48%] mb-0 md:mb-4'>
+            <p className='mb-2'><strong>Họ tên: </strong>{ profileCustomer.fullName }</p>
+            <p className='mb-2'><strong>Email: </strong>{ profileCustomer.email }</p>
+            <p className='mb-2'><strong>Số điện thoại: </strong>{ profileCustomer.phoneNumber }</p>
+            <p className='mb-2'><strong>Giới tính: </strong>{ profileCustomer.gender }</p>
+            <p className='mb-2'><strong>Ngày sinh: </strong>{ new Intl.DateTimeFormat('vi-VN').format(new Date(profileCustomer.dateOfBirth)) }</p>
+            <p className='mb-2'><strong>Địa chỉ: </strong>
+              { profileCustomer.address.street },{ ' ' }
+              { profileCustomer.address.ward },{ ' ' }
+              { profileCustomer.address.district },{ ' ' }
+              { profileCustomer.address.province }
+            </p>
           </div>
-          <div className='text-[16px] md:text-[20px] w-full md:w-[48%]'>
-            <p className='mb-2'><strong>Nghề nghiệp: </strong>Công nhân</p>
-            <p className='mb-2'><strong>Dân tộc: </strong>Kinh</p>
-            <p className='mb-2'><strong>Số CCCD: </strong>0325717890</p>
-            <p className='mb-2'><strong>Số BHYT: </strong>1041846121</p>
+          <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
+            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ profileCustomer.occupation }</p>
+            <p className='mb-2'><strong>Dân tộc: </strong>{ profileCustomer.ethnic }</p>
+            <p className='mb-2'><strong>Số CCCD: </strong>{ profileCustomer.citizenIdentificationNumber }</p>
+            <p className='mb-2'><strong>Số BHYT: </strong>{ profileCustomer.insuranceCode }</p>
           </div>
         </div>
         <hr />
         {/* Thanh toán */ }
         <div className='mt-6'>
-          <h1 className='font-bold text-[24px] md:text-[32px] mb-5'>Phương thức thanh toán</h1>
+          <h1 className='font-bold text-[16px] md:text-[24px] mb-5'>Phương thức thanh toán</h1>
           <div className='flex flex-col md:flex-row justify-between gap-4'>
-            <div className='flex flex-col gap-4 w-full md:w-[48%]'>
-              <label className="flex items-center border border-gray-500 rounded-md p-4">
+            <div className='flex flex-col gap-4 w-full'>
+              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
                 <img
                   src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'
                   className='w-[10%] mr-4'
@@ -100,7 +106,7 @@ export default function Form() {
                 <span>Thanh toán qua MOMO</span>
                 <input type="radio" name="payment" value="momo" className="ml-auto" />
               </label>
-              <label className="flex items-center border border-gray-500 rounded-md p-4">
+              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/1019/1019607.png'
                   className='w-[10%] mr-4'
@@ -109,8 +115,8 @@ export default function Form() {
                 <input type="radio" name="payment" value="clinic" className="ml-auto" />
               </label>
             </div>
-            <div className='flex flex-col gap-4 w-full md:w-[48%]'>
-              <label className="flex items-center border border-gray-500 rounded-md p-4">
+            <div className='flex flex-col gap-4 w-full'>
+              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
                 <img
                   src='https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png'
                   className='w-[10%] mr-4'
@@ -118,7 +124,7 @@ export default function Form() {
                 <span>Thanh toán qua ZaloPay</span>
                 <input type="radio" name="payment" value="zalopay" className="ml-auto" />
               </label>
-              <label className="flex items-center border border-gray-500 rounded-md p-4">
+              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/6963/6963703.png'
                   className='w-[10%] mr-4'
@@ -129,7 +135,6 @@ export default function Form() {
             </div>
           </div>
         </div>
-        <hr />
         <p className='text-red-600 italic mt-4 text-[16px] md:text-xl'>
           ! Trường hợp khách hàng có người thân hỗ trợ đặt lịch, bệnh án sẽ không được cập nhật liên tục.
         </p>
