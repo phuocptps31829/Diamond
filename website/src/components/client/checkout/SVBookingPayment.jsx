@@ -1,14 +1,18 @@
 import { Button } from '@/components/ui/Button';
 import { createAppointment } from '@/services/appointmentApi';
 import { useMutation } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 export default function Form() {
+  const [paymentMethod, setPaymentMethod] = useState('');
+  console.log(paymentMethod);
   const bookingInfoCheckout = useSelector((state) => state.infoBooking.bookingInfoCheckout);
+  const personHelpInfo = useSelector((state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser);
   const profileCustomer = useSelector((state) => state.auth.userProfile);
 
   const { mutate } = useMutation({
-    mutationFn: createAppointment,
+    mutationFn: () => createAppointment(bookingInfoCheckout, paymentMethod),
     onSuccess: (data) => {
       console.log(data);
       location.href = data.data;
@@ -19,7 +23,7 @@ export default function Form() {
   });
 
   const handleSubmitCheckout = () => {
-    mutate(bookingInfoCheckout);
+    mutate();
   };
 
 
@@ -73,23 +77,23 @@ export default function Form() {
         <h1 className='font-bold text-[16px] md:text-[24px] my-6'>Thông tin người khám</h1>
         <div className='flex flex-col md:flex-row justify-between mb-7'>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%] mb-0 md:mb-4'>
-            <p className='mb-2'><strong>Họ tên: </strong>{ profileCustomer.fullName }</p>
-            <p className='mb-2'><strong>Email: </strong>{ profileCustomer.email }</p>
-            <p className='mb-2'><strong>Số điện thoại: </strong>{ profileCustomer.phoneNumber }</p>
-            <p className='mb-2'><strong>Giới tính: </strong>{ profileCustomer.gender }</p>
-            <p className='mb-2'><strong>Ngày sinh: </strong>{ new Intl.DateTimeFormat('vi-VN').format(new Date(profileCustomer.dateOfBirth)) }</p>
+            <p className='mb-2'><strong>Họ tên: </strong>{ personHelpInfo ? personHelpInfo.fullName : profileCustomer.fullName }</p>
+            <p className='mb-2'><strong>Email: </strong>{ personHelpInfo ? personHelpInfo.email : profileCustomer.email }</p>
+            <p className='mb-2'><strong>Số điện thoại: </strong>{ personHelpInfo ? personHelpInfo.phoneNumber : profileCustomer.phoneNumber }</p>
+            <p className='mb-2'><strong>Giới tính: </strong>{ personHelpInfo ? personHelpInfo.gender : profileCustomer.gender }</p>
+            <p className='mb-2'><strong>Ngày sinh: </strong>{ new Intl.DateTimeFormat('vi-VN').format(new Date(personHelpInfo ? personHelpInfo.dateOfBirth : profileCustomer.dateOfBirth)) }</p>
             <p className='mb-2'><strong>Địa chỉ: </strong>
-              { profileCustomer.address.street },{ ' ' }
-              { profileCustomer.address.ward },{ ' ' }
-              { profileCustomer.address.district },{ ' ' }
-              { profileCustomer.address.province }
+              { personHelpInfo ? personHelpInfo.address.street : profileCustomer.address.street },{ ' ' }
+              { personHelpInfo ? personHelpInfo.address.ward : profileCustomer.address.ward },{ ' ' }
+              { personHelpInfo ? personHelpInfo.address.district : profileCustomer.address.district },{ ' ' }
+              { personHelpInfo ? personHelpInfo.address.province : profileCustomer.address.province }
             </p>
           </div>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
-            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ profileCustomer.occupation }</p>
-            <p className='mb-2'><strong>Dân tộc: </strong>{ profileCustomer.ethnic }</p>
-            <p className='mb-2'><strong>Số CCCD: </strong>{ profileCustomer.citizenIdentificationNumber }</p>
-            <p className='mb-2'><strong>Số BHYT: </strong>{ profileCustomer.insuranceCode }</p>
+            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ personHelpInfo ? personHelpInfo.occupation : profileCustomer.occupation }</p>
+            <p className='mb-2'><strong>Dân tộc: </strong>{ personHelpInfo ? personHelpInfo.ethnic : profileCustomer.ethnic }</p>
+            <p className='mb-2'><strong>Số CCCD: </strong>{ personHelpInfo ? personHelpInfo.citizenIdentificationNumber : profileCustomer.citizenIdentificationNumber }</p>
+            <p className='mb-2'><strong>Số BHYT: </strong>{ personHelpInfo ? personHelpInfo.insuranceCode : profileCustomer.insuranceCode }</p>
           </div>
         </div>
         <hr />
@@ -98,7 +102,7 @@ export default function Form() {
           <h1 className='font-bold text-[16px] md:text-[24px] mb-5'>Phương thức thanh toán</h1>
           <div className='flex flex-col md:flex-row justify-between gap-4'>
             <div className='flex flex-col gap-4 w-full'>
-              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
+              <label onClick={ () => setPaymentMethod("momo") } className={ `cursor-pointer flex items-center border border-gray-500 rounded-md p-4 ${paymentMethod === 'momo' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'
                   className='w-[10%] mr-4'
@@ -106,7 +110,7 @@ export default function Form() {
                 <span>Thanh toán qua MOMO</span>
                 <input type="radio" name="payment" value="momo" className="ml-auto" />
               </label>
-              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
+              <label onClick={ () => setPaymentMethod("vnpay") } className={ `cursor-pointer flex items-center border border-gray-500 rounded-md p-4 ${paymentMethod === 'vnpay' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/1019/1019607.png'
                   className='w-[10%] mr-4'
@@ -116,7 +120,7 @@ export default function Form() {
               </label>
             </div>
             <div className='flex flex-col gap-4 w-full'>
-              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
+              <label className={ `cursor-pointer flex items-center border border-gray-500 rounded-md p-4 ${paymentMethod === 'cccc' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png'
                   className='w-[10%] mr-4'
@@ -124,7 +128,7 @@ export default function Form() {
                 <span>Thanh toán qua ZaloPay</span>
                 <input type="radio" name="payment" value="zalopay" className="ml-auto" />
               </label>
-              <label className="cursor-pointer flex items-center border border-gray-500 rounded-md p-4">
+              <label className={ `cursor-pointer flex items-center border border-gray-500 rounded-md p-4 ${paymentMethod === 'cccccc' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/6963/6963703.png'
                   className='w-[10%] mr-4'

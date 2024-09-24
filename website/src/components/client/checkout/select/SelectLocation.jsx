@@ -87,7 +87,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                               province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince._id);
+                            field.onChange(selectedProvince.name);
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
@@ -96,7 +96,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === province._id
+                            field.value === province.name
                               ? "opacity-100"
                               : "opacity-0",
                           ) }
@@ -198,7 +198,7 @@ export function SelectDistrict({
                               district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict._id);
+                            field.onChange(selectedDistrict.name);
                             onDistrictChange(selectedDistrict._id);
                           }
                           setOpen(false);
@@ -295,7 +295,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                             (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard._id);
+                            field.onChange(selectedWard.name);
                           }
                           setOpen(false);
                         } }
@@ -303,7 +303,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === ward._id
+                            field.value === ward.name
                               ? "opacity-100"
                               : "opacity-0",
                           ) }

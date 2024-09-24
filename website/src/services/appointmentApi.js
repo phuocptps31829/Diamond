@@ -10,10 +10,11 @@ export const createAppointment = async (data, provider) => {
         case 'momo':
             endpoint = API_CREATE_APPOINTMENT_MOMO;
             break;
-
         default:
             break;
     }
+
+    console.log(endpoint);
 
     try {
         const res = await axiosInstance.post(endpoint, data);
