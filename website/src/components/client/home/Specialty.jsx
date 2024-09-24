@@ -73,7 +73,7 @@ export default function Specialty() {
                     key={index}
                     className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
                   >
-                    <div className="flex flex-col items-center rounded-md bg-white p-4 pb-10">
+                    <div className="flex flex-col items-center rounded-md bg-white p-4 pb-10 max-h-[264px]">
                       <div className="w-full">
                         <img
                           src={specialty.image}
@@ -81,7 +81,7 @@ export default function Specialty() {
                           className="h-40 w-full rounded-md object-cover"
                         />
                       </div>
-                      <div className="my-3 text-[16px] font-bold uppercase">
+                      <div className="my-3 text-[16px] font-bold uppercase text-center">
                         {specialty.name}
                       </div>
                     </div>

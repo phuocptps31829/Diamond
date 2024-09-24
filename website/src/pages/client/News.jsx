@@ -3,14 +3,14 @@ import NewsBanner from "../../components/client/news/NewsBanner";
 import NewsAbove from "../../components/client/news/NewsAbove";
 import NewsBelow from "../../components/client/news/NewsBelow";
 import useScrollToTop from "@/hooks/useScrollToTop";
-import { getAllNews } from "@/services/newsApi";
+import { takeItAllNews } from "@/services/newsApi";
 import NotFound from "@/components/client/notFound";
 export default function News() {
   useScrollToTop();
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn: getAllNews,
+    queryFn: takeItAllNews,
   });
 
   if (error) {

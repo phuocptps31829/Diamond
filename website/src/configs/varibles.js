@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3500/api/v1";
+const API_URL = "http://api.cosstewn.io.vn/api/v1";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
@@ -27,6 +27,7 @@ const API_URL_GET_ALL_BRANCHES_BY_SPECIALTY = `${API_URL}/branches/specialty`;
 const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
 
 // news
+const API_TAKE_IT_ALL_NEWS = `${API_URL}/news?limit=9999`;
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 
 //contact
@@ -49,9 +50,20 @@ const API_PROVINCES = `${API_URL}/provinces`;
 const API_DISTRICTS = `${API_URL}/provinces/districts`;
 const API_WARDS = `${API_URL}/provinces/wards`;
 
+// patients
+const API_GET_ALL_PATIENTS = `${API_URL}/patients?limit=9999`;
 
+// appointments
+const API_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
+
+// invoices
+const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
 export {
+  API_TAKE_IT_ALL_NEWS,
+  API_GET_ALL_INVOICES,
+  API_GET_ALL_APPOINTMENTS,
+  API_GET_ALL_PATIENTS,
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_ALL_SPECIALTIES,
@@ -79,5 +91,5 @@ export {
   API_WARDS,
   API_URL_GET_ALL_DOCTORS_BY_BRANCHES,
   API_URL_GET_ALL_BRANCHES_BY_SPECIALTY,
-  API_URL_GET_WORK_SCHEDULES_BY_DOCTOR
+  API_URL_GET_WORK_SCHEDULES_BY_DOCTOR,
 };

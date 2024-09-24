@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import brandLogo from "@/assets/images/brandLogo.png";
 
 const dataNav = [
   {
@@ -99,13 +100,9 @@ export default function MainHeader() {
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5 lg:py-4">
-        <Link to={"/"} className="relative w-44 items-center">
-          <img
-            src="https://ykhoadiamond.com/images/icons/logo.png"
-            className="w-full"
-            alt="Logo"
-          />
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5">
+        <Link to={"/"} className="relative w-56 items-center">
+          <img src={brandLogo} className="w-full" alt="Logo" />
         </Link>
         <div className="block lg:hidden" role="button" onClick={toggleNavbar}>
           <AiOutlineMenu className="text-2xl" />
