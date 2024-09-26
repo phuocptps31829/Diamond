@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
 
-export const columnsSchedule = [
+export const columns = [
     {
         id: "select",
         header: ({ table }) => (

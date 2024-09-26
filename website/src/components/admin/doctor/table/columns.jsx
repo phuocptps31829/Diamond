@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
 
-export const columnsSchedule = [
+export const columns = [
     {
         id: "select",
         header: ({ table }) => (
@@ -43,62 +43,81 @@ export const columnsSchedule = [
 
                 onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
             >
-                Tên bệnh nhân
+                Tên bác sĩ
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="lowercase flex items-center py-4 gap-3">
-            <Avatar className="size-8">
-                <img src={ row.original.avatar } alt={ row.getValue("name") } />
-            </Avatar>
-            <span className="w-full whitespace-nowrap">
-                { row.getValue("name") }
-            </span>
-        </div>
+        cell: ({ row }) => {
+            const doctorLv = row.original.doctorLv;
+            const name = row.getValue("name");
+        
+            // Hàm kiểm tra cấp độ bác sĩ
+            const getDoctorTitle = (level) => {
+                switch (level) {
+                    case 1:
+                        return `ThS. ${name}`;
+                    case 2:
+                        return `TS. ${name}`;
+                    case 3:
+                        return `GS. ${name}`;
+                    default:
+                        return `BS. ${name}`;
+                }
+            };
+        
+            return (
+                <div className="flex items-center py-4 gap-3">
+                    <Avatar className="size-8">
+                        <img src={row.original.avatar} alt={name} />
+                    </Avatar>
+                    <span className="w-full whitespace-nowrap">
+                        {getDoctorTitle(doctorLv)}
+                    </span>
+                </div>
+            );
+        }
     },
     {
-        accessorKey: "patientCode",
+        accessorKey: "specialty",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
                 onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
             >
-                Mã BN
-                <ArrowUpDown className="ml-2 h-4 w-4 " />
-            </Button>
-        ),
-        cell: ({ row }) => <div className="">{ row.original.patientCode }</div>,
-    },
-
-
-    {
-        accessorKey: "job",
-        header: ({ column }) => (
-            <Button
-                className="px-0 text-base"
-                variant="ghost"
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-            >
-                Công việc
+                Chuyên khoa
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.job }</div>,
+        cell: ({ row }) => <div className="">{ row.original.specialty }</div>,
     },
     {
-        accessorKey: "nation",
+        accessorKey: "doctorCate",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
                 onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
             >
-                Dân tộc
-                <ArrowUpDown className="ml-2 h-4 w-4 " />
+                Loại bác sĩ
+                <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="pl-4">{ row.original.nation }</div>,
+        cell: ({ row }) => <div className="">{ row.original.doctorCate }</div>,
+    },
+    {
+        accessorKey: "phoneNumber",
+        header: ({ column }) => (
+            <Button
+                className="px-0 text-base"
+                variant="ghost"
+                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+            >
+                Số điện thoại
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.phone }</div>,
     },
     {
         accessorKey: "email",
@@ -114,6 +133,7 @@ export const columnsSchedule = [
         ),
         cell: ({ row }) => <div className="">{ row.original.email }</div>,
     },
+
     {
         accessorKey: "status",
         header: ({ column }) => (
@@ -141,7 +161,6 @@ export const columnsSchedule = [
         cell: ({ row }) => {
             const payment = row.original;
             console.log(payment);
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

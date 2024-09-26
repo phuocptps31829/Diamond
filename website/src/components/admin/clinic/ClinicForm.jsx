@@ -6,7 +6,7 @@ import SelectDepartment from "@/components/client/checkout/select/SelectDepartme
 import 'react-quill/dist/quill.snow.css'; 
 import { Button } from "@/components/ui/Button";
 
-export default function Form() {
+export default function ClinicsForm() {
 
   const {
     handleSubmit,

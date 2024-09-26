@@ -1,18 +1,4 @@
-import InputCustom from "@/components/ui/InputCustom";
-import { FaSearch, FaPlus } from "react-icons/fa";
-import { FaArrowsRotate } from "react-icons/fa6";
-import { patientSchema } from "@/zods/patient";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/Button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/Table";
+"use client";
 import * as React from "react";
 import {
   flexRender,
@@ -22,166 +8,45 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { Button } from "@/components/ui/Button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
+import { useForm } from "react-hook-form";
+import { staffSchema } from "@/zods/staff";
+import InputCustom from "@/components/ui/InputCustom";
+import { FaSearch, FaPlus } from "react-icons/fa";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { columnsSchedule } from "./columns";
-// Patient Data
-const patientsData = [
-  {
-    id: 1,
-    name: "BN.Nguyễn Văn A",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0401",
-    job: "Sinh viên",
-    nation: "Kinh",
-    email: "nguyenvana@example.com",
-    birthDate: "02/01/2000",
-    gender: "Nam",
-    address: "Số 10, Đường B, Quận 1",
-    status: "1",
-  },
-  {
-    id: 2,
-    name: "BN.Trần Thị B",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0402",
-    job: "Nhân viên bán hàng",
-    nation: "Kinh",
-    email: "tranthib@example.com",
-    birthDate: "15/03/1998",
-    gender: "Nữ",
-    address: "Số 20, Đường C, Quận 2",
-    status: "0",
-  },
-  {
-    id: 3,
-    name: "BN.Lê Văn C",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0403",
-    job: "Kỹ sư",
-    nation: "Kinh",
-    email: "levanc@example.com",
-    birthDate: "25/05/1995",
-    gender: "Nam",
-    address: "Số 30, Đường D, Quận 3",
-    status: "1",
-  },
-  {
-    id: 4,
-    name: "BN.Pham Thi D",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0404",
-    job: "Giáo viên",
-    nation: "Kinh",
-    email: "phamthid@example.com",
-    birthDate: "10/07/1993",
-    gender: "Nữ",
-    address: "Số 40, Đường E, Quận 4",
-    status: "1",
-  },
-  {
-    id: 5,
-    name: "BN.Nguyễn Minh E",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0405",
-    job: "Nhà báo",
-    nation: "Kinh",
-    email: "nguyenmine@example.com",
-    birthDate: "30/08/1992",
-    gender: "Nam",
-    address: "Số 50, Đường F, Quận 5",
-    status: "0",
-  },
-  {
-    id: 6,
-    name: "BN.Hoang Thi F",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0406",
-    job: "Chuyên viên",
-    nation: "Kinh",
-    email: "hoangthif@example.com",
-    birthDate: "20/09/1991",
-    gender: "Nữ",
-    address: "Số 60, Đường G, Quận 6",
-    status: "1",
-  },
-  {
-    id: 7,
-    name: "BN.Bui Van G",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0407",
-    job: "Chủ doanh nghiệp",
-    nation: "Kinh",
-    email: "buivang@example.com",
-    birthDate: "12/10/1990",
-    gender: "Nam",
-    address: "Số 70, Đường H, Quận 7",
-    status: "1",
-  },
-  {
-    id: 8,
-    name: "BN.Dang Thi H",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0408",
-    job: "Lập trình viên",
-    nation: "Kinh",
-    email: "dangthih@example.com",
-    birthDate: "05/11/1989",
-    gender: "Nữ",
-    address: "Số 80, Đường I, Quận 8",
-    status: "0",
-  },
-  {
-    id: 9,
-    name: "BN.Vu Van I",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0409",
-    job: "Nhà thiết kế",
-    nation: "Kinh",
-    email: "vuvani@example.com",
-    birthDate: "18/12/1988",
-    gender: "Nam",
-    address: "Số 90, Đường J, Quận 9",
-    status: "1",
-  },
-  {
-    id: 10,
-    name: "BN.Do Thi J",
-    avatar: 'https://github.com/shadcn.png',
-    patientCode: "#BN0410",
-    job: "Công nhân",
-    nation: "Kinh",
-    email: "dothij@example.com",
-    birthDate: "25/01/1987",
-    gender: "Nữ",
-    address: "Số 100, Đường K, Quận 10",
-    status: "0",
-  }
-
-];
-export default function List() {
+export default function DataTable({data,columns}) {
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm({
-    resolver: zodResolver(patientSchema),
+    resolver: zodResolver(staffSchema),
     defaultValues: {
-      patientName: "",
+      staffName: "",
     },
   });
-  const onSubmit = () => {
-  };
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState(
     []
   );
+  const onSubmit = () => {
+  };
   const [columnVisibility, setColumnVisibility] =
     React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data: patientsData,
-    columns: columnsSchedule,
-    pageCount: Math.ceil(patientsData.length / 8),
+    data,
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -203,7 +68,7 @@ export default function List() {
     },
   });
   return (
-    <div className="bg-white w-[100%] px-6 py-3 rounded-lg">
+    <div className="bg-white w-[100%] px-6 py-3 rounded-lg ">
       {/* Search */ }
       <div className="flex h-[80px]">
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
@@ -211,10 +76,10 @@ export default function List() {
             <div className="relative w-[300px] mr-1">
               <InputCustom
                 className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm bệnh nhân"
-                name="patientName"
+                placeholder="Tìm kiếm nhân viên"
+                name="staffName"
                 type="text"
-                id="patientName"
+                id="staffName"
                 icon={ <FaSearch></FaSearch> }
                 control={ control }
                 errors={ errors }
@@ -270,7 +135,7 @@ export default function List() {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={ columnsSchedule.length }
+                  colSpan={ columns.length }
                   className="h-24 text-center "
                 >
                   No results.

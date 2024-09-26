@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { BiDetail } from "react-icons/bi";
@@ -205,8 +203,8 @@ export const columns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button className="px-0 text-base"
-              variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button className="h-8 w-8 p-0 rotate-90"
+              variant="ghost" >
               <span className="sr-only">Open menu</span>
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
@@ -243,7 +241,7 @@ export const mockData = [
     payment: "Chưa thanh toán",
   },
   {
-    patient: "Lêo Văn Tèo",
+    patient: "Lêo Văn Vèo",
     doctor: "Trần Thị Hồng Lê",
     service: "Tầm soát sức khỏe...",
     examType: "Khám lần 1",
