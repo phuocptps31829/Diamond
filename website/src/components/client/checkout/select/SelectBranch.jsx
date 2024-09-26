@@ -19,40 +19,36 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getAllBranchesBySpecialty } from "@/services/branchesApi";
 
-export default function SelectDepartment({
+export default function SelectBranch({
   control,
   name,
   errors,
-  specialtyID,
+  branchID,
   onChange,
+
 }) {
   const [open, setOpen] = useState(false);
-  const [departments, setDepartments] = useState([]);
+  const [branch, setBranch] = useState([]);
 
   useEffect(() => {
-    const fetchDepartments = async () => {
-      if (!specialtyID) return;
+    const fetchBranch = async () => {
+      if (!branchID) return;
       try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
-        setDepartments(data);
+        const data = await getAllBranchesBySpecialty(branchID);
+        setBranch(data);
       } catch (error) {
-        console.error("Failed to fetch departments:", error);
+        console.error("Failed to fetch branch:", error);
       }
     };
 
-    fetchDepartments();
-  }, [specialtyID]);
-
-  // useEffect(() => {
-  //   setValue(name, "");
-  // }, [setValue, name, selectedServiceID]);
-
+    fetchBranch();
+  }, [branchID]);
   return (
     <div className="">
       <Controller
         control={ control }
         name={ name }
-        rules={ { required: "Vui lòng chọn một khoa." } }
+        rules={ { required: "Vui lòng chọn một chi nhánh." } }
         render={ ({ field }) => (
           <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
@@ -66,22 +62,22 @@ export default function SelectDepartment({
                 ) }
               >
                 { field.value ? (
-                  departments.find(
+                  branch.find(
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
-                  <span className="text-gray-600">Chọn khoa làm việc</span>
+                  <span className="text-gray-600">Chọn chi nhánh</span>
                 ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên khoa" />
+                <CommandInput placeholder="Nhập tên chi nhánh" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    { departments.map((department) => (
+                    { branch.map((department) => (
                       <CommandItem
                         key={ department._id }
                         value={ department._id }

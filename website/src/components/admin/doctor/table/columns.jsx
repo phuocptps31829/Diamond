@@ -92,7 +92,7 @@ export const columns = [
         cell: ({ row }) => <div className="">{ row.original.specialty }</div>,
     },
     {
-        accessorKey: "doctorCate",
+        accessorKey: "department",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -103,7 +103,7 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.doctorCate }</div>,
+        cell: ({ row }) => <div className="">{ row.original.department }</div>,
     },
     {
         accessorKey: "phoneNumber",

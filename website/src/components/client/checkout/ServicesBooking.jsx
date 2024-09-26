@@ -5,7 +5,7 @@ import { otherBookingSchema, selfBookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectTime from "./select/SelectTime";
-import SelectDepartment from "./select/SelectDepartment";
+import SelectDepartment from "./select/SelectSpecialty";
 import SelectDate from "./select/SelectDate";
 import SelectBirthDate from "./select/SelectBirthday";
 import SelectGender from "./select/SelectGender";

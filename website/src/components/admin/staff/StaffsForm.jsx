@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import SelectBirthDate from "@/components/client/checkout/select/SelectBirthday";
-import SelectDepartment from "@/components/client/checkout/select/SelectDepartment";
+import SelectDepartment from "@/components/client/checkout/select/SelectSpecialty";
 import {
   SelectDistrict,
   SelectProvince,
@@ -13,6 +13,9 @@ import {
 import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
 import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
+import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialty";
+import SelectBranch from "@/components/client/checkout/select/SelectBranch";
+import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 
 
 
@@ -33,6 +36,7 @@ export default function StaffsForm() {
       phone: "",
       email: "",
       birthDate: "",
+      specialty:"",
       chungchi: "",
       gender: "",
       room: "",
@@ -115,7 +119,7 @@ export default function StaffsForm() {
             {/* Line 1 */ }
             <div className="block ">
               <div className="w-full md:flex md:gap-[10px] grid-cols-1">
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white md:text-base text-lg">
                     Họ và tên nhân viên <span className="text-red-500">*</span>
                   </label>
@@ -129,7 +133,7 @@ export default function StaffsForm() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="phone" className="block px-1 left-[15px] bg-white md:text-base text-lg">
                     Số điện thoại <span className="text-red-500">*</span>
                   </label>
@@ -147,7 +151,7 @@ export default function StaffsForm() {
          {/* Line 2 */}
          <div className="w-full flex gap-[10px] ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="email" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Email <span className="text-red-500">*</span>
@@ -162,7 +166,7 @@ export default function StaffsForm() {
                 />
               </div>
               <div className="w-1/2 flex gap-2 relative">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 w-full relative">
+              <div className="md:mb-4 w-full relative">
                 <label htmlFor="birthdate" className=" block px-1 left-[15px] bg-white mb-2
                  md:text-base text-lg">
                   Ngày sinh <span className="text-red-500">*</span>
@@ -201,22 +205,22 @@ export default function StaffsForm() {
             {/* Line 3 */ }
             <div className="block ">
               <div className="w-full md:flex gap-[10px]">
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                     Mật khẩu <span className="text-red-500">*</span>
                   </label>
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
-                    name="Password"
+                    name="password"
                     type="password"
-                    id="Password"
+                    id="password"
                     control={ control }
                     errors={ errors }
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="phone" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                     Nhập lại mật khẩu <span className="text-red-500">*</span>
@@ -232,16 +236,12 @@ export default function StaffsForm() {
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
                     {/* Line 4 */ }
                     <div className="block ">
               <div className="w-full md:flex gap-[10px]">
-
-
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white">
                     Chứng chỉ hành nghề <span className="text-red-500">*</span>
                   </label>
@@ -255,7 +255,7 @@ export default function StaffsForm() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white mb-2">
                     Khoa <span className="text-red-500">*</span>
                   </label>
@@ -274,7 +274,7 @@ export default function StaffsForm() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="phone" className="block px-1 left-[15px] bg-white">
                     Số năm kinh nghiệm <span className="text-red-500">*</span>
                   </label>
@@ -298,9 +298,9 @@ export default function StaffsForm() {
                 Chuyên khoa <span className="text-red-500">*</span>
               </label>
               {/* Khoa khám */ }
-              <SelectDepartment
+              <SelectSpecialties
                 control={ control }
-                name="department"
+                name="specialty"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -315,9 +315,9 @@ export default function StaffsForm() {
               <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Chi nhánh làm việc <span className="text-red-500">*</span>
               </label>
-              <SelectDepartment
+              <SelectBranch
                 control={ control }
-                name="department"
+                name="branch"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -333,9 +333,9 @@ export default function StaffsForm() {
               <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Phòng <span className="text-red-500">*</span>
               </label>
-              <SelectDepartment
+              <SelectRoom
                 control={ control }
-                name="department"
+                name="room"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -379,7 +379,6 @@ export default function StaffsForm() {
                 provinceId={ selectedProvinceId }
                 onDistrictChange={ setSelectedDistrictId }
                 setValue={ setValue }
-
               />
             </div>
 

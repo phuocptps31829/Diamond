@@ -14,6 +14,9 @@ import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
 import 'react-quill/dist/quill.snow.css'; 
 import { Button } from "@/components/ui/Button";
 import DoctorEditor from "./editor";
+import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialty";
+import SelectBranch from "@/components/client/checkout/select/SelectBranch";
+import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 
 
 
@@ -33,6 +36,9 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
       email: "",
       birthDate: "",
       experienceYears: "",
+      specialty:"",
+      room:"",
+      branch:"",
       password: "",
       confirmPassword: "",
       chungchi:"",
@@ -112,7 +118,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 1 */}
           <div className="block ">
             <div className="w-full md:flex md:gap-[10px] grid-cols-1">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg
                 ">
@@ -128,7 +134,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 />
               </div>
 
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="phone" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Số điện thoại <span className="text-red-500">*</span>
@@ -148,7 +154,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 2 */}
           <div className="w-full flex gap-[10px] ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="email" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Email <span className="text-red-500">*</span>
@@ -164,7 +170,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
               </div>
 
               <div className="w-1/2 flex gap-2 relative">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 w-full relative">
+              <div className="md:mb-4 w-full relative">
                 <label htmlFor="birthdate" className=" block px-1 left-[15px] bg-white mb-2
                  md:text-base text-lg">
                   Ngày sinh <span className="text-red-500">*</span>
@@ -207,22 +213,22 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 3 */}
           <div className="block ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Mật khẩu <span className="text-red-500">*</span>
                 </label>
                 <InputCustom
                   className="col-span-1 sm:col-span-1"
-                  name="Password"
+                  name="password"
                   type="password"
-                  id="Password"
+                  id="password"
                   control={control}
                   errors={errors}
                 />
               </div>
 
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="phone" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Nhập lại mật khẩu <span className="text-red-500">*</span>
@@ -238,18 +244,14 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
               </div>
             </div>
           </div>
-
-
           </div>
           </div>
-
-
           {/* Line 4 */}
           <div className="block ">
             <div className="w-full md:flex gap-[10px] 
 
             ">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+              <div className="md:mb-4 md:w-1/2 relative ">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
                   Chứng chỉ hành nghề <span className="text-red-500">*</span>
                 </label>
@@ -262,9 +264,9 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                   errors={errors}
                 />
               </div>
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
-                  Trình độ <span className="text-red-500">*</span>
+                  Trình độ chuyên môn <span className="text-red-500">*</span>
                 </label>
                 <InputCustom
                   className="col-span-1 sm:col-span-1"
@@ -275,7 +277,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                   errors={errors}
                 />
               </div>
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 md:text-base text-lg ">
                   Khoa <span className="text-red-500">*</span>
                 </label>
@@ -294,7 +296,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                   />
               </div>
 
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="phone" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
                   Số năm kinh nghiệm <span className="text-red-500">*</span>
                 </label>
@@ -317,10 +319,10 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                   Chuyên khoa <span className="text-red-500">*</span>
                 </label>
-                  {/* Khoa khám */}
-                  <SelectDepartment
+                  {/* Chuyên khoa */}
+                  <SelectSpecialties
                     control={control}
-                    name="department"
+                    name="specialty"
                     errors={errors}
                     // specialtyID={
                     //   selectedService?.bookingDetail?.specialtyID || ""
@@ -335,9 +337,9 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                   Chi nhánh làm việc <span className="text-red-500">*</span>
                 </label>
-                  <SelectDepartment
+                  <SelectBranch
                     control={control}
-                    name="department"
+                    name="branch"
                     errors={errors}
                     // specialtyID={
                     //   selectedService?.bookingDetail?.specialtyID || ""
@@ -353,9 +355,9 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                   <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                     Phòng <span className="text-red-500">*</span>
                   </label>
-                    <SelectDepartment
+                    <SelectRoom
                       control={control}
-                      name="department"
+                      name="room"
                       errors={errors}
                       // specialtyID={
                       //   selectedService?.bookingDetail?.specialtyID || ""
@@ -435,9 +437,9 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 </label>
                 <InputCustom
                   className="col-span-1 sm:col-span-1 "
-                  name="fullName"
+                  name="address"
                   type="text"
-                  id="fullName"
+                  id="address"
                   control={control}
                   errors={errors}
                 />

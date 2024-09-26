@@ -108,7 +108,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 1 */}
           <div className="block ">
             <div className="w-full md:flex md:gap-[10px] grid-cols-1">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className="block px-1 left-[15px] bg-white">
                   Họ và tên bệnh nhân <span className="text-red-500">*</span>
                 </label>
@@ -122,7 +122,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 />
               </div>
 
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="phone" className="block px-1 left-[15px] bg-white">
                   Số điện thoại <span className="text-red-500">*</span>
                 </label>
@@ -141,7 +141,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
          {/* Line 2 */}
          <div className="w-full flex gap-[10px] ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="email" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Email <span className="text-red-500">*</span>
@@ -157,7 +157,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
               </div>
 
               <div className="w-1/2 flex gap-2 relative">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 w-full relative">
+              <div className="md:mb-4 w-full relative">
                 <label htmlFor="birthdate" className=" block px-1 left-[15px] bg-white mb-2
                  md:text-base text-lg">
                   Ngày sinh <span className="text-red-500">*</span>
@@ -199,7 +199,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 3 */}
           <div className="block ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Mật khẩu <span className="text-red-500">*</span>
@@ -214,7 +214,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                 />
               </div>
 
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="phone" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                   Nhập lại mật khẩu <span className="text-red-500">*</span>
@@ -237,7 +237,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
           {/* Line 4 */}
           <div className="block ">
             <div className="w-full md:flex gap-[10px]">
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className="block px-1 left-[15px] bg-white">
                   MÃ BHYT <span className="text-red-500">*</span>
                 </label>
@@ -250,7 +250,7 @@ const [selectedDistrictId, setSelectedDistrictId] = useState(null);
                   errors={errors}
                 />
               </div>
-              <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+              <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className="block px-1 left-[15px] bg-white">
                   Nghề nghiệp <span className="text-red-500">*</span>
                 </label>
