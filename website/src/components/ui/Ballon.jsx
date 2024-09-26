@@ -28,7 +28,7 @@ const Balloon = () => {
       <motion.div
         className="fixed bottom-32 right-5 flex space-x-4"
         id="shopping-cart"
-        animate={ controls }
+        animate={controls}
       >
         <div className="social-button relative">
           <button className="group relative h-16 w-16 rounded-full">
@@ -37,20 +37,19 @@ const Balloon = () => {
               <MdAddShoppingCart className="h-7 w-7 text-white duration-300 group-hover:scale-125" />
             </div>
           </button>
-          { productCount > 0 && (
+          {productCount > 0 && (
             <motion.div
               className="absolute -right-0 -top-2 z-20 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs font-medium text-white"
-              initial={ { scale: 0 } }
-              animate={ { scale: 1 } }
-              transition={ { type: "spring", stiffness: 500, damping: 30 } }
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
             >
-              { productCount > 99 ? "99+" : productCount }
+              {productCount > 99 ? "99+" : productCount}
             </motion.div>
-          ) }
+          )}
         </div>
       </motion.div>
     </Link>
   );
 };
-
 export default Balloon;

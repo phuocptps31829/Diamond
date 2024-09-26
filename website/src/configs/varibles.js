@@ -27,13 +27,14 @@ const API_URL_GET_ALL_BRANCHES_BY_SPECIALTY = `${API_URL}/branches/specialty`;
 const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
 
 // news
+const API_TAKE_IT_ALL_NEWS = `${API_URL}/news?limit=9999`;
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 
 //contact
 const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
 
 // auth
-const API_LOGIN_GOOGLE = `http://api.cosstewn.io.vn/api/v1/auth/google`;
+const API_LOGIN_GOOGLE = `http://localhost:3500/api/v1/auth/google`;
 const API_GET_PROFILE_PATIENTS = `${API_URL}/patients/profile`;
 
 const API_VERIFY_OTP = `${API_URL}/patients/add`;
@@ -53,8 +54,20 @@ const API_WARDS = `${API_URL}/provinces/wards`;
 // Appointments
 const API_CREATE_APPOINTMENT_VNPAY = `${API_URL}/invoices/payment/vnpay`;
 const API_CREATE_APPOINTMENT_MOMO = `${API_URL}/invoices/payment/momo`;
+// patients
+const API_GET_ALL_PATIENTS = `${API_URL}/patients?limit=9999`;
+
+// appointments
+const API_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
+
+// invoices
+const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
 export {
+  API_TAKE_IT_ALL_NEWS,
+  API_GET_ALL_INVOICES,
+  API_GET_ALL_APPOINTMENTS,
+  API_GET_ALL_PATIENTS,
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_ALL_SPECIALTIES,

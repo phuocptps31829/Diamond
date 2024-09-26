@@ -7,12 +7,12 @@ import { useSelector } from 'react-redux';
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState('');
   console.log(paymentMethod);
-  const bookingInfoCheckout = useSelector((state) => state.infoBooking.bookingInfoCheckout);
+  const bookingInfo = useSelector((state) => state.infoBooking.bookingInfo);
   const personHelpInfo = useSelector((state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser);
   const profileCustomer = useSelector((state) => state.auth.userProfile);
 
   const { mutate } = useMutation({
-    mutationFn: () => createAppointment(bookingInfoCheckout, paymentMethod),
+    mutationFn: () => createAppointment(bookingInfo.bookingInfoCheckout, paymentMethod),
     onSuccess: (data) => {
       console.log(data);
       location.href = data.data;
@@ -33,7 +33,7 @@ export default function Form() {
         <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
             <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
-            <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> 1 dịch vụ</span>
+            <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> { } dịch vụ</span>
           </div>
           <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-7'>
             <div className='mb-4 md:mb-0'>

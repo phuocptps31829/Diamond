@@ -12,7 +12,6 @@ const BalloonMessage = () => {
             className="h-8 w-8 text-white duration-300 group-hover:scale-125" />
             </div>
           </button>
-         
         </div>
       </div>
     </Link>

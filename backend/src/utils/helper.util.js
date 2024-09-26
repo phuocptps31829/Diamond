@@ -111,7 +111,7 @@ const generateAccessRefreshToken = user => {
             id: user._id
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '5m' }
+        { expiresIn: '1m' }
     );
 
     const refreshToken = jwt.sign(

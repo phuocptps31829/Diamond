@@ -38,7 +38,7 @@ export default function AppLayout() {
       <Header />
       <Toaster />
       <Outlet />
-      <Balloon />;
+      <Balloon />
       <BalloonMessage />
       <Footer />
     </>

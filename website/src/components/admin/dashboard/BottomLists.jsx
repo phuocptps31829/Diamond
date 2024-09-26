@@ -14,7 +14,7 @@ import {
   MenubarTrigger,
 } from "../../ui/Menubar";
 import { CiMenuKebab } from "react-icons/ci";
-import { FaEye } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 
 export default function BottomLists() {
   return (
@@ -51,7 +51,7 @@ export default function BottomLists() {
                         </MenubarTrigger>
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEye className="mr-2" size={18} />{" "}
+                            <FaEdit className="mr-2" size={18} />{" "}
                             <span>Xem chi tiết</span>
                           </MenubarItem>
                         </MenubarContent>
@@ -109,7 +109,7 @@ export default function BottomLists() {
                         </MenubarTrigger>
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEye className="mr-2" size={18} />{" "}
+                            <FaEdit className="mr-2" size={18} />{" "}
                             <span>Xem chi tiết</span>
                           </MenubarItem>
                         </MenubarContent>

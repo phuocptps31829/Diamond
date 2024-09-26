@@ -1,8 +1,13 @@
-import { Outlet } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
+import { Outlet, useSearchParams } from "react-router-dom";
+
 import Sidebar from "../../components/client/infomationUser/Sidebar";
 import useScrollToTop from "@/hooks/useScrollToTop";
+
 const UserProfileLayout = () => {
   useScrollToTop();
+
   return (
     <div className="mx-auto max-w-screen-2xl bg-bg-gray pb-6">
       <div className="mx-auto grid max-w-7xl grid-cols-12 md:gap-7">

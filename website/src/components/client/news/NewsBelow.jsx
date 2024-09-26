@@ -61,7 +61,7 @@ export default function NewsBelow({ news, isLoading }) {
                   </div>
                 </CarouselItem>
               ))
-            : news.slice(4).map((newsItem, index) => (
+            : news.slice(0, news.length - 4).map((newsItem, index) => (
                 <CarouselItem
                   key={index}
                   className="pl-4 sm:basis-1/2 lg:basis-1/3"

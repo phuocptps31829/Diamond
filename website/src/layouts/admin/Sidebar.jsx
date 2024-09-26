@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import Menu from "./Menu";
-import { IoDiamond } from "react-icons/io5";
+import LogoNoLetters from "@/assets/images/LogoNoLetters.png";
+import BrandLogo from "@/assets/images/brandLogo.png";
 
 const Sidebar = ({ isOpen }) => {
   return (
@@ -12,22 +13,28 @@ const Sidebar = ({ isOpen }) => {
       )}
     >
       <div className="relative flex h-full flex-col overflow-y-auto pb-6 shadow-md dark:shadow-zinc-800">
-        <div className="flex min-h-16 items-center justify-center border-b-2 mt-0.5 border-primary-100">
+        <div className="mt-0.5 flex min-h-16 items-center justify-center border-b-2 border-primary-100">
           <Link
             href="/dashboard"
             className="flex items-center justify-center gap-2"
           >
-            <IoDiamond className="me-2 text-2xl" color="#007BBB" />
-            <h1
-              className={cn(
-                "whitespace-nowrap text-2xl font-bold transition-[transform,opacity,display] duration-300 ease-in-out text-[#007BBB]",
-                !isOpen
-                  ? "hidden -translate-x-96 opacity-0"
-                  : "translate-x-0 opacity-100",
-              )}
-            >
-              Diamond
-            </h1>
+            {!isOpen ? (
+              <div className="h-[45px] w-[45px] duration-200">
+                <img
+                  src={LogoNoLetters}
+                  alt="Logo"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="h-[58px] w-56 duration-200">
+                <img
+                  src={BrandLogo}
+                  alt="Logo"
+                  className="h-full w-full"
+                />
+              </div>
+            )}
           </Link>
         </div>
         <Menu isOpen={isOpen} />

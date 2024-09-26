@@ -23,7 +23,9 @@ const verifyAccessToken = (req, res, next) => {
 
 const verifyRefreshToken = async (req, res, next) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
+        const authHeader = req.headers['authorization'];
+        console.log(authHeader);
+        const refreshToken = authHeader && authHeader.split(' ')[1];
 
         if (!refreshToken) {
             createError(403, 'No refresh token found.');
@@ -70,10 +72,10 @@ const resendOTP = async (req, res, next) => {
     const { phone } = req.params;
     try {
         if (phone) {
-            phoneNumber = phone
+            phoneNumber = phone;
         }
         const checkPhoneNumber = await OtpModel.findOne({ phoneNumber });
-        console.log(checkPhoneNumber)
+        console.log(checkPhoneNumber);
         if (!checkPhoneNumber) {
             return next();
         }
