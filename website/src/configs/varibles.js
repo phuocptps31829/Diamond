@@ -12,7 +12,7 @@ const API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES = `${API_URL}/medical-packages/
 
 // specialties
 const API_URL_GET_ALL_SPECIALTIES = `${API_URL}/specialties`;
-const API_URL_GET_SPECIALTY_BY_ID = `${API_URL}/specialties`;
+const API_TAKE_IT_ALL_SPECIALTIES = `${API_URL}/specialties?limit=9999`;
 const API_URL_GET_SPECIALTY_WITH_SERVICES = `${API_URL}/specialties/specialties-with-services`;
 
 // doctors
@@ -54,12 +54,18 @@ const API_WARDS = `${API_URL}/provinces/wards`;
 const API_GET_ALL_PATIENTS = `${API_URL}/patients?limit=9999`;
 
 // appointments
-const API_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
+const API_GET_UPCOMING_APPOINTMENTS = `${API_URL}/appointments?limit=9999&sort=-time`;
+const API_GET_ALL_APPOINTMENTS = `${API_URL}/appointments?limit=9999`;
+const API_GET_PATIENTS_BY_GENDER = `${API_URL}/appointments/years`;
+const API_GET_TOTAL_PATIENTS_BY_SPECIALTY = `${API_URL}/appointments/specialty`;
 
 // invoices
 const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
 export {
+  API_GET_UPCOMING_APPOINTMENTS,
+  API_GET_PATIENTS_BY_GENDER,
+  API_GET_TOTAL_PATIENTS_BY_SPECIALTY,
   API_TAKE_IT_ALL_NEWS,
   API_GET_ALL_INVOICES,
   API_GET_ALL_APPOINTMENTS,
@@ -68,7 +74,7 @@ export {
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_ALL_SPECIALTIES,
   API_URL_GET_ALL_DOCTORS,
-  API_URL_GET_SPECIALTY_BY_ID,
+  API_TAKE_IT_ALL_SPECIALTIES,
   API_URL_GET_SERVICE_BY_ID,
   API_URL_GET_MEDICAL_PACKAGE_BY_ID,
   API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES,

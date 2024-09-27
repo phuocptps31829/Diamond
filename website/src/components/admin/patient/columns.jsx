@@ -10,6 +10,7 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
+import { FaRegCalendarCheck } from "react-icons/fa";
 
 export const columnsSchedule = [
   {
@@ -42,7 +43,7 @@ export const columnsSchedule = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Tên bệnh nhân
+        Tên người dùng
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -156,11 +157,15 @@ export const columnsSchedule = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
+            <DropdownMenuItem className="flex w-full items-center gap-2">
+              <FaRegCalendarCheck className="text-[15px]" />
+              <span>Thêm lịch khám</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="flex w-full items-center gap-2">
               <FiEdit className="text-[15px]" />
               <span>Sửa</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
+            <DropdownMenuItem className="flex w-full items-center gap-2">
               <RiDeleteBin6Line className="text-[15px]" />
               <span>Xóa</span>
             </DropdownMenuItem>
