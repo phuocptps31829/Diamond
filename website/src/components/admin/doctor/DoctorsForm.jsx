@@ -18,8 +18,6 @@ import SelectSpecialties from "@/components/client/checkout/select/SelectSpecial
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 
-
-
 export default function DoctorsForm() {
 const [selectedProvinceId, setSelectedProvinceId] = useState(null);
 const [selectedDistrictId, setSelectedDistrictId] = useState(null);

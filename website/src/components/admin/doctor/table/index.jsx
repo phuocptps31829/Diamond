@@ -24,7 +24,11 @@ import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function DataTable({data, columns}) {
+export default function DataTable({data, columns, specialtyData}) {
+
+  console.log("Doctors Data:", data);
+  console.log("Doctors with Specialties:", specialtyData);
+  
   const {
     handleSubmit,
     formState: { errors },
@@ -47,6 +51,7 @@ export default function DataTable({data, columns}) {
   const table = useReactTable({
     data,
     columns,
+    specialtyData,
     // pageCount: Math.ceil(doctorsData.length / 8),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -201,5 +206,6 @@ export default function DataTable({data, columns}) {
         </div>
       </div>
     </div>
+    
   );
 }
