@@ -17,6 +17,7 @@ const verifyAccessToken = (req, res, next) => {
 
         next();
     } catch (error) {
+        console.log('ỉner');
         next(error);
     }
 };
@@ -24,9 +25,9 @@ const verifyAccessToken = (req, res, next) => {
 const verifyRefreshToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
-        console.log(authHeader);
-        const refreshToken = authHeader && authHeader.split(' ')[1];
 
+        const refreshToken = authHeader && authHeader.split(' ')[1];
+        console.log('re', refreshToken);
         if (!refreshToken) {
             createError(403, 'No refresh token found.');
         }

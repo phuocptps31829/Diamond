@@ -55,6 +55,19 @@ export default function Form() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+  const isFullInfoToCheckout = !bookingDetails.some(booking => {
+    const { bookingDetail } = booking;
+    return Object.values(bookingDetail).some(value => value === "" || value === null || value === undefined);
+  });
+
+  useEffect(() => {
+    setSelectedService({
+      ...services[0], serviceId: services[0]?.id, bookingDetail: {
+        specialtyID: services[0]?.specialtyID
+      }
+    });
+  }, [services]);
+
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
     dispatch(removeItemInfo(id));
@@ -94,14 +107,13 @@ export default function Form() {
   };
 
   const handleChangeBranch = (branchId) => {
-    console.log('branchId', branchId);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService.serviceId,
         newChange: {
           selectedBranchId: branchId,
           selectedDoctorId: "",
-          selectedWorkSchedulesId: "",
+          selectedWorkScheduleId: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -114,13 +126,12 @@ export default function Form() {
   };
 
   const handleChangeDoctor = (doctorId) => {
-    console.log('doctorId', doctorId);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
           selectedDoctorId: doctorId,
-          selectedWorkSchedulesId: "",
+          selectedWorkScheduleId: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -132,13 +143,12 @@ export default function Form() {
   };
 
   const handleChangeDate = (date) => {
-    console.log('date', date);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
           selectedDate: date,
-          selectedWorkSchedulesId: "",
+          selectedWorkScheduleId: "",
           selectedTime: "",
           clinic: "",
         }
@@ -148,12 +158,11 @@ export default function Form() {
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
-    console.log('time', workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
         newChange: {
-          selectedWorkSchedulesId: workScheduleID,
+          selectedWorkScheduleId: workScheduleID,
           selectedTime: time,
           clinic: clinic?.name
         }
@@ -244,11 +253,11 @@ export default function Form() {
   const onSubmit = (data, event) => {
     event.preventDefault();
 
-    if (!profile) {
+    if (!isFullInfoToCheckout) {
       toast({
-        variant: "error",
-        title: "Thanh toán thất bại!",
-        description: "Vui lòng đăng nhập để tiếp tục.",
+        variant: "warning",
+        title: "Chưa đủ thông tin",
+        description: 'Vui lòng cung cấp đầy đủ thông tin',
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       return;
@@ -276,7 +285,7 @@ export default function Form() {
         }
         : undefined,
       data: bookingDetails.map((detail) => ({
-        workScheduleID: detail.bookingDetail.selectedWorkSchedulesId,
+        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
         serviceID: detail.serviceId,
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
@@ -285,7 +294,6 @@ export default function Form() {
       })),
     };
     setIsBlocking(false);
-    console.log(bookingInfo);
 
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
@@ -338,7 +346,7 @@ export default function Form() {
             <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4 sm:h-[215px] md:h-[680px]">
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4">
             { services.length > 0 ? (
               services.map((svc) => {
                 const bookingDetail = bookingDetails.find(
@@ -358,6 +366,7 @@ export default function Form() {
                       id={ `radio_${svc.id}` }
                       type="radio"
                       name="radio"
+                      checked={ svc.id === selectedService?.serviceId }
                       onChange={ (e) =>
                         handleServiceSelect(svc.id, e.target.checked)
                       }
@@ -373,7 +382,7 @@ export default function Form() {
                     >
                       <div className="flex items-center gap-4">
                         <img
-                          src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                          src={ svc.image }
                           className="w-[60px] sm:w-[75px] md:w-[100px]"
                           alt={ `Image of ${svc.name}` }
                         />
@@ -386,7 +395,7 @@ export default function Form() {
                               className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-primary-500"} font-semibold` }
                             >
                               { hasEmptyFields
-                                ? "Xem lại thông tin (còn trống)"
+                                ? "Chưa chọn đủ thông tin"
                                 : "Xem lại thông tin" }
                             </span>
                           ) }
@@ -645,8 +654,8 @@ export default function Form() {
                       Địa chỉ:
                     </label>
 
-                    <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
-                      <div className="w-full flex-1 md:w-[200px]">
+                    <div className="mb-2 flex flex-col items-start justify-between gap-1 md:flex-row">
+                      <div className="w-full flex-1">
                         <SelectProvince
                           control={ control }
                           name="province"
@@ -657,7 +666,7 @@ export default function Form() {
                           } }
                         />
                       </div>
-                      <div className="w-full flex-1 md:w-[200px]">
+                      <div className="w-full flex-1">
                         <SelectDistrict
                           control={ control }
                           name="district"
@@ -667,7 +676,7 @@ export default function Form() {
                           setValue={ setValue }
                         />
                       </div>
-                      <div className="w-full flex-1 md:w-[200px]">
+                      <div className="w-full flex-1">
                         <SelectWard
                           control={ control }
                           name="ward"
@@ -690,8 +699,6 @@ export default function Form() {
                       />
                     </div>
                   </div>
-
-                  {/* Button */ }
                 </div>
               </> }
               <div className="mt-3 flex justify-end gap-3">

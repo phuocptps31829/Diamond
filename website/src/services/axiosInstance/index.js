@@ -1,6 +1,6 @@
 import axios from "axios";
-import { refreshTokenApi } from "../authApi";
 import Cookies from 'js-cookie';
+import { refreshTokenApi } from "../authApi";
 
 export const axiosInstance = axios.create({
     headers: {
@@ -11,7 +11,8 @@ export const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
     console.log('in req', config);
     const accessToken = Cookies.get('accessToken');
-    if (accessToken) {
+
+    if (accessToken && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
@@ -23,25 +24,32 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(res => res, async err => {
     const originalRequest = err.config;
 
-    if (err.response && err.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
+    const refreshToken = Cookies.get('refreshToken');
 
-        try {
-            const refreshToken = Cookies.get('refreshToken');
-            const response = await refreshTokenApi(refreshToken);
+    if (refreshToken) {
+        if (err.response && err.response.status === 403) {
+            Cookies.remove("refreshToken");
+        }
 
-            Cookies.set('accessToken', response.data.accessToken.token, {
-                expires: new Date(response.data.accessToken.exp)
-            });
-            Cookies.set('refreshToken', response.data.refreshToken.token, {
-                expires: new Date(response.data.refreshToken.exp)
-            });
+        if (err.response && err.response.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
 
-            originalRequest.headers["Authorization"] = 'Bearer ' + response.data.accessToken.token;
+            try {
+                const response = await refreshTokenApi(refreshToken);
 
-            return axiosInstance(originalRequest);
-        } catch (error) {
-            return Promise.reject(err);
+                Cookies.set('accessToken', response.data.accessToken.token, {
+                    expires: new Date(response.data.accessToken.exp)
+                });
+                Cookies.set('refreshToken', response.data.refreshToken.token, {
+                    expires: new Date(response.data.refreshToken.exp)
+                });
+
+                originalRequest.headers["Authorization"] = 'Bearer ' + response.data.accessToken.token;
+
+                return axiosInstance(originalRequest);
+            } catch (error) {
+                return Promise.reject(err);
+            }
         }
     }
 

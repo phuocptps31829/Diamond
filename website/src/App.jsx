@@ -56,6 +56,7 @@ import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 import ClinicList from "./pages/admin/ClinicList";
 import AddClinic from "./pages/admin/AddClinic";
 import ProtectContainer from "./layouts/protect/ProtectContainer";
+import PaymentSuccess from "./pages/client/PaymentSuccess";
 
 const router = createBrowserRouter([
   {
@@ -109,6 +110,10 @@ const router = createBrowserRouter([
       {
         path: "doctors",
         element: <Doctors />,
+      },
+      {
+        path: "payment-success",
+        element: <PaymentSuccess />,
       },
       {
         path: "doctor-detail/:id",

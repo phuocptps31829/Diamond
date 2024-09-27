@@ -129,7 +129,7 @@ export default function MainHeader() {
                       </div>
 
                       <Avatar>
-                        <AvatarImage src={ userProfile.avatar } />
+                        <AvatarImage src={ userProfile?.avatar || 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png' } />
                       </Avatar>
                     </div>
                   </DropdownMenuTrigger>

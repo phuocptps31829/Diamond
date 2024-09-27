@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
+import { toast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
 
 export default function SelectTime({
   control,
@@ -25,22 +27,18 @@ export default function SelectTime({
   errors,
   date,
   onChange,
-  setValue,
   doctorId,
   branchId,
 }) {
   const [open, setOpen] = useState(false);
   const [times, setTimes] = useState([]);
-  const [options, setOptions] = useState([]);
 
-  console.log(doctorId, branchId, date);
   useEffect(() => {
     const fetchDates = async () => {
       if (!doctorId || !branchId) return;
 
       try {
         const data = await getWorkSchedulesByDoctors(doctorId, branchId);
-        setOptions(data);
 
         const selectedSchedule = data.find(
           (schedule) => schedule._id.day === date,
@@ -66,12 +64,24 @@ export default function SelectTime({
     fetchDates();
   }, [date, doctorId, branchId]);
 
-  // useEffect(() => {
-  //   onChange("");
-  //   setValue(name, "");
-  // }, [branchId, doctorId, setValue, name]);
+  useEffect(() => {
+    errors[name] = undefined;
+  }, [date, doctorId, branchId, errors, name]);
+
+  const handleClick = () => {
+    if (!date) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng chọn ngày",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+  };
+
   return (
-    <div>
+    <div onClick={ handleClick }>
       <Controller
         control={ control }
         name={ name }
@@ -90,6 +100,7 @@ export default function SelectTime({
                   className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500",
+                    date ? 'pointer-events-auto' : 'pointer-events-none'
                   ) }
                 >
                   { field.value ? (

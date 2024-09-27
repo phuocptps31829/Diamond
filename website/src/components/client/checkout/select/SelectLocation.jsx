@@ -73,7 +73,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên tỉnh/thành phố" />
+                <CommandInput placeholder="Tên tỉnh/thành phố" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -184,7 +184,7 @@ export function SelectDistrict({
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên quận/huyện" />
+                <CommandInput placeholder="Tên quận/huyện" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -265,7 +265,6 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -282,7 +281,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên phường/xã" />
+                <CommandInput placeholder="Tên phường/xã" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>

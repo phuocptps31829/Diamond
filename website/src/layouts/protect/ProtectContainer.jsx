@@ -7,7 +7,6 @@ const ProtectContainer = ({ children }) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const queryAccessToken = searchParams.get("accessToken");
     const queryRefreshToken = searchParams.get("refreshToken");
 
     useEffect(() => {
@@ -15,19 +14,9 @@ const ProtectContainer = ({ children }) => {
 
         if (!refreshToken && !queryRefreshToken) {
             navigate('/');
-        } else {
-            if (queryAccessToken && queryRefreshToken) {
-                Cookies.set("accessToken", queryAccessToken, {
-                    expires: new Date(Date.now() + 60 * 1000)
-                });
-                Cookies.set("refreshToken", queryRefreshToken, {
-                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-                });
-                navigate('/user-profile');
-            }
-            setLoading(false);
         }
-    }, [navigate, searchParams, queryAccessToken, queryRefreshToken]);
+        setLoading(false);
+    }, [navigate, queryRefreshToken]);
 
     if (loading) {
         return <div></div>;

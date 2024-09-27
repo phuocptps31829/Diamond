@@ -1,11 +1,31 @@
 import Cookies from "js-cookie";
 import { useEffect } from "react";
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
 
 import Sidebar from "../../components/client/infomationUser/Sidebar";
 import useScrollToTop from "@/hooks/useScrollToTop";
+import { useDispatch } from "react-redux";
 
 const UserProfileLayout = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const dispatch = useDispatch();
+
+  const queryAccessToken = searchParams.get("accessToken");
+  const queryRefreshToken = searchParams.get("refreshToken");
+
+  useEffect(() => {
+    if (queryAccessToken && queryRefreshToken) {
+      Cookies.set("accessToken", queryAccessToken, {
+        expires: new Date(Date.now() + 60 * 1000)
+      });
+      Cookies.set("refreshToken", queryRefreshToken, {
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      });
+      navigate('/user-profile');
+    }
+  }, [navigate, searchParams, queryAccessToken, queryRefreshToken, dispatch]);
+
   useScrollToTop();
 
   return (

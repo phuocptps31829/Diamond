@@ -39,12 +39,14 @@ export default function ServiceItem({
 
   const handleAddClick = () => {
     if (!isInCart) {
-      dispatch(addToCart({ id: _id, name, specialtyID, price }));
+      dispatch(addToCart({ id: _id, name, specialtyID, price, image }));
       dispatch(
         initBookingDetails({
           serviceId: _id,
           bookingDetail: {
             specialtyID,
+            name,
+            image,
             price: price || 0,
             selectedBranchId: "",
             selectedDoctorId: "",

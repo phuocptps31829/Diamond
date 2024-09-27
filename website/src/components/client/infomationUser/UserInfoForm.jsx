@@ -155,7 +155,7 @@ const UserInfoForm = () => {
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-              <AvatarImage src={ profile?.avatar || "" } className="object-cover" />
+              <AvatarImage src={ profile?.avatar || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">

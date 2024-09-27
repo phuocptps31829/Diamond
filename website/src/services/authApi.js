@@ -110,7 +110,7 @@ export const refreshTokenApi = async (refreshToken) => {
     console.log(res);
     return res.data;
   } catch (error) {
-    console.error("Failed to logout:", error);
+    console.error(error);
     throw error;
   }
 };

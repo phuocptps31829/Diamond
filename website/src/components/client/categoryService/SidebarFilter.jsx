@@ -188,7 +188,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
                 htmlFor="checkbox-lowest"
                 className="text-sm font-normal text-gray-600"
               >
-                Thấp nhất
+                Thấp đến cao
               </label>
             </div>
             <div className="flex items-center space-x-2">
@@ -201,7 +201,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
                 htmlFor="checkbox-highest"
                 className="text-sm font-normal text-gray-600"
               >
-                Cao nhất
+                Cao đến thấp
               </label>
             </div>
           </div>
