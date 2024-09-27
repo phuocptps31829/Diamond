@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import SelectBirthDate from "@/components/client/checkout/select/SelectBirthday";
-import SelectDepartment from "@/components/client/checkout/select/SelectDepartment";
+import SelectDepartment from "@/components/client/checkout/select/SelectSpecialty";
 import {
   SelectDistrict,
   SelectProvince,
@@ -13,10 +13,13 @@ import {
 import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
 import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
+import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialty";
+import SelectBranch from "@/components/client/checkout/select/SelectBranch";
+import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 
 
 
-export default function Form() {
+export default function StaffsForm() {
 
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
@@ -33,6 +36,7 @@ export default function Form() {
       phone: "",
       email: "",
       birthDate: "",
+      specialty:"",
       chungchi: "",
       gender: "",
       room: "",
@@ -50,6 +54,7 @@ export default function Form() {
     },
   });
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
@@ -66,31 +71,46 @@ export default function Form() {
         <div className="
           md:flex gap-[10px] 
           sm:grid grid-cols-1 ">
-          <div className="
-            2xl:w-1/5 
-            md:w-1/3
-            h-fit
-          ">
-            <div className="justify-center flex ">
-              <img src="https://cdn.pixabay.com/photo/2024/03/25/18/35/ai-generated-8655320_640.png"
-                className="
-                md:rounded-3xl rounded-xl  
-                md:w-[95%] 
-                w-2/3
-                "
-              ></img>
-            </div>
-            <div className="mt-5 md:mb-0 mb-4 flex justify-center">
-              <label className="
-              block w-1/2 md:px-2 md:py-2 py-2 text-center md:text-[13px] 2xl:text-lg text-white 
-              bg-primary-500 rounded-md cursor-pointer hover:bg-primary-600">
-                { selectedFile ? selectedFile.name : "Chọn file" }
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={ handleFileChange }
-                />
-              </label>
+          <div className="2xl:w-[26%] md:w-1/3 h-fit relative mb-2">
+            <div 
+              className="justify-center flex relative" 
+              onMouseEnter={() => setShowMenu(true)} 
+              onMouseLeave={() => setShowMenu(false)}
+            >
+              <img 
+                src={selectedFile ? URL.createObjectURL(selectedFile) : "https://cdn.pixabay.com/photo/2024/03/25/18/35/ai-generated-8655320_640.png"} 
+                className="rounded-3xl md:w-[100%] w-2/3 cursor-pointer"
+                onClick={() => document.getElementById('fileInput').click()}
+                alt="Ảnh đại diện"
+              />
+              {showMenu && (
+                <div className="absolute inset-0 bg-gray-800 rounded-3xl bg-opacity-50 flex justify-center items-center">
+                  <ul className="space-y-2 text-center">
+                    <li>
+                      <button 
+                        className="text-sm  text-white bg-blue-600 px-4 py-2 hover:bg-blue-700 rounded-md"
+                        onClick={() => document.getElementById('fileInput').click()}
+                      >
+                        Đổi ảnh
+                      </button>
+                    </li>
+                    <li>
+                      <button 
+                        className="text-sm  bg-red-600 px-4 py-2 text-white hover:bg-red-700 rounded-md"
+                        onClick={() => setSelectedFile(null)}
+                      >
+                        Xóa ảnh
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+              <input
+                id="fileInput"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
             </div>
           </div>
 
@@ -99,7 +119,7 @@ export default function Form() {
             {/* Line 1 */ }
             <div className="block ">
               <div className="w-full md:flex md:gap-[10px] grid-cols-1">
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white md:text-base text-lg">
                     Họ và tên nhân viên <span className="text-red-500">*</span>
                   </label>
@@ -113,7 +133,7 @@ export default function Form() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="phone" className="block px-1 left-[15px] bg-white md:text-base text-lg">
                     Số điện thoại <span className="text-red-500">*</span>
                   </label>
@@ -128,80 +148,79 @@ export default function Form() {
                 </div>
               </div>
             </div>
-
-            {/* Line 2 */ }
-            <div className="w-full flex gap-[10px] ">
-              <div className="w-full md:flex gap-[10px]">
-
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
-                  <label htmlFor="email" className="block px-1 left-[15px] bg-white
+         {/* Line 2 */}
+         <div className="w-full flex gap-[10px] ">
+            <div className="w-full md:flex gap-[10px]">
+              <div className="md:mb-4 md:w-1/2 relative">
+                <label htmlFor="email" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    name="email"
-                    type="text"
-                    id="email"
-                    control={ control }
-                    errors={ errors }
-                  />
-                </div>
-
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-2/5 relative">
-                  <label htmlFor="birthdate" className="block px-1 left-[15px] bg-white
-                 md:text-base text-lg">
-                    Ngày sinh <span className="text-red-500">*</span>
-                  </label>
-                  <SelectBirthDate
-                    control={ control }
-                    name="birthDate"
-                    errors={ errors }
-                  />
-                </div>
-                <div className="flex items-center gap-2 md:p-0 pb-2">
-                  <label className="flex items-center mr-2
-               md:text-base text-lg">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      className="mr-2"
-                    />
-                    Nam
-                  </label>
-                  <label className="flex items-center
-               md:text-base text-lg">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      className="mr-2"
-                    />
-                    Nữ
-                  </label>
-                </div>
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <InputCustom
+                  className="col-span-1 sm:col-span-1"
+                  name="email"
+                  type="text"
+                  id="email"
+                  control={control}
+                  errors={errors}
+                />
               </div>
+              <div className="w-1/2 flex gap-2 relative">
+              <div className="md:mb-4 w-full relative">
+                <label htmlFor="birthdate" className=" block px-1 left-[15px] bg-white mb-2
+                 md:text-base text-lg">
+                  Ngày sinh <span className="text-red-500">*</span>
+                </label>
+                <SelectBirthDate
+                      control={control}
+                      name="birthDate"
+                      errors={errors}
+                    />
+              </div>
+            <div className="flex items-center gap-2 md:p-0 pb-2 ">
+              <label className="flex items-center mr-2
+               md:text-base text-lg">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="male"
+                  className="mr-2"
+                />
+                Nam
+              </label>
+              <label className="flex items-center
+               md:text-base text-lg">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="female"
+                  className="mr-2"
+                />
+                Nữ
+              </label>
             </div>
+            </div>
+            </div>
+          </div>
             {/* Line 3 */ }
             <div className="block ">
               <div className="w-full md:flex gap-[10px]">
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                     Mật khẩu <span className="text-red-500">*</span>
                   </label>
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
-                    name="Password"
+                    name="password"
                     type="password"
-                    id="Password"
+                    id="password"
                     control={ control }
                     errors={ errors }
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative">
+                <div className="md:mb-4 md:w-1/2 relative">
                   <label htmlFor="phone" className=" block px-1 left-[15px] bg-white
                  md:text-base text-lg">
                     Nhập lại mật khẩu <span className="text-red-500">*</span>
@@ -217,13 +236,12 @@ export default function Form() {
                 </div>
               </div>
             </div>
-
-            {/* Line 4 */ }
-            <div className="block ">
+          </div>
+        </div>
+                    {/* Line 4 */ }
+                    <div className="block ">
               <div className="w-full md:flex gap-[10px]">
-
-
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white">
                     Chứng chỉ hành nghề <span className="text-red-500">*</span>
                   </label>
@@ -237,7 +255,7 @@ export default function Form() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="hoten" className="block px-1 left-[15px] bg-white mb-2">
                     Khoa <span className="text-red-500">*</span>
                   </label>
@@ -256,7 +274,7 @@ export default function Form() {
                   />
                 </div>
 
-                <div className="md:mb-1 xl:mb-[4px] 2xl:mb-3 md:w-1/2 relative ">
+                <div className="md:mb-4 md:w-1/2 relative ">
                   <label htmlFor="phone" className="block px-1 left-[15px] bg-white">
                     Số năm kinh nghiệm <span className="text-red-500">*</span>
                   </label>
@@ -272,8 +290,6 @@ export default function Form() {
 
               </div>
             </div>
-          </div>
-        </div>
         {/* Line 5 */ }
         <div className="w-full flex gap-[10px]">
           <div className="w-full md:flex gap-[10px]">
@@ -282,9 +298,9 @@ export default function Form() {
                 Chuyên khoa <span className="text-red-500">*</span>
               </label>
               {/* Khoa khám */ }
-              <SelectDepartment
+              <SelectSpecialties
                 control={ control }
-                name="department"
+                name="specialty"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -299,9 +315,9 @@ export default function Form() {
               <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Chi nhánh làm việc <span className="text-red-500">*</span>
               </label>
-              <SelectDepartment
+              <SelectBranch
                 control={ control }
-                name="department"
+                name="branch"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -317,9 +333,9 @@ export default function Form() {
               <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Phòng <span className="text-red-500">*</span>
               </label>
-              <SelectDepartment
+              <SelectRoom
                 control={ control }
-                name="department"
+                name="room"
                 errors={ errors }
               // specialtyID={
               //   selectedService?.bookingDetail?.specialtyID || ""
@@ -363,7 +379,6 @@ export default function Form() {
                 provinceId={ selectedProvinceId }
                 onDistrictChange={ setSelectedDistrictId }
                 setValue={ setValue }
-
               />
             </div>
 

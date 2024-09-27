@@ -10,6 +10,8 @@ export const doctorSchema = z.object({
   trinhdo: z.string().min(1, "Trình độ chuyên môn không được để trống"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   department: z.string().nonempty("Khoa không được để trống"),
+  room: z.string().nonempty("Phòng làm việc không được để trống"),
+  branch: z.string().nonempty("Chi nhánh làm việc không được để trống"),
   specialty: z.string().nonempty("Chuyên khoa không được để trống"),
   confirmPassword: z.string().min(6, "Nhập lại mật khẩu phải có ít nhất 6 ký tự"),
   experienceYears: z.string().min(1, "Số năm kinh nghiệm không được để trống"),

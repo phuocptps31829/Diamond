@@ -17,8 +17,6 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Controller } from 'react-hook-form';
-
-
 // Value
 const rooms = [
   {
@@ -80,7 +78,7 @@ export default function SelectRoom({ control, name, errors, disabled }) {
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="p-0">
+            <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
                 <CommandInput placeholder="Nhập tên phòng khám" />
                 <CommandList>

@@ -18,58 +18,37 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getAllBranchesBySpecialty } from "@/services/branchesApi";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 
-export default function SelectDepartment({
+export default function SelectSpecialties({
   control,
   name,
   errors,
   specialtyID,
   onChange,
-  selectedServiceID
+
 }) {
   const [open, setOpen] = useState(false);
-  const [departments, setDepartments] = useState([]);
-  console.log(selectedServiceID);
-  const { toast } = useToast();
+  const [specialties, setSpecialties] = useState([]);
 
   useEffect(() => {
-    const fetchDepartments = async () => {
+    const fetchSpecialties = async () => {
       if (!specialtyID) return;
       try {
         const data = await getAllBranchesBySpecialty(specialtyID);
-        setDepartments(data);
+        setSpecialties(data);
       } catch (error) {
-        console.error("Failed to fetch departments:", error);
+        console.error("Failed to fetch specialties:", error);
       }
     };
 
-    fetchDepartments();
+    fetchSpecialties();
   }, [specialtyID]);
-
-  useEffect(() => {
-    errors[name] = undefined;
-  }, [specialtyID, selectedServiceID, errors, name]);
-
-  const handleClick = () => {
-    if (!selectedServiceID) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn dịch vụ",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
-      return;
-    }
-  };
-
   return (
-    <div onClick={ handleClick }>
+    <div className="">
       <Controller
         control={ control }
         name={ name }
-        rules={ { required: "Vui lòng chọn một khoa." } }
+        rules={ { required: "Vui lòng chọn một chuyên khoa." } }
         render={ ({ field }) => (
           <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
@@ -80,26 +59,25 @@ export default function SelectDepartment({
                 className={ cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "border-red-500",
-                  selectedServiceID ? 'pointer-events-auto' : 'pointer-events-none'
                 ) }
               >
                 { field.value ? (
-                  departments.find(
+                  specialties.find(
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
-                  <span className="text-gray-600">Chọn khoa làm việc</span>
+                  <span className="text-gray-600">Chọn chuyên khoa</span>
                 ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên khoa" />
+                <CommandInput placeholder="Nhập tên chuyên khoa" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    { departments.map((department) => (
+                    { specialties.map((department) => (
                       <CommandItem
                         key={ department._id }
                         value={ department._id }

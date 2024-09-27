@@ -33,9 +33,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
 
-const combineDateTime = (date, time) => {
-  return `${date}T${time}:00.000Z`;
-};
+const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
 export default function Form() {
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
@@ -119,9 +117,8 @@ export default function Form() {
           selectedDate: "",
           selectedTime: "",
           clinic: "",
-        },
-      }),
-    );
+        }
+      }));
     setValue("doctor", "");
     setValue("time", "");
     setValue("date", "");
@@ -138,9 +135,8 @@ export default function Form() {
           selectedDate: "",
           selectedTime: "",
           clinic: "",
-        },
-      }),
-    );
+        }
+      }));
     setValue("time", "");
     setValue("date", "");
     setValue("room", "");
@@ -155,9 +151,8 @@ export default function Form() {
           selectedWorkScheduleId: "",
           selectedTime: "",
           clinic: "",
-        },
-      }),
-    );
+        }
+      }));
     setValue("time", "");
     setValue("room", "");
   };
@@ -169,10 +164,9 @@ export default function Form() {
         newChange: {
           selectedWorkScheduleId: workScheduleID,
           selectedTime: time,
-          clinic: clinic?.name,
-        },
-      }),
-    );
+          clinic: clinic?.name
+        }
+      }));
   };
 
   const {
@@ -294,10 +288,7 @@ export default function Form() {
         workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
         serviceID: detail.serviceId,
         type: "Khám lần 1",
-        time: combineDateTime(
-          getCurSelectedService()?.bookingDetail.selectedDate,
-          getCurSelectedService()?.bookingDetail.selectedTime,
-        ),
+        time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
         status: "Chờ xác nhận",
         price: detail.bookingDetail.price,
       })),
@@ -459,9 +450,7 @@ export default function Form() {
                     control={ control }
                     name="doctor"
                     errors={ errors }
-                    branchId={
-                      getCurSelectedService()?.bookingDetail?.selectedBranchId
-                    }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     setValue={ setValue }
                     specialtyID={
                       selectedService?.bookingDetail?.specialtyID || ""
@@ -482,12 +471,8 @@ export default function Form() {
                   <SelectDate
                     control={ control }
                     name="date"
-                    doctorId={
-                      getCurSelectedService()?.bookingDetail?.selectedDoctorId
-                    }
-                    branchId={
-                      getCurSelectedService()?.bookingDetail?.selectedBranchId
-                    }
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ (date) => {
@@ -499,12 +484,8 @@ export default function Form() {
                   <SelectTime
                     control={ control }
                     name="time"
-                    doctorId={
-                      getCurSelectedService()?.bookingDetail?.selectedDoctorId
-                    }
-                    branchId={
-                      getCurSelectedService()?.bookingDetail?.selectedBranchId
-                    }
+                    doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
+                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ handleChangeTime }
@@ -522,7 +503,7 @@ export default function Form() {
                   <input
                     value={ getCurSelectedService()?.bookingDetail?.clinic ?? "" }
                     disabled={ true }
-                    className={ `h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 pl-5 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto` }
+                    className={ `placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto pl-5` }
                   />
                 </div>
               </div>

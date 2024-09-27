@@ -10,7 +10,7 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 
-export const columnsSchedule = [
+export const columns = [
     {
         id: "select",
         header: ({ table }) => (

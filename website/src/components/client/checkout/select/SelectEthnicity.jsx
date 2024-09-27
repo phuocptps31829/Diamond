@@ -255,7 +255,7 @@ export default function SelectEthnic({ control, name, errors }) {
                                 role="combobox"
                                 aria-expanded={open}
                                 className={cn("w-full justify-between py-[21px]", 
-                                errors[name] && "")}
+                                errors[name] && "border-red-500")}
                             >
                                 {field.value
                                     ? ethnicGroups.find((ethnic) => ethnic.value === field.value)?.name
@@ -263,7 +263,7 @@ export default function SelectEthnic({ control, name, errors }) {
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="p-0">
+                        <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
                             <Command>
                                 <CommandInput placeholder="Nhập tên dân tộc" />
                                 <CommandList>
@@ -294,7 +294,7 @@ export default function SelectEthnic({ control, name, errors }) {
                     </Popover>
                 )}
             />
-            {errors[name] && (<span className="text-red-500 text-sm">{errors[name].message}</span>)}
+            {errors[name] && (<span className="text-red-500 text-sm ">{errors[name].message}</span>)}
         </div>
     );
 }

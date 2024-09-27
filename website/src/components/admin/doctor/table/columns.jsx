@@ -11,7 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
 
-export const columnsSchedule = [
+export const columns = [
     {
         id: "select",
         header: ({ table }) => (
@@ -35,29 +35,48 @@ export const columnsSchedule = [
         enableHiding: false,
     },
     {
-        accessorKey: "name",
+        accessorKey: "userID.fullName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
                 variant="ghost"
-
-                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
                 Tên bác sĩ
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="lowercase flex items-center py-4 gap-3">
-            <Avatar className="size-8">
-                <img src={ row.original.avatar } alt={ row.getValue("name") } />
-            </Avatar>
-            <span className="w-full whitespace-nowrap">
-                { row.getValue("name") }
-            </span>
-        </div>
+        cell: ({ row }) => {
+            const name = row.original.userID.fullName;
+            const yearsExperience  = row.original.yearsExperience ;
+            console.log(yearsExperience );
+            const getDoctorTitle = (years) => {
+                switch (true) {
+                    case years >= 10:
+                        return `GS. ${name}`; 
+                    case years >= 5:
+                        return `TS. ${name}`; 
+                    case years >= 2:
+                        return `ThS. ${name}`; 
+                    default:
+                        return `BS. ${name}`;
+                }
+            };
+            return (
+                <div className="flex items-center py-4 gap-3">
+                    <Avatar className="size-8">
+                        <img src={row.original.userID.avatar} alt={name} />
+                    </Avatar>
+                    <span className="w-full whitespace-nowrap">
+                        {getDoctorTitle(yearsExperience )} 
+                    </span>
+                </div>
+            );
+        }
     },
+    
     {
-        accessorKey: "specialty",
+        accessorKey: "specialtyName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -68,10 +87,24 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.specialty }</div>,
+        cell: ({ row }) => <div className="">{ row.original.specialtyName }</div>,
     },
     {
-        accessorKey: "phoneNumber",
+        accessorKey: "department",
+        header: ({ column }) => (
+            <Button
+                className="px-0 text-base"
+                variant="ghost"
+                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+            >
+                Loại bác sĩ
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="">{ row.original.department }</div>,
+    },
+    {
+        accessorKey: "userID.phoneNumber",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -82,10 +115,10 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.phone }</div>,
+        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.userID.phoneNumber }</div>,
     },
     {
-        accessorKey: "email",
+        accessorKey: "userID.email",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -96,7 +129,7 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.email }</div>,
+        cell: ({ row }) => <div className="">{ row.original.userID.email }</div>,
     },
 
     {
@@ -112,10 +145,10 @@ export const columnsSchedule = [
             </Button>
         ),
         cell: ({ row }) => {
-            const status = row.original.status;
+            const status = row.original.userID.isActivated;
             return (
-                <div className={ status === "1" ? "text-green-500" : "text-red-500" }>
-                    { status === "1" ? "Đang hoạt động" : "Đang khóa" }
+                <div className={ status === true ? "text-green-500" : "text-red-500" }>
+                    { status === true ? "Đang hoạt động" : "Đang khóa" }
                 </div>
             );
         },
@@ -125,7 +158,7 @@ export const columnsSchedule = [
         enableHiding: false,
         cell: ({ row }) => {
             const payment = row.original;
-            console.log(payment);
+            // console.log(payment);
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

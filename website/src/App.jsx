@@ -40,12 +40,6 @@ import Dashboard from "./pages/admin/Dashboard";
 import ScheduleTablePage from "./pages/admin/ScheduleTable";
 import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
 import DoctorDashboard from "./pages/admin/DoctorDashboard";
-import DoctorList from "./pages/admin/DoctorList";
-import PatientList from "./pages/admin/PatientList";
-import StaffList from "./pages/admin/StaffList";
-import AddDoctor from "./pages/admin/AddDoctor";
-import AddStaff from "./pages/admin/AddStaff";
-import AddPatient from "./pages/admin/AddPatient";
 import NewsListPage from "./pages/admin/News";
 import NewsFormPage from "./pages/admin/News/form";
 import BranchesListPage from "./pages/admin/Branches";
@@ -53,10 +47,16 @@ import BranchesFormPage from "./pages/admin/Branches/form";
 import AppointmentsListPage from "./pages/admin/Appointments";
 import AppointmentsFormPage from "./pages/admin/Appointments/form";
 import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
-import ClinicList from "./pages/admin/ClinicList";
-import AddClinic from "./pages/admin/AddClinic";
 import ProtectContainer from "./layouts/protect/ProtectContainer";
 import PaymentSuccess from "./pages/client/PaymentSuccess";
+import ClinicsListPage from "./pages/admin/Clinics";
+import ClinicsFormPage from "./pages/admin/Clinics/form";
+import DoctorsFormPage from "./pages/admin/Doctor/form";
+import DoctorsListPage from "./pages/admin/Doctor";
+import PatientsListPage from "./pages/admin/Patient";
+import PatientsFormPage from "./pages/admin/Patient/form";
+import StaffsFormPage from "./pages/admin/Staff/form";
+import StaffsListPage from "./pages/admin/Staff";
 
 const router = createBrowserRouter([
   {
@@ -231,27 +231,27 @@ const router = createBrowserRouter([
       },
       {
         path: "doctors/list",
-        element: <DoctorList />,
+        element: <DoctorsListPage />,
       },
       {
         path: "doctors/create",
-        element: <AddDoctor />,
+        element: <DoctorsFormPage />,
       },
       {
         path: "patients/list",
-        element: <PatientList />,
+        element: <PatientsListPage />,
       },
       {
         path: "patients/create",
-        element: <AddPatient />,
+        element: <PatientsFormPage />,
       },
       {
         path: "staffs/list",
-        element: <StaffList />,
+        element: <StaffsListPage />,
       },
       {
         path: "staffs/create",
-        element: <AddStaff />,
+        element: <StaffsFormPage />,
       },
       {
         path: "patients/list",
@@ -299,16 +299,12 @@ const router = createBrowserRouter([
         element: <AppointmentsFormPage />,
       },
       {
-        path: 'staffs/create',
-        element: <AddStaff />
-      },
-      {
         path: 'clinics/list',
-        element: <ClinicList />
+        element: <ClinicsListPage />
       },
       {
         path: 'clinics/create',
-        element: <AddClinic />
+        element: <ClinicsFormPage />
       }
     ],
   },

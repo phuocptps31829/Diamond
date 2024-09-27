@@ -29,86 +29,86 @@ const BookingInfo = () => {
               Dịch vụ / gói khám:
             </strong>
             <ul className="ml-4 list-disc">
-              {bookingData.serviceList.map((svc) => (
-                <div className="relative py-3" key={svc}>
+              { bookingData.serviceList.map((svc) => (
+                <div className="relative py-3" key={ svc }>
                   <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
                     <div className="flex items-center gap-4">
                       <img
                         src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
                         className="w-[60px] sm:w-[75px] md:w-[100px]"
-                        alt={`Image of ${svc}`}
+                        alt={ `Image of ${svc}` }
                       />
                       <div className="flex flex-col">
                         <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                          {svc}
+                          { svc }
                         </p>
                       </div>
                     </div>
                   </label>
                 </div>
-              ))}
+              )) }
             </ul>
           </div>
 
           <div className="col-span-7 grid w-full grid-cols-1 gap-6 gap-x-4 sm:grid-cols-2 md:mt-7 mt-0">
             <p className=" text-gray-600">
-              <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
-              {bookingData.branch}
+              <strong className="font-medium text-black">Chi nhánh:</strong>{ " " }
+              { bookingData.branch }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Bác sĩ:</strong>{" "}
-              {bookingData.doctor}
+              <strong className="font-medium text-black">Bác sĩ:</strong>{ " " }
+              { bookingData.doctor }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Loại khám:</strong>{" "}
-              {bookingData.serviceType}
+              <strong className="font-medium text-black">Loại khám:</strong>{ " " }
+              { bookingData.serviceType }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Thời gian:</strong>{" "}
-              {bookingData.time}
+              <strong className="font-medium text-black">Thời gian:</strong>{ " " }
+              { bookingData.time }
             </p>
             <p className="text-red-600">
-              <strong className="font-medium text-black">Trạng thái:</strong>{" "}
-              {bookingData.status}
+              <strong className="font-medium text-black">Trạng thái:</strong>{ " " }
+              { bookingData.status }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Tổng giá:</strong>{" "}
-              {bookingData.price} VND
+              <strong className="font-medium text-black">Tổng giá:</strong>{ " " }
+              { bookingData.price } VND
             </p>
             <p className="text-red-600">
-              <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {bookingData.extraFees}
+              <strong className="font-medium text-black">Phí phát sinh:</strong>{ " " }
+              { bookingData.extraFees }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Ngày khám:</strong>{" "}
-              {bookingData.appointmentDate}
+              <strong className="font-medium text-black">Ngày khám:</strong>{ " " }
+              { bookingData.appointmentDate }
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Phòng:</strong>{" "}
-              {bookingData.room}
+              <strong className="font-medium text-black">Phòng:</strong>{ " " }
+              { bookingData.room }
             </p>
             <p className="text-primary-500">
               <strong className="font-medium text-black">
                 Tổng số lượng dịch vụ / gói khám:
-              </strong>{" "}
-              {bookingData.quantity}
+              </strong>{ " " }
+              { bookingData.quantity }
             </p>
             <p className="text-gray-600 sm:col-span-2">
               <strong className="font-medium text-black">
                 Phương thức thanh toán:
-              </strong>{" "}
-              {bookingData.paymentMethod}
+              </strong>{ " " }
+              { bookingData.paymentMethod }
             </p>
             <div className="flex w-max items-center justify-center gap-2">
               <strong className="font-medium text-black">
                 Trạng thái thanh toán:
               </strong>
               <div
-                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${getStatusStyle(
+                className={ `relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${getStatusStyle(
                   bookingData.statusPayment,
-                )}`}
+                )}` }
               >
-                <span>{bookingData.statusPayment}</span>
+                <span>{ bookingData.statusPayment }</span>
               </div>
             </div>
           </div>
