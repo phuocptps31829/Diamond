@@ -19,13 +19,17 @@ const Patient = () => {
         Thông tin bệnh nhân
       </h1>
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <div className="grid grid-cols-10 items-start gap-16">
-          <div className="col-span-2 ">
-            <Avatar className="w-full h-auto  ">
-              <AvatarImage src="https://github.com/shadcn.png" className="rounded-md" alt="@shadcn" />
+        <div className="grid gap-6 md:grid-cols-3 lg:grid-cols-10 items-start">
+          <div className="col-span-1 md:col-span-1 lg:col-span-3">
+            <Avatar className="w-full">
+              <AvatarImage
+                src="https://github.com/shadcn.png"
+                className="rounded-md"
+                alt="@shadcn"
+              />
             </Avatar>
           </div>
-          <div className="col-span-8 grid grid-cols-1 gap-6 sm:grid-cols-2 w-full items-center p-2">
+          <div className="col-span-2 grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:col-span-2 lg:col-span-7">
             <p className="text-gray-600">
               <strong className="font-medium text-black">Họ và tên:</strong>{" "}
               {profile.fullName}

@@ -14,13 +14,48 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { Link } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteBranch } from "@/services/branchesApi";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/AlertDialog";
+import { useToast } from "@/hooks/useToast";
+const useDeleteBranch = () => {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (branchId) => deleteBranch(branchId),
+    onSuccess: () => {
+      queryClient.invalidateQueries("branches");
+      toast({
+        variant: "success",
+        title: "Xóa chi nhánh thành công",
+        description: "Chi nhánh đã được xóa khỏi hệ thống",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "error",
+        title: "Xóa chi nhánh thất bại",
+        description: "Đã xảy ra lỗi khi xóa chi nhánh",
+      });
+      console.error("Error deleting branch:", error);
+    },
+  });
+};
 
 export const columns = [
   {
@@ -31,14 +66,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={ row.getIsSelected() }
-        onCheckedChange={ (value) => row.toggleSelected(!!value) }
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -46,12 +81,12 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "branch_name",
+    accessorKey: "name",
     header: ({ column }) => (
       <Button
         variant="ghost"
         className="px-0 text-base"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tên chi nhánh
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -59,20 +94,17 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full max-w-[270px]">
-        <span className="w-full whitespace-nowrap">
-          { row.original.branch_name }
-        </span>
+        <span className="w-full whitespace-nowrap">{row.original.name}</span>
       </div>
     ),
   },
   {
-    accessorKey: "working_hours",
+    accessorKey: "workingTime",
     header: ({ column }) => (
-
       <Button
         variant="ghost"
         className="px-0 text-base"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Giờ làm việc
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -81,7 +113,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          { row.original.working_hours }
+          {row.original.workingTime}
         </span>
       </div>
     ),
@@ -89,11 +121,10 @@ export const columns = [
   {
     accessorKey: "hotline",
     header: ({ column }) => (
-
       <Button
         variant="ghost"
         className="px-0 text-base"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Hotline
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -101,18 +132,17 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full max-w-[270px] text-primary-500">
-        { row.original.hotline }
+        {row.original.hotline}
       </div>
     ),
   },
   {
     accessorKey: "address",
     header: ({ column }) => (
-
       <Button
         variant="ghost"
         className="px-0 text-base"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Địa chỉ
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -120,18 +150,17 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{ row.original.address }</span>
+        <span className="w-full whitespace-nowrap">{row.original.address}</span>
       </div>
     ),
   },
   {
     accessorKey: "image",
     header: ({ column }) => (
-
       <Button
         variant="ghost"
         className="px-0 text-base"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Hình ảnh
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -142,13 +171,13 @@ export const columns = [
 
       return (
         <>
-          <Dialog open={ open } onOpenChange={ setOpen }>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <img
-                src={ row.original.image }
+                src={row.original.image}
                 alt="thumbnail"
-                width={ 60 }
-                height={ 60 }
+                width={60}
+                height={60}
                 className="cursor-pointer"
               />
             </DialogTrigger>
@@ -157,7 +186,7 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={ row.original.image }
+                src={row.original.image}
                 alt="large-thumbnail w-full h-auto"
               />
             </DialogContent>
@@ -167,9 +196,39 @@ export const columns = [
     },
   },
   {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <div className="w-full text-left">
+        <Button
+          className="px-0 text-base"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Trạng thái
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full max-w-[270px] rounded-md p-2">
+        <span
+          className={`w-full whitespace-nowrap ${row.original.isHidden ? "text-red-500" : "text-green-500"}`}
+        >
+          {row.original.isHidden ? "Đang ẩn" : "Đang hiện"}
+        </span>
+      </div>
+    ),
+  },
+  {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
+      const deleteMutation = useDeleteBranch();
+
+      const handleDelete = () => {
+        deleteMutation.mutate(row.original._id);
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -181,34 +240,41 @@ export const columns = [
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
-              <Link to="/admin/branches/edit/123">Sửa</Link>
+              <Link to={`/admin/branches/edit/${row.original._id}`}>Sửa</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-fit items-center gap-2">
-              <RiDeleteBin6Line className="text-[15px]" />
-              <span>Xóa</span>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <div
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <RiDeleteBin6Line className="text-[15px]" />
+                    <span>Xóa</span>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Bạn có chắc chắn muốn xóa chi nhánh này?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Hành động này không thể hoàn tác. Chi nhánh sẽ bị xóa vĩnh
+                      viễn khỏi hệ thống.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>
+                      Xóa
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
-  },
-];
-
-export const mockData = [
-  {
-    branch_name: "DA KHOA DIAMOND",
-    working_hours: "7:30-11:30; 13:00-17:00 (Mon - Sat)",
-    hotline: "098.7654.321",
-    address: "179-181 Võ Thị Sáu, P.6, Q.3, HCM",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-  },
-  {
-    branch_name: "Da Khoa 179",
-    working_hours: "7:30-11:30; 13:00-17:00 (Mon - Sat)",
-    hotline: "098.7654.321",
-    address: "179-181 Võ Thị Sáu, P.6, Q.3, HCM",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
   },
 ];

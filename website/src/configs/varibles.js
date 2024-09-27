@@ -22,6 +22,9 @@ const API_URL_GET_ALL_DOCTORS_BY_BRANCHES = `${API_URL}/doctors/branch`;
 // branches
 const API_URL_GET_ALL_BRANCHES = `${API_URL}/branches`;
 const API_URL_GET_ALL_BRANCHES_BY_SPECIALTY = `${API_URL}/branches/specialty`;
+const API_URL_ADD_BRANCH = `${API_URL}/branches/add`;
+const API_URL_UPDATE_BRANCH = `${API_URL}/branches/update`;
+const API_URL_DELETE_BRANCH = `${API_URL}/branches/deletee`; // wrong url
 
 // work-schedule
 const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
@@ -29,6 +32,11 @@ const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
 // news
 const API_TAKE_IT_ALL_NEWS = `${API_URL}/news?limit=9999`;
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
+const API_URL_CREATE_NEWS = `${API_URL}/news/add`;
+const API_URL_UPDATE_NEWS = `${API_URL}/news/update`;
+const API_URL_DELETE_NEWS = `${API_URL}/news/deletee`; // wrong url
+// patients
+const API_URL_GET_PATIENTS_BY_ID = `${API_URL}/patients`;
 
 //contact
 const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
@@ -63,6 +71,8 @@ const API_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
 // invoices
 const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
+// Appointments
+const API_URL_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
 export {
   API_TAKE_IT_ALL_NEWS,
   API_GET_ALL_INVOICES,
@@ -98,5 +108,13 @@ export {
   API_URL_GET_ALL_BRANCHES_BY_SPECIALTY,
   API_URL_GET_WORK_SCHEDULES_BY_DOCTOR,
   API_CREATE_APPOINTMENT_VNPAY,
-  API_CREATE_APPOINTMENT_MOMO
+  API_CREATE_APPOINTMENT_MOMO,
+  API_URL_CREATE_NEWS,
+  API_URL_UPDATE_NEWS,
+  API_URL_ADD_BRANCH,
+  API_URL_UPDATE_BRANCH,
+  API_URL_DELETE_BRANCH,
+  API_URL_DELETE_NEWS,
+  API_URL_GET_ALL_APPOINTMENTS,
+  API_URL_GET_PATIENTS_BY_ID,
 };

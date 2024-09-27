@@ -15,33 +15,27 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllSpecialties } from "@/services/specialtiesApi";
 
-// Value
-const specialties = [
-  {
-    name: "Tim mạch",
-    value: "cardiology",
-  },
-  {
-    name: "Da liễu",
-    value: "dermatology",
-  },
-  {
-    name: "Thần kinh",
-    value: "neurology",
-  },
-  {
-    name: "Nhi khoa",
-    value: "pediatrics",
-  },
-  {
-    name: "Tâm thần",
-    value: "psychiatry",
-  },
-];
-export default function SelectSpecialty({ control, name, errors, disabled }) {
+export default function SelectSpecialty({ control, name, errors, disabled , onChange  }) {
   const [open, setOpen] = React.useState(false);
+  const {
+    data: specialties,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: () => getAllSpecialties(),
+  });
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading specialties</div>;
+  }
   return (
     <div>
       <Controller
@@ -63,7 +57,7 @@ export default function SelectSpecialty({ control, name, errors, disabled }) {
               >
                 {field.value ? (
                   specialties.find(
-                    (specialty) => specialty.value === field.value,
+                    (specialty) => specialty._id === field.value,
                   )?.name
                 ) : (
                   <span className="text-gray-600">Chọn chuyên khoa</span>
@@ -77,11 +71,12 @@ export default function SelectSpecialty({ control, name, errors, disabled }) {
                   <CommandGroup>
                     {specialties.map((specialty) => (
                       <CommandItem
-                        key={specialty.value}
-                        value={specialty.value}
+                        key={specialty._id}
+                        value={specialty._id}
                         onSelect={(currentValue) => {
                           if (!disabled) {
                             field.onChange(currentValue);
+                            onChange(currentValue)
                             setOpen(false);
                           }
                         }}
@@ -90,7 +85,7 @@ export default function SelectSpecialty({ control, name, errors, disabled }) {
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === specialty.value
+                            field.value === specialty._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}

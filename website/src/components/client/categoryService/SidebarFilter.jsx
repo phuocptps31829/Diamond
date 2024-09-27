@@ -40,7 +40,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
       gender: gender[0] || !gender.length ? gender : [],
     };
 
-    console.log('new', newFilters);
+    console.log("new", newFilters);
 
     if (specialties.length > 0 && specialties[0]) {
       const updatedFilters = {
@@ -78,12 +78,12 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
     isLoading: branchesLoading,
   } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => getAllBranches(),
+    queryFn: getAllBranches,
   });
 
   if (specialtiesLoading || branchesLoading)
     return (
-      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 ">
+      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
         <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
           <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
             <Skeleton className="h-6 w-24" />
@@ -162,7 +162,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
 
   if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
-    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 ">
+    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
       <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
@@ -267,7 +267,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
-            { branches.map((branch) => (
+            { branches.data.map((branch) => (
               <div key={ branch._id } className="flex items-center space-x-2">
                 <Checkbox
                   id={ `checkbox-${branch._id}` }
