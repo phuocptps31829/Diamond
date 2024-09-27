@@ -74,8 +74,8 @@ use App\Http\Requests\BranchRequest;
  *              @OA\Property(
  *                  property="coordinates",
  *                  type="object",
- *                  @OA\Property(property="Ing", type="number", example="10.762622"),
- *                  @OA\Property(property="Lat", type="number", example="106.660172")
+ *                  @OA\Property(property="lng", type="number", example="10.762622"),
+ *                  @OA\Property(property="lat", type="number", example="106.660172")
  *               ),
  *         )
  *     ),
@@ -112,8 +112,8 @@ use App\Http\Requests\BranchRequest;
  *              @OA\Property(
  *                  property="coordinates",
  *                  type="object",
- *                  @OA\Property(property="Ing", type="number", example="10.762622"),
- *                  @OA\Property(property="Lat", type="number", example="106.660172")
+ *                  @OA\Property(property="lng", type="number", example="10.762622"),
+ *                  @OA\Property(property="lat", type="number", example="106.660172")
  *               ),
  *         )
  *     ),

@@ -16,7 +16,6 @@ class Admin extends Model
     ];
 
     protected $casts = [
-        'userID' => 'object_id',
         'level' => 'string',
     ];
     public function setUserIDAttribute($value)

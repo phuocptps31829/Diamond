@@ -20,12 +20,10 @@ class Branch extends Model
     ];
 
     protected $casts = [
-        'imageURL' => 'array',
         'name' => 'string',
         'address' => 'string',
         'workingTime' => 'string',
         'hotline' => 'string',
-        'coordinates' => 'array',
         'isDeleted' => 'boolean',
     ];
 
@@ -33,7 +31,14 @@ class Branch extends Model
     protected $attributes = [
         'isDeleted' => false,
     ];
-
+    public function setImageURLAttribute($value)
+    {
+        $this->attributes['imageURL'] = $value;
+    }
+    public function setCoordinatesAttribute($value)
+    {
+        $this->attributes['coordinates'] = $value;
+    }
     public function getTable()
     {
         return 'Branch';

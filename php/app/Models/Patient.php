@@ -23,14 +23,16 @@ class Patient extends Model
         'patientCode' => 'string',
         'occupation' => 'string',
         'insuranceCode' => 'integer',
-        'ethnic' => 'string',
-        'healthInformation' => 'array',
+        'ethnic' => 'string'
     ];
     public function setUserIDAttribute($value)
     {
         $this->attributes['userID'] = new ObjectId($value);
     }
-
+    public function setHealthInformationAttribute($value)
+    {
+        $this->attributes['healthInformation'] = $value;
+    }
     public function getTable()
     {
         return 'Patient';
