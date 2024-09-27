@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaCalendarAlt, FaHospitalUser, FaMoneyCheckAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaUserPlus, FaMoneyCheckAlt } from "react-icons/fa";
 import { HiMiniArrowUpRight, HiMiniArrowDownRight } from "react-icons/hi2";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
 import { IoNewspaperSharp } from "react-icons/io5";
@@ -7,7 +7,7 @@ import { IoNewspaperSharp } from "react-icons/io5";
 // Định nghĩa các biểu tượng và màu sắc
 const ICONS = {
   calendar: <FaCalendarAlt color="#007BBB" size={22} />,
-  hospitalUser: <FaHospitalUser color="#007BBB" size={22} />,
+  hospitalUser: <FaUserPlus color="#007BBB" size={22} />,
   newspaper: <IoNewspaperSharp color="#007BBB" size={22} />,
   moneyCheck: <FaMoneyCheckAlt color="#007BBB" size={22} />,
 };
@@ -120,7 +120,7 @@ export default function TopStats({
     {
       id: 2,
       icon: ICONS.hospitalUser,
-      title: "Bệnh nhân",
+      title: "Người dùng mới",
       value: 0,
       percentage: "0%",
       isIncrease: true,

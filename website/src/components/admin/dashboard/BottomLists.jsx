@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -16,9 +17,34 @@ import {
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 
-export default function BottomLists() {
+export default function BottomLists({ dataUpcomingAppointments }) {
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
+  const [closestPatients, setClosestPatients] = useState([]);
+
+  useEffect(() => {
+    if (!dataUpcomingAppointments) return;
+    const now = new Date();
+    const upcomingAppointments = dataUpcomingAppointments
+      .filter((appointment) => {
+        const appointmentTime = new Date(appointment.time);
+        return appointmentTime >= now;
+      })
+      .sort((a, b) => new Date(a.time) - new Date(b.time));
+
+    setFilteredAppointments(upcomingAppointments.slice(0, 5));
+
+    const closestPatientsList = dataUpcomingAppointments
+      .filter((appointment) => {
+        const appointmentEndTime = new Date(appointment.time);
+        return appointmentEndTime <= now;
+      })
+      .sort((a, b) => new Date(a.time) - new Date(b.time));
+
+    setClosestPatients(closestPatientsList.slice(0, 5));
+  }, [dataUpcomingAppointments]);
+
   return (
-    <div className="mt-6 grid w-full grid-cols-[30%_67.8%] justify-between">
+    <div className="mt-6 grid w-full grid-cols-[32%_65.8%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Bệnh nhân gần đây</h3>
@@ -36,30 +62,32 @@ export default function BottomLists() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array(5)
-              .fill()
-              .map((_, idx) => (
-                <TableRow key={idx} className="p-0 text-[13px]">
-                  <TableCell>{idx + 1}</TableCell>
-                  <TableCell>Triệu Tiến Đạt</TableCell>
-                  <TableCell>Đau dạ dày</TableCell>
-                  <TableCell>
-                    <Menubar className="border-none bg-transparent shadow-none">
-                      <MenubarMenu>
-                        <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                          <CiMenuKebab />
-                        </MenubarTrigger>
-                        <MenubarContent>
-                          <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEdit className="mr-2" size={18} />{" "}
-                            <span>Xem chi tiết</span>
-                          </MenubarItem>
-                        </MenubarContent>
-                      </MenubarMenu>
-                    </Menubar>
-                  </TableCell>
-                </TableRow>
-              ))}
+            { closestPatients.map((appointment, index) => (
+              <TableRow key={ index } className="p-0 text-[13px]">
+                <TableCell>{ index + 1 }</TableCell>
+                <TableCell>{ appointment.user?.[0].fullName }</TableCell>
+                <TableCell>
+                  { appointment.result.length === 0
+                    ? "Chưa có kết quả"
+                    : "Render chẩn đoán" }
+                </TableCell>
+                <TableCell>
+                  <Menubar className="border-none bg-transparent shadow-none">
+                    <MenubarMenu>
+                      <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
+                        <CiMenuKebab />
+                      </MenubarTrigger>
+                      <MenubarContent>
+                        <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                          <FaEdit className="mr-2" size={ 18 } />{ " " }
+                          <span>Xem chi tiết</span>
+                        </MenubarItem>
+                      </MenubarContent>
+                    </MenubarMenu>
+                  </Menubar>
+                </TableCell>
+              </TableRow>
+            )) }
           </TableBody>
         </Table>
       </div>
@@ -83,41 +111,51 @@ export default function BottomLists() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array(5)
-              .fill()
-              .map((_, idx) => (
-                <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell>{idx + 1}</TableCell>
-                  <TableCell>Triệu Tiến Đạt</TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <img
-                        src="https://github.com/shadcn.png"
-                        alt="Doctor"
-                        className="h-6 w-6 rounded-full"
-                      />
-                      <span>Vũ Đức Tín</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>12.05.2022 lúc 7:00</TableCell>
-                  <TableCell>Điện tim thường</TableCell>
-                  <TableCell>
-                    <Menubar className="border-none bg-transparent shadow-none">
-                      <MenubarMenu>
-                        <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                          <CiMenuKebab />
-                        </MenubarTrigger>
-                        <MenubarContent>
-                          <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEdit className="mr-2" size={18} />{" "}
-                            <span>Xem chi tiết</span>
-                          </MenubarItem>
-                        </MenubarContent>
-                      </MenubarMenu>
-                    </Menubar>
-                  </TableCell>
-                </TableRow>
-              ))}
+            { filteredAppointments.map((appointment, index) => (
+              <TableRow key={ index } className="h-12 text-[13px]">
+                <TableCell>{ index + 1 }</TableCell>
+                <TableCell>{ appointment.user?.[0].fullName }</TableCell>
+                <TableCell>
+                  <div className="flex items-center space-x-2">
+                    <img
+                      src={
+                        appointment.user.avatar ||
+                        "https://github.com/shadcn.png"
+                      }
+                      alt="Doctor"
+                      className="h-6 w-6 rounded-full"
+                    />
+                    <span>{ appointment["user-doctor"]?.[0].fullName }</span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  { new Date(appointment.time).toLocaleString("vi-VN", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "numeric",
+                    year: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                  }) }
+                </TableCell>
+                <TableCell>{ appointment.service?.[0].name }</TableCell>
+                <TableCell>
+                  <Menubar className="border-none bg-transparent shadow-none">
+                    <MenubarMenu>
+                      <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
+                        <CiMenuKebab />
+                      </MenubarTrigger>
+                      <MenubarContent>
+                        <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                          <FaEdit className="mr-2" size={ 18 } />{ " " }
+                          <span>Xem chi tiết</span>
+                        </MenubarItem>
+                      </MenubarContent>
+                    </MenubarMenu>
+                  </Menubar>
+                </TableCell>
+              </TableRow>
+            )) }
           </TableBody>
         </Table>
       </div>

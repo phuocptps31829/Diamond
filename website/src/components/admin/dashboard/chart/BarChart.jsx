@@ -18,7 +18,26 @@ ChartJS.register(
   Legend,
 );
 
-const BarChart = () => {
+const BarChart = ({ dataPatientsByGenderAndByYear }) => {
+  const maleDataByMonth = new Array(12).fill(0);
+  const femaleDataByMonth = new Array(12).fill(0);
+
+  dataPatientsByGenderAndByYear.forEach((yearData) => {
+    yearData.details.forEach((monthData) => {
+      const month = monthData._id.month;
+      if (month <= 12) {
+        monthData.details.forEach((patientData) => {
+          const gender = patientData.user[0].gender;
+          if (gender === "Nam") {
+            maleDataByMonth[month - 1] += 1;
+          } else if (gender === "Nữ") {
+            femaleDataByMonth[month - 1] += 1;
+          }
+        });
+      }
+    });
+  });
+
   const labels = [
     "Tháng 1",
     "Tháng 2",
@@ -29,6 +48,9 @@ const BarChart = () => {
     "Tháng 7",
     "Tháng 8",
     "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
   ];
 
   const data = {
@@ -36,15 +58,15 @@ const BarChart = () => {
     datasets: [
       {
         label: "Nam",
-        data: [60, 50, 40, 70, 80, 60, 65, 55, 60], // Example data for males
-        backgroundColor: "rgba(75, 192, 192, 0.5)", // Light blue for males
+        data: maleDataByMonth,
+        backgroundColor: "rgba(75, 192, 192, 0.5)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
       {
         label: "Nữ",
-        data: [40, 10, 30, 20, 40, 50, 55, 50, 45], // Example data for females
-        backgroundColor: "rgba(54, 162, 235, 0.5)", // Darker blue for females
+        data: femaleDataByMonth,
+        backgroundColor: "rgba(54, 162, 235, 0.5)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 1,
       },
@@ -54,14 +76,6 @@ const BarChart = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    animations: {
-      y: {
-        type: "number",
-        easing: "easeInOutQuad",
-        from: 0,
-        duration: 1200,
-      },
-    },
 
     plugins: {
       legend: {

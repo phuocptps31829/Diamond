@@ -19,8 +19,13 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getProvinces, getDistricts, getWards } from "@/services/provincesApi";
 
-
-export function SelectProvince({ control, name, errors, onProvinceChange, disabled }) {
+export function SelectProvince({
+  control,
+  name,
+  errors,
+  onProvinceChange,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
 
@@ -60,9 +65,8 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                 { field.value ? (
                   <>
                     {
-                      provinces.find(
-                        (province) => province._id === field.value,
-                      )?.name
+                      provinces.find((province) => province._id === field.value)
+                        ?.name
                     }
                   </>
                 ) : (
@@ -83,8 +87,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         value={ province.name }
                         onSelect={ (currentValue) => {
                           const selectedProvince = provinces.find(
-                            (province) =>
-                              province.name === currentValue,
+                            (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
                             field.onChange(selectedProvince.name);
@@ -125,7 +128,7 @@ export function SelectDistrict({
   provinceId,
   onDistrictChange,
   setValue,
-  disabled
+  disabled,
 }) {
   const [open, setOpen] = React.useState(false);
   const [districts, setDistricts] = useState([]);
@@ -165,7 +168,6 @@ export function SelectDistrict({
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -173,9 +175,8 @@ export function SelectDistrict({
                 ) }
               >
                 { field.value && districts.length > 0 ? (
-                  districts.find(
-                    (district) => district._id === field.value,
-                  )?.name
+                  districts.find((district) => district._id === field.value)
+                    ?.name
                 ) : (
                   <span className="text-gray-600">Chọn quận/huyện</span>
                 ) }
@@ -194,8 +195,7 @@ export function SelectDistrict({
                         value={ district.name }
                         onSelect={ (currentValue) => {
                           const selectedDistrict = districts.find(
-                            (district) =>
-                              district.name === currentValue,
+                            (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
                             field.onChange(selectedDistrict.name);

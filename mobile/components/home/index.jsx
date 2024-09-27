@@ -1,4 +1,4 @@
-import { ScrollView, ActivityIndicator, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { useState } from "react";
 import Header from "./Header";
 import News from "./News";

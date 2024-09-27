@@ -3,27 +3,46 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DoughnutChart = () => {
+const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
+  const mergeData = (specialties, patientData) => {
+    let totalPatientsBySpecialty = {};
+
+    specialties.forEach((specialty) => {
+      totalPatientsBySpecialty[specialty.name] = 0;
+    });
+
+    patientData.forEach((yearData) => {
+      yearData.details.forEach((monthData) => {
+        monthData.details.forEach((detail) => {
+          detail._id.specialtyID.forEach((specialtyID) => {
+            const specialty = specialties.find((s) => s._id === specialtyID);
+            if (specialty) {
+              totalPatientsBySpecialty[specialty.name] += detail.totalCount;
+            }
+          });
+        });
+      });
+    });
+
+    return totalPatientsBySpecialty;
+  };
+
+  const mergedData = mergeData(dataAllSpecialties, dataTotalPatientsByYear);
+
   const data = {
-    labels: [
-      "Mắt",
-      "Phụ khoa",
-      "Nha khoa",
-      "Da liễu",
-      "Tai mũi họng",
-      "Tim mạch",
-    ],
+    labels: Object.keys(mergedData),
     datasets: [
       {
         label: "Bệnh nhân",
-        data: [150, 100, 75, 50, 45, 70],
+        data: Object.values(mergedData),
         backgroundColor: [
-          "#008FFB",
-          "#E50E9C",
-          "#00E396",
-          "#FFBB28",
-          "#FF4560",
-          "#775DD0",
+          "#FF6384",
+          "#36A2EB",
+          "#FFCE56",
+          "#4BC0C0",
+          "#9966FF",
+          "#FF9F40",
+          "#FF6633",
         ],
       },
     ],
@@ -37,7 +56,7 @@ const DoughnutChart = () => {
         labels: {
           color: "black",
           font: {
-            size: 13,
+            size: 12,
             weight: 500,
           },
           usePointStyle: true,
