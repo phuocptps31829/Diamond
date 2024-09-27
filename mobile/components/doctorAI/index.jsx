@@ -16,8 +16,6 @@ import LoadingDots from "react-native-loading-dots";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessages } from "../../store/chat/chatSlice";
 
-console.log('hello doctor');
-
 const goToTop = new Keyframe({
     0: {
         transform: [{ translateY: '90%' }],
