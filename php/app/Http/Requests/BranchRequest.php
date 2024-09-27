@@ -27,8 +27,8 @@ class BranchRequest extends FormRequest
             'imagesURL' => 'nullable|array',
             'address' => 'required|string',
             'hotline' => 'required|string',
-            'coordinates.Ing' => 'required|numeric',
-            'coordinates.Lat' => 'required|numeric',
+            'coordinates.lng' => 'required|numeric',
+            'coordinates.lat' => 'required|numeric',
         ];
     }
     public function messages()
@@ -43,10 +43,10 @@ class BranchRequest extends FormRequest
             'address.string' => 'Address should be a string',
             'hotline.required' => 'Hotline is required',
             'hotline.string' => 'Hotline should be a string',
-            'coordinates.Ing.required' => 'Lng is required',
-            'coordinates.Ing.numeric' => 'Lng should be a number',
-            'coordinates.Lat.required' => 'Lat is required',
-            'coordinates.Lat.numeric' => 'Lat should be a number',
+            'coordinates.lng.required' => 'Lng is required',
+            'coordinates.lng.numeric' => 'Lng should be a number',
+            'coordinates.lat.required' => 'Lat is required',
+            'coordinates.lat.numeric' => 'Lat should be a number',
         ];
     }
 }

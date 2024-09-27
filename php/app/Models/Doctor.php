@@ -22,14 +22,13 @@ class Doctor extends Model
     ];
 
     protected $casts = [
-        'userID' => 'object_id',
-        'specialtyID' => 'object_id',
         'title' => 'string',
         'practicingCertificate' => 'string',
         'yearsExperience' => 'integer',
         'detail' => 'string',
         'isInternal' => 'boolean',
     ];
+
     public function setUserIDAttribute($value)
     {
         $this->attributes['userID'] = new ObjectId($value);

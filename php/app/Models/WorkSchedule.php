@@ -19,14 +19,16 @@ class WorkSchedule extends Model
 
     protected $casts = [
         'doctorID' => 'object_id',
-        'clinic' => 'string',
-        'hour' => 'array',
+        'clinic' => 'string'
     ];
     public function setDoctorIDAttribute($value)
     {
         $this->attributes['doctorID'] = new ObjectId($value);
     }
-
+    public function setHourAttribute($value)
+    {
+        $this->attributes['hour'] = $value;
+    }
     protected $attributes = [
         'isDeleted' => false,
     ];

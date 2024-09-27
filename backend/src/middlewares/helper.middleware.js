@@ -21,8 +21,14 @@ const checkValidId = (req, res, next) => {
 };
 const checkValueQuery = (req, res, next) => {
     try {
-        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null, date = null } = req.query;
+        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null, date = null, time = null } = req.query;
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        const timeRegex = /^[0-9]{4}$/;
+        if (time) {
+            if (!timeRegex.test(time)) {
+                createError(400, `Invalid time format. Expected format is YYYY.`);
+            }
+        }
 
         if (date) {
             if (!dateRegex.test(date)) {
@@ -102,7 +108,8 @@ const checkValueQuery = (req, res, next) => {
             gender,
             startDay,
             endDay,
-            date
+            date,
+            time
         };
 
         next();

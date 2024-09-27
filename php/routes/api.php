@@ -17,6 +17,7 @@ use App\Http\Controllers\MedicalPackageController;
 use App\Http\Controllers\ApplicableObjectController;
 use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\AuthController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,24 +32,8 @@ use App\Http\Controllers\DoctorController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/add', function () {
-    // Dữ liệu mẫu
-    $sampleData = [
-        'name' => '66e6ab6dfcde63a3ef03aac5',
-        'email' => 'john.doe@example.com',
-        'password' => 'password123',
-    ];
 
-    // Tạo user mới với dữ liệu mẫu
-    $user = User::create([
-        'name' => $sampleData['name'],
-        'email' => $sampleData['email'],
-        'password' => $sampleData['password'],
-    ]);
-
-    return response()->json(['message' => 'Sample user created successfully', 'user' => $user], 201);
-});
-
+Route::post('/v1/auth', [AuthController::class, 'login']);
 
 Route::get('/v1/specialties', [SpecialtyController::class, 'getAllSpecialties'])->middleware('checkQueryParams');
 Route::get('/v1/specialties/{id}', [SpecialtyController::class, 'getOneSpecialty'])->middleware('CheckValidId');

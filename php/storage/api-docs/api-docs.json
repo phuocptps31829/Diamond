@@ -239,6 +239,43 @@
                 }
             }
         },
+        "/api/v1/auth": {
+            "post": {
+                "tags": [
+                    "Auth Routes"
+                ],
+                "summary": "Login",
+                "operationId": "5c638c36576e461d3b67465b17455aa7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    ""
+                                ],
+                                "properties": {
+                                    "phoneNumber": {
+                                        "type": "string",
+                                        "example": "0364842673"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
         "/api/v1/branches": {
             "get": {
                 "tags": [
@@ -641,6 +678,330 @@
                 ],
                 "summary": "Update Clinic",
                 "operationId": "60228c66936b824940fd734edcdb4f71",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "object id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctors/": {
+            "get": {
+                "tags": [
+                    "Doctor Routes"
+                ],
+                "summary": "Get all Doctor",
+                "operationId": "184e87d7687986f24833d5f6635c203e",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctors/{id}": {
+            "get": {
+                "tags": [
+                    "Doctor Routes"
+                ],
+                "summary": "Get one Doctor",
+                "operationId": "2aae10d9f2ef8af0d4287b27eadf7c2b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id number",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctors/add": {
+            "post": {
+                "tags": [
+                    "Doctor Routes"
+                ],
+                "summary": "Add a Doctor",
+                "operationId": "2a727d65e8a19082e1b9c4083e3c74b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    ""
+                                ],
+                                "properties": {
+                                    "fullName": {
+                                        "type": "string",
+                                        "example": "BS moi"
+                                    },
+                                    "phoneNumber": {
+                                        "type": "string",
+                                        "example": "0300099989"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "gmail123@gmail.com"
+                                    },
+                                    "dateOfBirth": {
+                                        "type": "string",
+                                        "example": "2000-01-01"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "example": "Nam"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "avatar": {
+                                        "type": "string",
+                                        "example": "avatar"
+                                    },
+                                    "citizenIdentificationNumber": {
+                                        "type": "number",
+                                        "example": 34256234
+                                    },
+                                    "isActivated": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "specialtyID": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "practicingCertificate": {
+                                        "type": "string",
+                                        "example": "practicingCertificate"
+                                    },
+                                    "yearsExperience": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "detail": {
+                                        "type": "string",
+                                        "example": "detail"
+                                    },
+                                    "isInternal": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "address": {
+                                        "properties": {
+                                            "province": {
+                                                "type": "string",
+                                                "example": "province"
+                                            },
+                                            "district": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            },
+                                            "ward": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            },
+                                            "street": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctors/update/{id}": {
+            "put": {
+                "tags": [
+                    "Doctor Routes"
+                ],
+                "summary": "Update Doctor",
+                "operationId": "0904027c2a79278184293211337b337a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "object id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    ""
+                                ],
+                                "properties": {
+                                    "fullName": {
+                                        "type": "string",
+                                        "example": "BS moi"
+                                    },
+                                    "phoneNumber": {
+                                        "type": "string",
+                                        "example": "0300099989"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "gmail123@gmail.com"
+                                    },
+                                    "dateOfBirth": {
+                                        "type": "string",
+                                        "example": "2000-01-01"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "example": "Nam"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "avatar": {
+                                        "type": "string",
+                                        "example": "avatar"
+                                    },
+                                    "citizenIdentificationNumber": {
+                                        "type": "number",
+                                        "example": 34256234
+                                    },
+                                    "isActivated": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "specialtyID": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "practicingCertificate": {
+                                        "type": "string",
+                                        "example": "practicingCertificate"
+                                    },
+                                    "yearsExperience": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "detail": {
+                                        "type": "string",
+                                        "example": "detail"
+                                    },
+                                    "isInternal": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "address": {
+                                        "properties": {
+                                            "province": {
+                                                "type": "string",
+                                                "example": "province"
+                                            },
+                                            "district": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            },
+                                            "ward": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            },
+                                            "street": {
+                                                "type": "string",
+                                                "example": "106.660172"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/doctors/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Doctor Routes"
+                ],
+                "summary": "Update Doctor",
+                "operationId": "d7a709e91418bb359c2f0b1a88100a6a",
                 "parameters": [
                     {
                         "name": "id",
@@ -2186,12 +2547,20 @@
             "description": "Applicable object Routes"
         },
         {
+            "name": "Auth Routes",
+            "description": "Auth Routes"
+        },
+        {
             "name": "Branch Routes",
             "description": "Branch Routes"
         },
         {
             "name": "Clinic Routes",
             "description": "Clinic Routes"
+        },
+        {
+            "name": "Doctor Routes",
+            "description": "Doctor Routes"
         },
         {
             "name": "Hospital Routes",

@@ -20,7 +20,6 @@ class ApplicableObject extends Model
 
     protected $casts = [
         'gender' => 'string',
-        'age' => 'array',
         'isMarred' => 'boolean',
         'isFamily' => 'boolean',
         'isDeleted' => 'boolean',
@@ -29,6 +28,10 @@ class ApplicableObject extends Model
     public function setMedicalPackageIDAttribute($value)
     {
         $this->attributes['medicalPackageID'] = new ObjectId($value);
+    }
+    public function setAgeAttribute($value)
+    {
+        $this->attributes['Age'] = $value;
     }
     protected $attributes = [
         'isDeleted' => false,

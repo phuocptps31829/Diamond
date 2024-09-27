@@ -17,14 +17,16 @@ class Prescription extends Model
 
     protected $casts = [
         'advice' => 'string',
-        'medicines' => 'array',
         'isDeleted' => 'boolean',
     ];
 
     protected $attributes = [
         'isDeleted' => false,
     ];
-
+    public function setMedicinesAttribute($value)
+    {
+        $this->attributes['medicines'] = $value;
+    }
     public function getTable()
     {
         return 'Prescription';
