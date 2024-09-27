@@ -10,7 +10,7 @@ const formattedCart = cartData.map((item) => {
       selectedBranchId: "",
       selectedDoctorId: "",
       price: item.price || "",
-      selectedWorkSchedulesId: "",
+      selectedWorkScheduleId: "",
       selectedDate: "",
       selectedTime: "",
       clinic: "",

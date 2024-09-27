@@ -102,11 +102,11 @@ const ServicesContainer = () => {
     <section className="relative mx-auto max-w-screen-xl md:px-5 py-3">
       <div className="mx-auto w-full px-4 md:px-0">
         <div className="grid grid-cols-12 md:gap-7">
-          <div className="col-span-12 mt-7 md:col-span-3">
+          <div className="col-span-12 md:col-span-3">
             <SidebarFilter onFilterApply={ handleFilterApply } parentFilters={ filters } />
           </div>
 
-          <div className="col-span-12 mt-7 md:col-span-9">
+          <div className="col-span-12  md:col-span-9">
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>

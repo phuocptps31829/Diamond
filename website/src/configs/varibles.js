@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3500/api/v1";
+const API_URL = "https://api.cosstewn.io.vn/api/v1";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
@@ -22,12 +22,20 @@ const API_URL_GET_ALL_DOCTORS_BY_BRANCHES = `${API_URL}/doctors/branch`;
 // branches
 const API_URL_GET_ALL_BRANCHES = `${API_URL}/branches`;
 const API_URL_GET_ALL_BRANCHES_BY_SPECIALTY = `${API_URL}/branches/specialty`;
+const API_URL_ADD_BRANCH = `${API_URL}/branches/add`;
+const API_URL_UPDATE_BRANCH = `${API_URL}/branches/update`;
+const API_URL_DELETE_BRANCH = `${API_URL}/branches/deletee`; // wrong url
 
 // work-schedule
 const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
 
 // news
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
+const API_URL_CREATE_NEWS = `${API_URL}/news/add`;
+const API_URL_UPDATE_NEWS = `${API_URL}/news/update`;
+const API_URL_DELETE_NEWS = `${API_URL}/news/deletee`; // wrong url
+// patients
+const API_URL_GET_PATIENTS_BY_ID = `${API_URL}/patients`;
 
 //contact
 const API_URL_POST_CONTACT = `${API_URL}/contact/contact-us`;
@@ -48,9 +56,8 @@ const API_LOGOUT = `${API_URL}/auth/logout`;
 const API_PROVINCES = `${API_URL}/provinces`;
 const API_DISTRICTS = `${API_URL}/provinces/districts`;
 const API_WARDS = `${API_URL}/provinces/wards`;
-
-
-
+// Appointments
+const API_URL_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
 export {
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
@@ -79,5 +86,13 @@ export {
   API_WARDS,
   API_URL_GET_ALL_DOCTORS_BY_BRANCHES,
   API_URL_GET_ALL_BRANCHES_BY_SPECIALTY,
-  API_URL_GET_WORK_SCHEDULES_BY_DOCTOR
+  API_URL_GET_WORK_SCHEDULES_BY_DOCTOR,
+  API_URL_CREATE_NEWS,
+  API_URL_UPDATE_NEWS,
+  API_URL_ADD_BRANCH,
+  API_URL_UPDATE_BRANCH,
+  API_URL_DELETE_BRANCH,
+  API_URL_DELETE_NEWS,
+  API_URL_GET_ALL_APPOINTMENTS,
+  API_URL_GET_PATIENTS_BY_ID,
 };

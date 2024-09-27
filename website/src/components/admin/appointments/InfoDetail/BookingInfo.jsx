@@ -1,4 +1,4 @@
-import React from "react";
+import { getStatusStyle } from "../utils/StatusStyle";
 
 const BookingInfo = () => {
   const bookingData = {
@@ -14,19 +14,7 @@ const BookingInfo = () => {
     paymentMethod: "Thanh toán qua Momo",
     statusPayment: "Thanh toán thành công",
     room: "Phòng 1",
-  };
-
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case "Chưa thanh toán":
-        return "bg-yellow-500/20 text-yellow-900";
-      case "Thanh toán thành công":
-        return "bg-green-500/20 text-green-900";
-      case "Thanh toán thất bại":
-        return "bg-red-500/20 text-red-900";
-      default:
-        return "bg-gray-500/20 text-gray-900";
-    }
+    extraFees: 2000,
   };
 
   return (
@@ -34,25 +22,21 @@ const BookingInfo = () => {
       <h1 className="mb-1 text-lg font-semibold text-gray-700">
         Thông tin lịch khám
       </h1>
-      <div className="rounded-xl bg-white px-6 py-6 shadow-md">
-        <div className="grid grid-cols-10 items-start gap-16">
-          <div className="col-span-3">
+      <div className="rounded-xl bg-white px-4 py-4 shadow-md sm:px-6 sm:py-6">
+        <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-1 md:grid-cols-10">
+          <div className="md:col-span-3 col-span-6">
             <strong className="font-medium text-black">
               Dịch vụ / gói khám:
             </strong>
             <ul className="ml-4 list-disc">
               {bookingData.serviceList.map((svc) => (
-                <div className="relative py-3" key={svc.id}>
-                  <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-black bg-white"></span>
-                  <label
-                    className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black"
-                    htmlFor={`radio_${svc.id}`}
-                  >
+                <div className="relative py-3" key={svc}>
+                  <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
                     <div className="flex items-center gap-4">
                       <img
                         src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
                         className="w-[60px] sm:w-[75px] md:w-[100px]"
-                        alt={`Image of ${svc.name}`}
+                        alt={`Image of ${svc}`}
                       />
                       <div className="flex flex-col">
                         <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
@@ -65,7 +49,12 @@ const BookingInfo = () => {
               ))}
             </ul>
           </div>
-          <div className="col-span-7 grid grid-cols-1 gap-6 sm:grid-cols-2">
+
+          <div className="col-span-7 grid w-full grid-cols-1 gap-6 gap-x-4 sm:grid-cols-2 md:mt-7 mt-0">
+            <p className=" text-gray-600">
+              <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
+              {bookingData.branch}
+            </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Bác sĩ:</strong>{" "}
               {bookingData.doctor}
@@ -74,7 +63,6 @@ const BookingInfo = () => {
               <strong className="font-medium text-black">Loại khám:</strong>{" "}
               {bookingData.serviceType}
             </p>
-
             <p className="text-gray-600">
               <strong className="font-medium text-black">Thời gian:</strong>{" "}
               {bookingData.time}
@@ -87,13 +75,13 @@ const BookingInfo = () => {
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
               {bookingData.price} VND
             </p>
+            <p className="text-red-600">
+              <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
+              {bookingData.extraFees}
+            </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Ngày khám:</strong>{" "}
               {bookingData.appointmentDate}
-            </p>
-            <p className="text-gray-600">
-              <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
-              {bookingData.branch}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Phòng:</strong>{" "}

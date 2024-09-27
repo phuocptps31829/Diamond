@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 import { ArrowUpDown } from "lucide-react";
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { deleteNews } from "@/services/newsApi";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,35 +22,53 @@ import {
 import { Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-const DetailsCell = ({ details }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const maxLength = 100;
+import { getSpecialtyById } from "@/services/specialtiesApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/useToast";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/AlertDialog";
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  return (
-    <Collapsible open={ isExpanded } onOpenChange={ toggleExpand }>
-      <div className="w-[300px]">
-        <span>
-          { isExpanded
-            ? details
-            : details.length > maxLength
-              ? `${details.substring(0, maxLength)}...`
-              : details }
-        </span>
-        { details.length > maxLength && (
-          <CollapsibleTrigger asChild>
-            <button className="ml-2 text-blue-500">
-              { isExpanded ? "Thu gọn" : "Xem thêm" }
-            </button>
-          </CollapsibleTrigger>
-        ) }
-      </div>
-    </Collapsible>
-  );
+const useSpecialtyName = (specialtyID) => {
+  return useQuery({
+    queryKey: ["specialty", specialtyID],
+    queryFn: () => getSpecialtyById(specialtyID),
+    enabled: !!specialtyID,
+  });
 };
+const useDeleteNews = () => {
+  const { toast } = useToast();
+
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newsId) => deleteNews(newsId),
+    onSuccess: () => {
+      queryClient.invalidateQueries("news");
+      toast({
+        variant: "success",
+        title: "Xóa tin tức thành công",
+        description: "Tin tức đã được xóa khỏi hệ thống",
+      });
+    },
+    onError: (error) => {
+      toast({
+        variant: "error",
+        title: "Xóa tin tức thất bại",
+        description: "Đã xảy ra lỗi khi xóa tin tức",
+      });
+      console.error("Error deleting news:", error);
+    },
+  });
+};
+
 export const columns = [
   {
     id: "select",
@@ -60,14 +78,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={ row.getIsSelected() }
-        onCheckedChange={ (value) => row.toggleSelected(!!value) }
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -81,7 +99,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Tiêu đề
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -89,8 +107,8 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="font-medium flex items-center py-4 gap-3">
-        <span className="block w-[300px]">{ row.original.title }</span>
+      <div className="flex items-center gap-3 py-4 font-medium">
+        <span className="block w-[300px]">{row.original.title}</span>
       </div>
     ),
   },
@@ -101,18 +119,29 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Chuyên khoa
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="w-full max-w-[270px]">
-        <span className="block w-[90px]">{ row.original.special }</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const {
+        data: specialty,
+        error,
+        isLoading,
+      } = useSpecialtyName(row.original.specialtyID);
+
+      if (isLoading) return <span>Đang tải..</span>;
+      if (error) return <span>Không có chuyên khoa</span>;
+
+      return (
+        <div className="w-full max-w-[270px]">
+          <span className="block w-[90px]">{specialty?.name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "image",
@@ -121,7 +150,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Hình ảnh
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -133,13 +162,13 @@ export const columns = [
 
       return (
         <>
-          <Dialog open={ open } onOpenChange={ setOpen }>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <img
-                src={ row.original.image }
+                src={row.original.image}
                 alt="thumbnail"
-                width={ 60 }
-                height={ 60 }
+                width={60}
+                height={60}
                 className="cursor-pointer"
               />
             </DialogTrigger>
@@ -148,7 +177,7 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={ row.original.image }
+                src={row.original.image}
                 alt="large-thumbnail w-full h-auto"
               />
             </DialogContent>
@@ -164,7 +193,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Tác giả
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -173,7 +202,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full max-w-[270px]">
-        <span className="w-full whitespace-nowrap">{ row.original.author }</span>
+        <span className="w-full whitespace-nowrap">{row.original.author}</span>
       </div>
     ),
   },
@@ -184,129 +213,80 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
+    cell: ({ row }) => (
+      <div className="w-full max-w-[270px] rounded-md p-2">
+        <span
+          className={`w-full whitespace-nowrap ${row.original.isHidden ? "text-red-500" : "text-green-500"}`}
+        >
+          {row.original.isHidden ? "Đang ẩn" : "Đang hiện"}
+        </span>
+      </div>
+    ),
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+
+    cell: ({ row }) => {
+      const deleteMutation = useDeleteNews();
+
+      const handleDelete = () => {
+        deleteMutation.mutate(row.original._id);
+      };
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
               <span className="sr-only">Open menu</span>
               <DotsHorizontalIcon className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-            <DropdownMenuItem className="w-fit flex items-center gap-2">
+            <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
-              <Link to="/admin/news/edit/123">Sửa</Link>
+              <Link to={`/admin/news/edit/${row.original._id}`}>Sửa</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="w-fit flex items-center gap-2">
-              <RiDeleteBin6Line className="text-[15px]" />
-              <span>Xóa</span>
+            <DropdownMenuItem className="flex w-fit items-center gap-2">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <div
+                    className="flex cursor-pointer items-center gap-2"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <RiDeleteBin6Line className="text-[15px]" />
+                    <span>Xóa</span>
+                  </div>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Bạn có chắc chắn muốn xóa tin tức này?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Hành động này không thể hoàn tác. Tin tức sẽ bị xóa vĩnh
+                      viễn khỏi hệ thống.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDelete}>
+                      Xóa
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );
     },
-  },
-];
-
-export const mockData = [
-  {
-    title: "Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 5000,
-    details:
-      "Bệnh sởi là một bệnh truyền nhiễmBệnh mãn tính: là bệnh tiến triển kéo dài hoặc hay tái phát, thời gian bệnh từ 3 tháng trở lên. Bệnh mạn tính không thể ngừa bằng vắc-xin, không thể chữa khỏi hoàn toàn và cũng không tự biến mất. Bệnh mạn tính phần lớn là bệnh không lây nhiễm, không do vi khuẩn, virus, ký sinh trùng hoặc nấm gây nên.",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 3000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 2000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 1000,
-    details: "Bệnh sởi là một bệnh truyền ",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 5000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 5000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 5000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
-  },
-  {
-    title:
-      "Bệnh Sởi: Diễn Biến Mạnh Vào Mùa Đông - Xuân, Dễ Bùng Phát Thành Dịch",
-    special: "Da liễu",
-    image:
-      "https://vcdn1-suckhoe.vnecdn.net/2024/05/03/Screen-Shot-2024-05-03-at-10-3-1328-5066-1714707559.png?w=0&h=0&q=100&dpr=1&fit=crop&s=tqdKpDUrqWCFbWL4sT_DPg",
-    author: "ThS.BS. Võ Thành Công",
-    views: 5000,
-    details: "Bệnh sởi là một bệnh truyền nhiễm",
-    status: "Hiện",
   },
 ];

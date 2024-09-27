@@ -18,11 +18,13 @@ export default function News() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
     queryFn: getAllNews,
+  
   });
 
   if (error) {
     return <div>Error loading news</div>;
   }
+  const newsData = data?.data || [];
 
   return (
     <div className="my-10 w-full bg-primary-500 py-4">
@@ -115,97 +117,97 @@ export default function News() {
         ) : (
           <div className="hidden gap-4 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
             <Link
-              to={`news-detail/${data[0]._id}`}
+              to={`news-detail/${newsData[0]._id}`}
               className="gap-4 overflow-hidden rounded-md border-2 border-white bg-white md:row-span-3 md:grid-rows-subgrid"
             >
-              <img src={data[0].image} alt="" />
+              <img src={newsData[0].image} alt="" />
               <div className="p-5">
                 <div className="mb-[6px] flex gap-2 text-[12px]">
                   <div className="font-bold text-primary-700">Tin Tức</div>
                   <div className="font-semibold">
-                    {new Date(data[0].createdAt).toLocaleDateString()}
+                    {new Date(newsData[0].createdAt).toLocaleDateString()}
                   </div>
                   <div>|</div>
-                  <div className="font-semibold">{data[0].author}</div>
+                  <div className="font-semibold">{newsData[0].author}</div>
                 </div>
                 <h2 className="my-2 text-[14px] font-bold sm:text-[18px]">
-                  {data[0].title}
+                  {newsData[0].title}
                 </h2>
                 <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] sm:text-[14px]">
-                  {data[0].shortDescription}
+                  {newsData[0].shortDescription}
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                   <FaRegEye />
-                  <div>{data[0].viewCount}</div>
+                  <div>{newsData[0].viewCount}</div>
                 </div>
               </div>
             </Link>
             <Link
-              to={`news-detail/${data[1]._id}`}
+              to={`news-detail/${newsData[1]._id}`}
               className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
             >
               <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
                 <img
                   className="block h-full w-full object-cover"
-                  src={data[1].image}
+                  src={newsData[1].image}
                 />
               </div>
               <div className="p-3">
                 <div className="mb-[6px] flex gap-2 text-[12px]">
                   <div className="font-bold text-primary-700">Tin Tức</div>
                   <div className="font-semibold">
-                    {new Date(data[1].createdAt).toLocaleDateString()}
+                    {new Date(newsData[1].createdAt).toLocaleDateString()}
                   </div>
                   <div>|</div>
-                  <div className="font-semibold">{data[1].author}</div>
+                  <div className="font-semibold">{newsData[1].author}</div>
                 </div>
-                <h2 className="my-2 text-[14px] font-bold">{data[1].title}</h2>
+                <h2 className="my-2 text-[14px] font-bold">{newsData[1].title}</h2>
                 <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  {data[1].shortDescription}
+                  {newsData[1].shortDescription}
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                   <FaRegEye />
-                  <div>{data[1].viewCount}</div>
+                  <div>{newsData[1].viewCount}</div>
                 </div>
               </div>
             </Link>
             <Link
-              to={`news-detail/${data[2]._id}`}
+              to={`news-detail/${newsData[2]._id}`}
               className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
             >
               <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
                 <img
                   className="block h-full w-full object-cover"
-                  src={data[2].image}
+                  src={newsData[2].image}
                 />
               </div>
               <div className="w-full p-3">
                 <div className="mb-[6px] flex gap-2 text-[12px]">
                   <div className="font-bold text-primary-700">Tin Tức</div>
                   <div className="font-semibold">
-                    {new Date(data[2].createdAt).toLocaleDateString()}
+                    {new Date(newsData[2].createdAt).toLocaleDateString()}
                   </div>
                   <div>|</div>
-                  <div className="font-semibold">{data[2].author}</div>
+                  <div className="font-semibold">{newsData[2].author}</div>
                 </div>
-                <h2 className="my-2 text-[14px] font-bold">{data[2].title}</h2>
+                <h2 className="my-2 text-[14px] font-bold">{newsData[2].title}</h2>
                 <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  {data[2].shortDescription}
+                  {newsData[2].shortDescription}
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                   <FaRegEye />
-                  <div>{data[2].viewCount}</div>
+                  <div>{newsData[2].viewCount}</div>
                 </div>
               </div>
             </Link>
             <Link
-              to={`news-detail/${data[3]._id}`}
+              to={`news-detail/${newsData[3]._id}`}
               className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
             >
               <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
                 <img
                   className="block h-full w-full object-cover"
-                  src={data[3].image}
+                  src={newsData[3].image}
                 />
               </div>
               <div className="p-3">
@@ -215,15 +217,15 @@ export default function News() {
                     {new Date().toLocaleDateString()}
                   </div>
                   <div>|</div>
-                  <div className="font-semibold">{data[3].author}</div>
+                  <div className="font-semibold">{newsData[3].author}</div>
                 </div>
-                <h2 className="my-2 text-[14px] font-bold">{data[3].title} </h2>
+                <h2 className="my-2 text-[14px] font-bold">{newsData[3].title} </h2>
                 <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  {data[3].shortDescription}
+                  {newsData[3].shortDescription}
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
                   <FaRegEye />
-                  <div>{data[3].viewCount}</div>
+                  <div>{newsData[3].viewCount}</div>
                 </div>
               </div>
             </Link>
@@ -276,7 +278,7 @@ export default function News() {
                     </div>
                   </CarouselItem>
                 ))
-              : data.slice(0, 3).map((news, index) => (
+              : newsData.slice(0, 3).map((news, index) => (
                   <CarouselItem
                     key={index}
                     className="pl-4 sm:basis-1/2 lg:basis-1/3"
