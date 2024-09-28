@@ -98,8 +98,8 @@ export default function MainHeader() {
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5">
-        <Link to={ "/" } className="relative w-56 items-center">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
+        <Link to={ "/" } className="relative w-52 items-center">
           <img src={ brandLogo } className="w-full" alt="Logo" />
         </Link>
         <div className="block lg:hidden" role="button" onClick={ toggleNavbar }>

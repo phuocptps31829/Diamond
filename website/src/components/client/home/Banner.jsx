@@ -1,11 +1,11 @@
-import banner from "../../../assets/images/homeBanner.webp";
+import banner from "../../../assets/images/homeBannerTin.webp";
 import { CiSearch } from "react-icons/ci";
 
 export default function Banner() {
   return (
-    <div className="relative h-[55vw] w-full text-primary-500 md:h-[22vw]">
+    <div className="relative h-[55vw] w-full text-primary-500 md:h-[16vw]">
       <div className="absolute bottom-0 h-10 w-full bg-gradient-to-t from-[#e8f2f7f7] to-transparent"></div>
-      <img src={banner} alt="Banner" className="h-full w-full object-cover" />
+      <img src={ banner } alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
         <div className="mb-2 font-medium text-primary-500 sm:mb-0 md:text-[20px]">
           Nền tảng công nghệ

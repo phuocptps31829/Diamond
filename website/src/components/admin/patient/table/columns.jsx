@@ -48,7 +48,7 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="lowercase flex items-center py-4 gap-3">
+    cell: ({ row }) => <div className="flex items-center py-4 gap-3">
       <Avatar className="size-8">
         <img src={ row.original.avatar } alt={ row.getValue("name") } />
       </Avatar>
