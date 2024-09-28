@@ -75,7 +75,7 @@ const API_GET_TOTAL_PATIENTS_BY_SPECIALTY = `${API_URL}/appointments/specialty`;
 const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
 // Appointments
-const API_URL_GET_ALL_APPOINTMENTS = `${API_URL}/appointments`;
+const API_URL_GET_ALL_APPOINTMENTS = `${API_URL}/appointments?limit=9999`;
 export {
   API_GET_UPCOMING_APPOINTMENTS,
   API_GET_PATIENTS_BY_GENDER,

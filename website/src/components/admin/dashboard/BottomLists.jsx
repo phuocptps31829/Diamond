@@ -20,7 +20,7 @@ import { FaEdit } from "react-icons/fa";
 export default function BottomLists({ dataUpcomingAppointments }) {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [closestPatients, setClosestPatients] = useState([]);
-
+  console.log(filteredAppointments);
   useEffect(() => {
     if (!dataUpcomingAppointments) return;
     const now = new Date();
@@ -32,7 +32,6 @@ export default function BottomLists({ dataUpcomingAppointments }) {
       .sort((a, b) => new Date(a.time) - new Date(b.time));
 
     setFilteredAppointments(upcomingAppointments.slice(0, 5));
-
     const closestPatientsList = dataUpcomingAppointments
       .filter((appointment) => {
         const appointmentEndTime = new Date(appointment.time);

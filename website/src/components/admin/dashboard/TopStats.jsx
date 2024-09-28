@@ -6,10 +6,10 @@ import { IoNewspaperSharp } from "react-icons/io5";
 
 // Định nghĩa các biểu tượng và màu sắc
 const ICONS = {
-  calendar: <FaCalendarAlt color="#007BBB" size={22} />,
-  hospitalUser: <FaUserPlus color="#007BBB" size={22} />,
-  newspaper: <IoNewspaperSharp color="#007BBB" size={22} />,
-  moneyCheck: <FaMoneyCheckAlt color="#007BBB" size={22} />,
+  calendar: <FaCalendarAlt color="#007BBB" size={ 22 } />,
+  hospitalUser: <FaUserPlus color="#007BBB" size={ 22 } />,
+  newspaper: <IoNewspaperSharp color="#007BBB" size={ 22 } />,
+  moneyCheck: <FaMoneyCheckAlt color="#007BBB" size={ 22 } />,
 };
 
 const COLORS = {
@@ -108,6 +108,10 @@ export default function TopStats({
   allAppointments,
   allInvoices,
 }) {
+  console.log("allNews", allNews);
+  console.log("allPatients", allPatients);
+  console.log("allAppointments", allAppointments);
+  console.log("allInvoices", allInvoices);
   const [statsData, setStatsData] = useState([
     {
       id: 1,
@@ -192,34 +196,33 @@ export default function TopStats({
   return (
     <div className="w-full">
       <div className="grid grid-cols-4 gap-6">
-        {statsData.map((stat) => (
-          <div key={stat.id} className="rounded-md bg-white p-4 shadow-sm">
+        { statsData.map((stat) => (
+          <div key={ stat.id } className="rounded-md bg-white p-4 shadow-sm">
             <div className="flex flex-col">
               <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#CAEDFF]">
-                {stat.icon}
+                { stat.icon }
               </div>
-              <div className="mt-2 font-semibold">{stat.title}</div>
+              <div className="mt-2 font-semibold">{ stat.title }</div>
               <div className="my-2 text-[30px] text-primary-500">
-                <AnimatedValue value={stat.value} isCurrency={stat.id === 4} />
+                <AnimatedValue value={ stat.value } isCurrency={ stat.id === 4 } />
               </div>
               <div className="flex gap-1 text-[14px]">
                 <span
-                  className={`flex items-center gap-1 ${
-                    stat.isIncrease ? COLORS.trendUp : COLORS.trendDown
-                  }`}
+                  className={ `flex items-center gap-1 ${stat.isIncrease ? COLORS.trendUp : COLORS.trendDown
+                    }` }
                 >
-                  {stat.isIncrease ? (
-                    <HiMiniArrowUpRight color="#13D6CB" size={18} />
+                  { stat.isIncrease ? (
+                    <HiMiniArrowUpRight color="#13D6CB" size={ 18 } />
                   ) : (
-                    <HiMiniArrowDownRight color="red" size={18} />
-                  )}
-                  {stat.percentage}
+                    <HiMiniArrowDownRight color="red" size={ 18 } />
+                  ) }
+                  { stat.percentage }
                 </span>
                 <span className="text-[#808080]">với tháng trước</span>
               </div>
             </div>
           </div>
-        ))}
+        )) }
       </div>
     </div>
   );

@@ -27,16 +27,11 @@ export const getPatientsByGender = async () => {
   }
 };
 
-export const getAllAppointments = async ({ page = 1, limit = 9999 }) => {
+export const getAllAppointments = async () => {
   try {
-    const res = await axios.get(API_URL_GET_ALL_APPOINTMENTS, {
-      params: {
-        page,
-        limit,
-      },
-    });
+    const res = await axios.get(API_URL_GET_ALL_APPOINTMENTS);
     console.log(res.data.data);
-    return res.data.data;
+    return res.data;
   } catch (error) {
     console.error(error);
     throw error;
