@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3500/api/v1";
+const API_URL = "https://api.cosstewn.io.vn/api/v1";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;

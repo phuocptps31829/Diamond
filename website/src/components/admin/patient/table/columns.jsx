@@ -36,7 +36,7 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "userID.fullName",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -48,14 +48,20 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="flex items-center py-4 gap-3">
+    cell: ({ row }) => {
+    const name = row.original.userID.fullName;
+    console.log("aaaaa" + name);
+    return(
+    <div className="flex items-center py-4 gap-3">
       <Avatar className="size-8">
         <img src={ row.original.avatar } alt={ row.getValue("name") } />
       </Avatar>
       <span className="w-full whitespace-nowrap">
-        { row.getValue("name") }
+        { name }
       </span>
     </div>
+    );
+    }
   },
   {
     accessorKey: "patientCode",
@@ -102,40 +108,42 @@ export const columns = [
     cell: ({ row }) => <div className="pl-4">{ row.original.nation }</div>,
   },
   {
-    accessorKey: "email",
+    accessorKey: "phoneNumber",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
         variant="ghost"
         onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
-        Email
+        {/* Để tạm thay email */}
+        Số diện thoại 
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{ row.original.email }</div>,
+    cell: ({ row }) => <div className="text-primary-500">{ row.original.userID.phoneNumber }</div>,
   },
+
   {
     accessorKey: "status",
     header: ({ column }) => (
-      <Button
-        className="px-0 text-base"
-        variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-      >
-        Trạng thái
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
+        <Button
+            className="px-0 text-base"
+            variant="ghost"
+            onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        >
+            Trạng thái
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
     ),
     cell: ({ row }) => {
-      const status = row.original.status;
-      return (
-        <div className={ status === "1" ? "text-green-500" : "text-red-500" }>
-          { status === "1" ? "Đang hoạt động" : "Đang khóa" }
-        </div>
-      );
+        const status = row.original.userID.isActivated;
+        return (
+            <div className={ status === true ? "text-green-500" : "text-red-500" }>
+                { status === true ? "Đang hoạt động" : "Đang khóa" }
+            </div>
+        );
     },
-  },
+},
   {
     id: "actions",
     enableHiding: false,
