@@ -57,6 +57,10 @@ import PatientsListPage from "./pages/admin/Patient";
 import PatientsFormPage from "./pages/admin/Patient/form";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
+import SerivesListPage from "./pages/admin/Services";
+import ServicesFormPage from "./pages/admin/Services/form";
+import PackagesListPage from "./pages/admin/Packages";
+import PackagesFormPage from "./pages/admin/Packages/form";
 
 const router = createBrowserRouter([
   {
@@ -121,9 +125,11 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: <ProtectContainer>
-          <UserProfileLayout />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <UserProfileLayout />
+          </ProtectContainer>
+        ),
         children: [
           {
             path: "",
@@ -153,27 +159,35 @@ const router = createBrowserRouter([
       },
       {
         path: "package-booking",
-        element: <ProtectContainer>
-          <PackageBooking />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <PackageBooking />
+          </ProtectContainer>
+        ),
       },
       {
         path: "services-booking",
-        element: <ProtectContainer>
-          <ServicesBooking />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <ServicesBooking />
+          </ProtectContainer>
+        ),
       },
       {
         path: "package-booking-checkout",
-        element: <ProtectContainer>
-          <PKCheckOut />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <PKCheckOut />
+          </ProtectContainer>
+        ),
       },
       {
         path: "services-booking-checkout",
-        element: <ProtectContainer>
-          <SVCheckOut />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <SVCheckOut />
+          </ProtectContainer>
+        ),
       },
       {
         path: "/login",
@@ -212,6 +226,22 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "services/list",
+        element: <SerivesListPage />,
+      },
+      {
+        path: "services/create",
+        element: <ServicesFormPage />,
+      },
+      {
+        path: "packages/list",
+        element: <PackagesListPage />,
+      },
+      {
+        path: "packages/create",
+        element: <PackagesFormPage />,
       },
       {
         path: "dashboard",
@@ -299,21 +329,21 @@ const router = createBrowserRouter([
         element: <AppointmentsFormPage />,
       },
       {
-        path: 'clinics/list',
-        element: <ClinicsListPage />
+        path: "clinics/list",
+        element: <ClinicsListPage />,
       },
       {
-        path: 'clinics/create',
-        element: <ClinicsFormPage />
-      }
+        path: "clinics/create",
+        element: <ClinicsFormPage />,
+      },
     ],
   },
 ]);
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }

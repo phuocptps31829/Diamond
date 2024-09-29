@@ -26,7 +26,7 @@ export const getAllMedicalPackages = async (filter) => {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
 
-    console.log(res.data);
+    console.log("getAllMedicalPackages", res.data);
     return res.data;
   } catch (error) {
     console.error(error);

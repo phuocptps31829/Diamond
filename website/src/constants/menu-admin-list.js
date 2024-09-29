@@ -7,6 +7,7 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
+import { FaKitMedical } from "react-icons/fa6";
 
 export const getMenuList = (pathname) => [
   {
@@ -27,6 +28,39 @@ export const getMenuList = (pathname) => [
             href: "/admin/doctordashboard",
             label: "Bảng điều khiển bác sĩ",
             active: pathname.includes("/admin/doctordashboard"),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    menus: [
+      {
+        href: "",
+        label: "Sản phẩm",
+        active: pathname === "/admin/products/list",
+        icon: FaKitMedical,
+        submenus: [
+          {
+            href: "/admin/packages/list",
+            label: "Danh sách gói",
+            active: pathname === "/admin/packages/list",
+          },
+          {
+            href: "/admin/services/list",
+            label: "Danh sách dịch vụ",
+            active: pathname === "/admin/services/list",
+          },
+          {
+            href: "/admin/packages/create",
+            label: "Thêm gói",
+            active: pathname === "/admin/packages/create",
+          },
+          {
+            href: "/admin/services/create",
+            label: "Thêm dịch vụ",
+            active: pathname === "/admin/services/create",
           },
         ],
       },
@@ -180,22 +214,22 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Phòng khám",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/clinics/list",
         icon: FaClinicMedical,
         submenus: [
           {
             href: "/admin/clinics/list",
             label: "Danh sách phòng khám",
-            active: pathname === "/admin/doctors/list"
+            active: pathname === "/admin/clinics/list",
           },
           {
             href: "/admin/clinics/create",
             label: "Thêm phòng khám",
-            active: pathname === "/admin/doctors/create"
-          }
-        ]
+            active: pathname === "/admin/clinics/create",
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     groupLabel: "",
@@ -222,4 +256,3 @@ export const getMenuList = (pathname) => [
     ],
   },
 ];
-

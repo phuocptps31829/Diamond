@@ -1,9 +1,8 @@
 import DataTable from "./table";
-import { columns} from "./table/columns";
-import { patientsData } from "./table/data";
+import { columnsSchedule } from "./table/columns";
 
-const PatientsList = () => {
-  return <DataTable columns={columns} data={patientsData} />;
+const PatientsList = ({ allPatients }) => {
+  return <DataTable columns={columnsSchedule} allPatients={allPatients} />;
 };
 
 export default PatientsList;

@@ -28,7 +28,6 @@ export default function OutstandingServices() {
       setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));
     }
   }, [loadingMedicalService, medicalServices]);
-console.log(OutstandingMedicalPackages);
 
   return (
     <div className="mx-auto my-5 max-w-screen-xl md:my-10">

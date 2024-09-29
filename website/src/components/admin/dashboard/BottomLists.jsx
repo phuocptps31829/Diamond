@@ -61,14 +61,14 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { closestPatients.map((appointment, index) => (
-              <TableRow key={ index } className="p-0 text-[13px]">
-                <TableCell>{ index + 1 }</TableCell>
-                <TableCell>{ appointment.user?.[0].fullName }</TableCell>
+            {closestPatients.map((appointment, index) => (
+              <TableRow key={index} className="p-0 text-[13px]">
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{appointment.user?.[0].fullName}</TableCell>
                 <TableCell>
-                  { appointment.result.length === 0
+                  {appointment.result.length === 0
                     ? "Chưa có kết quả"
-                    : "Render chẩn đoán" }
+                    : "Render chẩn đoán"}
                 </TableCell>
                 <TableCell>
                   <Menubar className="border-none bg-transparent shadow-none">
@@ -78,7 +78,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       </MenubarTrigger>
                       <MenubarContent>
                         <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                          <FaEdit className="mr-2" size={ 18 } />{ " " }
+                          <FaEdit className="mr-2" size={18} />{" "}
                           <span>Xem chi tiết</span>
                         </MenubarItem>
                       </MenubarContent>
@@ -86,7 +86,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                   </Menubar>
                 </TableCell>
               </TableRow>
-            )) }
+            ))}
           </TableBody>
         </Table>
       </div>
@@ -110,51 +110,57 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { filteredAppointments.map((appointment, index) => (
-              <TableRow key={ index } className="h-12 text-[13px]">
-                <TableCell>{ index + 1 }</TableCell>
-                <TableCell>{ appointment.user?.[0].fullName }</TableCell>
-                <TableCell>
-                  <div className="flex items-center space-x-2">
-                    <img
-                      src={
-                        appointment.user.avatar ||
-                        "https://github.com/shadcn.png"
-                      }
-                      alt="Doctor"
-                      className="h-6 w-6 rounded-full"
-                    />
-                    <span>{ appointment["user-doctor"]?.[0].fullName }</span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  { new Date(appointment.time).toLocaleString("vi-VN", {
-                    weekday: "long",
-                    day: "numeric",
-                    month: "numeric",
-                    year: "numeric",
-                    hour: "numeric",
-                    minute: "numeric",
-                  }) }
-                </TableCell>
-                <TableCell>{ appointment.service?.[0].name }</TableCell>
-                <TableCell>
-                  <Menubar className="border-none bg-transparent shadow-none">
-                    <MenubarMenu>
-                      <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                        <CiMenuKebab />
-                      </MenubarTrigger>
-                      <MenubarContent>
-                        <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                          <FaEdit className="mr-2" size={ 18 } />{ " " }
-                          <span>Xem chi tiết</span>
-                        </MenubarItem>
-                      </MenubarContent>
-                    </MenubarMenu>
-                  </Menubar>
-                </TableCell>
+            {filteredAppointments.length === 0 ? (
+              <TableRow className="text-center text-[13px] h-14">
+                <TableCell colSpan={6}>Không có lịch hẹn nào !</TableCell>
               </TableRow>
-            )) }
+            ) : (
+              filteredAppointments.map((appointment, index) => (
+                <TableRow key={index} className="h-12 text-[13px]">
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{appointment.user?.[0].fullName}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <img
+                        src={
+                          appointment.user.avatar ||
+                          "https://github.com/shadcn.png"
+                        }
+                        alt="Doctor"
+                        className="h-6 w-6 rounded-full"
+                      />
+                      <span>{appointment["user-doctor"]?.[0].fullName}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(appointment.time).toLocaleString("vi-VN", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                    })}
+                  </TableCell>
+                  <TableCell>{appointment.service?.[0].name}</TableCell>
+                  <TableCell>
+                    <Menubar className="border-none bg-transparent shadow-none">
+                      <MenubarMenu>
+                        <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
+                          <CiMenuKebab />
+                        </MenubarTrigger>
+                        <MenubarContent>
+                          <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                            <FaEdit className="mr-2" size={18} />{" "}
+                            <span>Xem chi tiết</span>
+                          </MenubarItem>
+                        </MenubarContent>
+                      </MenubarMenu>
+                    </Menubar>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
