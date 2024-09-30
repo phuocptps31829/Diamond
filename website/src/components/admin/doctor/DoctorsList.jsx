@@ -13,6 +13,7 @@ const DoctorsList = () => {
     queryKey: ["doctors"],
     queryFn: getAllDoctors,
   });
+
   const {
     data: specialtyData,
     isLoading: loadingSpecialties,
@@ -23,6 +24,7 @@ const DoctorsList = () => {
   });
   if (loadingDoctors || loadingSpecialties) return <div>Loading...</div>;
   if (errorLoadingDoctors || errorLoadingSpecialties) return <div>Error loading data</div>;
+  
   const specialtyMap = {};
   specialtyData.forEach((specialty) => {
     specialtyMap[specialty._id] = specialty.name;

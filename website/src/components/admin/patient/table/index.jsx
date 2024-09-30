@@ -22,7 +22,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-export default function DataTable({ data, columns }) {
+export default function DataTable({ data, columns,branchData }) {
   const {
     handleSubmit,
     formState: { errors },
@@ -44,6 +44,7 @@ export default function DataTable({ data, columns }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
     data,
+    branchData,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

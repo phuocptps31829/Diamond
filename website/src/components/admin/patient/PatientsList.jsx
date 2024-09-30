@@ -1,7 +1,6 @@
 import { getAllPatients } from "@/services/patientsApi";
 import DataTable from "./table";
 import { columns} from "./table/columns";
-// import { patientsData } from "./table/data";
 import { useQuery } from "@tanstack/react-query";
 
 const PatientsList = () => {
