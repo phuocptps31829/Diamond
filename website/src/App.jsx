@@ -57,6 +57,9 @@ import PatientsListPage from "./pages/admin/Patient";
 import PatientsFormPage from "./pages/admin/Patient/form";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
+import AuthPage from "./pages/admin/Auth";
+import RolesListPage from "./pages/admin/Roles";
+import CreateRolePage from "./pages/admin/Roles/CreateRolePage";
 
 const router = createBrowserRouter([
   {
@@ -206,6 +209,10 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/admin/auth",
+    element: <AuthPage />,
+  },
+  {
     path: "/admin",
     element: <AdminLayout />,
     children: [
@@ -293,7 +300,6 @@ const router = createBrowserRouter([
         path: "appointments/detail/:id",
         element: <AppointmentsDetailPage />,
       },
-
       {
         path: "appointments/edit/:id",
         element: <AppointmentsFormPage />,
@@ -305,6 +311,14 @@ const router = createBrowserRouter([
       {
         path: 'clinics/create',
         element: <ClinicsFormPage />
+      },
+      {
+        path: 'roles/list',
+        element: <RolesListPage />
+      },
+      {
+        path: 'roles/create',
+        element: <CreateRolePage />
       }
     ],
   },

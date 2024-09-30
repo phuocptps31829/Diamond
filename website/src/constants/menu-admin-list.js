@@ -7,6 +7,7 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
+import { IoSettingsSharp } from "react-icons/io5";
 
 export const getMenuList = (pathname) => [
   {
@@ -216,6 +217,30 @@ export const getMenuList = (pathname) => [
             href: "/admin/news/create",
             label: "Thêm tin tức",
             active: pathname === "/admin/news/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    menus: [
+      {
+        href: "",
+        label: "Vai trò",
+        active:
+          pathname === "/admin/roles/list" || pathname === "/admin/roles/create",
+        icon: IoSettingsSharp,
+        submenus: [
+          {
+            href: "/admin/roles/list",
+            label: "Danh sách vai trò",
+            active: pathname === "/admin/roles/list",
+          },
+          {
+            href: "/admin/roles/create",
+            label: "Thêm vai trò",
+            active: pathname === "/admin/roles/create",
           },
         ],
       },
