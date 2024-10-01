@@ -25,6 +25,7 @@ class NewsRequest extends FormRequest
             'specialtyID' => 'required|exists:Specialty,_id',
             'title' => 'required|string',
             'image' => 'required|string',
+            'slug' => 'required|string',
             'content' => 'required|string',
             'author' => 'required|string',
             'isHidden' => 'required|boolean',

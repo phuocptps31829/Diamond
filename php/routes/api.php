@@ -18,6 +18,7 @@ use App\Http\Controllers\ApplicableObjectController;
 use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,6 +35,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/v1/auth', [AuthController::class, 'login']);
+
+Route::get('/v1/roles', [RoleController::class, 'getAllRoles'])->middleware('checkQueryParams');
+Route::get('/v1/roles/{id}', [RoleController::class, 'getOneRole'])->middleware('CheckValidId');
+Route::post('/v1/roles/add', [RoleController::class, 'createRole']);
+Route::put('/v1/roles/update/{id}', [RoleController::class, 'updateRole'])->middleware('CheckValidId');
+Route::delete('/v1/roles/delete/{id}', [RoleController::class, 'deleteRole']);
 
 Route::get('/v1/specialties', [SpecialtyController::class, 'getAllSpecialties'])->middleware('checkQueryParams');
 Route::get('/v1/specialties/{id}', [SpecialtyController::class, 'getOneSpecialty'])->middleware('CheckValidId');

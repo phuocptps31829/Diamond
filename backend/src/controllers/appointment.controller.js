@@ -145,6 +145,41 @@ const getAllAppointments = async (req, res, next) => {
                 }
             },
             {
+                $unwind: '$workSchedule'
+            },
+            {
+                $lookup: {
+                    from: 'Doctor',
+                    localField: 'workSchedule.doctorID',
+                    foreignField: '_id',
+                    as: 'doctor'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'doctor.userID',
+                    foreignField: '_id',
+                    as: 'user-doctor'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Service',
+                    localField: 'serviceID',
+                    foreignField: '_id',
+                    as: 'service'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'MedicalPackage',
+                    localField: 'medicalPackageID',
+                    foreignField: '_id',
+                    as: 'medicalPackage'
+                }
+            },
+            {
                 $lookup: {
                     from: 'Invoice',
                     localField: '_id',
@@ -180,6 +215,11 @@ const getAllAppointments = async (req, res, next) => {
                 $match: {
                     isDeleted: false
                 },
+            },
+            {
+                $project: {
+                    "doctor.detail": 0,
+                }
             }
 
         ];
@@ -479,9 +519,120 @@ const getAllAppointmentsForSpecialty = async (req, res, next) => {
     }
 };
 
+
+const getAppointmentsById = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'WorkSchedule',
+                    localField: 'workScheduleID',
+                    foreignField: '_id',
+                    as: 'workSchedule'
+                }
+            },
+            {
+                $unwind: '$workSchedule'
+            },
+            {
+                $lookup: {
+                    from: 'Doctor',
+                    localField: 'workSchedule.doctorID',
+                    foreignField: '_id',
+                    as: 'doctor'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'doctor.userID',
+                    foreignField: '_id',
+                    as: 'user-doctor'
+                }
+            },
+            {
+                $match: {
+                    isDeleted: false,
+                    _id: new mongoose.Types.ObjectId(id)
+                },
+            },
+            {
+                $lookup: {
+                    from: 'Service',
+                    localField: 'serviceID',
+                    foreignField: '_id',
+                    as: 'service'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'MedicalPackage',
+                    localField: 'medicalPackageID',
+                    foreignField: '_id',
+                    as: 'medicalPackage'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Invoice',
+                    localField: '_id',
+                    foreignField: 'appointmentID',
+                    as: 'invoice'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Patient',
+                    localField: 'patientID',
+                    foreignField: '_id',
+                    as: 'patient'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'User',
+                    localField: 'patient.userID',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'Result',
+                    localField: '_id',
+                    foreignField: 'appointmentID',
+                    as: 'result'
+                }
+            },
+            {
+                $project: {
+                    'doctor.detail': 0,
+                    'medicalPackage.details': 0,
+                }
+            }
+        ];
+
+        const Appointment = await AppointmentModel.aggregate(pipeline);
+
+        if (!Appointment) {
+            createError(404, 'No Appointments found.');
+        }
+
+        return res.status(200).json({
+            message: 'Appointment retrieved successfully.',
+            data: Appointment
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllAppointmentsOfDoctor,
     getAllAppointments,
     getAllAppointmentsForYears,
-    getAllAppointmentsForSpecialty
+    getAllAppointmentsForSpecialty,
+    getAppointmentsById
 };

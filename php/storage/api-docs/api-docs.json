@@ -385,11 +385,11 @@
                                     },
                                     "coordinates": {
                                         "properties": {
-                                            "Ing": {
+                                            "lng": {
                                                 "type": "number",
                                                 "example": "10.762622"
                                             },
-                                            "Lat": {
+                                            "lat": {
                                                 "type": "number",
                                                 "example": "106.660172"
                                             }
@@ -461,11 +461,11 @@
                                     },
                                     "coordinates": {
                                         "properties": {
-                                            "Ing": {
+                                            "lng": {
                                                 "type": "number",
                                                 "example": "10.762622"
                                             },
-                                            "Lat": {
+                                            "lat": {
                                                 "type": "number",
                                                 "example": "106.660172"
                                             }
@@ -784,6 +784,10 @@
                                         "type": "string",
                                         "example": "BS moi"
                                     },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
                                     "phoneNumber": {
                                         "type": "string",
                                         "example": "0300099989"
@@ -816,30 +820,6 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "specialtyID": {
-                                        "type": "string",
-                                        "example": ""
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "title"
-                                    },
-                                    "practicingCertificate": {
-                                        "type": "string",
-                                        "example": "practicingCertificate"
-                                    },
-                                    "yearsExperience": {
-                                        "type": "number",
-                                        "example": 2
-                                    },
-                                    "detail": {
-                                        "type": "string",
-                                        "example": "detail"
-                                    },
-                                    "isInternal": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
                                     "address": {
                                         "properties": {
                                             "province": {
@@ -857,6 +837,35 @@
                                             "street": {
                                                 "type": "string",
                                                 "example": "106.660172"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "otherInfo": {
+                                        "properties": {
+                                            "specialtyID": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "title"
+                                            },
+                                            "practicingCertificate": {
+                                                "type": "string",
+                                                "example": "practicingCertificate"
+                                            },
+                                            "yearsExperience": {
+                                                "type": "number",
+                                                "example": 2
+                                            },
+                                            "detail": {
+                                                "type": "string",
+                                                "example": "detail"
+                                            },
+                                            "isInternal": {
+                                                "type": "boolean",
+                                                "example": true
                                             }
                                         },
                                         "type": "object"
@@ -905,6 +914,10 @@
                                         "type": "string",
                                         "example": "BS moi"
                                     },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
                                     "phoneNumber": {
                                         "type": "string",
                                         "example": "0300099989"
@@ -937,30 +950,6 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "specialtyID": {
-                                        "type": "string",
-                                        "example": ""
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "title"
-                                    },
-                                    "practicingCertificate": {
-                                        "type": "string",
-                                        "example": "practicingCertificate"
-                                    },
-                                    "yearsExperience": {
-                                        "type": "number",
-                                        "example": 2
-                                    },
-                                    "detail": {
-                                        "type": "string",
-                                        "example": "detail"
-                                    },
-                                    "isInternal": {
-                                        "type": "boolean",
-                                        "example": true
-                                    },
                                     "address": {
                                         "properties": {
                                             "province": {
@@ -978,6 +967,35 @@
                                             "street": {
                                                 "type": "string",
                                                 "example": "106.660172"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "otherInfo": {
+                                        "properties": {
+                                            "specialtyID": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "title": {
+                                                "type": "string",
+                                                "example": "title"
+                                            },
+                                            "practicingCertificate": {
+                                                "type": "string",
+                                                "example": "practicingCertificate"
+                                            },
+                                            "yearsExperience": {
+                                                "type": "number",
+                                                "example": 2
+                                            },
+                                            "detail": {
+                                                "type": "string",
+                                                "example": "detail"
+                                            },
+                                            "isInternal": {
+                                                "type": "boolean",
+                                                "example": true
                                             }
                                         },
                                         "type": "object"
@@ -2120,6 +2138,176 @@
                 }
             }
         },
+        "/api/v1/roles": {
+            "get": {
+                "tags": [
+                    "Role Routes"
+                ],
+                "summary": "Get all roles",
+                "operationId": "bfb24cae21eafdfc08a3793f804489b4",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort order",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/roles/{id}": {
+            "get": {
+                "tags": [
+                    "Role Routes"
+                ],
+                "summary": "Get one Role",
+                "operationId": "c55d26e7a611c1c69f669d7ed42544b7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id number",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/roles/add": {
+            "post": {
+                "tags": [
+                    "Role Routes"
+                ],
+                "summary": "Add a Role",
+                "operationId": "8f049455ef414d42a75a57c08045fded",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New Role"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/roles/update/{id}": {
+            "put": {
+                "tags": [
+                    "Role Routes"
+                ],
+                "summary": "Update Role",
+                "operationId": "df60a308ca868961c5f278d1bace47bc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "object id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "New Role"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api/v1/roles/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Role Routes"
+                ],
+                "summary": "Update Role",
+                "operationId": "5650c6037e6874ca7f000738761c087a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "object id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
         "/api/v1/services": {
             "get": {
                 "tags": [
@@ -2581,6 +2769,10 @@
         {
             "name": "News Routes",
             "description": "News Routes"
+        },
+        {
+            "name": "Role Routes",
+            "description": "Role Routes"
         },
         {
             "name": "Service Routes",

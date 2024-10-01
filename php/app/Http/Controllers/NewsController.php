@@ -183,6 +183,11 @@ class NewsController extends Controller
     {
         try {
             $NewsRequest = new NewsRequest();
+
+            $checkSlug = checkSlug($request->title, 'News');
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
             $News = News::create($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
 
             return response()->json([

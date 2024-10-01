@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Doctor;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\DoctorRequest;
@@ -64,6 +63,7 @@ use App\Http\Requests\UserRequest;
  *         @OA\JsonContent(
  *             required={""},
  *             @OA\Property(property="fullName", type="string", example="BS moi"),
+ *             @OA\Property(property="role", type="string", example="1"),
  *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
  *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
  *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
@@ -72,19 +72,23 @@ use App\Http\Requests\UserRequest;
  *             @OA\Property(property="avatar", type="string", example="avatar"),
  *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
  *             @OA\Property(property="isActivated", type="boolean", example=true),
- *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="title"),
- *             @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
- *             @OA\Property(property="yearsExperience", type="number", example=2),
- *             @OA\Property(property="detail", type="string", example="detail"),
- *             @OA\Property(property="isInternal", type="boolean", example=true),
- *             @OA\Property(
+ *              @OA\Property(
  *                  property="address",
  *                  type="object",
  *                  @OA\Property(property="province", type="string", example="province"),
  *                  @OA\Property(property="district", type="string", example="106.660172"),
  *                  @OA\Property(property="ward", type="string", example="106.660172"),
  *                  @OA\Property(property="street", type="string", example="106.660172"),
+ *               ),
+ *  *              @OA\Property(
+ *                  property="otherInfo",
+ *                  type="object",
+ *                  @OA\Property(property="specialtyID", type="string", example=""),
+ *                  @OA\Property(property="title", type="string", example="title"),
+ *                  @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
+ *                  @OA\Property(property="yearsExperience", type="number", example=2),
+ *                  @OA\Property(property="detail", type="string", example="detail"),
+ *                  @OA\Property(property="isInternal", type="boolean", example=true),
  *               ),
  *         )
  *     ),
@@ -109,6 +113,7 @@ use App\Http\Requests\UserRequest;
  *         @OA\JsonContent(
  *             required={""},
  *             @OA\Property(property="fullName", type="string", example="BS moi"),
+ *             @OA\Property(property="role", type="string", example="1"),
  *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
  *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
  *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
@@ -117,12 +122,6 @@ use App\Http\Requests\UserRequest;
  *             @OA\Property(property="avatar", type="string", example="avatar"),
  *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
  *             @OA\Property(property="isActivated", type="boolean", example=true),
- *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="title"),
- *             @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
- *             @OA\Property(property="yearsExperience", type="number", example=2),
- *             @OA\Property(property="detail", type="string", example="detail"),
- *             @OA\Property(property="isInternal", type="boolean", example=true),
  *              @OA\Property(
  *                  property="address",
  *                  type="object",
@@ -130,6 +129,16 @@ use App\Http\Requests\UserRequest;
  *                  @OA\Property(property="district", type="string", example="106.660172"),
  *                  @OA\Property(property="ward", type="string", example="106.660172"),
  *                  @OA\Property(property="street", type="string", example="106.660172"),
+ *               ),
+ *  *              @OA\Property(
+ *                  property="otherInfo",
+ *                  type="object",
+ *                  @OA\Property(property="specialtyID", type="string", example=""),
+ *                  @OA\Property(property="title", type="string", example="title"),
+ *                  @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
+ *                  @OA\Property(property="yearsExperience", type="number", example=2),
+ *                  @OA\Property(property="detail", type="string", example="detail"),
+ *                  @OA\Property(property="isInternal", type="boolean", example=true),
  *               ),
  *         )
  *     ),
@@ -166,16 +175,18 @@ class DoctorController extends Controller
             $limit = $request->get('limitDocuments');
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
-
-            // $totalRecords = User::count();
-
-            $Doctors = json_decode('{"province":"province","district":"106.660172","ward":"106.660172","street":"106.660172"}');
+            $totalRecords = User::where('isDeleted', false)->count();
+            $user = User::where('isDeleted', false)
+                ->skip($skip)
+                ->take($limit)
+                ->orderBy(key($sortOptions), current($sortOptions))
+                ->get();
 
             return response()->json([
                 'page' => $page,
                 'message' => 'Doctors retrieved successfully.',
-                'data' => $Doctors,
-                'totalRecords' => 3,
+                'data' => $user,
+                'totalRecords' => $totalRecords,
             ], 200);
         } catch (\Exception $e) {
 
@@ -191,7 +202,7 @@ class DoctorController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Doctor = Doctor::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
@@ -215,12 +226,13 @@ class DoctorController extends Controller
     {
         try {
             $doctorRequest = new DoctorRequest();
-            $userRequest = new UserRequest();
+            $check = checkPhoneAndEmail($request->phoneNumber, $request->email);
 
-            $user = User::create($request->validate($userRequest->rules(), $userRequest->messages()));
-            $request->merge(['userID' => $user->_id]);
-            $doctor = Doctor::create($request->validate($doctorRequest->rules(), $doctorRequest->messages()));
-            $doctor->user = $user;
+            if ($check) {
+                return createError(500, $check);
+            }
+            $doctor = User::create($request->validate($doctorRequest->rules(), $doctorRequest->messages()));
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Doctor created successfully.',
@@ -240,10 +252,16 @@ class DoctorController extends Controller
         try {
             $id = $request->route('id');
 
-            $Doctor = Doctor::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
+            }
+
+            $check = checkPhoneAndEmail($request->phoneNumber, $request->email, $Doctor->id);
+
+            if ($check) {
+                return createError(500, $check);
             }
             $DoctorRequest = new DoctorRequest();
 
@@ -273,7 +291,7 @@ class DoctorController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Doctor = Doctor::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
             }

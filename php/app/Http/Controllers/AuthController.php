@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use MongoDB\BSON\ObjectId;
 
 /**
-
  * @OA\Post(
  *     path="/api/v1/auth",
  *     tags={"Auth Routes"},
@@ -31,6 +30,63 @@ use MongoDB\BSON\ObjectId;
 
 class AuthController extends Controller
 {
+    public function register(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'fullName' => 'required|string',
+                'phoneNumber' => 'required|string',
+                'password' => 'required|string',
+            ], [
+                'fullName.required' => 'FullName is required',
+                'fullName.string' => 'FullName should be a string',
+                'phoneNumber.required' => 'Phone number is required',
+                'phoneNumber.string' => 'Phone number should be a string',
+                'password.required' => 'Password is required',
+                'password.string' => 'Password should be a string'
+            ]);
+            $check = checkPhoneAndEmail($request->phoneNumber);
+
+            if ($check) {
+                return createError(500, $check);
+            }
+            $user = User::create([
+                'fullName' => $request->fullName,
+                'phoneNumber' => $request->phoneNumber,
+                'password' => Hash::make($request->password),
+                'isActivated' => false,
+            ]);
+            $user = User::where('phoneNumber', '=', $request->phoneNumber)->first();
+            if (!$user) {
+                return  createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
+            }
+            $validPassword = Hash::check($request->password, $user->password);
+
+            if (!$validPassword) {
+                createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
+            }
+            if (!$user->isActivated) {
+                createError(400, 'Tài khoản chưa được kích hoạt.');
+            }
+            $token = generateAccessRefreshToken($user);
+
+            return response()->json([
+                'message' => 'User logged in successfully.',
+                'data' => [
+                    'accessToken' =>  $token['accessToken'],
+                    'refreshToken' => $token['refreshToken']
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 500);
+        }
+    }
     public function login(Request $request)
     {
         try {
@@ -56,16 +112,13 @@ class AuthController extends Controller
             if (!$user->isActivated) {
                 createError(400, 'Tài khoản chưa được kích hoạt.');
             }
-
-            $doctor = Doctor::where('userID', '=', new ObjectId($user->id))->first();
-            $doctor->user = $user;
-            $token = generateAccessRefreshToken($doctor);
+            $token = generateAccessRefreshToken($user);
 
             return response()->json([
                 'message' => 'User logged in successfully.',
                 'data' => [
                     'accessToken' =>  $token['accessToken'],
-                    'doctor' => $doctor
+                    'refreshToken' => $token['refreshToken']
                 ]
             ], 200);
         } catch (\Exception $e) {

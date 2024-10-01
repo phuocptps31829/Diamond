@@ -64,6 +64,14 @@ const getAllMedicalPackages = async (req, res, next) => {
                 }
             },
             {
+                $lookup: {
+                    from: "Specialty",
+                    localField: "specialtyID",
+                    foreignField: "_id",
+                    as: "specialty"
+                }
+            },
+            {
                 $match: {
                     isDeleted: false,
                     ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
@@ -164,12 +172,11 @@ const getMedicalPackageById = async (req, res, next) => {
         const medicalPackage = await MedicalPackageModel.findOne({
             _id: id,
             isDeleted: false,
-        });
+        }).populate('specialtyID');
 
         if (!medicalPackage) {
             createError(404, 'Medical package not found.');
         }
-
         // sắp xếp lại array services theo thứ tự giảm dần của mảng servicesID
         const arrayServices = medicalPackage.services.sort((a, b) => {
             return b.servicesID.length - a.servicesID.length;
@@ -185,7 +192,9 @@ const getMedicalPackageById = async (req, res, next) => {
 
         const newMedicalPackage = {
             ...medicalPackage.toObject(),
-            allServices: services
+            specialtyID: medicalPackage.specialtyID._id,
+            allServices: services,
+            specialty: medicalPackage.specialtyID
         };
 
         return res.status(200).json({
