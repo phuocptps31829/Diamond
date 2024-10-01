@@ -13,6 +13,8 @@ import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
 import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
+import { toast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
 
 export default function SelectDate({
   control,
@@ -22,7 +24,6 @@ export default function SelectDate({
   branchId,
   disabled,
   onChange,
-  setValue,
 }) {
   const [availableDates, setAvailableDates] = useState([]);
 
@@ -44,10 +45,9 @@ export default function SelectDate({
     fetchDates();
   }, [doctorId, branchId]);
 
-  // useEffect(() => {
-  //   onChange("");
-  //   setValue(name, "");
-  // }, [branchId, doctorId, setValue, name]);
+  useEffect(() => {
+    errors[name] = undefined;
+  }, [doctorId, branchId, errors, name]);
 
   const isDateAvailable = (date) => {
     return availableDates.some(
@@ -58,8 +58,20 @@ export default function SelectDate({
     );
   };
 
+  const handleClick = () => {
+    if (!doctorId) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng chọn bác sĩ",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+  };
+
   return (
-    <div>
+    <div onClick={ handleClick }>
       <Controller
         control={ control }
         name={ name }
@@ -75,6 +87,7 @@ export default function SelectDate({
                     "w-full justify-start py-[21px] text-left font-normal",
                     !field.value && "text-muted-foreground",
                     errors[name] && "border-red-500",
+                    doctorId ? 'pointer-events-auto' : 'pointer-events-none'
                   ) }
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />

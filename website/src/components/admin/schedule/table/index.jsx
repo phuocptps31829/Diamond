@@ -26,6 +26,9 @@ import { useState } from "react";
 import InputCustom from "@/components/ui/InputCustom";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { patientSchema } from "@/zods/patient";
 
 export default function DataTableSchedule() {
     const [sorting, setSorting] = useState([]);
@@ -39,6 +42,18 @@ export default function DataTableSchedule() {
         pageIndex: 0,
         pageSize: 10,
     });
+    const {
+        handleSubmit,
+        formState: { errors },
+        control,
+    } = useForm({
+        resolver: zodResolver(patientSchema),
+        defaultValues: {
+            patientName: "",
+        },
+    });
+    const onSubmit = () => {
+    };
 
     const table = useReactTable({
         data: mockData,
@@ -63,20 +78,20 @@ export default function DataTableSchedule() {
 
     return (
         <div className="w-full p-4 bg-white rounded-sm">
-            <div className="flex h-[65px]">
+            <div className="flex h-[80px]">
                 <form className="mr-1 flex">
                     <div className="mb-2 ">
                         <div className="relative w-[300px] mr-1">
-                            {/* <InputCustom
-                className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm nhân viên"
-                name="staffName"
-                type="text"
-                id="staffName"
-                icon={ <FaSearch></FaSearch> }
-                control={ control }
-                errors={ errors }
-              /> */}
+                            <InputCustom
+                                className="col-span-1 sm:col-span-1"
+                                placeholder="Tìm kiếm bác sĩ"
+                                name="patientName"
+                                type="text"
+                                id="patientName"
+                                icon={ <FaSearch></FaSearch> }
+                                control={ control }
+                                errors={ errors }
+                            />
                         </div>
                     </div>
                     <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">

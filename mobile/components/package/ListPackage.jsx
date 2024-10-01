@@ -24,12 +24,11 @@ const ListPackage = ({ listPackages }) => {
 
   return (
     <FlatList
-      data={ transformedPackages }
+      data={transformedPackages}
       className="w-full mt-2"
-      contentContainerStyle={ { paddingHorizontal: 10 } }
-      renderItem={ ({ item, index }) => (
+      contentContainerStyle={{ paddingHorizontal: 10 }}
+      renderItem={({ item, index }) => (
         <TouchableOpacity
-<<<<<<< HEAD
           key={index}
           style={{
             maxWidth: width / 2 - 18,
@@ -38,35 +37,28 @@ const ListPackage = ({ listPackages }) => {
           onPress={() => {
             console.log(`Button pressed for ${item.service.levelName}!`);
           }}
-=======
-          key={ index }
-          className="flex-column max-w-[170px] relative bg-white flex-1 m-1 rounded-[15px] overflow-hidden"
-          onPress={ () => {
-            router.push(`/detail-package/${item._id}`);
-          } }
->>>>>>> 3d4743d554b51a8f26325013d30057929d344d5c
         >
           <Image
-            source={ {
+            source={{
               uri: item.image,
-            } }
+            }}
             className="h-[110px] rounded-md"
           />
           <View className="p-2 space-y-1">
             <Text className="text-black font-medium text-[12px]">
-              { item.service.levelName }
+              {item.service.levelName}
             </Text>
             <Text
               className="text-black font-semibold"
-              numberOfLines={ 1 }
+              numberOfLines={1}
               ellipsizeMode="tail"
             >
-              { item.name }
+              {item.name}
             </Text>
           </View>
         </TouchableOpacity>
-      ) }
-      numColumns={ 2 }
+      )}
+      numColumns={2}
     />
   );
 };

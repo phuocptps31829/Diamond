@@ -184,15 +184,17 @@ const momoPayment = async (req, res, next) => {
     try {
         //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
         errorValidator(req, res);
+        const totalPrice = req.body.data.reduce((acc, cur) => acc = + cur.price, 0);
 
         const accessKey = process.env.MOMO_ACCESS_KEY;
         const secretKey = process.env.MOMO_SECRET_KEY;
         const orderInfo = 'Thanh toán với MoMo';
         const partnerCode = 'MOMO';
         const redirectUrl = process.env.MOMO_REDIRECT_URL;
-        const ipnUrl = process.env.MOMO_CALLBACK_URL;
+        // const ipnUrl = process.env.MOMO_CALLBACK_URL;
+        const ipnUrl = 'https://5803-2402-800-63a6-f690-4d85-fa38-47b5-37f1.ngrok-free.app/api/v1/invoices/payment/momo/callback';
         const requestType = "captureWallet";
-        const amount = req.body.price;
+        const amount = totalPrice;
         const orderId = partnerCode + new Date().getTime();
         const requestId = orderId;
         const extraData = JSON.stringify(req.body);
@@ -238,7 +240,7 @@ const momoPayment = async (req, res, next) => {
         console.log(result);
 
         return res.status(200).json({
-            message: 'Momo show successfully',
+            message: 'Momo link created successfully',
             data: result.data
         });
     } catch (error) {
@@ -298,7 +300,7 @@ const momoPaymentCallback = async (req, res, next) => {
 
         const appointmentData = JSON.parse(extraData);
 
-        let appointmentHelpID = null;
+        let newPatient = null;
         if (appointmentData.appointmentHelpUser) {
             const newPatient = await axios.post(
                 process.env.SERVER_LOCAL_API_URL + '/patients/add-full-info',
@@ -309,79 +311,94 @@ const momoPaymentCallback = async (req, res, next) => {
                     }
                 }
             );
-
-            console.log("data momo", newPatient.data.data);
-            const newAppointmentHelp = await AppointmentModel.create({
-                ...appointmentData,
-                patientID: newPatient.data.data._id,
-                appointmentHelpID: null
-            });
-            appointmentHelpID = newAppointmentHelp._id;
-            console.log('for help', newAppointmentHelp);
-
-            const updatedPatient = await PatientModel.findByIdAndUpdate(
-                appointmentData.patientID,
-                { $push: { relatedPatientsID: newPatient.data.data._id } },
-                { new: true }
-            );
-
-            console.log('update', updatedPatient);
+            console.log("new pa", newPatient.data.data);
         }
 
-        const newAppointment = await AppointmentModel.create({
-            ...appointmentData,
-            payment: {
-                method: "MOMO",
-                refundCode: signature,
-                status: "Đã thanh toán"
-            },
-            appointmentHelpID
-        });
+        for (const appointment of appointmentData.data) {
+            let newAppointment = null;
+            if (newPatient) {
+                newAppointment = await AppointmentModel.create({
+                    ...appointment,
+                    payment: {
+                        method: "MOMO",
+                        refundCode: signature,
+                        status: "Đã thanh toán"
+                    },
+                    patientID: newPatient.data.data._id,
+                    patientHelpID: appointmentData.patientID
+                });
+                console.log('for help', newAppointment);
 
-        const appointmentIDsInDay = await AppointmentModel
-            .find({
-                time: {
-                    $gte: `${newAppointment.time.slice(0, 10)}T00:00:00.000Z`,
-                    $lt: `${newAppointment.time.slice(0, 10)}T23:59:59.999Z`
-                }
-            })
-            .select("_id");
+                const updatedPatient = await PatientModel.findByIdAndUpdate(
+                    appointmentData.patientID,
+                    { $push: { relatedPatientsID: newPatient.data.data._id } },
+                    { new: true }
+                );
 
-        console.log(appointmentIDsInDay);
+                console.log('update', updatedPatient);
+            } else {
+                newAppointment = await AppointmentModel.create({
+                    ...appointment,
+                    payment: {
+                        method: "MOMO",
+                        refundCode: signature,
+                        status: "Đã thanh toán"
+                    },
+                    patientID: appointmentData.patientID,
+                });
 
-        const lastOrderNumberInDay = await OrderNumberModel
-            .find({
-                appointmentID: {
-                    $in: appointmentIDsInDay.map(id => new mongoose.Types.ObjectId(id))
-                }
-            })
-            .sort({ number: -1 })
-            .limit(1);
+                console.log('for you', newAppointment);
 
-        console.log("last", lastOrderNumberInDay);
-
-        const newOrderNumber = await OrderNumberModel.create({
-            appointmentID: appointmentHelpID || newAppointment._id,
-            number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
-            priority: 0
-        });
-
-        console.log('newor', newOrderNumber);
-
-        const newInvoice = await InvoiceModel.create({
-            appointmentID: newAppointment._id,
-            price: +amount,
-        });
-
-        return res.status(201).json({
-            message: "Appointment created successfully",
-            data: {
-                ...newAppointment.toObject(),
-                invoice: {
-                    ...newInvoice.toObject()
-                }
             }
-        });
+
+            const appointmentIDsInDay = await AppointmentModel
+                .find({
+                    time: {
+                        $gte: `${newAppointment.time.slice(0, 10)}T00:00:00.000Z`,
+                        $lt: `${newAppointment.time.slice(0, 10)}T23:59:59.999Z`
+                    }
+                })
+                .select("_id");
+
+            console.log('inday', appointmentIDsInDay);
+
+            const lastOrderNumberInDay = await OrderNumberModel
+                .find({
+                    appointmentID: {
+                        $in: appointmentIDsInDay.map(id => new mongoose.Types.ObjectId(id))
+                    }
+                })
+                .sort({ number: -1 })
+                .limit(1);
+
+            console.log("last", lastOrderNumberInDay);
+
+            const newOrderNumber = await OrderNumberModel.create({
+                appointmentID: newAppointment._id,
+                number: lastOrderNumberInDay[0]?.number ? +lastOrderNumberInDay[0].number + 1 : 1,
+                priority: 0
+            });
+
+            console.log('newor', newOrderNumber);
+
+            const newInvoice = await InvoiceModel.create({
+                appointmentID: newAppointment._id,
+                price: +appointment.price,
+            });
+
+            console.log('newin', newInvoice);
+        }
+
+        return res.redirect(process.env.CLIENT_LOCAL_URL + '/payment-success');
+        // return res.status(201).json({
+        //     message: "Appointment created successfully",
+        //     data: {
+        //         ...newAppointment.toObject(),
+        //         invoice: {
+        //             ...newInvoice.toObject()
+        //         }
+        //     }
+        // });
     } catch (error) {
         next(error);
     }
@@ -481,18 +498,10 @@ const vnpayPayment = async (req, res, next) => {
         vnp_Params['vnp_SecureHash'] = signed;
         vnpUrl += '?' + qs.stringify(vnp_Params, { encode: false });
 
-        // vnpayAppointmentData = {
-        //     ...req.body,
-        //     payment: {
-        //         method: "VNPAY",
-        //         refundCode: signed,
-        //         status: "Đã thanh toán"
-        //     },
-        //     price: req.body.price
-        // };
+
         vnpayAppointmentData = req.body;
-        console.log(vnpayAppointmentData);
-        // return res.redirect(vnpUrl);
+
+        console.log('vi', vnpayAppointmentData);
 
         return res.status(200).json({
             message: 'VNpay payment successfully',
@@ -566,8 +575,6 @@ const vnpayReturn = async (req, res, next) => {
         let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
 
         if (secureHash === signed) {
-            let newAppointmentssssss = null;
-
             let newPatient = null;
             if (vnpayAppointmentData.appointmentHelpUser) {
                 newPatient = await axios.post(
@@ -583,12 +590,16 @@ const vnpayReturn = async (req, res, next) => {
                 console.log("new pa", newPatient.data.data);
             }
 
-            ///
             for (const appointment of vnpayAppointmentData.data) {
                 let newAppointment = null;
                 if (newPatient) {
                     newAppointment = await AppointmentModel.create({
                         ...appointment,
+                        payment: {
+                            method: "VNPAY",
+                            refundCode: signed,
+                            status: "Đã thanh toán"
+                        },
                         patientID: newPatient.data.data._id,
                         patientHelpID: vnpayAppointmentData.patientID
                     });
@@ -604,6 +615,11 @@ const vnpayReturn = async (req, res, next) => {
                 } else {
                     newAppointment = await AppointmentModel.create({
                         ...appointment,
+                        payment: {
+                            method: "VNPAY",
+                            refundCode: signed,
+                            status: "Đã thanh toán"
+                        },
                         patientID: vnpayAppointmentData.patientID,
                     });
 
@@ -649,9 +665,10 @@ const vnpayReturn = async (req, res, next) => {
                 console.log('newin', newInvoice);
             }
 
-            return res.status(201).json({
-                message: "Appointment created successfully",
-            });
+            return res.redirect(process.env.CLIENT_LOCAL_URL + '/payment-success');
+            // return res.status(201).json({
+            //     message: "Appointment created successfully",
+            // });
         } else {
             createError(400, "Signs not match");
         }

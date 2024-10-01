@@ -67,6 +67,8 @@ const passportMiddleWare = app => {
     passport.deserializeUser((user, done) => {
         done(null, user);
     });
+    console.log("aaa" + process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
+
 };
 
 module.exports = passportMiddleWare;

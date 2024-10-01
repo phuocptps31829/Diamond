@@ -60,18 +60,18 @@ export const getMenuList = (pathname) => [
     menus: [
       {
         href: "",
-        label: "Bệnh nhân",
+        label: "Người dùng",
         active: pathname === "/admin/patients/list",
         icon: IoPeopleSharp,
         submenus: [
           {
             href: "/admin/patients/list",
-            label: "Danh sách bệnh nhân",
+            label: "Danh sách người dùng",
             active: pathname === "/admin/patients/list",
           },
           {
             href: "/admin/patients/create",
-            label: "Thêm bệnh nhân",
+            label: "Thêm người dùng",
             active: pathname === "/admin/patients/create",
           },
         ],

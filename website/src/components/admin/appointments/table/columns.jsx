@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { BiDetail } from "react-icons/bi";
@@ -66,14 +64,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -87,7 +85,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bệnh nhân
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -111,7 +109,7 @@ export const columns = [
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             </Avatar>
             <span className="ml-2 w-full whitespace-nowrap">
-              {patient?.fullName || "Không có bệnh nhân"}
+              { patient?.fullName || "Không có bệnh nhân" }
             </span>
           </div>
         </div>
@@ -125,7 +123,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bác sĩ
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -147,7 +145,7 @@ export const columns = [
       return (
         <div className="w-full">
           <span className="w-full whitespace-nowrap">
-            {doctor?.userID?.fullName || "Không có bác sĩ"}
+            { doctor?.userID?.fullName || "Không có bác sĩ" }
           </span>
         </div>
       );
@@ -160,7 +158,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Dịch vụ/Gói khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -193,9 +191,9 @@ export const columns = [
       return (
         <div className="w-fit p-2">
           <span
-            className={`flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage ? "bg-primary-500/20 text-primary-900" : "bg-[#13D6CB]/20 text-cyan-950"}`}
+            className={ `flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage ? "bg-primary-500/20 text-primary-900" : "bg-[#13D6CB]/20 text-cyan-950"}` }
           >
-            {name}
+            { name }
           </span>
         </div>
       );
@@ -208,7 +206,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Loại khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -217,7 +215,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{row.original.type}</span>
+        <span className="w-full whitespace-nowrap">{ row.original.type }</span>
       </div>
     ),
   },
@@ -228,7 +226,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thời gian khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -238,7 +236,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {new Date(row.original.time).toLocaleString()}
+          { new Date(row.original.time).toLocaleString() }
         </span>
       </div>
     ),
@@ -250,7 +248,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -259,7 +257,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{row.original.status}</span>
+        <span className="w-full whitespace-nowrap">{ row.original.status }</span>
       </div>
     ),
   },
@@ -270,7 +268,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -279,12 +277,12 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div
-        className={`flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
+        className={ `flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
           row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán",
-        )}`}
+        )}` }
       >
         <span className="whitespace-nowrap">
-          {row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán"}
+          { row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán" }
         </span>
       </div>
     ),

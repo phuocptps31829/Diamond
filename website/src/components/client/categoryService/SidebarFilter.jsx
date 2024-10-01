@@ -2,23 +2,16 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
-
-import PropTypes from "prop-types";
-import { getAllBranches } from "@/services/branchesApi";
 import { useLocation, useSearchParams } from "react-router-dom";
+
+import { getAllBranches } from "@/services/branchesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-const SidebarFilter = ({ onFilterApply, parentFilters }) => {
+const SidebarFilter = ({ filters, onFilterApply }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState({
-    sort: "",
-    specialtyID: [],
-    branch: [],
-    gender: [],
-  });
-
+  console.log('re');
   const handleResetFilters = () => {
     const resetFilters = {
       sort: "",
@@ -26,9 +19,8 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
       branch: [],
       gender: [],
     };
-    setFilters(resetFilters);
-    setSearchParams({});
     onFilterApply(resetFilters);
+    setSearchParams({});
   };
 
   useEffect(() => {
@@ -56,11 +48,9 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
         specialtyID: [...new Set(specialties)],
       };
 
-      setFilters(updatedFilters);
       onFilterApply(updatedFilters);
     } else {
       console.log(newFilters);
-      setFilters(newFilters);
       onFilterApply(newFilters);
     }
   }, [location.search, searchParams]);
@@ -69,76 +59,8 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
     setIsOpen(!isOpen);
   };
 
-  const handleBranchChange = (branch) => {
-    setFilters((prev) => {
-      const newBranches = prev.branch.includes(branch)
-        ? prev.branch.filter((b) => b !== branch)
-        : [...prev.branch, branch];
-      return { ...prev, branch: newBranches };
-    });
-  };
-
-  const handleSortChange = (sort) => {
-    setFilters((prev) => {
-      const newSort = prev.sort === sort ? "" : sort;
-      return { ...prev, sort: newSort };
-    });
-  };
-
-  const handleGenderChange = (gender) => {
-    setFilters((prev) => {
-      const newGender = prev.gender.includes(gender)
-        ? prev.gender.filter((g) => g !== gender)
-        : [...prev.gender, gender];
-      return { ...prev, gender: newGender };
-    });
-  };
-
-  const handleSpecialtyChange = (specialty) => {
-    setFilters((prev) => {
-      const newSpecialties = prev.specialtyID.includes(specialty)
-        ? prev.specialtyID.filter((s) => s !== specialty)
-        : [...prev.specialtyID, specialty];
-      return { ...prev, specialtyID: newSpecialties };
-    });
-  };
-
-  const handleFilterApply = () => {
-    console.log(filters);
-    const appliedFilters = Object.entries(filters).reduce(
-      (acc, [key, value]) => {
-        if (
-          (Array.isArray(value) && value.length > 0) ||
-          (!Array.isArray(value) && value)
-        ) {
-          acc[key] = value;
-        }
-        return acc;
-      },
-      {},
-    );
-
-    setSearchParams((params) => {
-      const updatedParams = new URLSearchParams(params);
-      Object.entries(filters).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          updatedParams.delete(key);
-          if (value.length > 0) {
-            value.forEach((v) => updatedParams.append(key, v));
-          }
-        } else {
-          if (value) {
-            updatedParams.set(key, value);
-          } else {
-            updatedParams.delete(key);
-          }
-        }
-      });
-      return updatedParams;
-    });
-    onFilterApply(appliedFilters);
-
-    console.log(appliedFilters);
+  const handleChangeFilter = (filter) => {
+    onFilterApply({ page: 1, ...filter });
   };
 
   const {
@@ -158,6 +80,7 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
     queryKey: ["branches"],
     queryFn: getAllBranches,
   });
+
   if (specialtiesLoading || branchesLoading)
     return (
       <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
@@ -189,15 +112,15 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
                   <Skeleton className="h-4 w-4" />
                 </div>
                 <div
-                  className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                  className={ ` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out` }
                 >
                   <div className="box mt-5 flex flex-col gap-2">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <div key={index} className="flex items-center space-x-2">
+                    { Array.from({ length: 5 }).map((_, index) => (
+                      <div key={ index } className="flex items-center space-x-2">
                         <Skeleton className="h-4 w-4" />
                         <Skeleton className="h-4 w-28" />
                       </div>
-                    ))}
+                    )) }
                   </div>
                 </div>
               </div>
@@ -244,7 +167,7 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
           <p
-            onClick={handleResetFilters}
+            onClick={ handleResetFilters }
             className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
           >
             Làm mới
@@ -258,27 +181,27 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-lowest"
-                checked={filters.sort === "discountPrice"}
-                onCheckedChange={() => handleSortChange("discountPrice")}
+                checked={ filters.sort === "discountPrice" }
+                onCheckedChange={ () => handleChangeFilter({ sort: 'discountPrice' }) }
               />
               <label
                 htmlFor="checkbox-lowest"
                 className="text-sm font-normal text-gray-600"
               >
-                Thấp nhất
+                Thấp đến cao
               </label>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-highest"
-                checked={filters.sort === "-discountPrice"}
-                onCheckedChange={() => handleSortChange("-discountPrice")}
+                checked={ filters.sort === "-discountPrice" }
+                onCheckedChange={ () => handleChangeFilter({ sort: '-discountPrice' }) }
               />
               <label
                 htmlFor="checkbox-highest"
                 className="text-sm font-normal text-gray-600"
               >
-                Cao nhất
+                Cao đến thấp
               </label>
             </div>
           </div>
@@ -288,13 +211,13 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             <div className="accordion">
               <button
                 className="inline-flex w-full items-center justify-between leading-8 text-gray-600 transition duration-500 hover:text-primary-600 active:text-primary-600"
-                onClick={toggleAccordion}
+                onClick={ toggleAccordion }
               >
                 <h5 className="text-base font-medium text-gray-900">
                   Chuyên khoa
                 </h5>
                 <svg
-                  className={`text-gray-900 transition duration-500 group-hover:text-primary-600 ${isOpen ? "rotate-180" : ""}`}
+                  className={ `text-gray-900 transition duration-500 group-hover:text-primary-600 ${isOpen ? "rotate-180" : ""}` }
                   width="22"
                   height="22"
                   viewBox="0 0 22 22"
@@ -311,29 +234,29 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
                 </svg>
               </button>
               <div
-                className={` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out`}
+                className={ ` ${isOpen ? "max-h-screen" : "max-h-0"} w-full overflow-hidden px-0 pr-4 transition-[max-height] duration-500 ease-in-out` }
               >
                 <div className="box mt-5 flex flex-col gap-2">
-                  {specialties.map((specialty) => (
+                  { specialties.map((specialty) => (
                     <div
-                      key={specialty._id}
+                      key={ specialty._id }
                       className="flex items-center space-x-2"
                     >
                       <Checkbox
-                        checked={filters.specialtyID.includes(specialty._id)}
-                        onCheckedChange={() =>
-                          handleSpecialtyChange(specialty._id)
+                        checked={ filters.specialtyID.includes(specialty._id) }
+                        onCheckedChange={ () =>
+                          handleChangeFilter({ specialtyID: specialty._id })
                         }
-                        id={`checkbox-${specialty._id}`}
+                        id={ `checkbox-${specialty._id}` }
                       />
                       <label
-                        htmlFor={`checkbox-${specialty._id}`}
+                        htmlFor={ `checkbox-${specialty._id}` }
                         className="text-sm font-normal text-gray-600"
                       >
-                        {specialty.name}
+                        { specialty.name }
                       </label>
                     </div>
-                  ))}
+                  )) }
                 </div>
               </div>
             </div>
@@ -344,24 +267,24 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             Chi nhánh
           </p>
           <div className="box mb-3 flex flex-col gap-2">
-            {branches.data.map((branch) => (
-              <div key={branch._id} className="flex items-center space-x-2">
+            { branches.data.map((branch) => (
+              <div key={ branch._id } className="flex items-center space-x-2">
                 <Checkbox
-                  id={`checkbox-${branch._id}`}
-                  checked={filters.branch.includes(branch._id)}
-                  onCheckedChange={() => handleBranchChange(branch._id)}
+                  id={ `checkbox-${branch._id}` }
+                  checked={ filters.branch.includes(branch._id) }
+                  onCheckedChange={ () => handleChangeFilter({ branch: branch._id }) }
                 />
                 <label
-                  htmlFor={`checkbox-${branch._id}`}
+                  htmlFor={ `checkbox-${branch._id}` }
                   className="text-sm font-normal leading-4 text-gray-600"
                 >
-                  {branch.name}
+                  { branch.name }
                 </label>
               </div>
-            ))}
+            )) }
           </div>
         </div>
-        <div className="mb-3 border-b pb-1">
+        <div className="pb-1">
           <p className="mb-3 text-base font-medium leading-6 text-black">
             Giới tính
           </p>
@@ -369,8 +292,8 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-male"
-                checked={filters.gender.includes("Nam")}
-                onCheckedChange={() => handleGenderChange("Nam")}
+                checked={ filters.gender.includes("Nam") }
+                onCheckedChange={ () => handleChangeFilter({ gender: "Nam" }) }
               />
               <label
                 htmlFor="checkbox-male"
@@ -382,8 +305,8 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             <div className="flex items-center space-x-2">
               <Checkbox
                 id="checkbox-female"
-                checked={filters.gender.includes("Nữ")}
-                onCheckedChange={() => handleGenderChange("Nữ")}
+                checked={ filters.gender.includes("Nữ") }
+                onCheckedChange={ () => handleChangeFilter({ gender: "Nữ" }) }
               />
               <label
                 htmlFor="checkbox-female"
@@ -394,35 +317,9 @@ const SidebarFilter = ({ onFilterApply, parentFilters }) => {
             </div>
           </div>
         </div>
-        <button
-          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary-500 py-2.5 text-xs font-semibold text-white shadow-sm shadow-transparent transition-all duration-500 hover:bg-primary-700 hover:shadow-sm"
-          onClick={handleFilterApply}
-        >
-          <svg
-            width="17"
-            height="16"
-            viewBox="0 0 17 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M14.4987 13.9997L13.1654 12.6663M13.832 7.33301C13.832 10.6467 11.1457 13.333 7.83203 13.333C4.51832 13.333 1.83203 10.6467 1.83203 7.33301C1.83203 4.0193 4.51832 1.33301 7.83203 1.33301C11.1457 1.33301 13.832 4.0193 13.832 7.33301Z"
-              stroke="white"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          Lọc
-        </button>
       </div>
     </div>
   );
-};
-
-SidebarFilter.propTypes = {
-  onFilterApply: PropTypes.func.isRequired,
-  onResetFilters: PropTypes.func,
 };
 
 export default SidebarFilter;

@@ -22,26 +22,13 @@ class DoctorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fullName' => 'required|string',
-            'phoneNumber' => 'nullable|string',
-            'email' => 'nullable|string|email',
-            'dateOfBirth' => 'nullable|date_format:Y-m-d',
-            'address' => 'nullable|array',
-            'address.province' => 'nullable|string',
-            'address.district' => 'nullable|string',
-            'address.ward' => 'nullable|string',
-            'address.street' => 'nullable|string',
-            'gender' => 'required|string',
-            'password' => 'required|string',
-            'avatar' => 'required|string',
-            'citizenIdentificationNumber' => 'required|numeric',
-            'isActivated' => 'required|boolean',
-            'specialtyID' => 'nullable|exists:Specialty,_id',
-            'title' => 'required|string',
-            'practicingCertificate' => 'required|string',
-            'yearsExperience' => 'required|numeric',
-            'detail' => 'required|string',
-            'isInternal' => 'required|boolean',
+            'userID' => 'required|exists:User,_id',
+            'specialtyID' => 'required|exists:Specialty,_id',
+            'title' => 'nullable|string',
+            'practicingCertificate' => 'nullable|string',
+            'yearsExperience' => 'nullable|numeric',
+            'detail' => 'nullable|string',
+            'isInternal' => 'nullable|boolean',
         ];
     }
 }

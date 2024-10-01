@@ -21,7 +21,4 @@ export const staffSchema = z.object({
   ethnicity: z.string().nonempty("Dân tộc không được để trống"),
   address: z.string().nonempty("Địa chỉ thường trú không được để trống"),
   status: z.enum(["active", "locked"], "Trạng thái tài khoản không hợp lệ"),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Mật khẩu và xác nhận mật khẩu không khớp",
-  path: ["confirmPassword"], // Đặt thông báo lỗi cho trường xác nhận mật khẩu
-});
+})

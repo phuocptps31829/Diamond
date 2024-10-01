@@ -19,8 +19,13 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getProvinces, getDistricts, getWards } from "@/services/provincesApi";
 
-
-export function SelectProvince({ control, name, errors, onProvinceChange, disabled }) {
+export function SelectProvince({
+  control,
+  name,
+  errors,
+  onProvinceChange,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
 
@@ -60,9 +65,8 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                 { field.value ? (
                   <>
                     {
-                      provinces.find(
-                        (province) => province._id === field.value,
-                      )?.name
+                      provinces.find((province) => province._id === field.value)
+                        ?.name
                     }
                   </>
                 ) : (
@@ -73,7 +77,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên tỉnh/thành phố" />
+                <CommandInput placeholder="Tên tỉnh/thành phố" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -83,11 +87,10 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         value={ province.name }
                         onSelect={ (currentValue) => {
                           const selectedProvince = provinces.find(
-                            (province) =>
-                              province.name === currentValue,
+                            (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince._id);
+                            field.onChange(selectedProvince.name);
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
@@ -96,7 +99,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === province._id
+                            field.value === province.name
                               ? "opacity-100"
                               : "opacity-0",
                           ) }
@@ -125,7 +128,7 @@ export function SelectDistrict({
   provinceId,
   onDistrictChange,
   setValue,
-  disabled
+  disabled,
 }) {
   const [open, setOpen] = React.useState(false);
   const [districts, setDistricts] = useState([]);
@@ -165,7 +168,6 @@ export function SelectDistrict({
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -173,9 +175,8 @@ export function SelectDistrict({
                 ) }
               >
                 { field.value && districts.length > 0 ? (
-                  districts.find(
-                    (district) => district._id === field.value,
-                  )?.name
+                  districts.find((district) => district._id === field.value)
+                    ?.name
                 ) : (
                   <span className="text-gray-600">Chọn quận/huyện</span>
                 ) }
@@ -184,7 +185,7 @@ export function SelectDistrict({
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên quận/huyện" />
+                <CommandInput placeholder="Tên quận/huyện" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -194,11 +195,10 @@ export function SelectDistrict({
                         value={ district.name }
                         onSelect={ (currentValue) => {
                           const selectedDistrict = districts.find(
-                            (district) =>
-                              district.name === currentValue,
+                            (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict._id);
+                            field.onChange(selectedDistrict.name);
                             onDistrictChange(selectedDistrict._id);
                           }
                           setOpen(false);
@@ -229,7 +229,7 @@ export function SelectDistrict({
   );
 }
 
-export function SelectWard({ control, name, errors, districtId, setValue,disabled }) {
+export function SelectWard({ control, name, errors, districtId, setValue, disabled }) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
@@ -265,7 +265,6 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -282,7 +281,7 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên phường/xã" />
+                <CommandInput placeholder="Tên phường/xã" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -295,7 +294,7 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
                             (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard._id);
+                            field.onChange(selectedWard.name);
                           }
                           setOpen(false);
                         } }
@@ -303,7 +302,7 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === ward._id
+                            field.value === ward.name
                               ? "opacity-100"
                               : "opacity-0",
                           ) }

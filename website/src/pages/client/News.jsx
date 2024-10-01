@@ -10,7 +10,7 @@ export default function News() {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn:  getAllNews,
+    queryFn: getAllNews,
   });
 
 
@@ -21,8 +21,8 @@ export default function News() {
   return (
     <div className="bg-[#E8F2F7]">
       <NewsBanner />
-      <NewsAbove news={data?.data} isLoading={isLoading} />
-      <NewsBelow news={data?.data} isLoading={isLoading} />
+      <NewsAbove news={ data?.data } isLoading={ isLoading } />
+      <NewsBelow news={ data?.data } isLoading={ isLoading } />
     </div>
   );
 }

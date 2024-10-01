@@ -11,26 +11,24 @@ import { useQuery } from "@tanstack/react-query";
 import { setUserProfile } from "@/redux/authSlice";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/Input";
+import Cookies from "js-cookie";
 
 const UserInfoForm = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.auth.userProfile);
-  const token = localStorage.getItem("accessToken");
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: "userProfile",
-    queryFn: () => getProfilePatients(token),
-    enabled: !!token && !!profile,
-    onSuccess: (data) => {
-      dispatch(setUserProfile(data));
-    },
+  const { data: profileFetched, error, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: () => getProfilePatients(),
+    enabled: !!profile
   });
-  // console.log(data);
+  console.log(profileFetched);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
     reset,
   } = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -47,20 +45,25 @@ const UserInfoForm = () => {
     },
   });
 
-
   useEffect(() => {
-    if (profile) {
-      reset(profile);
-    }
-  }, [profile, reset]);
+    dispatch(setUserProfile(profileFetched));
+
+    setValue('fullName', profileFetched?.fullName);
+    setValue('phoneNumber', profileFetched?.phoneNumber);
+    setValue('email', profileFetched?.email);
+    setValue('occupation', profileFetched?.occupation);
+    setValue('birthDate', profileFetched?.birthDate);
+    setValue('ethnicity', profileFetched?.ethnicity);
+    setValue('insuranceNumber', profileFetched?.insuranceNumber);
+  }, [profileFetched, dispatch, setValue]);
 
   const onSubmit = (data) => {
     console.log("Form submitted");
     console.log(data);
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching profile data.</p>;
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error fetching profile data.</p>;
 
   return (
     <div className="w-full p-6">
@@ -152,7 +155,7 @@ const UserInfoForm = () => {
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-              <AvatarImage src={ profile?.avatar || "" } className="object-cover" />
+              <AvatarImage src={ profile?.avatar || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">

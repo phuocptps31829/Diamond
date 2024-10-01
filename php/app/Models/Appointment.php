@@ -23,15 +23,12 @@ class Appointment extends Model
     ];
 
     protected $casts = [
-        'patientID' => 'object_id',
-        'serviceID' => 'object_id',
         'medicinePackageID' => 'string',
         'WorkScheduleID' => 'string',
         'appointmentHelpID' => 'string',
         'type' => 'string',
         'time' => 'string',
         'status' => 'string',
-        'payment' => 'array',
         'isDeleted' => 'boolean',
     ];
     public function setPatientIDAttribute($value)
@@ -53,6 +50,11 @@ class Appointment extends Model
     public function setAppointmentHelpIDAttribute($value)
     {
         $this->attributes['appointmentHelpID'] = new ObjectId($value);
+    }
+
+    public function setPaymentAttribute($value)
+    {
+        $this->attributes['payment'] = $value;
     }
     protected $attributes = [
         'isDeleted' => false,

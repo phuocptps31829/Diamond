@@ -30,6 +30,7 @@ export default function ServiceItem({
   const dispatch = useDispatch();
   const { toast } = useToast();
   const cartItems = useSelector((state) => state.cart.cart);
+  const profileCustomer = useSelector((state) => state.auth.userProfile);
   const [isInCart, setIsInCart] = useState(false);
 
   useEffect(() => {
@@ -38,13 +39,24 @@ export default function ServiceItem({
   }, [cartItems, _id]);
 
   const handleAddClick = () => {
+    if (!profileCustomer) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng đăng nhập để đặt lịch",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+
     if (!isInCart) {
-      dispatch(addToCart({ id: _id, name, specialtyID, price }));
+      dispatch(addToCart({ id: _id, name, specialtyID, price, image }));
       dispatch(
         initBookingDetails({
           serviceId: _id,
           bookingDetail: {
             specialtyID,
+            name,
+            image,
             price: price || 0,
             selectedBranchId: "",
             selectedDoctorId: "",

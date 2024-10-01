@@ -1,14 +1,19 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import { MdAddShoppingCart } from "react-icons/md";
 import { motion, useAnimation } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "./Toast";
 
 const Balloon = () => {
   const cartItems = useSelector((state) => state.cart.cart);
+  const userProfile = useSelector((state) => state.auth.userProfile);
   const [productCount, setProductCount] = useState(0);
   const prevCountRef = useRef(0);
   const controls = useAnimation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const newCount = cartItems.length || 0;
@@ -23,8 +28,21 @@ const Balloon = () => {
     prevCountRef.current = newCount;
   }, [cartItems, controls]);
 
+  const handleNavigate = () => {
+    if (userProfile) {
+      navigate('/services-booking');
+    } else {
+      toast({
+        variant: "warning",
+        title: "Vui lòng đăng nhập để đặt lịch!",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+    }
+  };
+
   return (
-    <Link to="/services-booking">
+    <div onClick={ handleNavigate }>
       <motion.div
         className="fixed bottom-32 right-5 flex space-x-4"
         id="shopping-cart"
@@ -49,8 +67,7 @@ const Balloon = () => {
           ) }
         </div>
       </motion.div>
-    </Link>
+    </div>
   );
 };
-
 export default Balloon;

@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    accessToken: localStorage.getItem("accessToken") || null,
+    accessToken: Cookies.get("accessToken") || null,
     userProfile: null,
   },
   reducers: {
@@ -19,7 +20,8 @@ const authSlice = createSlice({
     logoutAction: (state) => {
       state.accessToken = null;
       state.userProfile = null;
-      localStorage.removeItem("accessToken");
+      Cookies.remove("accessToken");
+      Cookies.remove("refreshToken");
     },
   },
 });

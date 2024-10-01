@@ -18,8 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getDoctorsByBranch } from "@/services/doctorsApi";
-import { useDispatch, useSelector } from "react-redux";
-import { changeBookingDetails } from "@/redux/bookingSlice";
+import { toast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
 
 export default function SelectDoctor({
   control,
@@ -28,7 +28,6 @@ export default function SelectDoctor({
   branchId,
   onChange,
   specialtyID,
-  setValue,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
@@ -49,8 +48,24 @@ export default function SelectDoctor({
     fetchDoctors();
   }, [branchId, specialtyID]);
 
+  useEffect(() => {
+    errors[name] = undefined;
+  }, [branchId, specialtyID, errors, name]);
+
+  const handleClick = () => {
+    if (!branchId) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng chọn chi nhánh",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+  };
+
   return (
-    <div>
+    <div onClick={ handleClick }>
       <Controller
         control={ control }
         name={ name }
@@ -66,6 +81,7 @@ export default function SelectDoctor({
                   className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500",
+                    branchId ? 'pointer-events-auto' : 'pointer-events-none'
                   ) }
                 >
                   { field.value ? (

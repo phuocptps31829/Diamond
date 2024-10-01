@@ -63,12 +63,29 @@ use App\Http\Requests\UserRequest;
  *         required=true,
  *         @OA\JsonContent(
  *             required={""},
+ *             @OA\Property(property="fullName", type="string", example="BS moi"),
+ *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
+ *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
+ *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
+ *             @OA\Property(property="gender", type="string", example="Nam"),
+ *             @OA\Property(property="password", type="string", example="123456"),
+ *             @OA\Property(property="avatar", type="string", example="avatar"),
+ *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
+ *             @OA\Property(property="isActivated", type="boolean", example=true),
  *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="Title of the new Doctor"),
- *             @OA\Property(property="image", type="string", example="Image of the new Doctor"),
- *             @OA\Property(property="content", type="string", example="content of the new Doctor"),
- *             @OA\Property(property="author", type="string", example="author of the new Doctor"),
- *             @OA\Property(property="isHidden", type="boolean", example=false),
+ *             @OA\Property(property="title", type="string", example="title"),
+ *             @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
+ *             @OA\Property(property="yearsExperience", type="number", example=2),
+ *             @OA\Property(property="detail", type="string", example="detail"),
+ *             @OA\Property(property="isInternal", type="boolean", example=true),
+ *             @OA\Property(
+ *                  property="address",
+ *                  type="object",
+ *                  @OA\Property(property="province", type="string", example="province"),
+ *                  @OA\Property(property="district", type="string", example="106.660172"),
+ *                  @OA\Property(property="ward", type="string", example="106.660172"),
+ *                  @OA\Property(property="street", type="string", example="106.660172"),
+ *               ),
  *         )
  *     ),
  *     @OA\Response(
@@ -91,12 +108,29 @@ use App\Http\Requests\UserRequest;
  *         required=true,
  *         @OA\JsonContent(
  *             required={""},
+ *             @OA\Property(property="fullName", type="string", example="BS moi"),
+ *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
+ *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
+ *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
+ *             @OA\Property(property="gender", type="string", example="Nam"),
+ *             @OA\Property(property="password", type="string", example="123456"),
+ *             @OA\Property(property="avatar", type="string", example="avatar"),
+ *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
+ *             @OA\Property(property="isActivated", type="boolean", example=true),
  *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="Title of the new Doctor"),
- *             @OA\Property(property="image", type="string", example="Image of the new Doctor"),
- *             @OA\Property(property="content", type="string", example="content of the new Doctor"),
- *             @OA\Property(property="author", type="string", example="author of the new Doctor"),
- *             @OA\Property(property="isHidden", type="boolean", example=false),
+ *             @OA\Property(property="title", type="string", example="title"),
+ *             @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
+ *             @OA\Property(property="yearsExperience", type="number", example=2),
+ *             @OA\Property(property="detail", type="string", example="detail"),
+ *             @OA\Property(property="isInternal", type="boolean", example=true),
+ *              @OA\Property(
+ *                  property="address",
+ *                  type="object",
+ *                  @OA\Property(property="province", type="string", example="province"),
+ *                  @OA\Property(property="district", type="string", example="106.660172"),
+ *                  @OA\Property(property="ward", type="string", example="106.660172"),
+ *                  @OA\Property(property="street", type="string", example="106.660172"),
+ *               ),
  *         )
  *     ),
  *     @OA\Response(
@@ -133,19 +167,15 @@ class DoctorController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Doctor::where('isDeleted', false)->count();
+            // $totalRecords = User::count();
 
-            $Doctors = Doctor::where('isDeleted', false)
-                ->skip($skip)
-                ->take($limit)
-                ->orderBy(key($sortOptions), current($sortOptions))
-                ->get();
+            $Doctors = json_decode('{"province":"province","district":"106.660172","ward":"106.660172","street":"106.660172"}');
 
             return response()->json([
                 'page' => $page,
                 'message' => 'Doctors retrieved successfully.',
                 'data' => $Doctors,
-                'totalRecords' => $totalRecords,
+                'totalRecords' => 3,
             ], 200);
         } catch (\Exception $e) {
 
@@ -185,13 +215,12 @@ class DoctorController extends Controller
     {
         try {
             $doctorRequest = new DoctorRequest();
-            // 123
-            $user = 123;
             $userRequest = new UserRequest();
 
             $user = User::create($request->validate($userRequest->rules(), $userRequest->messages()));
+            $request->merge(['userID' => $user->_id]);
             $doctor = Doctor::create($request->validate($doctorRequest->rules(), $doctorRequest->messages()));
-
+            $doctor->user = $user;
             return response()->json([
                 'status' => 'success',
                 'message' => 'Doctor created successfully.',

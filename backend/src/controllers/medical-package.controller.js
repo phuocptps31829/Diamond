@@ -68,13 +68,6 @@ const getAllMedicalPackages = async (req, res, next) => {
                     isDeleted: false,
                     ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
                 }
-            },
-
-            {
-                $skip: skip
-            },
-            {
-                $limit: limitDocuments
             }
         ];
 
@@ -103,6 +96,14 @@ const getAllMedicalPackages = async (req, res, next) => {
         countPipeline.push({
             $count: "totalRecords"
         });
+        pipeline.push(
+            {
+                $skip: skip
+            },
+            {
+                $limit: limitDocuments
+            }
+        );
 
         const totalRecords = await MedicalPackageModel.aggregate(countPipeline);
 
