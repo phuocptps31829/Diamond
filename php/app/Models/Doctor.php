@@ -18,7 +18,8 @@ class Doctor extends Model
         'practicingCertificate',
         'yearsExperience',
         'detail',
-        'isInternal'
+        'isInternal',
+        'isActivated'
     ];
 
     protected $casts = [
@@ -27,6 +28,7 @@ class Doctor extends Model
         'yearsExperience' => 'integer',
         'detail' => 'string',
         'isInternal' => 'boolean',
+        'isActivated' => 'boolean',
     ];
 
     public function setUserIDAttribute($value)

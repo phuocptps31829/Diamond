@@ -30,7 +30,7 @@ class User extends Authenticatable
         'citizenIdentificationNumber',
         'role',
         'otherInfo',
-        'isActive',
+        'isActivated',
         'isDeleted',
     ];
 
@@ -61,7 +61,6 @@ class User extends Authenticatable
         'gender' => 'string',
         'avatar' => 'string',
         'citizenIdentificationNumber' => 'string',
-        'isActive' => 'boolean',
         'isDeleted' => 'boolean',
     ];
     public function setRoleAttribute($value)
@@ -71,6 +70,10 @@ class User extends Authenticatable
     public function setAddressAttribute($value)
     {
         $this->attributes['address'] = $value;
+    }
+    public function setIsActivatedAttribute($value)
+    {
+        $this->attributes['isActivated'] = $value;
     }
     public function setOtherInfoAttribute($value)
     {

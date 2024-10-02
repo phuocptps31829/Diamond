@@ -24,6 +24,7 @@ class ServiceRequest extends FormRequest
         return [
             'specialtyID' => 'required|exists:Specialty,_id',
             'name' => 'required|string',
+            'slug' => 'required|string',
             'image' => 'required|string',
             'price' => 'required|numeric',
             'shortDescription' => 'required|string',
@@ -39,6 +40,8 @@ class ServiceRequest extends FormRequest
             'specialtyID.required' => 'Specialty ID is required',
             'specialtyID.exists' => 'The Specialty ID is invalid.',
             'name.required' => 'Name is required',
+            'slug.string' => 'Slug should be a string',
+            'slug.required' => 'Slug is required',
             'name.string' => 'Name should be a string',
             'image.required' => 'Image is required',
             'image.string' => 'Image should be a string',

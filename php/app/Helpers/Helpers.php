@@ -5,9 +5,38 @@ use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Storage;
 
 if (!function_exists('searchInTable')) {
-    function checkSlug($title, $table)
+    function checkValidImage($file)
+    {
+        if (!$file || !$file->isValid()) {
+            return 'File does not exist.';
+        }
+
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+        $mimeType = $file->getMimeType();
+        $extension = $file->getClientOriginalExtension();
+
+        if (!in_array($mimeType, $allowedMimeTypes) || !in_array(strtolower($extension), $allowedExtensions)) {
+            return 'The file must be jpg, jpeg, png or gif.';
+        }
+        return null;
+    }
+    function uploadImage($image, $nameFolder = null)
+    {
+        $newName = time() . '_' .   $image->getClientOriginalName();
+        if ($nameFolder) {
+            $image->move(public_path('images/' . $nameFolder . '/'), $newName);
+        } else {
+            $image->move('images/', $newName);
+        }
+        return $newName;
+    }
+
+    function checkSlug($title, $table, $id = null)
     {
 
         $slug = Str::slug($title);

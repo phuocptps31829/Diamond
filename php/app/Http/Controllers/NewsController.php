@@ -59,20 +59,24 @@ use App\Http\Requests\NewsRequest;
  *     summary="Add a News",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(
- *             required={""},
- *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="Title of the new News"),
- *             @OA\Property(property="image", type="string", example="Image of the new News"),
- *             @OA\Property(property="content", type="string", example="content of the new News"),
- *             @OA\Property(property="author", type="string", example="author of the new News"),
- *             @OA\Property(property="isHidden", type="boolean", example=false),
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 required={},
+ *                 @OA\Property(property="specialtyID", type="string", example="1"),
+ *                 @OA\Property(property="title", type="string", example="Title of the new News"),
+ *                 @OA\Property(property="file", type="string", format="binary", description="Image file"),
+ *                 @OA\Property(property="content", type="string", example="Content of the new News"),
+ *                 @OA\Property(property="author", type="string", example="Author of the new News"),
+ *                 @OA\Property(property="isHidden", type="boolean", example=false)
+ *             )
  *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successful response",
- *     ),
+ *         description="Successful response"
+ *     )
  * )
  *  @OA\put(
  *     path="/api/v1/news/update/{id}",
@@ -183,11 +187,20 @@ class NewsController extends Controller
     {
         try {
             $NewsRequest = new NewsRequest();
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
 
             $checkSlug = checkSlug($request->title, 'News');
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
+
             $News = News::create($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
 
             return response()->json([
@@ -213,6 +226,21 @@ class NewsController extends Controller
 
             if (!$News) {
                 return createError(404, 'News not found');
+            }
+
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
+
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
+
+            $checkSlug = checkSlug($request->title, 'News', $id);
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
             }
             $NewsRequest = new NewsRequest();
 

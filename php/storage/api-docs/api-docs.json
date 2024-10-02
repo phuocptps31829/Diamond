@@ -772,13 +772,11 @@
                 "summary": "Add a Doctor",
                 "operationId": "2a727d65e8a19082e1b9c4083e3c74b8",
                 "requestBody": {
-                    "required": true,
+                    "required": false,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    ""
-                                ],
+                                "required": [],
                                 "properties": {
                                     "fullName": {
                                         "type": "string",
@@ -798,6 +796,7 @@
                                     },
                                     "dateOfBirth": {
                                         "type": "string",
+                                        "format": "date",
                                         "example": "2000-01-01"
                                     },
                                     "gender": {
@@ -808,9 +807,10 @@
                                         "type": "string",
                                         "example": "123456"
                                     },
-                                    "avatar": {
+                                    "file": {
+                                        "description": "File ảnh đại diện của bác sĩ",
                                         "type": "string",
-                                        "example": "avatar"
+                                        "format": "binary"
                                     },
                                     "citizenIdentificationNumber": {
                                         "type": "number",
@@ -820,55 +820,45 @@
                                         "type": "boolean",
                                         "example": true
                                     },
-                                    "address": {
-                                        "properties": {
-                                            "province": {
-                                                "type": "string",
-                                                "example": "province"
-                                            },
-                                            "district": {
-                                                "type": "string",
-                                                "example": "106.660172"
-                                            },
-                                            "ward": {
-                                                "type": "string",
-                                                "example": "106.660172"
-                                            },
-                                            "street": {
-                                                "type": "string",
-                                                "example": "106.660172"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "address[province]": {
+                                        "type": "string",
+                                        "example": "province"
                                     },
-                                    "otherInfo": {
-                                        "properties": {
-                                            "specialtyID": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "title": {
-                                                "type": "string",
-                                                "example": "title"
-                                            },
-                                            "practicingCertificate": {
-                                                "type": "string",
-                                                "example": "practicingCertificate"
-                                            },
-                                            "yearsExperience": {
-                                                "type": "number",
-                                                "example": 2
-                                            },
-                                            "detail": {
-                                                "type": "string",
-                                                "example": "detail"
-                                            },
-                                            "isInternal": {
-                                                "type": "boolean",
-                                                "example": true
-                                            }
-                                        },
-                                        "type": "object"
+                                    "address[district]": {
+                                        "type": "string",
+                                        "example": "district"
+                                    },
+                                    "address[ward]": {
+                                        "type": "string",
+                                        "example": "ward"
+                                    },
+                                    "address[street]": {
+                                        "type": "string",
+                                        "example": "street"
+                                    },
+                                    "otherInfo[specialtyID]": {
+                                        "type": "string",
+                                        "example": "specialtyID"
+                                    },
+                                    "otherInfo[title]": {
+                                        "type": "string",
+                                        "example": "title"
+                                    },
+                                    "otherInfo[practicingCertificate]": {
+                                        "type": "string",
+                                        "example": "practicingCertificate"
+                                    },
+                                    "otherInfo[yearsExperience]": {
+                                        "type": "number",
+                                        "example": 2
+                                    },
+                                    "otherInfo[detail]": {
+                                        "type": "string",
+                                        "example": "detail"
+                                    },
+                                    "otherInfo[isInternal]": {
+                                        "type": "boolean",
+                                        "example": true
                                     }
                                 },
                                 "type": "object"
@@ -947,8 +937,7 @@
                                         "example": 34256234
                                     },
                                     "isActivated": {
-                                        "type": "boolean",
-                                        "example": true
+                                        "type": "boolean"
                                     },
                                     "address": {
                                         "properties": {
@@ -994,8 +983,7 @@
                                                 "example": "detail"
                                             },
                                             "isInternal": {
-                                                "type": "boolean",
-                                                "example": true
+                                                "type": "boolean"
                                             }
                                         },
                                         "type": "object"
@@ -2006,31 +1994,30 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    ""
-                                ],
+                                "required": [],
                                 "properties": {
                                     "specialtyID": {
                                         "type": "string",
-                                        "example": ""
+                                        "example": "1"
                                     },
                                     "title": {
                                         "type": "string",
                                         "example": "Title of the new News"
                                     },
-                                    "image": {
+                                    "file": {
+                                        "description": "Image file",
                                         "type": "string",
-                                        "example": "Image of the new News"
+                                        "format": "binary"
                                     },
                                     "content": {
                                         "type": "string",
-                                        "example": "content of the new News"
+                                        "example": "Content of the new News"
                                     },
                                     "author": {
                                         "type": "string",
-                                        "example": "author of the new News"
+                                        "example": "Author of the new News"
                                     },
                                     "isHidden": {
                                         "type": "boolean",

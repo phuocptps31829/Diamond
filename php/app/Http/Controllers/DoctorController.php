@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\DoctorRequest;
 use App\Http\Requests\UserRequest;
+use Hamcrest\Type\IsString;
 
 /**
  * @OA\Get(
@@ -59,37 +60,37 @@ use App\Http\Requests\UserRequest;
  *     tags={"Doctor Routes"},
  *     summary="Add a Doctor",
  *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={""},
- *             @OA\Property(property="fullName", type="string", example="BS moi"),
- *             @OA\Property(property="role", type="string", example="1"),
- *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
- *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
- *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
- *             @OA\Property(property="gender", type="string", example="Nam"),
- *             @OA\Property(property="password", type="string", example="123456"),
- *             @OA\Property(property="avatar", type="string", example="avatar"),
- *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
- *             @OA\Property(property="isActivated", type="boolean", example=true),
- *              @OA\Property(
- *                  property="address",
- *                  type="object",
- *                  @OA\Property(property="province", type="string", example="province"),
- *                  @OA\Property(property="district", type="string", example="106.660172"),
- *                  @OA\Property(property="ward", type="string", example="106.660172"),
- *                  @OA\Property(property="street", type="string", example="106.660172"),
- *               ),
- *  *              @OA\Property(
- *                  property="otherInfo",
- *                  type="object",
- *                  @OA\Property(property="specialtyID", type="string", example=""),
- *                  @OA\Property(property="title", type="string", example="title"),
- *                  @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
- *                  @OA\Property(property="yearsExperience", type="number", example=2),
- *                  @OA\Property(property="detail", type="string", example="detail"),
- *                  @OA\Property(property="isInternal", type="boolean", example=true),
- *               ),
+ *         required=false,
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 required={},
+ *                 @OA\Property(property="fullName", type="string", example="BS moi"),
+ *                 @OA\Property(property="role", type="string", example="1"),
+ *                 @OA\Property(property="phoneNumber", type="string", example="0300099989"),
+ *                 @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
+ *                 @OA\Property(property="dateOfBirth", type="string", format="date", example="2000-01-01"),
+ *                 @OA\Property(property="gender", type="string", example="Nam"),
+ *                 @OA\Property(property="password", type="string", example="123456"),
+ *                 @OA\Property(
+ *                     property="file",
+ *                     type="string",
+ *                     format="binary",
+ *                     description="File ảnh đại diện của bác sĩ"
+ *                 ),
+ *                 @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
+ *                 @OA\Property(property="isActivated", type="boolean", example=true),
+ *                 @OA\Property(property="address[province]", type="string", example="province"),
+ *                 @OA\Property(property="address[district]", type="string", example="district"),
+ *                 @OA\Property(property="address[ward]", type="string", example="ward"),
+ *                 @OA\Property(property="address[street]", type="string", example="street"),
+ *                  @OA\Property(property="otherInfo[specialtyID]", type="string", example="specialtyID"),
+ *                  @OA\Property(property="otherInfo[title]", type="string", example="title"),
+ *                  @OA\Property(property="otherInfo[practicingCertificate]", type="string", example="practicingCertificate"),
+ *                  @OA\Property(property="otherInfo[yearsExperience]", type="number", example=2),
+ *                  @OA\Property(property="otherInfo[detail]", type="string", example="detail"),
+ *                  @OA\Property(property="otherInfo[isInternal]", type="boolean", example=true),
+ *             )
  *         )
  *     ),
  *     @OA\Response(
@@ -121,7 +122,7 @@ use App\Http\Requests\UserRequest;
  *             @OA\Property(property="password", type="string", example="123456"),
  *             @OA\Property(property="avatar", type="string", example="avatar"),
  *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
- *             @OA\Property(property="isActivated", type="boolean", example=true),
+ *             @OA\Property(property="isActivated", type="boolean", ),
  *              @OA\Property(
  *                  property="address",
  *                  type="object",
@@ -130,7 +131,7 @@ use App\Http\Requests\UserRequest;
  *                  @OA\Property(property="ward", type="string", example="106.660172"),
  *                  @OA\Property(property="street", type="string", example="106.660172"),
  *               ),
- *  *              @OA\Property(
+ *              @OA\Property(
  *                  property="otherInfo",
  *                  type="object",
  *                  @OA\Property(property="specialtyID", type="string", example=""),
@@ -138,7 +139,7 @@ use App\Http\Requests\UserRequest;
  *                  @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
  *                  @OA\Property(property="yearsExperience", type="number", example=2),
  *                  @OA\Property(property="detail", type="string", example="detail"),
- *                  @OA\Property(property="isInternal", type="boolean", example=true),
+ *                  @OA\Property(property="isInternal", type="boolean", ),
  *               ),
  *         )
  *     ),
@@ -225,12 +226,28 @@ class DoctorController extends Controller
     public function createDoctor(Request $request)
     {
         try {
-            $doctorRequest = new DoctorRequest();
-            $check = checkPhoneAndEmail($request->phoneNumber, $request->email);
+            $otherInfo = $request->input('otherInfo');
+            if (isset($otherInfo['isInternal'])) {
+                $otherInfo['isInternal'] = filter_var($otherInfo['isInternal'], FILTER_VALIDATE_BOOLEAN);
+                $request->merge(['otherInfo' => $otherInfo]);
+            }
+            $isActivated = filter_var($request->input('isActivated'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isActivated' => $isActivated]);
 
+            $doctorRequest = new DoctorRequest();
+            $phoneNumber = $request->phoneNumber;
+            $email = $request->email;
+            $check = checkPhoneAndEmail($phoneNumber, $email);
             if ($check) {
                 return createError(500, $check);
             }
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $avatar = uploadImage($request->file);
+            $request->merge(['avatar' => $avatar]);
+
             $doctor = User::create($request->validate($doctorRequest->rules(), $doctorRequest->messages()));
 
             return response()->json([
