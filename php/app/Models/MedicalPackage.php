@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Mongodb\Laravel\Eloquent\Model;
 use MongoDB\BSON\ObjectId;
+use Illuminate\Support\Str;
 
 class MedicalPackage extends Model
 {
@@ -15,7 +16,8 @@ class MedicalPackage extends Model
         'image',
         'shortDescription',
         'details',
-        'services',
+        'slug',
+        'service',
         'isHidden',
         'isDeleted',
     ];
@@ -30,6 +32,10 @@ class MedicalPackage extends Model
         'isDeleted' => 'boolean',
     ];
 
+    public static function createSlug($name)
+    {
+        return Str::slug($name);
+    }
     public function setSpecialtyIDAttribute($value)
     {
         $this->attributes['specialtyID'] = new ObjectId($value);

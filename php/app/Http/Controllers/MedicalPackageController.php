@@ -207,6 +207,23 @@ class MedicalPackageController extends Controller
     {
         try {
             $MedicalPackageRequest = new MedicalPackageRequest();
+
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
+
+            $checkSlug = checkSlug($request->title, 'MedicalPackage');
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
+
             $MedicalPackage = MedicalPackage::create($request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages()));
 
             return response()->json([
@@ -227,7 +244,21 @@ class MedicalPackageController extends Controller
     {
         try {
             $id = $request->route('id');
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
 
+            $checkSlug = checkSlug($request->title, 'MedicalPackage');
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
             $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$MedicalPackage) {

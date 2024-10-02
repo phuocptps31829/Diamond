@@ -22,13 +22,13 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required|exists:Specialty,_id',
+            'specialtyID' => 'required',
             'name' => 'required|string',
             'slug' => 'required|string',
             'image' => 'required|string',
             'price' => 'required|numeric',
             'shortDescription' => 'required|string',
-            'detail' => 'required|string',
+            'details' => 'required|string',
             'discountPrice' => 'nullable|numeric',
             'duration' => 'required|numeric',
             'isHidden' => 'required|boolean',
@@ -49,8 +49,8 @@ class ServiceRequest extends FormRequest
             'price.numeric' => 'Price should be a number',
             'shortDescription.required' => 'Short description is required',
             'shortDescription.string' => 'Short description should be a string',
-            'detail.required' => 'Details are required',
-            'detail.string' => 'Details should be a string',
+            'details.required' => 'Details are required',
+            'details.string' => 'Details should be a string',
             'discountPrice.numeric' => 'Discount Price should be a number',
             'isHidden.required' => 'isHidden is required',
             'isHidden.boolean' => 'isHidden should be a boolean',

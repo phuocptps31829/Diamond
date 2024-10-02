@@ -189,6 +189,22 @@ class ServiceController extends Controller
     {
         try {
             $ServiceRequest = new ServiceRequest();
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
+
+            $checkSlug = checkSlug($request->title, 'Service');
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
+
             $Service = Service::create($request->validate($ServiceRequest->rules(), $ServiceRequest->messages()));
 
             return response()->json([
@@ -209,6 +225,21 @@ class ServiceController extends Controller
     {
         try {
             $id = $request->route('id');
+            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
+            $request->merge(['isHidden' => $isHidden]);
+
+            $checkSlug = checkSlug($request->title, 'Service');
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
+            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+                return createError(400, 'No image uploaded!');
+            }
+
+            $image = uploadImage($request->file);
+            $request->merge(['image' => $image]);
 
             $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
 

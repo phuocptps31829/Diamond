@@ -2041,13 +2041,13 @@
                 "tags": [
                     "News Routes"
                 ],
-                "summary": "Update News",
+                "summary": "Update a News by ID",
                 "operationId": "8eb03544470fd03b6c2978d42733b0c3",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "object id",
+                        "description": "ID of the news item to update",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -2057,31 +2057,30 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    ""
-                                ],
+                                "required": [],
                                 "properties": {
                                     "specialtyID": {
                                         "type": "string",
-                                        "example": ""
+                                        "example": "1"
                                     },
                                     "title": {
                                         "type": "string",
                                         "example": "Title of the new News"
                                     },
-                                    "image": {
+                                    "file": {
+                                        "description": "Image file",
                                         "type": "string",
-                                        "example": "Image of the new News"
+                                        "format": "binary"
                                     },
                                     "content": {
                                         "type": "string",
-                                        "example": "content of the new News"
+                                        "example": "Content of the new News"
                                     },
                                     "author": {
                                         "type": "string",
-                                        "example": "author of the new News"
+                                        "example": "Author of the new News"
                                     },
                                     "isHidden": {
                                         "type": "boolean",
