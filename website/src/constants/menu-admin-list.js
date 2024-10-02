@@ -7,6 +7,7 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
+import { CgAlignLeft } from "react-icons/cg";
 
 export const getMenuList = (pathname) => [
   {
@@ -96,6 +97,29 @@ export const getMenuList = (pathname) => [
             href: "/admin/staffs/create",
             label: "Thêm nhân viên",
             active: pathname === "/admin/staffs/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    menus: [
+      {
+        href: "",
+        label: "Chuyên khoa",
+        active: pathname === "/admin/specialties/list",
+        icon: CgAlignLeft,
+        submenus: [
+          {
+            href: "/admin/specialties/list",
+            label: "Danh sách chuyên khoa",
+            active: pathname === "/admin/specialties/list",
+          },
+          {
+            href: "/admin/specialties/create",
+            label: "Thêm chuyên khoa",
+            active: pathname === "/admin/specialties/create",
           },
         ],
       },

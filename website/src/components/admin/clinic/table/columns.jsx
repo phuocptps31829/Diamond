@@ -51,7 +51,7 @@ export const columns = [
         </div>,
     },
     {
-        accessorKey: "specialty",
+        accessorKey: "specialtyName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -62,7 +62,7 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.specialty}</div>,
+        cell: ({ row }) => <div className="">{row.original.specialtyName}</div>,
     },
     {
         accessorKey: "branchName",
