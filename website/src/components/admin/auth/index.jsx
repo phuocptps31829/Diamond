@@ -26,7 +26,7 @@ const AuthComponent = () => {
 
     return (
         <div className="bg-[#E8F2F7] h-dvh flex items-center justify-center">
-            <div className="bg-white w-[70%] rounded-lg flex items-start justify-center p-10">
+            <div className="bg-white w-[70%] rounded-xl flex items-start justify-center p-10">
                 <div className="flex-1 h-full pr-10">
                     <div className="relative w-60 mb-2 items-center">
                         <Link to={ "/" }>

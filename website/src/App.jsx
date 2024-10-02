@@ -60,6 +60,7 @@ import StaffsListPage from "./pages/admin/Staff";
 import AuthPage from "./pages/admin/Auth";
 import RolesListPage from "./pages/admin/Roles";
 import CreateRolePage from "./pages/admin/Roles/CreateRolePage";
+import UpdateRoleForm from "./components/admin/role/forms/FormUpdate";
 
 const router = createBrowserRouter([
   {
@@ -319,7 +320,11 @@ const router = createBrowserRouter([
       {
         path: 'roles/create',
         element: <CreateRolePage />
-      }
+      },
+      {
+        path: 'roles/update/:id',
+        element: <UpdateRoleForm />
+      },
     ],
   },
 ]);

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import { BsCalendarDate } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
 export const columnsRoles = [
@@ -40,7 +39,7 @@ export const columnsRoles = [
         header: () => {
             return (
                 <Button
-                    className="px-0 text-base"
+                    className="px-5 text-base"
                     variant="ghost"
                 >
 
@@ -48,7 +47,7 @@ export const columnsRoles = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="flex items-center w-16 gap-3">
+        cell: ({ row }) => <div className="flex px-5 items-center w-16 gap-3">
             <span className="w-full whitespace-nowrap">
                 { row.index + 1 }
             </span>
@@ -95,8 +94,6 @@ export const columnsRoles = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const payment = row.original;
-
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild className="text-end">
@@ -107,18 +104,14 @@ export const columnsRoles = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
-                        <Link to="/admin/schedules/details">
+                        <Link to={ `/admin/roles/update/${row.original._id}` }>
                             <DropdownMenuItem className="w-fit flex items-center gap-2">
-                                <BsCalendarDate className="text-[15px]" />
-                                Chi tiết
+                                <FiEdit className="text-[15px]" />
+                                <span>
+                                    Sửa
+                                </span>
                             </DropdownMenuItem>
                         </Link>
-                        <DropdownMenuItem className="w-fit flex items-center gap-2">
-                            <FiEdit className="text-[15px]" />
-                            <span>
-                                Sửa
-                            </span>
-                        </DropdownMenuItem>
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <RiDeleteBin6Line className="text-[15px]" />
                             <span>
