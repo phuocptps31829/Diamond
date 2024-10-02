@@ -1,110 +1,102 @@
-
-const DoctorModel = require('../models/doctor.model');
+const RoleModel = require('../models/role.model');
 const UserModel = require('../models/user.model');
-const { createError, errorValidator, hashValue } = require("../utils/helper.util");
-
-const createUser = async (req, res, next) => {
-    try {
-        errorValidator(req, res);
-
-        const newUserData = req.newUser || req.body;
-        console.log(newUserData);
-
-        // Gửi otp và xác thực nếu thành công mới tạo tài khoản
-
-        const hashedPassword = await hashValue(newUserData?.password || 'matkhaugiup');
-        const newUser = await UserModel.create({
-            ...newUserData,
-            password: hashedPassword,
-            isActivated: true
-        });
-        req.newUser = newUser;
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
-const updateUser = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const { phoneNumber, email } = req.body;
-
-        errorValidator(req, res);
-        const doctor = await DoctorModel.findOne({ _id: id }).populate({
-            path: 'userID',
-            match: { isDeleted: false }
-        });
-        if (!doctor || !doctor.userID) {
-            createError(404, 'User not found.');
-        }
-        const userID = doctor.userID._id;
-        // kiểm tra sdt và email không được để trống cả 2
-        if ((!email && !phoneNumber) || (email.trim() === '' && phoneNumber.trim() === '')) {
-            createError(400, 'Email or phone number is required');
-        }
-
-        // Nếu số điện thoại có và kiểm tra sdt mới có trùng với user khác không
-        if (phoneNumber) {
-            const getExistingUserByPhoneNumber = await UserModel.findOne({ phoneNumber: phoneNumber, _id: { $ne: userID } });
-            if (getExistingUserByPhoneNumber) {
-                createError(400, 'Phone number already exists');
-            }
-        }
-
-        // Nếu email có và kiểm tra email mới có trùng với user khác không
-        if (email) {
-            const getExistingUserByEmail = await UserModel.findOne({ email: email, _id: { $ne: userID } });
-            if (getExistingUserByEmail) {
-                createError(400, 'Email already exists');
-            }
-        }
-        const hashedPassword = await hashValue(req.body.password);
-        const updatedUser = await UserModel.findOneAndUpdate(
-            {
-                _id: userID,
-                isDeleted: false,
-            },
-            { ...req.body, password: hashedPassword },
-            { new: true }
-        );
-        req.updatedUser = updatedUser;
-        next();
-
-    } catch (error) {
-        next(error);
-    }
-};
-
-const deleteUser = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-        const doctor = await DoctorModel.findOne({ _id: id }).populate({
-            path: 'userID',
-            match: { isDeleted: false }
-        });
-        if (!doctor || !doctor.userID) {
-            createError(404, 'User not found.');
-        }
-        const userID = doctor.userID._id;
-        const deletedUser = await UserModel.findOneAndUpdate(
-            { _id: userID, isDeleted: false },
-            { isDeleted: true },
-            { new: true }
-        );
-
-        if (!deletedUser) {
-            createError(404, 'User not found.');
-        }
-        req.deletedUser = deletedUser;
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
+const { createError } = require("../utils/helper.util");
 
 module.exports = {
-    createUser,
-    updateUser,
-    deleteUser,
+    getAllUsers: async (req, res, next) => {
+        try {
+            const {
+                limitDocuments,
+                page,
+                skip,
+                sortOptions
+            } = req.customQueries;
 
+            const totalRecords = await UserModel.countDocuments({
+                isDeleted: false,
+            });
+            const users = await UserModel
+                .find({ isDeleted: false })
+                .limit(limitDocuments)
+                .skip(skip)
+                .sort(sortOptions);
+
+            if (!users.length) {
+                createError(404, 'No users found.');
+            }
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'Users retrieved successfully.',
+                data: users,
+                totalRecords
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAllUsersByRole: async (req, res, next) => {
+        try {
+            const { name } = req.params;
+
+            const {
+                limitDocuments,
+                page,
+                skip,
+                sortOptions
+            } = req.customQueries;
+
+            const role = await RoleModel.findOne({ name: name });
+
+            const users = await UserModel
+                .find({ isDeleted: false, roleID: role._id })
+                .populate('roleID')
+                .limit(limitDocuments)
+                .skip(skip)
+                .sort(sortOptions);
+
+            if (!users.length) {
+                createError(404, 'No users found.');
+            }
+
+            const transformedUsers = users.map(user => {
+                const userObject = user.toObject();
+                userObject.role = userObject.roleID;
+                delete userObject.roleID;
+                return userObject;
+            });
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'Users retrieved successfully.',
+                data: transformedUsers,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getUserByID: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const user = await UserModel
+                .findOne({ isDeleted: false, _id: id })
+                .populate('roleID');
+
+            if (!user) {
+                createError(404, 'User not found.');
+            }
+
+            const transformedUser = user.toObject();
+            transformedUser.role = transformedUser.roleID;
+            delete transformedUser.roleID;
+
+            return res.status(200).json({
+                message: 'User retrieved successfully.',
+                data: transformedUser,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
 };

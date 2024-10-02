@@ -53,76 +53,7 @@ const getApplicableObjectById = async (req, res, next) => {
     }
 };
 
-const createApplicableObject = async (req, res, next) => {
-    try {
-        errorValidator(req, res);
-
-        const newApplicableObject = await ApplicableObjectModel.create(req.body);
-
-        return res.status(201).json({
-            message: 'Medical package created successfully.',
-            data: newApplicableObject
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-const updateApplicableObject = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-
-        errorValidator(req, res);
-
-        const updatedApplicableObject = await ApplicableObjectModel.findOneAndUpdate(
-            {
-                _id: id,
-                isDeleted: false,
-            },
-            { ...req.body },
-            { new: true }
-        );
-
-        if (!updatedApplicableObject) {
-            createError(404, 'Applicable object not found.');
-        }
-
-        return res.status(201).json({
-            message: 'Applicable object updated successfully.',
-            data: updatedApplicableObject
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-const deleteApplicableObject = async (req, res, next) => {
-    try {
-        const { id } = req.params;
-
-        const deletedApplicableObject = await ApplicableObjectModel.findOneAndUpdate(
-            { _id: id, isDeleted: false },
-            { isDeleted: true },
-            { new: true }
-        );
-
-        if (!deletedApplicableObject) {
-            createError(404, 'Applicable object not found.');
-        }
-
-        return res.status(200).json({
-            message: 'Applicable object deleted successfully.',
-            data: deletedApplicableObject
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
 module.exports = {
     getAllApplicableObjects,
     getApplicableObjectById,
-    createApplicableObject,
-    updateApplicableObject,
-    deleteApplicableObject
 };

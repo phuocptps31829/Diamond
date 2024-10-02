@@ -2,16 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
+const roleController = require('../controllers/role.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
-const contractController = require('../controllers/contract.controller');
 
 /**
  * @openapi
- * '/api/v1/contracts':
+ * '/api/v1/roles':
  *  get:
  *    tags:
- *    - Contract Routes
- *    summary: Get all contracts
+ *    - Role Routes
+ *    summary: Get all roles
  *    parameters:
  *      - in: query
  *        name: page
@@ -25,6 +25,29 @@ const contractController = require('../controllers/contract.controller');
  *        name: sort
  *        schema:
  *          type: string
+ *      - in: query
+ *        name: gender
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
+ *      - in: query
+ *        name: rolesID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -35,22 +58,23 @@ const contractController = require('../controllers/contract.controller');
 */
 router.get(
     '/',
+    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    contractController.getAllContracts
+    roleController.getAllRoles
 );
 
 /**
  * @openapi
- * '/api/v1/contracts/{id}':
+ * '/api/v1/roles/{id}':
  *  get:
  *    tags:
- *    - Contract Routes
- *    summary: Get contract by id
+ *    - Role Routes
+ *    summary: Get role by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Contract id
+ *        description: Role id
  *        schema:
  *          type: string
  *    responses:
@@ -64,7 +88,7 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    contractController.getContractByID
+    roleController.getRoleById
 );
 
 module.exports = router;

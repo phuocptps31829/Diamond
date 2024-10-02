@@ -2,16 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
-const serviceController = require('../controllers/service.controller');
+const userController = require('../controllers/user.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
 
 /**
  * @openapi
- * '/api/v1/services':
+ * '/api/v1/users':
  *  get:
  *    tags:
- *    - Service Routes
- *    summary: Get all services
+ *    - User Routes
+ *    summary: Get all users
  *    parameters:
  *      - in: query
  *        name: page
@@ -41,7 +41,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
  *        style: form
  *        explode: true
  *      - in: query
- *        name: specialtyID
+ *        name: usersID
  *        schema:
  *          type: array
  *          items:
@@ -60,49 +60,21 @@ router.get(
     '/',
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    serviceController.getAllServices
+    userController.getAllUsers
 );
 
 /**
  * @openapi
- * '/api/v1/services/{id}':
+ * '/api/v1/users/get-by-role/{name}':
  *  get:
  *    tags:
- *    - Service Routes
- *    summary: Get service by id
+ *    - User Routes
+ *    summary: Get all users
  *    parameters:
  *      - in: path
- *        name: id
+ *        name: name
  *        required: true
- *        description: Service id
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        $ref: '#/components/responses/200'
- *      '404':
- *        $ref: '#/components/responses/404'
- *      '500':
- *        $ref: '#/components/responses/500'
-*/
-router.get(
-    '/:id',
-    helperMiddleware.checkValidId,
-    serviceController.getServiceById
-);
-
-/**
- * @openapi
- * '/api/v1/services/specialty/{id}':
- *  get:
- *    tags:
- *    - Service Routes
- *    summary: Get service by specialty id
- *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        description: Service id
+ *        description: Role name
  *        schema:
  *          type: string
  *      - in: query
@@ -117,6 +89,29 @@ router.get(
  *        name: sort
  *        schema:
  *          type: string
+ *      - in: query
+ *        name: gender
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
+ *      - in: query
+ *        name: usersID
+ *        schema:
+ *          type: array
+ *          items:
+ *            type: string
+ *        style: form
+ *        explode: true
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -126,10 +121,38 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/specialty/:id',
-    helperMiddleware.checkValidId,
+    '/get-by-role/:name',
+    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    serviceController.getAllServicesBySpecialtyId
+    userController.getAllUsersByRole
+);
+
+/**
+ * @openapi
+ * '/api/v1/users/get-by-id/{id}':
+ *  get:
+ *    tags:
+ *    - User Routes
+ *    summary: Get user by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: User id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-id/:id',
+    helperMiddleware.checkValidId,
+    userController.getUserByID
 );
 
 module.exports = router;
