@@ -57,7 +57,7 @@ const CreateRoleForm = () => {
                     Vai trò mới
                 </h1>
                 <form onSubmit={ handleSubmit(onSubmit) }>
-                    <div className="mb-6 grid grid-cols-1 items-center justify-center gap-8 sm:grid-cols-2">
+                    <div className="mb-6 grid grid-cols-1 items-start justify-center gap-8 sm:grid-cols-2">
                         <InputCustom
                             id="name"
                             type="text"

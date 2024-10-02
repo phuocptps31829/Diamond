@@ -45,7 +45,7 @@ module.exports = {
                 sortOptions
             } = req.customQueries;
 
-            let { doctorID, date } = req.checkValueQuery;
+            let { date } = req.checkValueQuery;
 
             const pipeline = [
                 {

@@ -51,7 +51,7 @@ export const columns = [
         </div>,
     },
     {
-        accessorKey: "specialty",
+        accessorKey: "specialtyName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -62,10 +62,10 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.specialty}</div>,
+        cell: ({ row }) => <div className="">{row.original.specialtyName}</div>,
     },
     {
-        accessorKey: "branch",
+        accessorKey: "branchName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -76,11 +76,13 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.branch}</div>,
+        cell: ({ row }) => {
+            return <div className="">{row.original.branchName}</div>;
+            
+        },
     },
-
     {
-        accessorKey: "address",
+        accessorKey: "branchAddress",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -91,14 +93,15 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.address}</div>,
+        cell: ({ row }) => <div className="">{row.original.branchAddress}</div>,
     },
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original;
-            console.log(payment);
+        cell: () => {
+        // cell: ({ row }) => {
+            // const payment = row.original;
+            // console.log(payment);
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>

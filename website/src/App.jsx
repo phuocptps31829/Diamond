@@ -58,9 +58,11 @@ import PatientsFormPage from "./pages/admin/Patient/form";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
 import AuthPage from "./pages/admin/Auth";
-import RolesListPage from "./pages/admin/Roles";
+import ListRolePage from "./pages/admin/Roles/ListRolePage";
 import CreateRolePage from "./pages/admin/Roles/CreateRolePage";
-import UpdateRoleForm from "./components/admin/role/forms/FormUpdate";
+import SpecialtiesListPage from "./pages/admin/Specialty";
+import SpecialtiesFormPage from "./pages/admin/Specialty/form";
+import UpdateRolePage from "./pages/admin/Roles/UpdateRolePage";
 
 const router = createBrowserRouter([
   {
@@ -262,6 +264,14 @@ const router = createBrowserRouter([
         element: <StaffsFormPage />,
       },
       {
+        path: "specialties/list",
+        element: <SpecialtiesListPage />,
+      },
+      {
+        path: "specialties/create",
+        element: <SpecialtiesFormPage />,
+      },
+      {
         path: "patients/list",
         element: <Dashboard />,
       },
@@ -315,7 +325,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'roles/list',
-        element: <RolesListPage />
+        element: <ListRolePage />
       },
       {
         path: 'roles/create',
@@ -323,7 +333,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'roles/update/:id',
-        element: <UpdateRoleForm />
+        element: <UpdateRolePage />
       },
     ],
   },

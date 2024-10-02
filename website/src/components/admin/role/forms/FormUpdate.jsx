@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/useToast";
 import { rolesAdminSchema } from "@/zods/admin/rolesAdmin";
 
-const UpdateRoleForm = () => {
+const UpdateRoleForm = ({ role }) => {
     const queryClient = useQueryClient();
     const { toast } = useToast();
 
@@ -21,8 +21,8 @@ const UpdateRoleForm = () => {
     } = useForm({
         resolver: zodResolver(rolesAdminSchema),
         defaultValues: {
-            name: "",
-            description: "",
+            name: role.name,
+            description: role.description,
         },
     });
     console.log(errors);
@@ -31,33 +31,14 @@ const UpdateRoleForm = () => {
         console.log("onSubmit called with data:", data);
     };
 
-
-
-    // if (isLoading) {
-    //     return (
-    //         <div className="w-full">
-    //             <h1 className="mb-3 text-2xl font-bold">
-    //                 <Skeleton className="h-8 w-1/2" />
-    //             </h1>
-    //             <div className="rounded-xl bg-white px-6 py-6">
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //             </div>
-    //         </div>
-    //     );
-    // }
-
     return (
         <div className="w-full">
             <div className="rounded-xl bg-white px-6 py-6">
                 <h1 className="mb-4 text-2xl font-semibold text-primary-400">
-                    Vai trò mới
+                    Vai trò Cũ
                 </h1>
                 <form onSubmit={ handleSubmit(onSubmit) }>
-                    <div className="mb-6 grid grid-cols-1 items-center justify-center gap-8 sm:grid-cols-2">
+                    <div className="mb-6 grid grid-cols-1 items-start justify-center gap-8 sm:grid-cols-2">
                         <InputCustom
                             id="name"
                             type="text"

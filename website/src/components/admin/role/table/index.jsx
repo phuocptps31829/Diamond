@@ -29,11 +29,8 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { patientSchema } from "@/zods/patient";
-import { useQuery } from "@tanstack/react-query";
-import { roleApi } from "@/services/roleApi";
-import Loading from "@/components/ui/Loading";
 
-export default function DataTableRole() {
+export default function DataTableRole({ data }) {
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState(
         []
@@ -58,15 +55,8 @@ export default function DataTableRole() {
     const onSubmit = () => {
     };
 
-    const { data: roles, isLoading, isError } = useQuery({
-        queryKey: ['roles'],
-        queryFn: roleApi.getAllRoles
-    });
-
-    console.log(roles);
-
     const table = useReactTable({
-        data: roles?.length ? roles : [],
+        data,
         columns: columnsRoles,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
@@ -85,10 +75,6 @@ export default function DataTableRole() {
             rowSelection,
         },
     });
-
-    if (isLoading) {
-        return <Loading />;
-    }
 
     return (
         <div className="w-full p-4 bg-white rounded-sm">

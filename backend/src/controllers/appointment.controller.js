@@ -116,7 +116,6 @@ module.exports = {
             next(error);
         }
     },
-
     getAllAppointments: async (req, res, next) => {
         try {
             const {
