@@ -19,6 +19,9 @@ use App\Http\Controllers\ClinicController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PatientController;
+use App\Models\Patient;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -34,7 +37,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/v1/auth', [AuthController::class, 'login']);
+Route::post('/v1/auth/login', [AuthController::class, 'login']);
+Route::post('/v1/auth/register', [AuthController::class, 'register']);
+Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
+Route::post('/v1/auth/forgot-password/send-otp/:phone', [AuthController::class, 'sendOTPForgotPassword']);
+Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword']);
+Route::post('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword']);
+Route::post('/v1/auth/refresh-token', [AuthController::class, 'refreshToken'])->middleware('VerifyRefreshToken');
 
 Route::get('/v1/roles', [RoleController::class, 'getAllRoles'])->middleware('checkQueryParams');
 Route::get('/v1/roles/{id}', [RoleController::class, 'getOneRole'])->middleware('CheckValidId');

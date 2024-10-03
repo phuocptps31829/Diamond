@@ -67,5 +67,7 @@ class Kernel extends HttpKernel
         'checkQueryParams' => \App\Http\Middleware\CheckQueryParams::class,
         'CheckValidId' => \App\Http\Middleware\CheckValidId::class,
         'CheckValidIdDeleted' => \App\Http\Middleware\CheckValidIdDeleted::class,
+        'VerifyOTP' => \App\Http\Middleware\VerifyOTP::class,
+        'VerifyRefreshToken' => \App\Http\Middleware\VerifyRefreshToken::class,
     ];
 }

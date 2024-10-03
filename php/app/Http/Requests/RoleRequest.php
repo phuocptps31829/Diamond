@@ -23,6 +23,7 @@ class RoleRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'description' => 'required|string',
         ];
     }
 
@@ -31,6 +32,8 @@ class RoleRequest extends FormRequest
         return [
             'name.required' => 'Name is required',
             'name.string' => 'Name should be a string',
+            'description.required' => 'Name is required',
+            'description.string' => 'Description should be a string',
         ];
     }
 }

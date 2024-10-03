@@ -7,19 +7,15 @@ use Mongodb\Laravel\Eloquent\Model;
 use MongoDB\BSON\ObjectId;
 use Illuminate\Support\Str;
 
-class Role extends Model
+class Test extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name',
-        'description',
-        'isDeleted',
+        'token',
     ];
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
+
     public function getTable()
     {
-        return 'Role';
+        return 'Test';
     }
 }

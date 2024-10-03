@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+
 use App\Models\Doctor;
+use App\Models\OTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use MongoDB\BSON\ObjectId;
@@ -30,6 +32,124 @@ use MongoDB\BSON\ObjectId;
 
 class AuthController extends Controller
 {
+    public function refreshToken(Request $request)
+    {
+        try {
+
+            $user = $request->user;
+
+            // $newTokens = generateAccessRefreshToken($user);
+
+            return response()->json([
+                'newAccessToken' => $request->all()
+            ], 200);
+            //  return response()->json([
+            //     'newAccessToken' => $newTokens['accessToken']
+            // ], 200);
+        } catch (\Exception $e) {
+            // Xử lý lỗi
+            return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 500);
+        }
+    }
+    public function forgotPassword(Request $request)
+    {
+        try {
+            $phoneNumber = $request->newUser['phoneNumber'];
+
+            $userFound = User::where('phoneNumber', $phoneNumber)
+                ->where('isActivated', true)
+                ->first();
+
+            if (!$userFound) {
+                return createError(404, "User not found");
+            }
+
+            $userFound->password = $request->password;
+            $userFound->save();
+
+            return response()->json([
+                'message' => 'Updated user successfully',
+                'data' => $userFound
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 500);
+        }
+    }
+    public function checkOTPForgotPassword(Request $request)
+    {
+        try {
+            $OTP = $request->input('OTP');
+            $newUser = $request->newUser;
+
+            $phoneNumber = $newUser['phoneNumber'];
+            $password = $newUser['password'];
+            $fullName = $newUser['fullName'];
+
+            $otpToken = $this->generateOTPToken([
+                'fullName' => $fullName,
+                'phoneNumber' => $phoneNumber,
+                'password' => $password,
+            ]);
+
+            return response()->json([
+                'message' => 'OTP is correct',
+                'data' => [
+                    'OTP' => $OTP,
+                    'otpToken' => $otpToken
+                ]
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 500);
+        }
+    }
+
+    public function sendOTPForgotPassword(Request $request, $phone)
+    {
+        try {
+            $userFound = User::where('phoneNumber', $phone)->where('isActivated', true)->first();
+
+            if (!$userFound) {
+                return createError(404, 'Phone number not found');
+            }
+
+            $OTP = $this->sendOTP($phone);
+
+            $hashedOTP = Hash::make($OTP);
+
+            Otp::create([
+                'otp' => $hashedOTP,
+                'phoneNumber' => $phone
+            ]);
+
+            $otpToken = $this->generateOTPToken([
+                'fullName' => $userFound->FullName,
+                'phoneNumber' => $userFound->phoneNumber,
+                'password' => $userFound->password,
+            ]);
+
+            return response()->json([
+                'message' => 'New OTP is created successfully.',
+                'data' => [
+                    'otpToken' =>  $otpToken,
+                ]
+            ], 201);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => 'fail',
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 500);
+        }
+    }
     public function register(Request $request)
     {
         try {
@@ -51,33 +171,23 @@ class AuthController extends Controller
             if ($check) {
                 return createError(500, $check);
             }
-            $user = User::create([
-                'fullName' => $request->fullName,
-                'phoneNumber' => $request->phoneNumber,
-                'password' => Hash::make($request->password),
-                'isActivated' => false,
-            ]);
-            $user = User::where('phoneNumber', '=', $request->phoneNumber)->first();
-            if (!$user) {
-                return  createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
-            }
-            $validPassword = Hash::check($request->password, $user->password);
 
-            if (!$validPassword) {
-                createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
-            }
-            if (!$user->isActivated) {
-                createError(400, 'Tài khoản chưa được kích hoạt.');
-            }
-            $token = generateAccessRefreshToken($user);
+            $otp = sendOTP($request->phoneNumber);
+            $optHash = Hash::make($otp);
+
+            $newOTP = OTP::create([
+                'otp' => $optHash,
+                'phoneNumber' => $request->phoneNumber,
+            ]);
+
+            $token = generateOTPToken($request->fullName, $request->phoneNumber, $request->password);
 
             return response()->json([
-                'message' => 'User logged in successfully.',
+                'message' => 'New OTP is created successfully.',
                 'data' => [
-                    'accessToken' =>  $token['accessToken'],
-                    'refreshToken' => $token['refreshToken']
+                    'otpToken' =>  $token,
                 ]
-            ], 200);
+            ], 201);
         } catch (\Exception $e) {
 
             return response()->json([

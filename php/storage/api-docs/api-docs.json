@@ -2036,13 +2036,13 @@
                 }
             }
         },
-        "/api/v1/news/update/{id}": {
-            "put": {
+        "/api/v1/news/update/{id}?_method=PUT": {
+            "post": {
                 "tags": [
                     "News Routes"
                 ],
                 "summary": "Update a News by ID",
-                "operationId": "8eb03544470fd03b6c2978d42733b0c3",
+                "operationId": "bce66a63221a04d7bc0f4efe970a52cf",
                 "parameters": [
                     {
                         "name": "id",

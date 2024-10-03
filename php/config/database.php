@@ -37,7 +37,7 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => 'mongodb+srv://gameming132:gameming132@cluster0.3bod6xq.mongodb.net/datn?retryWrites=true&w=majority',
+            'dsn' => env('MONGO_CONNECTION_STRING'),
             'database' => 'datn',
         ],
 

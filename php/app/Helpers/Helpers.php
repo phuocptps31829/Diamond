@@ -8,6 +8,24 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Storage;
 
 if (!function_exists('searchInTable')) {
+
+    function generateOTPToken($fullName, $phoneNumber, $password)
+    {
+        $payload = [
+            'fullName' => $fullName,
+            'phoneNumber' => $phoneNumber,
+            'password' => $password,
+            'expiresIn' => time() + 300
+        ];
+
+        $otpToken = JWT::encode($payload, getenv('OTP_TOKEN_SECRET'), 'HS256');
+
+        return $otpToken;
+    }
+    function sendOTP($phoneNumber)
+    {
+        return '123456';
+    }
     function checkValidImage($file)
     {
         if (!$file || !$file->isValid()) {
@@ -23,6 +41,7 @@ if (!function_exists('searchInTable')) {
         if (!in_array($mimeType, $allowedMimeTypes) || !in_array(strtolower($extension), $allowedExtensions)) {
             return 'The file must be jpg, jpeg, png or gif.';
         }
+
         return null;
     }
     function uploadImage($image, $nameFolder = null)
