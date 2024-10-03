@@ -1,5 +1,6 @@
 const RoleModel = require('../models/role.model');
 const UserModel = require('../models/user.model');
+const SpecialtyModel = require('../models/specialty.model');
 const { createError } = require("../utils/helper.util");
 
 module.exports = {
@@ -50,7 +51,6 @@ module.exports = {
 
             const users = await UserModel
                 .find({ isDeleted: false, roleID: role._id })
-                .populate('roleID')
                 .limit(limitDocuments)
                 .skip(skip)
                 .sort(sortOptions);
@@ -59,12 +59,52 @@ module.exports = {
                 createError(404, 'No users found.');
             }
 
-            const transformedUsers = users.map(user => {
+            let transformedUsers = users.map(user => {
                 const userObject = user.toObject();
-                userObject.role = userObject.roleID;
+                userObject.role = {
+                    _id: role._id,
+                    name: role.name
+                };
                 delete userObject.roleID;
                 return userObject;
             });
+
+            if (name === "DOCTOR") {
+                const specialtyPromises = transformedUsers.map(async (doctor) => {
+                    const specialty = await SpecialtyModel.findById(doctor.otherInfo.specialtyID);
+                    doctor.otherInfo.specialty = {
+                        _id: specialty._id,
+                        name: specialty.name
+                    };
+                    delete doctor.otherInfo.specialtyID;
+                    return doctor;
+                });
+
+                transformedUsers = await Promise.all(specialtyPromises);
+            }
+
+            if (name === "PATIENT") {
+                const relatedPatientsPromises = transformedUsers.map(async (patient) => {
+                    let relatedPatients = [];
+                    if (patient.otherInfo?.relatedPatientsID?.length) {
+                        const fetchRelatedPatientsPromises = patient.otherInfo.relatedPatientsID.map(async (id) => {
+                            const relatedPatient = await UserModel.findById(id);
+                            return relatedPatient ? {
+                                _id: relatedPatient._id,
+                                name: relatedPatient.fullName
+                            } : null;
+                        });
+
+                        relatedPatients = await Promise.all(fetchRelatedPatientsPromises);
+                        relatedPatients = relatedPatients.filter(Boolean);
+                    }
+                    patient.otherInfo.relatedPatients = relatedPatients;
+                    delete patient.otherInfo?.relatedPatientsID;
+                    return patient;
+                });
+
+                transformedUsers = await Promise.all(relatedPatientsPromises);
+            }
 
             return res.status(200).json({
                 page: page || 1,

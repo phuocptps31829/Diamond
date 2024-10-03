@@ -7,7 +7,6 @@ module.exports = {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
-            console.log(sortOptions);
             const pipeline = [
                 {
                     $match: {
@@ -33,7 +32,6 @@ module.exports = {
                 }
             ];
 
-
             if (gender) {
                 pipeline.push({
                     $match: {
@@ -45,6 +43,7 @@ module.exports = {
                     }
                 });
             }
+
             if (branchID) {
                 pipeline.push({
                     $match: {

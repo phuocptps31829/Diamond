@@ -65,11 +65,20 @@ module.exports = {
                     }
                 },
                 {
+                    $lookup: {
+                        from: "Specialty",
+                        localField: "specialtyID",
+                        foreignField: "_id",
+                        as: "specialty"
+                    }
+                },
+                {
                     $match: {
                         isDeleted: false,
                         ...(specialtyID && { specialtyID: { $in: specialtyID.map(id => new mongoose.Types.ObjectId(id)) } }),
                     }
                 }
+
             ];
 
             if (gender) {
@@ -105,7 +114,6 @@ module.exports = {
                     $limit: limitDocuments
                 }
             );
-
             const totalRecords = await MedicalPackageModel.aggregate(countPipeline);
 
             const medicalPackages = await MedicalPackageModel.aggregate(pipeline);

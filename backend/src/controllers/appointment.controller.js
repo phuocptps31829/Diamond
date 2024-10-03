@@ -348,126 +348,189 @@ module.exports = {
             next(error);
         }
     },
+    // getAllAppointmentsForSpecialty: async (req, res, next) => {
+    //     try {
+    //         const {
+    //             limitDocuments,
+    //             page,
+    //             skip,
+    //             sortOptions
+    //         } = req.customQueries;
+    //         let { time } = req.checkValueQuery;
+
+    //         const pipeline = [
+    //             {
+    //                 $lookup: {
+    //                     from: 'WorkSchedule',
+    //                     localField: 'workScheduleID',
+    //                     foreignField: '_id',
+    //                     as: 'workSchedule'
+    //                 }
+    //             },
+    //             {
+    //                 $unwind: '$workSchedule'
+    //             },
+    //             {
+    //                 $lookup: {
+    //                     from: 'Doctor',
+    //                     localField: 'workSchedule.doctorID',
+    //                     foreignField: '_id',
+    //                     as: 'doctor'
+    //                 }
+    //             },
+    //             {
+    //                 $match: {
+    //                     isDeleted: false
+    //                 },
+    //             },
+    //             {
+    //                 $addFields: {
+    //                     dateField: { $dateFromString: { dateString: "$time" } } // Chuyển đổi chuỗi thành Date
+    //                 }
+    //             },
+    //             {
+    //                 $group: {
+    //                     _id: {
+    //                         year: { $year: "$dateField" },
+    //                         month: { $month: "$dateField" },
+    //                         specialtyID: "$doctor.specialtyID",
+    //                     },
+    //                     totalCount: { $sum: 1 },
+    //                     details: { $push: "$$ROOT" }
+    //                 }
+    //             },
+    //             {
+    //                 $group: {
+    //                     _id: {
+    //                         year: "$_id.year",
+    //                         month: "$_id.month",
+    //                     },
+    //                     totalCount: { $sum: 1 },
+    //                     details: { $push: "$$ROOT" }
+    //                 }
+    //             },
+    //             {
+    //                 $group: {
+    //                     _id: {
+    //                         year: "$_id.year",
+    //                     },
+    //                     totalCount: { $sum: 1 },
+    //                     details: { $push: "$$ROOT" }
+    //                 }
+    //             },
+    //             {
+    //                 $project: {
+    //                     'details.details.details.doctor.detail': 0
+    //                 }
+    //             }
+    //         ];
+    //         if (time) {
+    //             pipeline.push({
+    //                 $match: {
+    //                     '_id.year': Number(time),
+    //                 }
+    //             });
+    //         }
+    //         const countPipeline = [...pipeline];
+    //         countPipeline.push({
+    //             $count: "totalRecords"
+    //         });
+
+    //         const totalRecords = await AppointmentModel.aggregate(countPipeline);
+
+    //         console.log(totalRecords);
+    //         if (sortOptions && Object.keys(sortOptions).length > 0) {
+    //             pipeline.push({
+    //                 $sort: sortOptions
+    //             });
+    //         }
+
+    //         pipeline.push(
+    //             {
+    //                 $skip: skip
+    //             },
+    //             {
+    //                 $limit: limitDocuments
+    //             }
+    //         );
+
+    //         const Appointments = await AppointmentModel.aggregate(pipeline);
+
+    //         if (!Appointments.length) {
+    //             createError(404, 'No Appointments found.');
+    //         }
+
+    //         return res.status(200).json({
+    //             page: page || 1,
+    //             message: 'Appointments retrieved successfully.',
+    //             data: Appointments,
+    //             totalRecords
+    //         });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // },
     getAllAppointmentsForSpecialty: async (req, res, next) => {
         try {
-            const {
-                limitDocuments,
-                page,
-                skip,
-                sortOptions
-            } = req.customQueries;
-            let { time } = req.checkValueQuery;
+            const appointments = await AppointmentModel
+                .find({})
+                .populate('serviceID')
+                .populate('medicalPackageID');
 
-            const pipeline = [
-                {
-                    $lookup: {
-                        from: 'WorkSchedule',
-                        localField: 'workScheduleID',
-                        foreignField: '_id',
-                        as: 'workSchedule'
-                    }
-                },
-                {
-                    $unwind: '$workSchedule'
-                },
-                {
-                    $lookup: {
-                        from: 'Doctor',
-                        localField: 'workSchedule.doctorID',
-                        foreignField: '_id',
-                        as: 'doctor'
-                    }
-                },
-                {
-                    $match: {
-                        isDeleted: false
-                    },
-                },
-                {
-                    $addFields: {
-                        dateField: { $dateFromString: { dateString: "$time" } } // Chuyển đổi chuỗi thành Date
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            year: { $year: "$dateField" },
-                            month: { $month: "$dateField" },
-                            specialtyID: "$doctor.specialtyID",
-                        },
-                        totalCount: { $sum: 1 },
-                        details: { $push: "$$ROOT" }
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            year: "$_id.year",
-                            month: "$_id.month",
-                        },
-                        totalCount: { $sum: 1 },
-                        details: { $push: "$$ROOT" }
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            year: "$_id.year",
-                        },
-                        totalCount: { $sum: 1 },
-                        details: { $push: "$$ROOT" }
-                    }
-                },
-                {
-                    $project: {
-                        'details.details.details.doctor.detail': 0
-                    }
+            const result = [];
+
+            for (let i = 0; i < appointments.length; i++) {
+                const item = appointments[i];
+                const year = new Date(item.time).getFullYear().toString();
+                const specialtyID = item.serviceID.specialtyID.toString();
+                const specialtyName = item.serviceID.name;
+
+                let yearObj = result.find(obj => obj.year === year);
+                if (!yearObj) {
+                    yearObj = {
+                        year: year,
+                        specialties: []
+                    };
+                    result.push(yearObj);
                 }
-            ];
-            if (time) {
-                pipeline.push({
-                    $match: {
-                        '_id.year': Number(time),
-                    }
-                });
-            }
-            const countPipeline = [...pipeline];
-            countPipeline.push({
-                $count: "totalRecords"
-            });
 
-            const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-            console.log(totalRecords);
-            if (sortOptions && Object.keys(sortOptions).length > 0) {
-                pipeline.push({
-                    $sort: sortOptions
-                });
-            }
-
-            pipeline.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: limitDocuments
+                let specialtyObj = yearObj.specialties.find(spec => spec.specialty._id === specialtyID);
+                if (!specialtyObj) {
+                    specialtyObj = {
+                        specialty: {
+                            _id: specialtyID,
+                            name: specialtyName
+                        },
+                        totalCount: 0
+                    };
+                    yearObj.specialties.push(specialtyObj);
                 }
-            );
 
-            const Appointments = await AppointmentModel.aggregate(pipeline);
-
-            if (!Appointments.length) {
-                createError(404, 'No Appointments found.');
+                specialtyObj.totalCount += 1;
             }
 
+            console.log(result);
+            console.log(result[0].year);
+            console.log(result[0].specialties);
+
+            // {
+            //     year: '2024',
+            //      specialties: [
+            //             {
+            //                 specialty: {
+            //                     _id: '',
+            //                     name: '',
+            //                 },
+            //                 totalCount: 0
+            //             }
+            //         ];
+            // }
             return res.status(200).json({
-                page: page || 1,
                 message: 'Appointments retrieved successfully.',
-                data: Appointments,
-                totalRecords
+                data: result,
             });
         } catch (error) {
             next(error);
         }
-    },
+    }
 };

@@ -25,29 +25,6 @@ const helperMiddleware = require('../middlewares/helper.middleware');
  *        name: sort
  *        schema:
  *          type: string
- *      - in: query
- *        name: gender
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *      - in: query
- *        name: branchID
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *        explode: true
- *      - in: query
- *        name: usersID
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *        explode: true
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -89,29 +66,6 @@ router.get(
  *        name: sort
  *        schema:
  *          type: string
- *      - in: query
- *        name: gender
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *      - in: query
- *        name: branchID
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *        explode: true
- *      - in: query
- *        name: usersID
- *        schema:
- *          type: array
- *          items:
- *            type: string
- *        style: form
- *        explode: true
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
