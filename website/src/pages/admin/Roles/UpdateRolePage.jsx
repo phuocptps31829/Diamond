@@ -24,14 +24,14 @@ const UpdateRolePage = () => {
     const { id } = useParams();
 
     console.log(id);
-    const { data: role, isLoading, isError } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['role', id],
         queryFn: () => roleApi.getRoleById(id),
         enabled: !!id
     });
 
-    const breadcrumbData = getBreadcrumbData(id, role?.name);
-    console.log(role);
+    const breadcrumbData = getBreadcrumbData(id, data?.data.name);
+    console.log(data);
 
     if (isLoading) {
         return <Loading />;
@@ -55,7 +55,7 @@ const UpdateRolePage = () => {
     return (
         <div>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <UpdateRoleForm role={ role } />
+            <UpdateRoleForm role={ data.data } />
         </div>
     );
 };

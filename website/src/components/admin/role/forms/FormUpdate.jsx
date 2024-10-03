@@ -6,10 +6,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/hooks/useToast";
 import { rolesAdminSchema } from "@/zods/admin/rolesAdmin";
+import { roleApi } from "@/services/roleApi";
+import Loading from "@/components/ui/Loading";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const UpdateRoleForm = ({ role }) => {
     const queryClient = useQueryClient();
     const { toast } = useToast();
+
+    const navigate = useNavigate();
 
     const {
         handleSubmit,
@@ -27,9 +33,30 @@ const UpdateRoleForm = ({ role }) => {
     });
     console.log(errors);
 
+    const { mutate: updateRole, isPending, isError } = useMutation({
+        mutationFn: (updatedRole) => roleApi.updateRole(updatedRole),
+        onSuccess: (data) => {
+            console.log(role._id, 'ne');
+            Promise.all([
+                queryClient.invalidateQueries("roles"),
+                queryClient.invalidateQueries(["role", role._id]),
+            ]);
+            navigate('/admin/roles/list');
+        },
+        onError: (err) => {
+            console.log(err);
+        },
+    });
+
     const onSubmit = (data) => {
+        console.log(role._id);
+        updateRole({ updatedRole: data, id: role._id });
         console.log("onSubmit called with data:", data);
     };
+
+    if (isPending) {
+        return <Loading />;
+    }
 
     return (
         <div className="w-full">

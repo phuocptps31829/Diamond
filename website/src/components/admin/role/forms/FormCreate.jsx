@@ -6,10 +6,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useToast } from "@/hooks/useToast";
 import { rolesAdminSchema } from "@/zods/admin/rolesAdmin";
+import { roleApi } from "@/services/roleApi";
+import { data } from "autoprefixer";
+import Loading from "@/components/ui/Loading";
+import { useNavigate } from "react-router-dom";
 
 const CreateRoleForm = () => {
     const queryClient = useQueryClient();
     const { toast } = useToast();
+
+    const navigate = useNavigate();
 
     const {
         handleSubmit,
@@ -25,30 +31,26 @@ const CreateRoleForm = () => {
             description: "",
         },
     });
+
+    const { mutate: createRole, isPending, isError } = useMutation({
+        mutationFn: (newRole) => roleApi.createRole(newRole),
+        onSuccess: (data) => {
+            console.log(data);
+            navigate('/admin/roles/list');
+        },
+        onError: (err) => {
+            console.log(err);
+        },
+    });
     console.log(errors);
 
     const onSubmit = (data) => {
+        createRole(data);
         console.log("onSubmit called with data:", data);
     };
-
-
-
-    // if (isLoading) {
-    //     return (
-    //         <div className="w-full">
-    //             <h1 className="mb-3 text-2xl font-bold">
-    //                 <Skeleton className="h-8 w-1/2" />
-    //             </h1>
-    //             <div className="rounded-xl bg-white px-6 py-6">
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //                 <Skeleton className="mb-4 h-10 w-full" />
-    //             </div>
-    //         </div>
-    //     );
-    // }
+    if (isPending) {
+        return <Loading />;
+    }
 
     return (
         <div className="w-full">

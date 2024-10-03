@@ -15,12 +15,12 @@ const breadcrumbData = [
 ];
 
 const ListRolePage = () => {
-    const { data: roles, isLoading, isError } = useQuery({
+    const { data, isLoading, isError } = useQuery({
         queryKey: ['roles'],
         queryFn: roleApi.getAllRoles
     });
 
-    console.log(roles);
+    console.log(data);
 
     if (isLoading) {
         return <Loading />;
@@ -29,7 +29,7 @@ const ListRolePage = () => {
     return (
         <div>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <DataTableRole data={ roles } />
+            <DataTableRole data={ data.data } />
         </div>
     );
 };
