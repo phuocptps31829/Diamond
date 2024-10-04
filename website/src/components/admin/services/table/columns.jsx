@@ -1,40 +1,37 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/Dialog";
-import { ArrowUpDown } from "lucide-react";
-import { deleteNews } from "@/services/newsApi";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import { Link } from "react-router-dom";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import { getSpecialtyById } from "@/services/specialtiesApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/Dialog";
 import {
   AlertDialog,
-  AlertDialogTrigger,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
   AlertDialogDescription,
   AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/AlertDialog";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Link } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getSpecialtyById } from "@/services/specialtiesApi";
+import { deleteService } from "@/services/servicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 
 const useSpecialtyName = (specialtyID) => {
@@ -42,31 +39,22 @@ const useSpecialtyName = (specialtyID) => {
     queryKey: ["specialty", specialtyID],
     queryFn: () => getSpecialtyById(specialtyID),
     enabled: !!specialtyID,
-    keepPreviousData: true,
   });
 };
-const useDeleteNews = () => {
-
+const useDeleteService = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (newsId) => deleteNews(newsId),
+    mutationFn: (serviceId) => deleteService(serviceId),
     onSuccess: () => {
-      queryClient.invalidateQueries("news");
-      toastUI(
-        "Xóa tin tức thành công.",
-        "success",
-      );
+      queryClient.invalidateQueries("service");
+      toastUI("Xóa dịch vụ thành công.", "success");
     },
     onError: (error) => {
-      toastUI(
-        "Xóa tin tức thất bại.",
-        "error",
-      );
-      console.error("Error deleting news:", error);
+      toastUI("Xóa dịch vụ thất bại.", "error");
+      console.error("Error deleting service:", error);
     },
   });
 };
-
 export const columns = [
   {
     id: "select",
@@ -91,7 +79,25 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
+    header: ({ column }) => (
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tên dịch vụ
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3 py-4 uppercase">
+        <span className="w-full whitespace-nowrap">{row.getValue("name")}</span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "image",
     header: ({ column }) => (
       <div className="w-full text-left">
         <Button
@@ -99,16 +105,36 @@ export const columns = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tiêu đề
+          Hình ảnh
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div className="flex items-center gap-3 py-4 font-medium">
-        <span className="block w-[300px]">{row.original.title}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const [open, setOpen] = useState(false);
+
+      return (
+        <>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <img
+                src={row.original.image}
+                alt="thumbnail"
+                width={60}
+                height={60}
+                className="cursor-pointer"
+              />
+            </DialogTrigger>
+            <DialogContent>
+              <AlertDialogHeader>
+                <DialogTitle>Hình ảnh lớn</DialogTitle>
+              </AlertDialogHeader>
+              <img src={row.original.image} className="h-auto w-full" alt=" " />
+            </DialogContent>
+          </Dialog>
+        </>
+      );
+    },
   },
   {
     accessorKey: "special",
@@ -142,103 +168,61 @@ export const columns = [
     },
   },
   {
-    accessorKey: "image",
+    accessorKey: "price",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          className="px-0 text-base"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Hình ảnh
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => {
-      const [open, setOpen] = useState(false);
-
-      return (
-        <>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <img
-                src={row.original.image}
-                alt="thumbnail"
-                width={60}
-                height={60}
-                className="cursor-pointer"
-              />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Hình ảnh lớn</DialogTitle>
-              </DialogHeader>
-              <img
-                src={row.original.image}
-                alt="large-thumbnail w-full h-auto"
-              />
-            </DialogContent>
-          </Dialog>
-        </>
-      );
-    },
-  },
-  {
-    accessorKey: "author",
-    header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          className="px-0 text-base"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Tác giả
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Giá
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full max-w-[270px]">
-        <span className="w-full whitespace-nowrap">{row.original.author}</span>
+      <div className="text-primary-500">
+        {new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(row.original.price)}
       </div>
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "discountPrice",
     header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          className="px-0 text-base"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Trạng thái
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Giá khuyến mãi
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full max-w-[270px] rounded-md p-2">
-        <span
-          className={`w-full whitespace-nowrap ${row.original.isHidden ? "text-red-500" : "text-green-500"}`}
-        >
-          {row.original.isHidden ? "Đang ẩn" : "Đang hiện"}
-        </span>
+      <div className="text-red-500">
+        {new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(row.original.discountPrice)}
       </div>
     ),
+  },
+  {
+    accessorKey: "shortDescription",
+    header: "Mô tả ngắn",
+    cell: ({ row }) => <div className="">{row.original.shortDescription}</div>,
   },
   {
     id: "actions",
     enableHiding: false,
-
     cell: ({ row }) => {
-      const deleteMutation = useDeleteNews();
+      const deleteMutation = useDeleteService();
 
       const handleDelete = () => {
         deleteMutation.mutate(row.original._id);
       };
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -248,10 +232,9 @@ export const columns = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-            
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
-              <Link to={`/admin/news/edit/${row.original._id}`}>Sửa</Link>
+              <Link to={`/admin/services/edit/${row.original._id}`}>Sửa</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <AlertDialog>
@@ -267,10 +250,10 @@ export const columns = [
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      Bạn có chắc chắn muốn xóa tin tức này?
+                      Bạn có chắc chắn muốn xóa dịch vụ này?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Hành động này không thể hoàn tác. Tin tức sẽ bị xóa vĩnh
+                      Hành động này không thể hoàn tác. Dịch vụ sẽ bị xóa vĩnh
                       viễn khỏi hệ thống.
                     </AlertDialogDescription>
                   </AlertDialogHeader>

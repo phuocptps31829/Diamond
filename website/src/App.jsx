@@ -41,11 +41,9 @@ import ScheduleTablePage from "./pages/admin/ScheduleTable";
 import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
 import DoctorDashboard from "./pages/admin/DoctorDashboard";
 import NewsListPage from "./pages/admin/News";
-import NewsFormPage from "./pages/admin/News/form";
 import BranchesListPage from "./pages/admin/Branches";
-import BranchesFormPage from "./pages/admin/Branches/form";
 import AppointmentsListPage from "./pages/admin/Appointments";
-import AppointmentsFormPage from "./pages/admin/Appointments/form";
+import AppointmentsFormPage from "./pages/admin/Appointments/add";
 import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 import ProtectContainer from "./layouts/protect/ProtectContainer";
 import PaymentSuccess from "./pages/client/PaymentSuccess";
@@ -57,6 +55,15 @@ import PatientsListPage from "./pages/admin/Patient";
 import PatientsFormPage from "./pages/admin/Patient/form";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
+import AppointmentsAddPage from "./pages/admin/Appointments/add";
+import ServicesListPage from "./pages/admin/services";
+import NewsAddPage from "./pages/admin/News/add";
+import NewsEditPage from "./pages/admin/News/edit";
+import BranchesAddPage from "./pages/admin/Branches/add";
+import BranchesEditPage from "./pages/admin/Branches/edit";
+import ServicesAddPage from "./pages/admin/services/add";
+import ServicesEditPage from "./pages/admin/services/edit";
+import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 
 const router = createBrowserRouter([
   {
@@ -121,9 +128,11 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: <ProtectContainer>
-          <UserProfileLayout />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <UserProfileLayout />
+          </ProtectContainer>
+        ),
         children: [
           {
             path: "",
@@ -153,27 +162,35 @@ const router = createBrowserRouter([
       },
       {
         path: "package-booking",
-        element: <ProtectContainer>
-          <PackageBooking />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <PackageBooking />
+          </ProtectContainer>
+        ),
       },
       {
         path: "services-booking",
-        element: <ProtectContainer>
-          <ServicesBooking />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <ServicesBooking />
+          </ProtectContainer>
+        ),
       },
       {
         path: "package-booking-checkout",
-        element: <ProtectContainer>
-          <PKCheckOut />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <PKCheckOut />
+          </ProtectContainer>
+        ),
       },
       {
         path: "services-booking-checkout",
-        element: <ProtectContainer>
-          <SVCheckOut />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer>
+            <SVCheckOut />
+          </ProtectContainer>
+        ),
       },
       {
         path: "/login",
@@ -263,11 +280,11 @@ const router = createBrowserRouter([
       },
       {
         path: "news/create",
-        element: <NewsFormPage />,
+        element: <NewsAddPage />,
       },
       {
         path: "news/edit/:id",
-        element: <NewsFormPage />,
+        element: <NewsEditPage />,
       },
       {
         path: "branches/list",
@@ -275,19 +292,23 @@ const router = createBrowserRouter([
       },
       {
         path: "branches/create",
-        element: <BranchesFormPage />,
+        element: <BranchesAddPage />,
       },
       {
         path: "branches/edit/:id",
-        element: <BranchesFormPage />,
+        element: <BranchesEditPage />,
       },
       {
         path: "appointments/list",
         element: <AppointmentsListPage />,
       },
       {
-        path: "appointments/create",
-        element: <AppointmentsFormPage />,
+        path: "appointments/create/:id",
+        element: <AppointmentsAddPage />,
+      },
+      {
+        path: "appointments/edit/:id",
+        element: <AppointmentsEditPage/>,
       },
       {
         path: "appointments/detail/:id",
@@ -299,21 +320,33 @@ const router = createBrowserRouter([
         element: <AppointmentsFormPage />,
       },
       {
-        path: 'clinics/list',
-        element: <ClinicsListPage />
+        path: "clinics/list",
+        element: <ClinicsListPage />,
       },
       {
-        path: 'clinics/create',
-        element: <ClinicsFormPage />
-      }
+        path: "clinics/create",
+        element: <ClinicsFormPage />,
+      },
+      {
+        path: "services/list",
+        element: <ServicesListPage />,
+      },
+      {
+        path: "services/create",
+        element: <ServicesAddPage />,
+      },
+      {
+        path: "services/edit/:id",
+        element: <ServicesEditPage />,
+      },
     ],
   },
 ]);
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }

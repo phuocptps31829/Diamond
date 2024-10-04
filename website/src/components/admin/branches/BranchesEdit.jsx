@@ -8,31 +8,26 @@ import InputCustom from "@/components/ui/InputCustom";
 import { branchesAdminSchema } from "@/zods/admin/branchesAdmin";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  getBranchesById,
-  addBranch,
-  updateBranch,
-} from "@/services/branchesApi";
-import axios from "axios";
-
-import { Skeleton } from "@/components/ui/Skeleton";
-import GoogleMapComponent from "./GoogleMapComponent";
+import { getBranchesById, updateBranch } from "@/services/branchesApi";
 import { useToast } from "@/hooks/useToast";
-const clientId = import.meta.env.VITE_CLIENT_ID;
-const BranchesForm = () => {
+import GoogleMapComponent from "./GoogleMapComponent";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { toastUI } from "@/components/ui/Toastify";
+import NotFound from "@/components/client/notFound";
+
+const BranchesEdit = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [address, setAddress] = useState(null);
+  const [image, setImage] = useState(null);
   const { id } = useParams();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  console.log(imagePreview);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
-    reset,
     register,
   } = useForm({
     resolver: zodResolver(branchesAdminSchema),
@@ -43,7 +38,6 @@ const BranchesForm = () => {
       address: "",
     },
   });
-  console.log(errors);
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["branches", id],
@@ -53,7 +47,6 @@ const BranchesForm = () => {
 
   useEffect(() => {
     if (data) {
-      console.log("Fetched data: ", data);
       setValue("branch_name", data.name);
       setValue("working_hours", data.workingTime);
       setValue("hotline", data.hotline);
@@ -70,25 +63,10 @@ const BranchesForm = () => {
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const response = await axios.post(
-          `https://api.imgbb.com/1/upload?key=${clientId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          },
-        );
-        const imageUrl = response.data.data.url;
-        setImagePreview(imageUrl);
-        setValue("image", imageUrl);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
+      setImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+      setValue("image", imageUrl);
     } else {
       setImagePreview(null);
       setValue("image", "");
@@ -96,83 +74,45 @@ const BranchesForm = () => {
   };
 
   const mutation = useMutation({
-    mutationFn: (newsData) =>
-      id ? updateBranch(id, newsData) : addBranch(newsData),
+    mutationFn: (newsData) => updateBranch(id, newsData),
     onSuccess: () => {
       queryClient.invalidateQueries("branches");
-      toast({
-        variant: "success",
-        title: id
-          ? "Cập nhật chi nhánh thành công"
-          : "Thêm chi nhánh thành công",
-        description: id
-          ? "Chi nhánh đã được cập nhật thành công"
-          : "Chi nhánh đã được thêm vào hệ thống",
-      });
+      toastUI(
+        "Chỉnh sửa chi nhánh thành công.",
+        "success",
+      );
     },
     onError: (error) => {
-      toast({
-        variant: "error",
-        title: id ? "Cập nhật chi nhánh thất bại" : "Thêm chi nhánh thất bại",
-        description: "Đã xảy ra lỗi khi thêm/ cập nhật chi nhánh",
-      });
-      console.error("Error creating/updating branch:", error);
+      toastUI(
+        "Chỉnh sửa chi nhánh thành công.",
+        "error",
+      );
+      console.error("Error updating branch:", error);
     },
   });
-
   const onSubmit = (data) => {
-    console.log("onSubmit called with data:", data);
-    const newsData = {
-      name: data.branch_name,
-      image: [imagePreview] || null,
-      address: address.name,
-      workingTime: data.working_hours,
-      hotline: data.hotline,
-      coordinates: {
-        Lat: address ? address.lat : null,
-        Ing: address ? address.lng : null,
-      },
-    };
-    mutation.mutate(newsData);
-    console.log("====================================");
-    console.log(newsData);
-    console.log("====================================");
-  };
-  useEffect(() => {
-    if (!id) {
-      reset({
-        branch_name: "",
-        working_hours: "",
-        hotline: "",
-        address: "",
-      });
-      setAddress({});
-      setImagePreview(null);
-    }
-  }, [id, reset]);
+    const formData = new FormData();
+    formData.append("name", data.branch_name);
+    formData.append("image", image);
+    formData.append("address", address?.name || null);
+    formData.append("workingTime", data.working_hours);
+    formData.append("hotline", data.hotline);
+    formData.append("coordinates[Lat]", address ? address.lat : null);
+    formData.append("coordinates[Ing]", address ? address.lng : null);
 
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+
+    // mutation.mutate(formData);
+  };
   if (isLoading) {
-    return (
-      <div className="w-full">
-        <h1 className="mb-3 text-2xl font-bold">
-          <Skeleton className="h-8 w-1/2" />
-        </h1>
-        <div className="rounded-xl bg-white px-6 py-6">
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-        </div>
-      </div>
-    );
+    return <Skeleton />;
   }
+  if (error) return <NotFound/>;
 
   return (
     <div className="w-full">
-      <h1 className="mb-3 text-2xl font-bold">
-        {id ? "Chỉnh sửa chi nhánh" : "Thêm chi nhánh"}
-      </h1>
       <div className="rounded-xl bg-white px-6 py-6">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-10 grid grid-cols-1 items-center justify-center gap-8 sm:grid-cols-2">
@@ -218,7 +158,7 @@ const BranchesForm = () => {
                 name="image"
                 label="Hình ảnh"
                 type="file"
-                required={!id}
+                required={!imagePreview}
                 onChange={handleImageChange}
               />
             </div>
@@ -251,7 +191,7 @@ const BranchesForm = () => {
 
           <div className="mt-10 w-full text-end">
             <Button variant="custom" type="submit">
-              {id ? "Cập nhật chi nhánh" : "Lưu chi nhánh"}
+              Lưu thay đổi
             </Button>
           </div>
         </form>
@@ -260,4 +200,4 @@ const BranchesForm = () => {
   );
 };
 
-export default BranchesForm;
+export default BranchesEdit;

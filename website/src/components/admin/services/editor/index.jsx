@@ -1,3 +1,4 @@
+import React from "react";
 import { Controller } from "react-hook-form";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import {
@@ -36,7 +37,7 @@ import { SlashCommand } from "ckeditor5-premium-features";
 import "ckeditor5/ckeditor5.css";
 import "ckeditor5-premium-features/ckeditor5-premium-features.css";
 
-const NewsEditor = ({ control, name, errors }) => {
+const ServiceEditor = ({ control, name, errors }) => {
   const CKBOX_TOKEN_URL = "";
   const LICENSE_KEY = "";
   const error = errors[name];
@@ -196,4 +197,4 @@ const NewsEditor = ({ control, name, errors }) => {
   );
 };
 
-export default NewsEditor;
+export default ServiceEditor;

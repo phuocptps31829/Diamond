@@ -30,12 +30,13 @@ export default function SelectSpecialty({ control, name, errors, disabled , onCh
     queryFn: () => getAllSpecialties(),
   });
 
+
   if (isLoading) {
     return <Skeleton className="w-full h-10"/>;
   }
 
   if (error) {
-    return <div> Lỗi khi tải chuyên khoa</div>;
+    return <div>Lỗi khi tải chuyên khoa</div>;
   }
   return (
     <div>

@@ -6,154 +6,100 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
-import NewsEditor from "./editor";
 import SelectSpecialty from "./select/SelectSpecialty";
-import { newsAdminSchema } from "@/zods/admin/newsAdmin";
 import { useParams } from "react-router-dom";
-import { getNewsById, createNews, updateNews } from "@/services/newsApi";
+import { getServiceById, updateService } from "@/services/servicesApi";
 import { Textarea } from "@/components/ui/Textarea";
-import axios from "axios";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-const clientId = import.meta.env.VITE_CLIENT_ID;
+import { serviceAdminSchema } from "@/zods/admin/serviceAdmin";
+import ServiceEditor from "./editor";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { toastUI } from "@/components/ui/Toastify";
 
-const NewsForm = () => {
+const ServicesEdit = () => {
   const { id } = useParams();
-  const { toast } = useToast();
   const queryClient = useQueryClient();
-
   const [imagePreview, setImagePreview] = useState(null);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
-    reset,
     setValue,
   } = useForm({
-    resolver: zodResolver(newsAdminSchema),
+    resolver: zodResolver(serviceAdminSchema),
     defaultValues: {
-      title: "",
-      category: "",
-      author: "",
-      status: "Ẩn",
-      content: "",
+      name: "",
+      specialtyID: "",
+      price: "",
+      discountPrice: "",
       shortDescription: "",
+      isHidden: false,
+      image: null,
+      content: "",
+      duration: "",
     },
   });
 
-  const handleSpecialtyChange = (specialtyId) => {
-    console.log(specialtyId);
-  };
-
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["news", id],
-    queryFn: () => getNewsById(id),
+  const { data, isLoading } = useQuery({
+    queryKey: ["service", id],
+    queryFn: () => getServiceById(id),
     enabled: !!id,
   });
-  console.log(errors);
+
   useEffect(() => {
     if (data) {
-      console.log("Fetched data: ", data);
-      setValue("title", data.title);
-      setValue("category", data.specialtyID);
-      setValue("author", data.author);
+      setValue("name", data.name);
+      setValue("specialtyID", data.specialtyID);
+      setValue("price", data.price);
+      setValue("discountPrice", data.discountPrice);
       setValue("shortDescription", data.shortDescription);
-      setValue("status", data.isHidden ? "Ẩn" : "Hiện");
-      setValue("content", data.content);
+      setValue("content", data.details);
+      setValue("isHidden", data.isHidden);
+      setValue("duration", data.duration);
+      setValue("image", data.image);
       setImagePreview(data.image);
     }
   }, [data, setValue]);
 
-  const handleImageChange = async (e) => {
+  const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      try {
-        const response = await axios.post(
-          `https://api.imgbb.com/1/upload?key=${clientId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          },
-        );
-        const imageUrl = response.data.data.url;
-        setImagePreview(imageUrl);
-        setValue("image", imageUrl);
-      } catch (error) {
-        console.error("Error uploading image:", error);
-      }
+      setImagePreview(URL.createObjectURL(file));
+      setValue("image", file);
     } else {
       setImagePreview(null);
-      setValue("image", "");
+      setValue("image", null);
     }
   };
 
   const mutation = useMutation({
-    mutationFn: (newsData) =>
-      id ? updateNews(id, newsData) : createNews(newsData),
+    mutationFn: (serviceData) => updateService(id, serviceData),
     onSuccess: () => {
-      queryClient.invalidateQueries("news");
-      toast({
-        variant: "success",
-        title: id
-          ? "Đã cập nhật thành công tin tức!"
-          : "Đã thêm thành công tin tức!",
-        description: id
-          ? "Tin tức đã được cập nhật, vui lòng kiểm tra danh sách."
-          : "Tin tức đã được thêm, vui lòng kiểm tra danh sách.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      queryClient.invalidateQueries("service");
+      toastUI("Chỉnh sửa dịch vụ thành công.", "success");
     },
     onError: (error) => {
-      toast({
-        variant: "error",
-        title: id ? "Lỗi cập nhật tin tức!" : "Lỗi thêm tin tức!",
-        description: id
-          ? "Đã xảy ra lỗi khi cập nhật tin tức, vui lòng thử lại."
-          : "Đã xảy ra lỗi khi thêm tin tức, vui lòng thử lại.",
-      });
-      console.error("Error creating/updating news:", error);
+      toastUI("Chỉnh sửa dịch vụ thất bại.", "error");
+      console.error("Error updating service:", error);
     },
   });
 
   const onSubmit = (data) => {
-    console.log("onSubmit called with data:", data);
-    const newsData = {
-      specialtyID: data.category,
-      title: data.title,
+    const serviceData = {
+      specialtyID: data.specialtyID,
+      name: data.name,
+      price: Number(data.price),
+      discountPrice: Number(data.discountPrice),
       shortDescription: data.shortDescription,
-      image: data.image,
       content: data.content,
-      author: data.author,
-      viewCount: 0,
-      isHidden: data.status === "Ẩn",
+      image: data.image,
+      duration: Number(data.duration),
+      isHidden: data.isHidden,
     };
-    mutation.mutate(newsData);
-    console.log("====================================");
-    console.log(newsData);
-    console.log("====================================");
+    mutation.mutate(serviceData);
   };
-
-  useEffect(() => {
-    if (!id) {
-      reset({
-        title: "",
-        category: "",
-        author: "",
-        status: "Ẩn",
-        content: "",
-        shortDescription: "",
-      });
-      setImagePreview(null);
-    }
-  }, [id, reset]);
 
   if (isLoading) {
     return (
@@ -161,35 +107,25 @@ const NewsForm = () => {
         <h1 className="mb-3 text-2xl">
           <Skeleton className="h-8 w-1/2" />
         </h1>
-        <div className="rounded-xl bg-white px-6 py-6">
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-          <Skeleton className="mb-4 h-10 w-full" />
-        </div>
+        <Skeleton className="mb-4 h-10 w-full" />
       </div>
     );
   }
 
   return (
     <div className="w-full">
-      <h1 className="mb-3 text-2xl">
-        {id ? "Chỉnh sửa tin tức" : "Thêm tin tức"}
-      </h1>
       <div className="rounded-xl bg-white px-6 py-6">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-10 grid grid-cols-1 items-center justify-center gap-10 sm:grid-cols-2">
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="title"
-              id="title"
-              label="Tiêu đề"
+              name="name"
+              id="name"
+              label="Tên dịch vụ"
               type="text"
               control={control}
               errors={errors}
-              placeholder="Nhập tiêu đề"
+              placeholder="Nhập tên dịch vụ"
             />
             <div className="">
               <Label
@@ -199,21 +135,37 @@ const NewsForm = () => {
                 Chuyên khoa:
               </Label>
               <SelectSpecialty
-                name="category"
+                name="specialtyID"
                 control={control}
                 errors={errors}
-                onChange={handleSpecialtyChange}
               />
             </div>
-
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="author"
-              label="Tác giả"
+              name="duration"
+              label="Thời lượng khám (phút):"
               type="text"
               control={control}
               errors={errors}
-              placeholder="Nhập tác giả"
+              placeholder="Nhập thời lượng khám (phút)"
+            />
+            <InputCustom
+              className="col-span-1 sm:col-span-1"
+              name="price"
+              label="Giá"
+              type="text"
+              control={control}
+              errors={errors}
+              placeholder="Nhập giá"
+            />
+            <InputCustom
+              className="col-span-1 sm:col-span-1"
+              name="discountPrice"
+              label="Giá giảm"
+              type="text"
+              control={control}
+              errors={errors}
+              placeholder="Nhập giá giảm"
             />
             <div className="grid w-full gap-1.5">
               <Label htmlFor="shortDescription">Nhập mô tả ngắn:</Label>
@@ -246,7 +198,7 @@ const NewsForm = () => {
                 name="image"
                 label="Hình ảnh"
                 type="file"
-                required={!id}
+                required={!imagePreview}
                 onChange={handleImageChange}
               />
             </div>
@@ -259,12 +211,12 @@ const NewsForm = () => {
                 Trạng thái
               </Label>
               <Controller
-                name="status"
+                name="isHidden"
                 control={control}
                 render={({ field }) => (
                   <RadioGroup
-                    value={field.value}
-                    onValueChange={(value) => field.onChange(value)}
+                    value={field.value ? "Ẩn" : "Hiện"}
+                    onValueChange={(value) => field.onChange(value === "Ẩn")}
                     className="mt-5 flex items-center justify-start gap-5"
                   >
                     <div className="flex items-center space-x-2">
@@ -290,11 +242,10 @@ const NewsForm = () => {
               </div>
             )}
           </div>
-
-          <NewsEditor control={control} name="content" errors={errors} />
+          <ServiceEditor control={control} name="content" errors={errors} />
           <div className="mt-10 w-full text-end">
             <Button variant="custom" type="submit">
-              {id ? "Cập nhật tin tức" : "Lưu tin tức"}
+              Cập nhật dịch vụ
             </Button>
           </div>
         </form>
@@ -303,4 +254,4 @@ const NewsForm = () => {
   );
 };
 
-export default NewsForm;
+export default ServicesEdit;

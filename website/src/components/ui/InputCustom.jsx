@@ -14,6 +14,7 @@ function InputCustom({
   min,
   max,
   disabled = false,
+  required = false,
   value,
   className,
 }) {
@@ -37,7 +38,7 @@ function InputCustom({
         className="mb-2 block text-sm font-medium leading-none text-black"
         htmlFor={`${name}Input`}
       >
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div>
         <div className="relative">

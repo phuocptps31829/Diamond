@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import React from "react";
-import { Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { Controller } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
@@ -10,39 +10,38 @@ import {
 } from "@/components/ui/Popover";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { getAllSpecialties } from "@/services/specialtiesApi";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { getAllServices } from "@/services/servicesApi";
 
-export default function SelectSpecialty({ control, name, errors, disabled , onChange  }) {
-  const [open, setOpen] = React.useState(false);
-  const {
-    data: specialties,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: () => getAllSpecialties(),
-  });
+export default function SelectService({ control, name, errors, onChange }) {
+  const [open, setOpen] = useState(false);
+  const [services, setServices] = useState([]);
 
-  if (isLoading) {
-    return <Skeleton className="w-full h-10"/>;
-  }
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const data = await getAllServices({ limit: 9999 });
+        setServices(data?.data);
+      } catch (error) {
+        console.error("Failed to fetch services:", error);
+      }
+    };
 
-  if (error) {
-    return <div> Lỗi khi tải chuyên khoa</div>;
-  }
+    fetchServices();
+  }, []);
+
   return (
-    <div>
+    <div className="">
       <Controller
         control={control}
         name={name}
-        rules={{ required: "Chọn chuyên khoa" }}
+        rules={{ required: "Vui lòng chọn một dịch vụ." }}
         render={({ field }) => (
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -52,46 +51,44 @@ export default function SelectSpecialty({ control, name, errors, disabled , onCh
                 aria-expanded={open}
                 className={cn(
                   "w-full justify-between py-[21px]",
-                  errors[name] && "",
+                  errors[name] && "border-red-500",
                 )}
-                disabled={disabled}
               >
                 {field.value ? (
-                  specialties.find(
-                    (specialty) => specialty._id === field.value,
-                  )?.name
+                  services.find((service) => service._id === field.value)?.name
                 ) : (
-                  <span className="text-gray-600">Chọn chuyên khoa</span>
+                  <span className="text-gray-600">Chọn dịch vụ</span>
                 )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command className="text-left">
-                <CommandList>
+              <Command>
+                <CommandInput placeholder="Nhập tên dịch vụ" />
+                <CommandList className="">
+                  <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    {specialties.map((specialty) => (
+                    {services.map((service) => (
                       <CommandItem
-                        key={specialty._id}
-                        value={specialty._id}
+                        key={service._id}
+                        value={service._id}
                         onSelect={(currentValue) => {
-                          if (!disabled) {
-                            field.onChange(currentValue);
-                            onChange(currentValue)
-                            setOpen(false);
-                          }
+                          field.onChange(
+                            currentValue === field.value ? "" : currentValue,
+                          );
+                          onChange(currentValue, service.specialtyID, service.discountPrice || service.price);
+                          setOpen(false);
                         }}
-                        disabled={disabled}
                       >
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === specialty._id
+                            field.value === service._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
                         />
-                        {specialty.name}
+                        {service.name}
                       </CommandItem>
                     ))}
                   </CommandGroup>
@@ -102,7 +99,7 @@ export default function SelectSpecialty({ control, name, errors, disabled , onCh
         )}
       />
       {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
+        <p className="mt-2 text-sm text-red-600">{errors[name].message}</p>
       )}
     </div>
   );

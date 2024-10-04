@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import {
   flexRender,
@@ -9,9 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/Button";
-
 import {
   Table,
   TableBody,
@@ -20,26 +17,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import InputCustom from "@/components/ui/InputCustom";
-import { FaPlus, FaSearch } from "react-icons/fa";
-import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
+import { staffSchema } from "@/zods/staff";
+import InputCustom from "@/components/ui/InputCustom";
+import { FaSearch, FaPlus } from "react-icons/fa";
+import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function DataTable({ data, columns }) {
-  const [sorting, setSorting] = React.useState([]);
-  const [columnFilters, setColumnFilters] = React.useState([]);
-  const [columnVisibility, setColumnVisibility] = React.useState({});
-  const [rowSelection, setRowSelection] = React.useState({});
   const {
     handleSubmit,
     formState: { errors },
     control,
   } = useForm({
-    resolver: zodResolver(),
-    defaultValues: {},
+    resolver: zodResolver(staffSchema),
+    defaultValues: {
+      staffName: "",
+    },
   });
- 
+  const [sorting, setSorting] = React.useState([]);
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const onSubmit = () => {};
+  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
     data,
     columns,
@@ -57,23 +57,29 @@ export default function DataTable({ data, columns }) {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
   });
-
-  const onSubmit = () => {};
-
   return (
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */}
-      <div className="flex  w-full justify-between mb-10">
-        <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex h-[80px]">
+        <form onSubmit={handleSubmit(onSubmit)} className="mr-1 flex">
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustom
                 className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm lịch khám"
-                name="staffName"
+                placeholder="Tìm kiếm dịch vụ"
+                name="serviceName"
                 type="text"
-                id="staffName"
+                value={table.getColumn("name")?.getFilterValue() ?? ""}
+                onChange={(event) =>
+                  table.getColumn("name")?.setFilterValue(event.target.value)
+                }
+                id="serviceName"
                 icon={<FaSearch></FaSearch>}
                 control={control}
                 errors={errors}
@@ -87,16 +93,6 @@ export default function DataTable({ data, columns }) {
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>
-        <div className="flex gap-4">
-          <div className="flex items-center">
-            <div className="mr-2 h-4 w-4 bg-blue-500/40"></div>
-            <span className="text-blue-900">Dịch vụ</span>
-          </div>
-          <div className="flex items-center">
-            <div className="mr-2 h-4 w-4 bg-[#13D6CB]/40"></div>
-            <span className="text-cyan-950">Gói khám</span>
-          </div>
-        </div>
       </div>
       <div>
         <Table>
@@ -122,6 +118,7 @@ export default function DataTable({ data, columns }) {
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  className=""
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                 >
@@ -141,65 +138,65 @@ export default function DataTable({ data, columns }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Không có dữ liệu
+                  No results.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          <span className="pr-1">Đã chọn</span>
-          {table.getFilteredSelectedRowModel().rows.length} trên{" "}
-          {table.getFilteredRowModel().rows.length} trong danh sách.
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Trước
-          </Button>
-          {Array.from({ length: table.getPageCount() }, (_, index) => {
-            const currentPage = table.getState().pagination.pageIndex;
-            const pageCount = table.getPageCount();
-            if (
-              index === 0 ||
-              index === pageCount - 1 ||
-              index === currentPage ||
-              index === currentPage - 1 ||
-              index === currentPage + 1
-            ) {
-              return (
-                <Button
-                  key={index}
-                  variant={currentPage === index ? "solid" : "outline"}
-                  size="sm"
-                  onClick={() => table.setPageIndex(index)}
-                >
-                  {index + 1}
-                </Button>
-              );
-            }
-            if (
-              (index === currentPage - 2 && currentPage > 2) ||
-              (index === currentPage + 2 && currentPage < pageCount - 3)
-            ) {
-              return <span key={index}>...</span>;
-            }
-            return null;
-          })}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Sau
-          </Button>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <div className="flex-1 text-sm text-muted-foreground">
+            <span className="pr-1">Đã chọn</span>
+            {table.getFilteredSelectedRowModel().rows.length} trên{" "}
+            {table.getFilteredRowModel().rows.length} trong danh sách.
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              Trước
+            </Button>
+            {Array.from({ length: table.getPageCount() }, (_, index) => {
+              const currentPage = table.getState().pagination.pageIndex;
+              const pageCount = table.getPageCount();
+              if (
+                index === 0 ||
+                index === pageCount - 1 ||
+                index === currentPage ||
+                index === currentPage - 1 ||
+                index === currentPage + 1
+              ) {
+                return (
+                  <Button
+                    key={index}
+                    variant={currentPage === index ? "solid" : "outline"}
+                    size="sm"
+                    onClick={() => table.setPageIndex(index)}
+                  >
+                    {index + 1}
+                  </Button>
+                );
+              }
+              if (
+                (index === currentPage - 2 && currentPage > 2) ||
+                (index === currentPage + 2 && currentPage < pageCount - 3)
+              ) {
+                return <span key={index}>...</span>;
+              }
+              return null;
+            })}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              Sau
+            </Button>
+          </div>
         </div>
       </div>
     </div>

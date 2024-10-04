@@ -1,10 +1,14 @@
-const API_URL = "http://localhost:3500/api/v1";
+const API_URL = "https://nodejs.diamond.id.vn/api/v1";
+const API_CURD_URL ="https://laravel.diamond.id.vn/api/v1";
+//https://v41fslrd-8000.asse.devtunnels.ms/api/v1
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
 const API_URL_GET_SERVICE_BY_ID = `${API_URL}/services`;
 const API_URL_GET_SERVICE_BY_SPECIALTIES = `${API_URL}/services/specialty`;
-
+const API_URL_CREATE_SERVICE = `${API_URL}/services/add`;
+const API_URL_UPDATE_SERVICE = `${API_URL}/services/update`;
+const API_URL_DELETE_SERVICE = `${API_URL}/services/deletee`;
 // medical-packages
 const API_URL_GET_ALL_MEDICAL_PACKAGES = `${API_URL}/medical-packages`;
 const API_URL_GET_MEDICAL_PACKAGE_BY_ID = `${API_URL}/medical-packages`;
@@ -32,9 +36,9 @@ const API_URL_GET_WORK_SCHEDULES_BY_DOCTOR = `${API_URL}/work-schedules/doctor`;
 // news
 const API_TAKE_IT_ALL_NEWS = `${API_URL}/news?limit=9999`;
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
-const API_URL_CREATE_NEWS = `${API_URL}/news/add`;
-const API_URL_UPDATE_NEWS = `${API_URL}/news/update`;
-const API_URL_DELETE_NEWS = `${API_URL}/news/deletee`; // wrong url
+const API_URL_CREATE_NEWS = `${API_CURD_URL}/news/add`;
+const API_URL_UPDATE_NEWS = `${API_CURD_URL}/news/update`;
+const API_URL_DELETE_NEWS = `${API_CURD_URL}/news/delete`; // wrong url
 // patients
 const API_URL_GET_PATIENTS_BY_ID = `${API_URL}/patients`;
 
@@ -76,6 +80,8 @@ const API_GET_ALL_INVOICES = `${API_URL}/invoices?limit=9999`;
 
 // Appointments
 const API_URL_GET_ALL_APPOINTMENTS = `${API_URL}/appointments?limit=9999`;
+const API_URL_GET_APPOINTMENTS_BY_ID = `${API_URL}/appointments`;
+
 export {
   API_GET_UPCOMING_APPOINTMENTS,
   API_GET_PATIENTS_BY_GENDER,
@@ -123,4 +129,8 @@ export {
   API_URL_DELETE_NEWS,
   API_URL_GET_ALL_APPOINTMENTS,
   API_URL_GET_PATIENTS_BY_ID,
+  API_URL_GET_APPOINTMENTS_BY_ID,
+  API_URL_CREATE_SERVICE,
+  API_URL_UPDATE_SERVICE,
+  API_URL_DELETE_SERVICE,
 };

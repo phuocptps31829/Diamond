@@ -1,4 +1,4 @@
-import AppointmentsForm from "@/components/admin/appointments/AppointmentsForm";
+import AppointmentsAdd from "@/components/admin/appointments/AppointmentsAdd";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 
 const breadcrumbData = [
@@ -11,13 +11,13 @@ const breadcrumbData = [
   },
 ];
 
-const AppointmentsFormPage = () => {
+const AppointmentsAddPage = () => {
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />
-      <AppointmentsForm />
+      <AppointmentsAdd />
     </div>
   );
 };
 
-export default AppointmentsFormPage;
+export default AppointmentsAddPage;
