@@ -36,6 +36,28 @@ export const columns = [
     enableHiding: false,
   },
   {
+    id: "stt",
+    header: ({column}) => 
+    (
+      <Button
+      className="px-0 text-left w-fit "
+      variant="ghost"
+      onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+    >
+      STT
+      <ArrowUpDown className="ml-2 h-4 w-4" />
+    </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full pl-5 text-left ">
+        {row.index + 1}
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },  
+
+  {
     accessorKey: "userID.fullName",
     header: ({ column }) => (
       <Button
@@ -49,7 +71,7 @@ export const columns = [
       </Button>
     ),
     cell: ({ row }) => {
-    const name = row.original.userID.fullName;
+    const name = row.original.fullName;
     console.log("aaaaa" + name);
     return(
     <div className="flex items-center py-4 gap-3">
@@ -120,7 +142,7 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="text-primary-500">{ row.original.userID.phoneNumber }</div>,
+    cell: ({ row }) => <div className="text-primary-500">{ row.original.phoneNumber }</div>,
   },
 
   {
@@ -136,7 +158,7 @@ export const columns = [
         </Button>
     ),
     cell: ({ row }) => {
-        const status = row.original.userID.isActivated;
+        const status = row.original.isActivated;
         return (
             <div className={ status === true ? "text-green-500" : "text-red-500" }>
                 { status === true ? "Đang hoạt động" : "Đang khóa" }

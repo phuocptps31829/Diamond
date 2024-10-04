@@ -1,4 +1,4 @@
-const API_URL = "https://api.cosstewn.io.vn/api/v1";
+const API_URL = "https://nodejs.diamond.id.vn/api/v1";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
@@ -16,7 +16,7 @@ const API_TAKE_IT_ALL_SPECIALTIES = `${API_URL}/specialties?limit=9999`;
 const API_URL_GET_SPECIALTY_WITH_SERVICES = `${API_URL}/specialties/specialties-with-services`;
 
 // doctors
-const API_URL_GET_ALL_DOCTORS = `${API_URL}/doctors`;
+const API_URL_GET_ALL_DOCTORS = `${API_URL}/users`;
 const API_URL_GET_ALL_DOCTORS_BY_BRANCHES = `${API_URL}/doctors/branch`;
 // clinics
 const API_URL_GET_ALL_CLINICS = `${API_URL}/clinics`;
@@ -65,7 +65,7 @@ const API_WARDS = `${API_URL}/provinces/wards`;
 const API_CREATE_APPOINTMENT_VNPAY = `${API_URL}/invoices/payment/vnpay`;
 const API_CREATE_APPOINTMENT_MOMO = `${API_URL}/invoices/payment/momo`;
 // patients
-const API_GET_ALL_PATIENTS = `${API_URL}/patients?limit=9999`;
+const API_GET_ALL_PATIENTS = `${API_URL}/users/get-by-role/PATIENT`;
 
 // appointments
 const API_GET_UPCOMING_APPOINTMENTS = `${API_URL}/appointments?limit=9999&sort=-time`;

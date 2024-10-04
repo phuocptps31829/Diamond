@@ -120,11 +120,11 @@ export default function DoctorsForm() {
               <div className="relative h-[250px] min-w-[250px] rounded-3xl border-2 border-dashed border-primary-500">
                 <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
                   {imagePreview ? (
-                    <div className="h-[100%]">
+                    <div className="">
                       <img
                         src={imagePreview}
                         alt="Doctor Preview"
-                        className="h-full rounded-3xl"
+                        className="h-full w-full object-cover rounded-3xl"
                       />
                       <button
                         type="button"
@@ -220,34 +220,31 @@ export default function DoctorsForm() {
                     />
               </div>
 
-            <div className="flex items-center gap-2 md:p-0 pb-2 ">
-              <label className="flex items-center mr-2
-               md:text-base text-lg">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  className="mr-2"
-                />
-                Nam
-              </label>
-              <label className="flex items-center
-               md:text-base text-lg">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  className="mr-2"
-                />
-                Nữ
-              </label>
+              <div className="flex items-center gap-2 md:p-0 pb-2">
+              <Controller
+                name="gender"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(value)}
+                    className="mt-5 flex items-center justify-start gap-5"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Nam" id="r1" />
+                      <Label htmlFor="r1">Nam</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Nữ" id="r2" />
+                      <Label htmlFor="r2">Nữ</Label>
+                    </div>
+                  </RadioGroup>
+                )}
+              />
             </div>
             </div>
-
-
             </div>
           </div>
-          
           {/* Line 3 */}
           <div className="block ">
             <div className="w-full md:flex gap-[10px]">
@@ -286,18 +283,16 @@ export default function DoctorsForm() {
           </div>
           {/* Line 4 */}
           <div className="block ">
-            <div className="w-full md:flex gap-[10px] 
-
-            ">
+            <div className="w-full md:flex gap-[10px]">
               <div className="md:mb-4 md:w-1/2 relative ">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
                   Chứng chỉ hành nghề <span className="text-red-500">*</span>
                 </label>
                 <InputCustom
                   className="col-span-1 sm:col-span-1"
-                  name="chungchi"
+                  name="practicingCertificate"
                   type="text"
-                  id="chungchi"
+                  id="practicingCertificate"
                   control={control}
                   errors={errors}
                 />
@@ -324,13 +319,6 @@ export default function DoctorsForm() {
                     control={control}
                     name="department"
                     errors={errors}
-                    // specialtyID={
-                    //   selectedService?.bookingDetail?.specialtyID || ""
-                    // }
-                    // setValue={setValue}
-                    // onChange={(branchID) => {
-                    //   setSelectedBranchId(branchID);
-                    // }}
                   />
               </div>
 
@@ -349,7 +337,6 @@ export default function DoctorsForm() {
               </div>
             </div>
           </div>
-
         {/* Line 5 */}
         <div className="w-full flex gap-[10px]">
             <div className="w-full md:flex gap-[10px]">
@@ -359,10 +346,10 @@ export default function DoctorsForm() {
                 </label>
                   {/* Chuyên khoa */}
                   <SelectSpecialty
-                    control={control}
                     name="specialty"
+                    control={control}
                     errors={errors}
-
+                    onChange={handleSpecialtyChange}
                   />
               </div>
               <div className="mb-3 md:w-1/2 relative">
@@ -373,13 +360,6 @@ export default function DoctorsForm() {
                     control={control}
                     name="branch"
                     errors={errors}
-                    // specialtyID={
-                    //   selectedService?.bookingDetail?.specialtyID || ""
-                    // }
-                    // setValue={setValue}
-                    // onChange={(branchID) => {
-                    //   setSelectedBranchId(branchID);
-                    // }}
                   />
                 </div>
 
@@ -391,19 +371,11 @@ export default function DoctorsForm() {
                       control={control}
                       name="room"
                       errors={errors}
-                      // specialtyID={
-                      //   selectedService?.bookingDetail?.specialtyID || ""
-                      // }
-                      // setValue={setValue}
-                      // onChange={(branchID) => {
-                      //   setSelectedBranchId(branchID);
-                      // }}
                     />
                 </div>
           </div>
 
           </div>
-
         <div className=" w-full flex gap-[10px]">
         {/* Line 6 */}
             <div className="w-full md:flex gap-[10px]">
@@ -415,6 +387,7 @@ export default function DoctorsForm() {
                     control={control}
                     name="province"
                     errors={errors}
+                    defaultValue={data?.address?.province} 
                     onProvinceChange={(provinceId) => {
                       setSelectedProvinceId(provinceId);
                       setSelectedDistrictId(null);
@@ -485,36 +458,35 @@ export default function DoctorsForm() {
               </label>
               <DoctorEditor/>
             </div>
-              
-
+            
               {/* Status */}
-            <div className="mt-2">
-              <h2 className="mb-1">Trạng thái tài khoản <span className="text-red-600">*</span></h2>
-              <div className="flex items-center mb-3">
-                <label className="flex items-center mr-6">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="male"
-                    className="mr-2 "
-                  />
-                  <span className="text-lg">
-                    Đang hoạt động
-
-                  </span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="gender"
-                    value="female"
-                    className="mr-2"
-                  />
-                  <span className="text-lg">
-                    Đã khóa
-                  </span>
-                </label>
-              </div>
+              <div className=" mt-3">
+              <Label
+                htmlFor=""
+                className="mb-2 block text-base text-black"
+              >
+                Trạng thái<span className="text-red-600">*</span>
+              </Label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(value)}
+                    className="flex items-center justify-start gap-5"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value={true} id="r3" />
+                      <Label htmlFor="r3">Đang hoạt động</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value={false} id="r4" />
+                      <Label htmlFor="r4">Tạm dừng</Label>
+                    </div>
+                  </RadioGroup>
+                )}
+              />
             </div>
               
             {/* Button */}

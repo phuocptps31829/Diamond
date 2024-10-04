@@ -15,7 +15,7 @@ const PatientsList = () => {
   const patientsData = patientsDataResponse?.data || [];
   if (loadingPatients ) return <div>Loading...</div>;
   if (errorLoadingPatients ) return <div>Error loading data</div>;
-  console.log("Patients", patientsData.map(patient => patient.userID.fullName)); 
+  console.log("Patients", patientsData.map(patient => patient.fullName)); 
 
   return <DataTable 
   columns={columns} 

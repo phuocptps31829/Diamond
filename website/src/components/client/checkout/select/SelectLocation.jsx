@@ -25,9 +25,11 @@ export function SelectProvince({
   errors,
   onProvinceChange,
   disabled,
+  defaultValue,
 }) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(defaultValue); // Tạo state cho giá trị đã chọn
 
   useEffect(() => {
     fetchProvinces();
@@ -36,42 +38,49 @@ export function SelectProvince({
   const fetchProvinces = async () => {
     try {
       const response = await getProvinces();
-
       setProvinces(response);
+      console.log("aaa",response);
+      
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
   };
-
+  useEffect(() => {
+    if (defaultValue) {
+      console.log(defaultValue);
+      const selectedProvince = provinces.find((province) => province.name === defaultValue);
+      if (selectedProvince) {
+        setSelectedValue(selectedProvince._id); 
+        control.setValue(name, selectedProvince._id); 
+      }
+    }
+  }, [defaultValue, provinces, control, name]);
   return (
     <div className="">
       <Controller
         control={ control }
         name={ name }
-        rules={ { required: "Vui lòng chọn tỉnh/thành phố." } }
-        render={ ({ field }) => (
-          <Popover open={ open } onOpenChange={ setOpen }>
+        rules={{ required: "Vui lòng chọn tỉnh/thành phố." }}
+        render={({ field }) => (
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                disabled={ disabled }
-                aria-expanded={ open }
-                className={ cn(
+                disabled={disabled}
+                aria-expanded={open}
+                className={cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "border-red-500",
-                ) }
+                )}
               >
-                { field.value ? (
+                {selectedValue ? (
                   <>
-                    {
-                      provinces.find((province) => province._id === field.value)
-                        ?.name
-                    }
+                    {provinces.find((province) => province._id === selectedValue)?.name}
                   </>
                 ) : (
                   "Chọn tỉnh/thành phố"
-                ) }
+                )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -81,45 +90,47 @@ export function SelectProvince({
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    { provinces.map((province) => (
+                    {provinces.map((province) => (
                       <CommandItem
-                        key={ province._id }
-                        value={ province.name }
-                        onSelect={ (currentValue) => {
+                        key={province._id}
+                        value={province.name}
+                        onSelect={(currentValue) => {
                           const selectedProvince = provinces.find(
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince.name);
+                            setSelectedValue(selectedProvince._id); // Cập nhật state giá trị đã chọn
+                            field.onChange(selectedProvince._id); // Cập nhật giá trị trong form
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
-                        } }
+                        }}
                       >
                         <Check
-                          className={ cn(
+                          className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === province.name
+                            selectedValue === province._id
                               ? "opacity-100"
                               : "opacity-0",
-                          ) }
+                          )}
                         />
-                        { province.name }
+                        {province.name}
                       </CommandItem>
-                    )) }
+                    ))}
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        ) }
+        )}
       />
-      { errors[name] && (
-        <span className="text-sm text-red-500">{ errors[name].message }</span>
-      ) }
+      {errors[name] && (
+        <span className="text-sm text-red-500">{errors[name].message}</span>
+      )}
     </div>
   );
 }
+
 
 export function SelectDistrict({
   control,
@@ -198,7 +209,7 @@ export function SelectDistrict({
                             (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict.name);
+                            field.onChange(selectedDistrict._id);
                             onDistrictChange(selectedDistrict._id);
                           }
                           setOpen(false);
@@ -228,6 +239,14 @@ export function SelectDistrict({
     </div>
   );
 }
+
+
+
+
+
+
+
+
 
 export function SelectWard({ control, name, errors, districtId, setValue, disabled }) {
   const [open, setOpen] = React.useState(false);
@@ -272,7 +291,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                 ) }
               >
                 { field.value && wards.length > 0 ? (
-                  wards.find((ward) => ward._id === field.value)?.name
+                  wards.find((ward) => ward.name === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn phường/xã</span>
                 ) }

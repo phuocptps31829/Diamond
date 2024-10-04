@@ -1,17 +1,25 @@
 import InputCustom from "@/components/ui/InputCustom";
 import { patientSchema } from "@/zods/patient";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/Button";
 import { MdCloudUpload } from "react-icons/md";
-
+import { useParams } from "react-router-dom";
+import { getSpecialtyById } from "@/services/specialtiesApi";
+import { useQuery } from "@tanstack/react-query";
+import { Label } from "@/components/ui/Label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import { Controller, useForm } from "react-hook-form";
 export default function Form() {
+  const { id } = useParams();
+  console.log(id);
+  const [selectedFile, setSelectedFile] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
   } = useForm({
     resolver: zodResolver(patientSchema),
     defaultValues: {
@@ -19,32 +27,32 @@ export default function Form() {
       status: "",
     },
   });
-  const [selectedFile, setSelectedFile] = useState(null);
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["specialty", id],
+    queryFn: () => getSpecialtyById(id),
+    enabled: !!id,
+  });
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
+  useEffect(() => {
+    if (data) {
+      console.log("Fetched data: ", data);
+      setValue("spectialtyName", data.name);
+      setValue("status", data.isHidden ? "Ẩn" : "Hiện");
+      setSelectedFile(data.image);
+    }
+  }, [data, setValue]);
   const onSubmit = (data) => {
+    console.log("Data: " + data);
     const formattedData = {
-      fullName: data.patientName,
-      phoneNumber: data.phone,
-      email: data.email,
-      gender: data.gender === "male" ? "Nam" : "Nữ",
-      dateOfBirth: data.birthDate,
-      address: {
-        province: data.province,
-        district: data.district,
-        ward: data.ward,
-        street: data.address,
-      },
-      citizenIdentificationNumber: 0,
-      occupation: data.job,
-      ethnic: data.ethnicity,
-      password: data.password,
+      name: data.spectialtyName,
+      isHidden: data.status,
+      image: data.fileImage,
     };
 
     console.log(JSON.stringify(formattedData, null, 2));
   };
-
   return (
     <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
@@ -60,7 +68,7 @@ export default function Form() {
                 <div className="relative md:mb-1 xl:mb-[4px] 2xl:mb-3 ">
                   <label
                     htmlFor="hoten"
-                    className="left-[15px] block bg-white px-1 text-sm"
+                    className="left-[15px] block bg-white px-1"
                   >
                     Tên chuyên khoa <span className="text-red-500">*</span>
                   </label>
@@ -75,39 +83,42 @@ export default function Form() {
                   />
                 </div>
               {/* Status */ }
-              <div className="mt-2">
-                <h2 className="mb-3 text-sm">
-                  Trạng thái <span className="text-red-600">*</span>
-                </h2>
-                <div className="mb-3 flex items-center">
-                  <label className="mr-6 flex items-center">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="active"
-                      className="mr-2"
-                      checked
-                    />
-                    <span className="text-sm">Hiển thị</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="status"
-                      value="inactive"
-                      className="mr-2"
-                    />
-                    <span className="text-sm">Ẩn</span>
-                  </label>
-                </div>
-              </div>
+
+              <div className=" ">
+              <Label
+                htmlFor=""
+                className="mb-2 block text-sm font-medium leading-none text-black"
+              >
+                Trạng thái
+              </Label>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(value)}
+                    className="mt-5 flex items-center justify-start gap-5"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Ẩn" id="r1" />
+                      <Label htmlFor="r1">Ẩn</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="Hiện" id="r2" />
+                      <Label htmlFor="r2">Hiện</Label>
+                    </div>
+                  </RadioGroup>
+                )}
+              />
+            </div>
             </div>
           </div>
-
-          {/* Image */}
-          <div className="mr-5">
+          {/* tai anh len */}
+          <div className="flex gap-3">
+            <div className="w-1/2">
             <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
-              Ảnh <span className="text-red-500">*</span>
+              Ảnh mới<span className="text-red-500">*</span>
             </label>
             <div className="relative h-[250px] min-w-[250px] rounded-3xl border-2 border-dashed border-primary-500">
               <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
@@ -124,6 +135,22 @@ export default function Form() {
                   />
                 </label>
               </div>
+            </div>
+            </div>
+            {/* Anh hien tai */}
+            <div className="w-1/2">
+            <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
+              Ảnh hiện tại<span className="text-red-500">*</span>
+            </label>
+              {selectedFile && (
+                <div className="relative h-[250px] min-w-[250px]">
+                  <img 
+                    src={selectedFile}
+                    alt="Image Preview"
+                    className="flex h-full w-full cursor-pointer items-center justify-center rounded-3xl"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

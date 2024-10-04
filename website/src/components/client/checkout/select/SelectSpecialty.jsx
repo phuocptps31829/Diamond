@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import React from "react";
+import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { Controller } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
@@ -10,106 +10,99 @@ import {
 } from "@/components/ui/Popover";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
+import { useQuery } from "@tanstack/react-query";
+import { getAllSpecialties } from "@/services/specialtiesApi";
 
-export default function SelectSpecialties({
-  control,
-  name,
-  errors,
-  specialtyID,
-  onChange,
+export default function SelectSpecialty({ control, name, errors, disabled , onChange  }) {
+  const [open, setOpen] = React.useState(false);
+  const {
+    data: specialties,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: () => getAllSpecialties(),
+  });
 
-}) {
-  const [open, setOpen] = useState(false);
-  const [specialties, setSpecialties] = useState([]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  useEffect(() => {
-    const fetchSpecialties = async () => {
-      if (!specialtyID) return;
-      try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
-        setSpecialties(data);
-      } catch (error) {
-        console.error("Failed to fetch specialties:", error);
-      }
-    };
-
-    fetchSpecialties();
-  }, [specialtyID]);
+  if (error) {
+    return <div>Error loading specialties</div>;
+  }
   return (
-    <div className="">
+    <div>
       <Controller
-        control={ control }
-        name={ name }
-        rules={ { required: "Vui lòng chọn một chuyên khoa." } }
-        render={ ({ field }) => (
-          <Popover open={ open } onOpenChange={ setOpen }>
+        control={control}
+        name={name}
+        rules={{ required: "Chọn chuyên khoa" }}
+        render={({ field }) => (
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={ open }
-                className={ cn(
+                aria-expanded={open}
+                className={cn(
                   "w-full justify-between py-[21px]",
-                  errors[name] && "border-red-500",
-                ) }
+                  errors[name] && "",
+                )}
+                disabled={disabled}
               >
-                { field.value ? (
+                {field.value ? (
                   specialties.find(
-                    (department) => department._id === field.value,
+                    (specialty) => specialty._id === field.value,
                   )?.name
                 ) : (
                   <span className="text-gray-600">Chọn chuyên khoa</span>
-                ) }
+                )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command>
-                <CommandInput placeholder="Nhập tên chuyên khoa" />
-                <CommandList className="">
-                  <CommandEmpty>Không tìm thấy!</CommandEmpty>
+              <Command className="text-left">
+                <CommandList>
                   <CommandGroup>
-                    { specialties.map((department) => (
+                    {specialties.map((specialty) => (
                       <CommandItem
-                        key={ department._id }
-                        value={ department._id }
-                        onSelect={ (currentValue) => {
-                          field.onChange(
-                            currentValue === field.value ? "" : currentValue,
-                          );
-                          onChange(currentValue);
-                          setOpen(false);
-                        } }
+                        key={specialty._id}
+                        value={specialty._id}
+                        onSelect={(currentValue) => {
+                          if (!disabled) {
+                            field.onChange(currentValue);
+                            onChange(currentValue)
+                            setOpen(false);
+                          }
+                        }}
+                        disabled={disabled}
                       >
                         <Check
-                          className={ cn(
+                          className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === department._id
+                            field.value === specialty._id
                               ? "opacity-100"
                               : "opacity-0",
-                          ) }
+                          )}
                         />
-                        { department.name }
+                        {specialty.name}
                       </CommandItem>
-                    )) }
+                    ))}
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        ) }
+        )}
       />
-      { errors[name] && (
-        <p className="mt-2 text-sm text-red-600">{ errors[name].message }</p>
-      ) }
+      {errors[name] && (
+        <span className="text-sm text-red-500">{errors[name].message}</span>
+      )}
     </div>
   );
 }
