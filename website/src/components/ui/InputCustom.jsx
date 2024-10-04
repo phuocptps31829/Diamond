@@ -31,6 +31,16 @@ function InputCustom({
     setShowPassword(!showPassword);
   };
 
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    if (type === "number") {
+      const numericValue = inputValue === "" ? "" : Number(inputValue);
+      onChange(numericValue);
+    } else {
+      onChange(inputValue);
+    }
+  };
+
   return (
     <div className={`w-full ${className}`}>
       <label
@@ -49,18 +59,19 @@ function InputCustom({
             </div>
           )}
           <input
-            onChange={onChange}
+            onChange={handleChange}
+            r
             onBlur={onBlur}
             value={fieldValue}
             ref={ref}
-            type={showPassword ? "text" : type}
+            type={type === "password" ? (showPassword ? "text" : type) : type} // Handle password visibility
             disabled={disabled}
             autoComplete={autocomplete || ""}
             id={`${name}Input`}
             placeholder={placeholder}
             min={min}
             max={max}
-            className={`h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${
+            className={`h-10 min-h-11 w-full appearance-none rounded-md border border-gray-300 bg-white py-2 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${
               icon ? "pl-10" : "pl-5"
             }`}
           />

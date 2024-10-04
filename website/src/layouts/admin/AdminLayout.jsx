@@ -1,12 +1,36 @@
 import { cn } from "@/lib/utils";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import { Toaster } from "@/components/ui/Toaster";
 
 export default function AdminLayout() {
   const [isOpen, setIsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <p className="text-lg font-bold text-gray-700">
+          Giao diện không hỗ trợ trên thiết bị di động !
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

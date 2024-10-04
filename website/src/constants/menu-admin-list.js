@@ -8,6 +8,7 @@ import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
 import { FaKitMedical } from "react-icons/fa6";
+import { GiMedicines } from "react-icons/gi";
 
 export const getMenuList = (pathname) => [
   {
@@ -61,6 +62,39 @@ export const getMenuList = (pathname) => [
             href: "/admin/services/create",
             label: "Thêm dịch vụ",
             active: pathname === "/admin/services/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    menus: [
+      {
+        href: "",
+        label: "Thuốc",
+        active: pathname === "/admin/medicine/list",
+        icon: GiMedicines,
+        submenus: [
+          {
+            href: "/admin/medicinesCategories/list",
+            label: "Danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/list",
+          },
+          {
+            href: "/admin/medicines/list",
+            label: "Danh sách thuốc",
+            active: pathname === "/admin/medicines/list",
+          },
+          {
+            href: "/admin/medicinesCategories/create",
+            label: "Thêm danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/create",
+          },
+          {
+            href: "/admin/medicines/create",
+            label: "Thêm thuốc",
+            active: pathname === "/admin/medicine/create",
           },
         ],
       },

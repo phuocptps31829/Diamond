@@ -20,7 +20,6 @@ import { FaEdit } from "react-icons/fa";
 export default function BottomLists({ dataUpcomingAppointments }) {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [closestPatients, setClosestPatients] = useState([]);
-  console.log(filteredAppointments);
   useEffect(() => {
     if (!dataUpcomingAppointments) return;
     const now = new Date();
@@ -32,6 +31,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
       .sort((a, b) => new Date(a.time) - new Date(b.time));
 
     setFilteredAppointments(upcomingAppointments.slice(0, 5));
+
     const closestPatientsList = dataUpcomingAppointments
       .filter((appointment) => {
         const appointmentEndTime = new Date(appointment.time);
@@ -64,7 +64,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             {closestPatients.map((appointment, index) => (
               <TableRow key={index} className="p-0 text-[13px]">
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{appointment.user?.[0].fullName}</TableCell>
+                <TableCell>{appointment.fullName}</TableCell>
                 <TableCell>
                   {appointment.result.length === 0
                     ? "Chưa có kết quả"
@@ -111,7 +111,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
           </TableHeader>
           <TableBody>
             {filteredAppointments.length === 0 ? (
-              <TableRow className="text-center text-[13px] h-14">
+              <TableRow className="h-14 text-center text-[13px]">
                 <TableCell colSpan={6}>Không có lịch hẹn nào !</TableCell>
               </TableRow>
             ) : (

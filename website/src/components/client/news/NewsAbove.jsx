@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import NewsCard from "@/components/ui/NewsCard";
 
 export default function NewsAbove({ news, isLoading }) {
+  console.log("news", news[3]);
   return (
     <div className="mx-auto max-w-screen-xl p-3 md:p-5 md:py-10">
       <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
@@ -98,6 +99,7 @@ export default function NewsAbove({ news, isLoading }) {
           />
           {news
             .slice(news.length - 4, news.length - 1)
+            .reverse()
             .map((newsItem, index) => (
               <NewsCard
                 key={index}

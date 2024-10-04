@@ -36,7 +36,22 @@ export const columnsSchedule = [
     enableHiding: false,
   },
   {
-    accessorKey: "userID.fullName",
+    accessorKey: "index",
+    header: () => (
+      <Button className="w-full px-0 text-center text-base" variant="ghost">
+        STT
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3 py-4 lowercase">
+        <span className="w-full whitespace-nowrap text-center">
+          {row.index + 1}
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "fullName",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -52,17 +67,17 @@ export const columnsSchedule = [
         <Avatar className="size-8">
           <img
             src="https://github.com/shadcn.png"
-            alt={row.original.userID.fullName}
+            alt={row.original.fullName}
           />
         </Avatar>
         <span className="w-full whitespace-nowrap">
-          {row.original.userID.fullName}
+          {row.original.fullName}
         </span>
       </div>
     ),
   },
   {
-    accessorKey: "patientCode",
+    accessorKey: "otherInfo.patientCode",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -73,11 +88,13 @@ export const columnsSchedule = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{row.original.patientCode}</div>,
+    cell: ({ row }) => (
+      <div className="">{row.original.otherInfo.patientCode}</div>
+    ),
   },
 
   {
-    accessorKey: "userID.phoneNumber",
+    accessorKey: "phoneNumber",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -89,9 +106,7 @@ export const columnsSchedule = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="pl-3 text-primary-500">
-        {row.original.userID.phoneNumber}
-      </div>
+      <div className="pl-3 text-primary-500">{row.original.phoneNumber}</div>
     ),
   },
   {
@@ -107,7 +122,7 @@ export const columnsSchedule = [
       </Button>
     ),
     cell: ({ row }) => {
-      const date = new Date(row.original.userID.createdAt);
+      const date = new Date(row.original.createdAt);
       const formattedDate = date.toLocaleDateString("vi-VN", {
         year: "numeric",
         month: "2-digit",
@@ -133,7 +148,7 @@ export const columnsSchedule = [
       </Button>
     ),
     cell: ({ row }) => {
-      const status = row.original.userID.isActivated;
+      const status = row.original.userID?.isActivated || false;
       return (
         <div className={status ? "text-green-500" : "text-red-500"}>
           {status ? "Đang hoạt động" : "Đang khóa"}

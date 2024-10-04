@@ -1,4 +1,5 @@
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import PackagesFormAdd from "@/components/admin/packages/PackagesFormAdd";
 
 const breadcrumbData = [
   {
@@ -10,13 +11,13 @@ const breadcrumbData = [
   },
 ];
 
-const PackagesFormPage = () => {
+const PackagesFormAddPage = () => {
   return (
     <>
       <BreadcrumbCustom data={breadcrumbData} />
-      <h1>Form gói</h1>
+      <PackagesFormAdd />
     </>
   );
 };
 
-export default PackagesFormPage;
+export default PackagesFormAddPage;

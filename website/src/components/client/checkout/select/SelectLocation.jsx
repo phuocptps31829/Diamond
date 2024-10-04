@@ -58,7 +58,7 @@ export function SelectProvince({
                 disabled={disabled}
                 aria-expanded={open}
                 className={cn(
-                  "w-full justify-between py-[21px]",
+                  "w-full justify-between py-[21px] border",
                   errors[name] && "border-red-500",
                 )}
               >
