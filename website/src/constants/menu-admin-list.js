@@ -1,5 +1,5 @@
 import { RxDashboard } from "react-icons/rx";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaKitMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -39,6 +39,39 @@ export const getMenuList = (pathname) => [
   {
     groupLabel: "",
     roles: ["ADMIN", "SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Sản phẩm",
+        active: pathname === "/admin/products/list",
+        icon: FaKitMedical,
+        submenus: [
+          {
+            href: "/admin/packages/list",
+            label: "Danh sách gói",
+            active: pathname === "/admin/packages/list",
+          },
+          {
+            href: "/admin/services/list",
+            label: "Danh sách dịch vụ",
+            active: pathname === "/admin/services/list",
+          },
+          {
+            href: "/admin/packages/create",
+            label: "Thêm gói",
+            active: pathname === "/admin/packages/create",
+          },
+          {
+            href: "/admin/services/create",
+            label: "Thêm dịch vụ",
+            active: pathname === "/admin/services/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
     menus: [
       {
         href: "",
@@ -149,11 +182,7 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
-          {
-            href: "/admin/appointments/create",
-            label: "Thêm lịch đặt",
-            active: pathname === "/admin/appointments/create",
-          },
+          
         ],
       },
     ],

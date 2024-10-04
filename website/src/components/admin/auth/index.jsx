@@ -69,12 +69,21 @@ const AuthComponent = () => {
     const { mutate: login, isPending: isPendingLogin } = useMutation({
         mutationFn: authApi.login,
         onSuccess: (data) => {
-            Cookies.set('accessToken', data.accessToken, { expires: new Date(Date.now() + 30 * 1000) });
-            Cookies.set('refreshToken', data.refreshToken);
+            Cookies.set('accessToken', data.accessToken.token, {
+                expires: new Date(data.accessToken.expires * 1000)
+            });
+            Cookies.set('refreshToken', data.refreshToken.token, {
+                expires: new Date(data.refreshToken.expires * 1000)
+            });
             getUserProfile();
         },
         onError: (err) => {
             console.log(err);
+            const errorMessage =
+                err.response?.data?.message ||
+                err.message ||
+                "Đã xảy ra lỗi, vui lòng thử lại.";
+            toastUI(errorMessage || "Đăng nhập thất bại!", "error");
         }
     });
 

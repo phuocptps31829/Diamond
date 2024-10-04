@@ -34,10 +34,10 @@ axiosInstance.interceptors.response.use(res => res, async err => {
                 const response = await refreshTokenApi(refreshToken);
 
                 Cookies.set('accessToken', response.data.accessToken.token, {
-                    expires: new Date(response.data.accessToken.exp)
+                    expires: new Date(response.data.accessToken.expires)
                 });
                 Cookies.set('refreshToken', response.data.refreshToken.token, {
-                    expires: new Date(response.data.refreshToken.exp)
+                    expires: new Date(response.data.refreshToken.expires)
                 });
 
                 originalRequest.headers["Authorization"] = 'Bearer ' + response.data.accessToken.token;

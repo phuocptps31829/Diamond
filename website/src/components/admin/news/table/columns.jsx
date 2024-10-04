@@ -24,7 +24,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { getSpecialtyById } from "@/services/specialtiesApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/useToast";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -36,34 +35,33 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/AlertDialog";
+import { toastUI } from "@/components/ui/Toastify";
 
 const useSpecialtyName = (specialtyID) => {
   return useQuery({
     queryKey: ["specialty", specialtyID],
     queryFn: () => getSpecialtyById(specialtyID),
     enabled: !!specialtyID,
+    keepPreviousData: true,
   });
 };
 const useDeleteNews = () => {
-  const { toast } = useToast();
 
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (newsId) => deleteNews(newsId),
     onSuccess: () => {
       queryClient.invalidateQueries("news");
-      toast({
-        variant: "success",
-        title: "Xóa tin tức thành công",
-        description: "Tin tức đã được xóa khỏi hệ thống",
-      });
+      toastUI(
+        "Xóa tin tức thành công.",
+        "success",
+      );
     },
     onError: (error) => {
-      toast({
-        variant: "error",
-        title: "Xóa tin tức thất bại",
-        description: "Đã xảy ra lỗi khi xóa tin tức",
-      });
+      toastUI(
+        "Xóa tin tức thất bại.",
+        "error",
+      );
       console.error("Error deleting news:", error);
     },
   });
@@ -250,6 +248,7 @@ export const columns = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
+            
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
               <Link to={`/admin/news/edit/${row.original._id}`}>Sửa</Link>

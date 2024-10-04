@@ -11,6 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
 import { FaRegCalendarCheck } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export const columns = [
   {
@@ -41,7 +42,6 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-
         onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Tên người dùng
@@ -49,18 +49,18 @@ export const columns = [
       </Button>
     ),
     cell: ({ row }) => {
-    const name = row.original.userID.fullName;
-    console.log("aaaaa" + name);
-    return(
-    <div className="flex items-center py-4 gap-3">
-      <Avatar className="size-8">
-        <img src={ row.original.avatar } alt={ row.getValue("name") } />
-      </Avatar>
-      <span className="w-full whitespace-nowrap">
-        { name }
-      </span>
-    </div>
-    );
+      const name = row.original.userID.fullName;
+      console.log("aaaaa" + name);
+      return (
+        <div className="flex items-center py-4 gap-3">
+          <Avatar className="size-8">
+            <img src={ row.original.avatar } alt={ row.getValue("name") } />
+          </Avatar>
+          <span className="w-full whitespace-nowrap">
+            { name }
+          </span>
+        </div>
+      );
     }
   },
   {
@@ -72,29 +72,14 @@ export const columns = [
         onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Mã BN
-        <ArrowUpDown className="ml-2 h-4 w-4 " />
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => <div className="">{ row.original.patientCode }</div>,
   },
 
-
   {
-    accessorKey: "job",
-    header: ({ column }) => (
-      <Button
-        className="px-0 text-base"
-        variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-      >
-        Công việc
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.job }</div>,
-  },
-  {
-    accessorKey: "nation",
+    accessorKey: "userID.phoneNumber",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -115,8 +100,8 @@ export const columns = [
         variant="ghost"
         onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
-        {/* Để tạm thay email */}
-        Số diện thoại 
+        {/* Để tạm thay email */ }
+        Số diện thoại
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -126,24 +111,24 @@ export const columns = [
   {
     accessorKey: "status",
     header: ({ column }) => (
-        <Button
-            className="px-0 text-base"
-            variant="ghost"
-            onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-        >
-            Trạng thái
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Trạng thái
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => {
-        const status = row.original.userID.isActivated;
-        return (
-            <div className={ status === true ? "text-green-500" : "text-red-500" }>
-                { status === true ? "Đang hoạt động" : "Đang khóa" }
-            </div>
-        );
+      const status = row.original.userID.isActivated;
+      return (
+        <div className={ status === true ? "text-green-500" : "text-red-500" }>
+          { status === true ? "Đang hoạt động" : "Đang khóa" }
+        </div>
+      );
     },
-},
+  },
   {
     id: "actions",
     enableHiding: false,
@@ -154,23 +139,25 @@ export const columns = [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-full items-center gap-2">
-              <FaRegCalendarCheck className="text-[15px]" />
-              <span>Thêm lịch khám</span>
+              <Link to={ `/admin/appointments/create/${row.original._id}` }>
+                <div className="flex items-center justify-center gap-1">
+                  <FaRegCalendarCheck className="text-[15px]" />
+                  <span>Thêm lịch khám</span>
+                </div>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-full items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <span>Sửa</span>
+              <FiEdit className="text-[15px]" /> <span>Sửa</span>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-full items-center gap-2">
-              <RiDeleteBin6Line className="text-[15px]" />
-              <span>Xóa</span>
+              <RiDeleteBin6Line className="text-[15px]" /> <span>Xóa</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -178,4 +165,3 @@ export const columns = [
     },
   },
 ];
-

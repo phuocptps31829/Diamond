@@ -3,6 +3,7 @@ import DataTable from "./table";
 import { columns } from "./table/columns";
 import { getAllBranches } from "@/services/branchesApi";
 import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/ui/Loading";
 
 const BranchesList = () => {
   const { data, error, isLoading } = useQuery({
@@ -12,7 +13,7 @@ const BranchesList = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   if (error) {

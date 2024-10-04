@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -77,9 +78,9 @@ export default function DataTable({ data, columns }) {
               <InputCustom
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm tin tức"
-                name="staffName"
+                name="newsName"
                 type="text"
-                id="staffName"
+                id="newsName"
                 icon={<FaSearch></FaSearch>}
                 control={control}
                 errors={errors}

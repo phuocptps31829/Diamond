@@ -36,8 +36,12 @@ export default function LoginComponent() {
     mutationFn: authApi.login,
     onSuccess: (data) => {
       console.log(data);
-      Cookies.set('accessToken', data.accessToken, { expires: new Date(Date.now() + 30 * 1000) });
-      Cookies.set('refreshToken', data.refreshToken);
+      Cookies.set('accessToken', data.accessToken.token, {
+        expires: new Date(data.accessToken.expires)
+      });
+      Cookies.set('refreshToken', data.refreshToken.token, {
+        expires: new Date(data.refreshToken.expires)
+      });
       navigate('/user-profile');
     },
     onError: (error) => {
