@@ -1,9 +1,5 @@
 export const roles = [
     {
-        value: "DOCTOR",
-        label: "Bác sĩ",
-    },
-    {
         value: "STAFF",
         label: "Nhân viên Y tế",
     },
@@ -12,7 +8,15 @@ export const roles = [
         label: "Editor",
     },
     {
-        value: "SUPER_ADMIN",
+        value: "DOCTOR",
+        label: "Bác sĩ",
+    },
+    {
+        value: "ADMIN",
         label: "Admin",
+    },
+    {
+        value: "SUPER_ADMIN",
+        label: "Super Admin",
     },
 ];

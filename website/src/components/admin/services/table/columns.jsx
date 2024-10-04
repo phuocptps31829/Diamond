@@ -64,14 +64,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -84,7 +84,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Tên dịch vụ
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -92,7 +92,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 uppercase">
-        <span className="w-full whitespace-nowrap">{row.getValue("name")}</span>
+        <span className="w-full whitespace-nowrap">{ row.getValue("name") }</span>
       </div>
     ),
   },
@@ -103,7 +103,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Hình ảnh
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -115,13 +115,13 @@ export const columns = [
 
       return (
         <>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={ open } onOpenChange={ setOpen }>
             <DialogTrigger asChild>
               <img
-                src={row.original.image}
+                src={ row.original.image }
                 alt="thumbnail"
-                width={60}
-                height={60}
+                width={ 60 }
+                height={ 60 }
                 className="cursor-pointer"
               />
             </DialogTrigger>
@@ -129,7 +129,7 @@ export const columns = [
               <AlertDialogHeader>
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </AlertDialogHeader>
-              <img src={row.original.image} className="h-auto w-full" alt=" " />
+              <img src={ row.original.image } className="h-auto w-full" alt=" " />
             </DialogContent>
           </Dialog>
         </>
@@ -143,7 +143,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Chuyên khoa
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -162,7 +162,7 @@ export const columns = [
 
       return (
         <div className="w-full max-w-[270px]">
-          <span className="block w-[90px]">{specialty?.name}</span>
+          <span className="block w-[90px]">{ specialty?.name }</span>
         </div>
       );
     },
@@ -173,7 +173,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Giá
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -181,10 +181,10 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="text-primary-500">
-        {new Intl.NumberFormat("vi-VN", {
+        { new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
-        }).format(row.original.price)}
+        }).format(row.original.price) }
       </div>
     ),
   },
@@ -194,7 +194,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Giá khuyến mãi
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -202,17 +202,17 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="text-red-500">
-        {new Intl.NumberFormat("vi-VN", {
+        { new Intl.NumberFormat("vi-VN", {
           style: "currency",
           currency: "VND",
-        }).format(row.original.discountPrice)}
+        }).format(row.original.discountPrice) }
       </div>
     ),
   },
   {
     accessorKey: "shortDescription",
     header: "Mô tả ngắn",
-    cell: ({ row }) => <div className="">{row.original.shortDescription}</div>,
+    cell: ({ row }) => <div className="">{ row.original.shortDescription }</div>,
   },
   {
     id: "actions",
@@ -234,14 +234,14 @@ export const columns = [
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <FiEdit className="text-[15px]" />
-              <Link to={`/admin/services/edit/${row.original._id}`}>Sửa</Link>
+              <Link to={ `/admin/services/edit/${row.original._id}` }>Sửa</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <div
                     className="flex cursor-pointer items-center gap-2"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={ (e) => e.stopPropagation() }
                   >
                     <RiDeleteBin6Line className="text-[15px]" />
                     <span>Xóa</span>
@@ -259,7 +259,7 @@ export const columns = [
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
+                    <AlertDialogAction onClick={ handleDelete }>
                       Xóa
                     </AlertDialogAction>
                   </AlertDialogFooter>

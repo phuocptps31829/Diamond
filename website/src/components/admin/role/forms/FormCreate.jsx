@@ -56,9 +56,6 @@ const CreateRoleForm = () => {
     return (
         <div className="w-full">
             <div className="rounded-xl bg-white px-6 py-6">
-                <h1 className="mb-4 text-2xl font-semibold text-primary-400">
-                    Vai trò mới
-                </h1>
                 <form onSubmit={ handleSubmit(onSubmit) }>
                     <div className="mb-6 grid grid-cols-1 items-start justify-center gap-8 sm:grid-cols-2">
                         <InputCustom

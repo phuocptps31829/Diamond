@@ -20,10 +20,8 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: 
-          "text-primary underline-offset-4 hover:underline",
-        primary: 
-          "bg-primary-500 text-white  rounded-md hover:bg-primary-600 ",
+        link: "text-primary underline-offset-4 hover:underline",
+        primary: "bg-primary-500 text-white  rounded-md hover:bg-primary-600 ",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -41,15 +39,27 @@ const buttonVariants = cva(
 );
 
 const Button = React.forwardRef(
-  ({ className, variant, size, asChild = false, icon, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      disabled = false,
+      size,
+      asChild = false,
+      icon,
+      ...props
+    },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
+        disabled={disabled}
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
       >
-        {icon && <span className="mr-2 ">{icon}</span>}
+        {icon && <span className="mr-2">{icon}</span>}
         {props.children}
       </Comp>
     );

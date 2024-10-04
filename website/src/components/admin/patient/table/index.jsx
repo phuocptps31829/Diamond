@@ -22,7 +22,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-export default function DataTable({ data, columns, branchData }) {
+export default function DataTable({ columns, allPatients }) {
   const {
     handleSubmit,
     formState: { errors },
@@ -39,10 +39,9 @@ export default function DataTable({ data, columns, branchData }) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data,
-    branchData,
+    data: allPatients,
     columns,
-    pageCount: Math.ceil(data.length / 8),
+    pageCount: Math.ceil(allPatients.length / 8),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

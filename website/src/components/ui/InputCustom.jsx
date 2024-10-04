@@ -32,6 +32,16 @@ function InputCustom({
     setShowPassword(!showPassword);
   };
 
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    if (type === "number") {
+      const numericValue = inputValue === "" ? "" : Number(inputValue);
+      onChange(numericValue);
+    } else {
+      onChange(inputValue);
+    }
+  };
+
   return (
     <div className={ `w-full ${className}` }>
       <label

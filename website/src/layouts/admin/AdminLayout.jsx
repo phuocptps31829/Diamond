@@ -12,6 +12,20 @@ import Loading from "@/components/ui/Loading";
 
 export default function AdminLayout() {
   const [isOpen, setIsOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -28,6 +42,16 @@ export default function AdminLayout() {
 
     dispatch(setUserProfile(profileFetched?.data));
   }, [profileFetched, dispatch, navigate]);
+
+  if (isMobile) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <p className="text-lg font-bold text-gray-700">
+          Giao diện không hỗ trợ trên thiết bị di động !
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

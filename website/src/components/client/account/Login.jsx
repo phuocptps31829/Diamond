@@ -37,10 +37,10 @@ export default function LoginComponent() {
     onSuccess: (data) => {
       console.log(data);
       Cookies.set('accessToken', data.accessToken.token, {
-        expires: new Date(data.accessToken.expires)
+        expires: new Date(data.accessToken.expires * 1000)
       });
       Cookies.set('refreshToken', data.refreshToken.token, {
-        expires: new Date(data.refreshToken.expires)
+        expires: new Date(data.refreshToken.expires * 1000)
       });
       navigate('/user-profile');
     },

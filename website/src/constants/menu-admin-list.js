@@ -9,6 +9,7 @@ import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
 import { IoSettingsSharp } from "react-icons/io5";
 import { CgAlignLeft } from "react-icons/cg";
+import { GiMedicines } from "react-icons/gi";
 
 export const getMenuList = (pathname) => [
   {
@@ -38,7 +39,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -75,7 +76,42 @@ export const getMenuList = (pathname) => [
     menus: [
       {
         href: "",
+        label: "Thuốc",
+        roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
+        active: pathname === "/admin/medicine/list",
+        icon: GiMedicines,
+        submenus: [
+          {
+            href: "/admin/medicinesCategories/list",
+            label: "Danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/list",
+          },
+          {
+            href: "/admin/medicines/list",
+            label: "Danh sách thuốc",
+            active: pathname === "/admin/medicines/list",
+          },
+          {
+            href: "/admin/medicinesCategories/create",
+            label: "Thêm danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/create",
+          },
+          {
+            href: "/admin/medicines/create",
+            label: "Thêm thuốc",
+            active: pathname === "/admin/medicine/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    menus: [
+      {
+        href: "",
         label: "Bác sĩ",
+        roles: ["ADMIN", "SUPER_ADMIN",],
         active: pathname === "/admin/doctors/list",
         icon: FaUserDoctor,
         submenus: [
@@ -182,7 +218,7 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
-          
+
         ],
       },
     ],
@@ -244,22 +280,22 @@ export const getMenuList = (pathname) => [
       {
         href: "",
         label: "Phòng khám",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/clinics/list",
         icon: FaClinicMedical,
         submenus: [
           {
             href: "/admin/clinics/list",
             label: "Danh sách phòng khám",
-            active: pathname === "/admin/doctors/list"
+            active: pathname === "/admin/clinics/list",
           },
           {
             href: "/admin/clinics/create",
             label: "Thêm phòng khám",
-            active: pathname === "/admin/doctors/create"
-          }
-        ]
+            active: pathname === "/admin/clinics/create",
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     groupLabel: "",
@@ -312,4 +348,3 @@ export const getMenuList = (pathname) => [
     ],
   },
 ];
-

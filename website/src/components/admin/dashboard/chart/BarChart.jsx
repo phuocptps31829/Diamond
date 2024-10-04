@@ -22,19 +22,19 @@ const BarChart = ({ dataPatientsByGenderAndByYear }) => {
   const maleDataByMonth = new Array(12).fill(0);
   const femaleDataByMonth = new Array(12).fill(0);
 
-  dataPatientsByGenderAndByYear.forEach((yearData) => {
-    yearData.details.forEach((monthData) => {
-      const month = monthData._id.month;
-      if (month <= 12) {
-        monthData.details.forEach((patientData) => {
-          const gender = patientData.user[0].gender;
-          if (gender === "Nam") {
-            maleDataByMonth[month - 1] += 1;
-          } else if (gender === "Nữ") {
-            femaleDataByMonth[month - 1] += 1;
+  dataPatientsByGenderAndByYear.forEach((patient) => {
+    patient.years.forEach((yearData) => {
+      yearData.months.forEach((monthData) => {
+        const month = monthData.month;
+        const count = monthData.count;
+        if (month <= 12) {
+          if (patient.gender === "Nam") {
+            maleDataByMonth[month - 1] += count;
+          } else if (patient.gender === "Nữ") {
+            femaleDataByMonth[month - 1] += count;
           }
-        });
-      }
+        }
+      });
     });
   });
 

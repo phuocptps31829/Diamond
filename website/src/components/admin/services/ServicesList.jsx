@@ -13,7 +13,7 @@ const ServicesList = () => {
   });
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -21,7 +21,7 @@ const ServicesList = () => {
   }
 
   console.log("data: ", data);
-  return <DataTable columns={columns} data={data.data} />;
+  return <DataTable columns={ columns } data={ data.data } />;
 };
 
 export default ServicesList;

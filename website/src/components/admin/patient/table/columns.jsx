@@ -13,7 +13,7 @@ import { Avatar } from "@/components/ui/Avatar";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-export const columns = [
+export const columnsSchedule = [
   {
     id: "select",
     header: ({ table }) => (
@@ -37,7 +37,22 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "userID.fullName",
+    accessorKey: "index",
+    header: () => (
+      <Button className="w-full px-0 text-center text-base" variant="ghost">
+        STT
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3 py-4 lowercase">
+        <span className="w-full whitespace-nowrap text-center">
+          { row.index + 1 }
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "fullName",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -48,23 +63,22 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const name = row.original.userID.fullName;
-      console.log("aaaaa" + name);
-      return (
-        <div className="flex items-center py-4 gap-3">
-          <Avatar className="size-8">
-            <img src={ row.original.avatar } alt={ row.getValue("name") } />
-          </Avatar>
-          <span className="w-full whitespace-nowrap">
-            { name }
-          </span>
-        </div>
-      );
-    }
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3 py-4 lowercase">
+        <Avatar className="size-8">
+          <img
+            src="https://github.com/shadcn.png"
+            alt={ row.original.fullName }
+          />
+        </Avatar>
+        <span className="w-full whitespace-nowrap">
+          { row.original.fullName }
+        </span>
+      </div>
+    ),
   },
   {
-    accessorKey: "patientCode",
+    accessorKey: "otherInfo.patientCode",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
@@ -75,23 +89,11 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{ row.original.patientCode }</div>,
+    cell: ({ row }) => (
+      <div className="">{ row.original.otherInfo.patientCode }</div>
+    ),
   },
 
-  {
-    accessorKey: "userID.phoneNumber",
-    header: ({ column }) => (
-      <Button
-        className="px-0 text-base"
-        variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-      >
-        Dân tộc
-        <ArrowUpDown className="ml-2 h-4 w-4 " />
-      </Button>
-    ),
-    cell: ({ row }) => <div className="pl-4">{ row.original.nation }</div>,
-  },
   {
     accessorKey: "phoneNumber",
     header: ({ column }) => (
@@ -100,12 +102,39 @@ export const columns = [
         variant="ghost"
         onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
-        {/* Để tạm thay email */ }
-        Số diện thoại
+        Số điện thoại
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="text-primary-500">{ row.original.userID.phoneNumber }</div>,
+    cell: ({ row }) => (
+      <div className="pl-3 text-primary-500">{ row.original.phoneNumber }</div>
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        Ngày tạo
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const date = new Date(row.original.createdAt);
+      const formattedDate = date.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
+      return <div>{ formattedDate }</div>;
+    },
   },
 
   {
@@ -121,10 +150,10 @@ export const columns = [
       </Button>
     ),
     cell: ({ row }) => {
-      const status = row.original.userID.isActivated;
+      const status = row.original.userID?.isActivated || false;
       return (
-        <div className={ status === true ? "text-green-500" : "text-red-500" }>
-          { status === true ? "Đang hoạt động" : "Đang khóa" }
+        <div className={ status ? "text-green-500" : "text-red-500" }>
+          { status ? "Đang hoạt động" : "Đang khóa" }
         </div>
       );
     },

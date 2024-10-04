@@ -161,6 +161,7 @@ export default function Dashboard() {
             allAppointments={allAppointments?.data}
             allInvoices={allInvoices?.data}
           />
+          {console.log("patientsByGender", patientsByGender)}
           <MiddleCharts
             dataTotalPatients={totalPatientsBySpecialty}
             dataAllSpecialties={allSpecialties}

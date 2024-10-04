@@ -14,7 +14,7 @@ const breadcrumbData = [
 const ServicesListPage = () => {
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <ServicesList />
     </div>
   );

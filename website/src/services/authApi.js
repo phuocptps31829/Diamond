@@ -119,6 +119,7 @@ export const refreshTokenApi = async (refreshToken) => {
 
 export const authApi = {
   login: async (data) => {
+    console.log(data);
     const res = await axiosInstance.post(`${CUD_API}/auth/login`, data);
     console.log(res.data.data);
     return res.data.data;

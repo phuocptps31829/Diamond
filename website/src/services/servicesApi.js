@@ -1,12 +1,25 @@
 import {
   API_URL_CREATE_SERVICE,
   API_URL_DELETE_SERVICE,
+  API_TAKE_IT_ALL_SERVICES,
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_SERVICE_BY_ID,
   API_URL_GET_SERVICE_BY_SPECIALTIES,
   API_URL_UPDATE_SERVICE,
 } from "@/configs/varibles";
 import axios from "axios";
+
+export const takeItAllServices = async () => {
+  try {
+    const res = await axios.get(API_TAKE_IT_ALL_SERVICES);
+    console.log(res.data.data);
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const getAllServices = async (filter) => {
   try {
     const { page, limit, sort, gender, branch, specialtyID } = filter;

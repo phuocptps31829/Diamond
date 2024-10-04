@@ -6,7 +6,8 @@ export const patientSchema = z.object({
     .min(10, "Số điện thoại không hợp lệ")
     .max(11, "Số điện thoại không hợp lệ"),
   email: z.string().email("Email không hợp lệ"),
-  birthDate: z.string().min(1, "Ngày khám không được để trống!"),
+  citizenIdentificationNumber: z.string().min(9, "Số CMND/CCCD không hợp lệ"),
+  birthDate: z.string().min(1, "Ngày sinh không được để trống"),
   password: z.string().min(6, "Mật khẩu phải ít nhất 6 kí tự"),
   confirmPassword: z.string().min(6, "Nhập lại mật khẩu không hợp lệ"),
   bhyt: z.string().min(6, "Mã BHYT không được để trống"),

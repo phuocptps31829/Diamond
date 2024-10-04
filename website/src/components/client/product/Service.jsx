@@ -110,10 +110,10 @@ export default function ServiceItem({
         <hr className="mb-1" />
         <div className="flex items-center space-x-2 py-1">
           <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-            { price.toLocaleString() } ₫
+            { (+price).toLocaleString() } ₫
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            { discountPrice.toLocaleString() }₫
+            { +discountPrice.toLocaleString() }₫
           </span>
         </div>
 
