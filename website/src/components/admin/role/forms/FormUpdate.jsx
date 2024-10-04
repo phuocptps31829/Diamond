@@ -1,20 +1,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-
-import { useToast } from "@/hooks/useToast";
 import { rolesAdminSchema } from "@/zods/admin/rolesAdmin";
 import { roleApi } from "@/services/roleApi";
 import Loading from "@/components/ui/Loading";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { toastUI } from "@/components/ui/Toastify";
 
 const UpdateRoleForm = ({ role }) => {
-    const queryClient = useQueryClient();
-    const { toast } = useToast();
-
     const navigate = useNavigate();
 
     const {
@@ -35,12 +30,8 @@ const UpdateRoleForm = ({ role }) => {
 
     const { mutate: updateRole, isPending, isError } = useMutation({
         mutationFn: (updatedRole) => roleApi.updateRole(updatedRole),
-        onSuccess: (data) => {
-            console.log(role._id, 'ne');
-            Promise.all([
-                queryClient.invalidateQueries("roles"),
-                queryClient.invalidateQueries(["role", role._id]),
-            ]);
+        onSuccess: () => {
+            toastUI("Cập nhật vai trò thành công", "success");
             navigate('/admin/roles/list');
         },
         onError: (err) => {
@@ -49,9 +40,7 @@ const UpdateRoleForm = ({ role }) => {
     });
 
     const onSubmit = (data) => {
-        console.log(role._id);
         updateRole({ updatedRole: data, id: role._id });
-        console.log("onSubmit called with data:", data);
     };
 
     if (isPending) {

@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -18,29 +15,11 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/Popover";
+import { useState } from "react";
+import { roles } from "@/constants/roles";
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Bác sĩ",
-    },
-    {
-        value: "sveltekit",
-        label: "Nhân viên Y tế",
-    },
-    {
-        value: "nuxt.js",
-        label: "Editor",
-    },
-    {
-        value: "Admin tổng",
-        label: "Admin tổng",
-    },
-];
-
-export function RoleSelect() {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState("");
+export function RoleSelect({ role, onSetSelectedRole }) {
+    const [open, setOpen] = useState(false);
 
     return (
         <Popover open={ open } onOpenChange={ setOpen }>
@@ -51,8 +30,8 @@ export function RoleSelect() {
                     aria-expanded={ open }
                     className="w-[200px] justify-between"
                 >
-                    { value
-                        ? frameworks.find((framework) => framework.value === value)?.label
+                    { role
+                        ? roles.find((framework) => framework.value === role)?.label
                         : "Chọn quyền" }
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -63,19 +42,19 @@ export function RoleSelect() {
                     <CommandList>
                         <CommandEmpty>No framework found.</CommandEmpty>
                         <CommandGroup>
-                            { frameworks.map((framework) => (
+                            { roles.map((framework) => (
                                 <CommandItem
                                     key={ framework.value }
                                     value={ framework.value }
                                     onSelect={ (currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue);
+                                        onSetSelectedRole(currentValue === role ? "" : currentValue);
                                         setOpen(false);
                                     } }
                                 >
                                     <Check
                                         className={ cn(
                                             "mr-2 h-4 w-4",
-                                            value === framework.value ? "opacity-100" : "opacity-0"
+                                            role === framework.value ? "opacity-100" : "opacity-0"
                                         ) }
                                     />
                                     { framework.label }

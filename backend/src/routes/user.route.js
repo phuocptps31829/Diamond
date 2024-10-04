@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userController = require('../controllers/user.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi
@@ -106,6 +107,27 @@ router.get(
 router.get(
     '/get-by-id/:id',
     helperMiddleware.checkValidId,
+    userController.getUserByID
+);
+
+/**
+ * @openapi
+ * '/api/v1/users/get-by-token':
+ *  get:
+ *    tags:
+ *    - User Routes
+ *    summary: Get user by token
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-token',
+    authMiddleware.verifyAccessToken,
     userController.getUserByID
 );
 

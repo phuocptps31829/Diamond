@@ -11,6 +11,8 @@ import {
 } from "@/configs/varibles";
 import { axiosInstance } from "./axiosInstance";
 
+const CUD_API = import.meta.env.VITE_CUD_API;
+const GET_API = import.meta.env.VITE_GET_API;
 
 export const getProfilePatients = async () => {
   try {
@@ -112,5 +114,18 @@ export const refreshTokenApi = async (refreshToken) => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+export const authApi = {
+  login: async (data) => {
+    const res = await axiosInstance.post(`${CUD_API}/auth/login`, data);
+    console.log(res.data.data);
+    return res.data.data;
+  },
+  getProfileInfo: async () => {
+    const res = await axiosInstance.get(`${GET_API}/users/get-by-token`);
+    console.log(res.data);
+    return res.data;
   }
 };

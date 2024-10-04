@@ -229,247 +229,55 @@ module.exports = {
             next(error);
         }
     },
-    getAllAppointmentsForYears: async (req, res, next) => {
+    getAllAppointmentsForGenderYears: async (req, res, next) => {
         try {
-            const {
-                limitDocuments,
-                page,
-                skip,
-                sortOptions
-            } = req.customQueries;
+            const appointments = await AppointmentModel
+                .find({})
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate('patientID');
 
-            let { time } = req.checkValueQuery;
-            const pipeline = [
-                {
-                    $lookup: {
-                        from: 'WorkSchedule',
-                        localField: 'workScheduleID',
-                        foreignField: '_id',
-                        as: 'workSchedule'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Invoice',
-                        localField: '_id',
-                        foreignField: 'appointmentID',
-                        as: 'invoice'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Patient',
-                        localField: 'patientID',
-                        foreignField: '_id',
-                        as: 'patient'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'User',
-                        localField: 'patient.userID',
-                        foreignField: '_id',
-                        as: 'user'
-                    }
-                },
-                {
-                    $match: {
-                        isDeleted: false
-                    },
-                },
-                {
-                    $addFields: {
-                        dateField: { $dateFromString: { dateString: "$time" } } // Chuyển đổi chuỗi thành Date
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            year: { $year: "$dateField" },
-                            month: { $month: "$dateField" },
-                        },
-                        totalCount: { $sum: 1 },
-                        details: { $push: "$$ROOT" }
-                    }
-                },
-                {
-                    $group: {
-                        _id: {
-                            year: "$_id.year",
-                        },
-                        totalCount: { $sum: 1 },
-                        details: { $push: "$$ROOT" }
-                    }
+            const result = {};
+
+            for (const appointment of appointments) {
+                console.log(appointment);
+                const { gender } = appointment.patientID;
+                const year = new Date(appointment.time).getFullYear();
+                const month = new Date(appointment.time).getMonth() + 1;
+
+                if (!result[gender]) {
+                    result[gender] = {};
                 }
-            ];
-            if (time) {
-                pipeline.push({
-                    $match: {
-                        '_id.year': Number(time),
-                    }
-                });
-            }
-            const countPipeline = [...pipeline];
-            countPipeline.push({
-                $count: "totalRecords"
-            });
 
-            const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-            console.log(totalRecords);
-            if (sortOptions && Object.keys(sortOptions).length > 0) {
-                pipeline.push({
-                    $sort: sortOptions
-                });
-            }
-
-            pipeline.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: limitDocuments
+                if (!result[gender][year]) {
+                    result[gender][year] = {
+                        year,
+                        months: []
+                    };
                 }
-            );
 
-            const Appointments = await AppointmentModel.aggregate(pipeline);
+                let monthData = result[gender][year].months.find(m => m.month === month);
+                if (!monthData) {
+                    monthData = { month, count: 0 };
+                    result[gender][year].months.push(monthData);
+                }
 
-            if (!Appointments.length) {
-                createError(404, 'No Appointments found.');
+                monthData.count += 1;
             }
+
+            const formattedResult = Object.entries(result).map(([gender, yearsData]) => ({
+                gender,
+                years: Object.values(yearsData)
+            }));
 
             return res.status(200).json({
-                page: page || 1,
                 message: 'Appointments retrieved successfully.',
-                data: Appointments,
-                totalRecords
+                data: formattedResult,
             });
         } catch (error) {
             next(error);
         }
     },
-    // getAllAppointmentsForSpecialty: async (req, res, next) => {
-    //     try {
-    //         const {
-    //             limitDocuments,
-    //             page,
-    //             skip,
-    //             sortOptions
-    //         } = req.customQueries;
-    //         let { time } = req.checkValueQuery;
-
-    //         const pipeline = [
-    //             {
-    //                 $lookup: {
-    //                     from: 'WorkSchedule',
-    //                     localField: 'workScheduleID',
-    //                     foreignField: '_id',
-    //                     as: 'workSchedule'
-    //                 }
-    //             },
-    //             {
-    //                 $unwind: '$workSchedule'
-    //             },
-    //             {
-    //                 $lookup: {
-    //                     from: 'Doctor',
-    //                     localField: 'workSchedule.doctorID',
-    //                     foreignField: '_id',
-    //                     as: 'doctor'
-    //                 }
-    //             },
-    //             {
-    //                 $match: {
-    //                     isDeleted: false
-    //                 },
-    //             },
-    //             {
-    //                 $addFields: {
-    //                     dateField: { $dateFromString: { dateString: "$time" } } // Chuyển đổi chuỗi thành Date
-    //                 }
-    //             },
-    //             {
-    //                 $group: {
-    //                     _id: {
-    //                         year: { $year: "$dateField" },
-    //                         month: { $month: "$dateField" },
-    //                         specialtyID: "$doctor.specialtyID",
-    //                     },
-    //                     totalCount: { $sum: 1 },
-    //                     details: { $push: "$$ROOT" }
-    //                 }
-    //             },
-    //             {
-    //                 $group: {
-    //                     _id: {
-    //                         year: "$_id.year",
-    //                         month: "$_id.month",
-    //                     },
-    //                     totalCount: { $sum: 1 },
-    //                     details: { $push: "$$ROOT" }
-    //                 }
-    //             },
-    //             {
-    //                 $group: {
-    //                     _id: {
-    //                         year: "$_id.year",
-    //                     },
-    //                     totalCount: { $sum: 1 },
-    //                     details: { $push: "$$ROOT" }
-    //                 }
-    //             },
-    //             {
-    //                 $project: {
-    //                     'details.details.details.doctor.detail': 0
-    //                 }
-    //             }
-    //         ];
-    //         if (time) {
-    //             pipeline.push({
-    //                 $match: {
-    //                     '_id.year': Number(time),
-    //                 }
-    //             });
-    //         }
-    //         const countPipeline = [...pipeline];
-    //         countPipeline.push({
-    //             $count: "totalRecords"
-    //         });
-
-    //         const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-    //         console.log(totalRecords);
-    //         if (sortOptions && Object.keys(sortOptions).length > 0) {
-    //             pipeline.push({
-    //                 $sort: sortOptions
-    //             });
-    //         }
-
-    //         pipeline.push(
-    //             {
-    //                 $skip: skip
-    //             },
-    //             {
-    //                 $limit: limitDocuments
-    //             }
-    //         );
-
-    //         const Appointments = await AppointmentModel.aggregate(pipeline);
-
-    //         if (!Appointments.length) {
-    //             createError(404, 'No Appointments found.');
-    //         }
-
-    //         return res.status(200).json({
-    //             page: page || 1,
-    //             message: 'Appointments retrieved successfully.',
-    //             data: Appointments,
-    //             totalRecords
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // },
     getAllAppointmentsForSpecialty: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
@@ -483,7 +291,6 @@ module.exports = {
                 const item = appointments[i];
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item.serviceID.specialtyID.toString();
-                const specialtyName = item.serviceID.name;
 
                 let yearObj = result.find(obj => obj.year === year);
                 if (!yearObj) {
@@ -494,13 +301,10 @@ module.exports = {
                     result.push(yearObj);
                 }
 
-                let specialtyObj = yearObj.specialties.find(spec => spec.specialty._id === specialtyID);
+                let specialtyObj = yearObj.specialties.find(spec => spec.specialtyID === specialtyID);
                 if (!specialtyObj) {
                     specialtyObj = {
-                        specialty: {
-                            _id: specialtyID,
-                            name: specialtyName
-                        },
+                        specialtyID,
                         totalCount: 0
                     };
                     yearObj.specialties.push(specialtyObj);
@@ -509,22 +313,6 @@ module.exports = {
                 specialtyObj.totalCount += 1;
             }
 
-            console.log(result);
-            console.log(result[0].year);
-            console.log(result[0].specialties);
-
-            // {
-            //     year: '2024',
-            //      specialties: [
-            //             {
-            //                 specialty: {
-            //                     _id: '',
-            //                     name: '',
-            //                 },
-            //                 totalCount: 0
-            //             }
-            //         ];
-            // }
             return res.status(200).json({
                 message: 'Appointments retrieved successfully.',
                 data: result,

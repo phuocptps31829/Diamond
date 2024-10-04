@@ -2,11 +2,7 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import { refreshTokenApi } from "../authApi";
 
-export const axiosInstance = axios.create({
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
+export const axiosInstance = axios.create({});
 
 axiosInstance.interceptors.request.use((config) => {
     console.log('in req', config);

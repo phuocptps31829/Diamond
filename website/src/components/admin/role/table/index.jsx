@@ -18,7 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/Table";
-import { columnsRoles, mockData } from "./columns";
+import { getColumnsRoles } from "./columns";
 
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
@@ -29,6 +29,11 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { patientSchema } from "@/zods/patient";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { roleApi } from "@/services/roleApi";
+import { toastUI } from "@/components/ui/Toastify";
+import Loading from "@/components/ui/Loading";
+import { Link } from "react-router-dom";
 
 export default function DataTableRole({ data }) {
     const [sorting, setSorting] = useState([]);
@@ -42,6 +47,20 @@ export default function DataTableRole({ data }) {
         pageIndex: 0,
         pageSize: 10,
     });
+    const queryClient = useQueryClient();
+
+    const { mutate: deleteRole, isPending } = useMutation({
+        mutationFn: roleApi.deleteRole,
+        onSuccess: () => {
+            toastUI("Xóa vai trò thành công", "success");
+            queryClient.invalidateQueries('roles');
+        },
+        onError: (err) => {
+            console.log(err);
+            toastUI("Xóa vai trò không thành công", "error");
+        },
+    });
+
     const {
         handleSubmit,
         formState: { errors },
@@ -55,9 +74,15 @@ export default function DataTableRole({ data }) {
     const onSubmit = () => {
     };
 
+    const handleDeleteRole = (id) => {
+        if (!confirm("Chắc chắn muốn xóa?")) return;
+
+        deleteRole(id);
+    };
+
     const table = useReactTable({
         data,
-        columns: columnsRoles,
+        columns: getColumnsRoles(handleDeleteRole),
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
@@ -75,6 +100,10 @@ export default function DataTableRole({ data }) {
             rowSelection,
         },
     });
+
+    if (isPending) {
+        return <Loading />;
+    }
 
     return (
         <div className="w-full p-4 bg-white rounded-sm">
@@ -94,9 +123,11 @@ export default function DataTableRole({ data }) {
                             />
                         </div>
                     </div>
-                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
-                        <FaPlus className="text-primary-500"></FaPlus>
-                    </Button>
+                    <Link to="/admin/roles/create">
+                        <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                            <FaPlus className="text-primary-500"></FaPlus>
+                        </Button>
+                    </Link>
                     <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
                         <FaArrowsRotate className="text-primary-500" />
                     </Button>

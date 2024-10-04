@@ -127,7 +127,7 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: <ProtectContainer>
+        element: <ProtectContainer type="client">
           <UserProfileLayout />
         </ProtectContainer>,
         children: [
@@ -217,7 +217,9 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <ProtectContainer type="admin">
+      <AdminLayout />
+    </ProtectContainer>,
     children: [
       {
         path: "",

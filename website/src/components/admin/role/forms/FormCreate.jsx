@@ -10,6 +10,7 @@ import { roleApi } from "@/services/roleApi";
 import { data } from "autoprefixer";
 import Loading from "@/components/ui/Loading";
 import { useNavigate } from "react-router-dom";
+import { toastUI } from "@/components/ui/Toastify";
 
 const CreateRoleForm = () => {
     const queryClient = useQueryClient();
@@ -36,13 +37,13 @@ const CreateRoleForm = () => {
         mutationFn: (newRole) => roleApi.createRole(newRole),
         onSuccess: (data) => {
             console.log(data);
+            toastUI("Thêm vai trò thành công", "success");
             navigate('/admin/roles/list');
         },
         onError: (err) => {
             console.log(err);
         },
     });
-    console.log(errors);
 
     const onSubmit = (data) => {
         createRole(data);

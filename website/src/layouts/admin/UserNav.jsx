@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
 import {
@@ -16,11 +16,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/Tooltip";
-import { LayoutGrid, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { IoMdMailUnread } from "react-icons/io";
 import { FaBell } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { roles } from "@/constants/roles";
+import { logoutAction } from "@/redux/authSlice";
+import { toastUI } from "@/components/ui/Toastify";
 
 const UserNav = () => {
+  const userProfile = useSelector((state) => state.auth.userProfile);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    toastUI("Đăng xuất thành công!", "success");
+    navigate("/admin/auth");
+  };
+
   return (
     <>
       <div className="mr-2 flex items-center gap-6">
@@ -28,26 +42,26 @@ const UserNav = () => {
           <span className="absolute -right-1 flex h-3 w-3">
             <span
               className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-              style={{ animationDuration: "2s" }}
+              style={ { animationDuration: "2s" } }
             ></span>
             <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
           </span>
-          <IoMdMailUnread size={25} color="#007BBB" />
+          <IoMdMailUnread size={ 25 } color="#007BBB" />
         </button>
         <button className="relative">
           <span className="absolute right-0 flex h-3 w-3">
             <span
               className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-              style={{ animationDuration: "2s" }}
+              style={ { animationDuration: "2s" } }
             ></span>
             <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
           </span>
-          <FaBell size={25} color="#007BBB" />
+          <FaBell size={ 25 } color="#007BBB" />
         </button>
       </div>
       <DropdownMenu>
         <TooltipProvider disableHoverableContent>
-          <Tooltip delayDuration={100}>
+          <Tooltip delayDuration={ 100 }>
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -56,10 +70,10 @@ const UserNav = () => {
                 >
                   <div className="flex flex-col">
                     <span className="font-semibold text-primary-500">
-                      NgChinh
+                      { userProfile?.fullName }
                     </span>
                     <span className="text-right text-[13px] font-light text-primary-300">
-                      Admin
+                      { roles.find(role => role.value === userProfile?.role?.name)?.label }
                     </span>
                   </div>
                   <Avatar>
@@ -79,31 +93,25 @@ const UserNav = () => {
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">Nguyen Chinh</p>
+              <p className="text-sm font-medium leading-none">{ userProfile?.fullName }</p>
               <p className="text-xs leading-none text-muted-foreground">
-                chinhnguyen@example.com
+                { userProfile?.phoneNumber || userProfile?.email }
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem className="hover:cursor-pointer" asChild>
-              <Link href="/dashboard" className="flex items-center">
-                <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
-                Dashboard
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="hover:cursor-pointer" asChild>
               <Link href="/account" className="flex items-center">
                 <User className="mr-3 h-4 w-4 text-muted-foreground" />
-                Account
+                Hồ sơ
               </Link>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {}}>
+          <DropdownMenuItem className="hover:cursor-pointer" onClick={ handleLogout }>
             <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
-            Sign out
+            Đăng xuất
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

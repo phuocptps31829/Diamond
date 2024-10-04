@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import brandLogo from "@/assets/images/brandLogo.png";
 import InputCustom from "@/components/ui/InputCustom";
 import { FaLock, FaPhoneAlt } from "react-icons/fa";
@@ -6,8 +6,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import { RoleSelect } from "./RoleSelect";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/services/authApi";
+import Cookies from "js-cookie";
+import { toastUI } from "@/components/ui/Toastify";
+import Loading from "@/components/ui/Loading";
+import { useDispatch } from "react-redux";
+import { setUserProfile } from "@/redux/authSlice";
 
 const AuthComponent = () => {
+    const [selectedRole, setSelectedRole] = useState("");
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const {
         handleSubmit,
         formState: { errors },
@@ -20,12 +33,62 @@ const AuthComponent = () => {
         },
     });
 
+    const { mutate: getUserProfile, isPending: isPendingProfile } = useMutation({
+        mutationFn: authApi.getProfileInfo,
+        onSuccess: (data) => {
+            const role = data.data.role.name;
+            if (selectedRole !== role) {
+                toastUI("Bạn không có quyền truy cập mục này.", "warning");
+                return;
+            }
+
+            dispatch(setUserProfile(data.data));
+
+            if (role === "SUPER_ADMIN" || role === "ADMIN") {
+                navigate('/admin');
+            }
+
+            if (role === "DOCTOR") {
+                navigate('/admin/doctordashboard');
+            }
+
+            if (role === "STAFF") {
+                navigate('/admin/appointments/list');
+            }
+
+            if (role === "EDITOR") {
+                navigate('/admin/news/list');
+            }
+
+        },
+        onError: (err) => {
+            console.log(err);
+        }
+    });
+
+    const { mutate: login, isPending: isPendingLogin } = useMutation({
+        mutationFn: authApi.login,
+        onSuccess: (data) => {
+            Cookies.set('accessToken', data.accessToken, { expires: new Date(Date.now() + 30 * 1000) });
+            Cookies.set('refreshToken', data.refreshToken);
+            getUserProfile();
+        },
+        onError: (err) => {
+            console.log(err);
+        }
+    });
+
     const onSubmit = (data) => {
-        console.log(data);
+        if (!selectedRole) {
+            toastUI("Vui lòng chọn quyền", "warning");
+            return;
+        }
+        login(data);
     };
 
     return (
         <div className="bg-[#E8F2F7] h-dvh flex items-center justify-center">
+            { isPendingLogin || isPendingProfile && <Loading /> }
             <div className="bg-white w-[70%] rounded-xl flex items-start justify-center p-10">
                 <div className="flex-1 h-full pr-10">
                     <div className="relative w-60 mb-2 items-center">
@@ -41,7 +104,7 @@ const AuthComponent = () => {
                         </h2>
                         <hr className="w-16 h-[3px] bg-primary-500 mb-3" />
                         <div className="mb-3">
-                            <RoleSelect />
+                            <RoleSelect role={ selectedRole } onSetSelectedRole={ setSelectedRole } />
                         </div>
                     </div>
                     <form onSubmit={ handleSubmit(onSubmit) }>
@@ -86,6 +149,7 @@ const AuthComponent = () => {
                             </div>
                         </div>
                         <button
+                            disabled={ isPendingLogin || isPendingProfile }
                             className="mt-5 mb-3 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-base font-semibold text-white hover:bg-primary-500"
                         >
                             Đăng nhập

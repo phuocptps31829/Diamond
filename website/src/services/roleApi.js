@@ -7,7 +7,7 @@ console.log(GET_API);
 
 export const roleApi = {
     getAllRoles: async () => {
-        const res = await axios.get(GET_API + '/roles');
+        const res = await axios.get(GET_API + '/roles', { 'Cache-Control': 'no-cache' });
         console.log("All roles data: ", res.data);
         return res.data;
     },

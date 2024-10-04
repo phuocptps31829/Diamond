@@ -34,6 +34,10 @@ const app = express();
 //     res.header("Access-Control-Allow-Origin", ['http://localhost:5173', 'http://127.0.0.1:5173']);
 //     next();
 // });
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+});
 passportMiddleWare(app);
 app.use(logger('dev'));
 app.use(express.json());

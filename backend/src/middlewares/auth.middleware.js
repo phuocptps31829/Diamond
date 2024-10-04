@@ -12,7 +12,11 @@ const verifyAccessToken = (req, res, next) => {
             createError(401, 'Không có quyền truy cập.');
         }
 
-        const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const verifiedUser = jwt.verify(
+            token,
+            process.env.ACCESS_TOKEN_SECRET,
+            { algorithms: ['HS256'] }
+        );
         req.user = { id: verifiedUser.id };
 
         next();
@@ -40,7 +44,11 @@ const verifyRefreshToken = async (req, res, next) => {
             createError(403, 'Refresh token is expired.');
         }
 
-        const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const verifiedUser = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            { algorithms: ['HS256'] }
+        );
 
         if (!verifiedUser) {
             createError(403, 'Invalid refresh token.');

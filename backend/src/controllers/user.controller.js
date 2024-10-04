@@ -117,10 +117,11 @@ module.exports = {
     },
     getUserByID: async (req, res, next) => {
         try {
-            const { id } = req.params;
+            const idParams = req.params?.id;
+            const idMid = req.user?.id;
 
             const user = await UserModel
-                .findOne({ isDeleted: false, _id: id })
+                .findOne({ isDeleted: false, _id: idParams || idMid })
                 .populate('roleID');
 
             if (!user) {

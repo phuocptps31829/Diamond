@@ -13,6 +13,7 @@ import { CgAlignLeft } from "react-icons/cg";
 export const getMenuList = (pathname) => [
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "/admin/dashboard",
@@ -23,6 +24,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/dashboard",
             label: "Bảng điều khiển quản trị",
+            exceptRoles: ["DOCTOR"],
             active: pathname.includes("/admin/dashboard"),
           },
           {
@@ -36,6 +38,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -59,6 +62,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -82,6 +86,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -105,6 +110,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -128,6 +134,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -153,6 +160,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -176,6 +184,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -201,6 +210,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -224,6 +234,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "EDITOR"],
     menus: [
       {
         href: "",
@@ -248,6 +259,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["SUPER_ADMIN"],
     menus: [
       {
         href: "",
