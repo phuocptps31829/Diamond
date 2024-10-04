@@ -125,7 +125,7 @@ export default function MainHeader() {
                     <div className="flex w-full items-center justify-center">
                       <div className="mr-3 flex flex-col items-start justify-center">
                         <p className="">Xin chào</p>
-                        <p className="">{ userProfile.fullName.split(' ').at(-1) } </p>
+                        <p className="">{ userProfile?.fullName.split(' ').at(-1) } </p>
                       </div>
 
                       <Avatar>

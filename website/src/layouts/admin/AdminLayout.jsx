@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import { useEffect, useState } from "react";
 import Header from "./Header";
@@ -14,6 +14,7 @@ export default function AdminLayout() {
   const [isOpen, setIsOpen] = useState(true);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { data: profileFetched, isLoading } = useQuery({
     queryKey: ["userProfile"],
@@ -21,9 +22,12 @@ export default function AdminLayout() {
   });
 
   useEffect(() => {
-    console.log(profileFetched);
+    if (profileFetched?.data.role && profileFetched?.data?.role?.name === "PATIENT") {
+      navigate('/');
+    }
+
     dispatch(setUserProfile(profileFetched?.data));
-  }, [profileFetched, dispatch]);
+  }, [profileFetched, dispatch, navigate]);
 
   return (
     <>

@@ -4,6 +4,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/Carousel";
+import Cookies from "js-cookie";
 import Autoplay from "embla-carousel-autoplay";
 import { Link, useNavigate } from "react-router-dom";
 import { FaPhoneAlt, FaLock } from "react-icons/fa";
@@ -12,15 +13,11 @@ import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
 import { API_LOGIN_GOOGLE } from "@/configs/varibles";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "@/services/authApi";
-import { useCookies } from "react-cookie";
+import { authApi } from "@/services/authApi";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function LoginComponent() {
-  const { toast } = useToast();
-  const [, setCookie] = useCookies(['accessToken', 'refreshToken']);
   const navigate = useNavigate();
 
   const {
@@ -36,21 +33,11 @@ export default function LoginComponent() {
   });
 
   const mutation = useMutation({
-    mutationFn: login,
+    mutationFn: authApi.login,
     onSuccess: (data) => {
       console.log(data);
-      setCookie(
-        "accessToken",
-        data.accessToken.token,
-        {
-          expires: new Date(data.accessToken.exp)
-        });
-      setCookie(
-        "refreshToken",
-        data.refreshToken.token,
-        {
-          expires: new Date(data.refreshToken.exp)
-        });
+      Cookies.set('accessToken', data.accessToken, { expires: new Date(Date.now() + 30 * 1000) });
+      Cookies.set('refreshToken', data.refreshToken);
       navigate('/user-profile');
     },
     onError: (error) => {
@@ -59,12 +46,7 @@ export default function LoginComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Đăng nhập thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Đăng nhập thất bại!", "error");
     },
   });
 

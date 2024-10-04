@@ -1,4 +1,5 @@
 const MedicineCategoryModel = require('../models/medicine-category.model');
+const MedicineModel = require('../models/medicine.model');
 const { createError } = require('../utils/helper.util');
 
 module.exports = {
@@ -18,10 +19,20 @@ module.exports = {
                 createError(404, 'No medicine categories found.');
             }
 
+            const medicineCategoriesWithCount = await Promise.all(
+                medicineCategories.map(async (m) => {
+                    const totalMedicines = await MedicineModel.countDocuments({ isDeleted: false, medicineCategoryID: m._id });
+                    return {
+                        ...m.toObject(),
+                        totalMedicines,
+                    };
+                })
+            );
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Medicine categories retrieved successfully.',
-                data: medicineCategories,
+                data: medicineCategoriesWithCount,
                 totalRecords
             });
         } catch (error) {
