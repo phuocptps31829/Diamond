@@ -113,7 +113,7 @@ export default function ServiceItem({
             { (+price).toLocaleString() } ₫
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            { +discountPrice.toLocaleString() }₫
+            { (+discountPrice).toLocaleString() }₫
           </span>
         </div>
 

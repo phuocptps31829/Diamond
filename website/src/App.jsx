@@ -57,7 +57,6 @@ import PatientsFormFixPage from "./pages/admin/Patient/formFix";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
 import SerivesListPage from "./pages/admin/Services";
-import ServicesFormPage from "./pages/admin/Services/form";
 import PackagesListPage from "./pages/admin/Packages";
 import PackagesFormAddPage from "./pages/admin/Packages/formAdd";
 import PackagesFormFixPage from "./pages/admin/Packages/formFix";
@@ -260,7 +259,7 @@ const router = createBrowserRouter([
       },
       {
         path: "services/create",
-        element: <ServicesFormPage />,
+        element: <ServicesAddPage />,
       },
       {
         path: "packages/list",

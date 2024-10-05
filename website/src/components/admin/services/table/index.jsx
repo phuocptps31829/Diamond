@@ -41,7 +41,7 @@ export default function DataTable({ data, columns }) {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -63,6 +63,7 @@ export default function DataTable({ data, columns }) {
       },
     },
   });
+
   return (
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */ }

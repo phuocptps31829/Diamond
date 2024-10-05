@@ -73,11 +73,11 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
         label: "Thuốc",
-        roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
         active: pathname === "/admin/medicine/list",
         icon: GiMedicines,
         submenus: [
@@ -107,11 +107,11 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
         label: "Bác sĩ",
-        roles: ["ADMIN", "SUPER_ADMIN",],
         active: pathname === "/admin/doctors/list",
         icon: FaUserDoctor,
         submenus: [

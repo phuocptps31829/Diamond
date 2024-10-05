@@ -669,6 +669,28 @@ export default function DoctorsForm() {
           </div>
         </div>
 
+        {/*  */ }
+        {/* <div className="mt-2">
+          <h2 className="mb-1">
+            Loại bác sĩ <span className="text-red-600">*</span>
+          </h2>
+          <div className="mb-3 flex items-center">
+            <label className="mr-6 flex items-center">
+              <input type="radio" name="gender" value="male" className="mr-2" />
+              <span className="text-lg">Bác sĩ nội</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="gender"
+                value="female"
+                className="mr-2"
+              />
+              <span className="text-lg">Bác sĩ ngoại</span>
+            </label>
+          </div>
+        </div> */}
+
         {/* Button */ }
         <div className="flex justify-end gap-2">
           <Button

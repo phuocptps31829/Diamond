@@ -21,6 +21,8 @@ const Menu = ({ isOpen }) => {
 
   console.log('role', profileRole);
 
+  console.log(menuList, 'mm');
+
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
       <nav className="no-scrollbar mt-5 h-full w-full">

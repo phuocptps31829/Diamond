@@ -21,43 +21,45 @@ const CheckboxServices = ({ control, name, errors }) => {
     return <div>Loading...</div>;
   }
 
+  if (!services.length) return;
+
   return (
     <Controller
-      control={control}
-      name={name}
-      render={({ field }) => (
+      control={ control }
+      name={ name }
+      render={ ({ field }) => (
         <div className="mt-5">
           <div className="space-y-4">
-            {services.map((item) => (
-              <div key={item._id} className="flex items-center space-x-3">
+            { services.map((item) => (
+              <div key={ item._id } className="flex items-center space-x-3">
                 <Checkbox
-                  id={item._id}
-                  checked={field.value?.includes(item._id)}
-                  onCheckedChange={(checked) => {
+                  id={ item._id }
+                  checked={ field.value?.includes(item._id) }
+                  onCheckedChange={ (checked) => {
                     const newValue = checked
                       ? [...(field.value || []), item._id]
                       : field.value?.filter((value) => value !== item._id) ||
-                        [];
+                      [];
                     field.onChange(newValue);
-                  }}
+                  } }
                 />
                 <label
-                  htmlFor={item._id}
+                  htmlFor={ item._id }
                   className="block cursor-pointer text-[14px] font-medium"
                 >
-                  {item.name} -{" "}
+                  { item.name } -{ " " }
                   <span className="mt-0 text-red-500 font-semibold">
-                    {item.discountPrice.toLocaleString()} ₫
+                    { item.discountPrice.toLocaleString() } ₫
                   </span>
                 </label>
               </div>
-            ))}
+            )) }
           </div>
-          {errors[name] && (
-            <span className="text-sm text-red-500">{errors[name].message}</span>
-          )}
+          { errors[name] && (
+            <span className="text-sm text-red-500">{ errors[name].message }</span>
+          ) }
         </div>
-      )}
+      ) }
     />
   );
 };

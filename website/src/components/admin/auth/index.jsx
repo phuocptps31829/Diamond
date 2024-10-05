@@ -13,7 +13,7 @@ import Cookies from "js-cookie";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
 import { useDispatch } from "react-redux";
-import { logoutAction, setUserProfile } from "@/redux/authSlice";
+import { setUserProfile } from "@/redux/authSlice";
 
 const AuthComponent = () => {
     const [selectedRole, setSelectedRole] = useState("");
