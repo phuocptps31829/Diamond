@@ -18,9 +18,7 @@ import { useParams } from "react-router-dom";
 import { getDoctorById } from "@/services/doctorsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { Label } from "@/components/ui/Label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
 import { MdCloudUpload } from "react-icons/md";
 

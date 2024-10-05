@@ -83,7 +83,10 @@ export default function DoctorsForm() {
       setValue("experienceYears", experienceYears);
       setValue("province", data.address.province);
       setValue("specialty", data.otherInfo.specialtyID);
+      setValue("trinhdo", data.otherInfo.title);
+      setValue("address", data.address.street);
       setValue("content", data.content);
+      setValue("detail", data.otherInfo.detail);
       setImagePreview(data.image);
     }
   }, [data, setValue]);
@@ -387,7 +390,9 @@ export default function DoctorsForm() {
                     control={control}
                     name="province"
                     errors={errors}
-                    defaultValue={data?.address?.province} 
+                    // Để tạm id để gét da ta
+                    defaultValue="66a6a8d80c92ef5523930997"
+                    // defaultValue={data?.address?.province} 
                     onProvinceChange={(provinceId) => {
                       setSelectedProvinceId(provinceId);
                       setSelectedDistrictId(null);
@@ -453,10 +458,13 @@ export default function DoctorsForm() {
 
 
             <div className="w-full">
-              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white">
+              <label htmlFor="hoten" className="mb-2 block px-1 left-[15px] bg-white text-base">
                   Chi tiết về bác sĩ <span className="text-red-500">*</span>
               </label>
-              <DoctorEditor/>
+              <DoctorEditor name="detail"
+              control={control}
+              errors={errors}
+              />
             </div>
             
               {/* Status */}

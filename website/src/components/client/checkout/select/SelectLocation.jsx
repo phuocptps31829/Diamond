@@ -47,11 +47,11 @@ export function SelectProvince({
   };
   useEffect(() => {
     if (defaultValue) {
-      console.log(defaultValue);
-      const selectedProvince = provinces.find((province) => province.name === defaultValue);
+      console.log("df:" + defaultValue);
+      const selectedProvince = provinces.find((province) => province._id === defaultValue);
       if (selectedProvince) {
         setSelectedValue(selectedProvince._id); 
-        control.setValue(name, selectedProvince._id); 
+        // control.setValue(name, selectedProvince._id); 
       }
     }
   }, [defaultValue, provinces, control, name]);
@@ -99,8 +99,8 @@ export function SelectProvince({
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            setSelectedValue(selectedProvince._id); // Cập nhật state giá trị đã chọn
-                            field.onChange(selectedProvince._id); // Cập nhật giá trị trong form
+                            setSelectedValue(selectedProvince._id);
+                            field.onChange(selectedProvince._id);
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
