@@ -320,5 +320,56 @@ module.exports = {
         } catch (error) {
             next(error);
         }
-    }
+    },
+    getAllAppointmentsForAges: async (req, res, next) => {
+        try {
+            const appointments = await AppointmentModel
+                .find({})
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate('patientID');
+
+            const result = {};
+
+            for (const appointment of appointments) {
+                const { dateOfBirth } = appointment.patientID;
+
+                console.log(new Date(dateOfBirth).getFullYear());
+                const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
+                const year = new Date(appointment.time).getFullYear();
+                const month = new Date(appointment.time).getMonth() + 1;
+
+                if (!result[age]) {
+                    result[age] = {};
+                }
+
+                if (!result[age][year]) {
+                    result[age][year] = {
+                        year,
+                        months: []
+                    };
+                }
+
+                let monthData = result[age][year].months.find(m => m.month === month);
+                if (!monthData) {
+                    monthData = { month, count: 0 };
+                    result[age][year].months.push(monthData);
+                }
+
+                monthData.count += 1;
+            }
+
+            const formattedResult = Object.entries(result).map(([age, yearsData]) => ({
+                age: +age,
+                years: Object.values(yearsData)
+            }));
+
+            return res.status(200).json({
+                message: 'Appointments retrieved successfully.',
+                data: formattedResult,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
 };

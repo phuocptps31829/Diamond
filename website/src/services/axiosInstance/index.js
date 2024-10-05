@@ -15,7 +15,6 @@ export const axiosInstanceCUD = axios.create({
 
 const interceptors = (axiosInstance) => {
     axiosInstance.interceptors.request.use((config) => {
-        console.log('in req', config);
         const accessToken = Cookies.get('accessToken');
 
         if (accessToken && !config.headers.Authorization) {

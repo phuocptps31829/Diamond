@@ -49,6 +49,29 @@ router.get(
     appointmentController.getAllAppointmentsForGenderYears
 );
 
+
+/**
+ * @openapi
+ * '/api/v1/appointments/ages-dashboard':
+ *  get:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Get all Appointments for ages dashboard
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/ages-dashboard',
+    helperMiddleware.checkValueQuery,
+    helperMiddleware.checkQueryParams,
+    appointmentController.getAllAppointmentsForAges
+);
+
 /**
  * @openapi
  * '/api/v1/appointments':
