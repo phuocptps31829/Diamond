@@ -71,7 +71,7 @@ const PackagesFormFix = ({ packageDetail }) => {
     setImage(packageDetail.image);
     setValue(
       "services",
-      packageDetail.services.map((service) => ({
+      packageDetail.services?.map((service) => ({
         servicesID: service.servicesID,
         levelName: service.levelName,
         price: service.price,
@@ -130,33 +130,33 @@ const PackagesFormFix = ({ packageDetail }) => {
         <h1 className="mr-2 h-fit bg-white text-2xl font-bold">
           Thông tin gói sản phẩm
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-8 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-5 mt-5">
               <div className="relative h-[230px] min-w-[300px] rounded-3xl border-2 border-dashed border-primary-500">
                 <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
                   <label className="flex h-full w-full cursor-pointer items-center justify-center">
                     <div className="flex flex-col items-center justify-center">
-                      <MdCloudUpload size={45} color="#007BBB" />
+                      <MdCloudUpload size={ 45 } color="#007BBB" />
                       <p className="mt-2 text-sm">Chọn ảnh</p>
                     </div>
-                    {imagePreview && (
+                    { imagePreview && (
                       <img
-                        src={imagePreview}
+                        src={ imagePreview }
                         alt="Image Preview"
                         className="absolute inset-0 h-full w-full rounded-3xl object-cover"
                       />
-                    )}
+                    ) }
                     <input
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => {
+                      onChange={ (e) => {
                         const file = e.target.files[0];
                         setFileImage(file);
                         const imageUrl = URL.createObjectURL(file);
                         setImagePreview(imageUrl);
-                      }}
+                      } }
                     />
                   </label>
                 </div>
@@ -170,8 +170,8 @@ const PackagesFormFix = ({ packageDetail }) => {
                   id="name"
                   label="Tên gói:"
                   type="text"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                   placeholder="Nhập tên gói"
                 />
                 <div>
@@ -183,8 +183,8 @@ const PackagesFormFix = ({ packageDetail }) => {
                   </Label>
                   <SelectSpecialty
                     name="specialtyID"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -194,20 +194,20 @@ const PackagesFormFix = ({ packageDetail }) => {
                   </Label>
                   <Controller
                     name="shortDescription"
-                    control={control}
-                    render={({ field }) => (
+                    control={ control }
+                    render={ ({ field }) => (
                       <Textarea
                         placeholder="Nhập mô tả."
                         id="shortDescription"
-                        {...field}
+                        { ...field }
                       />
-                    )}
+                    ) }
                   />
-                  {errors.shortDescription && (
+                  { errors.shortDescription && (
                     <p className="mt-1 text-sm text-red-500">
-                      {errors.shortDescription.message}
+                      { errors.shortDescription.message }
                     </p>
-                  )}
+                  ) }
                 </div>
 
                 <div className="flex h-full flex-col">
@@ -220,17 +220,17 @@ const PackagesFormFix = ({ packageDetail }) => {
                   <div className="mb-3 flex items-center">
                     <Controller
                       name="isHidden"
-                      control={control}
-                      render={({ field }) => (
+                      control={ control }
+                      render={ ({ field }) => (
                         <>
                           <label className="mr-6 flex items-center">
                             <input
                               type="radio"
                               name="isHidden"
-                              value={false}
+                              value={ false }
                               className="mr-2"
-                              checked={field.value === false}
-                              onChange={() => field.onChange(false)}
+                              checked={ field.value === false }
+                              onChange={ () => field.onChange(false) }
                             />
                             <span className="text-sm">Hiển thị</span>
                           </label>
@@ -238,15 +238,15 @@ const PackagesFormFix = ({ packageDetail }) => {
                             <input
                               type="radio"
                               name="isHidden"
-                              value={true}
+                              value={ true }
                               className="mr-2"
-                              checked={field.value === true}
-                              onChange={() => field.onChange(true)}
+                              checked={ field.value === true }
+                              onChange={ () => field.onChange(true) }
                             />
                             <span className="text-sm">Ẩn</span>
                           </label>
                         </>
-                      )}
+                      ) }
                     />
                   </div>
                 </div>
@@ -259,11 +259,11 @@ const PackagesFormFix = ({ packageDetail }) => {
               Dịch vụ trong gói:
             </Label>
             <div className="rounded-lg border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-5">
-              {fields.map((item, index) => (
+              { fields.map((item, index) => (
                 <>
                   <div
-                    key={item.id}
-                    className={`${index === 0 ? "pb-3" : "border-t-2 border-dashed border-primary-400 pt-4"} mb-5 flex items-center justify-between`}
+                    key={ item.id }
+                    className={ `${index === 0 ? "pb-3" : "border-t-2 border-dashed border-primary-400 pt-4"} mb-5 flex items-center justify-between` }
                   >
                     <div className="flex h-full w-[40%] flex-col pr-2">
                       <Label
@@ -274,9 +274,9 @@ const PackagesFormFix = ({ packageDetail }) => {
                       </Label>
                       <div className="scrollable-services">
                         <CheckboxServices
-                          name={`services[${index}].servicesID`}
-                          control={control}
-                          errors={errors}
+                          name={ `services[${index}].servicesID` }
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                     </div>
@@ -285,76 +285,76 @@ const PackagesFormFix = ({ packageDetail }) => {
                       <div className="w-full">
                         <InputCustom
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].levelName`}
+                          name={ `services[${index}].levelName` }
                           label="Cấp độ gói:"
                           type="text"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập tên cấp độ gói"
                         />
                       </div>
                       <div className="w-full">
                         <InputCustom
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].price`}
+                          name={ `services[${index}].price` }
                           label="Giá gói:"
                           type="number"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập giá gói"
                         />
                       </div>
                       <div className="w-full">
                         <InputCustom
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].discountPrice`}
+                          name={ `services[${index}].discountPrice` }
                           label="Giá khuyến mãi:"
                           type="number"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập giá khuyến mãi"
                         />
                       </div>
                     </div>
                   </div>
-                  {index !== 0 && (
+                  { index !== 0 && (
                     <button
                       type="button"
-                      onClick={() => remove(index)}
+                      onClick={ () => remove(index) }
                       className="group relative flex items-center justify-center overflow-hidden rounded-sm bg-red-600 bg-gradient-to-r px-4 py-2 text-white transition-all duration-300 ease-out"
                     >
                       <span className="relative text-[13px] font-semibold">
-                        Xóa biến thể{" "}
+                        Xóa biến thể{ " " }
                         <FaTrashRestore className="ml-2 inline-block" />
                       </span>
                     </button>
-                  )}
+                  ) }
                 </>
-              ))}
-              {fields.length === 1 && (
+              )) }
+              { fields.length === 1 && (
                 <button
                   type="button"
-                  onClick={addService}
+                  onClick={ addService }
                   className="group relative flex items-center justify-center overflow-hidden rounded-sm bg-green-600 bg-gradient-to-r px-4 py-2 text-white transition-all duration-300 ease-out hover:bg-gradient-to-r"
                 >
                   <span className="relative text-[13px] font-semibold">
                     Thêm biến thể <FaPlus className="ml-2 inline-block" />
                   </span>
                 </button>
-              )}
+              ) }
             </div>
-            {errors.services && (
-              <p className="mt-3 text-red-500">{errors.services.message}</p>
-            )}
+            { errors.services && (
+              <p className="mt-3 text-red-500">{ errors.services.message }</p>
+            ) }
           </div>
 
           <Label className="mb-3 block" htmlFor="details">
             Nhập mô tả gói:
           </Label>
-          <NewsEditor control={control} name="details" errors={errors} />
+          <NewsEditor control={ control } name="details" errors={ errors } />
           <div className="mt-10 w-full text-end">
-            <Button variant="custom" type="submit" disabled={isLoading}>
-              {isLoading ? <SpinLoader /> : "Cập nhật"}
+            <Button variant="custom" type="submit" disabled={ isLoading }>
+              { isLoading ? <SpinLoader /> : "Cập nhật" }
             </Button>
           </div>
         </form>

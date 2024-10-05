@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import SelectBirthDate from "@/components/client/checkout/select/SelectBirthday";
-import SelectDepartment from "@/components/client/checkout/select/SelectSpecialty";
+import SelectDepartment from "@/components/client/checkout/select/SelectSpecialtyold";
 import {
   SelectDistrict,
   SelectProvince,
@@ -13,7 +13,7 @@ import {
 import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
 import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
-import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialty";
+import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialtyold";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 

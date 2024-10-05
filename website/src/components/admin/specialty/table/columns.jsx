@@ -10,6 +10,7 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import { Link } from "react-router-dom";
 
 export const columns = [
   {
@@ -124,7 +125,8 @@ export const columns = [
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original;
-      console.log(payment);
+      const id = payment._id;
+      console.log("xxxx "+ id);
 
       return (
         <DropdownMenu>
@@ -137,7 +139,7 @@ export const columns = [
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-full items-center gap-2">
               <FiEdit className="text-[15px]" />
-              <span>Sửa</span>
+              <Link to={`/admin/specialty/edit/${id}`}>Sửa</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-full items-center gap-2">
               <RiDeleteBin6Line className="text-[15px]" />

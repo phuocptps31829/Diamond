@@ -25,10 +25,6 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function DataTable({data, columns, specialtyData}) {
-
-  console.log("Doctors Data:", data);
-  console.log("Doctors with Specialties:", specialtyData);
-  
   const {
     handleSubmit,
     formState: { errors },

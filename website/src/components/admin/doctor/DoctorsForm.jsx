@@ -1,8 +1,6 @@
 import InputCustom from "@/components/ui/InputCustom";
 import { doctorSchema } from "@/zods/doctor";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import SelectBirthDate from "@/components/client/checkout/select/SelectBirthday";
 import SelectDepartment from "@/components/client/checkout/select/SelectDepartment";
 import {
@@ -14,13 +12,23 @@ import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/Button";
 import DoctorEditor from "./editor";
-import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialty";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import SelectRoom from "@/components/client/checkout/select/SelectRoom";
+import { useParams } from "react-router-dom";
+import { getDoctorById } from "@/services/doctorsApi";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
+import { MdCloudUpload } from "react-icons/md";
+import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialtyold";
 
 export default function DoctorsForm() {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const { id } = useParams();
   const {
     handleSubmit,
     formState: { errors },
@@ -52,71 +60,99 @@ export default function DoctorsForm() {
       status: "",
     },
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [showMenu, setShowMenu] = useState(false);
+  const { data } = useQuery({
+    queryKey: ["doctors", id],
+    queryFn: () => getDoctorById(id),
+    enabled: !!id,
+  });
+  useEffect(() => {
+    if (data) {
+      console.log("Fetched data: ", data);
+      setValue("doctorName", data.fullName);
+      setValue("phone", data.phoneNumber);
+      setValue("email", data.email);
+      setValue("birthDate", data.dateOfBirth);
+      setValue("gender", data.gender ? "Nam" : "Nữ");
+      setValue("status", data.isActivated ? true : false);
+      setValue("practicingCertificate", data.otherInfo.practicingCertificate);
+      const currentYear = new Date().getFullYear();
+      const experienceDate = new Date(data.otherInfo.yearsExperience);
+      const experienceYear = experienceDate.getFullYear();
+      const experienceYears = currentYear - experienceYear;
+      setValue("experienceYears", experienceYears);
+      setValue("province", data.address.province);
+      setValue("specialty", data.otherInfo.specialtyID);
+      setValue("content", data.content);
+      setImagePreview(data.image);
+    }
+  }, [data, setValue]);
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
-  const onSubmit = () => {};
-
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setImagePreview(null);
+  };
+  const handleSpecialtyChange = (specialtyId) => {
+    console.log(specialtyId);
+  };
+  const onSubmit = () => {
+  };
   return (
-    <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
-      <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
-        Thông tin bác sĩ
-      </h1>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid-cols-1 gap-[10px] sm:grid md:flex">
-          <div className="relative mb-2 h-fit md:w-1/3 2xl:w-[26%]">
-            <div
-              className="relative flex justify-center"
-              onMouseEnter={() => setShowMenu(true)}
-              onMouseLeave={() => setShowMenu(false)}
-            >
-              <img
-                src={
-                  selectedFile
-                    ? URL.createObjectURL(selectedFile)
-                    : "https://cdn.pixabay.com/photo/2024/03/25/18/35/ai-generated-8655320_640.png"
-                }
-                className="w-2/3 cursor-pointer rounded-3xl md:w-[100%]"
-                onClick={() => document.getElementById("fileInput").click()}
-                alt="Ảnh đại diện"
-              />
-              {showMenu && (
-                <div className="absolute inset-0 flex items-center justify-center rounded-3xl bg-gray-800 bg-opacity-50">
-                  <ul className="space-y-2 text-center">
-                    <li>
+    <div className="bg-white w-[100%] px-7 py-6 rounded-lg shadow-gray ">
+      <h1 className="mr-2 bg-white h-fit mb-4 text-2xl font-bold">Thông tin bác sĩ</h1>
+      <form onSubmit={ handleSubmit(onSubmit) } >
+        <div className="md:flex gap-[10px] sm:grid grid-cols-1">
+          <div className="2xl:w-[26%] md:w-1/3 h-fit relative mb-2">
+            <div className="mr-5">
+              <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
+                Ảnh đại diện <span className="text-red-500">*</span>
+              </label>
+              <div className="relative h-[250px] min-w-[250px] rounded-3xl border-2 border-dashed border-primary-500">
+                <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
+                  { imagePreview ? (
+                    <div className="h-[100%]">
+                      <img
+                        src={ imagePreview }
+                        alt="Doctor Preview"
+                        className="h-full rounded-3xl"
+                      />
                       <button
-                        className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-                        onClick={() =>
-                          document.getElementById("fileInput").click()
-                        }
+                        type="button"
+                        onClick={ handleRemoveImage }
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-sm p-2"
                       >
-                        Đổi ảnh
+                        X
                       </button>
-                    </li>
-                    <li>
-                      <button
-                        className="rounded-md bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
-                        onClick={() => setSelectedFile(null)}
-                      >
-                        Xóa ảnh
-                      </button>
-                    </li>
-                  </ul>
+                    </div>
+                  ) : (
+                    <label className="flex h-full w-full cursor-pointer items-center justify-center">
+                      <div className="flex flex-col items-center justify-center">
+                        <MdCloudUpload size={ 45 } color="#007BBB" />
+                        <p className="mt-2 text-sm">Chọn ảnh</p>
+                      </div>
+                      <input
+                        type="file"
+                        id="fileImage"
+                        className="hidden"
+                        onChange={ handleFileChange }
+                      />
+                    </label>
+                  ) }
                 </div>
-              )}
-              <input
-                id="fileInput"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
-              />
+              </div>
             </div>
           </div>
           <div className="w-full">
-            {/* Line 1 */}
+            {/* Line 1 */ }
             <div className="block">
               <div className="w-full grid-cols-1 md:flex md:gap-[10px]">
                 <div className="relative md:mb-4 md:w-1/2">
@@ -131,8 +167,8 @@ export default function DoctorsForm() {
                     name="doctorName"
                     type="text"
                     id="doctorName"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -148,14 +184,14 @@ export default function DoctorsForm() {
                     name="phone"
                     type="text"
                     id="phone"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
 
-            {/* Line 2 */}
+            {/* Line 2 */ }
             <div className="flex w-full gap-[10px]">
               <div className="w-full gap-[10px] md:flex">
                 <div className="relative md:mb-4 md:w-1/2">
@@ -170,8 +206,8 @@ export default function DoctorsForm() {
                     name="email"
                     type="text"
                     id="email"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -184,9 +220,9 @@ export default function DoctorsForm() {
                       Ngày sinh <span className="text-red-500">*</span>
                     </label>
                     <SelectBirthDate
-                      control={control}
+                      control={ control }
                       name="birthDate"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
 
@@ -214,7 +250,7 @@ export default function DoctorsForm() {
               </div>
             </div>
 
-            {/* Line 3 */}
+            {/* Line 3 */ }
             <div className="block">
               <div className="w-full gap-[10px] md:flex">
                 <div className="relative md:mb-4 md:w-1/2">
@@ -229,8 +265,8 @@ export default function DoctorsForm() {
                     name="password"
                     type="password"
                     id="password"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -246,15 +282,15 @@ export default function DoctorsForm() {
                     name="confirmPassword"
                     type="password"
                     id="confirmPassword"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* Line 4 */}
+        {/* Line 4 */ }
         <div className="block">
           <div className="w-full gap-[10px] md:flex">
             <div className="relative md:mb-4 md:w-1/2">
@@ -269,8 +305,8 @@ export default function DoctorsForm() {
                 name="chungchi"
                 type="text"
                 id="chungchi"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="relative md:mb-4 md:w-1/2">
@@ -285,8 +321,8 @@ export default function DoctorsForm() {
                 name="trinhdo"
                 type="text"
                 id="trinhdo"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="relative md:mb-4 md:w-1/2">
@@ -296,18 +332,18 @@ export default function DoctorsForm() {
               >
                 Khoa <span className="text-red-500">*</span>
               </label>
-              {/* Khoa khám */}
+              {/* Khoa khám */ }
               <SelectDepartment
-                control={control}
+                control={ control }
                 name="department"
-                errors={errors}
-                // specialtyID={
-                //   selectedService?.bookingDetail?.specialtyID || ""
-                // }
-                // setValue={setValue}
-                // onChange={(branchID) => {
-                //   setSelectedBranchId(branchID);
-                // }}
+                errors={ errors }
+              // specialtyID={
+              //   selectedService?.bookingDetail?.specialtyID || ""
+              // }
+              // setValue={setValue}
+              // onChange={(branchID) => {
+              //   setSelectedBranchId(branchID);
+              // }}
               />
             </div>
 
@@ -323,83 +359,204 @@ export default function DoctorsForm() {
                 name="experienceYears"
                 type="text"
                 id="experienceYears"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
         </div>
 
-        {/* Line 5 */}
-        <div className="flex w-full gap-[10px]">
-          <div className="w-full gap-[10px] md:flex">
-            <div className="relative mb-3 md:w-1/2">
-              <label
-                htmlFor="hoten"
-                className="left-[15px] mb-2 block bg-white px-1"
-              >
+        {/* Line 5 */ }
+        <div className="w-full flex gap-[10px]">
+          <div className="w-full md:flex gap-[10px]">
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Chuyên khoa <span className="text-red-500">*</span>
               </label>
-              {/* Chuyên khoa */}
-              <SelectSpecialties
-                control={control}
+              {/* Chuyên khoa */ }
+              <SelectSpecialty
+                control={ control }
                 name="specialty"
-                errors={errors}
-                // specialtyID={
-                //   selectedService?.bookingDetail?.specialtyID || ""
-                // }
-                // setValue={setValue}
-                // onChange={(branchID) => {
-                //   setSelectedBranchId(branchID);
-                // }}
+                errors={ errors }
+
               />
             </div>
-            <div className="relative mb-3 md:w-1/2">
-              <label
-                htmlFor="hoten"
-                className="left-[15px] mb-2 block bg-white px-1"
-              >
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Chi nhánh làm việc <span className="text-red-500">*</span>
               </label>
               <SelectBranch
-                control={control}
+                control={ control }
                 name="branch"
-                errors={errors}
-                // specialtyID={
-                //   selectedService?.bookingDetail?.specialtyID || ""
-                // }
-                // setValue={setValue}
-                // onChange={(branchID) => {
-                //   setSelectedBranchId(branchID);
-                // }}
+                errors={ errors }
+              // specialtyID={
+              //   selectedService?.bookingDetail?.specialtyID || ""
+              // }
+              // setValue={setValue}
+              // onChange={(branchID) => {
+              //   setSelectedBranchId(branchID);
+              // }}
               />
             </div>
 
-            <div className="relative mb-3 md:w-1/2">
-              <label
-                htmlFor="hoten"
-                className="left-[15px] mb-2 block bg-white px-1"
-              >
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
                 Phòng <span className="text-red-500">*</span>
               </label>
               <SelectRoom
-                control={control}
+                control={ control }
                 name="room"
-                errors={errors}
-                // specialtyID={
-                //   selectedService?.bookingDetail?.specialtyID || ""
-                // }
-                // setValue={setValue}
-                // onChange={(branchID) => {
-                //   setSelectedBranchId(branchID);
-                // }}
+                errors={ errors }
+              // specialtyID={
+              //   selectedService?.bookingDetail?.specialtyID || ""
+              // }
+              // setValue={setValue}
+              // onChange={(branchID) => {
+              //   setSelectedBranchId(branchID);
+              // }}
+              />
+            </div>
+          </div>
+
+        </div>
+
+        <div className=" w-full flex gap-[10px]">
+          {/* Line 6 */ }
+          <div className="w-full md:flex gap-[10px]">
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2">
+                Tỉnh/Thành phố <span className="text-red-500">*</span>
+              </label>
+              <SelectProvince
+                control={ control }
+                name="province"
+                errors={ errors }
+                onProvinceChange={ (provinceId) => {
+                  setSelectedProvinceId(provinceId);
+                  setSelectedDistrictId(null);
+                } }
+              />
+            </div>
+
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2">
+                Quận huyện <span className="text-red-500">*</span>
+              </label>
+              <SelectDistrict
+                control={ control }
+                name="district"
+                errors={ errors }
+                provinceId={ selectedProvinceId }
+                onDistrictChange={ setSelectedDistrictId }
+                setValue={ setValue }
+
+              />
+            </div>
+
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2">
+                Phường/Xã <span className="text-red-500">*</span>
+              </label>
+              <SelectWard
+                control={ control }
+                name="ward"
+                errors={ errors }
+                setValue={ setValue }
+                districtId={ selectedDistrictId }
+              />
+            </div>
+            <div className="mb-3 md:w-1/2 relative">
+              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2">
+                Dân tộc <span className="text-red-500">*</span>
+              </label>
+              <SelectEthnic
+                control={ control }
+                name="ethnicity"
+                errors={ errors }
               />
             </div>
           </div>
         </div>
+        {/* Line 7 */ }
+        <div className="w-full flex gap-[10px]">
+          <div className="mb-3 w-full relative">
+            <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white">
+              Địa chỉ thường trú <span className="text-red-500">*</span>
+            </label>
+            <InputCustom
+              className="col-span-1 sm:col-span-1 "
+              name="address"
+              type="text"
+              id="address"
+              control={ control }
+              errors={ errors }
+            />
+          </div>
+        </div>
+
+
+        <div className="w-full">
+          <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white">
+            Chi tiết về bác sĩ <span className="text-red-500">*</span>
+          </label>
+          {/* Chuyên khoa */ }
+          <SelectSpecialties
+            control={ control }
+            name="specialty"
+            errors={ errors }
+          // specialtyID={
+          //   selectedService?.bookingDetail?.specialtyID || ""
+          // }
+          // setValue={setValue}
+          // onChange={(branchID) => {
+          //   setSelectedBranchId(branchID);
+          // }}
+          />
+        </div>
+        <div className="relative mb-3 md:w-1/2">
+          <label
+            htmlFor="hoten"
+            className="left-[15px] mb-2 block bg-white px-1"
+          >
+            Chi nhánh làm việc <span className="text-red-500">*</span>
+          </label>
+          <SelectBranch
+            control={ control }
+            name="branch"
+            errors={ errors }
+          // specialtyID={
+          //   selectedService?.bookingDetail?.specialtyID || ""
+          // }
+          // setValue={setValue}
+          // onChange={(branchID) => {
+          //   setSelectedBranchId(branchID);
+          // }}
+          />
+        </div>
+
+        <div className="relative mb-3 md:w-1/2">
+          <label
+            htmlFor="hoten"
+            className="left-[15px] mb-2 block bg-white px-1"
+          >
+            Phòng <span className="text-red-500">*</span>
+          </label>
+          <SelectRoom
+            control={ control }
+            name="room"
+            errors={ errors }
+          // specialtyID={
+          //   selectedService?.bookingDetail?.specialtyID || ""
+          // }
+          // setValue={setValue}
+          // onChange={(branchID) => {
+          //   setSelectedBranchId(branchID);
+          // }}
+          />
+        </div>
 
         <div className="flex w-full gap-[10px]">
-          {/* Line 6 */}
+          {/* Line 6 */ }
           <div className="w-full gap-[10px] md:flex">
             <div className="relative mb-3 md:w-1/2">
               <label
@@ -409,13 +566,13 @@ export default function DoctorsForm() {
                 Tỉnh/Thành phố <span className="text-red-500">*</span>
               </label>
               <SelectProvince
-                control={control}
+                control={ control }
                 name="province"
-                errors={errors}
-                onProvinceChange={(provinceId) => {
+                errors={ errors }
+                onProvinceChange={ (provinceId) => {
                   setSelectedProvinceId(provinceId);
                   setSelectedDistrictId(null);
-                }}
+                } }
               />
             </div>
 
@@ -427,12 +584,12 @@ export default function DoctorsForm() {
                 Quận huyện <span className="text-red-500">*</span>
               </label>
               <SelectDistrict
-                control={control}
+                control={ control }
                 name="district"
-                errors={errors}
-                provinceId={selectedProvinceId}
-                onDistrictChange={setSelectedDistrictId}
-                setValue={setValue}
+                errors={ errors }
+                provinceId={ selectedProvinceId }
+                onDistrictChange={ setSelectedDistrictId }
+                setValue={ setValue }
               />
             </div>
 
@@ -444,11 +601,11 @@ export default function DoctorsForm() {
                 Phường/Xã <span className="text-red-500">*</span>
               </label>
               <SelectWard
-                control={control}
+                control={ control }
                 name="ward"
-                errors={errors}
-                setValue={setValue}
-                districtId={selectedDistrictId}
+                errors={ errors }
+                setValue={ setValue }
+                districtId={ selectedDistrictId }
               />
             </div>
             <div className="relative mb-3 md:w-1/2">
@@ -459,14 +616,14 @@ export default function DoctorsForm() {
                 Dân tộc <span className="text-red-500">*</span>
               </label>
               <SelectEthnic
-                control={control}
+                control={ control }
                 name="ethnicity"
-                errors={errors}
+                errors={ errors }
               />
             </div>
           </div>
         </div>
-        {/* Line 7 */}
+        {/* Line 7 */ }
         <div className="flex w-full gap-[10px]">
           <div className="relative mb-3 w-full">
             <label htmlFor="hoten" className="left-[15px] block bg-white px-1">
@@ -477,8 +634,8 @@ export default function DoctorsForm() {
               name="address"
               type="text"
               id="address"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
           </div>
         </div>
@@ -490,7 +647,7 @@ export default function DoctorsForm() {
           <DoctorEditor />
         </div>
 
-        {/* Status */}
+        {/* Status */ }
         <div className="mt-2">
           <h2 className="mb-1">
             Trạng thái tài khoản <span className="text-red-600">*</span>
@@ -512,7 +669,7 @@ export default function DoctorsForm() {
           </div>
         </div>
 
-        {/* Button */}
+        {/* Button */ }
         <div className="flex justify-end gap-2">
           <Button
             size=""

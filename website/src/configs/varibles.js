@@ -24,7 +24,7 @@ const API_TAKE_IT_ALL_SPECIALTIES = `${API_URL}/specialties?limit=9999`;
 const API_URL_GET_SPECIALTY_WITH_SERVICES = `${API_URL}/specialties/specialties-with-services`;
 
 // doctors
-const API_URL_GET_ALL_DOCTORS = `${API_URL}/doctors`;
+const API_URL_GET_ALL_DOCTORS = `${API_URL}/users`;
 const API_URL_GET_ALL_DOCTORS_BY_BRANCHES = `${API_URL}/doctors/branch`;
 // clinics
 const API_URL_GET_ALL_CLINICS = `${API_URL}/clinics`;

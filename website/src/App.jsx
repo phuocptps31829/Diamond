@@ -80,6 +80,8 @@ import BranchesEditPage from "./pages/admin/Branches/edit";
 import ServicesAddPage from "./pages/admin/Services/add";
 import ServicesEditPage from "./pages/admin/Services/edit";
 import AppointmentsEditPage from "./pages/admin/Appointments/edit";
+import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
+import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 
 const router = createBrowserRouter([
   {
@@ -313,6 +315,10 @@ const router = createBrowserRouter([
         element: <DoctorsFormPage />,
       },
       {
+        path: "doctor/edit/:id",
+        element: <DoctorsEditFormPage />,
+      },
+      {
         path: "patients/list",
         element: <PatientsListPage />,
       },
@@ -339,6 +345,10 @@ const router = createBrowserRouter([
       {
         path: "specialties/create",
         element: <SpecialtiesFormPage />,
+      },
+      {
+        path: "specialty/edit/:id",
+        element: <SpecialtiesEditFormPage />,
       },
       {
         path: "patients/list",
