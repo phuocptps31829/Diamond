@@ -27,6 +27,8 @@ class Branch extends Model
         'isDeleted' => 'boolean',
     ];
 
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     // Đặt giá trị mặc định
     protected $attributes = [
         'isDeleted' => false,

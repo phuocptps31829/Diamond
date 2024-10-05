@@ -9,6 +9,8 @@ use App\Models\OTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use MongoDB\BSON\ObjectId;
+use Firebase\JWT\Key;
+use Firebase\JWT\JWT;
 
 /**
  * @OA\Post(
@@ -32,20 +34,28 @@ use MongoDB\BSON\ObjectId;
 
 class AuthController extends Controller
 {
-    public function refreshToken(Request $request)
+    public function logout(Request $request)
     {
         try {
 
-            $user = $request->user;
+            return response()->json([
+                'message' => 'logout successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            // Xử lý lỗi
+            return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 500);
+        }
+    }
 
-            // $newTokens = generateAccessRefreshToken($user);
+    public function refreshToken(Request $request)
+    {
+        try {
+            $newTokens = generateAccessRefreshToken($request);
 
             return response()->json([
-                'newAccessToken' => $request->all()
+                'accessToken' => $newTokens['accessToken'],
+                'refreshToken' => $newTokens['refreshToken'],
             ], 200);
-            //  return response()->json([
-            //     'newAccessToken' => $newTokens['accessToken']
-            // ], 200);
         } catch (\Exception $e) {
             // Xử lý lỗi
             return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 500);
@@ -217,10 +227,10 @@ class AuthController extends Controller
             $validPassword = Hash::check($request->password, $user->password);
 
             if (!$validPassword) {
-                createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
+                return  createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
             }
             if (!$user->isActivated) {
-                createError(400, 'Tài khoản chưa được kích hoạt.');
+                return   createError(400, 'Tài khoản chưa được kích hoạt.');
             }
             $token = generateAccessRefreshToken($user);
 

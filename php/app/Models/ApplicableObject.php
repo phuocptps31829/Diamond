@@ -24,7 +24,8 @@ class ApplicableObject extends Model
         'isFamily' => 'boolean',
         'isDeleted' => 'boolean',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setMedicalPackageIDAttribute($value)
     {
         $this->attributes['medicalPackageID'] = new ObjectId($value);

@@ -35,6 +35,8 @@ class Medicine extends Model
         'price' => 'string',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setMedicineCategoryIDAttribute($value)
     {
         $this->attributes['medicineCategoryID'] = new ObjectId($value);

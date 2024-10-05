@@ -18,6 +18,8 @@ class Admin extends Model
     protected $casts = [
         'level' => 'string',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setUserIDAttribute($value)
     {
         $this->attributes['userID'] = new ObjectId($value);

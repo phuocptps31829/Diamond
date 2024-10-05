@@ -167,7 +167,7 @@ class MedicalPackageController extends Controller
                 'page' => $page,
                 'message' => 'Medicine categories retrieved successfully.',
                 'data' => $MedicineCategories,
-                'totalRecords' => $totalRecords,
+                'totalRecords' => $totalRecords
             ], 200);
         } catch (\Exception $e) {
 
@@ -208,21 +208,11 @@ class MedicalPackageController extends Controller
         try {
             $MedicalPackageRequest = new MedicalPackageRequest();
 
-            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
-            $request->merge(['isHidden' => $isHidden]);
-
-            $checkSlug = checkSlug($request->title, 'MedicalPackage');
+            $checkSlug = checkSlug($request->name, 'MedicalPackage');
 
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
-
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
-                return createError(400, 'No image uploaded!');
-            }
-
-            $image = uploadImage($request->file);
-            $request->merge(['image' => $image]);
 
             $MedicalPackage = MedicalPackage::create($request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages()));
 
@@ -244,21 +234,12 @@ class MedicalPackageController extends Controller
     {
         try {
             $id = $request->route('id');
-            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
-            $request->merge(['isHidden' => $isHidden]);
-
-            $checkSlug = checkSlug($request->title, 'MedicalPackage');
+            $checkSlug = checkSlug($request->title, 'MedicalPackage', $id);
 
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
 
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
-                return createError(400, 'No image uploaded!');
-            }
-
-            $image = uploadImage($request->file);
-            $request->merge(['image' => $image]);
             $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$MedicalPackage) {

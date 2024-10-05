@@ -24,6 +24,8 @@ class Result extends Model
         'name' => 'string',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setServiceIDAttribute($value)
     {
         $this->attributes['serviceID'] = new ObjectId($value);

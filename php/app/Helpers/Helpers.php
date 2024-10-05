@@ -83,8 +83,16 @@ if (!function_exists('searchInTable')) {
         $refreshToken = JWT::encode(['id' => $user->id, 'isAdmin' => $user->isAdmin, 'ext' => time() + 7 * 24 * 60 * 60], env('REFRESH_TOKEN_SECRET'), 'HS256');
 
         return [
-            'accessToken' =>  $accessToken,
-            'refreshToken' => $refreshToken
+            'accessToken' =>
+            [
+                'token' => $accessToken,
+                'expires' => time() + 60
+            ],
+            'refreshToken' =>
+            [
+                'token' => $refreshToken,
+                'expires' => time() + (7 * 24 * 60 * 60)
+            ]
         ];
     };
 

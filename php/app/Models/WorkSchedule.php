@@ -21,6 +21,8 @@ class WorkSchedule extends Model
         'doctorID' => 'object_id',
         'clinic' => 'string'
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setDoctorIDAttribute($value)
     {
         $this->attributes['doctorID'] = new ObjectId($value);

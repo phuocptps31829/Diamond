@@ -237,13 +237,14 @@ class NewsController extends Controller
 
             $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
             $request->merge(['isHidden' => $isHidden]);
-
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+            if ($request->hasFile('file') && checkValidImage($request->file)) {
                 return createError(400, 'No image uploaded!');
             }
-            $image = uploadImage($request->file);
-            $request->merge(['image' => $image]);
 
+            if ($request->hasFile('file')) {
+                $image = uploadImage($request->file);
+                $request->merge(['image' => $image]);
+            }
             $checkSlug = checkSlug($request->title, 'News', $id);
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);

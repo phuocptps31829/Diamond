@@ -32,6 +32,8 @@ class News extends Model
         'isHidden' => 'boolean',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setSpecialtyIDAttribute($value)
     {
         $this->attributes['specialtyID'] = new ObjectId($value);

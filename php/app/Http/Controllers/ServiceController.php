@@ -234,12 +234,14 @@ class ServiceController extends Controller
                 $request->merge(['slug' => $checkSlug]);
             }
 
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
+            if ($request->hasFile('file') && checkValidImage($request->file)) {
                 return createError(400, 'No image uploaded!');
             }
 
-            $image = uploadImage($request->file);
-            $request->merge(['image' => $image]);
+            if ($request->hasFile('file')) {
+                $image = uploadImage($request->file);
+                $request->merge(['image' => $image]);
+            }
 
             $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
 

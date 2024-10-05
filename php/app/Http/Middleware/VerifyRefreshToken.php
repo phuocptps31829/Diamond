@@ -35,18 +35,18 @@ class VerifyRefreshToken
             if ($revokedToken) {
                 return createError(403, 'Refresh token is expired');
             }
-            // $verifiedToken  = JWT::decode($refreshToken, new Key(env('OTP_TOKEN_SECRET'), 'HS256'));
-            // $verifiedUser = JWT::decode($c, new Key(env('OTP_TOKEN_SECRET'), 'HS256'));
-            $decoded = JWT::decode($refreshToken, new Key(env('OTP_TOKEN_SECRET'), 'HS256'));
-            // if (!$verifiedUser) {
-            //     return response()->json(['error' => 'Invalid refresh token.'], 403);
-            // }
+
+            $verifiedUser = JWT::decode($refreshToken, new Key(env('REFRESH_TOKEN_SECRET'), 'HS256'));
+
+            if (!$verifiedUser) {
+                return response()->json(['error' => 'Invalid refresh token.'], 403);
+            }
 
             // $removeToken = RevokedToken::create([
             //     'token' => $refreshToken
             // ]);
 
-            // $request->merge(['user' => ['id' => $verifiedUser->id]]);
+            $request->merge(['id' => $verifiedUser->id]);
 
             return $next($request);
         } catch (\Exception $e) {

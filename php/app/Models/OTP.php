@@ -15,6 +15,8 @@ class OTP extends Model
         'phoneNumber',
         'isDeleted',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function isExpired()
     {
         $time = 60; // 60 giây

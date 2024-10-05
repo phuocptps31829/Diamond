@@ -27,13 +27,15 @@ class MedicalPackageRequest extends FormRequest
             'image' => 'required|string',
             'shortDescription' => 'required|string',
             'details' => 'required|string',
-            'service' => 'required',
+            'service' => 'required|array',
             'service.*.serviceID' => 'required',
+            'service.*.serviceID.*' => 'required',
             'service.*.levelName' => 'required|string',
             'service.*.price' => 'required|numeric',
             'service.*.discountPrice' => 'nullable|numeric',
             'service.*.duration' => 'required|numeric',
             'slug' => 'required|string',
+            'isHidden' => 'required|boolean',
         ];
     }
     public function messages()

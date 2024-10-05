@@ -24,7 +24,7 @@ class NewsRequest extends FormRequest
         return [
             'specialtyID' => 'required',
             'title' => 'required|string',
-            'image' => 'required|string',
+            'image' => 'string',
             'slug' => 'required|string',
             'content' => 'required|string',
             'author' => 'required|string',

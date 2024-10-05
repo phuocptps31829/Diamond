@@ -15,7 +15,8 @@ class Specialty extends Model
         'description',
         'isDeleted'
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     protected $casts = [
         'image' => 'string',
         'name' => 'string',

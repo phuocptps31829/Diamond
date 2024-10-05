@@ -26,6 +26,8 @@ class Invoice extends Model
         'arisePrice' => 'integer',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setPatientIDAttribute($value)
     {
         $this->attributes['patientID'] = new ObjectId($value);

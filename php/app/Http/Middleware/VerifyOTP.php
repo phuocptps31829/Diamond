@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\RevokedToken;
 use App\Models\Otp;
+use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Exception;
-use Firebase\JWT\Key;
 
 class VerifyOTP
 {

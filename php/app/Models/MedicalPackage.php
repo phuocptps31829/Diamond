@@ -31,6 +31,8 @@ class MedicalPackage extends Model
         'isHidden' => 'boolean',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
 
     public static function createSlug($name)
     {

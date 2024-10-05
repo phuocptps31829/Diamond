@@ -27,6 +27,8 @@ class Contract extends Model
         'detail' => 'string',
         'isDeleted' => 'boolean',
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setDoctorIDAttribute($value)
     {
         $this->attributes['doctorID'] = new ObjectId($value);

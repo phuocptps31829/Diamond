@@ -15,10 +15,20 @@ class PatientController extends Controller
     {
         try {
 
+            $endUser = user::latest("id")->first();
+            $codePatient = "";
+            if ($endUser) {
+                $codePatient = "BN" . ((int) substr($endUser->patientCode, 2) + 1);
+            } else {
+                $codePatient = "BN1";
+            }
+
             $patient = User::create([
                 'fullName' => $request->newUser['fullName'],
                 'phoneNumber' => $request->newUser['phoneNumber'],
-                'password' => $request->newUser['password']
+                'password' => $request->newUser['password'],
+                'patientCode' => $codePatient,
+                'isActivated' => true
             ]);
 
             return response()->json([

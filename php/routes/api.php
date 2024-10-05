@@ -20,6 +20,7 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\ImageController;
 use App\Models\Patient;
 
 /*
@@ -44,6 +45,7 @@ Route::post('/v1/auth/forgot-password/send-otp/:phone', [AuthController::class, 
 Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword']);
 Route::post('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword']);
 Route::post('/v1/auth/refresh-token', [AuthController::class, 'refreshToken'])->middleware('VerifyRefreshToken');
+Route::post('/v1/auth/logout', [AuthController::class, 'logout'])->middleware('VerifyRefreshToken');
 
 Route::get('/v1/roles', [RoleController::class, 'getAllRoles'])->middleware('checkQueryParams');
 Route::get('/v1/roles/{id}', [RoleController::class, 'getOneRole'])->middleware('CheckValidId');
@@ -116,3 +118,5 @@ Route::get('/v1/doctors/{id}', [DoctorController::class, 'getOneDoctor'])->middl
 Route::post('/v1/doctors/add', [DoctorController::class, 'createDoctor']);
 Route::put('/v1/doctors/update/{id}', [DoctorController::class, 'updateDoctor'])->middleware('CheckValidId');
 Route::delete('/v1/doctors/delete/{id}', [DoctorController::class, 'deleteClinic']);
+
+Route::post('/v1/images/upload', [ImageController::class, 'uploadImage']);

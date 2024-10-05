@@ -19,7 +19,8 @@ class Prescription extends Model
         'advice' => 'string',
         'isDeleted' => 'boolean',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     protected $attributes = [
         'isDeleted' => false,
     ];

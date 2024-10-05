@@ -18,6 +18,8 @@ class Role extends Model
     protected $attributes = [
         'isDeleted' => false,
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function getTable()
     {
         return 'Role';

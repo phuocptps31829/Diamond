@@ -33,7 +33,8 @@ class User extends Authenticatable
         'isActivated',
         'isDeleted',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     /**
      * The attributes that should be hidden for serialization.
      *
