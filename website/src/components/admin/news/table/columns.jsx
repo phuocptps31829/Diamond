@@ -176,7 +176,8 @@ export const columns = [
               </DialogHeader>
               <img
                 src={row.original.image}
-                alt="large-thumbnail w-full h-auto"
+                alt="image"
+                className="large-thumbnail w-full h-auto"
               />
             </DialogContent>
           </Dialog>

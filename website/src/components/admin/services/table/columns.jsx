@@ -232,9 +232,11 @@ export const columns = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <Link to={`/admin/services/edit/${row.original._id}`}>Sửa</Link>
+            <DropdownMenuItem className="flex w-full items-center gap-2">
+              <Link to={`/admin/services/edit/${row.original._id}`} className="flex w-full gap-2 ">
+                <FiEdit className="text-[15px]" />
+                <span>Sửa</span>
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="flex w-fit items-center gap-2">
               <AlertDialog>

@@ -52,7 +52,7 @@ const NewsEdit = () => {
       setValue("author", data.author);
       setValue("status", data.isHidden ? "Ẩn" : "Hiện");
       setValue("content", data.content);
-      setImagePreview(data.image);
+      setImagePreview(`https://laravel.diamond.id.vn/images/${data.image}`);
     }
   }, [data, setValue]);
 

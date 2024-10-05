@@ -87,7 +87,7 @@ const ServicesAdd = () => {
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-10 grid grid-cols-1 items-center justify-center gap-10 sm:grid-cols-2">
+          <div className="mb-10 grid grid-cols-1 items-center justify-center gap-5 sm:grid-cols-2">
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="name"
