@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useMatch, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { getAllServices } from "@/services/servicesApi";
-import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
+import { serviceApi } from "@/services/servicesApi";
+import { medicalPackageApi } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
-import notFoundImg from "@/assets/images/no-product.png";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -17,6 +15,7 @@ import {
 import PackageItem from "../product/Package";
 import ServiceItem from "../product/Service";
 import SidebarFilter from "../categoryService/SidebarFilter";
+import NotFound from "@/components/ui/NotFound";
 
 const ServicesContainer = () => {
   const location = useLocation();
@@ -92,9 +91,9 @@ const ServicesContainer = () => {
     queryKey: [type, filters],
     queryFn: async () => {
       if (type === "service") {
-        return await getAllServices(filters);
+        return await serviceApi.getAllServices(filters);
       } else if (type === "package") {
-        return await getAllMedicalPackages(filters);
+        return await medicalPackageApi.getAllMedicalPackages(filters);
       }
     },
     enabled: !!type,
@@ -123,25 +122,16 @@ const ServicesContainer = () => {
                     )) }
                 </>
               ) : error ? (
-                <div className="col-span-3 flex flex-col items-center justify-center p-4">
-                  <img
-                    src={ notFoundImg }
-                    alt="Not Found"
-                    className="w-full max-w-xs rounded-md md:max-w-md lg:max-w-lg"
-                  />
-                  <h1 className="mt-4 text-center text-lg font-semibold text-gray-700">
-                    { type === "package"
-                      ? "Gói khám không tồn tại"
-                      : "Dịch vụ không tồn tại" }
-                  </h1>
-                </div>
+                type === "package"
+                  ? <NotFound message={ "Không tìm thấy gói khám nào." } />
+                  : <NotFound message={ "Không tìm thấy dịch vụ nào." } />
               ) : (
                 <>
                   { type === "package"
-                    ? data.data.map((item) => (
+                    ? data?.data.map((item) => (
                       <PackageItem key={ item._id } { ...item } />
                     ))
-                    : data.data.map((item) => (
+                    : data?.data.map((item) => (
                       <ServiceItem key={ item._id } { ...item } />
                     )) }
                 </>

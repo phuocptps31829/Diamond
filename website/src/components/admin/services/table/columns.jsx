@@ -31,8 +31,8 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSpecialtyById } from "@/services/specialtiesApi";
-import { deleteService } from "@/services/servicesApi";
 import { toastUI } from "@/components/ui/Toastify";
+import { serviceApi } from "@/services/servicesApi";
 
 const useSpecialtyName = (specialtyID) => {
   return useQuery({
@@ -44,7 +44,7 @@ const useSpecialtyName = (specialtyID) => {
 const useDeleteService = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (serviceId) => deleteService(serviceId),
+    mutationFn: (serviceId) => serviceApi.deleteService(serviceId),
     onSuccess: () => {
       queryClient.invalidateQueries("service");
       toastUI("Xóa dịch vụ thành công.", "success");

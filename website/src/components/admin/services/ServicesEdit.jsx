@@ -8,7 +8,6 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
 import SelectSpecialty from "./select/SelectSpecialty";
 import { useParams } from "react-router-dom";
-import { getServiceById, updateService } from "@/services/servicesApi";
 import { Textarea } from "@/components/ui/Textarea";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import { serviceAdminSchema } from "@/zods/admin/serviceAdmin";
 import ServiceEditor from "./editor";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { toastUI } from "@/components/ui/Toastify";
+import { serviceApi } from "@/services/servicesApi";
 
 const ServicesEdit = () => {
   const { id } = useParams();
@@ -44,7 +44,7 @@ const ServicesEdit = () => {
 
   const { data, isLoading } = useQuery({
     queryKey: ["service", id],
-    queryFn: () => getServiceById(id),
+    queryFn: () => serviceApi.getServiceById(id),
     enabled: !!id,
   });
 
@@ -75,7 +75,7 @@ const ServicesEdit = () => {
   };
 
   const mutation = useMutation({
-    mutationFn: (serviceData) => updateService(id, serviceData),
+    mutationFn: (serviceData) => serviceApi.updateService(id, serviceData),
     onSuccess: () => {
       queryClient.invalidateQueries("service");
       toastUI("Chỉnh sửa dịch vụ thành công.", "success");
@@ -115,7 +115,7 @@ const ServicesEdit = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-10 grid grid-cols-1 items-center justify-center gap-10 sm:grid-cols-2">
             <InputCustom
               className="col-span-1 sm:col-span-1"
@@ -123,8 +123,8 @@ const ServicesEdit = () => {
               id="name"
               label="Tên dịch vụ"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập tên dịch vụ"
             />
             <div className="">
@@ -136,8 +136,8 @@ const ServicesEdit = () => {
               </Label>
               <SelectSpecialty
                 name="specialtyID"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <InputCustom
@@ -145,8 +145,8 @@ const ServicesEdit = () => {
               name="duration"
               label="Thời lượng khám (phút):"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập thời lượng khám (phút)"
             />
             <InputCustom
@@ -154,8 +154,8 @@ const ServicesEdit = () => {
               name="price"
               label="Giá"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập giá"
             />
             <InputCustom
@@ -163,28 +163,28 @@ const ServicesEdit = () => {
               name="discountPrice"
               label="Giá giảm"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập giá giảm"
             />
             <div className="grid w-full gap-1.5">
               <Label htmlFor="shortDescription">Nhập mô tả ngắn:</Label>
               <Controller
                 name="shortDescription"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <Textarea
                     placeholder="Nhập mô tả."
                     id="shortDescription"
-                    {...field}
+                    { ...field }
                   />
-                )}
+                ) }
               />
-              {errors.shortDescription && (
+              { errors.shortDescription && (
                 <p className="mt-1 text-sm text-red-500">
-                  {errors.shortDescription.message}
+                  { errors.shortDescription.message }
                 </p>
-              )}
+              ) }
             </div>
             <div className="">
               <Label
@@ -198,8 +198,8 @@ const ServicesEdit = () => {
                 name="image"
                 label="Hình ảnh"
                 type="file"
-                required={!imagePreview}
-                onChange={handleImageChange}
+                required={ !imagePreview }
+                onChange={ handleImageChange }
               />
             </div>
 
@@ -212,11 +212,11 @@ const ServicesEdit = () => {
               </Label>
               <Controller
                 name="isHidden"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <RadioGroup
-                    value={field.value ? "Ẩn" : "Hiện"}
-                    onValueChange={(value) => field.onChange(value === "Ẩn")}
+                    value={ field.value ? "Ẩn" : "Hiện" }
+                    onValueChange={ (value) => field.onChange(value === "Ẩn") }
                     className="mt-5 flex items-center justify-start gap-5"
                   >
                     <div className="flex items-center space-x-2">
@@ -228,21 +228,21 @@ const ServicesEdit = () => {
                       <Label htmlFor="r2">Hiện</Label>
                     </div>
                   </RadioGroup>
-                )}
+                ) }
               />
             </div>
 
-            {imagePreview && (
+            { imagePreview && (
               <div className="">
                 <img
-                  src={imagePreview}
+                  src={ imagePreview }
                   alt="Image Preview"
                   className="h-auto max-w-[300px] rounded-md object-cover"
                 />
               </div>
-            )}
+            ) }
           </div>
-          <ServiceEditor control={control} name="content" errors={errors} />
+          <ServiceEditor control={ control } name="content" errors={ errors } />
           <div className="mt-10 w-full text-end">
             <Button variant="custom" type="submit">
               Cập nhật dịch vụ

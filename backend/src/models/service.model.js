@@ -38,6 +38,20 @@ const serviceSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    applicableObject: {
+        type: Object,
+        required: true
+    },
+    slug: {
+        type: String,
+        trim: true,
+        required: true
+    },
+    duration: {
+        type: String,
+        trim: true,
+        required: true
+    },
     isHidden: {
         type: Boolean,
         default: false

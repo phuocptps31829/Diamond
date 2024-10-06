@@ -3,8 +3,9 @@ import ServiceItem from "../product/Service";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
-import { getAllServices } from "@/services/servicesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { serviceApi } from "@/services/servicesApi";
+import NotFound from "@/components/ui/NotFound";
 
 export default function OutstandingServices() {
   const [OutstandingMedicalPackages, setOutstandingMedicalPackages] = useState(
@@ -17,15 +18,15 @@ export default function OutstandingServices() {
     isLoading: loadingMedicalService,
   } = useQuery({
     queryKey: ["medical-services"],
-    queryFn: getAllServices,
+    queryFn: serviceApi.getAllServices,
   });
 
   useEffect(() => {
     if (!loadingMedicalService) {
-      const sortedMedicalPackages = medicalServices.data.sort(
+      const sortedMedicalPackages = medicalServices?.data.sort(
         (a, b) => b.orderCount - a.orderCount,
       );
-      setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));
+      setOutstandingMedicalPackages(sortedMedicalPackages?.slice(0, 8));
     }
   }, [loadingMedicalService, medicalServices]);
 
@@ -38,13 +39,13 @@ export default function OutstandingServices() {
         Danh sách dịch vụ khám nổi bật, được khách hàng yêu thích nhất.
       </span>
 
-      {loadingMedicalService ? (
+      { loadingMedicalService ? (
         <>
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, index) => (
+            { Array.from({ length: 8 }).map((_, index) => (
               <div
                 className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom"
-                key={index}
+                key={ index }
               >
                 <div className="group block h-full w-full overflow-hidden">
                   <div className="h-[210px] w-full">
@@ -77,22 +78,22 @@ export default function OutstandingServices() {
                   </div>
                 </div>
               </div>
-            ))}
+            )) }
           </div>
           <div className="mx-auto my-5 mt-10 flex w-[50%] cursor-pointer items-center justify-center gap-2 rounded-md border-2 border-gray-500 py-2 text-[12px] font-semibold uppercase md:w-[40%] md:text-[14px]">
             <Skeleton className="h-[18px] w-24 rounded-md" />
           </div>
         </>
       ) : error ? (
-        <div>Error loading specialties</div>
+        <NotFound message={ "Không tìm thấy dịch vụ nào" } />
       ) : (
         <>
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
-            {OutstandingMedicalPackages.map((medicalPackage) => {
+            { OutstandingMedicalPackages?.map((medicalPackage) => {
               return (
-                <ServiceItem key={medicalPackage._id} {...medicalPackage} />
+                <ServiceItem key={ medicalPackage._id } { ...medicalPackage } />
               );
-            })}
+            }) }
           </div>
           <Link
             to="/services"
@@ -101,7 +102,7 @@ export default function OutstandingServices() {
             Xem tất cả <AiOutlineDoubleRight />
           </Link>
         </>
-      )}
+      ) }
     </div>
   );
 }

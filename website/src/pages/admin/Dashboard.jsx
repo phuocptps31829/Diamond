@@ -143,33 +143,33 @@ export default function Dashboard() {
 
   return (
     <>
-      {isLoadingNews ||
-      isLoadingPatients ||
-      isLoadingAppointments ||
-      isLoadingInvoices ||
-      isLoadingTotalPatientsBySpecialty ||
-      isLoadingSpecialties ||
-      isLoadingPatientsByGender ||
-      isLoadingUpcomingAppointments ? (
+      { isLoadingNews ||
+        isLoadingPatients ||
+        isLoadingAppointments ||
+        isLoadingInvoices ||
+        isLoadingTotalPatientsBySpecialty ||
+        isLoadingSpecialties ||
+        isLoadingPatientsByGender ||
+        isLoadingUpcomingAppointments ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
+          <BreadcrumbCustom data={ breadcrumbData } />
           <TopStats
-            allNews={allNews}
-            allPatients={allPatients?.data}
-            allAppointments={allAppointments?.data}
-            allInvoices={allInvoices?.data}
+            allNews={ allNews }
+            allPatients={ allPatients?.data }
+            allAppointments={ allAppointments?.data }
+            allInvoices={ allInvoices?.data }
           />
-          {console.log("patientsByGender", patientsByGender)}
+          { console.log("patientsByGender", patientsByGender) }
           <MiddleCharts
-            dataTotalPatients={totalPatientsBySpecialty}
-            dataAllSpecialties={allSpecialties}
-            dataPatientsByGender={patientsByGender}
+            dataTotalPatients={ totalPatientsBySpecialty }
+            dataAllSpecialties={ allSpecialties }
+            dataPatientsByGender={ patientsByGender }
           />
-          <BottomLists dataUpcomingAppointments={upcomingAppointments} />
+          <BottomLists dataUpcomingAppointments={ upcomingAppointments } />
         </>
-      )}
+      ) }
     </>
   );
 }

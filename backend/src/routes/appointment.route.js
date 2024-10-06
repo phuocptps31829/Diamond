@@ -115,7 +115,6 @@ router.get(
     appointmentController.getAllAppointments
 );
 
-
 /**
  * @openapi
  * '/api/v1/appointments/get-appointment':
@@ -161,6 +160,34 @@ router.get(
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsOfDoctor
+);
+
+/**
+ * @openapi
+ * '/api/v1/appointments/{id}':
+ *  get:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Get appointment by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Appointment id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/:id',
+    helperMiddleware.checkValidId,
+    appointmentController.getAppointmentByID
 );
 
 module.exports = router;

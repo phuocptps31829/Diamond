@@ -75,8 +75,6 @@ export default function DataTableRole({ data }) {
     };
 
     const handleDeleteRole = (id) => {
-        if (!confirm("Chắc chắn muốn xóa?")) return;
-
         deleteRole(id);
     };
 

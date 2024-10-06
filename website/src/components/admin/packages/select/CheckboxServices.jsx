@@ -1,7 +1,7 @@
 import { Controller } from "react-hook-form";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useQuery } from "@tanstack/react-query";
-import { takeItAllServices } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 
 const CheckboxServices = ({ control, name, errors }) => {
   const {
@@ -10,7 +10,7 @@ const CheckboxServices = ({ control, name, errors }) => {
     isLoading,
   } = useQuery({
     queryKey: ["services"],
-    queryFn: () => takeItAllServices(),
+    queryFn: () => serviceApi.takeItAllServices(),
   });
 
   if (error) {

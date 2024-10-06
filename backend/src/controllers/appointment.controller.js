@@ -1,6 +1,10 @@
-const AppointmentModel = require('../models/appointment.model');
-const { createError } = require("../utils/helper.util");
 const mongoose = require("mongoose");
+const AppointmentModel = require('../models/appointment.model');
+const InvoiceModel = require('../models/invoice.model');
+const OrderNumberModel = require('../models/order-number.model');
+const ResultModel = require('../models/result.model');
+const PrescriptionModel = require('../models/prescription.model');
+const { createError } = require("../utils/helper.util");
 
 module.exports = {
     getAllAppointmentsOfDoctor: async (req, res, next) => {
@@ -127,103 +131,142 @@ module.exports = {
 
             let { startDay, endDay } = req.checkValueQuery;
 
-            const pipeline = [
-                {
-                    $lookup: {
-                        from: 'WorkSchedule',
-                        localField: 'workScheduleID',
-                        foreignField: '_id',
-                        as: 'workSchedule'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Invoice',
-                        localField: '_id',
-                        foreignField: 'appointmentID',
-                        as: 'invoice'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Patient',
-                        localField: 'patientID',
-                        foreignField: '_id',
-                        as: 'patient'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'User',
-                        localField: 'patient.userID',
-                        foreignField: '_id',
-                        as: 'user'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Result',
-                        localField: '_id',
-                        foreignField: 'appointmentID',
-                        as: 'result'
-                    }
-                },
-                {
-                    $match: {
-                        isDeleted: false
-                    },
-                }
+            // const pipeline = [
+            //     {
+            //         $lookup: {
+            //             from: 'WorkSchedule',
+            //             localField: 'workScheduleID',
+            //             foreignField: '_id',
+            //             as: 'workSchedule'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'Invoice',
+            //             localField: '_id',
+            //             foreignField: 'appointmentID',
+            //             as: 'invoice'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'User',
+            //             localField: 'userID',
+            //             foreignField: '_id',
+            //             as: 'patient'
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: 'Result',
+            //             localField: '_id',
+            //             foreignField: 'appointmentID',
+            //             as: 'result'
+            //         }
+            //     },
+            //     {
+            //         $match: {
+            //             isDeleted: false
+            //         },
+            //     }
 
-            ];
-            if (startDay) {
-                pipeline.push({
-                    $match: {
-                        time: { $gte: startDay },
+            // ];
+            // if (startDay) {
+            //     pipeline.push({
+            //         $match: {
+            //             time: { $gte: startDay },
+            //         }
+            //     });
+            // }
+
+            // if (endDay) {
+            //     pipeline.push({
+            //         $match: {
+            //             time: { $lte: endDay },
+            //         }
+            //     });
+            // }
+            // const countPipeline = [...pipeline];
+            // countPipeline.push({
+            //     $count: "totalRecords"
+            // });
+
+            // const totalRecords = await AppointmentModel.aggregate(countPipeline);
+
+            // console.log(totalRecords);
+            // if (sortOptions && Object.keys(sortOptions).length > 0) {
+            //     pipeline.push({
+            //         $sort: sortOptions
+            //     });
+            // }
+
+            // pipeline.push(
+            //     {
+            //         $skip: skip
+            //     },
+            //     {
+            //         $limit: limitDocuments
+            //     }
+            // );
+
+            // const Appointments = await AppointmentModel.aggregate(pipeline);
+
+            const appointments = await AppointmentModel
+                .find({ isDeleted: false })
+                .populate('patientID')
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'doctorID'
                     }
                 });
-            }
 
-            if (endDay) {
-                pipeline.push({
-                    $match: {
-                        time: { $lte: endDay },
-                    }
-                });
-            }
-            const countPipeline = [...pipeline];
-            countPipeline.push({
-                $count: "totalRecords"
-            });
-
-            const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-            console.log(totalRecords);
-            if (sortOptions && Object.keys(sortOptions).length > 0) {
-                pipeline.push({
-                    $sort: sortOptions
-                });
-            }
-
-            pipeline.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: limitDocuments
-                }
-            );
-
-            const Appointments = await AppointmentModel.aggregate(pipeline);
-
-            if (!Appointments.length) {
+            if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
+
+            const formattedAppointments = appointments.map(appointment => {
+                const appointmentObj = appointment.toObject();
+                const formattedAppointment = {
+                    ...appointmentObj,
+                    patient: {
+                        _id: appointmentObj.patientID._id,
+                        fullName: appointmentObj.patientID.fullName,
+                    },
+                    doctor: {
+                        _id: appointmentObj.workScheduleID.doctorID._id,
+                        fullName: appointmentObj.workScheduleID.doctorID.fullName
+                    },
+                    ...(appointmentObj.serviceID ? {
+                        service: {
+                            _id: appointmentObj.serviceID._id,
+                            name: appointmentObj.serviceID.name
+                        }
+                    } : {}),
+                    ...(appointmentObj.medicalPackageID ? {
+                        service: {
+                            _id: appointmentObj.medicalPackageID._id,
+                            name: appointmentObj.medicalPackageID.name
+                        }
+                    } : {})
+                };
+                delete formattedAppointment.serviceID;
+                delete formattedAppointment.medicalPackageID;
+                delete formattedAppointment.patientID;
+                delete formattedAppointment.workScheduleID;
+
+                return formattedAppointment;
+            });
+
+            console.log(formattedAppointments);
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
-                data: Appointments,
-                totalRecords
+                data: formattedAppointments,
+                totalRecords: formattedAppointments.length
             });
         } catch (error) {
             next(error);
@@ -232,10 +275,14 @@ module.exports = {
     getAllAppointmentsForGenderYears: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({})
+                .find({ isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID')
                 .populate('patientID');
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
 
             const result = {};
 
@@ -281,9 +328,13 @@ module.exports = {
     getAllAppointmentsForSpecialty: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({})
+                .find({ isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID');
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
 
             const result = [];
 
@@ -324,10 +375,14 @@ module.exports = {
     getAllAppointmentsForAges: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({})
+                .find({ isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID')
                 .populate('patientID');
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
 
             const result = {};
 
@@ -372,4 +427,88 @@ module.exports = {
             next(error);
         }
     },
+    getAppointmentByID: async (req, res, next) => {
+        const { id } = req.params;
+        try {
+            const appointment = await AppointmentModel
+                .findOne({ _id: id, isDeleted: false })
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate('patientID')
+                .populate('workScheduleID');
+
+            if (!appointment) {
+                createError(404, 'Appointment not found');
+            }
+
+            const [invoice, result, orderNumber] = await Promise.all([
+                InvoiceModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
+                ResultModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
+                OrderNumberModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
+            ]);
+
+            const prescription = invoice
+                ? await PrescriptionModel
+                    .findOne({ isDeleted: false, invoiceID: invoice._id }) : null;
+
+            const appointmentObj = appointment.toObject();
+            const invoiceObj = invoice.toObject();
+            const resultObj = result.toObject();
+            const orderNumberObj = orderNumber.toObject();
+            const prescriptionObj = prescription?.toObject();
+
+            const formattedAppointment = {
+                ...appointmentObj,
+                patient: {
+                    _id: appointmentObj.patientID._id,
+                    fullName: appointmentObj.patientID.fullName,
+                },
+                doctor: {
+                    _id: appointmentObj.workScheduleID.doctorID._id,
+                    fullName: appointmentObj.workScheduleID.doctorID.fullName
+                },
+                ...(appointmentObj.serviceID ? {
+                    service: {
+                        _id: appointmentObj.serviceID._id,
+                        name: appointmentObj.serviceID.name
+                    }
+                } : {}),
+                ...(appointmentObj.medicalPackageID ? {
+                    service: {
+                        _id: appointmentObj.medicalPackageID._id,
+                        name: appointmentObj.medicalPackageID.name
+                    }
+                } : {}),
+                orderNumber: {
+                    number: orderNumberObj.number,
+                    priority: orderNumberObj.priority,
+                },
+                result: {
+                    diagnose: resultObj.diagnose,
+                    images: resultObj.images,
+                    description: resultObj.description,
+                },
+                invoice: {
+                    price: invoiceObj.price,
+                    arisePrice: invoiceObj?.arisePrice || 0,
+                },
+                prescription: {
+                    advice: prescriptionObj.advice,
+                    medicines: prescriptionObj.medicines,
+                }
+            };
+
+            delete formattedAppointment.serviceID;
+            delete formattedAppointment.medicalPackageID;
+            delete formattedAppointment.patientID;
+            delete formattedAppointment.workScheduleID;
+
+            return res.status(200).json({
+                message: 'Appointment retrieved successfully.',
+                data: formattedAppointment,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 };

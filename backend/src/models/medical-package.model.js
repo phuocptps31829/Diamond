@@ -46,11 +46,25 @@ const medicalPackageSchema = new mongoose.Schema({
                 type: Number,
                 required: false
             },
+            duration: {
+                type: String,
+                trim: true,
+                required: true
+            },
         },
     ],
+    applicableObject: {
+        type: Object,
+        required: true
+    },
     orderCount: {
         type: Number,
         default: 0
+    },
+    slug: {
+        type: String,
+        trim: true,
+        required: true
     },
     isHidden: {
         type: Boolean,
