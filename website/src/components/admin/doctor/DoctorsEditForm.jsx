@@ -300,6 +300,7 @@ export default function DoctorsForm() {
                   errors={errors}
                 />
               </div>
+              
               <div className="md:mb-4 md:w-1/2 relative">
                 <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
                   Trình độ chuyên môn <span className="text-red-500">*</span>
@@ -366,16 +367,7 @@ export default function DoctorsForm() {
                   />
                 </div>
 
-                <div className="mb-3 md:w-1/2 relative">
-                  <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
-                    Phòng <span className="text-red-500">*</span>
-                  </label>
-                    <SelectRoom
-                      control={control}
-                      name="room"
-                      errors={errors}
-                    />
-                </div>
+
           </div>
 
           </div>
