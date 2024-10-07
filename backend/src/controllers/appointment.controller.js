@@ -132,86 +132,6 @@ module.exports = {
 
             let { startDay, endDay } = req.checkValueQuery;
 
-            // const pipeline = [
-            //     {
-            //         $lookup: {
-            //             from: 'WorkSchedule',
-            //             localField: 'workScheduleID',
-            //             foreignField: '_id',
-            //             as: 'workSchedule'
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: 'Invoice',
-            //             localField: '_id',
-            //             foreignField: 'appointmentID',
-            //             as: 'invoice'
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: 'User',
-            //             localField: 'userID',
-            //             foreignField: '_id',
-            //             as: 'patient'
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: 'Result',
-            //             localField: '_id',
-            //             foreignField: 'appointmentID',
-            //             as: 'result'
-            //         }
-            //     },
-            //     {
-            //         $match: {
-            //             isDeleted: false
-            //         },
-            //     }
-
-            // ];
-            // if (startDay) {
-            //     pipeline.push({
-            //         $match: {
-            //             time: { $gte: startDay },
-            //         }
-            //     });
-            // }
-
-            // if (endDay) {
-            //     pipeline.push({
-            //         $match: {
-            //             time: { $lte: endDay },
-            //         }
-            //     });
-            // }
-            // const countPipeline = [...pipeline];
-            // countPipeline.push({
-            //     $count: "totalRecords"
-            // });
-
-            // const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-            // console.log(totalRecords);
-            // if (sortOptions && Object.keys(sortOptions).length > 0) {
-            //     pipeline.push({
-            //         $sort: sortOptions
-            //     });
-            // }
-
-            // pipeline.push(
-            //     {
-            //         $skip: skip
-            //     },
-            //     {
-            //         $limit: limitDocuments
-            //     }
-            // );
-
-            // const Appointments = await AppointmentModel.aggregate(pipeline);
-
             const appointments = await AppointmentModel
                 .find({ isDeleted: false })
                 .populate('patientID')
@@ -229,16 +149,26 @@ module.exports = {
                 createError(404, 'No Appointments found.');
             }
 
-            const formattedAppointments = appointments.map(appointment => {
+            const formattedAppointmentsPromises = appointments.map(async appointment => {
+                const result = await ResultModel
+                    .findOne({ isDeleted: false, appointmentID: appointment._id })
+                    .lean();
+
                 const formattedAppointment = {
                     ...appointment,
                     patient: {
                         _id: appointment.patientID._id,
                         fullName: appointment.patientID.fullName,
+                        avatar: appointment.patientID.avatar,
                     },
                     doctor: {
                         _id: appointment.workScheduleID.doctorID._id,
                         fullName: appointment.workScheduleID.doctorID.fullName
+                    },
+                    result: {
+                        diagnose: result?.diagnose || 'Chưa có',
+                        images: result?.images || 'Chưa có',
+                        description: result?.description || 'Chưa có',
                     },
                     ...(appointment.serviceID ? {
                         service: {
@@ -247,7 +177,7 @@ module.exports = {
                         }
                     } : {}),
                     ...(appointment.medicalPackageID ? {
-                        service: {
+                        medicalPackage: {
                             _id: appointment.medicalPackageID._id,
                             name: appointment.medicalPackageID.name
                         }
@@ -260,6 +190,8 @@ module.exports = {
 
                 return formattedAppointment;
             });
+
+            const formattedAppointments = await Promise.all(formattedAppointmentsPromises);
 
             return res.status(200).json({
                 page: page || 1,
@@ -439,7 +371,12 @@ module.exports = {
                 .populate('medicalPackageID')
                 .populate('patientHelpID')
                 .populate('patientID')
-                .populate('workScheduleID')
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'doctorID'
+                    }
+                })
                 .lean();
 
             if (!appointment) {
@@ -493,6 +430,7 @@ module.exports = {
                 patient: {
                     _id: appointment.patientID._id,
                     fullName: appointment.patientID.fullName,
+                    avatar: appointment.patientID.avatar,
                 },
                 doctor: {
                     _id: appointment.workScheduleID.doctorID._id,
@@ -539,8 +477,8 @@ module.exports = {
 
             delete formattedAppointment.serviceID;
             delete formattedAppointment.medicalPackageID;
-            delete formattedAppointment.patientID;
             delete formattedAppointment.workScheduleID;
+            delete formattedAppointment.patientID;
             delete formattedAppointment.patientHelpID;
 
             return res.status(200).json({

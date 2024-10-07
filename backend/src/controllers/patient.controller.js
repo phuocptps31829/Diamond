@@ -74,19 +74,38 @@ module.exports = {
 
             const patient = await UserModel
                 .findOne({
-                    isDeleted: false, _id: idParams || idMid,
+                    _id: idParams || idMid,
+                    isDeleted: false,
                     roleID: process.env.ROLE_PATIENT
                 })
-                .populate('roleID');
+                .populate('roleID')
+                .lean();
 
             if (!patient) {
                 createError(404, 'Patient not found.');
             }
 
-            const transformedPatient = patient.toObject();
-            transformedPatient.role._id = transformedPatient.roleID._id;
-            transformedPatient.role.name = transformedPatient.roleID.name;
+            const transformedPatient = patient;
+            transformedPatient.role = {
+                _id: transformedPatient.roleID._id,
+                name: transformedPatient.roleID.name
+            };
             delete transformedPatient.roleID;
+
+            if (patient.otherInfo?.relatedPatientsID?.length) {
+                const fetchRelatedPatientsPromises = patient.otherInfo.relatedPatientsID.map(async (id) => {
+                    const relatedPatient = await UserModel.findById(id);
+                    return relatedPatient ? {
+                        _id: relatedPatient._id,
+                        name: relatedPatient.fullName
+                    } : null;
+                });
+
+                relatedPatients = await Promise.all(fetchRelatedPatientsPromises);
+                relatedPatients = relatedPatients.filter(Boolean);
+                patient.otherInfo.relatedPatients = relatedPatients;
+                delete patient.otherInfo?.relatedPatientsID;
+            }
 
             return res.status(200).json({
                 message: 'Patient retrieved successfully.',

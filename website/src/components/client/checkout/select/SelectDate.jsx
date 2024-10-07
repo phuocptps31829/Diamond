@@ -15,6 +15,7 @@ import { Controller } from "react-hook-form";
 import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
 import { toast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function SelectDate({
   control,
@@ -60,12 +61,7 @@ export default function SelectDate({
 
   const handleClick = () => {
     if (!doctorId) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn bác sĩ",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn bác sĩ", "warning");
       return;
     }
   };

@@ -98,7 +98,7 @@ export default function SelectDepartment({
                         value={ department._id }
                         onSelect={ (currentValue) => {
                           field.onChange(
-                            currentValue === field.value ? "" : currentValue,
+                            currentValue,
                           );
                           onChange(currentValue);
                           setOpen(false);
