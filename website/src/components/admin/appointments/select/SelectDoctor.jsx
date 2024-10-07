@@ -17,9 +17,9 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getDoctorsByBranch } from "@/services/doctorsApi";
 import { toast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
+import { doctorApi } from "@/services/doctorsApi";
 
 export default function SelectDoctor({
   control,
@@ -37,7 +37,7 @@ export default function SelectDoctor({
     if (!specialtyID || !branchId) return;
     const fetchDoctors = async () => {
       try {
-        const data = await getDoctorsByBranch(branchId, specialtyID);
+        const data = await doctorApi.getDoctorsByBranch(branchId, specialtyID);
 
         setOptions(data);
       } catch (error) {

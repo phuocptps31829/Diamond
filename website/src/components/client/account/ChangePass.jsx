@@ -78,10 +78,10 @@ export default function ChangePassComponent() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Đặt lại mật khẩu
@@ -90,7 +90,7 @@ export default function ChangePassComponent() {
               Đặt mật khẩu mới cho tài khoản của bạn
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2">
                 <label
                   htmlFor="phone"
@@ -105,9 +105,9 @@ export default function ChangePassComponent() {
                     name="password"
                     type="password"
                     id="password"
-                    icon={<FaLock></FaLock>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
 
                   {/* <input placeholder="Mật khẩu mới" type="text" id="phone" 
@@ -132,21 +132,21 @@ export default function ChangePassComponent() {
                     name="confirmPassword"
                     type="password"
                     id="confirmPassword"
-                    icon={<FaLock></FaLock>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
 
               <button
                 className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
-                disabled={mutation.isPending}
+                disabled={ mutation.isPending }
               >
-                {mutation.isPending ? "Đang xử lí" : "Xác nhận"}
-                {mutation.isPending && (
+                { mutation.isPending ? "Đang xử lí" : "Xác nhận" }
+                { mutation.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )}
+                ) }
               </button>
             </form>
           </div>

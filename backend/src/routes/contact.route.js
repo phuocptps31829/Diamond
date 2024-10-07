@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 
 const contactController = require('../controllers/contact.controller');
-const contactCValidator = require('../validations/contact.validation');
 
 /**
  * @openapi
@@ -46,7 +45,6 @@ const contactCValidator = require('../validations/contact.validation');
  */
 router.post(
     '/contact-us',
-    contactCValidator.contactValidator,
     contactController.contactUs
 );
 

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getDoctorById, getAllDoctors } from "@/services/doctorsApi";
+import { doctorApi } from "@/services/doctorsApi";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import AboveInformation from "../../components/client/doctorDetail/AboveInformation";
 import BelowInformation from "../../components/client/doctorDetail/BelowInformation";
@@ -19,7 +19,7 @@ export default function DoctorDetail() {
     isLoading: isLoadingDoctor,
   } = useQuery({
     queryKey: ["doctor", id],
-    queryFn: () => getDoctorById(id),
+    queryFn: () => doctorApi.getDoctorById(id),
   });
 
   // gọi API để lấy danh sách bác sĩ theo chuyên khoa
@@ -29,7 +29,7 @@ export default function DoctorDetail() {
     isLoading: isLoadingDoctors,
   } = useQuery({
     queryKey: "doctors",
-    queryFn: getAllDoctors,
+    queryFn: doctorApi.getAllDoctors,
   });
 
   // gọi API để lấy danh sách chuyên khoa
@@ -46,14 +46,14 @@ export default function DoctorDetail() {
 
   return (
     <div className="bg-[#E8F2F7] py-5">
-      <AboveInformation doctor={doctor} isLoading={isLoadingDoctor} />
+      <AboveInformation doctor={ doctor } isLoading={ isLoadingDoctor } />
       <BelowInformation />
       <OtherDoctor
-        doctor={doctor}
-        doctors={doctors}
-        specialties={specialties}
-        isLoading={isLoadingDoctors}
-        isLoadingSpecialties={loadingSpecialties}
+        doctor={ doctor }
+        doctors={ doctors }
+        specialties={ specialties }
+        isLoading={ isLoadingDoctors }
+        isLoadingSpecialties={ loadingSpecialties }
       />
     </div>
   );

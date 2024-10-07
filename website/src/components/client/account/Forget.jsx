@@ -60,10 +60,10 @@ export default function ForgetComponent() {
   };
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
             <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
               Quên mật khẩu
@@ -72,7 +72,7 @@ export default function ForgetComponent() {
               Đặt lại mật khẩu của bạn
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="relative">
+            <form onSubmit={ handleSubmit(onSubmit) } className="relative">
               <div className="relative mb-2">
                 <label
                   htmlFor="phone"
@@ -87,16 +87,16 @@ export default function ForgetComponent() {
                     name="phoneNumber"
                     type="text"
                     id="phoneNumber"
-                    icon={<FaPhoneAlt></FaPhoneAlt>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaPhoneAlt></FaPhoneAlt> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
 
               <div className="my-2 text-right text-sm italic">
                 <Link
-                  to={"/login"}
+                  to={ "/login" }
                   className="text-base font-bold italic text-primary-500 hover:underline"
                 >
                   Quay lại
@@ -105,12 +105,12 @@ export default function ForgetComponent() {
 
               <button
                 className="my-4 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
-                disabled={mutation.isPending}
+                disabled={ mutation.isPending }
               >
-                {mutation.isPending ? "Đang xử lí" : "Xác nhận"}
-                {mutation.isPending && (
+                { mutation.isPending ? "Đang xử lí" : "Xác nhận" }
+                { mutation.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )}
+                ) }
               </button>
 
               <div className="my-2 flex items-center">
@@ -121,7 +121,7 @@ export default function ForgetComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
                   type="button"
@@ -151,7 +151,7 @@ export default function ForgetComponent() {
                 <p className="text-center">
                   Bạn chưa có tài khoản?
                   <Link
-                    to={"/register"}
+                    to={ "/register" }
                     className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                   >
                     Đăng kí ngay!

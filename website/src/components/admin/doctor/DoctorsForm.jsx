@@ -15,13 +15,13 @@ import DoctorEditor from "./editor";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 import { useParams } from "react-router-dom";
-import { getDoctorById } from "@/services/doctorsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
 import { MdCloudUpload } from "react-icons/md";
 import SelectSpecialties from "@/components/client/checkout/select/SelectSpecialtyold";
+import { doctorApi } from "@/services/doctorsApi";
 
 export default function DoctorsForm() {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
@@ -62,7 +62,7 @@ export default function DoctorsForm() {
   });
   const { data } = useQuery({
     queryKey: ["doctors", id],
-    queryFn: () => getDoctorById(id),
+    queryFn: () => doctorApi.getDoctorById(id),
     enabled: !!id,
   });
   useEffect(() => {

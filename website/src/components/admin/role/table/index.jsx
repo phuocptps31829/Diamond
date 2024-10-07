@@ -159,7 +159,7 @@ export default function DataTableRole({ data }) {
                                     data-state={ row.getIsSelected() && "selected" }
                                 >
                                     { row.getVisibleCells().map((cell) => (
-                                        <TableCell key={ cell.id }>
+                                        <TableCell className="h-16" key={ cell.id }>
                                             { flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -171,7 +171,7 @@ export default function DataTableRole({ data }) {
                         ) : (
                             <TableRow>
                                 <TableCell
-                                    colSpan={ columnsRoles.length }
+                                    colSpan={ data.length }
                                     className="h-24 text-center"
                                 >
                                     No results.

@@ -178,10 +178,10 @@ export default function ChangePassAccuracyComponent() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
-          {/* FORM */}
+          {/* FORM */ }
           <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
             <h1 className="mb-4 text-center text-4xl font-bold md:text-5xl">
               Xác thực tài khoản
@@ -191,59 +191,59 @@ export default function ChangePassAccuracyComponent() {
             </p>
 
             <p className="mb-4 text-center text-sm text-gray-600">
-              Số điện thoại:{" "}
+              Số điện thoại:{ " " }
               <strong className="text-primary-500">
-                {formatPhoneNumber(phoneNumber)}
+                { formatPhoneNumber(phoneNumber) }
               </strong>
             </p>
             <div className="relative mb-2">
               <OtpInput
-                value={otp.join("")}
-                onChange={(value) => handleChange(value, otp.length)}
-                numInputs={6}
-                renderInput={(props, index) => (
+                value={ otp.join("") }
+                onChange={ (value) => handleChange(value, otp.length) }
+                numInputs={ 6 }
+                renderInput={ (props, index) => (
                   <input
-                    {...props}
-                    value={otp[index]}
-                    ref={(el) => (inputRefs.current[index] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    onChange={(e) => handleChange(e.target.value, index)}
+                    { ...props }
+                    value={ otp[index] }
+                    ref={ (el) => (inputRefs.current[index] = el) }
+                    onKeyDown={ (e) => handleKeyDown(e, index) }
+                    onChange={ (e) => handleChange(e.target.value, index) }
                     className="h-10 flex-1 rounded-md border bg-[#e1e1e1] text-center text-xl focus:outline-none focus:ring-2 focus:ring-primary-500 sm:h-16"
                   />
-                )}
+                ) }
                 containerStyle="flex justify-center space-x-2 sm:space-x-5"
               />
             </div>
             <span className="my-5 flex items-center justify-between text-sm">
               <p>
-                Yêu cầu mã OTP mới sau:{" "}
+                Yêu cầu mã OTP mới sau:{ " " }
                 <span className="font-bold text-primary-500">
-                  {formatTime(timeLeft)}
+                  { formatTime(timeLeft) }
                 </span>
               </p>
               <button
                 className="flex items-center gap-2 hover:text-primary-400"
-                onClick={handleSendAgainOtp}
-                disabled={mutationSendOtpAgain.isPending}
+                onClick={ handleSendAgainOtp }
+                disabled={ mutationSendOtpAgain.isPending }
               >
-                {mutationSendOtpAgain.isPending
+                { mutationSendOtpAgain.isPending
                   ? "Đang xử lí"
-                  : "Gửi lại mã OTP"}
-                {mutationSendOtpAgain.isPending && (
+                  : "Gửi lại mã OTP" }
+                { mutationSendOtpAgain.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )}
+                ) }
               </button>
             </span>
 
             <button
-              onClick={handleSubmitOTP}
+              onClick={ handleSubmitOTP }
               className="my-4 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-3 text-xl font-semibold text-white hover:bg-primary-500"
-              disabled={mutation.isPending}
+              disabled={ mutation.isPending }
             >
-              {mutation.isPending ? "Đang xử lí" : "Xác thực"}
-              {mutation.isPending && (
+              { mutation.isPending ? "Đang xử lí" : "Xác thực" }
+              { mutation.isPending && (
                 <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-              )}
+              ) }
             </button>
 
             <div className="my-2 flex items-center">
@@ -254,7 +254,7 @@ export default function ChangePassAccuracyComponent() {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
 
-            {/* GG - FB LOGIN */}
+            {/* GG - FB LOGIN */ }
             <div className="block justify-center md:flex md:space-x-2">
               <button
                 type="button"
@@ -284,7 +284,7 @@ export default function ChangePassAccuracyComponent() {
               <p className="text-center">
                 Bạn đã có tài khoản?
                 <Link
-                  to={"/login"}
+                  to={ "/login" }
                   className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                 >
                   Đăng nhập ngay!

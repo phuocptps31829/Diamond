@@ -4,6 +4,7 @@ const InvoiceModel = require('../models/invoice.model');
 const OrderNumberModel = require('../models/order-number.model');
 const ResultModel = require('../models/result.model');
 const PrescriptionModel = require('../models/prescription.model');
+const MedicineModel = require('../models/medicine.model');
 const { createError } = require("../utils/helper.util");
 
 module.exports = {
@@ -221,34 +222,34 @@ module.exports = {
                     populate: {
                         path: 'doctorID'
                     }
-                });
+                })
+                .lean();
 
             if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
 
             const formattedAppointments = appointments.map(appointment => {
-                const appointmentObj = appointment.toObject();
                 const formattedAppointment = {
-                    ...appointmentObj,
+                    ...appointment,
                     patient: {
-                        _id: appointmentObj.patientID._id,
-                        fullName: appointmentObj.patientID.fullName,
+                        _id: appointment.patientID._id,
+                        fullName: appointment.patientID.fullName,
                     },
                     doctor: {
-                        _id: appointmentObj.workScheduleID.doctorID._id,
-                        fullName: appointmentObj.workScheduleID.doctorID.fullName
+                        _id: appointment.workScheduleID.doctorID._id,
+                        fullName: appointment.workScheduleID.doctorID.fullName
                     },
-                    ...(appointmentObj.serviceID ? {
+                    ...(appointment.serviceID ? {
                         service: {
-                            _id: appointmentObj.serviceID._id,
-                            name: appointmentObj.serviceID.name
+                            _id: appointment.serviceID._id,
+                            name: appointment.serviceID.name
                         }
                     } : {}),
-                    ...(appointmentObj.medicalPackageID ? {
+                    ...(appointment.medicalPackageID ? {
                         service: {
-                            _id: appointmentObj.medicalPackageID._id,
-                            name: appointmentObj.medicalPackageID.name
+                            _id: appointment.medicalPackageID._id,
+                            name: appointment.medicalPackageID.name
                         }
                     } : {})
                 };
@@ -259,8 +260,6 @@ module.exports = {
 
                 return formattedAppointment;
             });
-
-            console.log(formattedAppointments);
 
             return res.status(200).json({
                 page: page || 1,
@@ -332,6 +331,7 @@ module.exports = {
                 .populate('serviceID')
                 .populate('medicalPackageID');
 
+            console.log('all', 1);
             if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
@@ -340,9 +340,12 @@ module.exports = {
 
             for (let i = 0; i < appointments.length; i++) {
                 const item = appointments[i];
+                console.log(item, 'ok');
                 const year = new Date(item.time).getFullYear().toString();
-                const specialtyID = item.serviceID.specialtyID.toString();
-
+                const specialtyID = item?.serviceID
+                    ? item.serviceID.specialtyID.toString()
+                    : item.medicalPackageID.specialtyID.toString();
+                console.log(specialtyID);
                 let yearObj = result.find(obj => obj.year === year);
                 if (!yearObj) {
                     yearObj = {
@@ -434,74 +437,111 @@ module.exports = {
                 .findOne({ _id: id, isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID')
+                .populate('patientHelpID')
                 .populate('patientID')
-                .populate('workScheduleID');
+                .populate('workScheduleID')
+                .lean();
 
             if (!appointment) {
                 createError(404, 'Appointment not found');
             }
 
             const [invoice, result, orderNumber] = await Promise.all([
-                InvoiceModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
-                ResultModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
-                OrderNumberModel.findOne({ appointmentID: appointment._id, isDeleted: false }),
+                InvoiceModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
+                ResultModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
+                OrderNumberModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
             ]);
 
             const prescription = invoice
                 ? await PrescriptionModel
-                    .findOne({ isDeleted: false, invoiceID: invoice._id }) : null;
+                    .findOne({ isDeleted: false, invoiceID: invoice._id })
+                    .lean() : null;
 
-            const appointmentObj = appointment.toObject();
-            const invoiceObj = invoice.toObject();
-            const resultObj = result.toObject();
-            const orderNumberObj = orderNumber.toObject();
-            const prescriptionObj = prescription?.toObject();
+            const prescriptionMedicinesPromises = prescription ? prescription.medicines.map(async m => {
+                const medicine = await MedicineModel
+                    .findById({ _id: m.medicineID })
+                    .populate("medicineCategoryID")
+                    .lean();
+
+                delete medicine.createdAt;
+                delete medicine.updatedAt;
+                delete medicine.isDeleted;
+                delete medicine.__v;
+
+                const formattedMedicine = {
+                    ...medicine,
+                    medicineCategory: {
+                        _id: medicine.medicineCategoryID._id,
+                        name: medicine.medicineCategoryID.name
+                    }
+                };
+                delete formattedMedicine.medicineCategoryID;
+
+                return formattedMedicine;
+            }) : null;
+
+            const prescriptionMedicines = await Promise.all(prescriptionMedicinesPromises);
 
             const formattedAppointment = {
-                ...appointmentObj,
+                ...appointment,
                 patient: {
-                    _id: appointmentObj.patientID._id,
-                    fullName: appointmentObj.patientID.fullName,
+                    _id: appointment.patientID._id,
+                    fullName: appointment.patientID.fullName,
                 },
                 doctor: {
-                    _id: appointmentObj.workScheduleID.doctorID._id,
-                    fullName: appointmentObj.workScheduleID.doctorID.fullName
+                    _id: appointment.workScheduleID.doctorID._id,
+                    fullName: appointment.workScheduleID.doctorID.fullName
                 },
-                ...(appointmentObj.serviceID ? {
+                ...(appointment.serviceID ? {
                     service: {
-                        _id: appointmentObj.serviceID._id,
-                        name: appointmentObj.serviceID.name
+                        _id: appointment.serviceID._id,
+                        name: appointment.serviceID.name
                     }
                 } : {}),
-                ...(appointmentObj.medicalPackageID ? {
+                ...(appointment.medicalPackageID ? {
                     service: {
-                        _id: appointmentObj.medicalPackageID._id,
-                        name: appointmentObj.medicalPackageID.name
+                        _id: appointment.medicalPackageID._id,
+                        name: appointment.medicalPackageID.name
                     }
                 } : {}),
                 orderNumber: {
-                    number: orderNumberObj.number,
-                    priority: orderNumberObj.priority,
+                    number: orderNumber.number,
+                    priority: orderNumber.priority,
                 },
                 result: {
-                    diagnose: resultObj.diagnose,
-                    images: resultObj.images,
-                    description: resultObj.description,
+                    diagnose: result.diagnose,
+                    images: result.images,
+                    description: result.description,
                 },
                 invoice: {
-                    price: invoiceObj.price,
-                    arisePrice: invoiceObj?.arisePrice || 0,
+                    price: invoice.price,
+                    arisePrice: invoice?.arisePrice || 0,
                 },
-                prescription: {
-                    advice: prescriptionObj.advice,
-                    medicines: prescriptionObj.medicines,
-                }
+                ...(prescription ? {
+                    prescription: {
+                        advice: prescription.advice,
+                        medicines: prescriptionMedicines
+                    }
+                } : {}),
+                ...(appointment.patientHelpID ? {
+                    helper: {
+                        _id: appointment.patientHelpID._id,
+                        fullName: appointment.patientHelpID.fullName
+                    }
+                } : {}),
             };
 
             delete formattedAppointment.serviceID;
             delete formattedAppointment.medicalPackageID;
             delete formattedAppointment.patientID;
             delete formattedAppointment.workScheduleID;
+            delete formattedAppointment.patientHelpID;
 
             return res.status(200).json({
                 message: 'Appointment retrieved successfully.',

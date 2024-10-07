@@ -8,8 +8,6 @@ const swaggerDocs = require('./swagger');
 const { createError } = require('./src/utils/helper.util');
 const newsRoutes = require('./src/routes/news.route');
 const workScheduleRoutes = require('./src/routes/work-schedule.route');
-
-const authRoutes = require('./src/routes/auth.route');
 const medicalPackageRoutes = require('./src/routes/medical-package.route');
 const serviceRoutes = require('./src/routes/service.route');
 const specialtyRoutes = require('./src/routes/specialty.route');
@@ -25,9 +23,11 @@ const invoiceRoutes = require('./src/routes/invoice.route');
 const contactRoutes = require('./src/routes/contact.route');
 const provinceRoutes = require('./src/routes/province.route');
 const appointmentRoutes = require('./src/routes/appointment.route');
-const rolesRoutes = require('./src/routes/role.route');
-const usersRoutes = require('./src/routes/user.route');
-const passportMiddleWare = require('./src/middlewares/passport.middleware');
+const roleRoutes = require('./src/routes/role.route');
+const userRoutes = require('./src/routes/user.route');
+const doctorRoutes = require('./src/routes/doctor.route');
+const patientRoutes = require('./src/routes/patient.route');
+const staffRoutes = require('./src/routes/staff.route');
 const app = express();
 
 // app.use((req, res, next) => {
@@ -38,7 +38,6 @@ app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     next();
 });
-passportMiddleWare(app);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -70,12 +69,14 @@ app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
 app.use('/api/v1/provinces', provinceRoutes);
-app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/work-schedules', workScheduleRoutes);
 app.use('/api/v1/appointments', appointmentRoutes);
-app.use('/api/v1/roles', rolesRoutes);
-app.use('/api/v1/users', usersRoutes);
+app.use('/api/v1/roles', roleRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/doctors', doctorRoutes);
+app.use('/api/v1/patients', patientRoutes);
+app.use('/api/v1/staffs', staffRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

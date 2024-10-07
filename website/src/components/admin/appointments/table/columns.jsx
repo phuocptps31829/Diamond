@@ -16,7 +16,6 @@ import { ArrowUpDown } from "lucide-react";
 import { getStatusStyle } from "../utils/StatusStyle";
 import { getPatientsById } from "@/services/patientsApi";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getDoctorById } from "@/services/doctorsApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Select,
@@ -25,9 +24,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { useToast } from "@/hooks/useToast";
 import { serviceApi } from "@/services/servicesApi";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
+import { doctorApi } from "@/services/doctorsApi";
 // const useDeleteAppointment = () => {
 //   const { toast } = useToast();
 
@@ -64,7 +63,7 @@ const usePatientData = (patientID) => {
 const useDoctorData = (doctorID) => {
   return useQuery({
     queryKey: ["doctor", doctorID],
-    queryFn: () => getDoctorById(doctorID),
+    queryFn: () => doctorApi.getDoctorById(doctorID),
     keepPreviousData: true,
     enabled: !!doctorID,
   });

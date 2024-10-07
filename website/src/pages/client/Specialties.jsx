@@ -21,9 +21,9 @@ const Specialties = () => {
   if (error) return <NotFound />;
 
   return (
-    <div className="bg-bg-gray">
+    <div className="bg-[#E8F2F7]">
       <SpecialtiesBanner />
-      <SpecialtiesList specialties={specialties} isLoading={isLoading} />
+      <SpecialtiesList specialties={ specialties } isLoading={ isLoading } />
       <Safe />
     </div>
   );

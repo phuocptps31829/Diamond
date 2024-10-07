@@ -2,16 +2,16 @@ const express = require('express');
 
 const router = express.Router();
 
+const patientController = require('../controllers/patient.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
-const invoiceController = require('../controllers/invoice.controller');
 
 /**
  * @openapi
- * '/api/v1/invoices':
+ * '/api/v1/patients':
  *  get:
  *    tags:
- *    - Invoice Route
- *    summary: Get all invoices
+ *    - Patient Routes
+ *    summary: Get all patients
  *    parameters:
  *      - in: query
  *        name: page
@@ -35,22 +35,23 @@ const invoiceController = require('../controllers/invoice.controller');
 */
 router.get(
     '/',
+    helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    invoiceController.getAllInvoices
+    patientController.getAllPatients
 );
 
 /**
  * @openapi
- * '/api/v1/invoices/{id}':
+ * '/api/v1/patients/{id}':
  *  get:
  *    tags:
- *    - Invoice Route
- *    summary: Get invoice by id
+ *    - Patient Routes
+ *    summary: Get patient by id
  *    parameters:
  *      - in: path
  *        name: id
  *        required: true
- *        description: Invoice id
+ *        description: Patient id
  *        schema:
  *          type: string
  *    responses:
@@ -64,7 +65,28 @@ router.get(
 router.get(
     '/:id',
     helperMiddleware.checkValidId,
-    invoiceController.getInvoiceByID
+    patientController.getPatientByID
 );
+
+// /**
+//  * @openapi
+//  * '/api/v1/users/get-by-token':
+//  *  get:
+//  *    tags:
+//  *    - User Routes
+//  *    summary: Get user by token
+//  *    responses:
+//  *      '200':
+//  *        $ref: '#/components/responses/200'
+//  *      '404':
+//  *        $ref: '#/components/responses/404'
+//  *      '500':
+//  *        $ref: '#/components/responses/500'
+// */
+// router.get(
+//     '/get-by-token',
+//     authMiddleware.verifyAccessToken,
+//     patientController.getUserByID
+// );
 
 module.exports = router;

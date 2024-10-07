@@ -12,6 +12,7 @@ import { logoutAction, setUserProfile } from "@/redux/authSlice";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
+import Loading from "@/components/ui/Loading";
 
 const UserInfoForm = () => {
   const dispatch = useDispatch();
@@ -65,18 +66,18 @@ const UserInfoForm = () => {
     setValue('occupation', profileFetched?.data?.otherInfo?.occupation);
     setValue('ethnic', profileFetched?.data?.otherInfo?.ethnic);
     setValue('insuranceCode', profileFetched?.data?.otherInfo?.insuranceCode);
-  }, [profileFetched, dispatch, setValue]);
+  }, [profileFetched, dispatch, setValue, navigate]);
 
   const onSubmit = (data) => {
     console.log("Form submitted");
     console.log(data);
   };
 
-  // if (isLoading) return <p>Loading...</p>;
   // if (error) return <p>Error fetching profile data.</p>;
 
   return (
     <div className="w-full p-6">
+      { isLoading && <Loading /> }
       <h2 className="col-span-2 mb-6 text-xl font-bold">Thông tin tài khoản</h2>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
