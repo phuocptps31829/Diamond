@@ -104,7 +104,7 @@ module.exports = {
 
             const doctors = await UserModel.find({
                 roleID: process.env.ROLE_DOCTOR,
-                'otherInfo.specialtyID': new mongoose.Types.ObjectId('669e86f57fe9668357fcaead'),
+                'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
                 'otherInfo.branchID': new mongoose.Types.ObjectId(branchID),
                 isDeleted: false,
                 isActivated: true
@@ -118,5 +118,5 @@ module.exports = {
         } catch (error) {
             next(error);
         }
-    }
+    },
 };

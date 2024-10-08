@@ -12,9 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
-import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
-import { toast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
+import { workScheduleApi } from "@/services/workSchedulesApi";
 
 export default function SelectDate({
   control,
@@ -32,7 +30,7 @@ export default function SelectDate({
 
     const fetchDates = async () => {
       try {
-        const data = await getWorkSchedulesByDoctors(doctorId, branchId);
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId, branchId);
         const dates = data.map((option) =>
           parse(option._id.day, "yyyy-MM-dd", new Date()),
         );

@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
+import { workScheduleApi } from "@/services/workSchedulesApi";
 import { toast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 
@@ -38,7 +38,7 @@ export default function SelectTime({
       if (!doctorId || !branchId) return;
 
       try {
-        const data = await getWorkSchedulesByDoctors(doctorId, branchId);
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId, branchId);
 
         const selectedSchedule = data.find(
           (schedule) => schedule._id.day === date,
