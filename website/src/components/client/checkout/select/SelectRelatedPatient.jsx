@@ -17,17 +17,16 @@ import {
     CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { ethnicGroups } from '@/constants/ethnics';
 
-export default function SelectEthnic({ control, name, errors }) {
+export default function SelectRelatedPatient({ control, name, errors, patientList }) {
     const [open, setOpen] = React.useState(false);
 
     return (
-        <div>
+        <div className='w-52'>
             <Controller
                 control={ control }
                 name={ name }
-                rules={ { required: "Bạn thuộc dân tộc nào" } }
+                rules={ { required: "Chọn khám hộ ai" } }
                 render={ ({ field }) => (
                     <Popover open={ open } onOpenChange={ setOpen }>
                         <PopoverTrigger asChild>
@@ -38,22 +37,22 @@ export default function SelectEthnic({ control, name, errors }) {
                                 className={ cn("w-full justify-between py-[21px]",
                                     errors[name] && "border-red-500") }
                             >
-                                { field.value
-                                    ? ethnicGroups.find((ethnic) => ethnic.value === field.value)?.name
-                                    : <span className='text-[#838A94]'>Chọn dân tộc</span> }
+                                { field._id
+                                    ? patientList.find((patient) => patient._id === field._id)?.fullName
+                                    : <span className='text-[#838A94]'>Người liên quan</span> }
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
                             <Command>
-                                <CommandInput placeholder="Nhập tên dân tộc" />
+                                <CommandInput placeholder="Tên người liên quan" />
                                 <CommandList>
                                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
                                     <CommandGroup>
-                                        { ethnicGroups.map((ethnic) => (
+                                        { patientList.map((patient) => (
                                             <CommandItem
-                                                key={ ethnic.value }
-                                                value={ ethnic.value }
+                                                key={ patient._id }
+                                                value={ patient._id }
                                                 onSelect={ (currentValue) => {
                                                     field.onChange(currentValue);
                                                     setOpen(false);
@@ -62,10 +61,10 @@ export default function SelectEthnic({ control, name, errors }) {
                                                 <Check
                                                     className={ cn(
                                                         "mr-2 h-4 w-4",
-                                                        field.value === ethnic.value ? "opacity-100" : "opacity-0"
+                                                        field._id === patient._id ? "opacity-100" : "opacity-0"
                                                     ) }
                                                 />
-                                                { ethnic.name }
+                                                { patient.fullName }
                                             </CommandItem>
                                         )) }
                                     </CommandGroup>

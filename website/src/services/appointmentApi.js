@@ -2,6 +2,7 @@ import { API_CREATE_APPOINTMENT_MOMO, API_CREATE_APPOINTMENT_VNPAY } from "@/con
 import axios from "axios";
 
 export const createAppointment = async (data, provider) => {
+    console.log(data);
     let endpoint = null;
     switch (provider) {
         case 'vnpay':
@@ -17,7 +18,7 @@ export const createAppointment = async (data, provider) => {
     console.log(endpoint);
 
     try {
-        const res = await axios.post(endpoint, data);
+        const res = await axios.post('https://laravel.diamond.id.vn/api/v1/invoices/payment/momo', data);
         return res.data;
     } catch (error) {
         console.error(error);

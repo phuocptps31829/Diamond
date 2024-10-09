@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const patientController = require('../controllers/patient.controller');
+const authMiddleware = require('../middlewares/auth.middleware');
 const helperMiddleware = require('../middlewares/helper.middleware');
 
 /**
@@ -67,26 +68,5 @@ router.get(
     helperMiddleware.checkValidId,
     patientController.getPatientByID
 );
-
-// /**
-//  * @openapi
-//  * '/api/v1/users/get-by-token':
-//  *  get:
-//  *    tags:
-//  *    - User Routes
-//  *    summary: Get user by token
-//  *    responses:
-//  *      '200':
-//  *        $ref: '#/components/responses/200'
-//  *      '404':
-//  *        $ref: '#/components/responses/404'
-//  *      '500':
-//  *        $ref: '#/components/responses/500'
-// */
-// router.get(
-//     '/get-by-token',
-//     authMiddleware.verifyAccessToken,
-//     patientController.getUserByID
-// );
 
 module.exports = router;

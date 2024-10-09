@@ -47,8 +47,8 @@ export default function Form() {
   };
 
   return (
-    <div className='mx-auto mt-5 max-w-screen-xl px-4 py-3 md:px-5 md:py-5 md:mt-10 '>
-      <div className='container mx-auto gap-5 px-10 py-5 pb-10 border shadow-gray rounded-md '>
+    <div className='mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10'>
+      <div className='container bg-white mx-auto gap-5 px-10 py-5 pb-10 border rounded-md '>
         <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
             <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
@@ -96,10 +96,10 @@ export default function Form() {
             </p>
           </div>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
-            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ personHelpInfo ? personHelpInfo.occupation : profileCustomer.occupation }</p>
-            <p className='mb-2'><strong>Dân tộc: </strong>{ personHelpInfo ? personHelpInfo.ethnic : profileCustomer.ethnic }</p>
+            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.occupation : profileCustomer.otherInfo.occupation }</p>
+            <p className='mb-2'><strong>Dân tộc: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.ethnic : profileCustomer.otherInfo.ethnic }</p>
             <p className='mb-2'><strong>Số CCCD: </strong>{ personHelpInfo ? personHelpInfo.citizenIdentificationNumber : profileCustomer.citizenIdentificationNumber }</p>
-            <p className='mb-2'><strong>Số BHYT: </strong>{ personHelpInfo ? personHelpInfo.insuranceCode : profileCustomer.insuranceCode }</p>
+            <p className='mb-2'><strong>Số BHYT: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.insuranceCode : profileCustomer.otherInfo.insuranceCode }</p>
           </div>
         </div>
         <hr />
@@ -108,7 +108,7 @@ export default function Form() {
           <h1 className='font-bold text-[16px] md:text-[24px] mb-5'>Phương thức thanh toán</h1>
           <div className='flex flex-col md:flex-row justify-between gap-4'>
             <div className='flex flex-col gap-4 w-full'>
-              <label onClick={ () => setPaymentMethod("momo") } className={ `cursor-pointer flex items-center border-2 border-gray-500 rounded-md p-4 ${paymentMethod === 'momo' ? 'border-primary-500 border-2' : ''}` }>
+              <label onClick={ () => setPaymentMethod("momo") } className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'momo' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'
                   className='w-[10%] mr-4'
@@ -116,7 +116,7 @@ export default function Form() {
                 <span>Thanh toán qua MOMO</span>
                 <input type="radio" name="payment" value="momo" className="ml-auto" />
               </label>
-              <label onClick={ () => setPaymentMethod("banking") } className={ `cursor-pointer flex items-center border-2 border-gray-500 rounded-md p-4 ${paymentMethod === 'banking' ? 'border-primary-500 border-2' : ''}` }>
+              <label onClick={ () => setPaymentMethod("banking") } className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'banking' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/6963/6963703.png'
                   className='w-[10%] mr-4'
@@ -126,7 +126,7 @@ export default function Form() {
               </label>
             </div>
             <div className='flex flex-col gap-4 w-full'>
-              <label onClick={ () => setPaymentMethod("vnpay") } className={ `cursor-pointer flex items-center border-2 border-gray-500 rounded-md p-4 ${paymentMethod === 'vnpay' ? 'border-primary-500 border-2' : ''}` }>
+              <label onClick={ () => setPaymentMethod("vnpay") } className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'vnpay' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src={ VNPAYICON } alt='VNPAYICON'
                   className='w-[10%] mr-4'
@@ -135,7 +135,7 @@ export default function Form() {
                 <input type="radio" name="payment" value="zalopay" className="ml-auto" />
               </label>
 
-              <label className={ `cursor-pointer flex items-center border-2 border-gray-500 rounded-md p-4 ${paymentMethod === 'ccc' ? 'border-primary-500 border-2' : ''}` }>
+              <label className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'ccc' ? 'border-primary-500 border-2' : ''}` }>
                 <img
                   src='https://cdn-icons-png.flaticon.com/512/1019/1019607.png'
                   className='w-[10%] mr-4'

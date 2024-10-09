@@ -19,8 +19,6 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "@/redux/cartSlice";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
 import SelectDoctor from "./select/SelectDoctor";
 import { IoMdRemove } from "react-icons/io";
 import { Switch } from "@/components/ui/Switch";
@@ -32,6 +30,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
 import { toastUI } from "@/components/ui/Toastify";
+import SelectRelatedPatient from "./select/SelectRelatedPatient";
 
 const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
@@ -177,6 +176,7 @@ export default function Form() {
       isBookingForOthers ? otherBookingSchema : selfBookingSchema,
     ),
     defaultValues: {
+      relatedPatient: "",
       fullName: profile?.fullName || "",
       email: profile?.email || "",
       phoneNumber: profile?.phoneNumber || "",
@@ -197,6 +197,12 @@ export default function Form() {
       ward: profile?.ward || "",
     },
   });
+
+  useEffect(() => {
+    const currentValues = getValues();
+
+    console.log(currentValues.relatedPatient);
+  }, [getValues]);
 
   const handleSwitchChange = (checked) => {
     setIsBookingForOthers(checked);
@@ -507,12 +513,11 @@ export default function Form() {
                 />
               </div>
               { isBookingForOthers && <>
-                <div className="flex mt-1 justify-between">
+                <div className="flex mt-1 justify-between items-center">
                   <p className="text-xl font-bold">Thông tin người khám</p>
                   <div>
-                    Select những người đã từng:
-                    {/* <br />
-                    { profile.otherInfo?.relatedPatients.map((p, i) => <span key={ i }>{ p }</span>) } */}
+                    { profile.otherInfo?.relatedPatients?.length
+                      && <SelectRelatedPatient control={ control } errors={ errors } name="relatedPatient" patientList={ profile.otherInfo.relatedPatients } /> }
                   </div>
                 </div>
                 <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
