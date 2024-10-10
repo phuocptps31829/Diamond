@@ -11,9 +11,6 @@ import {
 } from "@/configs/varibles";
 import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
-const CUD_API = import.meta.env.VITE_CUD_API;
-const GET_API = import.meta.env.VITE_GET_API;
-
 export const getProfilePatients = async () => {
   try {
     const res = await axiosInstanceGET.get(API_GET_PROFILE_PATIENTS);
@@ -118,14 +115,23 @@ export const refreshTokenApi = async (refreshToken) => {
 };
 
 export const authApi = {
+  getProfileInfo: async () => {
+    const res = await axiosInstanceGET.get(`/auth/get-user-by-token`);
+    console.log(res.data);
+    return res.data;
+  },
   login: async (data) => {
     console.log(data);
     const res = await axiosInstanceCUD.post(`/auth/login`, data);
     console.log(res.data.data);
     return res.data.data;
   },
-  getProfileInfo: async () => {
-    const res = await axiosInstanceGET.get(`/users/get-by-token`);
+  refreshToken: async (refreshToken) => {
+    const res = await axiosInstanceCUD.post('/auth/refresh-token', {}, {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
     console.log(res.data);
     return res.data;
   }

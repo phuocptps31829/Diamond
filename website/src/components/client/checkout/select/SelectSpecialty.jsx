@@ -75,8 +75,7 @@ export default function SelectSpecialty({ control, name, errors, disabled , onCh
                         value={specialty._id}
                         onSelect={(currentValue) => {
                           if (!disabled) {
-                            field.onChange(currentValue);
-                            onChange(currentValue)
+                            field.onChange(currentValue); // Chỉ cần gọi field.onChange
                             setOpen(false);
                           }
                         }}

@@ -23,8 +23,32 @@ import InputCustom from "@/components/ui/InputCustom";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Loading from "@/components/ui/Loading";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { clinicsApi } from "@/services/clinicApi";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function DataTable({data, columns}) {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteClinics, isPending } = useMutation({
+    mutationFn: clinicsApi.deleteClinics,
+    onSuccess: () => {
+        toastUI("Xóa phòng khám thành công", "success");
+        queryClient.invalidateQueries('roles');
+    },
+    onError: (err) => {
+        console.log(err);
+        toastUI("Xóa phòng khám không thành công", "error");
+    },
+});
+
+const handleDeleteClinic = (id) => {
+  if (!confirm("Chắc chắn muốn xóa?")) return;
+
+  deleteClinics(id);
+};
+
   const {
     handleSubmit,
     formState: { errors },
@@ -46,8 +70,7 @@ export default function DataTable({data, columns}) {
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
     data,
-    columns,
-    // columns: columns,
+    columns: columns(handleDeleteClinic),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -68,6 +91,9 @@ export default function DataTable({data, columns}) {
       },
     },
   });
+  if (isPending) {
+    return <Loading />;
+}
   return (
     <div className="bg-white w-[100%] px-6 py-3 rounded-lg ">
       {/* Search */ }

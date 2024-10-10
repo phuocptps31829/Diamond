@@ -7,14 +7,9 @@ import {
 } from "@/configs/varibles";
 import axios from "axios";
 
-export const getAllBranches = async ({ page, limit }) => {
+export const getAllBranches = async () => {
   try {
-    const res = await axios.get(API_URL_GET_ALL_BRANCHES, {
-      params: {
-        page,
-        limit,
-      },
-    });
+    const res = await axios.get(API_URL_GET_ALL_BRANCHES);
     console.log(res.data.data);
     return res.data;
   } catch (error) {

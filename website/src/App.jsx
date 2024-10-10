@@ -81,6 +81,7 @@ import ServicesEditPage from "./pages/admin/Services/edit";
 import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
+import ClinicsEditFormPage from "./pages/admin/Clinics/editForm";
 
 const router = createBrowserRouter([
   {
@@ -404,6 +405,10 @@ const router = createBrowserRouter([
       {
         path: "clinics/create",
         element: <ClinicsFormPage />,
+      },
+      {
+        path: "clinics/edit/:id",
+        element: <ClinicsEditFormPage />,
       },
       {
         path: 'roles/list',

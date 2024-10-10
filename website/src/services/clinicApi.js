@@ -1,24 +1,49 @@
-import { API_URL_GET_ALL_CLINICS } from "@/configs/varibles";
-import axios from "axios";
+import { axiosInstanceCUD } from "./axiosInstance";
+import { axiosInstanceGET } from "./axiosInstance";
 
-export const getAllClinics = async () => {
-  try {
-    const res = await axios.get(API_URL_GET_ALL_CLINICS);
-    // console.log(res.data.data);
+export const clinicsApi = {
+  getAllClinics:  async () => {
+    const res = await axiosInstanceGET.get('/clinics');
+    console.log("clinics data: ", res.data.data);
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
-export const getClinicsById = async (id) => {
-  try {
-    const res = await axios.get(`${API_URL_GET_ALL_CLINICS}/${id}`);
-    console.log(res.data.data);
+  },
+  getClinicsById:  async (id) => {
+    const res = await axiosInstanceGET.get(`/clinics/${id}`);
+    console.log("clinic data by id: ", res.data.data);
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+  },
+  createClinics: async (newClinics) => {
+    const res = await axiosInstanceCUD.post(
+        '/clinics/add',
+        newClinics,
+        {
+            headers: {
+                "Content-Type": 'application/json'
+            }
+        }
+    );
+    console.log("clinics data: ", res.data);
+    return res.data;
+  },
+  updateClinic: async ({ updateClinic, id }) => {
+    console.log(updateClinic, id);
+    const res = await axiosInstanceCUD.put(
+        `/clinics/update/${id}`, 
+        updateClinic, 
+        {
+            headers: {
+                "Content-Type": 'application/json',
+            },
+        }
+    );
+    console.log("clinics data updated: ", res.data);
+    return res.data;
+},
+  deleteClinics: async (id) => {
+    const res = await axiosInstanceCUD.post(
+        '/clinics/delete/' + id + '?_method=DELETE',
+    );
+    console.log("clinics data deleted: ", res.data.data);
+    return res.data.data;
+},
+}

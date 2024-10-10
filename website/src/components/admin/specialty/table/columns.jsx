@@ -12,7 +12,9 @@ import { FiEdit } from "react-icons/fi";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import { Link } from "react-router-dom";
 
-export const columns = [
+// export const columns =
+export const columns = (onDelete) =>
+[
   {
     id: "select",
     header: ({ table }) => (
@@ -94,7 +96,7 @@ export const columns = [
         const img = row.original.image;
         return (
           <Avatar className="size-8 rounded-sm  w-[80px] h-[80px]">
-            <AvatarImage  className=""  src={ img } alt={ row.getValue("name") }/>
+            <AvatarImage  className=""  src={ "https://larvel.diamond.id.vn/images/" + img } alt={ row.getValue("name") }/>
         </Avatar>
         );
     },
@@ -114,8 +116,8 @@ export const columns = [
     cell: ({ row }) => {
         const status = row.original.isHidden;
         return (
-            <div className={ status === true ? "text-green-500" : "text-red-500" }>
-                { status === true ? "Đang hiển thị" : "Đang ẩn" }
+            <div className={ status === false ? "text-green-500" : "text-red-500" }>
+                { status === false ? "Đang hiển thị" : "Đang ẩn" }
             </div>
         );
     },
@@ -126,8 +128,6 @@ export const columns = [
     cell: ({ row }) => {
       const payment = row.original;
       const id = payment._id;
-      console.log("xxxx "+ id);
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -141,7 +141,8 @@ export const columns = [
               <FiEdit className="text-[15px]" />
               <Link to={`/admin/specialty/edit/${id}`}>Sửa</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex w-full items-center gap-2">
+            {/* <DropdownMenuItem className="flex w-full items-center gap-2" > */}
+            <DropdownMenuItem className="flex w-full items-center gap-2" onClick={ () => onDelete(row.original._id) }>
               <RiDeleteBin6Line className="text-[15px]" />
               <span>Xóa</span>
             </DropdownMenuItem>

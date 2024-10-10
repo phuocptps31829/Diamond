@@ -80,6 +80,7 @@ const ServicesAdd = () => {
       duration: Number(data.duration),
       isHidden: data.isHidden,
     };
+    console.log(serviceData);
     mutation.mutate(serviceData);
   };
 

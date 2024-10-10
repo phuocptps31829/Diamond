@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { refreshTokenApi } from "../authApi";
+import { authApi } from "../authApi";
 
 const GET_API_URL = import.meta.env.VITE_GET_API_URL;
 const CUD_API_URL = import.meta.env.VITE_CUD_API_URL;
+const IMG_API_URL = import.meta.env.VITE_UPLOAD_IMAGE_API_URL;
 
 export const axiosInstanceGET = axios.create({
     baseURL: GET_API_URL
@@ -12,10 +13,12 @@ export const axiosInstanceGET = axios.create({
 export const axiosInstanceCUD = axios.create({
     baseURL: CUD_API_URL
 });
+export const axiosInstanceIMG = axios.create({
+    baseURL: IMG_API_URL
+});
 
 const interceptors = (axiosInstance) => {
     axiosInstance.interceptors.request.use((config) => {
-        console.log('in req', config);
         const accessToken = Cookies.get('accessToken');
 
         if (accessToken && !config.headers.Authorization) {
@@ -41,8 +44,7 @@ const interceptors = (axiosInstance) => {
                 originalRequest._retry = true;
 
                 try {
-                    const response = await refreshTokenApi(refreshToken);
-
+                    const response = await authApi.refreshToken(refreshToken);
                     Cookies.set('accessToken', response.data.accessToken.token, {
                         expires: new Date(response.data.accessToken.expires * 1000)
                     });
@@ -65,3 +67,4 @@ const interceptors = (axiosInstance) => {
 
 interceptors(axiosInstanceGET);
 interceptors(axiosInstanceCUD);
+interceptors(axiosInstanceIMG);

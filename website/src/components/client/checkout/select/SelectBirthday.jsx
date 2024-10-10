@@ -14,8 +14,6 @@ import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
 
 export default function SelectBirthDate({ control, name, errors }) {
-  // eslint-disable-next-line no-unused-vars
-  const [selectedDate, setSelectedDate] = React.useState(null);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -33,34 +31,31 @@ export default function SelectBirthDate({ control, name, errors }) {
                 className={cn(
                   "w-full justify-start py-[21px] text-left font-normal",
                   !field.value && "text-muted-foreground",
-                  errors[name] && "",
+                  errors[name] && "border-red-500"
                 )}
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {field.value ? (
-                  format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
+                  format(new Date(field.value), "yyyy/mm/dd", { locale: vi })
                 ) : (
                   <span className="text-gray-600">Chọn ngày sinh</span>
                 )}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={field.value ? new Date(field.value) : null}
-                onSelect={(selectedDate) => {
-                  if (selectedDate && selectedDate <= today) {
-                    setSelectedDate(selectedDate);
-                    field.onChange(format(selectedDate, "yyyy-MM-dd"));
-                  } else {
-                    console.error(
-                      "Ngày sinh không thể là ngày trong tương lai",
-                    );
-                  }
-                }}
-                initialFocus
-                maxDate={today}
-              />
+            <Calendar
+              mode="single"
+              selected={field.value ? new Date(field.value) : null}
+              onSelect={(selectedDate) => {
+                if (selectedDate && selectedDate <= today) {
+                  field.onChange(selectedDate); // Gọi onChange với đối tượng Date
+                } else {
+                  console.error("Ngày sinh không thể là ngày trong tương lai");
+                }
+              }}
+              initialFocus
+              maxDate={today}
+            />
             </PopoverContent>
           </Popover>
         )}
