@@ -1,6 +1,7 @@
 import { API_GET_ALL_PATIENTS } from "@/configs/varibles";
 import { API_URL_GET_PATIENTS_BY_ID } from "@/configs/varibles";
 import axios from "axios";
+import { axiosInstanceGET } from "./axiosInstance";
 
 export const getAllPatients = async () => {
   try {
@@ -20,5 +21,13 @@ export const getPatientsById = async (id) => {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+};
+
+export const patientApi = {
+  getRelatedPatient: async (id) => {
+    const res = await axiosInstanceGET.get(`/patients/related-patient/${id}`);
+    console.log(res.data);
+    return res.data;
   }
 };

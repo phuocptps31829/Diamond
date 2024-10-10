@@ -29,8 +29,7 @@ export function SelectProvince({
 }) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
-  const [selectedValue, setSelectedValue] = useState(defaultValue); // Tạo state cho giá trị đã chọn
-
+  const [selectedValue, setSelectedValue] = useState(defaultValue);
   useEffect(() => {
     fetchProvinces();
   }, []);
@@ -39,8 +38,6 @@ export function SelectProvince({
     try {
       const response = await getProvinces();
       setProvinces(response);
-      console.log("aaa", response);
-
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
@@ -51,7 +48,6 @@ export function SelectProvince({
       const selectedProvince = provinces.find((province) => province._id === defaultValue);
       if (selectedProvince) {
         setSelectedValue(selectedProvince._id);
-        // control.setValue(name, selectedProvince._id); 
       }
     }
   }, [defaultValue, provinces, control, name]);
@@ -76,7 +72,7 @@ export function SelectProvince({
               >
                 { field.value ? (
                   <>
-                    { provinces.find((province) => province._id === selectedValue)?.name }
+                    { provinces.find((province) => province._id === field.value)?.name }
                   </>
                 ) : (
                   "Chọn tỉnh/thành phố"
@@ -95,10 +91,14 @@ export function SelectProvince({
                         key={ province._id }
                         value={ province.name }
                         onSelect={ (currentValue) => {
+                          console.log('c', province);
+                          console.log('d', currentValue);
                           const selectedProvince = provinces.find(
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
+                            console.log('e', selectedProvince);
+
                             field.onChange(selectedProvince._id);
                             onProvinceChange(selectedProvince._id);
                           }

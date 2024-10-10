@@ -18,7 +18,13 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-export default function SelectRelatedPatient({ control, name, errors, patientList }) {
+export default function SelectRelatedPatient({
+    control,
+    name,
+    errors,
+    patientList,
+    onChange
+}) {
     const [open, setOpen] = React.useState(false);
 
     return (
@@ -37,8 +43,8 @@ export default function SelectRelatedPatient({ control, name, errors, patientLis
                                 className={ cn("w-full justify-between py-[21px]",
                                     errors[name] && "border-red-500") }
                             >
-                                { field._id
-                                    ? patientList.find((patient) => patient._id === field._id)?.fullName
+                                { field.value
+                                    ? patientList.find((patient) => patient._id === field.value)?.fullName
                                     : <span className='text-[#838A94]'>Người liên quan</span> }
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                             </Button>
@@ -55,6 +61,7 @@ export default function SelectRelatedPatient({ control, name, errors, patientLis
                                                 value={ patient._id }
                                                 onSelect={ (currentValue) => {
                                                     field.onChange(currentValue);
+                                                    onChange(currentValue);
                                                     setOpen(false);
                                                 } }
                                             >
