@@ -108,10 +108,6 @@ export default function TopStats({
   allAppointments,
   allInvoices,
 }) {
-  console.log("allNews", allNews);
-  console.log("allPatients", allPatients);
-  console.log("allAppointments", allAppointments);
-  console.log("allInvoices", allInvoices);
   const [statsData, setStatsData] = useState([
     {
       id: 1,

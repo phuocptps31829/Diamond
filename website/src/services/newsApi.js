@@ -46,7 +46,7 @@ export const createNews = async (data) => {
   try {
     const res = await axios.post(API_URL_CREATE_NEWS, data, {
       headers: {
-        "Content-Type": "application/json",
+       "Content-Type": "multipart/form-data",
       },
     });
     console.log("res.data.data: ", res.data.data);
@@ -58,9 +58,9 @@ export const createNews = async (data) => {
 };
 export const updateNews = async (id, data) => {
   try {
-    const res = await axios.put(`${API_URL_UPDATE_NEWS}/${id}`, data, {
+    const res = await axios.post(`${API_URL_UPDATE_NEWS}/${id}?_method=PUT`, data, {
       headers: {
-        "Content-Type": "application/json",
+       "Content-Type": "multipart/form-data",
       },
     });
     console.log("res.data.data: ", res.data.data);

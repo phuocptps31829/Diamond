@@ -22,7 +22,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-export default function DataTable({ data, columns,branchData }) {
+export default function DataTable({ columns, allPatients }) {
   const {
     handleSubmit,
     formState: { errors },
@@ -33,19 +33,15 @@ export default function DataTable({ data, columns,branchData }) {
       patientName: "",
     },
   });
-  const onSubmit = () => {
-  };
+  const onSubmit = () => { };
   const [sorting, setSorting] = React.useState([]);
-  const [columnFilters, setColumnFilters] = React.useState(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState({});
+  const [columnFilters, setColumnFilters] = React.useState([]);
+  const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
-    data,
-    branchData,
+    data: allPatients,
     columns,
+    pageCount: Math.ceil(allPatients.length / 8),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -67,12 +63,12 @@ export default function DataTable({ data, columns,branchData }) {
     },
   });
   return (
-    <div className="bg-white w-[100%] px-6 py-3 rounded-lg">
+    <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */ }
       <div className="flex h-[80px]">
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
-          <div className="mb-2 ">
-            <div className="relative w-[300px] mr-1">
+          <div className="mb-2">
+            <div className="relative mr-1 w-[300px]">
               <InputCustom
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm bệnh nhân"
@@ -85,10 +81,10 @@ export default function DataTable({ data, columns,branchData }) {
               />
             </div>
           </div>
-          <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
             <FaPlus className="text-primary-500"></FaPlus>
           </Button>
-          <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>
@@ -105,7 +101,7 @@ export default function DataTable({ data, columns,branchData }) {
                         ? null
                         : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         ) }
                     </TableHead>
                   );
@@ -125,7 +121,7 @@ export default function DataTable({ data, columns,branchData }) {
                     <TableCell key={ cell.id }>
                       { flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       ) }
                     </TableCell>
                   )) }
@@ -135,7 +131,7 @@ export default function DataTable({ data, columns,branchData }) {
               <TableRow>
                 <TableCell
                   colSpan={ columns.length }
-                  className="h-24 text-center "
+                  className="h-24 text-center"
                 >
                   No results.
                 </TableCell>
@@ -149,7 +145,7 @@ export default function DataTable({ data, columns,branchData }) {
             { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
             { table.getFilteredRowModel().rows.length } trong danh sách.
           </div>
-          <div className="space-x-2 flex items-center">
+          <div className="flex items-center space-x-2">
             <Button
               variant="outline"
               size="sm"

@@ -1,27 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import DataTable from "./table";
 import { columns } from "./table/columns";
-import { getAllNews } from "@/services/newsApi";
+import { takeItAllNews } from "@/services/newsApi";
 import NotFound from "@/components/client/notFound";
+import Loading from "@/components/ui/Loading";
 
 const NewsList = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn: () => getAllNews({ limit: 999 }),
+    queryFn: takeItAllNews,
     keepPreviousData: true,
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   if (error) {
     return <NotFound />;
   }
 
-  console.log("data: ", data.totalRecords);
+  console.log("data: ", data);
 
-  return <DataTable columns={columns} data={data.data} />;
+  return <DataTable columns={columns} data={data} />;
 };
 
 export default NewsList;

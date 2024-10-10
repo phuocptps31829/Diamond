@@ -18,31 +18,28 @@ export default function MiddleCharts({
 
   useEffect(() => {
     const filteredPatients = dataPatientsByGender.filter(
-      (item) => item._id.year === yearNow,
+      (item) => item.years[0].year === yearNow,
     );
 
     setDataTotalPatientsByYear(
       dataTotalPatients.filter(
-        (item) => item._id.year === new Date().getFullYear(),
+        (item) => Number(item.year) === new Date().getFullYear(),
       ),
     );
+
     setDataPatientsByGenderAndByYear(filteredPatients);
 
     // Tính tổng số bệnh nhân nam và nữ
     let totalMale = 0;
     let totalFemale = 0;
 
-    filteredPatients.forEach((yearData) => {
-      yearData.details.forEach((monthData) => {
-        monthData.details.forEach((patientData) => {
-          const gender = patientData.user[0].gender;
-          if (gender === "Nam") {
-            totalMale += 1;
-          } else if (gender === "Nữ") {
-            totalFemale += 1;
-          }
-        });
-      });
+    filteredPatients.forEach((patient) => {
+      const gender = patient.gender;
+      if (gender === "Nam") {
+        totalMale += 1;
+      } else if (gender === "Nữ") {
+        totalFemale += 1;
+      }
     });
 
     // Tính phần trăm

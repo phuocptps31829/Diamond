@@ -1,5 +1,5 @@
 import { API_CREATE_APPOINTMENT_MOMO, API_CREATE_APPOINTMENT_VNPAY } from "@/configs/varibles";
-import { axiosInstance } from "./axiosInstance";
+import axios from "axios";
 
 export const createAppointment = async (data, provider) => {
     let endpoint = null;
@@ -17,7 +17,7 @@ export const createAppointment = async (data, provider) => {
     console.log(endpoint);
 
     try {
-        const res = await axiosInstance.post(endpoint, data);
+        const res = await axios.post(endpoint, data);
         return res.data;
     } catch (error) {
         console.error(error);

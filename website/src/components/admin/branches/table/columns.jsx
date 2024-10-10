@@ -33,6 +33,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/AlertDialog";
 import { useToast } from "@/hooks/useToast";
+import { toastUI } from "@/components/ui/Toastify";
 const useDeleteBranch = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -40,18 +41,16 @@ const useDeleteBranch = () => {
     mutationFn: (branchId) => deleteBranch(branchId),
     onSuccess: () => {
       queryClient.invalidateQueries("branches");
-      toast({
-        variant: "success",
-        title: "Xóa chi nhánh thành công",
-        description: "Chi nhánh đã được xóa khỏi hệ thống",
-      });
+      toastUI(
+        "Xóa chi nhánh thành công.",
+        "success",
+      );
     },
     onError: (error) => {
-      toast({
-        variant: "error",
-        title: "Xóa chi nhánh thất bại",
-        description: "Đã xảy ra lỗi khi xóa chi nhánh",
-      });
+      toastUI(
+        "Xóa chi nhánh thất bại.",
+        "error",
+      );
       console.error("Error deleting branch:", error);
     },
   });

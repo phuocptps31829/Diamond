@@ -1,0 +1,46 @@
+import PackagesList from "@/components/admin/packages/PackagesList";
+import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useQuery } from "@tanstack/react-query";
+import { takeItAllPackages } from "@/services/medicalPackagesApi";
+import NotFound from "@/components/client/notFound";
+import Loading from "@/components/ui/Loading";
+
+const breadcrumbData = [
+  {
+    title: "Sản phẩm",
+  },
+  {
+    href: "/admin/packages/list",
+    title: "Danh sách gói",
+  },
+];
+
+const PackagesListPage = () => {
+  const {
+    data: dataTakeItAllPackages,
+    error: errorTakeItAllPackages,
+    isLoading: isLoadingTakeItAllPackages,
+  } = useQuery({
+    queryKey: ["takeItAllPackages"],
+    queryFn: takeItAllPackages,
+  });
+
+  if (errorTakeItAllPackages) {
+    return <NotFound />;
+  }
+
+  return (
+    <>
+      {isLoadingTakeItAllPackages ? (
+        <Loading />
+      ) : (
+        <>
+          <BreadcrumbCustom data={breadcrumbData} />
+          <PackagesList allPackages={dataTakeItAllPackages} />
+        </>
+      )}
+    </>
+  );
+};
+
+export default PackagesListPage;

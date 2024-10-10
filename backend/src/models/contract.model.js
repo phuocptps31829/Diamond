@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const contractSchema = new mongoose.Schema({
     doctorID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Doctor',
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
     },
     hospitalID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Hospital',

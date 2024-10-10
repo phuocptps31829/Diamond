@@ -24,6 +24,7 @@ import { ChevronDown } from "lucide-react";
 import { MdChevronRight } from "react-icons/md";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const CollapseMenuButton = ({
   icon: Icon,
@@ -34,6 +35,8 @@ const CollapseMenuButton = ({
 }) => {
   const isSubmenuActive = submenus.some((submenu) => submenu.active);
   const [isCollapsed, setIsCollapsed] = useState(isSubmenuActive);
+  const profile = useSelector((state) => state.auth.userProfile);
+  const profileRole = profile?.role?.name;
 
   return isOpen ? (
     <Collapsible
@@ -79,8 +82,8 @@ const CollapseMenuButton = ({
         </button>
       </CollapsibleTrigger>
       <CollapsibleContent className="data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden">
-        { submenus.map(({ href, label, active }, index) => (
-          <button
+        { submenus.map(({ href, label, active, exceptRoles }, index) => (
+          !exceptRoles?.includes(profileRole) && <button
             key={ index }
             className="mb-1 ml-4 h-10 w-full justify-start text-[14px] hover:text-primary-700"
           >
@@ -145,8 +148,8 @@ const CollapseMenuButton = ({
           { label }
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        { submenus.map(({ href, label, active }, index) => (
-          <DropdownMenuItem key={ index } asChild>
+        { submenus.map(({ href, label, active, exceptRoles }, index) => (
+          !exceptRoles?.includes(profileRole) && <DropdownMenuItem key={ index } asChild>
             <Link className={ `${active ? "text-primary-500" : ""} cursor-pointer` } to={ href }>
               <p className="max-w-[180px] truncate">{ label }</p>
             </Link>

@@ -8,19 +8,17 @@ const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
     let totalPatientsBySpecialty = {};
 
     specialties.forEach((specialty) => {
-      totalPatientsBySpecialty[specialty.name] = 0;
+      totalPatientsBySpecialty[specialty._id] = 0;
     });
 
     patientData.forEach((yearData) => {
-      yearData.details.forEach((monthData) => {
-        monthData.details.forEach((detail) => {
-          detail._id.specialtyID.forEach((specialtyID) => {
-            const specialty = specialties.find((s) => s._id === specialtyID);
-            if (specialty) {
-              totalPatientsBySpecialty[specialty.name] += detail.totalCount;
-            }
-          });
-        });
+      yearData.specialties.forEach((specialtyData) => {
+        const specialtyID = specialtyData.specialtyID;
+        const specialty = specialties.find((s) => s._id === specialtyID);
+
+        if (specialty) {
+          totalPatientsBySpecialty[specialtyID] += specialtyData.totalCount;
+        }
       });
     });
 
@@ -29,8 +27,13 @@ const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
 
   const mergedData = mergeData(dataAllSpecialties, dataTotalPatientsByYear);
 
+  const labels = Object.keys(mergedData).map((specialtyID) => {
+    const specialty = dataAllSpecialties.find((s) => s._id === specialtyID);
+    return specialty ? specialty.name : "";
+  });
+
   const data = {
-    labels: Object.keys(mergedData),
+    labels: labels,
     datasets: [
       {
         label: "Bệnh nhân",

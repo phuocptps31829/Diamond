@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
+    roleID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Role',
+        required: true
+    },
     fullName: {
         type: String,
         required: true
@@ -40,6 +44,9 @@ const userSchema = new mongoose.Schema({
     },
     citizenIdentificationNumber: {
         type: Number,
+    },
+    otherInfo: {
+        type: Object
     },
     isActivated: {
         type: Boolean,

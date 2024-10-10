@@ -39,8 +39,8 @@ export function SelectProvince({
     try {
       const response = await getProvinces();
       setProvinces(response);
-      console.log("aaa",response);
-      
+      console.log("aaa", response);
+
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
@@ -50,7 +50,7 @@ export function SelectProvince({
       console.log("df:" + defaultValue);
       const selectedProvince = provinces.find((province) => province._id === defaultValue);
       if (selectedProvince) {
-        setSelectedValue(selectedProvince._id); 
+        setSelectedValue(selectedProvince._id);
         // control.setValue(name, selectedProvince._id); 
       }
     }
@@ -60,27 +60,27 @@ export function SelectProvince({
       <Controller
         control={ control }
         name={ name }
-        rules={{ required: "Vui lòng chọn tỉnh/thành phố." }}
-        render={({ field }) => (
-          <Popover open={open} onOpenChange={setOpen}>
+        rules={ { required: "Vui lòng chọn tỉnh/thành phố." } }
+        render={ ({ field }) => (
+          <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                disabled={disabled}
-                aria-expanded={open}
-                className={cn(
-                  "w-full justify-between py-[21px]",
+                disabled={ disabled }
+                aria-expanded={ open }
+                className={ cn(
+                  "w-full justify-between py-[21px] border",
                   errors[name] && "border-red-500",
-                )}
+                ) }
               >
-                {selectedValue ? (
+                { field.value ? (
                   <>
-                    {provinces.find((province) => province._id === selectedValue)?.name}
+                    { provinces.find((province) => province._id === selectedValue)?.name }
                   </>
                 ) : (
                   "Chọn tỉnh/thành phố"
-                )}
+                ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -90,43 +90,42 @@ export function SelectProvince({
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    {provinces.map((province) => (
+                    { provinces.map((province) => (
                       <CommandItem
-                        key={province._id}
-                        value={province.name}
-                        onSelect={(currentValue) => {
+                        key={ province._id }
+                        value={ province.name }
+                        onSelect={ (currentValue) => {
                           const selectedProvince = provinces.find(
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            setSelectedValue(selectedProvince._id);
                             field.onChange(selectedProvince._id);
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
-                        }}
+                        } }
                       >
                         <Check
-                          className={cn(
+                          className={ cn(
                             "mr-2 h-4 w-4",
                             selectedValue === province._id
                               ? "opacity-100"
                               : "opacity-0",
-                          )}
+                          ) }
                         />
-                        {province.name}
+                        { province.name }
                       </CommandItem>
-                    ))}
+                    )) }
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        )}
+        ) }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }
@@ -240,15 +239,14 @@ export function SelectDistrict({
   );
 }
 
-
-
-
-
-
-
-
-
-export function SelectWard({ control, name, errors, districtId, setValue, disabled }) {
+export function SelectWard({
+  control,
+  name,
+  errors,
+  districtId,
+  setValue,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
@@ -291,7 +289,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                 ) }
               >
                 { field.value && wards.length > 0 ? (
-                  wards.find((ward) => ward.name === field.value)?.name
+                  wards.find((ward) => ward._id === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn phường/xã</span>
                 ) }
@@ -313,7 +311,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                             (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard.name);
+                            field.onChange(selectedWard._id);
                           }
                           setOpen(false);
                         } }

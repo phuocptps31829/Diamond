@@ -17,6 +17,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllSpecialties } from "@/services/specialtiesApi";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function SelectSpecialty({ control, name, errors, disabled , onChange  }) {
   const [open, setOpen] = React.useState(false);
@@ -30,11 +31,11 @@ export default function SelectSpecialty({ control, name, errors, disabled , onCh
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Skeleton className="w-full h-10"/>;
   }
 
   if (error) {
-    return <div>Error loading specialties</div>;
+    return <div> Lỗi khi tải chuyên khoa</div>;
   }
   return (
     <div>
