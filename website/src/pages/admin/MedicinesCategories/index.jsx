@@ -1,7 +1,7 @@
 import MedicinesCategoriesList from "@/components/admin/medicineCategories/MedicinesCategoriesList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { useQuery } from "@tanstack/react-query";
-import { getAllMedicinesCategories } from "@/services/medicineApi";
+import { medicineApi } from "@/services/medicineApi";
 import NotFound from "@/components/client/notFound";
 import Loading from "@/components/ui/Loading";
 
@@ -22,7 +22,7 @@ const MedicinesCategoriesListPage = () => {
     isLoading: isLoadingAllMedicinesCategories,
   } = useQuery({
     queryKey: ["allMedicinesCategories"],
-    queryFn: getAllMedicinesCategories,
+    queryFn: medicineApi.getAllMedicinesCategories,
   });
 
   if (errorAllMedicinesCategories) {

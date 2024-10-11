@@ -1,7 +1,17 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import ActionMenu from "./actionMenu";
+const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export const columnsSchedule = [
   {
@@ -48,15 +58,45 @@ export const columnsSchedule = [
         Hình ảnh
       </Button>
     ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center gap-3 py-2 lowercase">
-        <img
-          src={row.original.image}
-          alt={row.original.image}
-          className="max-w-20 rounded-sm border border-black object-contain"
-        />
-      </div>
-    ),
+    cell: ({ row }) => {
+      const [open, setOpen] = useState(false);
+      const [loading, setLoading] = useState(true);
+
+      const handleImageLoad = () => {
+        setLoading(false);
+      };
+
+      return (
+        <>
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+              <div className="flex items-center justify-center gap-3 py-2 lowercase">
+                {loading && (
+                  <Skeleton className="h-14 w-20 animate-pulse rounded-sm bg-gray-300" />
+                )}
+                <div className={`${loading ? "hidden" : "block"} h-14 w-20`}>
+                  <img
+                    src={URL_IMAGE + "/" + row.original.image}
+                    alt={row.original.image}
+                    className={`${loading ? "hidden" : "block"} h-full w-full cursor-pointer rounded-sm border border-primary-200 object-cover`}
+                    onLoad={handleImageLoad}
+                  />
+                </div>
+              </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Hình ảnh lớn</DialogTitle>
+              </DialogHeader>
+              <img
+                src={URL_IMAGE + "/" + row.original.image}
+                alt="large-thumbnail w-full h-auto"
+              />
+            </DialogContent>
+          </Dialog>
+        </>
+      );
+    },
   },
   {
     accessorKey: "name",
@@ -71,8 +111,10 @@ export const columnsSchedule = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center gap-3 py-4 ">
-        <span className="w-full whitespace-nowrap font-medium">{row.original.name}</span>
+      <div className="flex items-center gap-3 py-4">
+        <span className="w-full whitespace-nowrap font-medium">
+          {row.original.name}
+        </span>
       </div>
     ),
   },
@@ -88,7 +130,9 @@ export const columnsSchedule = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{row.original?.specialty[0].name || "null"}</div>,
+    cell: ({ row }) => (
+      <div className="">{row.original?.specialty[0].name || "null"}</div>
+    ),
   },
   {
     accessorKey: "createdAt",

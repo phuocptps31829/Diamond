@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { addToCart } from "@/redux/cartSlice";
 import { useNavigate } from "react-router-dom";
 

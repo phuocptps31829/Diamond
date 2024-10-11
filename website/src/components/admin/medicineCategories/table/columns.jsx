@@ -100,7 +100,7 @@ export const columnsSchedule = [
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="">{row.original?.totalMedicines || "null"}</div>;
+      return <div className="">{row.original?.totalMedicines}</div>;
     },
   },
   {

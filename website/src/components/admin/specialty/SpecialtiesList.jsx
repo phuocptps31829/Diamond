@@ -1,6 +1,6 @@
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import DataTable from "./table";
-import { columns} from "./table/columns";
+import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
 
 const SpecialtiesList = () => {
@@ -12,15 +12,16 @@ const SpecialtiesList = () => {
     queryKey: ["specialties"],
     queryFn: getAllSpecialties,
   });
-  
-  const specialtiesData = specialtiesDataResponse|| [];
-  if (loadingSpecialties ) return <div>Loading...</div>;
-  if (errorLoadingSpecialties ) return <div>Error loading data</div>;
-  console.log("specialties", specialtiesData.map(specialty => specialty.name)); 
 
-  return <DataTable 
-  columns={columns} 
-  data={specialtiesData} />;
+  const specialtiesData = specialtiesDataResponse || [];
+  if (loadingSpecialties) return <div>Loading...</div>;
+  if (errorLoadingSpecialties) return <div>Error loading data</div>;
+  console.log(
+    "specialties",
+    specialtiesData.map((specialty) => specialty.name),
+  );
+
+  return <DataTable columns={columns} data={specialtiesData} />;
 };
 
 export default SpecialtiesList;

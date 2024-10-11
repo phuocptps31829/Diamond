@@ -1,7 +1,8 @@
 import PackagesList from "@/components/admin/packages/PackagesList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { useQuery } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import { takeItAllPackages } from "@/services/medicalPackagesApi";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 
@@ -26,7 +27,7 @@ const PackagesListPage = () => {
   });
 
   if (errorTakeItAllPackages) {
-    return <NotFound />;
+    return <NotFound message={ errorTakeItAllPackages.message } />;
   }
 
   return (

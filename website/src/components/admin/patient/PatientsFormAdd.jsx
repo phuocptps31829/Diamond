@@ -1,82 +1,126 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { patientSchema } from "@/zods/patient";
+import { patientAdminSchema } from "@/zods/admin/patientAdmin";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import SelectBirthDate from "@/components/client/checkout/select/SelectBirthday";
 import {
   SelectDistrict,
   SelectProvince,
   SelectWard,
-} from "@/components/client/checkout/select/SelectLocation";
+} from "./select/SelectLocation";
 import SelectEthnic from "@/components/client/checkout/select/SelectEthnicity";
+import RadioGroupField from "@/components/ui/RadioGroupField";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/Button";
-import { MdCloudUpload } from "react-icons/md";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
+import ImagePreview from "@/components/ui/ImagePreview";
+import { imageApi } from "@/services/imageApi";
+import { patientApi } from "@/services/patientsApi";
+import { toastUI as toast } from "@/components/ui/Toastify";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 export default function PatientFormAdd() {
-  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [loadingImage, setLoadingImage] = useState(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
+  const [fileImage, setFileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
+    reset,
   } = useForm({
-    resolver: zodResolver(patientSchema),
+    resolver: zodResolver(patientAdminSchema),
     defaultValues: {
-      patientName: "",
+      fullName: "",
       phone: "",
       email: "",
-      birthDate: "",
+      dateOfBirth: "",
       password: "",
       confirmPassword: "",
-      gender: "",
-      bhyt: "",
-      job: "",
+      gender: "Nam",
+      roleID: "1",
+      insuranceCode: "",
+      occupation: "",
       province: "",
       district: "",
       ward: "",
+      street: "",
       citizenIdentificationNumber: "",
-      ethnicity: "",
-      address: "",
-      status: "",
+      ethnic: "",
+      isActivated: true,
     },
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [showMenu, setShowMenu] = useState(false);
-  const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
-  };
-  const onSubmit = (data) => {
-    const formattedData = {
-      fullName: data.patientName,
+
+  const { mutate: createPatientMutation, isPending } = useMutation({
+    mutationFn: patientApi.createPatient,
+    onSuccess: () => {
+      reset();
+      setFileImage(null);
+      setImagePreview(null);
+      setLoadingImage(false);
+      toast("Thêm mới người dùng thành công!", "success");
+      navigate("/admin/patients/list");
+    },
+    onError: (error) => {
+      console.log("error", error);
+      setLoadingImage(false);
+      toast(
+        error ? error.response.data.message : "Thêm mới người dùng thất bại!",
+        "error",
+      );
+    },
+  });
+
+  const onSubmit = async (data) => {
+    if (!fileImage) {
+      toast("Vui lòng chọn ảnh!", "error");
+      return;
+    }
+
+    setLoadingImage(true);
+
+    const formData = new FormData();
+    formData.append("file", fileImage);
+
+    const imageResponse = await imageApi.createImage(formData);
+    const imageUrl = imageResponse?.data;
+
+    if (!imageUrl) {
+      setLoadingImage(false);
+      throw new Error("Không thể upload ảnh");
+    }
+
+    const requestBody = {
+      fullName: data.fullName,
+      roleID: data.roleID,
       phoneNumber: data.phone,
       email: data.email,
-      gender: data.gender === "male" ? "Nam" : "Nữ",
-      dateOfBirth: data.birthDate,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      password: data.password,
+      avatar: imageUrl,
+      citizenIdentificationNumber: data.citizenIdentificationNumber,
+      isActivated: data.isActivated,
       address: {
         province: data.province,
         district: data.district,
         ward: data.ward,
-        street: data.address,
+        street: data.street,
       },
-      citizenIdentificationNumber: data.citizenIdentificationNumber,
-      occupation: data.job,
-      ethnic: data.ethnicity,
-      password: data.password,
+      otherInfo: {
+        occupation: data.occupation,
+        insuranceCode: data.insuranceCode,
+        ethnic: data.ethnic,
+      },
     };
 
-    console.log(JSON.stringify(formattedData, null, 2));
-    toast({
-      variant: "success",
-      title: "Thao tác thành công",
-      description: "Thêm người dùng thành công.",
-      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-    });
+    createPatientMutation(requestBody);
   };
 
   return (
@@ -92,39 +136,29 @@ export default function PatientFormAdd() {
             <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
               Ảnh đại diện <span className="text-red-500">*</span>
             </label>
-            <div className="relative h-[250px] min-w-[250px] rounded-3xl border-2 border-dashed border-primary-500">
-              <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
-                <label className="flex h-full w-full cursor-pointer items-center justify-center">
-                  <div className="flex flex-col items-center justify-center">
-                    <MdCloudUpload size={45} color="#007BBB" />
-                    <p className="mt-2 text-sm">Chọn ảnh</p>
-                  </div>
-                  <input
-                    type="file"
-                    id="fileImage"
-                    className="hidden"
-                    onChange={(e) => handleFileChange(e)}
-                  />
-                </label>
-              </div>
-            </div>
+            <ImagePreview
+              imagePreview={imagePreview}
+              setFileImage={setFileImage}
+              setImagePreview={setImagePreview}
+            />
+            {!fileImage && (
+              <p className="mt-3 text-center text-sm text-red-500">
+                Vui lòng chọn ảnh
+              </p>
+            )}
           </div>
           <div className="w-full">
             {/* Line 1 */}
             <div className="block">
               <div className="flex w-full grid-cols-1 gap-[20px]">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="hoten"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Họ và tên người dùng <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Họ và tên người dùng"}
+                    required
                     className="col-span-1 sm:col-span-1"
-                    name="patientName"
+                    name="fullName"
                     type="text"
-                    id="patientName"
+                    id="fullName"
                     placeholder="Nhập họ và tên bệnh nhân"
                     control={control}
                     errors={errors}
@@ -132,13 +166,9 @@ export default function PatientFormAdd() {
                 </div>
 
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="phone"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Số điện thoại <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Số điện thoại"}
+                    required
                     className="col-span-1 sm:col-span-1"
                     name="phone"
                     type="text"
@@ -155,13 +185,9 @@ export default function PatientFormAdd() {
             <div className="flex w-full">
               <div className="flex w-full gap-[20px]">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="email"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Email <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Email"}
+                    required
                     className="col-span-1 sm:col-span-1"
                     name="email"
                     type="text"
@@ -181,7 +207,7 @@ export default function PatientFormAdd() {
                   </label>
                   <SelectBirthDate
                     control={control}
-                    name="birthDate"
+                    name="dateOfBirth"
                     errors={errors}
                   />
                 </div>
@@ -191,13 +217,9 @@ export default function PatientFormAdd() {
             <div className="block">
               <div className="w-full gap-[20px] md:flex">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="hoten"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Mật khẩu <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Mật khẩu"}
+                    required
                     className="col-span-1 sm:col-span-1"
                     name="password"
                     type="password"
@@ -209,13 +231,9 @@ export default function PatientFormAdd() {
                 </div>
 
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="phone"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Nhập lại mật khẩu <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Nhập lại mật khẩu"}
+                    required
                     className="col-span-1 sm:col-span-1"
                     name="confirmPassword"
                     type="password"
@@ -232,34 +250,26 @@ export default function PatientFormAdd() {
             <div className="block">
               <div className="w-full gap-[20px] md:flex">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="hoten"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Mã bảo hiểm y tế <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Mã bảo hiểm y tế"}
+                    required
                     className="col-span-1 sm:col-span-1"
-                    name="bhyt"
+                    name="insuranceCode"
                     type="text"
-                    id="bhyt"
+                    id="insuranceCode"
                     placeholder="Nhập mã bảo hiểm y tế"
                     control={control}
                     errors={errors}
                   />
                 </div>
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
-                  <label
-                    htmlFor="hoten"
-                    className="left-[15px] block bg-white px-1 text-sm"
-                  >
-                    Nghề nghiệp <span className="text-red-500">*</span>
-                  </label>
                   <InputCustom
+                    label={"Nghề nghiệp"}
+                    required
                     className="col-span-1 sm:col-span-1"
-                    name="job"
+                    name="occupation"
                     type="text"
-                    id="job"
+                    id="occupation"
                     placeholder="Nhập nghề nghiệp"
                     control={control}
                     errors={errors}
@@ -272,39 +282,20 @@ export default function PatientFormAdd() {
 
         <div className="flex w-full gap-[20px]">
           <div className="w-1/4">
-            <label className="mb-3 mr-2 block text-sm">
-              Giới tính <span className="text-red-500">*</span>
-            </label>
-            <div className="flex items-center gap-2 pb-2 md:p-0">
-              <label className="mr-2 flex items-center text-sm">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="male"
-                  className="mr-2"
-                  defaultChecked={true}
-                />
-                Nam
-              </label>
-              <label className="flex items-center text-sm">
-                <input
-                  type="radio"
-                  name="gender"
-                  value="female"
-                  className="mr-2"
-                />
-                Nữ
-              </label>
-            </div>
+            <RadioGroupField
+              name="gender"
+              label="Giới tính:"
+              options={[
+                { value: "Nam", label: "Nam" },
+                { value: "Nữ", label: "Nữ" },
+              ]}
+              control={control}
+            />
           </div>
           <div className="relative md:mb-1 md:w-1/2">
-            <label
-              htmlFor="hoten"
-              className="left-[15px] block bg-white px-1 text-sm"
-            >
-              Mã căn cước công dân <span className="text-red-500">*</span>
-            </label>
             <InputCustom
+              label={"Mã căn cước công dân"}
+              required
               className="col-span-1 sm:col-span-1"
               name="citizenIdentificationNumber"
               type="text"
@@ -317,11 +308,11 @@ export default function PatientFormAdd() {
           <div className="relative mb-3 md:w-1/2">
             <label
               htmlFor="hoten"
-              className="left-[15px] mb-2 block bg-white px-1 text-sm"
+              className="left-[15px] mb-2 block bg-white px-1 text-[14px]"
             >
               Dân tộc <span className="text-red-500">*</span>
             </label>
-            <SelectEthnic control={control} name="ethnicity" errors={errors} />
+            <SelectEthnic control={control} name="ethnic" errors={errors} />
           </div>
         </div>
 
@@ -381,61 +372,38 @@ export default function PatientFormAdd() {
             </div>
           </div>
         </div>
-        {/* Line 7 */}
-        <div className="flex w-full gap-[10px]">
-          <div className="relative mb-3 w-full">
-            <label
-              htmlFor="hoten"
-              className="left-[15px] block bg-white px-1 text-sm"
-            >
-              Địa chỉ cụ thể <span className="text-red-500">*</span>
-            </label>
-            <InputCustom
-              className="col-span-1 sm:col-span-1"
-              name="address"
-              type="text"
-              id="address"
-              placeholder="Nhập địa chỉ cụ thể"
-              control={control}
-              errors={errors}
-            />
-          </div>
+        <div className="mb-4">
+          <InputCustom
+            label={"Tên đường"}
+            required
+            className="col-span-1 sm:col-span-1"
+            name="street"
+            type="text"
+            id="street"
+            placeholder="Nhập tên đường"
+            control={control}
+            errors={errors}
+          />
         </div>
-        {/* Status */}
+        {/* isActivated */}
         <div className="mt-2">
-          <h2 className="mb-3 text-sm">
-            Trạng thái tài khoản <span className="text-red-600">*</span>
-          </h2>
-          <div className="mb-3 flex items-center">
-            <label className="mr-6 flex items-center">
-              <input
-                type="radio"
-                name="status"
-                value="active"
-                className="mr-2"
-                defaultChecked={true}
-              />
-              <span className="text-sm">Hoạt động</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="status"
-                value="inactive"
-                className="mr-2"
-              />
-              <span className="text-sm">Khóa tài khoản</span>
-            </label>
-          </div>
+          <RadioGroupField
+            name="isActivated"
+            label="Trạng thái tài khoản:"
+            options={[
+              { value: true, label: "Hoạt động" },
+              { value: false, label: "Khóa tài khoản" },
+            ]}
+            control={control}
+          />
         </div>
-        {/* Button */}
         <div className="flex justify-end">
           <Button
-            size=""
-            variant="primary"
-            className="border-none bg-primary-500 px-6 hover:bg-primary-600"
+            variant="custom"
+            type="submit"
+            disabled={isPending || loadingImage}
           >
-            Xác nhận
+            {isPending || loadingImage ? <SpinLoader /> : "Thêm mới"}
           </Button>
         </div>
       </form>

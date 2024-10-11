@@ -20,7 +20,6 @@ const ServicesList = () => {
     return <NotFound />;
   }
 
-  console.log("data: ", data);
   return <DataTable columns={ columns } data={ data.data } />;
 };
 

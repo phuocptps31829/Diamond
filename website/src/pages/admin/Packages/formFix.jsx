@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import PackagesFormFix from "@/components/admin/packages/PackagesFormFix";
 import { useQuery } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import { getMedicalPackageById } from "@/services/medicalPackagesApi";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 
@@ -42,7 +43,7 @@ const PackagesFormFixPage = () => {
     }
   }, [isLoadingPackage, packageDetail]);
 
-  if (errorPackage) return <NotFound />;
+  if (errorPackage) return <NotFound message={ errorPackage.message } />;
 
   return (
     <>

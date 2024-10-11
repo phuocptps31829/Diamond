@@ -21,14 +21,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={ row.getIsSelected() }
-        onCheckedChange={ (value) => row.toggleSelected(!!value) }
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -37,87 +37,78 @@ export const columns = [
   },
   {
     id: "stt",
-    header: ({column}) => 
-    (
+    header: ({ column }) => (
       <Button
-      className="px-0 text-left w-fit "
-      variant="ghost"
-      onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-    >
-      STT
-      <ArrowUpDown className="ml-2 h-4 w-4" />
-    </Button>
+        className="w-fit px-0 text-left"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        STT
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full pl-5 text-left ">
-        {row.index + 1}
-      </div>
+      <div className="w-full pl-5 text-left">{row.index + 1}</div>
     ),
     enableSorting: false,
     enableHiding: false,
-  },  
+  },
   {
     accessorKey: "name",
     header: ({ column }) => (
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tên chuyên khoa
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
-    const name = row.original.name;
-    return (
-      <div className="flex items-center py-4 gap-3">
-
-        <span className="w-full whitespace-nowrap">
-          { name }
-        </span>
-      </div>
-    );
-    }
+      const name = row.original.name;
+      return (
+        <div className="flex items-center gap-3 py-4">
+          <span className="w-full whitespace-nowrap">{name}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "image",
     header: () => (
-        <Button
-            className="px-0 text-base"
-            variant="ghost"
-        >
-            Hình ảnh
-        </Button>
+      <Button className="px-0 text-base" variant="ghost">
+        Hình ảnh
+      </Button>
     ),
     cell: ({ row }) => {
-        const img = row.original.image;
-        return (
-          <Avatar className="size-8 rounded-sm  w-[80px] h-[80px]">
-            <AvatarImage  className=""  src={ img } alt={ row.getValue("name") }/>
+      const img = row.original.image;
+      return (
+        <Avatar className="size-8 h-[80px] w-[80px] rounded-sm">
+          <img src={img} alt="" className="w-full h-full object-cover" />
         </Avatar>
-        );
+      );
     },
   },
   {
     accessorKey: "status",
     header: ({ column }) => (
-        <Button
-            className="px-0 text-base"
-            variant="ghost"
-            onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
-        >
-            Trạng thái
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
+      <Button
+        className="px-0 text-base"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Trạng thái
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => {
-        const status = row.original.isHidden;
-        return (
-            <div className={ status === true ? "text-green-500" : "text-red-500" }>
-                { status === true ? "Đang hiển thị" : "Đang ẩn" }
-            </div>
-        );
+      const status = row.original.isHidden;
+      return (
+        <div className={status === true ? "text-green-500" : "text-red-500"}>
+          {status === true ? "Đang hiển thị" : "Đang ẩn"}
+        </div>
+      );
     },
   },
   {
@@ -126,12 +117,12 @@ export const columns = [
     cell: ({ row }) => {
       const payment = row.original;
       const id = payment._id;
-      console.log("xxxx "+ id);
+      console.log("xxxx " + id);
 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 rotate-90">
+            <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
