@@ -23,8 +23,30 @@ import InputCustom from "@/components/ui/InputCustom";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toastUI } from "@/components/ui/Toastify";
+import Loading from "@/components/ui/Loading";
+import { doctorApi } from "@/services/doctorsApi";
+
 
 export default function DataTable({data, columns, specialtyData}) {
+  const queryClient = useQueryClient();
+  const { mutate: deleteDoctors, isPending } = useMutation({
+    mutationFn: doctorApi.deleteDoctors,
+    onSuccess: () => {
+        toastUI("Xóa bác sĩ thành công", "success");
+        queryClient.invalidateQueries('roles');
+    },
+    onError: (err) => {
+        console.log(err);
+        toastUI("Xóa bác sĩ không thành công", "error");
+    },
+});
+
+const handleDeleteDoctors = (id) => {
+  if (!confirm("Chắc chắn muốn xóa?")) return;
+  deleteDoctors(id);
+};
   const {
     handleSubmit,
     formState: { errors },
@@ -46,7 +68,7 @@ export default function DataTable({data, columns, specialtyData}) {
   const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
     data,
-    columns,
+    columns: columns(handleDeleteDoctors),
     specialtyData,
     // pageCount: Math.ceil(doctorsData.length / 8),
     onSortingChange: setSorting,

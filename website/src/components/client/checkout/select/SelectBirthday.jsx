@@ -48,7 +48,7 @@ export default function SelectBirthDate({ control, name, errors }) {
               selected={field.value ? new Date(field.value) : null}
               onSelect={(selectedDate) => {
                 if (selectedDate && selectedDate <= today) {
-                  field.onChange(selectedDate); // Gọi onChange với đối tượng Date
+                  field.onChange(selectedDate);
                 } else {
                   console.error("Ngày sinh không thể là ngày trong tương lai");
                 }

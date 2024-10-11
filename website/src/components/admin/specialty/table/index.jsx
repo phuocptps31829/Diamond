@@ -25,7 +25,6 @@ import {
 import { specialtyApi } from "@/services/specialtiesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
-import { columns }  from "./columns";
 import Loading from "@/components/ui/Loading";
 
 export default function DataTable({ data, columns,branchData }) {
@@ -44,7 +43,6 @@ export default function DataTable({ data, columns,branchData }) {
 
 const handleDeleteSpecialty = (id) => {
   if (!confirm("Chắc chắn muốn xóa?")) return;
-
   deleteSpecialty(id);
 };
   const {

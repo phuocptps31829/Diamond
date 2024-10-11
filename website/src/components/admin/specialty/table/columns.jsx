@@ -93,12 +93,15 @@ export const columns = (onDelete) =>
         </Button>
     ),
     cell: ({ row }) => {
-        const img = row.original.image;
-        return (
-          <Avatar className="size-8 rounded-sm  w-[80px] h-[80px]">
-            <AvatarImage  className=""  src={ "https://larvel.diamond.id.vn/images/" + img } alt={ row.getValue("name") }/>
+      const img = row.original.image;
+      const imageUrl = `${import.meta.env.VITE_IMAGE_API_URL}/${img}`;
+      
+      return (
+        <Avatar className="size-8 rounded-sm w-[80px] h-[80px]">
+          <AvatarImage src={imageUrl} alt={row.getValue("name")} />
+          <h1>{imageUrl}</h1>
         </Avatar>
-        );
+      );
     },
   },
   {

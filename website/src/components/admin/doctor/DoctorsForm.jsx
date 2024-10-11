@@ -143,7 +143,6 @@ const handleDegreeChange = (event) => {
       phoneNumber: data.phoneNumber,
       email: data.email,
       dateOfBirth: formattedDateOfBirth,
-      detail: data.detail,
       password: data.password,
       address: {
         province: data.province,
@@ -151,23 +150,30 @@ const handleDegreeChange = (event) => {
         ward: data.ward, 
         street: data.address 
       },
-      isInternal: data.isInternal,
       isActivated: data.isActivated,
       image: imageUrl, 
       citizenIdentificationNumber: data.citizenIdentificationNumber, 
-      specialty: {
-        _id: data.specialty, 
-      },
       otherInfo: {
+        // branchID: {
+        //   _id: data.branch, 
+        // },
+        branchID: data.branch, 
+
+        // specialtyID: {
+        //   _id: data.specialty, 
+        // },
         specialtyID: data.specialty, 
+
+        isInternal: data.isInternal,
+        yearsExperience: data.yearsExperience,
+        // specialtyID: data.specialty, 
         verification: {
-          practicingCertificate : "112131312", // Thêm trường verification với practicing là 1
+          practicingCertificate : "112131312",
           images:["123", "456", "789"],
         },
+        detail: data.detail,
       },
-      branch: {
-        _id: data.branch, 
-      },
+
     };
     console.log("Dữ liệu gửi đi: ", data);
     createDoctors(doctorData);

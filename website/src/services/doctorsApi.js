@@ -25,6 +25,16 @@ export const doctorApi = {
     console.log("doctors data: ", res.data);
     return res.data;
   },
+  // Delete Doctors
+  deleteDoctors: async (id)=>{
+    console.log(id);
+    const res = await axiosInstanceCUD.post(
+      '/doctors/delete/' + id + '?_method=DELETE',
+    );
+    console.log("doctors deleted data: ", res.data.data);
+    return res.data.data;
+  },
+  
   uploadIMG: async (newIMG) => {
     const formData = new FormData();
     formData.append("file", newIMG); 
