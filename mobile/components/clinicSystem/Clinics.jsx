@@ -3,7 +3,7 @@ import { FlatList, Image, Pressable, Text, View } from "react-native";
 const Clinics = ({ dataClinic, activeIndex, handleZoomToClinic, km }) => {
   return (
     <>
-      <View className="absolute bottom-[270px] w-full z-50 flex justify-center items-center">
+      <View className="absolute bottom-[270px]  w-full z-50 flex justify-center items-center">
         <View className="w-fit bg-[#ef8d32cd] p-3 px-5 rounded-lg flex-row space-x-1 items-center">
           <Text className="text-white text-[15px] font-semibold">
             Khoảng cách:
@@ -13,7 +13,7 @@ const Clinics = ({ dataClinic, activeIndex, handleZoomToClinic, km }) => {
           </Text>
         </View>
       </View>
-      <View className="absolute bottom-24 z-50 flex-row">
+      <View className="absolute bottom-24 left-2 z-50 flex-row">
         <FlatList
           data={dataClinic}
           className="w-full"

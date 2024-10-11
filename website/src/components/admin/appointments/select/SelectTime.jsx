@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -18,8 +17,7 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { workScheduleApi } from "@/services/workSchedulesApi";
-import { toast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function SelectTime({
   control,
@@ -28,30 +26,27 @@ export default function SelectTime({
   date,
   onChange,
   doctorId,
-  branchId,
 }) {
   const [open, setOpen] = useState(false);
   const [times, setTimes] = useState([]);
 
   useEffect(() => {
     const fetchDates = async () => {
-      if (!doctorId || !branchId) return;
+      if (!doctorId) return;
 
       try {
-        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId, branchId);
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId);
 
-        const selectedSchedule = data.find(
-          (schedule) => schedule._id.day === date,
+        const selectedSchedule = data.data.find(
+          (schedule) => schedule.day === date,
         );
 
         if (selectedSchedule) {
-          const availableTimes = selectedSchedule.hour.flatMap((hourObj) =>
-            hourObj.time.map((time) => ({
-              time,
-              workScheduleID: hourObj.workScheduleID,
-              clinic: hourObj.clinicID[0],
-            })),
-          );
+          const availableTimes = selectedSchedule.time.map((time) => ({
+            time,
+            workScheduleID: data.data[0]._id,
+            clinic: data.data[0].clinic,
+          }));
           setTimes(availableTimes);
         } else {
           setTimes([]);
@@ -62,20 +57,15 @@ export default function SelectTime({
     };
 
     fetchDates();
-  }, [date, doctorId, branchId]);
+  }, [date, doctorId]);
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [date, doctorId, branchId, errors, name]);
+  }, [date, doctorId, errors, name]);
 
   const handleClick = () => {
     if (!date) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn ngày",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn ngày", "warning");
       return;
     }
   };

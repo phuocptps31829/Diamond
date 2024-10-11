@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 
 export default function SelectBranch({
   control,
@@ -34,7 +34,7 @@ export default function SelectBranch({
     const fetchBranch = async () => {
       if (!branchID) return;
       try {
-        const data = await getAllBranchesBySpecialty(branchID);
+        const data = await branchApi.getAllBranchesBySpecialty(branchID);
         setBranch(data);
       } catch (error) {
         console.error("Failed to fetch branch:", error);

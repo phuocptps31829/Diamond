@@ -84,17 +84,17 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                               checked={servicesByLevel[levelName].includes(
                                 row._id,
                               )}
-                              className="h-8 w-8 rounded-lg  transition-all duration-500 ease-in-out"
+                              className="h-6 w-6 rounded-lg  transition-all duration-500 ease-in-out"
                               type="checkbox"
                               readOnly
-                              checkIconSize="h-8 w-8" 
+                              checkIconSize="h-6 w-6" 
                             />
                         </div>
                       </TableCell>
                     ))}
                   </TableRow>
                 ))}
-                  <TableRow className="bg-white">
+                  <TableRow className="bg-white ">
                 <TableCell colSpan={2} className="text-right font-semibold">
                   Giá:
                 </TableCell>
@@ -105,7 +105,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                   return (
                     <TableCell
                       key={index}
-                      className="whitespace-nowrap text-center font-semibold"
+                      className="whitespace-nowrap text-center font-semibold w-[160px]"
                     >
                       {service.price.toLocaleString()} VNĐ
                     </TableCell>

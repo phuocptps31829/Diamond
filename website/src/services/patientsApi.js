@@ -46,6 +46,7 @@ export const patientApi = {
     });
     return res.data;
   },
+
   updatePatient: async (id, data) => {
     const res = await axiosInstanceCUD.put(`/patients/update/${id}`, data, {
       headers: {
@@ -54,6 +55,7 @@ export const patientApi = {
     });
     return res.data.data;
   },
+
   deletePatient: async (id) => {
     const res = await axiosInstanceCUD.post(
       `/patients/delete/${id}?_method=DELETE`,

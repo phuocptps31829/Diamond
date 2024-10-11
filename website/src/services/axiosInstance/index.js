@@ -1,6 +1,6 @@
-import axios from "axios";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { authApi } from "../authApi";
+import axios from "axios";
 
 const GET_API_URL = import.meta.env.VITE_GET_API_URL;
 const CUD_API_URL = import.meta.env.VITE_CUD_API_URL;

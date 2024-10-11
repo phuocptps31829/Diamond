@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import PackagesFormFix from "@/components/admin/packages/PackagesFormFix";
 import { useQuery } from "@tanstack/react-query";
-import { getMedicalPackageById } from "@/services/medicalPackagesApi";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";

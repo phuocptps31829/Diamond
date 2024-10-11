@@ -17,9 +17,8 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { toast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { doctorApi } from "@/services/doctorsApi";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function SelectDoctor({
   control,
@@ -31,14 +30,13 @@ export default function SelectDoctor({
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-  console.log(branchId, specialtyID);
 
   useEffect(() => {
     if (!specialtyID || !branchId) return;
     const fetchDoctors = async () => {
       try {
         const data = await doctorApi.getDoctorsByBranch(branchId, specialtyID);
-
+        console.log(data);
         setOptions(data);
       } catch (error) {
         console.error("Failed to fetch doctors:", error);
@@ -54,12 +52,7 @@ export default function SelectDoctor({
 
   const handleClick = () => {
     if (!branchId) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn chi nhánh",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn chi nhánh", "warning");
       return;
     }
   };
@@ -85,8 +78,7 @@ export default function SelectDoctor({
                   ) }
                 >
                   { field.value ? (
-                    options.find((doctor) => doctor._id === field.value)?.doctor
-                      .users[0].fullName
+                    options.find((doctor) => doctor._id === field.value)?.fullName
                   ) : (
                     <span className="text-gray-600">Chọn bác sĩ</span>
                   ) }
@@ -117,7 +109,7 @@ export default function SelectDoctor({
                                 : "opacity-0",
                             ) }
                           />
-                          { doctor.doctor.users[0].fullName }
+                          { doctor.fullName }
                         </CommandItem>
                       )) }
                     </CommandGroup>

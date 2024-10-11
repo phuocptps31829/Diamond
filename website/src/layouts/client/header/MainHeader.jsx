@@ -4,8 +4,6 @@ import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutAction } from "@/redux/authSlice";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -54,34 +52,9 @@ const dataNav = [
 ];
 export default function MainHeader() {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const dispatch = useDispatch();
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
-
-  // const mutation = useMutation({
-  //   mutationFn: logutApi,
-  //   onSuccess: () => {
-  //     toast({
-  //       title: "Đăng xuất thành công",
-  //       description: "Hẹn gặp lại bạn!",
-  //       status: "success",
-  //       action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-  //     });
-  //   },
-  //   onError: (error) => {
-  //     const errorMessage =
-  //       error.response?.data?.error ||
-  //       error.message ||
-  //       "Đã xảy ra lỗi, vui lòng thử lại.";
-  //     toast({
-  //       title: "Đăng xuất thất bại",
-  //       description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-  //       status: "error",
-  //       action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-  //     });
-  //   },
-  // });
 
   const handleLogout = () => {
     // const accessToken = localStorage.getItem("accessToken");

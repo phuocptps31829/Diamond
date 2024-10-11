@@ -1,11 +1,5 @@
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { takeItAllNews } from "@/services/newsApi";
 import { getAllPatients } from "@/services/patientsApi";
-import {
-  getAllAppointments,
-  get5UpcomingAppointments,
-} from "@/services/appointmentsApi";
 import { getAllInvoices } from "@/services/invoicesApi";
 import TopStats from "../../components/admin/dashboard/TopStats";
 import MiddleCharts from "../../components/admin/dashboard/MiddleCharts";
@@ -13,9 +7,9 @@ import BottomLists from "../../components/admin/dashboard/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import NotFound from "@/components/client/notFound";
 import Loading from "@/components/ui/Loading";
-import { getTotalPatientsBySpecialty } from "@/services/appointmentsApi";
-import { takeItAllSpecialties } from "@/services/specialtiesApi";
 import { appointmentApi } from "@/services/appointmentsApi";
+import { getAllSpecialties } from "@/services/specialtiesApi";
+import { newsApi } from "@/services/newsApi";
 
 const breadcrumbData = [
   {
@@ -34,7 +28,7 @@ export default function Dashboard() {
     isLoadingNews: isLoadingUpcomingAppointments,
   } = useQuery({
     queryKey: ["upcomingAppointments"],
-    queryFn: get5UpcomingAppointments,
+    queryFn: appointmentApi.get5UpcomingAppointments,
   });
 
   const {
@@ -52,7 +46,7 @@ export default function Dashboard() {
     isLoadingNews: isLoadingNews,
   } = useQuery({
     queryKey: ["news"],
-    queryFn: takeItAllNews,
+    queryFn: newsApi.takeItAllNews,
   });
 
   const {
@@ -61,7 +55,7 @@ export default function Dashboard() {
     isLoading: isLoadingSpecialties,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: takeItAllSpecialties,
+    queryFn: getAllSpecialties,
   });
 
   const {
@@ -79,7 +73,7 @@ export default function Dashboard() {
     isLoading: isLoadingAppointments,
   } = useQuery({
     queryKey: ["appointments"],
-    queryFn: getAllAppointments,
+    queryFn: appointmentApi.getAllAppointments,
   });
 
   const {
@@ -97,7 +91,7 @@ export default function Dashboard() {
     isLoading: isLoadingTotalPatientsBySpecialty,
   } = useQuery({
     queryKey: ["totalAppointmentsBySpecialty"],
-    queryFn: getTotalPatientsBySpecialty,
+    queryFn: appointmentApi.getTotalPatientsBySpecialty,
   });
 
   if (

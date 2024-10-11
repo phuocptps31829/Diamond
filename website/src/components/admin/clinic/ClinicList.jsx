@@ -1,7 +1,7 @@
 import DataTable from "./table";
 import { columns } from "./table/columns";
 import { getAllClinics } from "@/services/clinicApi";
-import { getAllBranches } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -39,7 +39,7 @@ const ClinicsList = () => {
     isError: errorLoadingBranches,
   } = useQuery({
     queryKey: ["branches", page, limit],
-    queryFn: () => getAllBranches(page, limit), 
+    queryFn: () => branchApi.getAllBranches(page, limit), 
   });
   const branchesData = branchesResponse.data || [];
   const branchMap = {};

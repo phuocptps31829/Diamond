@@ -128,6 +128,7 @@ const AppointmentsAdd = () => {
     setValue("department", "");
     setValue("doctor", "");
     setValue("time", "");
+    setValue("type", "");
     setValue("date", "");
     setValue("room", "");
     setValue("isServiceSelected", isServiceSelected);
@@ -154,7 +155,8 @@ const AppointmentsAdd = () => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <span>Dịch vụ</span>
-              <Switch
+              <Switch 
+              className="bg-primary-500"
                 checked={!isServiceSelected}
                 onCheckedChange={handleSwitchChange}
               />

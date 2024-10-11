@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -21,17 +20,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import InputCustom from "@/components/ui/InputCustom";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import InputCustomSearch from "@/components/ui/InputCustomSearch";
+import { useDebounce } from "use-debounce";
 
 export default function DataTable({ data, columns }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [searchValue, setSearchValue] = React.useState("");
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
 
   const {
     handleSubmit,
@@ -68,6 +70,9 @@ export default function DataTable({ data, columns }) {
       },
     },
   });
+  React.useEffect(() => {
+    table.getColumn("title")?.setFilterValue(debouncedSearchValue);
+  }, [debouncedSearchValue, table]);
 
   return (
     <div className="w-[100%] rounded-lg bg-white px-5 py-2">
@@ -75,13 +80,15 @@ export default function DataTable({ data, columns }) {
         <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
-              <InputCustom
+              <InputCustomSearch
+                value={table.getColumn("title")?.getFilterValue() ?? ""}
+                onChange={(event) => setSearchValue(event.target.value)}
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm tin tức"
                 name="newsName"
                 type="text"
                 id="newsName"
-                icon={<FaSearch></FaSearch>}
+                icon={<FaSearch />}
                 control={control}
                 errors={errors}
               />

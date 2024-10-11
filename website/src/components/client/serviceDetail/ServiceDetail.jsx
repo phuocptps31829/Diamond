@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/Button";
 import { AiOutlineSchedule } from "react-icons/ai";
-import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -108,7 +107,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
               </p>
               <div className="mb-3">
                 <h2 className="mb-4 font-medium">Chọn gói khám:</h2>
-                <div className="my-3 flex items-center justify-center gap-3">
+                <div className="my-3 flex items-center md:justify-center justify-start gap-x-4 gap-y-7 md:gap-3 flex-wrap ">
                   { medicalPackage.services
                     .slice()
                     .reverse()
@@ -158,12 +157,6 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
       </div>
     </div>
   );
-};
-
-ServiceDetail.propTypes = {
-  isLoading: PropTypes.bool,
-  medicalPackage: PropTypes.object,
-  service: PropTypes.object,
 };
 
 export default ServiceDetail;

@@ -1,4 +1,4 @@
-import { axiosInstanceGET } from "./axiosInstance";
+import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
 export const serviceApi = {
   getAllServices: async (filter) => {
@@ -48,12 +48,12 @@ export const serviceApi = {
     return res.data.data;
   },
   deleteService: async (id) => {
-    const res = await axiosInstanceGET.delete(`/services/delete/${id}`);
+    const res = await axiosInstanceCUD.delete(`/services/delete/${id}`);
     console.log(res.data.data);
     return res.data.data;
   },
   updateService: async (id, serviceData) => {
-    const res = await axiosInstanceGET.put(
+    const res = await axiosInstanceCUD.put(
       `/services/update/${id}`,
       serviceData,
       {
@@ -66,7 +66,7 @@ export const serviceApi = {
     return res.data.data;
   },
   createService: async (serviceData) => {
-    const res = await axiosInstanceGET.post('/services/add', serviceData, {
+    const res = await axiosInstanceCUD.post('/services/add', serviceData, {
       headers: {
         "Content-Type": "application/json",
       },

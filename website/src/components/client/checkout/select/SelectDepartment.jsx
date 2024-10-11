@@ -17,7 +17,6 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
 import { toastUI } from "@/components/ui/Toastify";
 
 export default function SelectDepartment({

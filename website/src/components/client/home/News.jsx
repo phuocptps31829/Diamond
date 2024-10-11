@@ -9,7 +9,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import NewsItem from "../product/News";
-import { getAllNews } from "@/services/newsApi";
+import {  newsApi } from "@/services/newsApi";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import NewsCard from "@/components/ui/NewsCard";
@@ -17,7 +17,7 @@ import NewsCard from "@/components/ui/NewsCard";
 export default function News() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn: getAllNews,
+    queryFn: newsApi.getAllNews,
   });
 
   if (error) {

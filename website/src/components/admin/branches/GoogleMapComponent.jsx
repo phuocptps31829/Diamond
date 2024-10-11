@@ -55,7 +55,9 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
 
     return { ward, district, city };
   };
-
+  const removePostalCode = (address) => {
+    return address.replace(/\b\d{5}(?:-\d{4})?\b/g, "").trim();
+  };
   useEffect(() => {
     if (!isLoaded) return;
 
@@ -82,9 +84,9 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
         const { ward, district, city } = extractAddressComponents(
           place.address_components,
         );
-
+        const formattedAddress = removePostalCode(place.formatted_address || place.name);
         setAddress({
-          name: place.formatted_address || place.name,
+          name: formattedAddress,
           lat: location.lat(),
           lng: location.lng(),
           ward,

@@ -1,19 +1,19 @@
 import NotFound from "@/components/client/notFound";
 import DataTable from "./table";
 import { columns } from "./table/columns";
-import { getAllBranches } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
 
 const BranchesList = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["branches"],
-    queryFn: () => getAllBranches({ limit: 999 }),
+    queryFn: () => branchApi.getAllBranches({ limit: 999 }),
     keepPreviousData: true,
   });
 
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
