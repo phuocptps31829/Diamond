@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema({
     patientID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
         required: true
     },
     serviceID: {
@@ -15,6 +15,9 @@ const appointmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'WorkSchedule',
         required: true
     },
+    patientHelpID: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+    },
     type: {
         type: String,
         required: true
@@ -26,9 +29,6 @@ const appointmentSchema = new mongoose.Schema({
     status: {
         type: String,
         required: true
-    },
-    patientHelpID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Patient',
     },
     payment: {
         method: {

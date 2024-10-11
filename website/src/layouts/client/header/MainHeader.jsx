@@ -99,7 +99,7 @@ export default function MainHeader() {
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
-        <Link to={ "/" } className="relative w-52 items-center">
+        <Link to={ "/" } className="relative w-56 items-center">
           <img src={ brandLogo } className="w-full" alt="Logo" />
         </Link>
         <div className="block lg:hidden" role="button" onClick={ toggleNavbar }>
@@ -125,7 +125,7 @@ export default function MainHeader() {
                     <div className="flex w-full items-center justify-center">
                       <div className="mr-3 flex flex-col items-start justify-center">
                         <p className="">Xin chào</p>
-                        <p className="">{ userProfile.fullName.split(' ').at(-1) } </p>
+                        <p className="">{ userProfile?.fullName.split(' ').at(-1) } </p>
                       </div>
 
                       <Avatar>

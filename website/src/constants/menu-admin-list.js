@@ -7,10 +7,14 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
+import { IoSettingsSharp } from "react-icons/io5";
+import { CgAlignLeft } from "react-icons/cg";
+import { GiMedicines } from "react-icons/gi";
 
 export const getMenuList = (pathname) => [
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "/admin/dashboard",
@@ -21,6 +25,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/dashboard",
             label: "Bảng điều khiển quản trị",
+            exceptRoles: ["DOCTOR"],
             active: pathname.includes("/admin/dashboard"),
           },
           {
@@ -34,6 +39,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -67,6 +73,41 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
+    menus: [
+      {
+        href: "",
+        label: "Thuốc",
+        active: pathname === "/admin/medicine/list",
+        icon: GiMedicines,
+        submenus: [
+          {
+            href: "/admin/medicinesCategories/list",
+            label: "Danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/list",
+          },
+          {
+            href: "/admin/medicines/list",
+            label: "Danh sách thuốc",
+            active: pathname === "/admin/medicines/list",
+          },
+          {
+            href: "/admin/medicinesCategories/create",
+            label: "Thêm danh mục thuốc",
+            active: pathname === "/admin/medicinesCategories/create",
+          },
+          {
+            href: "/admin/medicines/create",
+            label: "Thêm thuốc",
+            active: pathname === "/admin/medicine/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -90,6 +131,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -113,6 +155,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -136,6 +179,31 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
+    menus: [
+      {
+        href: "",
+        label: "Chuyên khoa",
+        active: pathname === "/admin/specialties/list",
+        icon: CgAlignLeft,
+        submenus: [
+          {
+            href: "/admin/specialties/list",
+            label: "Danh sách chuyên khoa",
+            active: pathname === "/admin/specialties/list",
+          },
+          {
+            href: "/admin/specialties/create",
+            label: "Thêm chuyên khoa",
+            active: pathname === "/admin/specialties/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -150,13 +218,14 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
-          
+
         ],
       },
     ],
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -180,6 +249,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -205,29 +275,31 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
         label: "Phòng khám",
-        active: pathname === "/admin/doctors/list",
+        active: pathname === "/admin/clinics/list",
         icon: FaClinicMedical,
         submenus: [
           {
             href: "/admin/clinics/list",
             label: "Danh sách phòng khám",
-            active: pathname === "/admin/doctors/list"
+            active: pathname === "/admin/clinics/list",
           },
           {
             href: "/admin/clinics/create",
             label: "Thêm phòng khám",
-            active: pathname === "/admin/doctors/create"
-          }
-        ]
+            active: pathname === "/admin/clinics/create",
+          },
+        ],
       },
-    ]
+    ],
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "EDITOR"],
     menus: [
       {
         href: "",
@@ -250,5 +322,29 @@ export const getMenuList = (pathname) => [
       },
     ],
   },
+  {
+    groupLabel: "",
+    roles: ["SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Vai trò",
+        active:
+          pathname === "/admin/roles/list" || pathname === "/admin/roles/create",
+        icon: IoSettingsSharp,
+        submenus: [
+          {
+            href: "/admin/roles/list",
+            label: "Danh sách vai trò",
+            active: pathname === "/admin/roles/list",
+          },
+          {
+            href: "/admin/roles/create",
+            label: "Thêm vai trò",
+            active: pathname === "/admin/roles/create",
+          },
+        ],
+      },
+    ],
+  },
 ];
-

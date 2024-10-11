@@ -2,8 +2,20 @@ import {
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_MEDICAL_PACKAGE_BY_ID,
   API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES,
+  API_TAKE_IT_ALL_PACKAGES,
 } from "@/configs/varibles";
 import axios from "axios";
+
+export const takeItAllPackages = async () => {
+  try {
+    const res = await axios.get(API_TAKE_IT_ALL_PACKAGES);
+    return res.data.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const getAllMedicalPackages = async (filter) => {
   try {
     const { page, limit, sort, gender, branch, specialtyID } = filter;
@@ -26,7 +38,7 @@ export const getAllMedicalPackages = async (filter) => {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
 
-    console.log(res.data);
+    console.log("getAllMedicalPackages", res.data);
     return res.data;
   } catch (error) {
     console.error(error);

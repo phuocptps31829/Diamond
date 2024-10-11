@@ -52,18 +52,35 @@ import ClinicsFormPage from "./pages/admin/Clinics/form";
 import DoctorsFormPage from "./pages/admin/Doctor/form";
 import DoctorsListPage from "./pages/admin/Doctor";
 import PatientsListPage from "./pages/admin/Patient";
-import PatientsFormPage from "./pages/admin/Patient/form";
+import PatientsFormAddPage from "./pages/admin/Patient/formAdd";
+import PatientsFormFixPage from "./pages/admin/Patient/formFix";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
+import SerivesListPage from "./pages/admin/Services";
+import PackagesListPage from "./pages/admin/Packages";
+import PackagesFormAddPage from "./pages/admin/Packages/formAdd";
+import PackagesFormFixPage from "./pages/admin/Packages/formFix";
+import MedicinesListPage from "./pages/admin/Medicine";
+import MedicinesCategoriesListPage from "./pages/admin/MedicinesCategories";
+import MedicinesCategoriesFormAddPage from "./pages/admin/MedicinesCategories/formAdd";
+import MedicinesFormAddPage from "./pages/admin/Medicine/formAdd";
+import AuthPage from "./pages/admin/Auth";
+import ListRolePage from "./pages/admin/Roles/ListRolePage";
+import CreateRolePage from "./pages/admin/Roles/CreateRolePage";
+import SpecialtiesListPage from "./pages/admin/Specialty";
+import SpecialtiesFormPage from "./pages/admin/Specialty/form";
+import UpdateRolePage from "./pages/admin/Roles/UpdateRolePage";
 import AppointmentsAddPage from "./pages/admin/Appointments/add";
-import ServicesListPage from "./pages/admin/services";
+import ServicesListPage from "./pages/admin/Services";
 import NewsAddPage from "./pages/admin/News/add";
 import NewsEditPage from "./pages/admin/News/edit";
 import BranchesAddPage from "./pages/admin/Branches/add";
 import BranchesEditPage from "./pages/admin/Branches/edit";
-import ServicesAddPage from "./pages/admin/services/add";
-import ServicesEditPage from "./pages/admin/services/edit";
+import ServicesAddPage from "./pages/admin/Services/add";
+import ServicesEditPage from "./pages/admin/Services/edit";
 import AppointmentsEditPage from "./pages/admin/Appointments/edit";
+import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
+import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 
 const router = createBrowserRouter([
   {
@@ -128,11 +145,9 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: (
-          <ProtectContainer>
-            <UserProfileLayout />
-          </ProtectContainer>
-        ),
+        element: <ProtectContainer type="client">
+          <UserProfileLayout />
+        </ProtectContainer>,
         children: [
           {
             path: "",
@@ -183,6 +198,7 @@ const router = createBrowserRouter([
             <PKCheckOut />
           </ProtectContainer>
         ),
+
       },
       {
         path: "services-booking-checkout",
@@ -191,6 +207,7 @@ const router = createBrowserRouter([
             <SVCheckOut />
           </ProtectContainer>
         ),
+
       },
       {
         path: "/login",
@@ -223,12 +240,54 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/admin/auth",
+    element: <AuthPage />,
+  },
+  {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <ProtectContainer type="admin">
+      <AdminLayout />
+    </ProtectContainer>,
     children: [
       {
         path: "",
         element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "services/list",
+        element: <SerivesListPage />,
+      },
+      {
+        path: "services/create",
+        element: <ServicesAddPage />,
+      },
+      {
+        path: "packages/list",
+        element: <PackagesListPage />,
+      },
+      {
+        path: "packages/create",
+        element: <PackagesFormAddPage />,
+      },
+      {
+        path: "packages/edit/:id",
+        element: <PackagesFormFixPage />,
+      },
+      {
+        path: "medicines/list",
+        element: <MedicinesListPage />,
+      },
+      {
+        path: "medicinesCategories/list",
+        element: <MedicinesCategoriesListPage />,
+      },
+      {
+        path: "medicinesCategories/create",
+        element: <MedicinesCategoriesFormAddPage />,
+      },
+      {
+        path: "medicines/create",
+        element: <MedicinesFormAddPage />,
       },
       {
         path: "dashboard",
@@ -255,12 +314,20 @@ const router = createBrowserRouter([
         element: <DoctorsFormPage />,
       },
       {
+        path: "doctor/edit/:id",
+        element: <DoctorsEditFormPage />,
+      },
+      {
         path: "patients/list",
         element: <PatientsListPage />,
       },
       {
         path: "patients/create",
-        element: <PatientsFormPage />,
+        element: <PatientsFormAddPage />,
+      },
+      {
+        path: "patients/edit/:id",
+        element: <PatientsFormFixPage />,
       },
       {
         path: "staffs/list",
@@ -269,6 +336,18 @@ const router = createBrowserRouter([
       {
         path: "staffs/create",
         element: <StaffsFormPage />,
+      },
+      {
+        path: "specialties/list",
+        element: <SpecialtiesListPage />,
+      },
+      {
+        path: "specialties/create",
+        element: <SpecialtiesFormPage />,
+      },
+      {
+        path: "specialty/edit/:id",
+        element: <SpecialtiesEditFormPage />,
       },
       {
         path: "patients/list",
@@ -308,13 +387,12 @@ const router = createBrowserRouter([
       },
       {
         path: "appointments/edit/:id",
-        element: <AppointmentsEditPage/>,
+        element: <AppointmentsEditPage />,
       },
       {
         path: "appointments/detail/:id",
         element: <AppointmentsDetailPage />,
       },
-
       {
         path: "appointments/edit/:id",
         element: <AppointmentsFormPage />,
@@ -326,6 +404,18 @@ const router = createBrowserRouter([
       {
         path: "clinics/create",
         element: <ClinicsFormPage />,
+      },
+      {
+        path: 'roles/list',
+        element: <ListRolePage />
+      },
+      {
+        path: 'roles/create',
+        element: <CreateRolePage />
+      },
+      {
+        path: 'roles/update/:id',
+        element: <UpdateRolePage />
       },
       {
         path: "services/list",
@@ -345,8 +435,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }

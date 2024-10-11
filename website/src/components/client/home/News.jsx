@@ -7,18 +7,17 @@ import {
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Link } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import NewsItem from "../product/News";
-import { getAllNews } from "@/services/newsApi";
+import {  newsApi } from "@/services/newsApi";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
+import NewsCard from "@/components/ui/NewsCard";
 
 export default function News() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn: getAllNews,
-
+    queryFn: newsApi.getAllNews,
   });
 
   if (error) {
@@ -37,7 +36,7 @@ export default function News() {
           tin hữu ích khác.
         </span>
 
-        { isLoading ? (
+        {isLoading ? (
           <div className="mt-6 hidden gap-4 px-2 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
             <div className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid">
               <Skeleton className="h-[200px] w-full md:h-[300px]" />
@@ -116,176 +115,78 @@ export default function News() {
           </div>
         ) : (
           <div className="hidden gap-4 sm:grid md:grid-cols-2 md:grid-rows-1 lg:px-3">
-            <Link
-              to={ `news-detail/${newsData[0]._id}` }
-              className="gap-4 overflow-hidden rounded-md border-2 border-white bg-white md:row-span-3 md:grid-rows-subgrid"
-            >
-              <img src={ newsData[0].image } alt="" />
-              <div className="p-5">
-                <div className="mb-[6px] flex gap-2 text-[12px]">
-                  <div className="font-bold text-primary-700">Tin Tức</div>
-                  <div className="font-semibold">
-                    { new Date(newsData[0].createdAt).toLocaleDateString() }
-                  </div>
-                  <div>|</div>
-                  <div className="font-semibold">{ newsData[0].author }</div>
-                </div>
-                <h2 className="my-2 text-[14px] font-bold sm:text-[18px]">
-                  { newsData[0].title }
-                </h2>
-                <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] sm:text-[14px]">
-                  { newsData[0].shortDescription }
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                  <FaRegEye />
-                  <div>{ newsData[0].viewCount }</div>
-                </div>
-              </div>
-            </Link>
-            <Link
-              to={ `news-detail/${newsData[1]._id}` }
-              className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
-            >
-              <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-                <img
-                  className="block h-full w-full object-cover"
-                  src={ newsData[1].image }
+            <NewsCard
+              newsItem={newsData[newsData.length - 1]}
+              className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
+              firstNews={true}
+            />
+            {newsData
+              .slice(newsData.length - 4, newsData.length - 1)
+              .reverse()
+              .map((newsItem, index) => (
+                <NewsCard
+                  key={index}
+                  newsItem={newsItem}
+                  className="sm:h-[200px] sm:flex-row"
                 />
-              </div>
-              <div className="p-3">
-                <div className="mb-[6px] flex gap-2 text-[12px]">
-                  <div className="font-bold text-primary-700">Tin Tức</div>
-                  <div className="font-semibold">
-                    { new Date(newsData[1].createdAt).toLocaleDateString() }
-                  </div>
-                  <div>|</div>
-                  <div className="font-semibold">{ newsData[1].author }</div>
-                </div>
-                <h2 className="my-2 text-[14px] font-bold">{ newsData[1].title }</h2>
-                <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  { newsData[1].shortDescription }
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                  <FaRegEye />
-                  <div>{ newsData[1].viewCount }</div>
-                </div>
-              </div>
-            </Link>
-            <Link
-              to={ `news-detail/${newsData[2]._id}` }
-              className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
-            >
-              <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-                <img
-                  className="block h-full w-full object-cover"
-                  src={ newsData[2].image }
-                />
-              </div>
-              <div className="w-full p-3">
-                <div className="mb-[6px] flex gap-2 text-[12px]">
-                  <div className="font-bold text-primary-700">Tin Tức</div>
-                  <div className="font-semibold">
-                    { new Date(newsData[2].createdAt).toLocaleDateString() }
-                  </div>
-                  <div>|</div>
-                  <div className="font-semibold">{ newsData[2].author }</div>
-                </div>
-                <h2 className="my-2 text-[14px] font-bold">{ newsData[2].title }</h2>
-                <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  { newsData[2].shortDescription }
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                  <FaRegEye />
-                  <div>{ newsData[2].viewCount }</div>
-                </div>
-              </div>
-            </Link>
-            <Link
-              to={ `news-detail/${newsData[3]._id}` }
-              className="flex flex-col overflow-hidden rounded-md border-2 border-white bg-white sm:h-[200px] sm:flex-row"
-            >
-              <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-                <img
-                  className="block h-full w-full object-cover"
-                  src={ newsData[3].image }
-                />
-              </div>
-              <div className="p-3">
-                <div className="mb-[6px] flex gap-2 text-[12px]">
-                  <div className="font-bold text-primary-700">Tin Tức</div>
-                  <div className="font-semibold">
-                    { new Date().toLocaleDateString() }
-                  </div>
-                  <div>|</div>
-                  <div className="font-semibold">{ newsData[3].author }</div>
-                </div>
-                <h2 className="my-2 text-[14px] font-bold">{ newsData[3].title } </h2>
-                <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                  { newsData[3].shortDescription }
-                </div>
-                <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                  <FaRegEye />
-                  <div>{ newsData[3].viewCount }</div>
-                </div>
-              </div>
-            </Link>
+              ))}
           </div>
-        ) }
+        )}
         <Carousel
-          opts={ {
+          opts={{
             align: "start",
             loop: true,
-          } }
+          }}
           className="block w-full sm:hidden"
-          plugins={ [
+          plugins={[
             Autoplay({
               delay: 3500,
               stopOnInteraction: false,
               stopOnMouseEnter: false,
             }),
-          ] }
+          ]}
         >
           <CarouselContent>
-            { isLoading
+            {isLoading
               ? Array.from({ length: 3 }).map((_, index) => (
-                <CarouselItem
-                  key={ index }
-                  className="pl-4 sm:basis-1/2 lg:basis-1/3"
-                >
-                  <div
-                    className="h-full overflow-hidden rounded-xl bg-white shadow-sm"
-                    key={ index }
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 sm:basis-1/2 lg:basis-1/3"
                   >
-                    <div className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid">
-                      <div className="h-[250px] w-full">
-                        <Skeleton className="block h-full w-full object-cover" />
-                      </div>
-                      <div className="p-5">
-                        <div className="mb-[6px] flex gap-2 text-[12px]">
-                          <Skeleton className="h-4 w-16" />
-                          <Skeleton className="h-4 w-24" />
-                          <div>|</div>
-                          <Skeleton className="h-4 w-16" />
+                    <div
+                      className="h-full overflow-hidden rounded-xl bg-white shadow-sm"
+                      key={index}
+                    >
+                      <div className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid">
+                        <div className="h-[250px] w-full">
+                          <Skeleton className="block h-full w-full object-cover" />
                         </div>
-                        <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-                        <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-                        <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                          <Skeleton className="h-4 w-8" />
-                          <Skeleton className="h-4 w-8" />
+                        <div className="p-5">
+                          <div className="mb-[6px] flex gap-2 text-[12px]">
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-4 w-24" />
+                            <div>|</div>
+                            <Skeleton className="h-4 w-16" />
+                          </div>
+                          <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
+                          <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
+                          <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                            <Skeleton className="h-4 w-8" />
+                            <Skeleton className="h-4 w-8" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </CarouselItem>
-              ))
-              : newsData.slice(0, 3).map((news, index) => (
-                <CarouselItem
-                  key={ index }
-                  className="pl-4 sm:basis-1/2 lg:basis-1/3"
-                >
-                  <NewsItem { ...news } />
-                </CarouselItem>
-              )) }
+                  </CarouselItem>
+                ))
+              : newsData.reverse().map((news, index) => (
+                  <CarouselItem
+                    key={index}
+                    className="pl-4 sm:basis-1/2 lg:basis-1/3"
+                  >
+                    <NewsItem {...news} />
+                  </CarouselItem>
+                ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/Button";
 
 import InputCustom from "@/components/ui/InputCustom";
@@ -19,19 +20,18 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "@/redux/cartSlice";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
+
 import SelectDoctor from "./select/SelectDoctor";
 import { IoMdRemove } from "react-icons/io";
 import { Switch } from "@/components/ui/Switch";
 import {
-  clearBookingDetails,
   removeItemInfo,
   saveBookingInfo,
   changeBookingDetails,
 } from "@/redux/bookingSlice";
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
+import { toastUI } from "@/components/ui/Toastify";
 
 const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
@@ -47,13 +47,13 @@ export default function Form() {
 
   const services = useSelector((state) => state.cart.cart);
   const profile = useSelector((state) => state.auth.userProfile);
+  console.log(profile);
   const bookingDetails = useSelector(
     (state) => state.infoBooking.bookingDetails,
   );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { toast } = useToast();
 
   const isFullInfoToCheckout = !bookingDetails.some(booking => {
     const { bookingDetail } = booking;
@@ -71,12 +71,7 @@ export default function Form() {
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
     dispatch(removeItemInfo(id));
-    toast({
-      variant: "success",
-      title: "Đã xóa dịch vụ khỏi giỏ hàng!",
-      description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
-      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-    });
+    toastUI("Đã xóa khỏi giỏ y tế", "success");
   };
 
   const getCurSelectedService = () => {
@@ -158,6 +153,7 @@ export default function Form() {
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
+    console.log(workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
@@ -254,12 +250,7 @@ export default function Form() {
     event.preventDefault();
 
     if (!isFullInfoToCheckout) {
-      toast({
-        variant: "warning",
-        title: "Chưa đủ thông tin",
-        description: 'Vui lòng cung cấp đầy đủ thông tin',
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI('Vui lòng cung cấp đầy đủ thông tin', "warning");
       return;
     }
 
@@ -337,16 +328,16 @@ export default function Form() {
   }, [isBlocking, shouldNavigate, navigate]);
 
   return (
-    <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
-      <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
+    <div className="mx-auto pt-5 max-w-screen-xl px-0 md:pt-10 md:px-5">
+      <div className="container mx-auto flex flex-col gap-3 rounded-md border px-5 py-5 md:flex-row bg-white">
         {/* Select Services */ }
-        <div className="flex w-full flex-col gap-[20px] px-2">
+        <div className="flex w-[44%] flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
             <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4">
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2">
             { services.length > 0 ? (
               services.map((svc) => {
                 const bookingDetail = bookingDetails.find(
@@ -423,7 +414,7 @@ export default function Form() {
         </div>
 
         {/* Form */ }
-        <div className="w-full p-4 pt-0 md:ml-auto">
+        <div className="w-[60%] p-4 pt-0 md:ml-auto">
           <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
           <form onSubmit={ handleSubmit(onSubmit) }>
             <div className="flex flex-col gap-4">
@@ -472,7 +463,6 @@ export default function Form() {
                     control={ control }
                     name="date"
                     doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
-                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ (date) => {
@@ -485,7 +475,6 @@ export default function Form() {
                     control={ control }
                     name="time"
                     doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
-                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ handleChangeTime }
@@ -518,7 +507,14 @@ export default function Form() {
                 />
               </div>
               { isBookingForOthers && <>
-                <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
+                <div className="flex mt-1 justify-between">
+                  <p className="text-xl font-bold">Thông tin người khám</p>
+                  <div>
+                    Select những người đã từng:
+                    {/* <br />
+                    { profile.otherInfo?.relatedPatients.map((p, i) => <span key={ i }>{ p }</span>) } */}
+                  </div>
+                </div>
                 <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
                   {/* Hàng 1 */ }
                   <div className="mb-4">

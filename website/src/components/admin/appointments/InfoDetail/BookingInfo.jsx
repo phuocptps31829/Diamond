@@ -1,118 +1,296 @@
+import React, { useState } from "react";
 import { getStatusStyle } from "../utils/StatusStyle";
+import { IoBulbOutline } from "react-icons/io5";
+import { GiMedicines } from "react-icons/gi";
+import { MdOutlineConfirmationNumber } from "react-icons/md";
+import { FcHighPriority } from "react-icons/fc";
+import { Button } from "@/components/ui/Button";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/AlertDialog";
 
-const BookingInfo = () => {
-  const bookingData = {
-    doctor: "Dr. Nguyễn Văn B",
-    serviceType: "Khám lần 1",
-    serviceList: ["Khám tim", "Khám tai", "Khám mắt"],
-    time: "13:30",
-    status: "Chờ xác nhận",
-    price: 9999,
-    quantity: 1,
-    appointmentDate: "2024-09-25",
-    branch: "Phòng khám Đa khoa ABC, Quận 3, TP. HCM",
-    paymentMethod: "Thanh toán qua Momo",
-    statusPayment: "Thanh toán thành công",
-    room: "Phòng 1",
-    extraFees: 2000,
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
+import avatarDefault from "@/assets/images/avatar_default.png";
+import { Link } from "react-router-dom";
+import { FaUserInjured } from "react-icons/fa6";
+
+const BookingInfo = ({ data }) => {
+  const bookingData = data;
+  const isValidAvatar = (avatar) => {
+    const validExtensions = [".jpg", ".jpeg", ".png"];
+    return validExtensions.some((ext) => avatar.endsWith(ext));
   };
 
+  const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const handleOpen = (image) => {
+    setSelectedImage(image);
+    setOpen(true);
+  };
   return (
     <div className="mt-8 w-full">
-      <h1 className="mb-1 text-lg font-semibold text-gray-700">
-        Thông tin lịch khám
-      </h1>
+      <div className="flex w-full justify-between">
+        <div className="my-2 flex items-center justify-start gap-2">
+          {" "}
+          <h1 className="text-lg font-semibold text-gray-700">
+            Thông tin lịch khám -{" "}
+          </h1>
+          <div className="flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+            <MdOutlineConfirmationNumber className="text-xl text-yellow-400" />
+            <strong className="font-medium text-primary-900">
+              Thứ tự khám : {bookingData.orderNumber.number || "Chưa xác định"}
+            </strong>
+          </div>
+          {bookingData.orderNumber.priority !== undefined && (
+            <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+              <FcHighPriority className="text-xl" />
+              <strong className="font-medium text-primary-900">
+                Số ưu tiên : {bookingData.orderNumber.priority}
+              </strong>
+            </div>
+          )}
+        </div>
+        <div className="my-2 flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+          <FaUserInjured className="text-xl text-primary-500" />
+          <span className="font-medium text-primary-900"> Bệnh nhân :</span>
+          <strong className="">
+            <Link
+              to={`/admin/patients/${bookingData.patient._id}`}
+              className="font-semibold text-primary-900 underline"
+            >
+              {bookingData.patient.fullName}
+            </Link>
+          </strong>
+          <Avatar className="ml-2 size-6">
+            <AvatarImage
+              src={
+                bookingData.patient.avatar &&
+                isValidAvatar(bookingData.patient.avatar)
+                  ? `${import.meta.env.VITE_IMAGE_API_URL}/${bookingData.patient.avatar}`
+                  : avatarDefault
+              }
+              alt="@shadcn"
+            />
+          </Avatar>
+        </div>
+      </div>
+
       <div className="rounded-xl bg-white px-4 py-4 shadow-md sm:px-6 sm:py-6">
         <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-1 md:grid-cols-10">
-          <div className="md:col-span-3 col-span-6">
-            <strong className="font-medium text-black">
+          <div className="col-span-6 md:col-span-4">
+            <strong className="text-lg font-semibold text-gray-700">
               Dịch vụ / gói khám:
             </strong>
-            <ul className="ml-4 list-disc">
-              { bookingData.serviceList.map((svc) => (
-                <div className="relative py-3" key={ svc }>
-                  <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
-                        className="w-[60px] sm:w-[75px] md:w-[100px]"
-                        alt={ `Image of ${svc}` }
-                      />
-                      <div className="flex flex-col">
-                        <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                          { svc }
-                        </p>
-                      </div>
+            <ul className="list-disc">
+              <div className="relative py-3" key={bookingData.service._id}>
+                <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
+                  <div className="ml-4 flex items-center gap-12">
+                    <img
+                      src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                      className="w-[60px] sm:w-[75px] md:w-[100px]"
+                      alt={`Image of ${bookingData.service.name}`}
+                    />
+                    <div className="flex flex-col">
+                      <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
+                        {bookingData.service.name}
+                      </p>
                     </div>
-                  </label>
-                </div>
-              )) }
+                  </div>
+                </label>
+              </div>
             </ul>
           </div>
 
-          <div className="col-span-7 grid w-full grid-cols-1 gap-6 gap-x-4 sm:grid-cols-2 md:mt-7 mt-0">
-            <p className=" text-gray-600">
-              <strong className="font-medium text-black">Chi nhánh:</strong>{ " " }
-              { bookingData.branch }
+          <div className="col-span-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-5">
+            <p className="text-gray-600">
+              <strong className="font-medium text-black">Bác sĩ:</strong>{" "}
+              {bookingData.doctor.fullName}
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Bác sĩ:</strong>{ " " }
-              { bookingData.doctor }
+              <strong className="font-medium text-black">Loại khám:</strong>{" "}
+              {bookingData.type}
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Loại khám:</strong>{ " " }
-              { bookingData.serviceType }
+              <strong className="font-medium text-black">Thời gian:</strong>{" "}
+              {new Date(bookingData.time).toLocaleString()}
+            </p>
+            <p
+              className={
+                bookingData.status === "Chờ xác nhận"
+                  ? "text-red-600"
+                  : "text-green-600"
+              }
+            >
+              <strong className="font-medium text-black">Trạng thái:</strong>{" "}
+              {bookingData.status}
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Thời gian:</strong>{ " " }
-              { bookingData.time }
+              <strong className="font-medium text-black">Tổng giá:</strong>{" "}
+              {bookingData.invoice.price.toLocaleString("vi-VN")}đ
             </p>
             <p className="text-red-600">
-              <strong className="font-medium text-black">Trạng thái:</strong>{ " " }
-              { bookingData.status }
+              <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
+              {bookingData.invoice.arisePrice.toLocaleString("vi-VN")}đ
             </p>
             <p className="text-gray-600">
-              <strong className="font-medium text-black">Tổng giá:</strong>{ " " }
-              { bookingData.price } VND
-            </p>
-            <p className="text-red-600">
-              <strong className="font-medium text-black">Phí phát sinh:</strong>{ " " }
-              { bookingData.extraFees }
-            </p>
-            <p className="text-gray-600">
-              <strong className="font-medium text-black">Ngày khám:</strong>{ " " }
-              { bookingData.appointmentDate }
-            </p>
-            <p className="text-gray-600">
-              <strong className="font-medium text-black">Phòng:</strong>{ " " }
-              { bookingData.room }
-            </p>
-            <p className="text-primary-500">
-              <strong className="font-medium text-black">
-                Tổng số lượng dịch vụ / gói khám:
-              </strong>{ " " }
-              { bookingData.quantity }
-            </p>
-            <p className="text-gray-600 sm:col-span-2">
               <strong className="font-medium text-black">
                 Phương thức thanh toán:
-              </strong>{ " " }
-              { bookingData.paymentMethod }
+              </strong>{" "}
+              {bookingData.payment.method}
             </p>
             <div className="flex w-max items-center justify-center gap-2">
               <strong className="font-medium text-black">
                 Trạng thái thanh toán:
               </strong>
               <div
-                className={ `relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${getStatusStyle(
-                  bookingData.statusPayment,
-                )}` }
+                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${getStatusStyle(
+                  bookingData.payment.status,
+                )}`}
               >
-                <span>{ bookingData.statusPayment }</span>
+                <span>{bookingData.payment.status}</span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Prescription Section */}
+        {bookingData.prescription && (
+          <div className="">
+            <h2 className="text-lg font-semibold text-gray-700">Đơn thuốc:</h2>
+
+            <div className="my-6 mt-1 rounded-md border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-4">
+              <div className="flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+                <IoBulbOutline className="text-xl text-yellow-500" />
+                <strong className="font-medium text-primary-900">
+                  Lời khuyên :
+                </strong>{" "}
+              </div>
+              <span className="my-3 ml-1 block text-gray-700">
+                {bookingData.prescription.advice}
+              </span>
+              <div className="my-2 flex items-center justify-start">
+                <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+                  <GiMedicines className="text-xl text-red-500" />
+                  <strong className="font-medium text-primary-900">
+                    Thuốc kê :
+                  </strong>{" "}
+                </div>
+              </div>
+              <ul className="ml-4">
+                {data.prescription.medicines.map((medicine, i) => (
+                  <React.Fragment key={medicine._id}>
+                    {i !== 0 && (
+                      <div className="my-3 border border-dashed border-primary-200"></div>
+                    )}
+                    <li className="mt-2 flex flex-col gap-2">
+                      <ul className="ml-4 list-disc text-gray-600">
+                        <li>
+                          <strong className="font-medium text-black">
+                            Tên thuốc:
+                          </strong>{" "}
+                          {medicine.name} - {medicine.unit}
+                        </li>
+                        <li>
+                          <strong className="font-medium text-black">
+                            Thành phần:
+                          </strong>{" "}
+                          {medicine.ingredients}
+                        </li>
+                        <li>
+                          <strong className="font-medium text-black">
+                            Hướng dẫn:
+                          </strong>{" "}
+                          {medicine.instruction}
+                        </li>
+                        <li>
+                          <strong className="font-medium text-black">
+                            Tác dụng phụ:
+                          </strong>{" "}
+                          {medicine.sideEffects}
+                        </li>
+                        <li className="text-black">
+                          <strong className="font-medium text-black">
+                            Lưu ý:
+                          </strong>{" "}
+                          <span className="text-red-500"> {medicine.note}</span>
+                        </li>
+                      </ul>
+                    </li>
+                  </React.Fragment>
+                ))}
+              </ul>
+            </div>
+            <div className="w-full text-end">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="custom" className="">
+                    Xem kết quả
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="!max-w-4xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Kết quả khám bệnh</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <div className="my-4">
+                        <strong>Chẩn đoán:</strong>{" "}
+                        {bookingData.result.diagnose || "Chưa có kết quả"}
+                      </div>
+                      <div className="my-4">
+                        <strong>Mô tả:</strong>{" "}
+                        {bookingData.result.description || "Không có mô tả"}
+                      </div>
+                      <div className="my-4">
+                        <strong>Hình ảnh liên quan:</strong>
+                        <div className="mx-auto my-3 flex flex-wrap gap-4">
+                          {bookingData.result.images.map((image, index) => (
+                            <div key={index}>
+                              <img
+                                src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
+                                alt={`Kết quả khám bệnh ${index}`}
+                                className="h-[150px] w-[150px] cursor-pointer rounded-md object-cover"
+                                onClick={() => handleOpen(image)}
+                              />
+                            </div>
+                          ))}
+                          {selectedImage && (
+                            <Dialog open={open} onOpenChange={setOpen}>
+                              <DialogContent className="max-w-[1000px]">
+                                <DialogHeader>
+                                  <DialogTitle>Hình ảnh lớn</DialogTitle>
+                                </DialogHeader>
+                                <img
+                                  src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
+                                  alt="Hình ảnh lớn"
+                                  className="large-thumbnail h-auto w-full"
+                                />
+                              </DialogContent>
+                            </Dialog>
+                          )}
+                        </div>
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Đóng</AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

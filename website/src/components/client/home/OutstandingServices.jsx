@@ -3,7 +3,7 @@ import ServiceItem from "../product/Service";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
-import { getAllServices } from "@/services/servicesApi";
+import {  serviceApi } from "@/services/servicesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function OutstandingServices() {
@@ -17,7 +17,7 @@ export default function OutstandingServices() {
     isLoading: loadingMedicalService,
   } = useQuery({
     queryKey: ["medical-services"],
-    queryFn: getAllServices,
+    queryFn: serviceApi.getAllServices,
   });
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export default function OutstandingServices() {
       setOutstandingMedicalPackages(sortedMedicalPackages.slice(0, 8));
     }
   }, [loadingMedicalService, medicalServices]);
-console.log(OutstandingMedicalPackages);
 
   return (
     <div className="mx-auto my-5 max-w-screen-xl md:my-10">

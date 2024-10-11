@@ -25,9 +25,11 @@ export function SelectProvince({
   errors,
   onProvinceChange,
   disabled,
+  defaultValue,
 }) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(defaultValue); // Tạo state cho giá trị đã chọn
 
   useEffect(() => {
     fetchProvinces();
@@ -36,13 +38,23 @@ export function SelectProvince({
   const fetchProvinces = async () => {
     try {
       const response = await getProvinces();
-
       setProvinces(response);
+      console.log("aaa", response);
+
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
   };
-
+  useEffect(() => {
+    if (defaultValue) {
+      console.log("df:" + defaultValue);
+      const selectedProvince = provinces.find((province) => province._id === defaultValue);
+      if (selectedProvince) {
+        setSelectedValue(selectedProvince._id);
+        // control.setValue(name, selectedProvince._id); 
+      }
+    }
+  }, [defaultValue, provinces, control, name]);
   return (
     <div className="">
       <Controller
@@ -58,16 +70,13 @@ export function SelectProvince({
                 disabled={ disabled }
                 aria-expanded={ open }
                 className={ cn(
-                  "w-full justify-between py-[21px]",
+                  "w-full justify-between py-[21px] border",
                   errors[name] && "border-red-500",
                 ) }
               >
                 { field.value ? (
                   <>
-                    {
-                      provinces.find((province) => province._id === field.value)
-                        ?.name
-                    }
+                    { provinces.find((province) => province._id === selectedValue)?.name }
                   </>
                 ) : (
                   "Chọn tỉnh/thành phố"
@@ -90,7 +99,7 @@ export function SelectProvince({
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince.name);
+                            field.onChange(selectedProvince._id);
                             onProvinceChange(selectedProvince._id);
                           }
                           setOpen(false);
@@ -99,7 +108,7 @@ export function SelectProvince({
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === province.name
+                            selectedValue === province._id
                               ? "opacity-100"
                               : "opacity-0",
                           ) }
@@ -120,6 +129,7 @@ export function SelectProvince({
     </div>
   );
 }
+
 
 export function SelectDistrict({
   control,
@@ -198,7 +208,7 @@ export function SelectDistrict({
                             (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict.name);
+                            field.onChange(selectedDistrict._id);
                             onDistrictChange(selectedDistrict._id);
                           }
                           setOpen(false);
@@ -229,7 +239,14 @@ export function SelectDistrict({
   );
 }
 
-export function SelectWard({ control, name, errors, districtId, setValue, disabled }) {
+export function SelectWard({
+  control,
+  name,
+  errors,
+  districtId,
+  setValue,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
@@ -294,7 +311,7 @@ export function SelectWard({ control, name, errors, districtId, setValue, disabl
                             (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard.name);
+                            field.onChange(selectedWard._id);
                           }
                           setOpen(false);
                         } }

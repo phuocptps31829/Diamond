@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import ContentNews from "../../components/client/newsDetail/Content";
-import { getNewsById, getAllNews } from "@/services/newsApi";
+import {  newsApi } from "@/services/newsApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
 
@@ -15,12 +15,12 @@ export default function NewsDetail() {
     isLoading: isLoadingNews,
   } = useQuery({
     queryKey: "news",
-    queryFn: getAllNews,
+    queryFn: newsApi.getAllNews,
   });
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["news", id],
-    queryFn: () => getNewsById(id),
+    queryFn: () => newsApi.getNewsById(id),
   });
 
   if (error || errorNews) return <NotFound />;

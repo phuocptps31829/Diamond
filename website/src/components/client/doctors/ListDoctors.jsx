@@ -17,7 +17,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "@/services/doctorsApi";
+import { doctorApi } from "@/services/doctorsApi";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import DoctorItem from "../product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -41,7 +41,7 @@ export default function ListDoctors() {
     isLoading: loadingDoctors,
   } = useQuery({
     queryKey: ["doctors"],
-    queryFn: getAllDoctors,
+    queryFn: doctorApi.getAllDoctors,
   });
 
   const {

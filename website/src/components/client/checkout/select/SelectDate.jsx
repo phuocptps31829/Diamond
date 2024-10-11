@@ -12,9 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
-import { getWorkSchedulesByDoctors } from "@/services/workSchedulesApi";
-import { toast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
+import { toastUI } from "@/components/ui/Toastify";
+import { workScheduleApi } from "@/services/workSchedulesApi";
 
 export default function SelectDate({
   control,
@@ -28,13 +27,14 @@ export default function SelectDate({
   const [availableDates, setAvailableDates] = useState([]);
 
   useEffect(() => {
-    if (!doctorId || !branchId) return;
+    if (!doctorId) return;
 
     const fetchDates = async () => {
       try {
-        const data = await getWorkSchedulesByDoctors(doctorId, branchId);
-        const dates = data.map((option) =>
-          parse(option._id.day, "yyyy-MM-dd", new Date()),
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId);
+        console.log(data);
+        const dates = data.data.map((option) =>
+          parse(option.day, "yyyy-MM-dd", new Date()),
         );
         setAvailableDates(dates);
       } catch (error) {
@@ -60,69 +60,64 @@ export default function SelectDate({
 
   const handleClick = () => {
     if (!doctorId) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn bác sĩ",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn bác sĩ", "warning");
       return;
     }
   };
 
   return (
-    <div onClick={ handleClick }>
+    <div onClick={handleClick}>
       <Controller
-        control={ control }
-        name={ name }
-        rules={ { required: "Vui lòng chọn ngày khám" } }
-        render={ ({ field }) => {
+        control={control}
+        name={name}
+        rules={{ required: "Vui lòng chọn ngày khám" }}
+        render={({ field }) => {
           return (
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant={ "outline" }
-                  disabled={ disabled }
-                  className={ cn(
+                  variant={"outline"}
+                  disabled={disabled}
+                  className={cn(
                     "w-full justify-start py-[21px] text-left font-normal",
                     !field.value && "text-muted-foreground",
                     errors[name] && "border-red-500",
-                    doctorId ? 'pointer-events-auto' : 'pointer-events-none'
-                  ) }
+                    doctorId ? "pointer-events-auto" : "pointer-events-none",
+                  )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  { field.value && availableDates.length > 0 ? (
+                  {field.value && availableDates.length > 0 ? (
                     format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
                   ) : (
                     <span>Chọn ngày khám</span>
-                  ) }
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={ field.value ? new Date(field.value) : null }
-                  onSelect={ (selectedDate) => {
+                  selected={field.value ? new Date(field.value) : null}
+                  onSelect={(selectedDate) => {
                     if (selectedDate && isDateAvailable(selectedDate)) {
                       const formattedDate = format(selectedDate, "yyyy-MM-dd");
                       field.onChange(formattedDate);
                       onChange(formattedDate);
                     }
-                  } }
+                  }}
                   initialFocus
-                  disabled={ (date) => !isDateAvailable(date) || disabled }
-                  modifiers={ {
+                  disabled={(date) => !isDateAvailable(date) || disabled}
+                  modifiers={{
                     available: (date) => isDateAvailable(date),
-                  } }
+                  }}
                 />
               </PopoverContent>
             </Popover>
           );
-        } }
+        }}
       />
-      { errors[name] && (
-        <span className="text-sm text-red-500">{ errors[name].message }</span>
-      ) }
+      {errors[name] && (
+        <span className="text-sm text-red-500">{errors[name].message}</span>
+      )}
     </div>
   );
 }

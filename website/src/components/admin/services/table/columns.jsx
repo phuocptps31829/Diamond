@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,9 +31,9 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSpecialtyById } from "@/services/specialtiesApi";
-import { deleteService } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 import { toastUI } from "@/components/ui/Toastify";
-
+ 
 const useSpecialtyName = (specialtyID) => {
   return useQuery({
     queryKey: ["specialty", specialtyID],
@@ -44,7 +44,7 @@ const useSpecialtyName = (specialtyID) => {
 const useDeleteService = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (serviceId) => deleteService(serviceId),
+    mutationFn: (serviceId) => serviceApi.deleteService(serviceId),
     onSuccess: () => {
       queryClient.invalidateQueries("service");
       toastUI("Xóa dịch vụ thành công.", "success");
@@ -118,7 +118,7 @@ export const columns = [
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <img
-                src={row.original.image}
+                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.image}`}
                 alt="thumbnail"
                 width={60}
                 height={60}
@@ -129,7 +129,11 @@ export const columns = [
               <AlertDialogHeader>
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </AlertDialogHeader>
-              <img src={row.original.image} className="h-auto w-full" alt=" " />
+              <img
+                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.image}`}
+                className="h-auto w-full"
+                alt=" "
+              />
             </DialogContent>
           </Dialog>
         </>
@@ -233,7 +237,10 @@ export const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-full items-center gap-2">
-              <Link to={`/admin/services/edit/${row.original._id}`} className="flex w-full gap-2 ">
+              <Link
+                to={`/admin/services/edit/${row.original._id}`}
+                className="flex w-full gap-2"
+              >
                 <FiEdit className="text-[15px]" />
                 <span>Sửa</span>
               </Link>

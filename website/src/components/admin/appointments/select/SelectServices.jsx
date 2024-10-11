@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllServices } from "@/services/servicesApi";
+import {  serviceApi } from "@/services/servicesApi";
 
 export default function SelectService({ control, name, errors, onChange }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function SelectService({ control, name, errors, onChange }) {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const data = await getAllServices({ limit: 9999 });
+        const data = await serviceApi.getAllServices({ limit: 9999 });
         setServices(data?.data);
       } catch (error) {
         console.error("Failed to fetch services:", error);

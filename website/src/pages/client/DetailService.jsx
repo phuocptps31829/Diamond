@@ -11,7 +11,7 @@ import {
 } from "@/services/medicalPackagesApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
-import { getServiceById, getServiceBySpecialty } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 
 const DetailService = () => {
   useScrollToTop();
@@ -37,7 +37,7 @@ const DetailService = () => {
     isLoading: isLoadingService,
   } = useQuery({
     queryKey: ["service", id],
-    queryFn: () => getServiceById(id),
+    queryFn: () => serviceApi.getServiceById(id),
 
     enabled: !!serviceId,
   });
@@ -57,7 +57,7 @@ const DetailService = () => {
     isLoading: isLoadingServiceSpecialty,
   } = useQuery({
     queryKey: ["service-specialty", service?.specialtyID],
-    queryFn: () => getServiceBySpecialty(service?.specialtyID),
+    queryFn: () => serviceApi.getServiceBySpecialty(service?.specialtyID),
     enabled: !!service?.specialtyID,
   });
 

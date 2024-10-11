@@ -7,7 +7,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "./index.css";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  keepPreviousData: true
+});
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

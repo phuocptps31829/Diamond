@@ -6,6 +6,11 @@ const newsSchema = new mongoose.Schema({
         ref: 'Specialty',
         required: true
     },
+    author: {
+        type: String,
+        trim: true,
+        required: true
+    },
     title: {
         type: String,
         trim: true,
@@ -22,11 +27,6 @@ const newsSchema = new mongoose.Schema({
         required: true
     },
     content: {
-        type: String,
-        trim: true,
-        required: true
-    },
-    author: {
         type: String,
         trim: true,
         required: true

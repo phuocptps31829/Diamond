@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectDoctor from "./select/SelectDoctor";
 import SelectTime from "./select/SelectTime";
-import SelectDepartment from "./select/SelectSpecialty";
+import SelectDepartment from "./select/SelectSpecialtyold";
 import SelectDate from "./select/SelectDate";
 import SelectBirthDate from "./select/SelectBirthday";
 import SelectGender from "./select/SelectGender";

@@ -10,32 +10,55 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
+import { Link } from "react-router-dom";
 
 export const columns = [
     {
         id: "select",
         header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
-                aria-label="Select all"
-            />
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+            aria-label="Select all"
+          />
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={ row.getIsSelected() }
-                onCheckedChange={ (value) => row.toggleSelected(!!value) }
-                aria-label="Select row"
-            />
+          <Checkbox
+            checked={ row.getIsSelected() }
+            onCheckedChange={ (value) => row.toggleSelected(!!value) }
+            aria-label="Select row"
+          />
         ),
         enableSorting: false,
         enableHiding: false,
-    },
+      },
     {
-        accessorKey: "userID.fullName",
+        id: "stt",
+        header: ({column}) => 
+        (
+          <Button
+          className="pl-[6px] text-left w-fit "
+          variant="ghost"
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        >
+          STT
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+        ),
+        cell: ({ row }) => (
+          <div className="w-full pl-[26px] text-left ">
+            {row.index + 1}
+          </div>
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },  
+
+    {
+        accessorKey: "fullName",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -47,28 +70,15 @@ export const columns = [
             </Button>
         ),
         cell: ({ row }) => {
-            const name = row.original.userID.fullName;
-            const yearsExperience  = row.original.yearsExperience ;
-            console.log(yearsExperience );
-            const getDoctorTitle = (years) => {
-                switch (true) {
-                    case years >= 10:
-                        return `GS. ${name}`; 
-                    case years >= 5:
-                        return `TS. ${name}`; 
-                    case years >= 2:
-                        return `ThS. ${name}`; 
-                    default:
-                        return `BS. ${name}`;
-                }
-            };
+            const name = row.original.fullName;
             return (
                 <div className="flex items-center py-4 gap-3">
                     <Avatar className="size-8">
-                        <img src={row.original.userID.avatar} alt={name} />
+                        <img src={row.original.avatar} alt={name} />
                     </Avatar>
                     <span className="w-full whitespace-nowrap">
-                        {getDoctorTitle(yearsExperience )} 
+                    { row.original.otherInfo.title }
+                    { row.original.fullName }
                     </span>
                 </div>
             );
@@ -87,7 +97,7 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.specialtyName }</div>,
+        cell: ({ row }) => <div className="">{ row.original.otherInfo.specialty.name }</div>,
     },
     {
         accessorKey: "department",
@@ -101,10 +111,14 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.department }</div>,
+        cell: ({ row }) =>(
+            <div className="">
+                {row.original.otherInfo.isInternal ? "Khoa nội" : "Khoa ngoại"}
+            </div>
+        ),
     },
     {
-        accessorKey: "userID.phoneNumber",
+        accessorKey: "phoneNumber",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -115,10 +129,10 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.userID.phoneNumber }</div>,
+        cell: ({ row }) => <div className="text-primary-500 pl-3">{ row.original.phoneNumber }</div>,
     },
     {
-        accessorKey: "userID.email",
+        accessorKey: "email",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -129,7 +143,7 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.userID.email }</div>,
+        cell: ({ row }) => <div className="">{ row.original.email }</div>,
     },
 
     {
@@ -145,7 +159,7 @@ export const columns = [
             </Button>
         ),
         cell: ({ row }) => {
-            const status = row.original.userID.isActivated;
+            const status = row.original.isActivated;
             return (
                 <div className={ status === true ? "text-green-500" : "text-red-500" }>
                     { status === true ? "Đang hoạt động" : "Đang khóa" }
@@ -158,7 +172,9 @@ export const columns = [
         enableHiding: false,
         cell: ({ row }) => {
             const payment = row.original;
-            // console.log(payment);
+            const id = payment._id;
+            console.log(id);
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -170,7 +186,7 @@ export const columns = [
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <FiEdit className="text-[15px]" />
-                            <span>Sửa</span>
+                            <Link to={`/admin/doctor/edit/${id}`}>Sửa</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <RiDeleteBin6Line className="text-[15px]" />

@@ -1,22 +1,22 @@
 import { toast } from "react-toastify";
 
 const options = {
-  position: "top-right",
+  position: 'top-right',
   closeOnClick: true,
   pauseOnHover: false,
-  toastId: "id-t",
+  toastId: 'id-t'
 };
 
 export const toastUI = (message, type) => {
-  if (type === "success") {
+  if (type === 'success') {
     toast.success(message, options);
   }
 
-  if (type === "error") {
+  if (type === 'error') {
     toast.error(message, options);
   }
 
-  if (type === "warning") {
+  if (type === 'warning') {
     toast.warning(message, options);
   }
 };

@@ -1,21 +1,21 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import BookingInfo from "./InfoDetail/BookingInfo";
-import Patient from "./InfoDetail/Patient";
-import { getAppointmentById } from "@/services/appointmentsApi";
 import NotFound from "@/components/client/notFound";
+import { appointmentApi } from "@/services/appointmentsApi";
+import Loading from "@/components/ui/Loading";
 
 const AppointmentsDetailAdmin = () => {
   const { id } = useParams();
   console.log(id, "id");
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["news"],
-    queryFn: () => getAppointmentById(id),
+    queryKey: ["appointment", id],
+    queryFn: () => appointmentApi.getAppointmentById(id),
     enabled: !!id,
   });
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {
@@ -27,8 +27,7 @@ const AppointmentsDetailAdmin = () => {
     <div className="w-full">
       <h1 className="mb-3 text-2xl font-bold">Chi tiết lịch đặt</h1>
       <div className="w-full">
-        <Patient />
-        <BookingInfo />
+        <BookingInfo data={data} />
       </div>
     </div>
   );
