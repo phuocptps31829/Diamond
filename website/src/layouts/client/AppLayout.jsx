@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import { Toaster } from "@/components/ui/Toaster";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getProfilePatients } from "@/services/authApi";
+import { authApi } from "@/services/authApi";
 import { setAccessToken, setUserProfile } from "@/redux/authSlice";
 import Balloon from "@/components/ui/Ballon";
 import BalloonMessage from "@/components/ui/BallonMessage";
@@ -15,13 +15,13 @@ export default function AppLayout() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.auth.userProfile);
 
-  const { data: profileFetched, error, isLoading } = useQuery({
+  const { data: profileFetched } = useQuery({
     queryKey: ["userProfile"],
-    queryFn: () => getProfilePatients(),
+    queryFn: authApi.getProfileInfo,
   });
 
   useEffect(() => {
-    dispatch(setUserProfile(profileFetched));
+    dispatch(setUserProfile(profileFetched?.data));
   }, [profileFetched, dispatch]);
 
   useEffect(() => {

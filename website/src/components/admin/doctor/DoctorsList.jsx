@@ -13,6 +13,7 @@ const DoctorsList = () => {
     queryKey: ["doctors"],
     queryFn: getAllDoctors,
   });
+
   const {
     data: specialtyData,
     isLoading: loadingSpecialties,
@@ -23,20 +24,18 @@ const DoctorsList = () => {
   });
   if (loadingDoctors || loadingSpecialties) return <div>Loading...</div>;
   if (errorLoadingDoctors || errorLoadingSpecialties) return <div>Error loading data</div>;
+  
   const specialtyMap = {};
   specialtyData.forEach((specialty) => {
     specialtyMap[specialty._id] = specialty.name;
   });
   const doctorsWithSpecialties = doctorsData.map((doctor) => ({
     ...doctor,
-    specialtyName: specialtyMap[doctor.specialtyID] || "Error!", 
+    specialtyName: specialtyMap[doctor.otherInfo.specialtyID] || "Error!", 
   }));
   const specialtiesOnly = specialtyData.map((specialty) => ({
     specialtyName: specialty.name, 
   }));
-  console.log("doc to da ta", doctorsData.map(doctor => doctor.userID.fullName)); 
-  console.log("specialtyName", specialtiesOnly); 
-
   return (
     <DataTable 
       columns={columns} 

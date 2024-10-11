@@ -1,5 +1,5 @@
 import { RxDashboard } from "react-icons/rx";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaKitMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FaUsers } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
@@ -7,12 +7,14 @@ import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
 import { LuNewspaper } from "react-icons/lu";
 import { FcDepartment } from "react-icons/fc";
-import { FaKitMedical } from "react-icons/fa6";
+import { IoSettingsSharp } from "react-icons/io5";
+import { CgAlignLeft } from "react-icons/cg";
 import { GiMedicines } from "react-icons/gi";
 
 export const getMenuList = (pathname) => [
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "/admin/dashboard",
@@ -23,6 +25,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/dashboard",
             label: "Bảng điều khiển quản trị",
+            exceptRoles: ["DOCTOR"],
             active: pathname.includes("/admin/dashboard"),
           },
           {
@@ -36,6 +39,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -69,6 +73,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -94,7 +99,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/medicines/create",
             label: "Thêm thuốc",
-            active: pathname === "/admin/medicine/create",
+            active: pathname === "/admin/medicines/create",
           },
         ],
       },
@@ -102,6 +107,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -125,6 +131,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -148,6 +155,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -171,6 +179,31 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
+    menus: [
+      {
+        href: "",
+        label: "Chuyên khoa",
+        active: pathname === "/admin/specialties/list",
+        icon: CgAlignLeft,
+        submenus: [
+          {
+            href: "/admin/specialties/list",
+            label: "Danh sách chuyên khoa",
+            active: pathname === "/admin/specialties/list",
+          },
+          {
+            href: "/admin/specialties/create",
+            label: "Thêm chuyên khoa",
+            active: pathname === "/admin/specialties/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -185,17 +218,13 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
-          {
-            href: "/admin/appointments/create",
-            label: "Thêm lịch đặt",
-            active: pathname === "/admin/appointments/create",
-          },
         ],
       },
     ],
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -219,6 +248,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -244,6 +274,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF"],
     menus: [
       {
         href: "",
@@ -267,6 +298,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "EDITOR"],
     menus: [
       {
         href: "",
@@ -284,6 +316,32 @@ export const getMenuList = (pathname) => [
             href: "/admin/news/create",
             label: "Thêm tin tức",
             active: pathname === "/admin/news/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Vai trò",
+        active:
+          pathname === "/admin/roles/list" ||
+          pathname === "/admin/roles/create",
+        icon: IoSettingsSharp,
+        submenus: [
+          {
+            href: "/admin/roles/list",
+            label: "Danh sách vai trò",
+            active: pathname === "/admin/roles/list",
+          },
+          {
+            href: "/admin/roles/create",
+            label: "Thêm vai trò",
+            active: pathname === "/admin/roles/create",
           },
         ],
       },

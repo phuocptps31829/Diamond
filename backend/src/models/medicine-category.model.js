@@ -1,7 +1,6 @@
 const { default: mongoose } = require("mongoose");
 
 const medicineCategorySchema = new mongoose.Schema({
-
     name: {
         type: String,
         trim: true,

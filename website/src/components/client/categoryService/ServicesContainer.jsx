@@ -105,14 +105,14 @@ const ServicesContainer = () => {
   const totalPages = Math.ceil(totalItems / limit);
 
   return (
-    <section className="relative mx-auto max-w-screen-xl md:px-5 py-3">
+    <section className="relative mx-auto max-w-screen-xl md:px-5 py-3 pb-10">
       <div className="mx-auto w-full px-4 md:px-0">
         <div className="grid grid-cols-12 md:gap-7">
           <div className="col-span-12 md:col-span-3">
             <SidebarFilter filters={ filters } onFilterApply={ handleFilterApply } />
           </div>
 
-          <div className="col-span-12  md:col-span-9">
+          <div className="col-span-12 md:col-span-9 flex flex-col justify-between">
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
@@ -147,51 +147,51 @@ const ServicesContainer = () => {
                 </>
               ) }
             </div>
+            <Pagination className="pt-5">
+              { totalPages ?
+                <PaginationContent className="hover:cursor-pointer">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={ () =>
+                        handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
+                      }
+                      className={
+                        filters.page === 1 ? "opacity-50 hover:cursor-default" : ""
+                      }
+                    />
+                  </PaginationItem>
+                  { Array.from({ length: totalPages }).map((_, index) => {
+                    return (
+                      <PaginationItem key={ index }>
+                        <PaginationLink
+                          onClick={ () => handlePageChange(index + 1) }
+                          isActive={ filters.page === index + 1 }
+                        >
+                          { index + 1 }
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }) }
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={ () =>
+                        handlePageChange(
+                          currentPage + 1 > totalPages ? totalPages : currentPage + 1,
+                        )
+                      }
+                      className={
+                        filters.page === totalPages
+                          ? "opacity-50 hover:cursor-default"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+                : ''
+              }
+            </Pagination>
           </div>
         </div>
-        <Pagination className="py-5">
-          { totalPages ?
-            <PaginationContent className="hover:cursor-pointer">
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={ () =>
-                    handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-                  }
-                  className={
-                    filters.page === 1 ? "opacity-50 hover:cursor-default" : ""
-                  }
-                />
-              </PaginationItem>
-              { Array.from({ length: totalPages }).map((_, index) => {
-                return (
-                  <PaginationItem key={ index }>
-                    <PaginationLink
-                      onClick={ () => handlePageChange(index + 1) }
-                      isActive={ filters.page === index + 1 }
-                    >
-                      { index + 1 }
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }) }
-              <PaginationItem>
-                <PaginationNext
-                  onClick={ () =>
-                    handlePageChange(
-                      currentPage + 1 > totalPages ? totalPages : currentPage + 1,
-                    )
-                  }
-                  className={
-                    filters.page === totalPages
-                      ? "opacity-50 hover:cursor-default"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-            : ''
-          }
-        </Pagination>
       </div>
     </section>
   );

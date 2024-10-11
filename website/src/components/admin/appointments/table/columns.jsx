@@ -15,11 +15,44 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { ArrowUpDown } from "lucide-react";
 import { getStatusStyle } from "../utils/StatusStyle";
 import { getPatientsById } from "@/services/patientsApi";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getDoctorById } from "@/services/doctorsApi";
 import { getServiceById } from "@/services/servicesApi";
 import { getMedicalPackageById } from "@/services/medicalPackagesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import { useToast } from "@/hooks/useToast";
+// const useDeleteAppointment = () => {
+//   const { toast } = useToast();
+
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: (newsId) => deleteAppointment(newsId),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries("news");
+//       toast({
+//         variant: "success",
+//         title: "Xóa tin tức thành công",
+//         description: "Tin tức đã được xóa khỏi hệ thống",
+//       });
+//     },
+//     onError: (error) => {
+//       toast({
+//         variant: "error",
+//         title: "Xóa tin tức thất bại",
+//         description: "Đã xảy ra lỗi khi xóa tin tức",
+//       });
+//       console.error("Error deleting news:", error);
+//     },
+//   });
+// };
+
 const usePatientData = (patientID) => {
   return useQuery({
     queryKey: ["patient", patientID],
@@ -55,6 +88,10 @@ const useMedicalPackageData = (medicalPackageID) => {
     enabled: !!medicalPackageID,
   });
 };
+const statusOptions = [
+  { value: "Chờ xác nhận", label: "Chờ xác nhận" },
+  { value: "Chưa khám", label: "Chưa khám" },
+];
 export const columns = [
   {
     id: "select",
@@ -64,14 +101,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={ row.getIsSelected() }
-        onCheckedChange={ (value) => row.toggleSelected(!!value) }
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
     ),
@@ -85,7 +122,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Bệnh nhân
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -109,7 +146,7 @@ export const columns = [
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             </Avatar>
             <span className="ml-2 w-full whitespace-nowrap">
-              { patient?.fullName || "Không có bệnh nhân" }
+              {patient?.fullName || "Không có bệnh nhân"}
             </span>
           </div>
         </div>
@@ -123,7 +160,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Bác sĩ
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -145,7 +182,7 @@ export const columns = [
       return (
         <div className="w-full">
           <span className="w-full whitespace-nowrap">
-            { doctor?.userID?.fullName || "Không có bác sĩ" }
+            {doctor?.userID?.fullName || "Không có bác sĩ"}
           </span>
         </div>
       );
@@ -158,7 +195,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Dịch vụ/Gói khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -191,9 +228,9 @@ export const columns = [
       return (
         <div className="w-fit p-2">
           <span
-            className={ `flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage ? "bg-primary-500/20 text-primary-900" : "bg-[#13D6CB]/20 text-cyan-950"}` }
+            className={`flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage ? "bg-primary-500/20 text-primary-900" : "bg-[#13D6CB]/20 text-cyan-950"}`}
           >
-            { name }
+            {name}
           </span>
         </div>
       );
@@ -206,7 +243,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Loại khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -215,7 +252,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{ row.original.type }</span>
+        <span className="w-full whitespace-nowrap">{row.original.type}</span>
       </div>
     ),
   },
@@ -226,7 +263,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Thời gian khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -236,7 +273,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          { new Date(row.original.time).toLocaleString() }
+          {new Date(row.original.time).toLocaleString()}
         </span>
       </div>
     ),
@@ -248,7 +285,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -257,7 +294,24 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{ row.original.status }</span>
+        <Select
+          value={row.original.status}
+          onValueChange={(value) => {
+            row.original.status = value;
+            // Thực hiện các hành động khác nếu cần, ví dụ: gọi API để cập nhật trạng thái
+          }}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Chọn trạng thái" />
+          </SelectTrigger>
+          <SelectContent>
+            {statusOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     ),
   },
@@ -268,7 +322,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -277,12 +331,12 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div
-        className={ `flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
+        className={`flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
           row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán",
-        )}` }
+        )}`}
       >
         <span className="whitespace-nowrap">
-          { row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán" }
+          {row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán"}
         </span>
       </div>
     ),
@@ -290,7 +344,7 @@ export const columns = [
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -302,13 +356,18 @@ export const columns = [
           <DropdownMenuContent align="end" className="w-fit min-w-0">
             <DropdownMenuItem className="flex w-full items-center gap-2">
               <BiDetail className="text-[15px]" />
-              <Link to="/admin/appointments/detail/123">Chi tiết</Link>
+              <Link to={`/admin/appointments/detail/${row.original._id}`}>
+                Chi tiết
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex w-full items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <Link to="/admin/appointments/edit/123">Sửa</Link>
-            </DropdownMenuItem>
-
+            {row.original.status === "Chờ xác nhận" && (
+              <DropdownMenuItem className="flex w-full items-center gap-2">
+                <FiEdit className="text-[15px]" />
+                <Link to={`/admin/appointments/edit/${row.original._id}`}>
+                  Sửa
+                </Link>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem className="flex w-full items-center gap-2">
               <RiDeleteBin6Line className="text-[15px]" />
               <span>Xóa</span>

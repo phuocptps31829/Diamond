@@ -9,120 +9,210 @@ import CheckboxServices from "./select/CheckboxServices";
 import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { packageAdminSchema } from "@/zods/admin/packagesAdmin";
-import { MdCloudUpload } from "react-icons/md";
-import { FaPlus } from "react-icons/fa6";
-import { FaTrashRestore } from "react-icons/fa";
-import axios from "axios";
+import ImagePreview from "@/components/ui/ImagePreview";
+import { imageApi } from "@/services/imageApi";
 import SpinLoader from "@/components/ui/SpinLoader";
-const clientId = import.meta.env.VITE_CLIENT_ID;
+import RadioGroupField from "@/components/ui/RadioGroupField";
+import AgeField from "@/components/ui/AgeField";
 import { toastUI as toast } from "@/components/ui/Toastify";
+import { packageApi } from "@/services/medicalPackagesApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 
 const PackagesFormFix = ({ packageDetail }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState(null);
+  const queryClient = useQueryClient();
+  const [loadingImage, setLoadingImage] = useState(false);
+  const [pageServices, setPageServices] = useState(0);
   const [fileImage, setFileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [dataNewUpdate, setDataNewUpdate] = useState(null);
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
+    getValues,
+    reset,
   } = useForm({
     resolver: zodResolver(packageAdminSchema),
     defaultValues: {
-      name: "",
-      specialtyID: "",
-      shortDescription: "",
-      details: "",
-      isHidden: true,
+      name: packageDetail.name || "",
+      specialtyID: packageDetail.specialtyID || "",
+      shortDescription: packageDetail.shortDescription || "",
+      details: packageDetail.details || "",
+      isHidden: packageDetail.isHidden || false,
+      isFamily: packageDetail.applicableObject.isFamily || false,
+      gender: packageDetail.applicableObject.specialtyID || "0",
+      age: {
+        min: packageDetail.applicableObject.age.min || 0,
+        max: packageDetail.applicableObject.age.max || 0,
+      },
       services: [
         {
           servicesID: [],
           levelName: "",
           price: 0,
           discountPrice: 0,
+          duration: 0,
+        },
+        {
+          servicesID: [],
+          levelName: "",
+          price: 0,
+          discountPrice: 0,
+          duration: 0,
+        },
+        {
+          servicesID: [],
+          levelName: "",
+          price: 0,
+          discountPrice: 0,
+          duration: 0,
+        },
+        {
+          servicesID: [],
+          levelName: "",
+          price: 0,
+          discountPrice: 0,
+          duration: 0,
+        },
+        {
+          servicesID: [],
+          levelName: "",
+          price: 0,
+          discountPrice: 0,
+          duration: 0,
         },
       ],
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: "services",
   });
 
-  const addService = () => {
-    append({
-      servicesID: [],
-      levelName: "",
-      price: 0,
-      discountPrice: 0,
+  const syncServicesID = (servicesID, index) => {
+    fields.forEach((_, i) => {
+      if (i > index) {
+        const currentServices = getValues(`services[${i}].servicesID`);
+        const newServices = [...new Set([...currentServices, ...servicesID])];
+        setValue(`services[${i}].servicesID`, newServices);
+      }
     });
   };
 
+  const { mutate: updatePackageMutation, isPending } = useMutation({
+    mutationFn: ({ id, requestBody }) =>
+      packageApi.updatePackage(id, requestBody),
+    onSuccess: (newData) => {
+      const transformedData = {
+        ...newData,
+        services: newData.services.map((service) => ({
+          servicesID: service.servicesID.map((id) => id.$oid),
+          levelName: service.levelName,
+          price: service.price,
+          discountPrice: service.discountPrice,
+          duration: String(service.duration),
+        })),
+      };
+
+      reset(newData);
+      setIsInitialized(false);
+      setDataNewUpdate(transformedData);
+      setImagePreview(null);
+      setFileImage(null);
+      setLoadingImage(false);
+      toast("Cập nhật gói thành công!", "success");
+      queryClient.invalidateQueries(["package", packageDetail._id]);
+    },
+    onError: () => {
+      toast("Cập nhật gói thất bại!", "error");
+    },
+  });
+
   useEffect(() => {
-    setValue("name", packageDetail.name);
-    setValue("specialtyID", packageDetail.specialtyID);
-    setValue("shortDescription", packageDetail.shortDescription);
-    setValue("isHidden", packageDetail.isHidden);
-    setValue("details", packageDetail.details);
-    setImagePreview(packageDetail.image);
-    setImage(packageDetail.image);
-    setValue(
-      "services",
-      packageDetail.services.map((service) => ({
+    if (isInitialized) return;
+
+    const dataRender = (data, firstTime = false) => {
+      setImagePreview(data.image);
+      const formattedServices =
+        data.services?.map((service) => ({
+          servicesID: service.servicesID,
+          levelName: service.levelName,
+          price: service.price,
+          discountPrice: service.discountPrice,
+          duration: Number(service.duration),
+        })) || [];
+
+      if (firstTime) {
+        setValue("services", formattedServices.reverse());
+      } else {
+        setValue("services", formattedServices);
+      }
+    };
+
+    if (dataNewUpdate !== null) {
+      dataRender(dataNewUpdate);
+    } else {
+      dataRender(packageDetail, true);
+    }
+
+    setIsInitialized(true);
+  }, [packageDetail, isInitialized, setValue, dataNewUpdate]);
+
+  const onSubmit = async (data) => {
+    if (!fileImage && !imagePreview) {
+      toast("Vui lòng chọn ảnh!", "error");
+      return;
+    }
+
+    const requestBody = {
+      image: "",
+      name: data.name,
+      specialtyID: data.specialtyID,
+      shortDescription: data.shortDescription,
+      details: data.details,
+      isHidden: data.isHidden,
+      applicableObject: {
+        isFamily: data.isFamily,
+        gender: data.gender,
+        age: {
+          min: data.age.min,
+          max: data.age.max,
+        },
+      },
+      services: data.services.map((service) => ({
         servicesID: service.servicesID,
         levelName: service.levelName,
         price: service.price,
         discountPrice: service.discountPrice,
+        duration: service.duration,
       })),
-    );
-  }, [packageDetail, setValue, refreshTrigger]);
+    };
 
-  const onSubmit = async (data) => {
-    setIsLoading(true);
     if (fileImage) {
+      setLoadingImage(true);
       const formData = new FormData();
-      formData.append("image", fileImage);
-      try {
-        const response = await axios.post(
-          `https://api.imgbb.com/1/upload?key=${clientId}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          },
-        );
-        const imageUrl = response.data.data.url;
-        const formattedData = {
-          ...data,
-          image: imageUrl,
-        };
+      formData.append("file", fileImage);
+      const imageResponse = await imageApi.createImage(formData);
+      const imageUrl = imageResponse?.data;
 
-        console.log(JSON.stringify(formattedData, null, 2));
-        setFileImage(null);
-        setIsLoading(false);
-        setRefreshTrigger((prev) => !prev);
-        toast("Cập nhật gói thành công!", "success");
-      } catch (error) {
-        console.log(error);
-        setIsLoading(false);
-        toast("Cập nhật gói thất bại!", "error");
+      if (!imageUrl) {
+        throw new Error("Không thể upload ảnh");
       }
+
+      requestBody.image = imageUrl;
+
+      updatePackageMutation({ id: packageDetail._id, requestBody });
     } else {
-      const formattedData = {
-        ...data,
-        image: image,
-      };
-      console.log(JSON.stringify(formattedData, null, 2));
-      setFileImage(null);
-      setIsLoading(false);
-      setRefreshTrigger((prev) => !prev);
-      toast("Cập nhật gói thành công!", "success");
+      requestBody.image = imagePreview;
+      updatePackageMutation({ id: packageDetail._id, requestBody });
     }
   };
+
 
   return (
     <div className="w-full">
@@ -133,38 +223,25 @@ const PackagesFormFix = ({ packageDetail }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-8 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-5 mt-5">
-              <div className="relative h-[230px] min-w-[300px] rounded-3xl border-2 border-dashed border-primary-500">
-                <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
-                  <label className="flex h-full w-full cursor-pointer items-center justify-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <MdCloudUpload size={45} color="#007BBB" />
-                      <p className="mt-2 text-sm">Chọn ảnh</p>
-                    </div>
-                    {imagePreview && (
-                      <img
-                        src={imagePreview}
-                        alt="Image Preview"
-                        className="absolute inset-0 h-full w-full rounded-3xl object-cover"
-                      />
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files[0];
-                        setFileImage(file);
-                        const imageUrl = URL.createObjectURL(file);
-                        setImagePreview(imageUrl);
-                      }}
-                    />
-                  </label>
-                </div>
-              </div>
+              <ImagePreview
+                imagePreview={
+                  imagePreview && fileImage
+                    ? imagePreview
+                    : imagePreview && URL_IMAGE + "/" + imagePreview
+                }
+                setFileImage={setFileImage}
+                setImagePreview={setImagePreview}
+              />
+              {!imagePreview && (
+                <p className="mt-3 text-center text-sm text-red-500">
+                  Vui lòng chọn ảnh
+                </p>
+              )}
             </div>
             <div className="mt-3 w-full">
-              <div className="grid grid-cols-1 items-center justify-center gap-10 sm:grid-cols-2">
+              <div className="grid grid-cols-1 items-center justify-center gap-5 sm:grid-cols-2">
                 <InputCustom
+                  required
                   className="col-span-1 sm:col-span-1"
                   name="name"
                   id="name"
@@ -179,7 +256,7 @@ const PackagesFormFix = ({ packageDetail }) => {
                     htmlFor=""
                     className="mb-3 block text-sm font-medium leading-none text-black"
                   >
-                    Chuyên khoa:
+                    Chuyên khoa: <span className="text-red-500">*</span>
                   </Label>
                   <SelectSpecialty
                     name="specialtyID"
@@ -190,7 +267,7 @@ const PackagesFormFix = ({ packageDetail }) => {
 
                 <div className="grid w-full gap-1.5">
                   <Label className="mb-3 block" htmlFor="shortDescription">
-                    Nhập mô tả ngắn:
+                    Nhập mô tả ngắn: <span className="text-red-500">*</span>
                   </Label>
                   <Controller
                     name="shortDescription"
@@ -209,46 +286,38 @@ const PackagesFormFix = ({ packageDetail }) => {
                     </p>
                   )}
                 </div>
-
-                <div className="flex h-full flex-col">
-                  <Label
-                    htmlFor=""
-                    className="mb-5 block text-sm font-medium leading-none text-black"
-                  >
-                    Trạng thái:
-                  </Label>
-                  <div className="mb-3 flex items-center">
-                    <Controller
-                      name="isHidden"
-                      control={control}
-                      render={({ field }) => (
-                        <>
-                          <label className="mr-6 flex items-center">
-                            <input
-                              type="radio"
-                              name="isHidden"
-                              value={false}
-                              className="mr-2"
-                              checked={field.value === false}
-                              onChange={() => field.onChange(false)}
-                            />
-                            <span className="text-sm">Hiển thị</span>
-                          </label>
-                          <label className="flex items-center">
-                            <input
-                              type="radio"
-                              name="isHidden"
-                              value={true}
-                              className="mr-2"
-                              checked={field.value === true}
-                              onChange={() => field.onChange(true)}
-                            />
-                            <span className="text-sm">Ẩn</span>
-                          </label>
-                        </>
-                      )}
-                    />
-                  </div>
+                <AgeField control={control} errors={errors} />
+                <div className="col-span-2 flex justify-between">
+                  <RadioGroupField
+                    name="isFamily"
+                    label="Dành cho gia đình:"
+                    options={[
+                      { value: true, label: "Có" },
+                      { value: false, label: "Không" },
+                    ]}
+                    control={control}
+                  />
+                  <div className="flex h-[50px] w-[1px] border border-dashed border-primary-400"></div>
+                  <RadioGroupField
+                    name="gender"
+                    label="Dành cho giới tính:"
+                    options={[
+                      { value: "Nam", label: "Nam" },
+                      { value: "Nữ", label: "Nữ" },
+                      { value: "0", label: "Tất cả" },
+                    ]}
+                    control={control}
+                  />
+                  <div className="flex h-[50px] w-[1px] border border-dashed border-primary-400"></div>
+                  <RadioGroupField
+                    name="isHidden"
+                    label="Trạng thái:"
+                    options={[
+                      { value: false, label: "Hiển thị" },
+                      { value: true, label: "Ẩn" },
+                    ]}
+                    control={control}
+                  />
                 </div>
               </div>
             </div>
@@ -256,34 +325,42 @@ const PackagesFormFix = ({ packageDetail }) => {
 
           <div className="mb-10">
             <Label className="mb-3 block text-[17px] font-medium leading-none text-black">
-              Dịch vụ trong gói:
+              Dịch vụ trong gói: <span className="text-red-500">*</span>
             </Label>
-            <div className="rounded-lg border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-5">
+            <div
+              className={`${pageServices % 2 === 0 ? "bg-[#c1e0ff2f]" : "bg-[#d4fff02f]"} flex w-full flex-col rounded-lg border-2 border-dashed border-primary-200 p-5`}
+            >
               {fields.map((item, index) => (
                 <>
                   <div
                     key={item.id}
-                    className={`${index === 0 ? "pb-3" : "border-t-2 border-dashed border-primary-400 pt-4"} mb-5 flex items-center justify-between`}
+                    className={`${index === pageServices ? "flex" : "hidden"} mb-5 w-full items-center justify-between`}
                   >
-                    <div className="flex h-full w-[40%] flex-col pr-2">
+                    <div className="flex h-full min-h-[330px] w-[40%] flex-col pr-2">
                       <Label
                         htmlFor=""
                         className="mb-4 block text-sm font-medium leading-none text-black"
                       >
                         Chọn dịch vụ:
                       </Label>
-                      <div className="scrollable-services">
-                        <CheckboxServices
-                          name={`services[${index}].servicesID`}
-                          control={control}
-                          errors={errors}
-                        />
-                      </div>
+                      <CheckboxServices
+                        name={`services[${index}].servicesID`}
+                        control={control}
+                        errors={errors}
+                        onChange={(servicesID) => {
+                          setValue(`services[${index}].servicesID`, servicesID);
+                          if (index < fields.length - 1) {
+                            syncServicesID(servicesID, index);
+                          }
+                        }}
+                        index={index}
+                      />
                     </div>
                     <div className="relative w-[60%] space-y-4 pl-10">
                       <div className="absolute left-0 top-[10%] h-[90%] w-[1px] border border-dashed border-primary-500"></div>
                       <div className="w-full">
                         <InputCustom
+                          required
                           className="col-span-1 sm:col-span-1"
                           name={`services[${index}].levelName`}
                           label="Cấp độ gói:"
@@ -291,10 +368,12 @@ const PackagesFormFix = ({ packageDetail }) => {
                           control={control}
                           errors={errors}
                           placeholder="Nhập tên cấp độ gói"
+                          disabled={true}
                         />
                       </div>
                       <div className="w-full">
                         <InputCustom
+                          required
                           className="col-span-1 sm:col-span-1"
                           name={`services[${index}].price`}
                           label="Giá gói:"
@@ -306,6 +385,7 @@ const PackagesFormFix = ({ packageDetail }) => {
                       </div>
                       <div className="w-full">
                         <InputCustom
+                          required
                           className="col-span-1 sm:col-span-1"
                           name={`services[${index}].discountPrice`}
                           label="Giá khuyến mãi:"
@@ -315,33 +395,40 @@ const PackagesFormFix = ({ packageDetail }) => {
                           placeholder="Nhập giá khuyến mãi"
                         />
                       </div>
+                      <div className="w-full">
+                        <InputCustom
+                          required
+                          className="col-span-1 sm:col-span-1"
+                          name={`services[${index}].duration`}
+                          label="Thời gian: (phút)"
+                          type="number"
+                          control={control}
+                          errors={errors}
+                          placeholder="Nhập thời gian"
+                        />
+                      </div>
                     </div>
                   </div>
-                  {index !== 0 && (
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="group relative flex items-center justify-center overflow-hidden rounded-sm bg-red-600 bg-gradient-to-r px-4 py-2 text-white transition-all duration-300 ease-out"
-                    >
-                      <span className="relative text-[13px] font-semibold">
-                        Xóa biến thể{" "}
-                        <FaTrashRestore className="ml-2 inline-block" />
-                      </span>
-                    </button>
-                  )}
                 </>
               ))}
-              {fields.length === 1 && (
+              <div className="mt-4 flex justify-between">
                 <button
                   type="button"
-                  onClick={addService}
-                  className="group relative flex items-center justify-center overflow-hidden rounded-sm bg-green-600 bg-gradient-to-r px-4 py-2 text-white transition-all duration-300 ease-out hover:bg-gradient-to-r"
+                  className={`${pageServices === 0 ? "bg-gray-400" : "bg-red-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white`}
+                  onClick={() => setPageServices(pageServices - 1)}
+                  disabled={pageServices === 0}
                 >
-                  <span className="relative text-[13px] font-semibold">
-                    Thêm biến thể <FaPlus className="ml-2 inline-block" />
-                  </span>
+                  <FaArrowLeft /> Trước
                 </button>
-              )}
+                <button
+                  type="button"
+                  className={`${pageServices === 4 ? "bg-gray-400" : "bg-green-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white`}
+                  onClick={() => setPageServices(pageServices + 1)}
+                  disabled={pageServices === 4}
+                >
+                  Sau <FaArrowRight />
+                </button>
+              </div>
             </div>
             {errors.services && (
               <p className="mt-3 text-red-500">{errors.services.message}</p>
@@ -349,12 +436,16 @@ const PackagesFormFix = ({ packageDetail }) => {
           </div>
 
           <Label className="mb-3 block" htmlFor="details">
-            Nhập mô tả gói:
+            Nhập mô tả gói: <span className="text-red-500">*</span>
           </Label>
           <NewsEditor control={control} name="details" errors={errors} />
           <div className="mt-10 w-full text-end">
-            <Button variant="custom" type="submit" disabled={isLoading}>
-              {isLoading ? <SpinLoader /> : "Cập nhật"}
+            <Button
+              variant="custom"
+              type="submit"
+              disabled={isPending || loadingImage}
+            >
+              {isPending || loadingImage ? <SpinLoader /> : "Cập nhật"}
             </Button>
           </div>
         </form>

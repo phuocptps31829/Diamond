@@ -6,7 +6,7 @@ export default function ServicesBooking(){
   useScrollToTop();
 
   return (
-    <div>
+    <div className="bg-[#E8F2F7] md:pt-10 pt-5">
         <Form/>
         <Collaborate/>
     </div>

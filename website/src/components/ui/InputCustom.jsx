@@ -14,6 +14,7 @@ function InputCustom({
   min,
   max,
   disabled = false,
+  required = false,
   value,
   className,
 }) {
@@ -44,10 +45,10 @@ function InputCustom({
   return (
     <div className={`w-full ${className}`}>
       <label
-        className="mb-2 block text-sm font-medium leading-none text-black"
+        className="mb-2 block text-sm font-medium text-black"
         htmlFor={`${name}Input`}
       >
-        {label}
+        {label} {required && <span className="text-red-500">*</span>}
       </label>
       <div>
         <div className="relative">
@@ -60,11 +61,10 @@ function InputCustom({
           )}
           <input
             onChange={handleChange}
-            r
             onBlur={onBlur}
             value={fieldValue}
             ref={ref}
-            type={type === "password" ? (showPassword ? "text" : type) : type} // Handle password visibility
+            type={showPassword ? "text" : type}
             disabled={disabled}
             autoComplete={autocomplete || ""}
             id={`${name}Input`}

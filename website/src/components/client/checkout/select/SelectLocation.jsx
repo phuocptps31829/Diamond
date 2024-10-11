@@ -28,6 +28,7 @@ export function SelectProvince({
 }) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(null);
 
   useEffect(() => {
     fetchProvinces();
@@ -36,7 +37,6 @@ export function SelectProvince({
   const fetchProvinces = async () => {
     try {
       const response = await getProvinces();
-
       setProvinces(response);
     } catch (error) {
       console.error("Error fetching provinces:", error);
@@ -58,20 +58,11 @@ export function SelectProvince({
                 disabled={disabled}
                 aria-expanded={open}
                 className={cn(
-                  "w-full justify-between py-[21px] border",
+                  "w-full justify-between border py-[21px]",
                   errors[name] && "border-red-500",
                 )}
               >
-                {field.value ? (
-                  <>
-                    {
-                      provinces.find((province) => province._id === field.value)
-                        ?.name
-                    }
-                  </>
-                ) : (
-                  "Chọn tỉnh/thành phố"
-                )}
+                {field.value ? field.value : "Chọn tỉnh/thành phố"}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -90,8 +81,9 @@ export function SelectProvince({
                             (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
-                            field.onChange(selectedProvince._id);
+                            field.onChange(selectedProvince.name);
                             onProvinceChange(selectedProvince._id);
+                            setSelectedValue(selectedProvince._id);
                           }
                           setOpen(false);
                         }}
@@ -99,7 +91,7 @@ export function SelectProvince({
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === province.name
+                            selectedValue === province._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
@@ -132,11 +124,13 @@ export function SelectDistrict({
 }) {
   const [open, setOpen] = React.useState(false);
   const [districts, setDistricts] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(null);
 
   useEffect(() => {
     if (provinceId) {
       fetchDistricts(provinceId);
       setValue(name, null);
+      setSelectedValue(null);
       onDistrictChange(null);
     } else {
       setDistricts([]);
@@ -175,8 +169,7 @@ export function SelectDistrict({
                 )}
               >
                 {field.value && districts.length > 0 ? (
-                  districts.find((district) => district._id === field.value)
-                    ?.name
+                  field.value
                 ) : (
                   <span className="text-gray-600">Chọn quận/huyện</span>
                 )}
@@ -198,8 +191,9 @@ export function SelectDistrict({
                             (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
-                            field.onChange(selectedDistrict._id);
+                            field.onChange(selectedDistrict.name);
                             onDistrictChange(selectedDistrict._id);
+                            setSelectedValue(selectedDistrict._id);
                           }
                           setOpen(false);
                         }}
@@ -207,7 +201,7 @@ export function SelectDistrict({
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            field.value === district._id
+                            selectedValue === district._id
                               ? "opacity-100"
                               : "opacity-0",
                           )}
@@ -279,7 +273,7 @@ export function SelectWard({
                 )}
               >
                 {field.value && wards.length > 0 ? (
-                  wards.find((ward) => ward._id === field.value)?.name
+                  field.value
                 ) : (
                   <span className="text-gray-600">Chọn phường/xã</span>
                 )}
@@ -301,7 +295,7 @@ export function SelectWard({
                             (ward) => ward.name === currentValue,
                           );
                           if (selectedWard) {
-                            field.onChange(selectedWard._id);
+                            field.onChange(selectedWard.name);
                           }
                           setOpen(false);
                         }}

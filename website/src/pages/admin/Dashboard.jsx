@@ -13,11 +13,9 @@ import BottomLists from "../../components/admin/dashboard/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import NotFound from "@/components/client/notFound";
 import Loading from "@/components/ui/Loading";
-import {
-  getTotalPatientsBySpecialty,
-  getPatientsByGender,
-} from "@/services/appointmentsApi";
+import { getTotalPatientsBySpecialty } from "@/services/appointmentsApi";
 import { takeItAllSpecialties } from "@/services/specialtiesApi";
+import { appointmentApi } from "@/services/appointmentsApi";
 
 const breadcrumbData = [
   {
@@ -37,6 +35,15 @@ export default function Dashboard() {
   } = useQuery({
     queryKey: ["upcomingAppointments"],
     queryFn: get5UpcomingAppointments,
+  });
+
+  const {
+    data: appointmentsByAges,
+    error: errorAppointmentsByAges,
+    isLoading: isLoadingAppointmentsByAges,
+  } = useQuery({
+    queryKey: ["appointmentsByAges"],
+    queryFn: appointmentApi.getAppointmentByAges,
   });
 
   const {
@@ -93,41 +100,6 @@ export default function Dashboard() {
     queryFn: getTotalPatientsBySpecialty,
   });
 
-  const {
-    data: patientsByGender,
-    error: errorPatientsByGender,
-    isLoading: isLoadingPatientsByGender,
-  } = useQuery({
-    queryKey: ["patientsByGender"],
-    queryFn: getPatientsByGender,
-  });
-
-  useEffect(() => {
-    if (
-      isLoadingNews ||
-      isLoadingPatients ||
-      isLoadingAppointments ||
-      isLoadingInvoices ||
-      isLoadingTotalPatientsBySpecialty ||
-      isLoadingSpecialties ||
-      isLoadingPatientsByGender ||
-      isLoadingUpcomingAppointments
-    ) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  }, [
-    isLoadingNews,
-    isLoadingPatients,
-    isLoadingAppointments,
-    isLoadingInvoices,
-    isLoadingTotalPatientsBySpecialty,
-    isLoadingSpecialties,
-    isLoadingPatientsByGender,
-    isLoadingUpcomingAppointments,
-  ]);
-
   if (
     errorAllNews ||
     errorPatients ||
@@ -135,8 +107,8 @@ export default function Dashboard() {
     errorInvoices ||
     errorTotalPatientsBySpecialty ||
     errorSpecialties ||
-    errorPatientsByGender ||
-    errorUpcomingAppointments
+    errorUpcomingAppointments ||
+    errorAppointmentsByAges
   ) {
     return <NotFound />;
   }
@@ -149,8 +121,8 @@ export default function Dashboard() {
       isLoadingInvoices ||
       isLoadingTotalPatientsBySpecialty ||
       isLoadingSpecialties ||
-      isLoadingPatientsByGender ||
-      isLoadingUpcomingAppointments ? (
+      isLoadingUpcomingAppointments ||
+      isLoadingAppointmentsByAges ? (
         <Loading />
       ) : (
         <>
@@ -161,11 +133,10 @@ export default function Dashboard() {
             allAppointments={allAppointments?.data}
             allInvoices={allInvoices?.data}
           />
-          {console.log("patientsByGender", patientsByGender)}
           <MiddleCharts
             dataTotalPatients={totalPatientsBySpecialty}
             dataAllSpecialties={allSpecialties}
-            dataPatientsByGender={patientsByGender}
+            dataPatientsByAges={appointmentsByAges}
           />
           <BottomLists dataUpcomingAppointments={upcomingAppointments} />
         </>

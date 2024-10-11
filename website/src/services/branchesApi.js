@@ -48,7 +48,7 @@ export const addBranch = async (branchData) => {
   try {
     const res = await axios.post(API_URL_ADD_BRANCH, branchData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     console.log(res.data.data);
@@ -63,7 +63,7 @@ export const updateBranch = async (id, branchData) => {
   try {
     const res = await axios.put(`${API_URL_UPDATE_BRANCH}/${id}`, branchData, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     console.log(res.data.data);
@@ -78,7 +78,7 @@ export const deleteBranch = async (id) => {
   try {
     const res = await axios.delete(`${API_URL_DELETE_BRANCH}/${id}`, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     });
     console.log(res.data.data);

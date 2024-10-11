@@ -39,6 +39,7 @@ export default function DataTable({ data, columns }) {
     resolver: zodResolver(),
     defaultValues: {},
   });
+ 
   const table = useReactTable({
     data,
     columns,

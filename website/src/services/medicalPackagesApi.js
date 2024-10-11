@@ -1,3 +1,4 @@
+import { axiosInstanceCUD } from "./axiosInstance";
 import {
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_MEDICAL_PACKAGE_BY_ID,
@@ -74,4 +75,37 @@ export const getMedicalPackageBySpecialty = async (id, page, limit, sort) => {
     console.error(error);
     throw error;
   }
+};
+
+export const packageApi = {
+  createPackage: async (newPackage) => {
+    const res = await axiosInstanceCUD.post(
+      "/medical-packages/add",
+      newPackage,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return res.data;
+  },
+  updatePackage: async (id, requestBody) => {
+    const res = await axiosInstanceCUD.post(
+      `/medical-packages/update/${id}?_method=PUT`,
+      requestBody,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    return res.data.data;
+  },
+  deletePackage: async (id) => {
+    const res = await axiosInstanceCUD.post(
+      `/medical-packages/delete/${id}?_method=DELETE`,
+    );
+    return res.data;
+  },
 };

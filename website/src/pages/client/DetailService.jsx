@@ -70,12 +70,13 @@ const DetailService = () => {
     return <NotFound />;
   }
 
-  
   const isLoading =
     isLoadingMedicalPackage ||
     isLoadingService ||
     isLoadingMedicalPackageSpecialty ||
     isLoadingServiceSpecialty;
+
+
   return (
     <div className="bg-bg-gray p-8">
       <ServiceDetail

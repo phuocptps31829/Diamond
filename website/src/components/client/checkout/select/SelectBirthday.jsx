@@ -4,6 +4,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/Popover";
+import { vi } from "date-fns/locale";
+
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/Calendar";
 import { Button } from "@/components/ui/Button";
@@ -36,7 +38,7 @@ export default function SelectBirthDate({ control, name, errors }) {
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {field.value ? (
-                  format(new Date(field.value), "PPP")
+                  format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
                 ) : (
                   <span className="text-gray-600">Chọn ngày sinh</span>
                 )}

@@ -64,10 +64,12 @@ const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
           },
           usePointStyle: true,
           pointStyle: "circle",
+          filter: (legendItem) => {
+            return legendItem.index < 7;
+          },
         },
       },
     },
-
     cutout: "60%",
   };
 

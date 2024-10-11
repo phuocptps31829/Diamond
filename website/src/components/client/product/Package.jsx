@@ -29,9 +29,7 @@ export default function PackageItem({
           to={`/detail-package/${_id}`}
           className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
-          {services.length > 1
-            ? services[0].levelName + " / " + services[1].levelName
-            : services[0].levelName}
+          {services.length > 0 && services[0].levelName}
         </Link>
         <Link
           to={`/detail-package/${_id}`}
