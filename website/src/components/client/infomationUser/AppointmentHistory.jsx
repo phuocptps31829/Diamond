@@ -27,6 +27,9 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { useLocation, useNavigate } from "react-router-dom";
+import { appointmentApi } from "@/services/appointmentsApi";
+import { useQuery } from "@tanstack/react-query";
+import { formatDateTimeLocale } from "@/utils/format";
 const AppointmentHistory = () => {
 
 
@@ -99,6 +102,14 @@ const AppointmentHistory = () => {
   const currentRecords = records.slice(indexOfFirstRecord, indexOfLastRecord);
   const totalPages = Math.ceil(records.length / recordsPerPage);
 
+  const { data: appointments, isLoading } = useQuery({
+    queryKey: ["allAppointments"],
+    queryFn: appointmentApi.getAllAppointments
+  });
+
+  if (isLoading || !appointments.data.length) {
+    return;
+  }
 
   return (
     <div className="p-3 md:p-6">
@@ -139,13 +150,13 @@ const AppointmentHistory = () => {
               #
             </TableHead>
             <TableHead className="text-xs font-semibold text-black whitespace-nowrap md:text-sm">
-             Dịch vụ
+              Gói khám/Dịch vụ
             </TableHead>
             <TableHead className="text-xs font-semibold text-black whitespace-nowrap md:text-sm">
-            Thời gian khám
+              Thời gian khám
             </TableHead>
             <TableHead className="text-xs font-semibold text-black whitespace-nowrap md:text-sm">
-            Trạng thái
+              Loại khám
             </TableHead>
             <TableHead className="text-xs font-semibold text-black whitespace-nowrap md:text-sm">
               Thanh toán
@@ -156,40 +167,40 @@ const AppointmentHistory = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {currentRecords.map((record, index) => (
-            <TableRow key={index}>
-              <TableCell className="text-xs md:text-sm">{record.id}</TableCell>
+          { appointments.data.map((appointment, index) => (
+            <TableRow key={ index }>
+              <TableCell className="text-xs md:text-sm">{ index + 1 }</TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                {record.service}
+                { appointment.service.name }
               </TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                {record.appointmentTime}
+                { formatDateTimeLocale(appointment.time) }
               </TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                {record.status}
+                { appointment.type }
               </TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                {record.payment}
+                { appointment.payment.method }
               </TableCell>
               <TableCell>
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={() => handleViewDetail(record.id)}
+                  onClick={ () => handleViewDetail(appointment._id) }
                   className="bg-primary-500 p-1 text-[9px] text-white md:p-3 md:text-xs"
                 >
                   Xem chi tiết
                 </Button>
               </TableCell>
             </TableRow>
-          ))}
+          )) }
         </TableBody>
       </Table>
       <Pagination className="py-5">
         <PaginationContent className="hover:cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
-              onClick={() =>
+              onClick={ () =>
                 handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
               }
               className={
@@ -197,22 +208,22 @@ const AppointmentHistory = () => {
               }
             />
           </PaginationItem>
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <PaginationItem key={index}>
+          { Array.from({ length: totalPages }).map((_, index) => (
+            <PaginationItem key={ index }>
               <PaginationLink
-                onClick={() => handlePageChange(index + 1)}
-                isActive={currentPage === index + 1}
+                onClick={ () => handlePageChange(index + 1) }
+                isActive={ currentPage === index + 1 }
               >
-                {index + 1}
+                { index + 1 }
               </PaginationLink>
             </PaginationItem>
-          ))}
+          )) }
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
-              onClick={() =>
+              onClick={ () =>
                 handlePageChange(
                   currentPage + 1 > totalPages ? totalPages : currentPage + 1,
                 )

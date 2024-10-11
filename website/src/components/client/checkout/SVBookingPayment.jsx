@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import VNPAYICON from '../../../assets/images/vnpay.webp';
 import { useToast } from '@/hooks/useToast';
 import { ToastAction } from '@/components/ui/Toast';
+import { toastUI } from '@/components/ui/Toastify';
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -35,12 +36,7 @@ export default function Form() {
 
   const handleSubmitCheckout = () => {
     if (!paymentMethod) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn phương thức thanh toán",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn phương thức thanh toán", "warning");
       return;
     }
     mutate();
@@ -96,10 +92,10 @@ export default function Form() {
             </p>
           </div>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
-            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.occupation : profileCustomer.otherInfo.occupation }</p>
-            <p className='mb-2'><strong>Dân tộc: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.ethnic : profileCustomer.otherInfo.ethnic }</p>
+            <p className='mb-2'><strong>Nghề nghiệp: </strong>{ personHelpInfo ? personHelpInfo.occupation : profileCustomer.otherInfo.occupation }</p>
+            <p className='mb-2'><strong>Dân tộc: </strong>{ personHelpInfo ? personHelpInfo.ethnic : profileCustomer.otherInfo.ethnic }</p>
             <p className='mb-2'><strong>Số CCCD: </strong>{ personHelpInfo ? personHelpInfo.citizenIdentificationNumber : profileCustomer.citizenIdentificationNumber }</p>
-            <p className='mb-2'><strong>Số BHYT: </strong>{ personHelpInfo ? personHelpInfo.otherInfo.insuranceCode : profileCustomer.otherInfo.insuranceCode }</p>
+            <p className='mb-2'><strong>Số BHYT: </strong>{ personHelpInfo ? personHelpInfo.insuranceCode : profileCustomer.otherInfo.insuranceCode }</p>
           </div>
         </div>
         <hr />

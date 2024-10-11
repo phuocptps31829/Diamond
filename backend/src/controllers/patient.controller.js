@@ -50,6 +50,9 @@ module.exports = {
                     relatedPatients = await Promise.all(fetchRelatedPatientsPromises);
                     relatedPatients = relatedPatients.filter(Boolean);
                 }
+                if (!patient?.otherInfo) {
+                    patient.otherInfo = {};
+                }
                 patient.otherInfo.relatedPatients = relatedPatients;
                 delete patient.otherInfo?.relatedPatientsID;
                 return patient;

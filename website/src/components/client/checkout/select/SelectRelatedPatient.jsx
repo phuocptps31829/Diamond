@@ -32,7 +32,6 @@ export default function SelectRelatedPatient({
             <Controller
                 control={ control }
                 name={ name }
-                rules={ { required: "Chọn khám hộ ai" } }
                 render={ ({ field }) => (
                     <Popover open={ open } onOpenChange={ setOpen }>
                         <PopoverTrigger asChild>

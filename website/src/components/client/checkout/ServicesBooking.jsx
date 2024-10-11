@@ -34,6 +34,7 @@ import SelectRelatedPatient from "./select/SelectRelatedPatient";
 import { useQuery } from "@tanstack/react-query";
 import { patientApi } from "@/services/patientsApi";
 import Loading from "@/components/ui/Loading";
+import { checkRequiredBookingFields } from "@/utils/validate";
 
 const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
@@ -50,7 +51,6 @@ export default function Form() {
 
   const services = useSelector((state) => state.cart.cart);
   const profile = useSelector((state) => state.auth.userProfile);
-  console.log(profile);
   const bookingDetails = useSelector(
     (state) => state.infoBooking.bookingDetails,
   );
@@ -63,6 +63,8 @@ export default function Form() {
     queryFn: () => patientApi.getRelatedPatient(relatedPatientID),
     enabled: !!relatedPatientID
   });
+
+  const isValidInfo = checkRequiredBookingFields(profile);
 
   const isFullInfoToCheckout = !bookingDetails.some(booking => {
     const { bookingDetail } = booking;
@@ -186,7 +188,6 @@ export default function Form() {
       isBookingForOthers ? otherBookingSchema : selfBookingSchema,
     ),
     defaultValues: {
-      relatedPatient: "",
       fullName: profile?.fullName || "",
       email: profile?.email || "",
       phoneNumber: profile?.phoneNumber || "",
@@ -202,18 +203,13 @@ export default function Form() {
       date: "",
       dateOfBirth: profile?.dateOfBirth || "",
       gender: profile?.gender || "",
-      province: profile?.province || "",
-      district: profile?.district || "",
-      ward: profile?.ward || "",
-      street: profile?.street || "",
+      province: profile?.address.province || "",
+      district: profile?.address.district || "",
+      ward: profile?.address.ward || "",
+      street: profile?.address.street || "",
     },
   });
-
-  useEffect(() => {
-    const currentValues = getValues();
-    console.log(currentValues.relatedPatient);
-  }, [getValues]);
-
+  console.log(errors);
   const handleSwitchChange = (checked) => {
     setIsBookingForOthers(checked);
     setRelatedPatientID('');
@@ -233,6 +229,7 @@ export default function Form() {
         province: "",
         district: "",
         ward: "",
+        street: "",
         department: currentValues.department,
         doctor: currentValues.doctor,
         time: currentValues.time,
@@ -254,6 +251,7 @@ export default function Form() {
         province: profile?.province || "",
         district: profile?.district || "",
         ward: profile?.ward || "",
+        street: profile?.street || "",
         department: currentValues.department,
         doctor: currentValues.doctor,
         time: currentValues.time,
@@ -318,6 +316,7 @@ export default function Form() {
   }, [isBlocking, shouldNavigate, navigate]);
 
   const onSubmit = (data, event) => {
+    console.log(9999);
     event.preventDefault();
 
     if (!isFullInfoToCheckout) {
@@ -334,16 +333,16 @@ export default function Form() {
           email: data.email,
           gender: data.gender,
           dateOfBirth: data.dateOfBirth,
+          insuranceCode: data.insuranceCode,
           address: {
             province: data.province,
             district: data.district,
             ward: data.ward,
-            street: data.address,
+            street: data.street,
           },
           citizenIdentificationNumber: data.citizenIdentificationNumber,
           occupation: data.occupation,
           ethnic: data.ethnic,
-          password: "string",
         }
         : undefined,
       data: bookingDetails.map((detail) => ({
@@ -356,6 +355,8 @@ export default function Form() {
       })),
     };
     setIsBlocking(false);
+
+    console.log(bookingInfo);
 
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
@@ -453,7 +454,7 @@ export default function Form() {
         <div className="w-[60%] p-4 pt-0 md:ml-auto">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-xl font-bold">Thông tin đặt lịch khám</p>
-            { !relatedPatientID && <p className="text-sm text-red-500">{ '(*)' } Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!</p> }
+            { !isValidInfo && <p className="text-sm text-red-500">{ '(*)' } Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!</p> }
           </div>
           <form
             onSubmit={ handleSubmit(onSubmit) }
@@ -552,15 +553,15 @@ export default function Form() {
                   <p className="text-xl font-bold">Thông tin người khám</p>
                   <div>
                     { profile.otherInfo?.relatedPatients?.length
-                      && <SelectRelatedPatient
+                      ? <SelectRelatedPatient
                         control={ control }
                         errors={ errors }
                         name="relatedPatient"
                         patientList={ profile.otherInfo.relatedPatients }
-                        onChange={ setRelatedPatientID } /> }
+                        onChange={ setRelatedPatientID } /> : '' }
                   </div>
                 </div>
-                <div className={ `${relatedPatientID ? 'pointer-events-' : 'pointer-events-auto'} rounded-md bg-gray-500/30 px-5 py-6 pt-2` }>
+                <div className={ `${relatedPatientID ? 'pointer-events-none' : 'pointer-events-auto'} rounded-md bg-gray-500/30 px-5 py-6 pt-2` }>
                   {/* Hàng 1 */ }
                   <div className="mb-4">
                     <label htmlFor="hoten" className="mb-1 block">
@@ -705,6 +706,7 @@ export default function Form() {
                             setSelectedProvinceId(provinceId);
                             setSelectedDistrictId(null);
                           } }
+                          defaultValue={ relatedInfo?.data?.address?.province }
                         />
                       </div>
                       <div className="w-full flex-1">
@@ -715,6 +717,7 @@ export default function Form() {
                           provinceId={ selectedProvinceId }
                           onDistrictChange={ setSelectedDistrictId }
                           setValue={ setValue }
+                          defaultValue={ relatedInfo?.data?.address?.district }
                         />
                       </div>
                       <div className="w-full flex-1">
@@ -724,6 +727,7 @@ export default function Form() {
                           errors={ errors }
                           setValue={ setValue }
                           districtId={ selectedDistrictId }
+                          defaultValue={ relatedInfo?.data?.address?.ward }
                         />
                       </div>
                     </div>

@@ -47,7 +47,7 @@ export default function LoginComponent() {
     onError: (error) => {
       console.log(error);
       const errorMessage =
-        error.response?.data?.error ||
+        error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
       toastUI(errorMessage || "Đăng nhập thất bại!", "error");

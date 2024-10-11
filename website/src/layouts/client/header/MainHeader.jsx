@@ -18,6 +18,7 @@ import {
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import brandLogo from "@/assets/images/brandLogo.png";
+import { toastUI } from "@/components/ui/Toastify";
 
 const dataNav = [
   {
@@ -86,13 +87,7 @@ export default function MainHeader() {
     // const accessToken = localStorage.getItem("accessToken");
     // mutation.mutate(accessToken);
     dispatch(logoutAction());
-    toast({
-      variant: "success",
-      title: "Đăng xuất thành công!",
-      description: "Hẹn gặp lại bạn!",
-      status: "success",
-      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-    });
+    toastUI("Đăng xuất thành công!", "success");
     navigate("/");
   };
 

@@ -9,12 +9,15 @@ import { authApi } from "@/services/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { logoutAction, setUserProfile } from "@/redux/authSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import Loading from "@/components/ui/Loading";
+import { SelectDistrict, SelectProvince, SelectWard } from "../checkout/select/SelectLocation";
 
 const UserInfoForm = () => {
+  const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+  const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profile = useSelector((state) => state.auth.userProfile);
@@ -66,6 +69,7 @@ const UserInfoForm = () => {
     setValue('occupation', profileFetched?.data?.otherInfo?.occupation);
     setValue('ethnic', profileFetched?.data?.otherInfo?.ethnic);
     setValue('insuranceCode', profileFetched?.data?.otherInfo?.insuranceCode);
+    setValue('street', profileFetched?.data?.address?.street);
   }, [profileFetched, dispatch, setValue, navigate]);
 
   const onSubmit = (data) => {
@@ -153,20 +157,62 @@ const UserInfoForm = () => {
               errors={ errors }
               placeholder="**************"
             />
-            <InputCustom
-              name="address"
-              label="Địa chỉ"
-              type="text"
-              control={ control }
-              errors={ errors }
-              placeholder="Nhập địa chỉ"
-              className="col-span-1 sm:col-span-2"
-            />
+            <div className="flex flex-col gap-1 col-span-2">
+              <label htmlFor="address" className="mb-1 block">
+                Địa chỉ:
+              </label>
+              <div className="mb-2 flex flex-col items-start justify-between gap-1 md:flex-row">
+                <div className="w-full flex-1">
+                  <SelectProvince
+                    control={ control }
+                    name="province"
+                    errors={ errors }
+                    onProvinceChange={ (provinceId) => {
+                      setSelectedProvinceId(provinceId);
+                      setSelectedDistrictId(null);
+                    } }
+                    defaultValue={ profileFetched?.data?.address?.province }
+                  />
+                </div>
+                <div className="w-full flex-1">
+                  <SelectDistrict
+                    control={ control }
+                    name="district"
+                    errors={ errors }
+                    provinceId={ selectedProvinceId }
+                    onDistrictChange={ setSelectedDistrictId }
+                    setValue={ setValue }
+                    defaultValue={ profileFetched?.data?.address?.district }
+                  />
+                </div>
+                <div className="w-full flex-1">
+                  <SelectWard
+                    control={ control }
+                    name="ward"
+                    errors={ errors }
+                    setValue={ setValue }
+                    districtId={ selectedDistrictId }
+                    defaultValue={ profileFetched?.data?.address?.ward }
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <InputCustom
+                  className="col-span-1 sm:col-span-1"
+                  placeholder="Nhập địa chỉ cụ thể của bạn"
+                  name="street"
+                  type="text"
+                  id="street"
+                  control={ control }
+                  errors={ errors }
+                />
+              </div>
+            </div>
           </div>
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-              <AvatarImage src={ profile?.avatar || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
+              <AvatarImage src={ "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">
