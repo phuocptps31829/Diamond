@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
-export const columns = [
+export const columns = (onDelete) =>
+[
     {
         id: "select",
         header: ({ table }) => (
@@ -51,7 +53,7 @@ export const columns = [
         </div>,
     },
     {
-        accessorKey: "specialtyName",
+        accessorKey: "specialty",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -62,10 +64,10 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.specialtyName}</div>,
+        cell: ({ row }) => <div className="">{row.original.specialty.name}</div>,
     },
     {
-        accessorKey: "branchName",
+        accessorKey: "branch",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -77,12 +79,12 @@ export const columns = [
             </Button>
         ),
         cell: ({ row }) => {
-            return <div className="">{row.original.branchName}</div>;
+            return <div className="">{row.original.branch.name}</div>;
             
         },
     },
     {
-        accessorKey: "branchAddress",
+        accessorKey: "address",
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -93,15 +95,15 @@ export const columns = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original.branchAddress}</div>,
+        cell: ({ row }) => <div className="">{row.original.branch.address}</div>,
     },
     {
         id: "actions",
         enableHiding: false,
-        cell: () => {
-        // cell: ({ row }) => {
-            // const payment = row.original;
-            // console.log(payment);
+        // cell: () => {
+        cell: ({ row }) => {
+            const payment = row.original;
+            const id = payment._id;
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -113,9 +115,9 @@ export const columns = [
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <FiEdit className="text-[15px]" />
-                            <span>Sửa</span>
+                            <Link to={`/admin/clinics/edit/${id}`}>Sửa</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="w-fit flex items-center gap-2">
+                        <DropdownMenuItem className="w-fit flex items-center gap-2" onClick={ () => onDelete(row.original._id) }>
                             <RiDeleteBin6Line className="text-[15px]" />
                             <span>Xóa</span>
                         </DropdownMenuItem>

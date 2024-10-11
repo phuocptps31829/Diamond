@@ -1,16 +1,19 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { clinicSchema } from "@/zods/clinic";   
+import { clinicSchema } from "@/zods/clinic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import 'react-quill/dist/quill.snow.css'; 
+import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
 import { clinicsApi } from "@/services/clinicApi";
-import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
+import { useEffect } from "react";
+
 export default function ClinicsForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -21,36 +24,57 @@ export default function ClinicsForm() {
     resolver: zodResolver(clinicSchema),
     defaultValues: {
       name: "",
-      specialtyID: "",
+      clinicID: "",
       branchID: "",
       address: "",
     },
   });
-  const { mutate: createClinics } = useMutation({
-    mutationFn: (newClinics) => clinicsApi.createClinics(newClinics),
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["clinics", id],
+    queryFn: () => clinicsApi.getClinicsById(id),
+    enabled: !!id,
+  });
+
+  useEffect(() => {
+    if (data) {
+      console.log("Fetched data: ", data);
+      console.log("specialtyID data: ", data._doc.specialtyID._id);
+      setValue("name", data._doc.name);
+      setValue("specialtyID", data._doc.specialtyID._id);
+      setValue("branchID", data._doc.branchID._id);
+      setValue("address", data._doc.branchID.address);
+    }
+  }, [data, setValue]);
+
+  const { mutate: updateClinic, isLoading: isSubmitting } = useMutation({
+    mutationFn: (newClinics) => clinicsApi.updateClinic(newClinics),
     onSuccess: () => {
-        toastUI("Thêm phòng khám thành công", "success");
-        navigate('/admin/clinics/list');
+      toastUI("Sửa phòng khám thành công", "success");
+      navigate('/admin/clinics/list');
     },
     onError: (err) => {
-        console.error(err);
-        toastUI("Có lỗi xảy ra: " + err.message, "error");
+      console.error(err);
+      toastUI("Có lỗi xảy ra: " + err.message, "error");
     },
   });
+
   const onSubmit = (data) => {
     const newClinics = {
-      name: data.name,
-      specialtyID: data.specialtyID,
-      branchID: data.branchID,
-      address: data.address,
-    }
-    createClinics(data);
-    console.log("Form Data:", newClinics); 
-  };
+        updateClinic: {
+            name: data.name,
+            specialtyID: data.specialtyID,
+            branchID: data.branchID,
+            address: data.address,
+        },
+        id: id, 
+    };
+    updateClinic(newClinics); 
+    console.log("update Data:", newClinics);
+};
   return (
-    <div className="bg-white w-full px-7 py-6 rounded-lg shadow-gray ">
+    <div className="bg-white w-full px-7 py-6 rounded-lg shadow-gray">
       <h1 className="mr-2 bg-white h-fit mb-4 text-2xl font-bold">Thông tin phòng khám</h1>
-      
+      {error && <p className="text-red-500">Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex gap-2">
           <div className="w-full">
@@ -78,6 +102,7 @@ export default function ClinicsForm() {
                   <SelectSpecialty
                     control={control}
                     name="specialtyID"
+                    id="specialtyID"
                     errors={errors}
                   />
                 </div>
@@ -104,7 +129,7 @@ export default function ClinicsForm() {
                     Địa chỉ cụ thể <span className="text-red-500">*</span>
                   </label>
                   <InputCustom
-                    className="col-span-1 sm:col-span-1 "
+                    className="col-span-1 sm:col-span-1"
                     name="address"
                     type="text"
                     id="address"
@@ -117,6 +142,7 @@ export default function ClinicsForm() {
             </div>
           </div>
         </div>
+
         {/* Button */}
         <div className="flex gap-2 justify-end">
           <Button
@@ -130,8 +156,9 @@ export default function ClinicsForm() {
             type="submit"
             variant="primary"
             className="border-none bg-primary-500 hover:bg-primary-600 px-6"
+            disabled={isSubmitting}
           >
-            Cập nhật
+            {isSubmitting ? "Đang xử lý..." : "Cập nhật"}
           </Button>
         </div>
       </form>

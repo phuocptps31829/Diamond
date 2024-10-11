@@ -60,7 +60,6 @@ export default function DataTableRole({ data }) {
             toastUI("Xóa vai trò không thành công", "error");
         },
     });
-
     const {
         handleSubmit,
         formState: { errors },
@@ -73,7 +72,6 @@ export default function DataTableRole({ data }) {
     });
     const onSubmit = () => {
     };
-
     const handleDeleteRole = (id) => {
         deleteRole(id);
     };

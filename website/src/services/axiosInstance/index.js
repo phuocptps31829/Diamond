@@ -4,13 +4,16 @@ import axios from "axios";
 
 const GET_API_URL = import.meta.env.VITE_GET_API_URL;
 const CUD_API_URL = import.meta.env.VITE_CUD_API_URL;
+const IMG_API_URL = import.meta.env.VITE_UPLOAD_IMAGE_API_URL;
 
 export const axiosInstanceGET = axios.create({
   baseURL: GET_API_URL
 });
-
 export const axiosInstanceCUD = axios.create({
   baseURL: CUD_API_URL
+});
+export const axiosInstanceIMG = axios.create({
+  baseURL: IMG_API_URL
 });
 
 const interceptors = (axiosInstance) => {

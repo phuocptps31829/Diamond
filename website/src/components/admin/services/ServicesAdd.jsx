@@ -114,7 +114,6 @@ const ServicesAdd = () => {
       },
     };
     console.log(serviceData);
-
     mutation.mutate(serviceData);
   };
 

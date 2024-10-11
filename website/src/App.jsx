@@ -83,6 +83,7 @@ import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
+import ClinicsEditFormPage from "./pages/admin/Clinics/editForm";
 
 const router = createBrowserRouter([
   {
@@ -418,8 +419,12 @@ const router = createBrowserRouter([
         element: <ClinicsFormPage />,
       },
       {
-        path: "roles/list",
-        element: <ListRolePage />,
+        path: "clinics/edit/:id",
+        element: <ClinicsEditFormPage />,
+      },
+      {
+        path: 'roles/list',
+        element: <ListRolePage />
       },
       {
         path: "roles/create",
@@ -447,8 +452,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }

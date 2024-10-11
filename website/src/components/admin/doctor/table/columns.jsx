@@ -12,7 +12,8 @@ import { FiEdit } from "react-icons/fi";
 import { Avatar } from "@/components/ui/Avatar";
 import { Link } from "react-router-dom";
 
-export const columns = [
+export const columns = (onDelete) =>
+[
     {
         id: "select",
         header: ({ table }) => (
@@ -188,7 +189,7 @@ export const columns = [
                             <FiEdit className="text-[15px]" />
                             <Link to={`/admin/doctor/edit/${id}`}>Sửa</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="w-fit flex items-center gap-2">
+                        <DropdownMenuItem className="w-fit flex items-center gap-2" onClick={ () => onDelete(row.original._id) }>
                             <RiDeleteBin6Line className="text-[15px]" />
                             <span>Xóa</span>
                         </DropdownMenuItem>

@@ -13,8 +13,8 @@ import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
 import DoctorEditor from "./editor";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
-import SelectRoom from "@/components/client/checkout/select/SelectRoom";
 import { useParams } from "react-router-dom";
+import { getDoctorById } from "@/services/doctorsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/Label";
@@ -22,13 +22,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { Controller, useForm } from "react-hook-form";
 import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
 import { MdCloudUpload } from "react-icons/md";
-import { doctorApi } from "@/services/doctorsApi";
+// import Modal from 'react-modal';
 
+// Modal.setAppElement("#root");
 export default function DoctorsForm() {
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isDegreeModalOpen, setIsDegreeModalOpen] = useState(false);
+  const [DegreePreview, setDegreePreview] = useState(null);
+  const [Degrees, setDegrees] = useState([]);
   const { id } = useParams();
   const {
     handleSubmit,
@@ -63,7 +67,7 @@ export default function DoctorsForm() {
   });
   const { data } = useQuery({
     queryKey: ["doctors", id],
-    queryFn: () => doctorApi.getDoctorById(id),
+    queryFn: () => getDoctorById(id),
     enabled: !!id,
   });
   useEffect(() => {
@@ -104,6 +108,28 @@ export default function DoctorsForm() {
   const handleRemoveImage = () => {
     setSelectedFile(null);
     setImagePreview(null);
+  };
+  const handleDegreeChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDegreePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleAddDegree = () => {
+    if (DegreePreview) {
+      setDegrees((prev) => [...prev, DegreePreview]);
+      setDegreePreview(null);
+    }
+  };
+  const handleRemoveDegree = (index) => {
+    setDegrees((prev) => prev.filter((_, i) => i !== index));
+  };
+  const toggleDegreeModal = () => {
+    setIsDegreeModalOpen(!isDegreeModalOpen);
   };
   const handleSpecialtyChange = (specialtyId) => {
     console.log(specialtyId);
@@ -284,6 +310,115 @@ export default function DoctorsForm() {
             </div>
           </div>
         </div>
+
+        {/* Line 4 */ }
+        <div className="block">
+          <div className="relative md:mb-4">
+            <label
+              htmlFor="hoten"
+              className="left-[15px] block bg-white px-1 text-lg md:text-base "
+            >
+              Bằng cấp <span className="text-red-500">*</span>
+            </label>
+
+            {/* Upload button */ }
+            <Button
+              variant="primary"
+              type="button"
+              onClick={ toggleDegreeModal }
+              className="px-4 py-2 bg-blue-500 text-white rounded-md text-xl my-1 p-5"
+            >
+              <MdCloudUpload className="mr-2" size={ 24 } />
+              Tải ảnh lên
+            </Button>
+            <div className="relative ">
+              <div className="flex flex-wrap gap-4 ">
+                { Degrees.map((cert, index) => (
+                  <div key={ index } className="relative">
+                    <img
+                      src={ cert }
+                      alt={ `Degree ${index + 1}` }
+                      className="h-[250px] w-[250px] object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={ () => handleRemoveDegree(index) }
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-2 text-sm"
+                    >
+                      X
+                    </button>
+                  </div>
+                )) }
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* <Modal
+          isOpen={ isDegreeModalOpen }
+          onRequestClose={ toggleDegreeModal }
+          contentLabel="Thêm ảnh"
+          className="w-1/6 mx-auto mt-20 bg-white p-6 rounded-lg shadow-lg"
+          overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+        >
+          <h2 className="text-xl font-semibold mb-4">Thêm ảnh <span className="text-red-500">*</span></h2>
+          <div className="relative h-64 w-full rounded-lg border-2 border-dashed border-primary-500 flex items-center justify-center">
+            { DegreePreview ? (
+              <div className="relative h-full w-full">
+                <img
+                  src={ DegreePreview }
+                  alt="Degree Preview"
+                  className="h-full w-full object-cover rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={ () => setDegreePreview(null) }
+                  className="absolute top-3 right-3 bg-red-500 text-white rounded-sm p-2 hover:bg-red-600"
+                >
+                  X
+                </button>
+              </div>
+            ) : (
+              <label className="flex h-full w-full cursor-pointer items-center justify-center">
+                <div className="flex flex-col items-center justify-center">
+                  <MdCloudUpload size={ 45 } color="#007BBB" />
+                  <p className="mt-2 text-sm">Chọn ảnh</p>
+                </div>
+                <input
+                  type="file"
+                  id="DegreeImage"
+                  className="hidden"
+                  onChange={ handleDegreeChange }
+                  accept="image/*"
+                />
+              </label>
+            ) }
+          </div>
+          <div className="flex justify-end gap-2 items-center">
+            <button
+              type="button"
+              onClick={ toggleDegreeModal }
+              className="
+                mt-2 h-fit px-4 py-2 text-primary-500 rounded-md border border-primary-500 
+              hover:bg-primary-600 hover:text-white hover:border-primary-600 transition duration-300"
+            >
+              Đóng
+            </button>
+            { DegreePreview && (
+              <button
+                type="button"
+                onClick={ handleAddDegree }
+                className="
+                  mt-2 px-4 py-2 bg-primary-500 text-white rounded-md 
+                hover:bg-primary-600 hover:shadow-lg transition duration-300"
+              >
+                Tải lên
+              </button>
+            ) }
+          </div>
+        </Modal> */}
+        {/* Select images end */ }
+
+
         {/* Line 4 */ }
         <div className="block ">
           <div className="w-full md:flex gap-[10px]">
@@ -365,17 +500,6 @@ export default function DoctorsForm() {
                 errors={ errors }
               />
             </div>
-
-            <div className="mb-3 md:w-1/2 relative">
-              <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white mb-2 ">
-                Phòng <span className="text-red-500">*</span>
-              </label>
-              <SelectRoom
-                control={ control }
-                name="room"
-                errors={ errors }
-              />
-            </div>
           </div>
 
         </div>
@@ -391,8 +515,8 @@ export default function DoctorsForm() {
                 name="province"
                 errors={ errors }
                 // Để tạm id để gét da ta
-                defaultValue="66a6a8d80c92ef5523930997"
-                // defaultValue={data?.address?.province} 
+                // defaultValue="66a6a8d80c92ef5523930997"
+                defaultValue={ data?.address?.province }
                 onProvinceChange={ (provinceId) => {
                   setSelectedProvinceId(provinceId);
                   setSelectedDistrictId(null);

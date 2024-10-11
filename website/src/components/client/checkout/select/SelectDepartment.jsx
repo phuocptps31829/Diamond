@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { toastUI } from "@/components/ui/Toastify";
+import { branchApi } from "@/services/branchesApi";
 
 export default function SelectDepartment({
   control,
@@ -35,7 +36,7 @@ export default function SelectDepartment({
     const fetchDepartments = async () => {
       if (!specialtyID) return;
       try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
+        const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
         setDepartments(data);
       } catch (error) {
         console.error("Failed to fetch departments:", error);

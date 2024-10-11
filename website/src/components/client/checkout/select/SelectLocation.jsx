@@ -70,7 +70,7 @@ export function SelectProvince({
                 disabled={ disabled }
                 aria-expanded={ open }
                 className={ cn(
-                  "w-full justify-between py-[21px] border",
+                  "w-full justify-between border py-[21px]",
                   errors[name] && "border-red-500",
                 ) }
               >
@@ -129,7 +129,6 @@ export function SelectProvince({
     </div>
   );
 }
-
 
 export function SelectDistrict({
   control,
