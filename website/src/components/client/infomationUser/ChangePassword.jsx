@@ -18,7 +18,7 @@ const ChangePassword = () => {
   });
 
   const onSubmit = (data) => {
-    console.log("Form submitted");
+    console.log("Form submittedd");
     console.log(data);
   };
 
