@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
@@ -15,16 +14,16 @@ export default function PackageItem({
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={ `/detail-package/${_id}` }
-        className="group block min-h-[125px] w-full overflow-hidden sm:min-h-[210px]"
+        className="group block h-[200px] w-full overflow-hidden"
       >
         <img
           src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }
           alt={ name }
-          className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
+          className="ease w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
 
-      <div className="flex h-full flex-col p-3 md:p-5">
+      <div className="flex flex-col p-3 md:p-5">
         <Link
           to={ `/detail-package/${_id}` }
           className="mb-1 text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
@@ -33,7 +32,7 @@ export default function PackageItem({
         </Link>
         <Link
           to={ `/detail-package/${_id}` }
-          className="grow py-1 text-xs font-bold md:text-xl"
+          className="py-1 text-xs font-bold md:text-xl"
         >
           { name }
         </Link>
@@ -66,17 +65,3 @@ export default function PackageItem({
     </div>
   );
 }
-
-PackageItem.propTypes = {
-  image: PropTypes.string.isRequired,
-  services: PropTypes.arrayOf(
-    PropTypes.shape({
-      levelName: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired,
-      discountPrice: PropTypes.number.isRequired,
-    }),
-  ).isRequired,
-  name: PropTypes.string.isRequired,
-  orderCount: PropTypes.number.isRequired,
-  _id: PropTypes.string.isRequired,
-};

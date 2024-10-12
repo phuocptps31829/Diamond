@@ -154,7 +154,7 @@ export function SelectDistrict({
       setValue(name, null);
       onDistrictChange(null);
     }
-  }, [provinceId, setValue, name, onDistrictChange]);
+  }, [provinceId, setValue, name]);
 
   const fetchDistricts = async (provinceId) => {
     try {

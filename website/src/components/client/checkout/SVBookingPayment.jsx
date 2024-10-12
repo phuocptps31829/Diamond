@@ -45,7 +45,7 @@ export default function Form() {
   return (
     <div className='mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10'>
       <div className='container bg-white mx-auto gap-5 px-10 py-5 pb-10 border rounded-md '>
-        <div>
+        {/* <div>
           <div className='flex flex-col md:flex-row justify-between items-center my-6'>
             <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
             <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> { bookingInfo.bookingDetails?.length } dịch vụ</span>
@@ -59,7 +59,6 @@ export default function Form() {
             </div>
             <div className='w-full md:w-[50%]'>
               <p>Dịch vụ đã chọn:</p>
-              {/* Services list */ }
               { cart.map((item, index) => <div key={ index } className='mt-2 px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
@@ -74,8 +73,8 @@ export default function Form() {
               </div>) }
             </div>
           </div>
-        </div>
-        <hr />
+        </div> */}
+        {/* <hr /> */ }
         <h1 className='font-bold text-[16px] md:text-[24px] my-6'>Thông tin người khám</h1>
         <div className='flex flex-col md:flex-row justify-between mb-7'>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%] mb-0 md:mb-4'>

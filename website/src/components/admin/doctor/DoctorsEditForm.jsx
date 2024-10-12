@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/Button";
 import DoctorEditor from "./editor";
 import SelectBranch from "@/components/client/checkout/select/SelectBranch";
 import { useParams } from "react-router-dom";
-import { getDoctorById } from "@/services/doctorsApi";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/Label";
@@ -22,6 +21,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { Controller, useForm } from "react-hook-form";
 import SelectSpecialty from "@/components/client/checkout/select/SelectSpecialty";
 import { MdCloudUpload } from "react-icons/md";
+import { doctorApi } from "@/services/doctorsApi";
 // import Modal from 'react-modal';
 
 // Modal.setAppElement("#root");
@@ -67,7 +67,7 @@ export default function DoctorsForm() {
   });
   const { data } = useQuery({
     queryKey: ["doctors", id],
-    queryFn: () => getDoctorById(id),
+    queryFn: () => doctorApi.getDoctorById(id),
     enabled: !!id,
   });
   useEffect(() => {

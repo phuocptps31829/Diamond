@@ -316,14 +316,13 @@ export default function Form() {
   }, [isBlocking, shouldNavigate, navigate]);
 
   const onSubmit = (data, event) => {
-    console.log(9999);
     event.preventDefault();
 
     if (!isFullInfoToCheckout) {
       toastUI('Vui lòng cung cấp đầy đủ thông tin', "warning");
       return;
     }
-
+    console.log(data, 'd');
     const bookingInfo = {
       patientID: profile._id,
       appointmentHelpUser: isBookingForOthers
@@ -336,7 +335,7 @@ export default function Form() {
           insuranceCode: data.insuranceCode,
           address: {
             province: data.province,
-            district: data.district,
+            district: data.district || "Quận Ngô Quyền",
             ward: data.ward,
             street: data.street,
           },
@@ -366,7 +365,6 @@ export default function Form() {
 
   return (
     <div className="mx-auto pt-5 max-w-screen-xl px-0 md:pt-10 md:px-5">
-      { isLoading && <Loading /> }
       <div className="container mx-auto flex flex-col gap-3 rounded-md border px-5 py-5 md:flex-row bg-white">
         {/* Select Services */ }
         <div className="flex w-[44%] flex-col gap-[20px] px-2">
