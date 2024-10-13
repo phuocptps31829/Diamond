@@ -37,40 +37,17 @@ const UserInfoForm = () => {
       return patientApi.updatePatient(id, requestBody);
     },
     onSuccess: (newData) => {
-      console.log('updated', newData);
-      // reset({
-      //   fullName: newData.fullName,
-      //   phone: newData.phoneNumber,
-      //   email: newData.email,
-      //   dateOfBirth: newData.dateOfBirth,
-      //   gender: newData.gender,
-      //   roleID: newData.roleID,
-      //   citizenIdentificationNumber: newData.citizenIdentificationNumber,
-      //   isActivated: newData.isActivated,
-      //   password: undefined,
-      //   confirmPassword: undefined,
-      // });
-
-      // setValue("insuranceCode", newData.otherInfo?.insuranceCode || "");
-      // setValue("occupation", newData.otherInfo?.occupation || "");
-      // setValue("ethnic", newData.otherInfo?.ethnic || "");
-      // setValue("province", newData.address?.province || "");
-      // setValue("district", newData.address?.district || "");
-      // setValue("ward", newData.address?.ward || "");
-      // setValue("address", newData.address?.address || "");
-
-      // setFileImage(null);
-      // setImagePreview(null);
-      // setLoadingImage(false);
-      // setIsInitialized(true);
-      // setInitialRender(true);
-      // toast("Cập nhật người dùng thành công!", "success");
+      toastUI("Cập nhật thành công", "success");
       queryClient.invalidateQueries(["userProfile"]);
     },
-    // onError: () => {
-    //   setLoadingImage(false);
-    //   toast("Cập nhật người dùng thất bại!", "error");
-    // },
+    onError: (error) => {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toastUI(errorMessage || "Cập nhật thất bại", "error");
+    },
   });
 
   const {
@@ -121,8 +98,6 @@ const UserInfoForm = () => {
   console.log(errors);
   const onSubmit = async (data) => {
     console.log(data);
-    return;
-
     const requestBody = {
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
@@ -132,6 +107,7 @@ const UserInfoForm = () => {
       avatar: "",
       citizenIdentificationNumber: data.citizenIdentificationNumber,
       address: data.address,
+      isActivated: true,
       otherInfo: {
         occupation: data.occupation,
         insuranceCode: data.insuranceCode,

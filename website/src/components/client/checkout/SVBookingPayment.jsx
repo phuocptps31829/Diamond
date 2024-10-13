@@ -45,24 +45,18 @@ export default function Form() {
   return (
     <div className='mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10'>
       <div className='container bg-white mx-auto gap-5 px-10 py-5 pb-10 border rounded-md '>
-        {/* <div>
-          <div className='flex flex-col md:flex-row justify-between items-center my-6'>
+        <div>
+          <div className='flex flex-col md:flex-row justify-between items-center my-3'>
             <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
             <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'><strong>Tổng dịch vụ:</strong> { bookingInfo.bookingDetails?.length } dịch vụ</span>
           </div>
-          <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-7'>
-            <div className='mb-4 md:mb-0'>
-              <p className='mb-1 text-[16px] md:text-[20px]'><strong>Chi nhánh: </strong>ĐA KHOA DIAMOND</p>
-              <p className='mb-1'><strong>Ngày khám: </strong>18/08/2024</p>
-              <p className='mb-1'><strong>Giờ khám: </strong>08:30</p>
-
-            </div>
+          <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-6'>
             <div className='w-full md:w-[50%]'>
               <p>Dịch vụ đã chọn:</p>
               { cart.map((item, index) => <div key={ index } className='mt-2 px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'>
                 <div className='flex flex-row md:flex-row items-center'>
                   <img
-                    src={ item.image }
+                    src={ `${import.meta.env.VITE_IMAGE_API_URL}/${item.image}` }
                     className='w-[60px] md:w-[110px] sm:w-[80px]'
                     alt={ item.name }
                   />
@@ -73,9 +67,9 @@ export default function Form() {
               </div>) }
             </div>
           </div>
-        </div> */}
-        {/* <hr /> */ }
-        <h1 className='font-bold text-[16px] md:text-[24px] my-6'>Thông tin người khám</h1>
+        </div>
+        <hr />
+        <h1 className='font-bold text-[16px] md:text-[24px] my-3'>Thông tin người khám</h1>
         <div className='flex flex-col md:flex-row justify-between mb-7'>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%] mb-0 md:mb-4'>
             <p className='mb-2'><strong>Họ tên: </strong>{ personHelpInfo ? personHelpInfo.fullName : profileCustomer.fullName }</p>
@@ -84,10 +78,7 @@ export default function Form() {
             <p className='mb-2'><strong>Giới tính: </strong>{ personHelpInfo ? personHelpInfo.gender : profileCustomer.gender }</p>
             <p className='mb-2'><strong>Ngày sinh: </strong>{ new Intl.DateTimeFormat('vi-VN').format(new Date(personHelpInfo ? personHelpInfo.dateOfBirth : profileCustomer.dateOfBirth)) }</p>
             <p className='mb-2'><strong>Địa chỉ: </strong>
-              { personHelpInfo ? personHelpInfo.address.street : profileCustomer.address.street },{ ' ' }
-              { personHelpInfo ? personHelpInfo.address.ward : profileCustomer.address.ward },{ ' ' }
-              { personHelpInfo ? personHelpInfo.address.district : profileCustomer.address.district },{ ' ' }
-              { personHelpInfo ? personHelpInfo.address.province : profileCustomer.address.province }
+              { personHelpInfo ? personHelpInfo.address : profileCustomer.address }
             </p>
           </div>
           <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
@@ -99,8 +90,8 @@ export default function Form() {
         </div>
         <hr />
         {/* Thanh toán */ }
-        <div className='mt-6'>
-          <h1 className='font-bold text-[16px] md:text-[24px] mb-5'>Phương thức thanh toán</h1>
+        <div className='mt-3'>
+          <h1 className='font-bold text-[16px] md:text-[24px] mb-3'>Phương thức thanh toán</h1>
           <div className='flex flex-col md:flex-row justify-between gap-4'>
             <div className='flex flex-col gap-4 w-full'>
               <label onClick={ () => setPaymentMethod("momo") } className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'momo' ? 'border-primary-500 border-2' : ''}` }>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import PackageItem from "../product/Package";
 import { Link } from "react-router-dom";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 import NotFound from "@/components/ui/NotFound";
+import Product from "../product/Product";
 
 export default function OutstandingPackages() {
   const [OutstandingMedicalPackages, setOutstandingMedicalPackages] = useState(
@@ -89,7 +89,7 @@ export default function OutstandingPackages() {
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
             { OutstandingMedicalPackages?.map((medicalPackage) => {
               return (
-                <PackageItem key={ medicalPackage._id } { ...medicalPackage } />
+                <Product key={ medicalPackage._id } product={ medicalPackage } />
               );
             }) }
           </div>

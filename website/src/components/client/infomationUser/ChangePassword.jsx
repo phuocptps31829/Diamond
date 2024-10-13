@@ -1,6 +1,8 @@
 import InputCustom from "@/components/ui/InputCustom";
+import { toastUI } from "@/components/ui/Toastify";
 import { changePasswordSchema } from "@/zods/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 const ChangePassword = () => {
@@ -17,6 +19,19 @@ const ChangePassword = () => {
     },
   });
 
+  const { mutate: changePassword, isPending } = useMutation({
+    mutationFn: () => { },
+    onError: (error) => {
+      console.log(error);
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toastUI(errorMessage || "Có lỗi xảy ra khi đổi mật khẩu", "error");
+    }
+  });
+
   const onSubmit = (data) => {
     console.log("Form submittedd");
     console.log(data);
@@ -30,11 +45,11 @@ const ChangePassword = () => {
           <InputCustom
             className="col-span-1 sm:col-span-1"
             name="oldPassword"
-            label="Mật khẩu cũ"
+            label="Mật khẩu hiện tại"
             type="text"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Nhập mật khẩu hiện tại"
           />
           <InputCustom
             className="col-span-1 sm:col-span-1"
@@ -43,7 +58,7 @@ const ChangePassword = () => {
             type="password"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Nhập mật khẩu mới"
           />
           <InputCustom
             className="col-span-1 sm:col-span-1"
@@ -52,7 +67,7 @@ const ChangePassword = () => {
             type="password"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Xác nhận mật khẩu mới"
           />
         </div>
         <div className="flex w-full items-end justify-end">

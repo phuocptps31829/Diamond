@@ -50,11 +50,15 @@ const infoBookingSlice = createSlice({
     },
     initBookingDetails: (state, action) => {
       state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId != null,
+        (detail) => detail?.serviceID
+          ? detail?.serviceID !== null
+          : detail?.medicalPackageID !== null,
       );
 
       const existingIndex = state.bookingDetails.findIndex(
-        (detail) => detail.serviceId === action.payload.serviceId,
+        (detail) => detail?.serviceID
+          ? detail?.serviceID === action.payload.serviceID
+          : detail?.medicalPackageID === action.payload.medicalPackageID,
       );
 
       if (existingIndex >= 0) {
@@ -64,8 +68,11 @@ const infoBookingSlice = createSlice({
       }
     },
     removeItemInfo: (state, action) => {
-      state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId !== action.payload,
+      const isService = action.payload.isService;
+      state.bookingDetails = state.bookingDetails.filter((detail) =>
+        isService
+          ? detail.serviceID !== action.payload._id
+          : detail.medicalPackageID !== action.payload._id
       );
     },
     clearBookingDetails: (state) => {

@@ -6,17 +6,10 @@ export function checkRequiredBookingFields(data) {
     const requiredFields = [
         'fullName',
         'phoneNumber',
-        'email',
         'dateOfBirth',
-        'address.province',
-        'address.district',
-        'address.ward',
-        'address.street',
+        'address',
         'gender',
         'citizenIdentificationNumber',
-        'otherInfo.occupation',
-        'otherInfo.insuranceCode',
-        'otherInfo.ethnic'
     ];
 
     for (let field of requiredFields) {

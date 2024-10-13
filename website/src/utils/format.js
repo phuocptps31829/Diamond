@@ -7,3 +7,7 @@ export const formatDateTimeLocale = (time) => {
         minute: '2-digit',
     }).format(new Date(time));
 };
+
+export const formatPrice = (price) => {
+    return price.toLocaleString() + '₫';
+};

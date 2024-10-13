@@ -40,26 +40,7 @@ export const otherBookingSchema = z.object({
   time: z.string().min(1, "Thời gian khám không được để trống!"),
 
   date: z.string().min(1, "Ngày khám không được để trống!"),
-  province: z.union([
-    z.string().min(1, "Không được để trống!"),
-    z.number(),
-    z.null(),
-  ]),
-  district: z.union([
-    z.string().min(1, "Không được để trống!"),
-    z.number(),
-    z.null(),
-  ]),
-  ward: z.union([
-    z.string().min(1, "Không được để trống!"),
-    z.number(),
-    z.null(),
-  ]),
-  street: z.union([
-    z.string().min(1, "Không được để trống!"),
-    z.number(),
-    z.null(),
-  ]),
+  address: z.string().min(1, "Địa chỉ không được để trống!"),
 });
 
 export const selfBookingSchema = z.object({

@@ -12,10 +12,9 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
-import PackageItem from "../product/Package";
-import ServiceItem from "../product/Service";
 import SidebarFilter from "../categoryService/SidebarFilter";
 import NotFound from "@/components/ui/NotFound";
+import Product from "../product/Product";
 
 const ServicesContainer = () => {
   const location = useLocation();
@@ -115,7 +114,7 @@ const ServicesContainer = () => {
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
-                  { Array(12)
+                  { Array(6)
                     .fill(null)
                     .map((_, index) => (
                       <Skeleton key={ index } className="h-80 w-full" />
@@ -125,17 +124,8 @@ const ServicesContainer = () => {
                 type === "package"
                   ? <NotFound message={ "Không tìm thấy gói khám nào." } />
                   : <NotFound message={ "Không tìm thấy dịch vụ nào." } />
-              ) : (
-                <>
-                  { type === "package"
-                    ? data?.data.map((item) => (
-                      <PackageItem key={ item._id } { ...item } />
-                    ))
-                    : data?.data.map((item) => (
-                      <ServiceItem key={ item._id } { ...item } />
-                    )) }
-                </>
-              ) }
+              ) : data?.data.map((item) =>
+                <Product key={ item._id } product={ item } />) }
             </div>
             <Pagination className="pt-5">
               { totalPages ?

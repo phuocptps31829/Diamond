@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
@@ -16,25 +15,36 @@ import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useEffect, useState } from "react";
 import { removeItemInfo, initBookingDetails } from "@/redux/bookingSlice";
 import { toastUI } from "@/components/ui/Toastify";
+import { RiDeleteBackFill } from "react-icons/ri";
+import { formatPrice } from "@/utils/format";
 
-export default function ServiceItem({
-  image,
-  name,
-  price,
-  discountPrice,
-  orderCount,
-  _id,
-  specialtyID,
-}) {
+export default function Product({ product }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cart);
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const [isInCart, setIsInCart] = useState(false);
 
+  const {
+    _id,
+    name,
+    specialtyID,
+    price,
+    discountPrice,
+    image,
+    orderCount,
+    services
+  } = product;
+
+  const isService = !services || !services?.length;
+
   useEffect(() => {
-    const productExists = cartItems.some((item) => item.id === _id);
-    setIsInCart(productExists);
-  }, [cartItems, _id]);
+    const isExists = cartItems.some((item) =>
+      isService
+        ? item.serviceID === _id
+        : item.medicalPackageID === _id
+    );
+    setIsInCart(isExists);
+  }, [cartItems, _id, isService]);
 
   const handleAddClick = () => {
     if (!profileCustomer) {
@@ -43,15 +53,29 @@ export default function ServiceItem({
     }
 
     if (!isInCart) {
-      dispatch(addToCart({ id: _id, name, specialtyID, price, image }));
+      dispatch(addToCart({
+        ...(isService ? {
+          serviceID: _id
+        } : {
+          medicalPackageID: _id
+        }),
+        name,
+        specialtyID,
+        price,
+        image
+      }));
       dispatch(
         initBookingDetails({
-          serviceId: _id,
+          ...(isService ? {
+            serviceID: _id
+          } : {
+            medicalPackageID: _id
+          }),
           bookingDetail: {
             specialtyID,
             name,
             image,
-            price: price || 0,
+            price: discountPrice || 0,
             selectedBranchId: "",
             selectedDoctorId: "",
             selectedWorkScheduleId: "",
@@ -62,8 +86,9 @@ export default function ServiceItem({
         }),
       );
     } else {
-      dispatch(removeFromCart(_id));
-      dispatch(removeItemInfo(_id));
+      console.log('del', product);
+      dispatch(removeFromCart({ _id, isService: isService }));
+      dispatch(removeItemInfo({ _id, isService: isService }));
       setIsInCart(false);
     }
   };
@@ -71,8 +96,8 @@ export default function ServiceItem({
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to={ `/detail-service/${_id}` }
-        className="group block min-h-[125px] w-full overflow-hidden sm:min-h-[210px]"
+        to={ isService ? `/service/${_id}` : `/package/${_id}` }
+        className="group block min-h-[125px] w-full overflow-hidden h-[210px]"
       >
         <img
           src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }
@@ -80,20 +105,27 @@ export default function ServiceItem({
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex h-full flex-col p-3 md:p-5 md:pt-2">
+      <div className="flex flex-col p-3 md:p-5 md:pt-2">
+        { services && services?.length > 0 ? <Link
+          to={ `/package/${_id}` }
+          className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
+        >
+          { services[0].levelName }
+        </Link> : '' }
         <Link
-          to={ `/detail-service/${_id}` }
-          className="grow py-2 text-sm font-bold md:text-xl"
+          to={ isService ? `/service/${_id}` : `/package/${_id}` }
+          className="py-1 text-sm font-bold md:text-xl"
         >
           { name }
         </Link>
         <hr className="mb-1" />
         <div className="flex items-center space-x-2 py-1">
           <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-            { (discountPrice).toLocaleString() } ₫
+            { formatPrice(services && services?.length > 0 ? services[0].discountPrice : discountPrice) }
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            { (price).toLocaleString() }₫
+
+            { formatPrice(services && services?.length > 0 ? services[0].price : price) }
           </span>
         </div>
 
@@ -112,7 +144,7 @@ export default function ServiceItem({
         </div>
         <div className="mt-2 flex w-full items-center justify-center gap-2">
           <Link
-            to={ `/detail-service/${_id}` }
+            to={ isService ? `/service/${_id}` : `/package/${_id}` }
             className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
           >
             Đặt ngay <AiOutlineDoubleRight />
@@ -128,7 +160,7 @@ export default function ServiceItem({
                     }` }
                 >
                   { isInCart ? (
-                    <ImBin className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
+                    <RiDeleteBackFill className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
                   ) : (
                     <GiHeartPlus className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
                   ) }
@@ -144,13 +176,3 @@ export default function ServiceItem({
     </div>
   );
 }
-
-ServiceItem.propTypes = {
-  image: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  discountPrice: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  orderCount: PropTypes.number.isRequired,
-  _id: PropTypes.string.isRequired,
-  specialtyID: PropTypes.string.isRequired,
-};
