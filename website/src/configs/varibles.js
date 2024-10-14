@@ -74,7 +74,7 @@ const API_CREATE_APPOINTMENT_VNPAY = `${API_URL}/invoices/payment/vnpay`;
 const API_CREATE_APPOINTMENT_MOMO = `${API_URL}/invoices/payment/momo`;
 
 // patients
-const API_GET_ALL_PATIENTS = `${API_URL}/users/get-by-role/PATIENT`;
+const API_GET_ALL_PATIENTS = `${API_URL}/patients`;
 
 // appointments
 const API_GET_UPCOMING_APPOINTMENTS = `${API_URL}/appointments?limit=9999&sort=-time`;

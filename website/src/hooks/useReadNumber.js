@@ -61,7 +61,7 @@ export const useReadNumber = () => {
       index++;
     } while (absNumber > 0);
     result = (number < 0 ? "âm " : "") + (result.trim() + " đồng");
-    return result[0].toUpperCase + result.slice(1);
+    return result[0].toUpperCase() + result.slice(1);
   }
   return readNumber;
 };
