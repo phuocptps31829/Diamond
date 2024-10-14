@@ -47,6 +47,7 @@ export default function Product({ product }) {
   }, [cartItems, _id, isService]);
 
   const handleAddClick = () => {
+    console.log('prd', product);
     if (!profileCustomer) {
       toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
       return;
@@ -76,9 +77,9 @@ export default function Product({ product }) {
             name,
             image,
             price: discountPrice || 0,
-            selectedBranchId: "",
-            selectedDoctorId: "",
-            selectedWorkScheduleId: "",
+            selectedBranchID: "",
+            selectedDoctorID: "",
+            selectedWorkScheduleID: "",
             selectedDate: "",
             selectedTime: "",
             clinic: "",

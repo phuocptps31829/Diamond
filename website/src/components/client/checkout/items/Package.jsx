@@ -1,13 +1,8 @@
-import { Checkbox } from "@/components/ui/Checkbox";
-
-const Package = ({ index, pkg }) => {
+const Package = ({ pkg }) => {
+    console.log('pkg', pkg);
     return (
         <label>
             <div className="relative mb-3 rounded-lg border border-primary-500 px-4 py-3">
-                <Checkbox
-                    id={ `checkbox-gt-${index}` }
-                    className="absolute right-5 top-1/2"
-                />
                 <div className="mb-2 flex">
                     <img
                         src={ pkg.image }

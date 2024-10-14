@@ -36,6 +36,7 @@ import { patientApi } from "@/services/patientsApi";
 import Loading from "@/components/ui/Loading";
 import { checkRequiredBookingFields } from "@/utils/validate";
 import Service from "./items/Service";
+import Package from "./items/Package";
 
 const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
@@ -101,6 +102,7 @@ export default function Form() {
 
   const handleSelectProduct = async (productID) => {
     console.log(productID);
+    console.log(bookingDetails);
     const product = bookingDetails.find((product) =>
       product?.serviceID
         ? product.serviceID === productID
@@ -111,22 +113,25 @@ export default function Form() {
 
     if (product) {
       setSelectedProduct(product);
-      setValue("department", product.bookingDetail?.selectedBranchId);
-      setValue("doctor", product.bookingDetail?.selectedDoctorId);
+      setValue("department", product.bookingDetail?.selectedBranchID);
+      setValue("doctor", product.bookingDetail?.selectedDoctorID);
       setValue("time", product.bookingDetail?.selectedTime);
       setValue("date", product.bookingDetail?.selectedDate);
       setValue("room", product.bookingDetail?.clinic.name);
     }
   };
 
-  const handleChangeBranch = (branchId) => {
+  const handleChangeBranch = (branchID) => {
     dispatch(
       changeBookingDetails({
-        serviceId: selectedProduct.serviceId,
+        ...(selectedProduct?.serviceID
+          ? { serviceID: selectedProduct.serviceID }
+          : { medicalPackageID: selectedProduct?.medicalPackageID }
+        ),
         newChange: {
-          selectedBranchId: branchId,
-          selectedDoctorId: "",
-          selectedWorkScheduleId: "",
+          selectedBranchID: branchID,
+          selectedDoctorID: "",
+          selectedWorkScheduleID: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -138,13 +143,16 @@ export default function Form() {
     setValue("room", "");
   };
 
-  const handleChangeDoctor = (doctorId) => {
+  const handleChangeDoctor = (doctorID) => {
     dispatch(
       changeBookingDetails({
-        serviceId: selectedProduct?.serviceId,
+        ...(selectedProduct?.serviceID
+          ? { serviceID: selectedProduct.serviceID }
+          : { medicalPackageID: selectedProduct?.medicalPackageID }
+        ),
         newChange: {
-          selectedDoctorId: doctorId,
-          selectedWorkScheduleId: "",
+          selectedDoctorID: doctorID,
+          selectedWorkScheduleID: "",
           selectedDate: "",
           selectedTime: "",
           clinic: "",
@@ -158,10 +166,13 @@ export default function Form() {
   const handleChangeDate = (date) => {
     dispatch(
       changeBookingDetails({
-        serviceId: selectedProduct?.serviceId,
+        ...(selectedProduct?.serviceID
+          ? { serviceID: selectedProduct.serviceID }
+          : { medicalPackageID: selectedProduct?.medicalPackageID }
+        ),
         newChange: {
           selectedDate: date,
-          selectedWorkScheduleId: "",
+          selectedWorkScheduleID: "",
           selectedTime: "",
           clinic: "",
         }
@@ -174,9 +185,12 @@ export default function Form() {
     console.log(workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
-        serviceId: selectedProduct?.serviceId,
+        ...(selectedProduct?.serviceID
+          ? { serviceID: selectedProduct.serviceID }
+          : { medicalPackageID: selectedProduct?.medicalPackageID }
+        ),
         newChange: {
-          selectedWorkScheduleId: workScheduleID,
+          selectedWorkScheduleID: workScheduleID,
           selectedTime: time,
           clinic: clinic?.name
         }
@@ -336,7 +350,7 @@ export default function Form() {
         }
         : undefined,
       data: bookingDetails.map((detail) => ({
-        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
+        workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
         serviceID: detail.serviceId,
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedProduct()?.bookingDetail.selectedDate, getCurSelectedProduct()?.bookingDetail.selectedTime),
@@ -373,7 +387,10 @@ export default function Form() {
                 selectedID={ selectedProduct?.serviceID }
                 onRemove={ handleRemoveItem }
                 onSelect={ handleSelectProduct }
-              /> : '') : (
+              /> : <Package
+                key={ item.medicalPackageID }
+                pkg={ item }
+              />) : (
                 <div className="flex h-full items-center justify-center">
                   <p className="text-center text-gray-500">
                     Chưa có dịch vụ được chọn
@@ -400,7 +417,7 @@ export default function Form() {
                   <SelectDepartment
                     control={ control }
                     name="department"
-                    selectedServiceID={
+                    selectedProductID={
                       selectedProduct?.serviceID || selectedProduct?.medicalPackageID
                     }
                     errors={ errors }
@@ -418,13 +435,13 @@ export default function Form() {
                     control={ control }
                     name="doctor"
                     errors={ errors }
-                    branchId={ getCurSelectedProduct()?.bookingDetail?.selectedBranchId }
+                    branchID={ getCurSelectedProduct()?.bookingDetail?.selectedBranchID }
                     setValue={ setValue }
                     specialtyID={
                       selectedProduct?.bookingDetail?.specialtyID || ""
                     }
-                    onChange={ (doctorId) => {
-                      handleChangeDoctor(doctorId);
+                    onChange={ (doctorID) => {
+                      handleChangeDoctor(doctorID);
                     } }
                     selectedServiceID={
                       selectedProduct?.serviceID || selectedProduct?.medicalPackageID
@@ -437,7 +454,7 @@ export default function Form() {
                   <SelectDate
                     control={ control }
                     name="date"
-                    doctorId={ getCurSelectedProduct()?.bookingDetail?.selectedDoctorId }
+                    doctorID={ getCurSelectedProduct()?.bookingDetail?.selectedDoctorID }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ (date) => {
@@ -449,7 +466,7 @@ export default function Form() {
                   <SelectTime
                     control={ control }
                     name="time"
-                    doctorId={ getCurSelectedProduct()?.bookingDetail?.selectedDoctorId }
+                    doctorID={ getCurSelectedProduct()?.bookingDetail?.selectedDoctorID }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ handleChangeTime }

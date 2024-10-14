@@ -171,7 +171,7 @@ const AppointmentHistory = () => {
             <TableRow key={ index }>
               <TableCell className="text-xs md:text-sm">{ index + 1 }</TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                { appointment.service.name }
+                { appointment?.service?.name || appointment?.medicalPackage?.name }
               </TableCell>
               <TableCell className="text-xs whitespace-nowrap  md:text-sm">
                 { formatDateTimeLocale(appointment.time) }

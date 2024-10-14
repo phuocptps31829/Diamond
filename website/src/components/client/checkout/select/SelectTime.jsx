@@ -25,17 +25,17 @@ export default function SelectTime({
   errors,
   date,
   onChange,
-  doctorId,
+  doctorID,
 }) {
   const [open, setOpen] = useState(false);
   const [times, setTimes] = useState([]);
 
   useEffect(() => {
     const fetchDates = async () => {
-      if (!doctorId) return;
+      if (!doctorID) return;
 
       try {
-        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId);
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorID);
 
         const selectedSchedule = data.data.find(
           (schedule) => schedule.day === date,
@@ -57,11 +57,11 @@ export default function SelectTime({
     };
 
     fetchDates();
-  }, [date, doctorId]);
+  }, [date, doctorID]);
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [date, doctorId, errors, name]);
+  }, [date, doctorID, errors, name]);
 
   const handleClick = () => {
     if (!date) {

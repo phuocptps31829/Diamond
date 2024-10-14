@@ -3,7 +3,7 @@ const { createError } = require("../utils/helper.util");
 const mongoose = require("mongoose");
 
 module.exports = {
-    getAllServices: async (req, res, next) => {
+    getAllServices1: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
@@ -83,6 +83,61 @@ module.exports = {
                 page: page || 1,
                 message: 'Services retrieved successfully.',
                 data: services,
+                totalRecords
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAllServices: async (req, res, next) => {
+        try {
+            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { branchID, specialtyID, gender } = req.checkValueQuery;
+
+            const queryOptions = {
+                ...(branchID ? { branchID } : {}),
+                ...(specialtyID ? { specialtyID } : {}),
+                ...(gender ? { "applicableObject.gender": gender } : {})
+            };
+
+            const totalRecords = await ServiceModel
+                .countDocuments({
+                    isDeleted: false,
+                    ...queryOptions
+                });
+
+            const services = await ServiceModel
+                .find({
+                    isDeleted: false,
+                    ...queryOptions
+                })
+                .populate('specialtyID')
+                .limit(limitDocuments)
+                .skip(skip)
+                .sort(sortOptions)
+                .lean();
+
+            if (!services.length) {
+                createError(404, 'No services found.');
+            }
+
+            const formattedServices = services.map(service => {
+                const formattedService = {
+                    ...service,
+                    specialty: {
+                        _id: service.specialtyID._id,
+                        name: service.specialtyID.name,
+                    }
+                };
+
+                delete formattedService.specialtyID;
+                return formattedService;
+            });
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'Services retrieved successfully.',
+                data: formattedServices,
                 totalRecords
             });
         } catch (error) {

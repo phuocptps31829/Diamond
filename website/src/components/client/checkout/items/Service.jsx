@@ -22,7 +22,7 @@ const Service = ({
         <div className="relative py-3">
             <input
                 className="peer hidden"
-                id={ `radio_${svc.id}` }
+                id={ `radio_${svc.serviceID}` }
                 type="radio"
                 name="radio"
                 checked={ svc.serviceID === selectedID }
@@ -34,7 +34,7 @@ const Service = ({
             </span>
             <label
                 className={ `flex cursor-pointer select-none rounded-lg p-2 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline ${hasEmptyFields ? "peer-checked:outline-red-500" : "peer-checked:outline-primary-500"} ${hasEmptyFields ? "outline-red-500" : "outline-primary-500"}` }
-                htmlFor={ `radio_${svc.id}` }
+                htmlFor={ `radio_${svc.serviceID}` }
             >
                 <div className="flex items-center gap-4">
                     <img

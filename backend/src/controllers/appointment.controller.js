@@ -148,7 +148,7 @@ module.exports = {
             if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
-
+            console.log(appointments);
             const formattedAppointmentsPromises = appointments.map(async appointment => {
                 const result = await ResultModel
                     .findOne({ isDeleted: false, appointmentID: appointment._id })

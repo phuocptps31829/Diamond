@@ -61,7 +61,8 @@ module.exports = {
                     _id: id
                 })
                 .populate("branchID")
-                .populate("specialtyID");
+                .populate("specialtyID")
+                .lean();
 
             if (!clinic) {
                 createError(404, "Clinic not found.");

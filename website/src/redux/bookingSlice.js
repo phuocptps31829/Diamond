@@ -4,13 +4,15 @@ const cartData = JSON.parse(localStorage.getItem("cart")) || [];
 console.log('cartInit', cartData);
 const formattedCart = cartData.map((item) => {
   return {
-    serviceId: item.id,
+    ...(item.serviceID
+      ? { serviceID: item.serviceID }
+      : { medicalPackageID: item.medicalPackageID }),
     bookingDetail: {
       specialtyID: item.specialtyID,
-      selectedBranchId: "",
-      selectedDoctorId: "",
+      selectedBranchID: "",
+      selectedDoctorID: "",
       price: item.price || "",
-      selectedWorkScheduleId: "",
+      selectedWorkScheduleID: "",
       selectedDate: "",
       selectedTime: "",
       clinic: "",
@@ -30,14 +32,11 @@ const infoBookingSlice = createSlice({
   initialState,
   reducers: {
     changeBookingDetails: (state, action) => {
-      // state.bookingDetails = state.bookingDetails.filter(
-      //   (detail) => detail.serviceId != null,
-      // );
-      console.log(action.payload);
       const existingIndex = state.bookingDetails.findIndex(
-        (detail) => detail.serviceId === action.payload.serviceId,
+        (detail) => detail.serviceID
+          ? detail.serviceID === action.payload.serviceID
+          : detail.medicalPackageID === action.payload.medicalPackageID,
       );
-
       if (existingIndex >= 0) {
         state.bookingDetails[existingIndex] = {
           ...state.bookingDetails[existingIndex],
@@ -80,9 +79,9 @@ const infoBookingSlice = createSlice({
         serviceId: item.serviceId,
         bookingDetail: {
           specialtyID: item.bookingDetail.specialtyID,
-          selectedBranchId: "",
-          selectedDoctorId: "",
-          selectedWorkScheduleId: "",
+          selectedBranchID: "",
+          selectedDoctorID: "",
+          selectedWorkScheduleID: "",
           selectedDate: "",
           price: item.bookingDetail.price,
           selectedTime: "",
@@ -99,5 +98,11 @@ const infoBookingSlice = createSlice({
   },
 });
 
-export const { changeBookingDetails, removeItemInfo, clearBookingDetails, saveBookingInfo, initBookingDetails } = infoBookingSlice.actions;
+export const {
+  changeBookingDetails,
+  removeItemInfo,
+  clearBookingDetails,
+  saveBookingInfo,
+  initBookingDetails
+} = infoBookingSlice.actions;
 export default infoBookingSlice.reducer;
