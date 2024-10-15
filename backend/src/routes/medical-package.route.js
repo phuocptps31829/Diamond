@@ -64,6 +64,33 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/medical-packages/slug/{slug}':
+ *  get:
+ *    tags:
+ *    - Medical Package Routes
+ *    summary: Get medical package by slug
+ *    parameters:
+ *      - in: path
+ *        name: slug
+ *        required: true
+ *        description: Medical package slug
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/slug/:slug',
+    medicalPackageController.getMedicalPackageBySlug
+);
+
+/**
+ * @openapi
  * '/api/v1/medical-packages/{id}':
  *  get:
  *    tags:

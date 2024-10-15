@@ -148,4 +148,12 @@ export const authApi = {
     console.log(res.data);
     return res.data;
   },
+  changePassword: async ({ password, newPassword }) => {
+    const res = await axiosInstanceCUD.put('/auth/change-password', {
+      password,
+      newPassword
+    });
+    console.log(res.data);
+    return res.data;
+  },
 };

@@ -180,10 +180,12 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            const service = await ServiceModel.findOne({
-                _id: id,
-                isDeleted: false,
-            });
+            const service = await ServiceModel
+                .findOne({
+                    _id: id,
+                    isDeleted: false,
+                });
+
 
             if (!service) {
                 createError(404, 'Service not found.');
@@ -192,6 +194,39 @@ module.exports = {
             return res.status(200).json({
                 message: 'Service retrieved successfully.',
                 data: service,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getServiceBySlug: async (req, res, next) => {
+        try {
+            const { slug } = req.params;
+
+            const service = await ServiceModel
+                .findOne({
+                    slug: slug,
+                    isDeleted: false,
+                })
+                .populate("specialtyID")
+                .lean();
+
+            if (!service) {
+                createError(404, 'Service not found.');
+            }
+
+            const formattedService = {
+                ...service,
+                specialty: {
+                    _id: service.specialtyID._id,
+                    name: service.specialtyID.name,
+                }
+            };
+            delete formattedService.specialtyID;
+
+            return res.status(200).json({
+                message: 'Service retrieved successfully.',
+                data: formattedService,
             });
         } catch (error) {
             next(error);

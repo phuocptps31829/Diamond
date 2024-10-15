@@ -107,11 +107,11 @@ const router = createBrowserRouter([
         element: <CategoryService />,
       },
       {
-        path: "service/:serviceId",
+        path: "service/:serviceSlug",
         element: <DetailService />,
       },
       {
-        path: "package/:packageId",
+        path: "package/:packageSlug",
         element: <DetailService />,
       },
       {

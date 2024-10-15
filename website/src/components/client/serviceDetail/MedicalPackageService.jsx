@@ -25,7 +25,6 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
       </div>
     );
   }
-
   const { allServices, services, name } = medicalPackage;
   const levelNames = services.map((service) => service.levelName).reverse();
   const servicesByLevel = services.reduce((acc, service) => {

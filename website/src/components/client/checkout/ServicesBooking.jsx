@@ -38,7 +38,7 @@ import { checkRequiredBookingFields } from "@/utils/validate";
 import Service from "./items/Service";
 import Package from "./items/Package";
 
-const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
+const combineDateTime = (date, time) => { return `${date}T${time}:00.000`; };
 
 export default function Form() {
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
@@ -351,7 +351,7 @@ export default function Form() {
         : undefined,
       data: bookingDetails.map((detail) => ({
         workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
-        serviceID: detail.serviceId,
+        serviceID: detail.serviceID,
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedProduct()?.bookingDetail.selectedDate, getCurSelectedProduct()?.bookingDetail.selectedTime),
         status: "Chờ xác nhận",

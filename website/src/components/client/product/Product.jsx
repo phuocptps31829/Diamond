@@ -27,13 +27,16 @@ export default function Product({ product }) {
   const {
     _id,
     name,
-    specialtyID,
+    slug,
+    specialty,
     price,
     discountPrice,
     image,
     orderCount,
     services
   } = product;
+
+  console.log(product);
 
   const isService = !services || !services?.length;
 
@@ -61,7 +64,7 @@ export default function Product({ product }) {
           medicalPackageID: _id
         }),
         name,
-        specialtyID,
+        specialtyID: specialty._id,
         price,
         image
       }));
@@ -73,7 +76,7 @@ export default function Product({ product }) {
             medicalPackageID: _id
           }),
           bookingDetail: {
-            specialtyID,
+            specialtyID: specialty._id,
             name,
             image,
             price: discountPrice || 0,
@@ -97,7 +100,7 @@ export default function Product({ product }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to={ isService ? `/service/${_id}` : `/package/${_id}` }
+        to={ isService ? `/service/${slug}` : `/package/${slug}` }
         className="group block min-h-[125px] w-full overflow-hidden h-[210px]"
       >
         <img
@@ -108,13 +111,13 @@ export default function Product({ product }) {
       </Link>
       <div className="flex flex-col p-3 md:p-5 md:pt-2">
         { services && services?.length > 0 ? <Link
-          to={ `/package/${_id}` }
+          to={ `/package/${slug}` }
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
           { services[0].levelName }
         </Link> : '' }
         <Link
-          to={ isService ? `/service/${_id}` : `/package/${_id}` }
+          to={ isService ? `/service/${slug}` : `/package/${slug}` }
           className="py-1 text-sm font-bold md:text-xl"
         >
           { name }
@@ -125,7 +128,6 @@ export default function Product({ product }) {
             { formatPrice(services && services?.length > 0 ? services[0].discountPrice : discountPrice) }
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-
             { formatPrice(services && services?.length > 0 ? services[0].price : price) }
           </span>
         </div>
@@ -145,7 +147,7 @@ export default function Product({ product }) {
         </div>
         <div className="mt-2 flex w-full items-center justify-center gap-2">
           <Link
-            to={ isService ? `/service/${_id}` : `/package/${_id}` }
+            to={ isService ? `/service/${slug}` : `/package/${slug}` }
             className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
           >
             Đặt ngay <AiOutlineDoubleRight />

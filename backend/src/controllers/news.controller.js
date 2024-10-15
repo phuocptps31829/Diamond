@@ -45,5 +45,26 @@ module.exports = {
         } catch (error) {
             next(error);
         }
+    },
+    getNewsBySlug: async (req, res, next) => {
+        try {
+            const { slug } = req.params;
+
+            const news = await NewsModel.findOne({
+                slug: slug,
+                isDeleted: false
+            });
+
+            if (!news) {
+                createError(404, 'News not found.');
+            }
+
+            return res.status(200).json({
+                message: 'News retrieved successfully.',
+                data: news
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 };

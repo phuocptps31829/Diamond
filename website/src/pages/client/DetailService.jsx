@@ -13,8 +13,8 @@ import { serviceApi } from "@/services/servicesApi";
 const DetailService = () => {
   useScrollToTop();
 
-  const { serviceId, packageId } = useParams();
-  const id = serviceId || packageId;
+  const { serviceSlug, packageSlug } = useParams();
+  const slug = serviceSlug || packageSlug;
 
   // Fetch medical package if packageId is present
   const {
@@ -22,9 +22,9 @@ const DetailService = () => {
     error: errorMedicalPackage,
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
-    queryKey: ["medical-packages", id],
-    queryFn: () => medicalPackageApi.getMedicalPackageById(id),
-    enabled: !!packageId,
+    queryKey: ["medical-packages", slug],
+    queryFn: () => medicalPackageApi.getMedicalPackageBySlug(packageSlug),
+    enabled: !!packageSlug,
   });
 
   // Fetch service if serviceId is present
@@ -33,10 +33,9 @@ const DetailService = () => {
     error: errorService,
     isLoading: isLoadingService,
   } = useQuery({
-    queryKey: ["service", id],
-    queryFn: () => serviceApi.getServiceById(id),
-
-    enabled: !!serviceId,
+    queryKey: ["service", slug],
+    queryFn: () => serviceApi.getServiceBySlug(serviceSlug),
+    enabled: !!serviceSlug,
   });
 
   const {
@@ -72,7 +71,6 @@ const DetailService = () => {
     isLoadingService ||
     isLoadingMedicalPackageSpecialty ||
     isLoadingServiceSpecialty;
-
 
   return (
     <div className="bg-[#E8F2F7] p-8">

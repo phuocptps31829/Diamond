@@ -1,5 +1,6 @@
 import InputCustom from "@/components/ui/InputCustom";
 import { toastUI } from "@/components/ui/Toastify";
+import { authApi } from "@/services/authApi";
 import { changePasswordSchema } from "@/zods/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -13,14 +14,17 @@ const ChangePassword = () => {
   } = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      oldPassword: "",
+      password: "",
       newPassword: "",
       confirmPassword: "",
     },
   });
 
   const { mutate: changePassword, isPending } = useMutation({
-    mutationFn: () => { },
+    mutationFn: authApi.changePassword,
+    onSuccess: (data) => {
+      console.log(data);
+    },
     onError: (error) => {
       console.log(error);
       console.log(error);
@@ -35,6 +39,7 @@ const ChangePassword = () => {
   const onSubmit = (data) => {
     console.log("Form submittedd");
     console.log(data);
+    changePassword({ password: data.password, newPassword: data.newPassword });
   };
 
   return (
@@ -44,9 +49,9 @@ const ChangePassword = () => {
         <div className="mb-4 flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-end">
           <InputCustom
             className="col-span-1 sm:col-span-1"
-            name="oldPassword"
+            name="password"
             label="Mật khẩu hiện tại"
-            type="text"
+            type="password"
             control={ control }
             errors={ errors }
             placeholder="Nhập mật khẩu hiện tại"

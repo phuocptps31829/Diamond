@@ -35,6 +35,11 @@ export const serviceApi = {
     console.log(res.data.data);
     return res.data.data;
   },
+  getServiceBySlug: async (slug) => {
+    const res = await axiosInstanceGET.get(`/services/slug/${slug}`);
+    console.log(res.data.data);
+    return res.data.data;
+  },
   getServiceBySpecialty: async (id, page, limit, sort) => {
     const params = {
       ...(page !== undefined && page !== null && { page }),
