@@ -1,4 +1,3 @@
-import React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { vi } from 'date-fns/locale';
 
@@ -44,7 +43,8 @@ export default function SelectBirthDate({ control, name, errors }) {
                                 selected={field.value ? new Date(field.value) : null}
                                 onSelect={(selectedDate) => {
                                     if (selectedDate && selectedDate <= today) {
-                                        field.onChange(selectedDate);
+                                        const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+                                        field.onChange(formattedDate);
                                     } else {
                                         console.error(
                                             'Ngày sinh không thể là ngày trong tương lai'
