@@ -6,6 +6,11 @@ const prescriptionSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
+    invoiceID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Invoice',
+        required: true,
+    },
     medicines: [{
         medicineID: {
             type: mongoose.Schema.Types.ObjectId,

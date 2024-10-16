@@ -12,12 +12,12 @@ const DoctorsList = () => {
     queryKey: ["doctors"],
     queryFn: doctorApi.getAllDoctors,
   });
-  if (loadingDoctors ) return <div>Loading...</div>;
-  if (errorLoadingDoctors ) return <div>Error loading data</div>;
+  if (loadingDoctors) return <div>Loading...</div>;
+  if (errorLoadingDoctors) return <div>Error loading data</div>;
   return (
-    <DataTable 
-      columns={columns} 
-      data={doctorsData || []} 
+    <DataTable
+      columns={ columns }
+      data={ doctorsData || [] }
     />
   );
 };

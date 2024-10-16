@@ -1,8 +1,7 @@
-import { getAllPatients } from "@/services/patientsApi";
 import DataTable from "./table";
 import { columnsSchedule } from "./table/columns";
 
-const PatientsList = ({ allPatients }) => {
+const PatientsList = ({ allPatients = [] }) => {
   return <DataTable columns={ columnsSchedule } allPatients={ allPatients } />;
 };
 

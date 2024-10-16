@@ -1,0 +1,124 @@
+const express = require('express');
+
+const router = express.Router();
+
+const doctorController = require('../controllers/doctor.controller');
+const helperMiddleware = require('../middlewares/helper.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
+
+/**
+ * @openapi
+ * '/api/v1/doctors':
+ *  get:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get all doctors
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/',
+    helperMiddleware.checkValueQuery,
+    helperMiddleware.checkQueryParams,
+    doctorController.getAllDoctors
+);
+
+/**
+ * @openapi
+ * '/api/v1/doctors/get-by-branch-and-specialty':
+ *  get:
+ *    tags:
+ *    - User Routes
+ *    summary: Get user by token
+ *    parameters:
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-branch-and-specialty',
+    doctorController.getDoctorBySpecialtyAndBranch
+);
+
+/**
+ * @openapi
+ * '/api/v1/doctors/{id}':
+ *  get:
+ *    tags:
+ *    - Doctor Routes
+ *    summary: Get doctor by id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: Doctor id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/:id',
+    helperMiddleware.checkValidId,
+    doctorController.getDoctorByID
+);
+
+// /**
+//  * @openapi
+//  * '/api/v1/users/get-by-token':
+//  *  get:
+//  *    tags:
+//  *    - User Routes
+//  *    summary: Get user by token
+//  *    responses:
+//  *      '200':
+//  *        $ref: '#/components/responses/200'
+//  *      '404':
+//  *        $ref: '#/components/responses/404'
+//  *      '500':
+//  *        $ref: '#/components/responses/500'
+// */
+// router.get(
+//     '/get-by-token',
+//     authMiddleware.verifyAccessToken,
+//     doctorController.getUserByID
+// );
+
+
+
+module.exports = router;

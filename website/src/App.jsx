@@ -81,6 +81,8 @@ import ServicesEditPage from "./pages/admin/Services/edit";
 import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
+import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
+import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
 import ClinicsEditFormPage from "./pages/admin/Clinics/editForm";
 
 const router = createBrowserRouter([
@@ -146,9 +148,11 @@ const router = createBrowserRouter([
       },
       {
         path: "user-profile",
-        element: <ProtectContainer type="client">
-          <UserProfileLayout />
-        </ProtectContainer>,
+        element: (
+          <ProtectContainer type="client">
+            <UserProfileLayout />
+          </ProtectContainer>
+        ),
         children: [
           {
             path: "",
@@ -199,7 +203,6 @@ const router = createBrowserRouter([
             <PKCheckOut />
           </ProtectContainer>
         ),
-
       },
       {
         path: "services-booking-checkout",
@@ -208,7 +211,6 @@ const router = createBrowserRouter([
             <SVCheckOut />
           </ProtectContainer>
         ),
-
       },
       {
         path: "/login",
@@ -246,9 +248,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <ProtectContainer type="admin">
-      <AdminLayout />
-    </ProtectContainer>,
+    element: (
+      <ProtectContainer type="admin">
+        <AdminLayout />
+      </ProtectContainer>
+    ),
     children: [
       {
         path: "",
@@ -283,12 +287,20 @@ const router = createBrowserRouter([
         element: <MedicinesCategoriesListPage />,
       },
       {
+        path: "medicinesCategories/edit/:id",
+        element: <MedicinesCategoriesFormFixPage />,
+      },
+      {
         path: "medicinesCategories/create",
         element: <MedicinesCategoriesFormAddPage />,
       },
       {
         path: "medicines/create",
         element: <MedicinesFormAddPage />,
+      },
+      {
+        path: "medicines/edit/:id",
+        element: <MedicinesFormFixPage />,
       },
       {
         path: "dashboard",
@@ -415,12 +427,12 @@ const router = createBrowserRouter([
         element: <ListRolePage />
       },
       {
-        path: 'roles/create',
-        element: <CreateRolePage />
+        path: "roles/create",
+        element: <CreateRolePage />,
       },
       {
-        path: 'roles/update/:id',
-        element: <UpdateRolePage />
+        path: "roles/update/:id",
+        element: <UpdateRolePage />,
       },
       {
         path: "services/list",

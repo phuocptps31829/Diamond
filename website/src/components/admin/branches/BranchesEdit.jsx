@@ -2,26 +2,29 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/Label";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
 import { branchesAdminSchema } from "@/zods/admin/branchesAdmin";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getBranchesById, updateBranch } from "@/services/branchesApi";
-import { useToast } from "@/hooks/useToast";
+import { branchApi } from "@/services/branchesApi";
+
 import GoogleMapComponent from "./GoogleMapComponent";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { toastUI } from "@/components/ui/Toastify";
 import NotFound from "@/components/client/notFound";
+import ImagePreview from "@/components/ui/ImagePreview";
+import { axiosInstanceCUD } from "@/services/axiosInstance";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const BranchesEdit = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [address, setAddress] = useState(null);
-  const [image, setImage] = useState(null);
+  const [fileImage, setFileImage] = useState(null);
   const { id } = useParams();
+  const [isPending, setIsPending] = useState(false); 
+
   const queryClient = useQueryClient();
-  const { toast } = useToast();
 
   const {
     handleSubmit,
@@ -41,7 +44,7 @@ const BranchesEdit = () => {
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["branches", id],
-    queryFn: () => getBranchesById(id),
+    queryFn: () => branchApi.getBranchesById(id),
     enabled: !!id,
   });
 
@@ -51,7 +54,9 @@ const BranchesEdit = () => {
       setValue("working_hours", data.workingTime);
       setValue("hotline", data.hotline);
       setValue("address", data.address);
-      setImagePreview(data.imagesURL[0]);
+      setImagePreview(
+        `${import.meta.env.VITE_IMAGE_API_URL}/${data.imagesURL[0]}`,
+      );
       setAddress({
         formatted_address: data.address,
         lat: data.coordinates.lat,
@@ -60,120 +65,124 @@ const BranchesEdit = () => {
     }
   }, [data, setValue]);
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreview(imageUrl);
-      setValue("image", imageUrl);
-    } else {
-      setImagePreview(null);
-      setValue("image", "");
-    }
-  };
-
   const mutation = useMutation({
-    mutationFn: (newsData) => updateBranch(id, newsData),
+    mutationFn: (newsData) => branchApi.updateBranch(id, newsData),
     onSuccess: () => {
       queryClient.invalidateQueries("branches");
-      toastUI(
-        "Chỉnh sửa chi nhánh thành công.",
-        "success",
-      );
+      toastUI("Chỉnh sửa chi nhánh thành công.", "success");
     },
     onError: (error) => {
-      toastUI(
-        "Chỉnh sửa chi nhánh thành công.",
-        "error",
-      );
+      toastUI("Chỉnh sửa chi nhánh thành công.", "error");
       console.error("Error updating branch:", error);
     },
   });
-  const onSubmit = (data) => {
-    const formData = new FormData();
-    formData.append("name", data.branch_name);
-    formData.append("image", image);
-    formData.append("address", address?.name || null);
-    formData.append("workingTime", data.working_hours);
-    formData.append("hotline", data.hotline);
-    formData.append("coordinates[Lat]", address ? address.lat : null);
-    formData.append("coordinates[Ing]", address ? address.lng : null);
+  const onSubmit = async (data) => {
+    if (!fileImage && !imagePreview) {
+      toastUI("Vui lòng chọn ảnh!", "error");
+      return;
+    }
+    let imageName = null;
 
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
+    if (fileImage) {
+      const formData = new FormData();
+      formData.append("file", fileImage);
+      setIsPending(true);
+      try {
+        const response = await axiosInstanceCUD.post(
+          "/images/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+        );
+
+        imageName = response.data.data;
+      } catch (error) {
+        toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
+        console.error("Error uploading image:", error);
+        return;
+      }finally{
+        setIsPending(false)
+      }
+    } else {
+      imageName = imagePreview.split("/").pop();
     }
 
-    // mutation.mutate(formData);
+    const branchData = {
+      name: data.branch_name,
+      imagesURL: [imageName],
+      address: address?.formatted_address || null,
+      workingTime: data.working_hours,
+      hotline: data.hotline,
+      coordinates: {
+        lat: address ? address.lat : null,
+        lng: address ? address.lng : null,
+      },
+    };
+
+    console.log(branchData);
+
+    mutation.mutate(branchData);
   };
   if (isLoading) {
     return <Skeleton />;
   }
-  if (error) return <NotFound/>;
+  if (error) return <NotFound />;
 
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-10 grid grid-cols-1 items-center justify-center gap-8 sm:grid-cols-2">
-            <InputCustom
-              id="branch_name"
-              type="text"
-              name="branch_name"
-              label="Tên chi nhánh"
-              placeholder="Nhập tên chi nhánh"
-              control={control}
-              errors={errors}
-            />
-
-            <InputCustom
-              id="working_hours"
-              name="working_hours"
-              label="Giờ làm việc"
-              type="text"
-              placeholder="Nhập thời gian làm việc"
-              control={control}
-              errors={errors}
-            />
-
-            <InputCustom
-              id="hotline"
-              type="text"
-              name="hotline"
-              label="Hotline"
-              placeholder="Nhập hotline"
-              control={control}
-              errors={errors}
-            />
-
-            <div className="">
-              <Label
-                htmlFor=""
-                className="mb-2 block text-sm font-medium leading-none text-black"
-              >
-                Hình ảnh
-              </Label>
-              <Input
-                className="col-span-1 h-11 py-3 shadow-none sm:col-span-1"
-                name="image"
-                label="Hình ảnh"
-                type="file"
-                required={!imagePreview}
-                onChange={handleImageChange}
+          <div className="mb-3 grid-cols-1 gap-[10px] sm:grid md:flex">
+            <div className="mr-2">
+              <ImagePreview
+                imagePreview={imagePreview}
+                setFileImage={setFileImage}
+                setImagePreview={setImagePreview}
               />
+              {!fileImage ||
+                (!imagePreview && (
+                  <p className="mt-3 text-center text-sm text-red-500">
+                    Vui lòng chọn ảnh
+                  </p>
+                ))}
             </div>
+            <div className="w-full">
+              <div className="grid grid-cols-1 items-center justify-center gap-5">
+                <InputCustom
+                  id="branch_name"
+                  type="text"
+                  name="branch_name"
+                  label="Tên chi nhánh"
+                  placeholder="Nhập tên chi nhánh"
+                  control={control}
+                  errors={errors}
+                />
 
-            {imagePreview && (
-              <div className="sm:col-span-2">
-                <img
-                  src={imagePreview}
-                  alt="Image Preview"
-                  className="h-auto w-full max-w-[300px] rounded-md object-cover"
+                <InputCustom
+                  id="hotline"
+                  type="text"
+                  name="hotline"
+                  label="Hotline"
+                  placeholder="Nhập hotline"
+                  control={control}
+                  errors={errors}
+                />
+
+                <InputCustom
+                  id="working_hours"
+                  name="working_hours"
+                  label="Giờ làm việc"
+                  type="text"
+                  placeholder="Nhập thời gian làm việc"
+                  control={control}
+                  errors={errors}
                 />
               </div>
-            )}
+            </div>
           </div>
-
           <div className="sm:col-span-2">
             <Label
               htmlFor="address"
@@ -190,8 +199,15 @@ const BranchesEdit = () => {
           </div>
 
           <div className="mt-10 w-full text-end">
-            <Button variant="custom" type="submit">
-              Lưu thay đổi
+            <Button type="submit" disabled={isPending || mutation.isPending} variant="custom">
+              {isPending || mutation.isPending ? (
+                <>
+                    <SpinLoader />
+
+                </>
+              ) : (
+                "Cập nhật chi nhánh"
+              )}
             </Button>
           </div>
         </form>

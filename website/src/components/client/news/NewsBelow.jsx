@@ -11,6 +11,8 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 
 export default function NewsBelow({ news, isLoading }) {
+  console.log(news, "news");
+  
   return (
     <>
       {news.slice(0, news.length - 4) > 0 && (

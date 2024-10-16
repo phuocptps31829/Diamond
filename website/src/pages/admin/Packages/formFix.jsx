@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import PackagesFormFix from "@/components/admin/packages/PackagesFormFix";
 import { useQuery } from "@tanstack/react-query";
-import { getMedicalPackageById } from "@/services/medicalPackagesApi";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
+import { medicalPackageApi } from "@/services/medicalPackagesApi";
 
 const initialBreadcrumbData = [
   {
@@ -29,7 +29,7 @@ const PackagesFormFixPage = () => {
     error: errorPackage,
   } = useQuery({
     queryKey: ["package", id],
-    queryFn: () => getMedicalPackageById(id),
+    queryFn: () => medicalPackageApi.getMedicalPackageById(id),
   });
 
   useEffect(() => {
@@ -42,18 +42,18 @@ const PackagesFormFixPage = () => {
     }
   }, [isLoadingPackage, packageDetail]);
 
-  if (errorPackage) return <NotFound />;
+  if (errorPackage) return <NotFound message={ errorPackage.message } />;
 
   return (
     <>
-      {isLoadingPackage ? (
+      { isLoadingPackage ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
-          <PackagesFormFix packageDetail={packageDetail} />
+          <BreadcrumbCustom data={ breadcrumbData } />
+          <PackagesFormFix packageDetail={ packageDetail } />
         </>
-      )}
+      ) }
     </>
   );
 };

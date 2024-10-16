@@ -1,6 +1,11 @@
-const AppointmentModel = require('../models/appointment.model');
-const { createError } = require("../utils/helper.util");
 const mongoose = require("mongoose");
+const AppointmentModel = require('../models/appointment.model');
+const InvoiceModel = require('../models/invoice.model');
+const OrderNumberModel = require('../models/order-number.model');
+const ResultModel = require('../models/result.model');
+const PrescriptionModel = require('../models/prescription.model');
+const MedicineModel = require('../models/medicine.model');
+const { createError } = require("../utils/helper.util");
 
 module.exports = {
     getAllAppointmentsOfDoctor: async (req, res, next) => {
@@ -127,103 +132,72 @@ module.exports = {
 
             let { startDay, endDay } = req.checkValueQuery;
 
-            const pipeline = [
-                {
-                    $lookup: {
-                        from: 'WorkSchedule',
-                        localField: 'workScheduleID',
-                        foreignField: '_id',
-                        as: 'workSchedule'
+            const appointments = await AppointmentModel
+                .find({ isDeleted: false })
+                .populate('patientID')
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'doctorID'
                     }
-                },
-                {
-                    $lookup: {
-                        from: 'Invoice',
-                        localField: '_id',
-                        foreignField: 'appointmentID',
-                        as: 'invoice'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Patient',
-                        localField: 'patientID',
-                        foreignField: '_id',
-                        as: 'patient'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'User',
-                        localField: 'patient.userID',
-                        foreignField: '_id',
-                        as: 'user'
-                    }
-                },
-                {
-                    $lookup: {
-                        from: 'Result',
-                        localField: '_id',
-                        foreignField: 'appointmentID',
-                        as: 'result'
-                    }
-                },
-                {
-                    $match: {
-                        isDeleted: false
-                    },
-                }
+                })
+                .lean();
 
-            ];
-            if (startDay) {
-                pipeline.push({
-                    $match: {
-                        time: { $gte: startDay },
-                    }
-                });
-            }
-
-            if (endDay) {
-                pipeline.push({
-                    $match: {
-                        time: { $lte: endDay },
-                    }
-                });
-            }
-            const countPipeline = [...pipeline];
-            countPipeline.push({
-                $count: "totalRecords"
-            });
-
-            const totalRecords = await AppointmentModel.aggregate(countPipeline);
-
-            console.log(totalRecords);
-            if (sortOptions && Object.keys(sortOptions).length > 0) {
-                pipeline.push({
-                    $sort: sortOptions
-                });
-            }
-
-            pipeline.push(
-                {
-                    $skip: skip
-                },
-                {
-                    $limit: limitDocuments
-                }
-            );
-
-            const Appointments = await AppointmentModel.aggregate(pipeline);
-
-            if (!Appointments.length) {
+            if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
+
+            const formattedAppointmentsPromises = appointments.map(async appointment => {
+                const result = await ResultModel
+                    .findOne({ isDeleted: false, appointmentID: appointment._id })
+                    .lean();
+
+                const formattedAppointment = {
+                    ...appointment,
+                    patient: {
+                        _id: appointment.patientID._id,
+                        fullName: appointment.patientID.fullName,
+                        avatar: appointment.patientID.avatar,
+                    },
+                    doctor: {
+                        _id: appointment.workScheduleID.doctorID._id,
+                        fullName: appointment.workScheduleID.doctorID.fullName
+                    },
+                    result: {
+                        diagnose: result?.diagnose || 'Chưa có',
+                        images: result?.images || 'Chưa có',
+                        description: result?.description || 'Chưa có',
+                    },
+                    ...(appointment.serviceID ? {
+                        service: {
+                            _id: appointment.serviceID._id,
+                            name: appointment.serviceID.name
+                        }
+                    } : {}),
+                    ...(appointment.medicalPackageID ? {
+                        medicalPackage: {
+                            _id: appointment.medicalPackageID._id,
+                            name: appointment.medicalPackageID.name
+                        }
+                    } : {})
+                };
+                delete formattedAppointment.serviceID;
+                delete formattedAppointment.medicalPackageID;
+                delete formattedAppointment.patientID;
+                delete formattedAppointment.workScheduleID;
+
+                return formattedAppointment;
+            });
+
+            const formattedAppointments = await Promise.all(formattedAppointmentsPromises);
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
-                data: Appointments,
-                totalRecords
+                data: formattedAppointments,
+                totalRecords: formattedAppointments.length
             });
         } catch (error) {
             next(error);
@@ -232,10 +206,14 @@ module.exports = {
     getAllAppointmentsForGenderYears: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({})
+                .find({ isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID')
                 .populate('patientID');
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
 
             const result = {};
 
@@ -281,17 +259,25 @@ module.exports = {
     getAllAppointmentsForSpecialty: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({})
+                .find({ isDeleted: false })
                 .populate('serviceID')
                 .populate('medicalPackageID');
+
+            console.log('all', 1);
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
 
             const result = [];
 
             for (let i = 0; i < appointments.length; i++) {
                 const item = appointments[i];
+                console.log(item, 'ok');
                 const year = new Date(item.time).getFullYear().toString();
-                const specialtyID = item.serviceID.specialtyID.toString();
-
+                const specialtyID = item?.serviceID
+                    ? item.serviceID.specialtyID.toString()
+                    : item.medicalPackageID.specialtyID.toString();
+                console.log(specialtyID);
                 let yearObj = result.find(obj => obj.year === year);
                 if (!yearObj) {
                     yearObj = {
@@ -316,6 +302,188 @@ module.exports = {
             return res.status(200).json({
                 message: 'Appointments retrieved successfully.',
                 data: result,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAllAppointmentsForAges: async (req, res, next) => {
+        try {
+            const appointments = await AppointmentModel
+                .find({ isDeleted: false })
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate('patientID');
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
+
+            const result = {};
+
+            for (const appointment of appointments) {
+                const { dateOfBirth } = appointment.patientID;
+
+                console.log(new Date(dateOfBirth).getFullYear());
+                const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
+                const year = new Date(appointment.time).getFullYear();
+                const month = new Date(appointment.time).getMonth() + 1;
+
+                if (!result[age]) {
+                    result[age] = {};
+                }
+
+                if (!result[age][year]) {
+                    result[age][year] = {
+                        year,
+                        months: []
+                    };
+                }
+
+                let monthData = result[age][year].months.find(m => m.month === month);
+                if (!monthData) {
+                    monthData = { month, count: 0 };
+                    result[age][year].months.push(monthData);
+                }
+
+                monthData.count += 1;
+            }
+
+            const formattedResult = Object.entries(result).map(([age, yearsData]) => ({
+                age: +age,
+                years: Object.values(yearsData)
+            }));
+
+            return res.status(200).json({
+                message: 'Appointments retrieved successfully.',
+                data: formattedResult,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAppointmentByID: async (req, res, next) => {
+        const { id } = req.params;
+        try {
+            const appointment = await AppointmentModel
+                .findOne({ _id: id, isDeleted: false })
+                .populate('serviceID')
+                .populate('medicalPackageID')
+                .populate('patientHelpID')
+                .populate('patientID')
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'doctorID'
+                    }
+                })
+                .lean();
+
+            if (!appointment) {
+                createError(404, 'Appointment not found');
+            }
+
+            const [invoice, result, orderNumber] = await Promise.all([
+                InvoiceModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
+                ResultModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
+                OrderNumberModel
+                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .lean(),
+            ]);
+
+            const prescription = invoice
+                ? await PrescriptionModel
+                    .findOne({ isDeleted: false, invoiceID: invoice._id })
+                    .lean() : null;
+
+            const prescriptionMedicinesPromises = prescription ? prescription.medicines.map(async m => {
+                const medicine = await MedicineModel
+                    .findById({ _id: m.medicineID })
+                    .populate("medicineCategoryID")
+                    .lean();
+
+                delete medicine.createdAt;
+                delete medicine.updatedAt;
+                delete medicine.isDeleted;
+                delete medicine.__v;
+
+                const formattedMedicine = {
+                    ...medicine,
+                    medicineCategory: {
+                        _id: medicine.medicineCategoryID._id,
+                        name: medicine.medicineCategoryID.name
+                    }
+                };
+                delete formattedMedicine.medicineCategoryID;
+
+                return formattedMedicine;
+            }) : null;
+
+            const prescriptionMedicines = await Promise.all(prescriptionMedicinesPromises);
+
+            const formattedAppointment = {
+                ...appointment,
+                patient: {
+                    _id: appointment.patientID._id,
+                    fullName: appointment.patientID.fullName,
+                    avatar: appointment.patientID.avatar,
+                },
+                doctor: {
+                    _id: appointment.workScheduleID.doctorID._id,
+                    fullName: appointment.workScheduleID.doctorID.fullName
+                },
+                ...(appointment.serviceID ? {
+                    service: {
+                        _id: appointment.serviceID._id,
+                        name: appointment.serviceID.name
+                    }
+                } : {}),
+                ...(appointment.medicalPackageID ? {
+                    service: {
+                        _id: appointment.medicalPackageID._id,
+                        name: appointment.medicalPackageID.name
+                    }
+                } : {}),
+                orderNumber: {
+                    number: orderNumber.number,
+                    priority: orderNumber.priority,
+                },
+                result: {
+                    diagnose: result.diagnose,
+                    images: result.images,
+                    description: result.description,
+                },
+                invoice: {
+                    price: invoice.price,
+                    arisePrice: invoice?.arisePrice || 0,
+                },
+                ...(prescription ? {
+                    prescription: {
+                        advice: prescription.advice,
+                        medicines: prescriptionMedicines
+                    }
+                } : {}),
+                ...(appointment.patientHelpID ? {
+                    helper: {
+                        _id: appointment.patientHelpID._id,
+                        fullName: appointment.patientHelpID.fullName
+                    }
+                } : {}),
+            };
+
+            delete formattedAppointment.serviceID;
+            delete formattedAppointment.medicalPackageID;
+            delete formattedAppointment.workScheduleID;
+            delete formattedAppointment.patientID;
+            delete formattedAppointment.patientHelpID;
+
+            return res.status(200).json({
+                message: 'Appointment retrieved successfully.',
+                data: formattedAppointment,
             });
         } catch (error) {
             next(error);

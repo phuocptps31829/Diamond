@@ -19,19 +19,22 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "@/redux/cartSlice";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
 import SelectDoctor from "./select/SelectDoctor";
 import { IoMdRemove } from "react-icons/io";
 import { Switch } from "@/components/ui/Switch";
 import {
-  clearBookingDetails,
   removeItemInfo,
   saveBookingInfo,
   changeBookingDetails,
 } from "@/redux/bookingSlice";
 import { useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
+import { toastUI } from "@/components/ui/Toastify";
+import SelectRelatedPatient from "./select/SelectRelatedPatient";
+import { useQuery } from "@tanstack/react-query";
+import { patientApi } from "@/services/patientsApi";
+import Loading from "@/components/ui/Loading";
+import { checkRequiredBookingFields } from "@/utils/validate";
 
 const combineDateTime = (date, time) => { return `${date}T${time}:00.000Z`; };
 
@@ -41,6 +44,7 @@ export default function Form() {
   const [selectedDistrictId, setSelectedDistrictId] = useState(null);
   const [selectedService, setSelectedService] = useState(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
+  const [relatedPatientID, setRelatedPatientID] = useState("");
   const [isBlocking, setIsBlocking] = useNavigationPrompt(
     "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
   );
@@ -53,7 +57,14 @@ export default function Form() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { toast } = useToast();
+
+  const { data: relatedInfo, isLoading, isError } = useQuery({
+    queryKey: ['relatedPatient', relatedPatientID],
+    queryFn: () => patientApi.getRelatedPatient(relatedPatientID),
+    enabled: !!relatedPatientID
+  });
+
+  const isValidInfo = checkRequiredBookingFields(profile);
 
   const isFullInfoToCheckout = !bookingDetails.some(booking => {
     const { bookingDetail } = booking;
@@ -71,12 +82,7 @@ export default function Form() {
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
     dispatch(removeItemInfo(id));
-    toast({
-      variant: "success",
-      title: "Đã xóa dịch vụ khỏi giỏ hàng!",
-      description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
-      action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-    });
+    toastUI("Đã xóa khỏi giỏ y tế", "success");
   };
 
   const getCurSelectedService = () => {
@@ -158,6 +164,7 @@ export default function Form() {
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
+    console.log(workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
@@ -184,42 +191,45 @@ export default function Form() {
       fullName: profile?.fullName || "",
       email: profile?.email || "",
       phoneNumber: profile?.phoneNumber || "",
-      job: profile?.job || "",
-      ethnicity: profile?.ethnicity || "",
-      cccd: profile?.cccd || "",
-      bhyt: profile?.bhyt || "",
+      occupation: profile?.occupation || "",
+      ethnic: profile?.ethnic || "",
+      citizenIdentificationNumber: profile?.citizenIdentificationNumber || "",
+      insuranceCode: profile?.insuranceCode || "",
       address: profile?.address || "",
       department: "",
       doctor: "",
       time: "",
       room: "",
       date: "",
-      birthDate: profile?.birthDate || "",
+      dateOfBirth: profile?.dateOfBirth || "",
       gender: profile?.gender || "",
-      province: profile?.province || "",
-      district: profile?.district || "",
-      ward: profile?.ward || "",
+      province: profile?.address.province || "",
+      district: profile?.address.district || "",
+      ward: profile?.address.ward || "",
+      street: profile?.address.street || "",
     },
   });
-
+  console.log(errors);
   const handleSwitchChange = (checked) => {
     setIsBookingForOthers(checked);
+    setRelatedPatientID('');
     const currentValues = getValues();
     if (checked) {
       reset({
         fullName: "",
         email: "",
         phoneNumber: "",
-        job: "",
-        ethnicity: "",
-        cccd: "",
-        bhyt: "",
+        occupation: "",
+        ethnic: "",
+        citizenIdentificationNumber: "",
+        insuranceCode: "",
         address: "",
-        birthDate: "",
+        dateOfBirth: "",
         gender: "",
         province: "",
         district: "",
         ward: "",
+        street: "",
         department: currentValues.department,
         doctor: currentValues.doctor,
         time: currentValues.time,
@@ -231,16 +241,17 @@ export default function Form() {
         fullName: profile?.fullName || "",
         email: profile?.email || "",
         phoneNumber: profile?.phoneNumber || "",
-        job: profile?.job || "",
-        ethnicity: profile?.ethnicity || "",
-        cccd: profile?.cccd || "",
-        bhyt: profile?.bhyt || "",
+        occupation: profile?.occupation || "",
+        ethnic: profile?.ethnic || "",
+        citizenIdentificationNumber: profile?.citizenIdentificationNumber || "",
+        insuranceCode: profile?.insuranceCode || "",
         address: profile?.address || "",
-        birthDate: profile?.birthDate || "",
+        dateOfBirth: profile?.dateOfBirth || "",
         gender: profile?.gender || "",
         province: profile?.province || "",
         district: profile?.district || "",
         ward: profile?.ward || "",
+        street: profile?.street || "",
         department: currentValues.department,
         doctor: currentValues.doctor,
         time: currentValues.time,
@@ -248,57 +259,6 @@ export default function Form() {
         date: currentValues.date,
       });
     }
-  };
-
-  const onSubmit = (data, event) => {
-    event.preventDefault();
-
-    if (!isFullInfoToCheckout) {
-      toast({
-        variant: "warning",
-        title: "Chưa đủ thông tin",
-        description: 'Vui lòng cung cấp đầy đủ thông tin',
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
-      return;
-    }
-
-    const bookingInfo = {
-      patientID: profile._id,
-      appointmentHelpUser: isBookingForOthers
-        ? {
-          fullName: data.fullName,
-          phoneNumber: data.phoneNumber,
-          email: data.email,
-          gender: data.gender,
-          dateOfBirth: data.birthDate,
-          address: {
-            province: data.province,
-            district: data.district,
-            ward: data.ward,
-            street: data.address,
-          },
-          citizenIdentificationNumber: data.cccd,
-          occupation: data.job,
-          ethnic: data.ethnicity,
-          password: "string",
-        }
-        : undefined,
-      data: bookingDetails.map((detail) => ({
-        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
-        serviceID: detail.serviceId,
-        type: "Khám lần 1",
-        time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
-        status: "Chờ xác nhận",
-        price: detail.bookingDetail.price,
-      })),
-    };
-    setIsBlocking(false);
-
-    dispatch(saveBookingInfo(bookingInfo));
-    setShouldNavigate(true);
-
-    navigate('/services-booking-checkout');
   };
 
   useEffect(() => {
@@ -331,22 +291,89 @@ export default function Form() {
   }, [navigate]);
 
   useEffect(() => {
+    if (relatedInfo) {
+      setValue("fullName", relatedInfo?.data?.fullName);
+      setValue("email", relatedInfo?.data?.email);
+      setValue("phoneNumber", relatedInfo?.data?.phoneNumber);
+      setValue("occupation", relatedInfo?.data?.otherInfo?.occupation);
+      setValue("ethnic", relatedInfo?.data?.otherInfo?.ethnic);
+      setValue("citizenIdentificationNumber", relatedInfo?.data?.citizenIdentificationNumber);
+      setValue("insuranceCode", relatedInfo?.data?.otherInfo?.insuranceCode);
+      setValue("address", relatedInfo?.data?.address);
+      setValue("dateOfBirth", relatedInfo?.data?.dateOfBirth);
+      setValue("gender", relatedInfo?.data?.gender);
+      setValue("province", relatedInfo?.data?.address?.province);
+      setValue("district", relatedInfo?.data?.address?.district);
+      setValue("ward", relatedInfo?.data?.address?.ward);
+      setValue("street", relatedInfo?.data?.address?.street);
+    }
+  }, [relatedInfo, setValue]);
+
+  useEffect(() => {
     if (!isBlocking && shouldNavigate) {
       navigate("/services-booking-checkout");
     }
   }, [isBlocking, shouldNavigate, navigate]);
 
+  const onSubmit = (data, event) => {
+    event.preventDefault();
+
+    if (!isFullInfoToCheckout) {
+      toastUI('Vui lòng cung cấp đầy đủ thông tin', "warning");
+      return;
+    }
+    console.log(data, 'd');
+    const bookingInfo = {
+      patientID: profile._id,
+      appointmentHelpUser: isBookingForOthers
+        ? {
+          fullName: data.fullName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+          gender: data.gender,
+          dateOfBirth: data.dateOfBirth,
+          insuranceCode: data.insuranceCode,
+          address: {
+            province: data.province,
+            district: data.district || "Quận Ngô Quyền",
+            ward: data.ward,
+            street: data.street,
+          },
+          citizenIdentificationNumber: data.citizenIdentificationNumber,
+          occupation: data.occupation,
+          ethnic: data.ethnic,
+        }
+        : undefined,
+      data: bookingDetails.map((detail) => ({
+        workScheduleID: detail.bookingDetail.selectedWorkScheduleId,
+        serviceID: detail.serviceId,
+        type: "Khám lần 1",
+        time: combineDateTime(getCurSelectedService()?.bookingDetail.selectedDate, getCurSelectedService()?.bookingDetail.selectedTime),
+        status: "Chờ xác nhận",
+        price: detail.bookingDetail.price,
+      })),
+    };
+    setIsBlocking(false);
+
+    console.log(bookingInfo);
+
+    dispatch(saveBookingInfo(bookingInfo));
+    setShouldNavigate(true);
+
+    navigate('/services-booking-checkout');
+  };
+
   return (
-    <div className="mx-auto mt-5 max-w-screen-xl px-0 py-3 md:mt-10 md:px-5 md:py-5">
-      <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
+    <div className="mx-auto pt-5 max-w-screen-xl px-0 md:pt-10 md:px-5">
+      <div className="container mx-auto flex flex-col gap-3 rounded-md border px-5 py-5 md:flex-row bg-white">
         {/* Select Services */ }
-        <div className="flex w-full flex-col gap-[20px] px-2">
+        <div className="flex w-[44%] flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
             <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4">
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2">
             { services.length > 0 ? (
               services.map((svc) => {
                 const bookingDetail = bookingDetails.find(
@@ -373,7 +400,6 @@ export default function Form() {
                     />
                     <span className={ `absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white ${hasEmptyFields ? 'peer-checked:border-red-500' : 'peer-checked:border-[#0067e2]'}` }>
                       <span className={ `absolute right-1/2 translate-x-1/2 top-1/2 box-content block h-[0.5px] w-[0.5px] -translate-y-1/2 rounded-full border-[3px] border-gray-300 bg-white border-inherit` }>
-
                       </span>
                     </span>
                     <label
@@ -423,9 +449,14 @@ export default function Form() {
         </div>
 
         {/* Form */ }
-        <div className="w-full p-4 pt-0 md:ml-auto">
-          <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
-          <form onSubmit={ handleSubmit(onSubmit) }>
+        <div className="w-[60%] p-4 pt-0 md:ml-auto">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-xl font-bold">Thông tin đặt lịch khám</p>
+            { !isValidInfo && <p className="text-sm text-red-500">{ '(*)' } Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!</p> }
+          </div>
+          <form
+            onSubmit={ handleSubmit(onSubmit) }
+          >
             <div className="flex flex-col gap-4">
               {/* Hàng đầu tiên */ }
               <div className="flex flex-col gap-4 md:flex-row">
@@ -472,7 +503,6 @@ export default function Form() {
                     control={ control }
                     name="date"
                     doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
-                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ (date) => {
@@ -485,7 +515,6 @@ export default function Form() {
                     control={ control }
                     name="time"
                     doctorId={ getCurSelectedService()?.bookingDetail?.selectedDoctorId }
-                    branchId={ getCurSelectedService()?.bookingDetail?.selectedBranchId }
                     errors={ errors }
                     setValue={ setValue }
                     onChange={ handleChangeTime }
@@ -518,8 +547,19 @@ export default function Form() {
                 />
               </div>
               { isBookingForOthers && <>
-                <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
-                <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
+                <div className="flex mt-1 justify-between items-center">
+                  <p className="text-xl font-bold">Thông tin người khám</p>
+                  <div>
+                    { profile.otherInfo?.relatedPatients?.length
+                      ? <SelectRelatedPatient
+                        control={ control }
+                        errors={ errors }
+                        name="relatedPatient"
+                        patientList={ profile.otherInfo.relatedPatients }
+                        onChange={ setRelatedPatientID } /> : '' }
+                  </div>
+                </div>
+                <div className={ `${relatedPatientID ? 'pointer-events-none' : 'pointer-events-auto'} rounded-md bg-gray-500/30 px-5 py-6 pt-2` }>
                   {/* Hàng 1 */ }
                   <div className="mb-4">
                     <label htmlFor="hoten" className="mb-1 block">
@@ -585,7 +625,7 @@ export default function Form() {
                       </label>
                       <SelectBirthDate
                         control={ control }
-                        name="birthDate"
+                        name="dateOfBirth"
                         errors={ errors }
                       />
                     </div>
@@ -593,26 +633,26 @@ export default function Form() {
                   {/* Hàng 3 */ }
                   <div className="mb-4 flex flex-col gap-4 md:flex-row">
                     <div className="flex-1">
-                      <label htmlFor="job" className="mb-1 block">
+                      <label htmlFor="occupation" className="mb-1 block">
                         Nghề nghiệp:
                       </label>
                       <InputCustom
                         className="col-span-1 sm:col-span-1"
                         placeholder="Nhập nghề nghiệp của bạn"
-                        name="job"
+                        name="occupation"
                         type="text"
-                        id="job"
+                        id="occupation"
                         control={ control }
                         errors={ errors }
                       />
                     </div>
                     <div className="flex-1">
-                      <label htmlFor="ethnicity" className="mb-2 block">
+                      <label htmlFor="ethnic" className="mb-2 block">
                         Dân tộc:
                       </label>
                       <SelectEthnic
                         control={ control }
-                        name="ethnicity"
+                        name="ethnic"
                         errors={ errors }
                       />
                     </div>
@@ -621,29 +661,29 @@ export default function Form() {
                   {/* Hàng 4 */ }
                   <div className="mb-4 flex flex-col gap-4 md:flex-row">
                     <div className="flex-1">
-                      <label htmlFor="cccd" className="mb-1 block">
+                      <label htmlFor="citizenIdentificationNumber" className="mb-1 block">
                         CCCD/CMND:
                       </label>
                       <InputCustom
                         className="col-span-1 sm:col-span-1"
                         placeholder="Nhập CCCD/CMND của bạn"
-                        name="cccd"
+                        name="citizenIdentificationNumber"
                         type="text"
-                        id="cccd"
+                        id="citizenIdentificationNumber"
                         control={ control }
                         errors={ errors }
                       />
                     </div>
                     <div className="flex-1">
-                      <label htmlFor="bhyt" className="mb-1 block">
+                      <label htmlFor="insuranceCode" className="mb-1 block">
                         Bảo hiểm y tế:
                       </label>
                       <InputCustom
                         className="col-span-1 sm:col-span-1"
                         placeholder="Nhập BHYT của bạn"
-                        name="bhyt"
+                        name="insuranceCode"
                         type="text"
-                        id="bhyt"
+                        id="insuranceCode"
                         control={ control }
                         errors={ errors }
                       />
@@ -664,6 +704,7 @@ export default function Form() {
                             setSelectedProvinceId(provinceId);
                             setSelectedDistrictId(null);
                           } }
+                          defaultValue={ relatedInfo?.data?.address?.province }
                         />
                       </div>
                       <div className="w-full flex-1">
@@ -674,6 +715,7 @@ export default function Form() {
                           provinceId={ selectedProvinceId }
                           onDistrictChange={ setSelectedDistrictId }
                           setValue={ setValue }
+                          defaultValue={ relatedInfo?.data?.address?.district }
                         />
                       </div>
                       <div className="w-full flex-1">
@@ -683,6 +725,7 @@ export default function Form() {
                           errors={ errors }
                           setValue={ setValue }
                           districtId={ selectedDistrictId }
+                          defaultValue={ relatedInfo?.data?.address?.ward }
                         />
                       </div>
                     </div>
@@ -691,9 +734,9 @@ export default function Form() {
                       <InputCustom
                         className="col-span-1 sm:col-span-1"
                         placeholder="Nhập địa chỉ cụ thể của bạn"
-                        name="address"
+                        name="street"
                         type="text"
-                        id="address"
+                        id="street"
                         control={ control }
                         errors={ errors }
                       />

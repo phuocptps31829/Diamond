@@ -5,13 +5,10 @@ import PackageServiceOther from "../../components/client/serviceDetail/PackageSe
 import Rules from "../../components/client/serviceDetail/Rules";
 import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getMedicalPackageById,
-  getMedicalPackageBySpecialty,
-} from "@/services/medicalPackagesApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
-import { getServiceById, getServiceBySpecialty } from "@/services/servicesApi";
+import { medicalPackageApi } from "@/services/medicalPackagesApi";
+import { serviceApi } from "@/services/servicesApi";
 
 const DetailService = () => {
   useScrollToTop();
@@ -26,7 +23,7 @@ const DetailService = () => {
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
     queryKey: ["medical-packages", id],
-    queryFn: () => getMedicalPackageById(id),
+    queryFn: () => medicalPackageApi.getMedicalPackageById(id),
     enabled: !!packageId,
   });
 
@@ -37,7 +34,7 @@ const DetailService = () => {
     isLoading: isLoadingService,
   } = useQuery({
     queryKey: ["service", id],
-    queryFn: () => getServiceById(id),
+    queryFn: () => serviceApi.getServiceById(id),
 
     enabled: !!serviceId,
   });
@@ -48,7 +45,7 @@ const DetailService = () => {
     isLoading: isLoadingMedicalPackageSpecialty,
   } = useQuery({
     queryKey: ["medical-packages-specialty", medicalPackage?.specialtyID],
-    queryFn: () => getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
+    queryFn: () => medicalPackageApi.getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
     enabled: !!medicalPackage?.specialtyID,
   });
   const {
@@ -57,7 +54,7 @@ const DetailService = () => {
     isLoading: isLoadingServiceSpecialty,
   } = useQuery({
     queryKey: ["service-specialty", service?.specialtyID],
-    queryFn: () => getServiceBySpecialty(service?.specialtyID),
+    queryFn: () => serviceApi.getServiceBySpecialty(service?.specialtyID),
     enabled: !!service?.specialtyID,
   });
 
@@ -70,37 +67,38 @@ const DetailService = () => {
     return <NotFound />;
   }
 
-  
   const isLoading =
     isLoadingMedicalPackage ||
     isLoadingService ||
     isLoadingMedicalPackageSpecialty ||
     isLoadingServiceSpecialty;
+
+
   return (
-    <div className="bg-bg-gray p-8">
+    <div className="bg-[#E8F2F7] p-8">
       <ServiceDetail
-        medicalPackage={medicalPackage}
-        service={service}
-        isLoading={isLoading}
+        medicalPackage={ medicalPackage }
+        service={ service }
+        isLoading={ isLoading }
       />
       <DescriptionService
-        medicalPackage={medicalPackage}
-        service={service}
-        isLoading={isLoading}
+        medicalPackage={ medicalPackage }
+        service={ service }
+        isLoading={ isLoading }
       />
-      {!service && (
+      { !service && (
         <MedicalPackageService
-          medicalPackage={medicalPackage}
-          service={service}
-          isLoading={isLoading}
+          medicalPackage={ medicalPackage }
+          service={ service }
+          isLoading={ isLoading }
         />
-      )}
+      ) }
 
       <Rules />
       <PackageServiceOther
-        serviceSpecialty={serviceSpecialty}
-        medicalPackageSpecialty={medicalPackageSpecialty}
-        isLoading={isLoading}
+        serviceSpecialty={ serviceSpecialty }
+        medicalPackageSpecialty={ medicalPackageSpecialty }
+        isLoading={ isLoading }
       />
     </div>
   );

@@ -1,25 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import { BiDetail } from "react-icons/bi";
-import { FiEdit } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import { RiDeleteBin6Line } from "react-icons/ri";
+
 import { ArrowUpDown } from "lucide-react";
 import { getStatusStyle } from "../utils/StatusStyle";
-import { getPatientsById } from "@/services/patientsApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getDoctorById } from "@/services/doctorsApi";
-import { getServiceById } from "@/services/servicesApi";
-import { getMedicalPackageById } from "@/services/medicalPackagesApi";
-import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Select,
   SelectContent,
@@ -27,7 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import { useToast } from "@/hooks/useToast";
+import avatarDefault from "@/assets/images/avatar_default.png";
+import Action from "./action";
 // const useDeleteAppointment = () => {
 //   const { toast } = useToast();
 
@@ -53,41 +38,6 @@ import { useToast } from "@/hooks/useToast";
 //   });
 // };
 
-const usePatientData = (patientID) => {
-  return useQuery({
-    queryKey: ["patient", patientID],
-    queryFn: () => getPatientsById(patientID),
-    keepPreviousData: true,
-    enabled: !!patientID,
-  });
-};
-const useDoctorData = (doctorID) => {
-  return useQuery({
-    queryKey: ["doctor", doctorID],
-    queryFn: () => getDoctorById(doctorID),
-    keepPreviousData: true,
-    enabled: !!doctorID,
-  });
-};
-const useServiceData = (serviceID) => {
-  return useQuery({
-    queryKey: ["service", serviceID],
-    queryFn: () => getServiceById(serviceID),
-    keepPreviousData: true,
-
-    enabled: !!serviceID,
-  });
-};
-
-const useMedicalPackageData = (medicalPackageID) => {
-  return useQuery({
-    queryKey: ["medicalPackage", medicalPackageID],
-    queryFn: () => getMedicalPackageById(medicalPackageID),
-    keepPreviousData: true,
-
-    enabled: !!medicalPackageID,
-  });
-};
 const statusOptions = [
   { value: "Chờ xác nhận", label: "Chờ xác nhận" },
   { value: "Chưa khám", label: "Chưa khám" },
@@ -101,14 +51,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -122,7 +72,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bệnh nhân
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -130,23 +80,26 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => {
-      const {
-        data: patient,
-        isLoading,
-        error,
-      } = usePatientData(row.original.patientID);
-
-      if (isLoading) return <Skeleton className="h-7 w-40" />;
-      if (error) return <span>Không có bệnh nhân</span>;
-
+      const isValidAvatar = (avatar) => {
+        const validExtensions = [".jpg", ".jpeg", ".png"];
+        return validExtensions.some((ext) => avatar.endsWith(ext));
+      };
       return (
         <div className="flex items-center gap-3 py-3 font-medium">
           <div className="ml-2 flex w-full items-center">
             <Avatar className="size-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+              <AvatarImage
+                src={
+                  row.original.patient.avatar &&
+                    isValidAvatar(row.original.patient.avatar)
+                    ? `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.patient.avatar}`
+                    : avatarDefault
+                }
+                alt="@shadcn"
+              />
             </Avatar>
             <span className="ml-2 w-full whitespace-nowrap">
-              {patient?.fullName || "Không có bệnh nhân"}
+              { row.original.patient.fullName || "Không có tên" }
             </span>
           </div>
         </div>
@@ -160,7 +113,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bác sĩ
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -168,21 +121,10 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => {
-      const {
-        data: doctor,
-        isLoading,
-        error,
-      } = useDoctorData(row.original.workSchedule[0]?.doctorID);
-
-      console.log("doctor: ", doctor);
-
-      if (isLoading) return <Skeleton className="h-7 w-40" />;
-      if (error) return <span>Error loading doctor</span>;
-
       return (
         <div className="w-full">
           <span className="w-full whitespace-nowrap">
-            {doctor?.userID?.fullName || "Không có bác sĩ"}
+            { row.original.doctor.fullName || "Lỗi tên bác sĩ" }
           </span>
         </div>
       );
@@ -195,7 +137,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Dịch vụ/Gói khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -203,34 +145,19 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => {
-      const serviceID = row.original.serviceID;
-      const medicalPackageID = row.original.medicalPackageID;
-
-      const {
-        data: service,
-        isLoading: isLoadingService,
-        error: errorService,
-      } = useServiceData(serviceID);
-      const {
-        data: medicalPackage,
-        isLoading: isLoadingMedicalPackage,
-        error: errorMedicalPackage,
-      } = useMedicalPackageData(medicalPackageID);
-
-      if (isLoadingService || isLoadingMedicalPackage)
-        return <Skeleton className="h-7 w-40" />;
-      if (errorService || errorMedicalPackage)
-        return <span>Error loading data</span>;
-
-      const name = service?.name || medicalPackage?.name || "không có tên";
-      const isMedicalPackage = !!medicalPackageID;
+      const isMedicalPackage = !!row.original.medicalPackage;
 
       return (
         <div className="w-fit p-2">
           <span
-            className={`flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage ? "bg-primary-500/20 text-primary-900" : "bg-[#13D6CB]/20 text-cyan-950"}`}
+            className={ `flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${isMedicalPackage
+              ? "bg-primary-500/20 text-primary-900"
+              : "bg-[#13D6CB]/20 text-cyan-950"
+              }` }
           >
-            {name}
+            { row.original.service?.name ||
+              row.original.medicalPackage?.name ||
+              "Không có tên" }
           </span>
         </div>
       );
@@ -243,7 +170,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Loại khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -252,7 +179,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{row.original.type}</span>
+        <span className="w-full whitespace-nowrap">{ row.original.type }</span>
       </div>
     ),
   },
@@ -263,7 +190,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thời gian khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -273,7 +200,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {new Date(row.original.time).toLocaleString()}
+          { new Date(row.original.time).toLocaleString() || "Không có thời gian" }
         </span>
       </div>
     ),
@@ -285,7 +212,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -295,21 +222,21 @@ export const columns = [
     cell: ({ row }) => (
       <div className="w-full">
         <Select
-          value={row.original.status}
-          onValueChange={(value) => {
+          value={ row.original.status }
+          onValueChange={ (value) => {
             row.original.status = value;
             // Thực hiện các hành động khác nếu cần, ví dụ: gọi API để cập nhật trạng thái
-          }}
+          } }
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Chọn trạng thái" />
           </SelectTrigger>
           <SelectContent>
-            {statusOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            { statusOptions.map((option) => (
+              <SelectItem key={ option.value } value={ option.value }>
+                { option.label }
               </SelectItem>
-            ))}
+            )) }
           </SelectContent>
         </Select>
       </div>
@@ -322,59 +249,35 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
-    cell: ({ row }) => (
-      <div
-        className={`flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
-          row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán",
-        )}`}
-      >
-        <span className="whitespace-nowrap">
-          {row.original.invoice[0]?.price ? "Đã thanh toán" : "Chưa thanh toán"}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const paymentStatus =
+        row.original.payment?.status === "Đã thanh toán"
+          ? "Đã thanh toán"
+          : "Chưa thanh toán";
+
+      return (
+        <div
+          className={ `flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
+            paymentStatus,
+          )}` }
+        >
+          <span className="whitespace-nowrap">{ paymentStatus }</span>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 rotate-90 p-0 text-base" variant="ghost">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-fit min-w-0">
-            <DropdownMenuItem className="flex w-full items-center gap-2">
-              <BiDetail className="text-[15px]" />
-              <Link to={`/admin/appointments/detail/${row.original._id}`}>
-                Chi tiết
-              </Link>
-            </DropdownMenuItem>
-            {row.original.status === "Chờ xác nhận" && (
-              <DropdownMenuItem className="flex w-full items-center gap-2">
-                <FiEdit className="text-[15px]" />
-                <Link to={`/admin/appointments/edit/${row.original._id}`}>
-                  Sửa
-                </Link>
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem className="flex w-full items-center gap-2">
-              <RiDeleteBin6Line className="text-[15px]" />
-              <span>Xóa</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <Action row={ row } />;
     },
   },
 ];

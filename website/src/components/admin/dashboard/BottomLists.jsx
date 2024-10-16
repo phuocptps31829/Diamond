@@ -37,13 +37,13 @@ export default function BottomLists({ dataUpcomingAppointments }) {
         const appointmentEndTime = new Date(appointment.time);
         return appointmentEndTime <= now;
       })
-      .sort((a, b) => new Date(a.time) - new Date(b.time));
+      .sort((a, b) => new Date(b.time) - new Date(a.time));
 
     setClosestPatients(closestPatientsList.slice(0, 5));
   }, [dataUpcomingAppointments]);
 
   return (
-    <div className="mt-6 grid w-full grid-cols-[32%_65.8%] justify-between">
+    <div className="mt-6 grid w-full grid-cols-[35%_62.8%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Bệnh nhân gần đây</h3>
@@ -64,12 +64,8 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             {closestPatients.map((appointment, index) => (
               <TableRow key={index} className="p-0 text-[13px]">
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>{appointment.fullName}</TableCell>
-                <TableCell>
-                  {appointment.result.length === 0
-                    ? "Chưa có kết quả"
-                    : "Render chẩn đoán"}
-                </TableCell>
+                <TableCell>{appointment.patient.fullName}</TableCell>
+                <TableCell>{appointment.result.diagnose}</TableCell>
                 <TableCell>
                   <Menubar className="border-none bg-transparent shadow-none">
                     <MenubarMenu>

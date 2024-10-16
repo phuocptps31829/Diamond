@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllServices } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 
 export default function SelectService({ control, name, errors, onChange }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function SelectService({ control, name, errors, onChange }) {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const data = await getAllServices({ limit: 9999 });
+        const data = await serviceApi.getAllServices({ limit: 9999 });
         setServices(data?.data);
       } catch (error) {
         console.error("Failed to fetch services:", error);
@@ -39,26 +39,26 @@ export default function SelectService({ control, name, errors, onChange }) {
   return (
     <div className="">
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Vui lòng chọn một dịch vụ." }}
-        render={({ field }) => (
-          <Popover open={open} onOpenChange={setOpen}>
+        control={ control }
+        name={ name }
+        rules={ { required: "Vui lòng chọn một dịch vụ." } }
+        render={ ({ field }) => (
+          <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={open}
-                className={cn(
+                aria-expanded={ open }
+                className={ cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "border-red-500",
-                )}
+                ) }
               >
-                {field.value ? (
+                { field.value ? (
                   services.find((service) => service._id === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn dịch vụ</span>
-                )}
+                ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -68,39 +68,39 @@ export default function SelectService({ control, name, errors, onChange }) {
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
-                    {services.map((service) => (
+                    { services.map((service) => (
                       <CommandItem
-                        key={service._id}
-                        value={service._id}
-                        onSelect={(currentValue) => {
+                        key={ service._id }
+                        value={ service._id }
+                        onSelect={ (currentValue) => {
                           field.onChange(
                             currentValue === field.value ? "" : currentValue,
                           );
                           onChange(currentValue, service.specialtyID, service.discountPrice || service.price);
                           setOpen(false);
-                        }}
+                        } }
                       >
                         <Check
-                          className={cn(
+                          className={ cn(
                             "mr-2 h-4 w-4",
                             field.value === service._id
                               ? "opacity-100"
                               : "opacity-0",
-                          )}
+                          ) }
                         />
-                        {service.name}
+                        { service.name }
                       </CommandItem>
-                    ))}
+                    )) }
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        )}
+        ) }
       />
-      {errors[name] && (
-        <p className="mt-2 text-sm text-red-600">{errors[name].message}</p>
-      )}
+      { errors[name] && (
+        <p className="mt-2 text-sm text-red-600">{ errors[name].message }</p>
+      ) }
     </div>
   );
 }

@@ -17,9 +17,8 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
+import { toastUI } from "@/components/ui/Toastify";
+import { branchApi } from "@/services/branchesApi";
 
 export default function SelectDepartment({
   control,
@@ -32,13 +31,12 @@ export default function SelectDepartment({
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
   console.log(selectedServiceID);
-  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDepartments = async () => {
       if (!specialtyID) return;
       try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
+        const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
         setDepartments(data);
       } catch (error) {
         console.error("Failed to fetch departments:", error);
@@ -54,12 +52,7 @@ export default function SelectDepartment({
 
   const handleClick = () => {
     if (!selectedServiceID) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn dịch vụ",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng chọn dịch vụ", "warning");
       return;
     }
   };
@@ -69,7 +62,7 @@ export default function SelectDepartment({
       <Controller
         control={ control }
         name={ name }
-        rules={ { required: "Vui lòng chọn một khoa." } }
+        rules={ { required: "Vui lòng chọn chi nhánh." } }
         render={ ({ field }) => (
           <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
@@ -88,14 +81,14 @@ export default function SelectDepartment({
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
-                  <span className="text-gray-600">Chọn khoa làm việc</span>
+                  <span className="text-gray-600">Chọn chi nhánh</span>
                 ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên khoa" />
+                <CommandInput placeholder="Nhập tên chi nhánh" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -105,7 +98,7 @@ export default function SelectDepartment({
                         value={ department._id }
                         onSelect={ (currentValue) => {
                           field.onChange(
-                            currentValue === field.value ? "" : currentValue,
+                            currentValue,
                           );
                           onChange(currentValue);
                           setOpen(false);

@@ -1,42 +1,91 @@
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import { Label } from "@/components/ui/Label";
-// import avatarU from "../../../assets/images/healthcare-medical-people-concept-smiling-asian-female-doctor-pointing-fingers-right-showing-adverti.jpg";
 import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userInfoSchema } from "@/zods/user";
 import { authApi } from "@/services/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logoutAction, setUserProfile } from "@/redux/authSlice";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
+import Loading from "@/components/ui/Loading";
+import { imageApi } from "@/services/imageApi";
+import { toastUI } from "@/components/ui/Toastify";
+import { patientApi } from "@/services/patientsApi";
+import { Controller } from "react-hook-form";
+import SelectEthnic from "../checkout/select/SelectEthnicity";
 
 const UserInfoForm = () => {
+  const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [fileImage, setFileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const profile = useSelector((state) => state.auth.userProfile);
 
-  const { data: profileFetched, error, isLoading } = useQuery({
+  const { data: profileFetched, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: authApi.getProfileInfo,
     enabled: !!profile
   });
-  console.log(profileFetched);
+
+  const { mutate: updatePatient, isPending: isPendingUpdate } = useMutation({
+    mutationFn: ({ id, requestBody }) => {
+      return patientApi.updatePatient(id, requestBody);
+    },
+    onSuccess: (newData) => {
+      console.log('updated', newData);
+      // reset({
+      //   fullName: newData.fullName,
+      //   phone: newData.phoneNumber,
+      //   email: newData.email,
+      //   dateOfBirth: newData.dateOfBirth,
+      //   gender: newData.gender,
+      //   roleID: newData.roleID,
+      //   citizenIdentificationNumber: newData.citizenIdentificationNumber,
+      //   isActivated: newData.isActivated,
+      //   password: undefined,
+      //   confirmPassword: undefined,
+      // });
+
+      // setValue("insuranceCode", newData.otherInfo?.insuranceCode || "");
+      // setValue("occupation", newData.otherInfo?.occupation || "");
+      // setValue("ethnic", newData.otherInfo?.ethnic || "");
+      // setValue("province", newData.address?.province || "");
+      // setValue("district", newData.address?.district || "");
+      // setValue("ward", newData.address?.ward || "");
+      // setValue("address", newData.address?.address || "");
+
+      // setFileImage(null);
+      // setImagePreview(null);
+      // setLoadingImage(false);
+      // setIsInitialized(true);
+      // setInitialRender(true);
+      // toast("Cập nhật người dùng thành công!", "success");
+      queryClient.invalidateQueries(["userProfile"]);
+    },
+    // onError: () => {
+    //   setLoadingImage(false);
+    //   toast("Cập nhật người dùng thất bại!", "error");
+    // },
+  });
 
   const {
     handleSubmit,
     formState: { errors },
     control,
     setValue,
-    reset,
+    register
   } = useForm({
     resolver: zodResolver(userInfoSchema),
     defaultValues: {
       fullName: profile?.fullName || "",
       phoneNumber: profile?.phoneNumber || "",
       email: profile?.email || "",
+      gender: profile?.gender || "",
       dateOfBirth: profile?.dateOfBirth || "",
       citizenIdentificationNumber: profile?.citizenIdentificationNumber || "",
       occupation: profile?.occupation || "",
@@ -56,28 +105,83 @@ const UserInfoForm = () => {
 
     dispatch(setUserProfile(profileFetched?.data));
 
+    setImagePreview(profileFetched?.data?.avatar);
     setValue('fullName', profileFetched?.data?.fullName);
     setValue('phoneNumber', profileFetched?.data?.phoneNumber);
     setValue('email', profileFetched?.data?.email);
     setValue('dateOfBirth', profileFetched?.data?.dateOfBirth);
     setValue('gender', profileFetched?.data?.gender);
+    setValue('address', profileFetched?.data?.address);
     setValue('citizenIdentificationNumber', profileFetched?.data?.citizenIdentificationNumber);
     setValue('occupation', profileFetched?.data?.otherInfo?.occupation);
     setValue('ethnic', profileFetched?.data?.otherInfo?.ethnic);
     setValue('insuranceCode', profileFetched?.data?.otherInfo?.insuranceCode);
-  }, [profileFetched, dispatch, setValue]);
+  }, [profileFetched, dispatch, setValue, navigate]);
 
-  const onSubmit = (data) => {
-    console.log("Form submitted");
+  console.log(errors);
+  const onSubmit = async (data) => {
     console.log(data);
+    return;
+
+    const requestBody = {
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+      email: data.email,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      avatar: "",
+      citizenIdentificationNumber: data.citizenIdentificationNumber,
+      address: data.address,
+      otherInfo: {
+        occupation: data.occupation,
+        insuranceCode: data.insuranceCode,
+        ethnic: data.ethnic,
+      },
+    };
+
+    if (fileImage) {
+      const formData = new FormData();
+      formData.append("file", fileImage);
+
+      const imageResponse = await imageApi.createImage(formData);
+      const imageUrl = imageResponse?.data;
+
+      if (!imageUrl) {
+        throw new Error("Không thể upload ảnh");
+      }
+      requestBody.avatar = imageUrl;
+
+      console.log('requestBody', requestBody);
+      updatePatient({ id: profileFetched?.data?._id, requestBody });
+    } else {
+      requestBody.avatar = imagePreview;
+      updatePatient({ id: profileFetched?.data?._id, requestBody });
+    }
   };
 
-  // if (isLoading) return <p>Loading...</p>;
+  const fileInputRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+    }
+  };
+
+  useEffect(() => {
+    if (!imagePreview) {
+      fileInputRef.current.value = "";
+    }
+  }, [imagePreview]);
+
   // if (error) return <p>Error fetching profile data.</p>;
 
   return (
     <div className="w-full p-6">
-      <h2 className="col-span-2 mb-6 text-xl font-bold">Thông tin tài khoản</h2>
+      { isLoading && <Loading /> }
+      <h2 className="col-span-2 text-xl font-bold">Thông tin tài khoản</h2>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
           <div className="flex-2 grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2">
@@ -89,6 +193,7 @@ const UserInfoForm = () => {
               control={ control }
               errors={ errors }
               placeholder="Nhập họ và tên"
+              required
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
@@ -97,13 +202,14 @@ const UserInfoForm = () => {
               type="text"
               control={ control }
               errors={ errors }
+              required
               placeholder="Nhập số điện thoại"
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="email"
               label="Email"
-              type="email"
+              type="text"
               control={ control }
               errors={ errors }
               placeholder="Nhập email"
@@ -120,25 +226,27 @@ const UserInfoForm = () => {
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="dateOfBirth"
+              required
               label="Ngày sinh"
               type="date"
               control={ control }
               errors={ errors }
             />
-            <InputCustom
-              className="col-span-1 sm:col-span-1"
-              name="ethnic"
-              label="Dân tộc"
-              type="text"
-              control={ control }
-              errors={ errors }
-              placeholder="Nhập dân tộc"
-            />
+            <div className="relative">
+              <label
+                htmlFor="ethnic"
+                className="left-[15px] mb-[7.5px] block bg-white px-1 text-[14px]"
+              >
+                Dân tộc
+              </label>
+              <SelectEthnic control={ control } name="ethnic" errors={ errors } />
+            </div>
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="citizenIdentificationNumber"
               label="Số CMND/CCCD"
               type="password"
+              required
               control={ control }
               errors={ errors }
               placeholder="**************"
@@ -152,55 +260,59 @@ const UserInfoForm = () => {
               errors={ errors }
               placeholder="**************"
             />
-            <InputCustom
-              name="address"
-              label="Địa chỉ"
-              type="text"
-              control={ control }
-              errors={ errors }
-              placeholder="Nhập địa chỉ"
-              className="col-span-1 sm:col-span-2"
-            />
+            <div className="flex flex-col gap-1 col-span-2">
+              <InputCustom
+                label="Địa chỉ"
+                className="col-span-1 sm:col-span-1"
+                placeholder="Nhập địa chỉ cụ thể của bạn"
+                name="address"
+                type="text"
+                id="address"
+                required
+                control={ control }
+                errors={ errors }
+              />
+            </div>
           </div>
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-              <AvatarImage src={ profile?.avatar || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
+              <AvatarImage src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-cover" />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">
               <Label htmlFor="picture" className="mb-1.5 block">
                 Ảnh đại diện
               </Label>
-              <Input id="picture" type="file" />
+              <Input id="picture" ref={ fileInputRef } onChange={ handleFileChange } type="file" />
             </div>
             <div className="mt-4 flex w-full justify-center gap-4 md:flex-wrap">
               <div className="flex w-full items-center justify-center rounded-md border p-2 text-center sm:w-24">
                 <input
+                  { ...register('gender') }
+                  id="male"
                   type="radio"
-                  name="gender"
                   value="Nam"
-                  checked={ profileFetched?.data.gender === "Nam" }
-                  className="mr-3 size-5"
+                  className="mr-3 size-4"
                   required
                 />
-                <label className="mr-2">Nam</label>
+                <label className="mr-2" htmlFor="male">Nam</label>
               </div>
               <div className="flex w-full items-center justify-center rounded-md border p-2 text-center sm:w-24">
                 <input
+                  { ...register('gender') }
+                  id="female"
                   type="radio"
-                  name="gender"
                   value="Nữ"
-                  checked={ profileFetched?.data.gender === "Nữ" }
-                  className="mr-3 size-5"
+                  className="mr-3 size-4"
                   required
                 />
-                <label>Nữ</label>
+                <label htmlFor="female">Nữ</label>
               </div>
             </div>
             <button
               type="submit"
-              className="mt-5 hidden h-fit w-full rounded bg-primary-500 p-2 text-white md:block"
+              className="mt-5 hidden h-fit w-full rounded-md bg-primary-500 p-2 text-white md:block"
             >
               Cập nhật
             </button>
@@ -209,7 +321,7 @@ const UserInfoForm = () => {
         <div className="mt-auto block w-full px-4 pb-4 md:hidden md:px-4">
           <button
             type="submit"
-            className="mt-4 h-fit w-full rounded bg-primary-500 p-3 text-white"
+            className="mt-4 h-fit w-full rounded-sm bg-primary-500 p-3 text-white"
           >
             Cập nhật
           </button>

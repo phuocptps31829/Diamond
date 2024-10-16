@@ -4,6 +4,5 @@ export default function Register() {
     useScrollToTop();
     return (
         <RegisterComponent />
-    )
-        ;
+    );
 }

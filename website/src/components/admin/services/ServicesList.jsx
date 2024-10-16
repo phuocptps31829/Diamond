@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import DataTable from "./table";
 import { columns } from "./table/columns";
-import { getAllServices } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 import NotFound from "@/components/client/notFound";
 import Loading from "@/components/ui/Loading";
 
 const ServicesList = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["services"],
-    queryFn: () => getAllServices({ limit: 9999 }),
+    queryFn: () => serviceApi.getAllServices({ limit: 9999 }),
     keepPreviousData: true,
   });
 
@@ -21,7 +21,7 @@ const ServicesList = () => {
   }
 
   console.log("data: ", data);
-  return <DataTable columns={ columns } data={ data.data } />;
+  return <DataTable columns={ columns } data={ data?.data } />;
 };
 
 export default ServicesList;

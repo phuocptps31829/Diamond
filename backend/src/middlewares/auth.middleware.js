@@ -21,7 +21,6 @@ const verifyAccessToken = (req, res, next) => {
 
         next();
     } catch (error) {
-        console.log('ỉner');
         next(error);
     }
 };

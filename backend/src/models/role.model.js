@@ -9,6 +9,10 @@ const roleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isSystem: {
+        type: Boolean,
+        default: false
+    },
     isDeleted: {
         type: Boolean,
         default: false

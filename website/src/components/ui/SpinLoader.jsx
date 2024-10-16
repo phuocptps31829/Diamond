@@ -21,7 +21,7 @@ export default function SpinLoader() {
           className="opacity-75"
         ></path>
       </svg>
-      Loading...
+      Đang xử lí...
     </div>
   );
 }

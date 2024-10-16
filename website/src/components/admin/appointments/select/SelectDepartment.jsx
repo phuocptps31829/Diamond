@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 
@@ -38,7 +38,7 @@ export default function SelectDepartment({
     const fetchDepartments = async () => {
       if (!specialtyID) return;
       try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
+        const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
         setDepartments(data);
       } catch (error) {
         console.error("Failed to fetch departments:", error);

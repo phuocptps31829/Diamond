@@ -80,22 +80,22 @@ export default function DoctorsForm() {
       setFileName(file.name);
     }
   };
-  const [fileName, setFileName] = useState(""); 
+  const [fileName, setFileName] = useState("");
 
   const handleRemoveImage = () => {
     setSelectedFile(null);
     setPreviewImage(null);
   };
-const handleDegreeChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setDegreePreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-  }
-};
+  const handleDegreeChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDegreePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
   const handleAddDegree = () => {
     if (DegreePreview) {
       setDegrees((prev) => [...prev, DegreePreview]);
@@ -111,12 +111,12 @@ const handleDegreeChange = (event) => {
   const { mutate: createDoctors } = useMutation({
     mutationFn: (newDoctors) => doctorApi.createDoctors(newDoctors),
     onSuccess: () => {
-        toastUI("Thêm bác sĩ thành công", "success");
-        navigate('/admin/doctors/list');
+      toastUI("Thêm bác sĩ thành công", "success");
+      navigate('/admin/doctors/list');
     },
     onError: (err) => {
-        console.error(err);
-        toastUI("Có lỗi xảy ra: " + err.message, "error");
+      console.error(err);
+      toastUI("Có lỗi xảy ra: " + err.message, "error");
     },
   });
   const onSubmit = async (data) => {
@@ -132,8 +132,8 @@ const handleDegreeChange = (event) => {
       setUploading(true);
       const imageResponse = await doctorApi.uploadIMG(selectedFile);
       setUploading(false);
-      imageUrl = imageResponse?.data; 
-      console.log("IMG uploaded: ", imageUrl); 
+      imageUrl = imageResponse?.data;
+      console.log("IMG uploaded: ", imageUrl);
     }
     const formattedDateOfBirth = dateOfBirth.toISOString().split('T')[0];
     const doctorData = {
@@ -145,21 +145,21 @@ const handleDegreeChange = (event) => {
       password: data.password,
       address: {
         province: data.province,
-        district: data.district, 
-        ward: data.ward, 
-        street: data.address 
+        district: data.district,
+        ward: data.ward,
+        street: data.address
       },
       isActivated: data.isActivated,
-      image: imageUrl, 
-      citizenIdentificationNumber: data.citizenIdentificationNumber, 
+      image: imageUrl,
+      citizenIdentificationNumber: data.citizenIdentificationNumber,
       otherInfo: {
         branchID: data.branch, 
         specialtyID: data.specialty, 
         isInternal: data.isInternal,
         yearsExperience: data.yearsExperience,
         verification: {
-          practicingCertificate : "112131312",
-          images:["123", "456", "789"],
+          practicingCertificate: "112131312",
+          images: ["123", "456", "789"],
         },
         detail: data.detail,
       },
@@ -286,18 +286,18 @@ const handleDegreeChange = (event) => {
                       control={ control }
                       name="dateOfBirth"
                       errors={ errors }
-                      onChange={(value) => console.log("Giá trị khoa được chọn: ", value)}
+                      onChange={ (value) => console.log("Giá trị khoa được chọn: ", value) }
 
                     />
                   </div>
                   <Controller
                     name="gender"
-                    control={control}
-                    render={({ field }) => (
+                    control={ control }
+                    render={ ({ field }) => (
                       <div className="flex items-center gap-2 pb-2 md:p-0">
                         <label className="mr-2 flex items-center text-lg md:text-base">
                           <input
-                            {...field}
+                            { ...field }
                             type="radio"
                             value="male"
                             className="mr-2"
@@ -306,7 +306,7 @@ const handleDegreeChange = (event) => {
                         </label>
                         <label className="flex items-center text-lg md:text-base">
                           <input
-                            {...field}
+                            { ...field }
                             type="radio"
                             value="female"
                             className="mr-2"
@@ -314,7 +314,7 @@ const handleDegreeChange = (event) => {
                           Nữ
                         </label>
                       </div>
-                    )}
+                    ) }
                   />
                 </div>
               </div>
@@ -360,63 +360,63 @@ const handleDegreeChange = (event) => {
         </div>
         {/* Line 4 */ }
         <div className="block">
-        <div className="relative md:mb-4">
-              <label
-                htmlFor="hoten"
-                className="left-[15px] block bg-white px-1 text-lg md:text-base "
-              >
-                Bằng cấp <span className="text-red-500">*</span>
-              </label>
-              <Button
+          <div className="relative md:mb-4">
+            <label
+              htmlFor="hoten"
+              className="left-[15px] block bg-white px-1 text-lg md:text-base "
+            >
+              Bằng cấp <span className="text-red-500">*</span>
+            </label>
+            <Button
               variant="primary"
               type="button"
-              onClick={toggleDegreeModal}
+              onClick={ toggleDegreeModal }
               className="px-4 py-2 bg-blue-500 text-white rounded-md text-xl my-1 p-5"
-              > 
-              <MdCloudUpload className="mr-2" size={24} />
+            >
+              <MdCloudUpload className="mr-2" size={ 24 } />
               Tải ảnh lên
             </Button>
             <div className="relative ">
               <div className="flex flex-wrap gap-4 ">
-                {Degrees.map((cert, index) => (
-                  <div key={index} className="relative">
+                { Degrees.map((cert, index) => (
+                  <div key={ index } className="relative">
                     <img
-                      src={cert}
-                      alt={`Degree ${index + 1}`}
+                      src={ cert }
+                      alt={ `Degree ${index + 1}` }
                       className="h-[250px] w-[250px] object-cover rounded-lg"
                     />
                     <button
                       type="button"
-                      onClick={() => handleRemoveDegree(index)}
+                      onClick={ () => handleRemoveDegree(index) }
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-lg p-2 text-sm"
                     >
                       X
                     </button>
                   </div>
-                ))}
+                )) }
               </div>
             </div>
           </div>
         </div>
-        <Modal
-          isOpen={isDegreeModalOpen}
-          onRequestClose={toggleDegreeModal}
+        {/* <Modal
+          isOpen={ isDegreeModalOpen }
+          onRequestClose={ toggleDegreeModal }
           contentLabel="Thêm ảnh"
           className="w-1/6 mx-auto mt-20 bg-white p-6 rounded-lg shadow-lg"
           overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
         >
           <h2 className="text-xl font-semibold mb-4">Thêm ảnh <span className="text-red-500">*</span></h2>
           <div className="relative h-64 w-full rounded-lg border-2 border-dashed border-primary-500 flex items-center justify-center">
-            {DegreePreview ? (
+            { DegreePreview ? (
               <div className="relative h-full w-full">
                 <img
-                  src={DegreePreview}
+                  src={ DegreePreview }
                   alt="Degree Preview"
                   className="h-full w-full object-cover rounded-lg"
                 />
                 <button
                   type="button"
-                  onClick={() => setDegreePreview(null)}
+                  onClick={ () => setDegreePreview(null) }
                   className="absolute top-3 right-3 bg-red-500 text-white rounded-sm p-2 hover:bg-red-600"
                 >
                   X
@@ -425,47 +425,46 @@ const handleDegreeChange = (event) => {
             ) : (
               <label className="flex h-full w-full cursor-pointer items-center justify-center">
                 <div className="flex flex-col items-center justify-center">
-                  <MdCloudUpload size={45} color="#007BBB" />
+                  <MdCloudUpload size={ 45 } color="#007BBB" />
                   <p className="mt-2 text-sm">Chọn ảnh</p>
                 </div>
                 <input
                   type="file"
                   id="DegreeImage"
                   className="hidden"
-                  onChange={handleDegreeChange}
+                  onChange={ handleDegreeChange }
                   accept="image/*"
                 />
               </label>
-            )}
+            ) }
           </div>
-          {/* Close Modal Button */}
           <div className="flex justify-end gap-2 items-center">
             <button
               type="button"
-              onClick={toggleDegreeModal}
+              onClick={ toggleDegreeModal }
               className="
                 mt-2 h-fit px-4 py-2 text-primary-500 rounded-md border border-primary-500 
               hover:bg-primary-600 hover:text-white hover:border-primary-600 transition duration-300"
             >
               Đóng
             </button>
-            {DegreePreview && (
+            { DegreePreview && (
               <button
                 type="button"
-                onClick={handleAddDegree}
+                onClick={ handleAddDegree }
                 className="
                   mt-2 px-4 py-2 bg-primary-500 text-white rounded-md 
                 hover:bg-primary-600 hover:shadow-lg transition duration-300"
               >
                 Tải lên
               </button>
-            )}
+            ) }
           </div>
-        </Modal>
-        {/* Select images end */}
+        </Modal> */}
+        {/* Select images end */ }
         <div className="block">
           <div className="w-full gap-[10px] md:flex">
-          <div className="md:mb-4 md:w-1/2 relative ">
+            <div className="md:mb-4 md:w-1/2 relative ">
               <label htmlFor="hoten" className=" block px-1 left-[15px] bg-white md:text-base text-lg ">
                 Chứng chỉ hành nghề <span className="text-red-500">*</span>
               </label>
@@ -503,7 +502,7 @@ const handleDegreeChange = (event) => {
                 control={ control }
                 name="isInternal"
                 errors={ errors }
-                onChange={(value) => console.log("Giá trị khoa được chọn: ", value)}
+                onChange={ (value) => console.log("Giá trị khoa được chọn: ", value) }
               />
             </div>
             <div className="relative md:mb-4 md:w-1/2">
@@ -547,7 +546,7 @@ const handleDegreeChange = (event) => {
                 control={ control }
                 name="branch"
                 errors={ errors }
-                setValue={(value) => console.log("Giá trị branch được chọn: ",value)}
+                setValue={ (value) => console.log("Giá trị branch được chọn: ", value) }
               />
             </div>
           </div>
@@ -634,35 +633,35 @@ const handleDegreeChange = (event) => {
             errors={ errors }
           />
         </div>
-          {/* isActivated */ }
-          <div className=" mt-3">
-            <Label
-              htmlFor=""
-              className="mb-2 block text-base text-black"
-            >
-              Trạng thái<span className="text-red-[250px]0">*</span>
-            </Label>
-            <Controller
-              name="isActivated"
-              control={ control }
-              render={ ({ field }) => (
-                <RadioGroup
-                  value={ field.value }
-                  onValueChange={ (value) => field.onChange(value) }
-                  className="flex items-center justify-start gap-5"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value={ true } id="r3" />
-                    <Label htmlFor="r3">Đang hoạt động</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value={ false } id="r4" />
-                    <Label htmlFor="r4">Tạm dừng</Label>
-                  </div>
-                </RadioGroup>
-              ) }
-            />
-          </div>
+        {/* isActivated */ }
+        <div className=" mt-3">
+          <Label
+            htmlFor=""
+            className="mb-2 block text-base text-black"
+          >
+            Trạng thái<span className="text-red-[250px]0">*</span>
+          </Label>
+          <Controller
+            name="isActivated"
+            control={ control }
+            render={ ({ field }) => (
+              <RadioGroup
+                value={ field.value }
+                onValueChange={ (value) => field.onChange(value) }
+                className="flex items-center justify-start gap-5"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={ true } id="r3" />
+                  <Label htmlFor="r3">Đang hoạt động</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value={ false } id="r4" />
+                  <Label htmlFor="r4">Tạm dừng</Label>
+                </div>
+              </RadioGroup>
+            ) }
+          />
+        </div>
         {/* Button */ }
         <div className="flex justify-end gap-2">
           <Button

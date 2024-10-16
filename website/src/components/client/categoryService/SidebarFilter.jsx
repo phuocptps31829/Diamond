@@ -4,7 +4,7 @@ import { getAllSpecialties } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 
-import { getAllBranches } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 const SidebarFilter = ({ filters, onFilterApply }) => {
@@ -78,7 +78,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
     isLoading: branchesLoading,
   } = useQuery({
     queryKey: ["branches"],
-    queryFn: getAllBranches,
+    queryFn: branchApi.getAllBranches,
   });
 
   if (specialtiesLoading || branchesLoading)

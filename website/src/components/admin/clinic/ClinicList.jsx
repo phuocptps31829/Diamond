@@ -7,15 +7,15 @@ import Loading from "@/components/ui/Loading";
 const ClinicsList = () => {
   const {
     data: clinicsData = [],
-    error, 
+    error,
     isLoading
   } = useQuery({
     queryKey: ["clinics"],
     queryFn: clinicsApi.getAllClinics,
-    
-  });  
+
+  });
   if (isLoading) {
-    return <Loading/>;
+    return <Loading />;
   }
 
   if (error) {
@@ -24,8 +24,8 @@ const ClinicsList = () => {
   console.log("aaaaaa:", clinicsData);
   return (
     <DataTable
-      columns={columns}
-      data={clinicsData}
+      columns={ columns }
+      data={ clinicsData }
     />
   );
 };

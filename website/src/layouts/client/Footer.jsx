@@ -1,5 +1,6 @@
 import { FaFacebookSquare, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import brandLogo from "@/assets/images/brandLogo.png";
 
 export default function Footer() {
   return (
@@ -8,11 +9,11 @@ export default function Footer() {
         <div className="flex flex-col justify-between gap-2 border-b-[1px] border-slate-300 pb-4 lg:flex-row lg:gap-28">
           <div className="flex-[2]">
             <Link
-              to={"/"}
-              className="w-50 relative inline-block h-14 items-center"
+              to={ "/" }
+              className="w-72 relative inline-block h-14 items-center"
             >
               <img
-                src="https://ykhoadiamond.com/images/icons/logo.png"
+                src={ brandLogo }
                 className="w-full"
                 alt="Logo"
               />
@@ -21,18 +22,18 @@ export default function Footer() {
               <li className="pb-3">
                 <p>
                   <strong className="font-medium">Hotline </strong>
-                  <span  className="font-normal text-sm">19001008</span>
+                  <span className="font-normal text-sm">19001008</span>
                 </p>
               </li>
               <li className="pb-3">
                 <p>
                   <strong className="font-medium">Hỗ trợ </strong>
-                  <span  className="font-normal text-sm">diamond@contact.com</span>
+                  <span className="font-normal text-sm">diamond@contact.com</span>
                 </p>
               </li>
               <li className="pb-3">
                 <p>
-                  <span  className="font-normal text-sm">
+                  <span className="font-normal text-sm">
                     Copyright © 2017-2024 Rai and Rohl Technologies, Inc. All
                     rights reserved.
                   </span>
@@ -90,7 +91,7 @@ export default function Footer() {
             <h6 className="pb-3 font-semibold">
               CÔNG TY TNHH PHÒNG KHÁM ĐA KHOA DIAMOND
             </h6>
-            <p  className="font-normal text-sm">
+            <p className="font-normal text-sm">
               Giấy CN ĐKDN số 0309145924, đăng ký lần đầu ngày 06/07/2009, đăng
               ký thay đổi lần thứ 9 ngày 06/07/2023, cấp bởi Sở KH&ĐT Thành phố
               Hồ Chí Minh.
@@ -119,7 +120,7 @@ export default function Footer() {
               <div>
                 <img
                   src="https://dangkywebvoibocongthuong.com/wp-content/uploads/2021/11/logo-da-thong-bao-bo-cong-thuong.png"
-                  width={200}
+                  width={ 200 }
                   alt="Notification"
                 />
               </div>

@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { getAllBranchesBySpecialty } from "@/services/branchesApi";
+import { branchApi } from "@/services/branchesApi";
 
 export default function SelectSpecialties({
   control,
@@ -34,7 +34,7 @@ export default function SelectSpecialties({
     const fetchSpecialties = async () => {
       if (!specialtyID) return;
       try {
-        const data = await getAllBranchesBySpecialty(specialtyID);
+        const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
         setSpecialties(data);
       } catch (error) {
         console.error("Failed to fetch specialties:", error);

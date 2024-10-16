@@ -13,10 +13,9 @@ import {
 } from "@/components/ui/Tooltip";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/redux/cartSlice";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@radix-ui/react-toast";
 import { useEffect, useState } from "react";
 import { removeItemInfo, initBookingDetails } from "@/redux/bookingSlice";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function ServiceItem({
   image,
@@ -28,7 +27,6 @@ export default function ServiceItem({
   specialtyID,
 }) {
   const dispatch = useDispatch();
-  const { toast } = useToast();
   const cartItems = useSelector((state) => state.cart.cart);
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const [isInCart, setIsInCart] = useState(false);
@@ -40,11 +38,7 @@ export default function ServiceItem({
 
   const handleAddClick = () => {
     if (!profileCustomer) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng đăng nhập để đặt lịch",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
       return;
     }
 
@@ -67,24 +61,10 @@ export default function ServiceItem({
           },
         }),
       );
-
-      toast({
-        variant: "success",
-        title: "Thêm dịch vụ vào giỏ hàng thành công!",
-        description: "Vui lòng xem chi tiết dịch vụ ở giỏ hàng.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
     } else {
       dispatch(removeFromCart(_id));
       dispatch(removeItemInfo(_id));
-
       setIsInCart(false);
-      toast({
-        variant: "success",
-        title: "Đã xóa dịch vụ khỏi giỏ hàng!",
-        description: "Dịch vụ đã được xóa khỏi giỏ hàng của bạn.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
     }
   };
 
@@ -95,7 +75,7 @@ export default function ServiceItem({
         className="group block min-h-[125px] w-full overflow-hidden sm:min-h-[210px]"
       >
         <img
-          src={ image }
+          src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }
           alt={ name }
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
@@ -110,10 +90,10 @@ export default function ServiceItem({
         <hr className="mb-1" />
         <div className="flex items-center space-x-2 py-1">
           <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-            { (+price).toLocaleString() } ₫
+            { (discountPrice).toLocaleString() } ₫
           </span>
           <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            { (+discountPrice).toLocaleString() }₫
+            { (price).toLocaleString() }₫
           </span>
         </div>
 

@@ -18,32 +18,33 @@ export const otherBookingSchema = z.object({
 
   gender: z.string().min(1, "Giới tính không được để trống!"),
 
-  birthDate: z.string().min(1, "Ngày sinh không được để trống!"),
+  dateOfBirth: z.string().min(1, "Ngày sinh không được để trống!"),
 
-  job: z.string().min(1, "Nghề nghiệp không được để trống!"),
+  occupation: z.string().min(1, "Nghề nghiệp không được để trống!"),
 
-  ethnicity: z.string().min(1, "Dân tộc không được để trống!"),
+  ethnic: z.string().min(1, "Dân tộc không được để trống!"),
 
-  cccd: z
+  citizenIdentificationNumber: z
     .string()
     .min(1, "Số CCCD không được để trống!")
     .regex(/^\d{9,12}$/, "Số CCCD phải là số có từ 9 đến 12 chữ số"),
 
-  bhyt: z
+  insuranceCode: z
     .string()
-    .min(1, "Số BHYT không được để trống!")
-    .regex(/^\d+$/, "Số BHYT chỉ được chứa các chữ số"),
+    .min(1, "Số BHYT không được để trống!"),
 
-  address: z.string().min(1, "Địa chỉ không được để trống!"),
-
-  department: z.string().min(1, "Khoa khám không được để trống!"),
+  department: z.string().min(1, "Chi nhánh không được để trống!"),
 
   doctor: z.string().min(1, "Bác sĩ không được để trống!"),
 
   time: z.string().min(1, "Thời gian khám không được để trống!"),
 
   date: z.string().min(1, "Ngày khám không được để trống!"),
-  province: z.union([z.string().min(1, "Không được để trống!"), z.number()]),
+  province: z.union([
+    z.string().min(1, "Không được để trống!"),
+    z.number(),
+    z.null(),
+  ]),
   district: z.union([
     z.string().min(1, "Không được để trống!"),
     z.number(),
@@ -54,10 +55,15 @@ export const otherBookingSchema = z.object({
     z.number(),
     z.null(),
   ]),
+  street: z.union([
+    z.string().min(1, "Không được để trống!"),
+    z.number(),
+    z.null(),
+  ]),
 });
 
 export const selfBookingSchema = z.object({
-  department: z.string().min(1, "Khoa khám không được để trống!"),
+  department: z.string().min(1, "Chi nhánh không được để trống!"),
   date: z.string().min(1, "Ngày khám không được để trống!"),
 
   doctor: z.string().min(1, "Bác sĩ không được để trống!"),

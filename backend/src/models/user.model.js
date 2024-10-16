@@ -19,18 +19,7 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     address: {
-        province: {
-            type: String,
-        },
-        district: {
-            type: String,
-        },
-        ward: {
-            type: String,
-        },
-        street: {
-            type: String,
-        },
+        type: String,
     },
     gender: {
         type: String,

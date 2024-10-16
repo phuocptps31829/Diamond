@@ -30,11 +30,6 @@ module.exports = {
                         orderCount: { $first: '$orderCount' }
                     }
                 },
-                // ...(sortOptions['discountPrice'] ? [{
-                //     $sort: {
-                //         minDiscountPrice: sortOptions['discountPrice']
-                //     }
-                // }] : []),
                 ...(sortOptions && Object.keys(sortOptions).length ?
                     sortOptions['discountPrice'] ? [{
                         $sort: {
@@ -132,7 +127,6 @@ module.exports = {
             next(error);
         }
     },
-
     getAllMedicalPackagesBySpecialtyId: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
@@ -178,12 +172,10 @@ module.exports = {
                 createError(404, 'Medical package not found.');
             }
 
-            // sắp xếp lại array services theo thứ tự giảm dần của mảng servicesID
             const arrayServices = medicalPackage.services.sort((a, b) => {
                 return b.servicesID.length - a.servicesID.length;
             });
 
-            // Lấy tất cả các service có trong mảng dày nhất
             const services = await ServiceModel.find({
                 _id: { $in: arrayServices[0].servicesID },
                 isDeleted: false,

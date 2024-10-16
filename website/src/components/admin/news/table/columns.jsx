@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import {
   Dialog,
@@ -10,32 +9,11 @@ import {
   DialogTitle,
 } from "@/components/ui/Dialog";
 import { ArrowUpDown } from "lucide-react";
-import { deleteNews } from "@/services/newsApi";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import { Link } from "react-router-dom";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
+
 import { getSpecialtyById } from "@/services/specialtiesApi";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/AlertDialog";
-import { toastUI } from "@/components/ui/Toastify";
+import { useQuery } from "@tanstack/react-query";
+
+import Action from "./action";
 
 const useSpecialtyName = (specialtyID) => {
   return useQuery({
@@ -43,27 +21,6 @@ const useSpecialtyName = (specialtyID) => {
     queryFn: () => getSpecialtyById(specialtyID),
     enabled: !!specialtyID,
     keepPreviousData: true,
-  });
-};
-const useDeleteNews = () => {
-
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (newsId) => deleteNews(newsId),
-    onSuccess: () => {
-      queryClient.invalidateQueries("news");
-      toastUI(
-        "Xóa tin tức thành công.",
-        "success",
-      );
-    },
-    onError: (error) => {
-      toastUI(
-        "Xóa tin tức thất bại.",
-        "error",
-      );
-      console.error("Error deleting news:", error);
-    },
   });
 };
 
@@ -163,7 +120,7 @@ export const columns = [
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <img
-                src={row.original.image}
+                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.image}`}
                 alt="thumbnail"
                 width={60}
                 height={60}
@@ -175,8 +132,9 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={row.original.image}
-                alt="large-thumbnail w-full h-auto"
+                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.image}`}
+                alt="image"
+                className="large-thumbnail h-auto w-full"
               />
             </DialogContent>
           </Dialog>
@@ -232,60 +190,6 @@ export const columns = [
     id: "actions",
     enableHiding: false,
 
-    cell: ({ row }) => {
-      const deleteMutation = useDeleteNews();
-
-      const handleDelete = () => {
-        deleteMutation.mutate(row.original._id);
-      };
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-fit min-w-0">
-            
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <Link to={`/admin/news/edit/${row.original._id}`}>Sửa</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <div
-                    className="flex cursor-pointer items-center gap-2"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <RiDeleteBin6Line className="text-[15px]" />
-                    <span>Xóa</span>
-                  </div>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Bạn có chắc chắn muốn xóa tin tức này?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Hành động này không thể hoàn tác. Tin tức sẽ bị xóa vĩnh
-                      viễn khỏi hệ thống.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Xóa
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <Action row={row} />,
   },
 ];

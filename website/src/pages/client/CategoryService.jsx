@@ -7,7 +7,7 @@ const CategoryService = () => {
   useScrollToTop();
 
   return (
-    <div className="bg-bg-gray">
+    <div className="bg-[#E8F2F7]">
       <ServiceBanner />
       <SupportService />
       <ServicesContainer />
