@@ -84,6 +84,7 @@ import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
 import ClinicsEditFormPage from "./pages/admin/Clinics/editForm";
+import PatientsResult from "./pages/admin/Patient/resultAdd";
 
 const router = createBrowserRouter([
   {
@@ -341,6 +342,10 @@ const router = createBrowserRouter([
       {
         path: "patients/edit/:id",
         element: <PatientsFormFixPage />,
+      },
+      {
+        path: "patients/result",
+        element: <PatientsResult />,
       },
       {
         path: "staffs/list",
