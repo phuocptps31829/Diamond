@@ -184,16 +184,27 @@ module.exports = {
                 .findOne({
                     _id: id,
                     isDeleted: false,
-                });
+                })
+                .populate("specialtyID")
+                .lean();
 
 
             if (!service) {
                 createError(404, 'Service not found.');
             }
 
+            const formattedService = {
+                ...service,
+                specialty: {
+                    _id: service.specialtyID._id,
+                    name: service.specialtyID.name,
+                }
+            };
+            delete formattedService.specialtyID;
+
             return res.status(200).json({
                 message: 'Service retrieved successfully.',
-                data: service,
+                data: formattedService,
             });
         } catch (error) {
             next(error);

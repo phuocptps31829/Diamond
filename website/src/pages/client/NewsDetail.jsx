@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import ContentNews from "../../components/client/newsDetail/Content";
-import {  newsApi } from "@/services/newsApi";
+import { newsApi } from "@/services/newsApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/client/notFound";
 
 export default function NewsDetail() {
   useScrollToTop();
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const {
     data: allNews,
@@ -16,11 +16,12 @@ export default function NewsDetail() {
   } = useQuery({
     queryKey: "news",
     queryFn: newsApi.getAllNews,
+    enabled: !!slug,
   });
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["news", id],
-    queryFn: () => newsApi.getNewsById(id),
+    queryKey: ["news", slug],
+    queryFn: () => newsApi.getNewsBySlug(slug),
   });
 
   if (error || errorNews) return <NotFound />;
@@ -28,10 +29,10 @@ export default function NewsDetail() {
   return (
     <div className="bg-[#E8F2F7] py-5">
       <ContentNews
-        news={data}
-        allNews={allNews?.data}
-        isLoading={isLoading}
-        isLoadingAllNews={isLoadingNews}
+        news={ data }
+        allNews={ allNews?.data }
+        isLoading={ isLoading }
+        isLoadingAllNews={ isLoadingNews }
       />
     </div>
   );

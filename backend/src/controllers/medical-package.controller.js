@@ -4,7 +4,7 @@ const ServiceModel = require('../models/service.model');
 const { createError } = require("../utils/helper.util");
 
 module.exports = {
-    getAllMedicalPackages: async (req, res, next) => {
+    getAllMedicalPackages1: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
@@ -122,6 +122,61 @@ module.exports = {
                 page: page || 1,
                 message: 'Medical packages retrieved successfully.',
                 data: medicalPackages,
+                totalRecords
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAllMedicalPackages: async (req, res, next) => {
+        try {
+            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { branchID, specialtyID, gender } = req.checkValueQuery;
+
+            const queryOptions = {
+                ...(branchID ? { branchID } : {}),
+                ...(specialtyID ? { specialtyID } : {}),
+                ...(gender ? { "applicableObject.gender": gender } : {})
+            };
+
+            const totalRecords = await MedicalPackageModel
+                .countDocuments({
+                    isDeleted: false,
+                    ...queryOptions
+                });
+
+            const medicalPackages = await MedicalPackageModel
+                .find({
+                    isDeleted: false,
+                    ...queryOptions
+                })
+                .populate('specialtyID')
+                .limit(limitDocuments)
+                .skip(skip)
+                .sort(sortOptions)
+                .lean();
+
+            if (!medicalPackages.length) {
+                createError(404, 'No medicalPackages found.');
+            }
+
+            const formattedMedicalPackages = medicalPackages.map(package => {
+                const formattedPackage = {
+                    ...package,
+                    specialty: {
+                        _id: package.specialtyID._id,
+                        name: package.specialtyID.name,
+                    }
+                };
+
+                delete formattedPackage.specialtyID;
+                return formattedPackage;
+            });
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'MedicalPackages retrieved successfully.',
+                data: formattedMedicalPackages,
                 totalRecords
             });
         } catch (error) {

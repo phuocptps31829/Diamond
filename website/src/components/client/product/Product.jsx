@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
-import { GiHeartPlus } from "react-icons/gi";
-import { ImBin } from "react-icons/im";
+import { MdOutlineAddCircle } from "react-icons/md";
 import {
   Tooltip,
   TooltipContent,
@@ -165,7 +164,7 @@ export default function Product({ product }) {
                   { isInCart ? (
                     <RiDeleteBackFill className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
                   ) : (
-                    <GiHeartPlus className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
+                    <MdOutlineAddCircle className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
                   ) }
                 </button>
               </TooltipTrigger>

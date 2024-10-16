@@ -10,7 +10,7 @@ export const doctorApi = {
   },
   getDoctorById: async (id) => {
     try {
-      const res = await axiosInstanceGET.get(`/users/get-by-id/${id}`);
+      const res = await axiosInstanceGET.get(`/doctors/${id}`);
       console.log(res.data.data);
       return res.data.data;
     } catch (error) {

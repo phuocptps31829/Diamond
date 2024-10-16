@@ -12,16 +12,28 @@ module.exports = {
                 .find({ isDeleted: false })
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions);
+                .sort(sortOptions)
+                .populate("specialtyID")
+                .lean();
 
             if (!news.length) {
                 createError(404, 'No news found.');
             }
 
+            const formattedNews = news.map((news) => {
+                const newNews = { ...news };
+                newNews.specialty = {
+                    _id: newNews.specialtyID._id,
+                    name: newNews.specialtyID.name,
+                };
+                delete newNews.specialtyID;
+                return newNews;
+            });
+
             return res.status(200).json({
                 page: page || 1,
-                message: 'Categories retrieved successfully.',
-                data: news,
+                message: 'News retrieved successfully.',
+                data: formattedNews,
                 totalRecords
             });
         } catch (error) {
@@ -32,15 +44,30 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            const news = await NewsModel.findById(id);
+            const news = await NewsModel
+                .findOne({
+                    _id: id,
+                    isDeleted: false
+                })
+                .populate("specialtyID")
+                .lean();
 
             if (!news) {
                 createError(404, 'News not found.');
             }
 
+            const formattedNews = {
+                ...news,
+                specialty: {
+                    _id: news.specialtyID._id,
+                    name: news.specialtyID.name,
+                }
+            };
+            delete formattedNews.specialtyID;
+
             return res.status(200).json({
                 message: 'News retrieved successfully.',
-                data: news
+                data: formattedNews
             });
         } catch (error) {
             next(error);
@@ -50,18 +77,30 @@ module.exports = {
         try {
             const { slug } = req.params;
 
-            const news = await NewsModel.findOne({
-                slug: slug,
-                isDeleted: false
-            });
+            const news = await NewsModel
+                .findOne({
+                    slug: slug,
+                    isDeleted: false
+                })
+                .populate("specialtyID")
+                .lean();
 
             if (!news) {
                 createError(404, 'News not found.');
             }
 
+            const formattedNews = {
+                ...news,
+                specialty: {
+                    _id: news.specialtyID._id,
+                    name: news.specialtyID.name,
+                }
+            };
+            delete formattedNews.specialtyID;
+
             return res.status(200).json({
                 message: 'News retrieved successfully.',
-                data: news
+                data: formattedNews
             });
         } catch (error) {
             next(error);

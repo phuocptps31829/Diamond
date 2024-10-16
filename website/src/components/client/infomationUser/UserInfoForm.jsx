@@ -17,6 +17,7 @@ import { toastUI } from "@/components/ui/Toastify";
 import { patientApi } from "@/services/patientsApi";
 import { Controller } from "react-hook-form";
 import SelectEthnic from "../checkout/select/SelectEthnicity";
+import SelectDateOfBirth from "./SelectDateOfBirth";
 
 const UserInfoForm = () => {
   const queryClient = useQueryClient();
@@ -36,7 +37,7 @@ const UserInfoForm = () => {
     mutationFn: ({ id, requestBody }) => {
       return patientApi.updatePatient(id, requestBody);
     },
-    onSuccess: (newData) => {
+    onSuccess: () => {
       toastUI("Cập nhật thành công", "success");
       queryClient.invalidateQueries(["userProfile"]);
     },
@@ -198,15 +199,20 @@ const UserInfoForm = () => {
               errors={ errors }
               placeholder="Nhập nghề nghiệp"
             />
-            <InputCustom
-              className="col-span-1 sm:col-span-1"
-              name="dateOfBirth"
-              required
-              label="Ngày sinh"
-              type="date"
-              control={ control }
-              errors={ errors }
-            />
+            <div className="relative">
+              <label
+                htmlFor="ethnic"
+                className="left-[15px] mb-[7.5px] block bg-white px-1 text-[14px]"
+              >
+                Ngày sinh <span className="text-red-500">*</span>
+              </label>
+              <SelectDateOfBirth
+                control={ control }
+                name="dateOfBirth"
+                errors={ errors }
+                disabled={ isPendingUpdate }
+              />
+            </div>
             <div className="relative">
               <label
                 htmlFor="ethnic"

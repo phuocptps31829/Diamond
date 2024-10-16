@@ -123,7 +123,7 @@ const router = createBrowserRouter([
         element: <News />,
       },
       {
-        path: "news-detail/:id",
+        path: "new/:slug",
         element: <NewsDetail />,
       },
       {
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
         element: <PaymentSuccess />,
       },
       {
-        path: "doctor-detail/:id",
+        path: "doctor/:id",
         element: <DoctorDetail />,
       },
       {

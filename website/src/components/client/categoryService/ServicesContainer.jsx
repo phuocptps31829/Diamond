@@ -24,7 +24,7 @@ const ServicesContainer = () => {
   const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-  const currentLimit = parseInt(queryParams.get("limit")) || 3;
+  const currentLimit = parseInt(queryParams.get("limit")) | 6;
 
   const [filters, setFilters] = useState({
     page: currentPage,
@@ -34,12 +34,11 @@ const ServicesContainer = () => {
     branch: [],
     gender: [],
   });
-  console.log('re', filters);
 
   useEffect(() => {
     setFilters({
       page: 1,
-      limit: 3,
+      limit: 6,
       sort: "",
       specialtyID: [],
       branch: [],
