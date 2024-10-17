@@ -101,15 +101,11 @@ export default function Form() {
   };
 
   const handleSelectProduct = async (productID) => {
-    console.log(productID);
-    console.log(bookingDetails);
     const product = bookingDetails.find((product) =>
       product?.serviceID
         ? product.serviceID === productID
         : product.medicalPackageID === productID
     );
-
-    console.log(product);
 
     if (product) {
       setSelectedProduct(product);
@@ -182,7 +178,6 @@ export default function Form() {
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
-    console.log(workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
         ...(selectedProduct?.serviceID
@@ -351,7 +346,9 @@ export default function Form() {
         : undefined,
       data: bookingDetails.map((detail) => ({
         workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
-        serviceID: detail.serviceID,
+        ...(selectedProduct?.serviceID
+          ? { serviceID: selectedProduct.serviceID }
+          : { medicalPackageID: selectedProduct?.medicalPackageID }),
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedProduct()?.bookingDetail.selectedDate, getCurSelectedProduct()?.bookingDetail.selectedTime),
         status: "Chờ xác nhận",
@@ -390,6 +387,10 @@ export default function Form() {
               /> : <Package
                 key={ item.medicalPackageID }
                 pkg={ item }
+                bookingDetails={ bookingDetails }
+                selectedID={ selectedProduct?.medicalPackageID }
+                onRemove={ handleRemoveItem }
+                onSelect={ handleSelectProduct }
               />) : (
                 <div className="flex h-full items-center justify-center">
                   <p className="text-center text-gray-500">
@@ -560,6 +561,7 @@ export default function Form() {
                     <div className="flex-1">
                       <label htmlFor="gioitinh" className="mb-1 block">
                         Giới tính
+                        <span className="text-red-500 text-sm pl-1">*</span>
                       </label>
                       <SelectGender
                         control={ control }
@@ -570,6 +572,7 @@ export default function Form() {
                     <div className="flex-1">
                       <label htmlFor="ngaysinh" className="mb-1 block">
                         Ngày sinh
+                        <span className="text-red-500 text-sm pl-1">*</span>
                       </label>
                       <SelectBirthDate
                         control={ control }

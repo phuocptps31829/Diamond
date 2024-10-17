@@ -55,18 +55,24 @@ export default function Product({ product }) {
       return;
     }
 
+    const newItem = isService ? {
+      serviceID: _id,
+      name,
+      specialtyID: specialty._id,
+      price: discountPrice,
+      image
+    } : {
+      medicalPackageID: _id,
+      name,
+      specialtyID: specialty._id,
+      price: services[0].discountPrice,
+      levelName: services[0].levelName,
+      image,
+      services
+    };
+
     if (!isInCart) {
-      dispatch(addToCart({
-        ...(isService ? {
-          serviceID: _id
-        } : {
-          medicalPackageID: _id
-        }),
-        name,
-        specialtyID: specialty._id,
-        price,
-        image
-      }));
+      dispatch(addToCart(newItem));
       dispatch(
         initBookingDetails({
           ...(isService ? {

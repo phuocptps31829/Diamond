@@ -54,7 +54,6 @@ export default function SelectDateOfBirth({
                                             if (selectedDate > new Date()) {
                                                 return;
                                             }
-
                                             const formattedDate = format(selectedDate, "yyyy-MM-dd");
                                             field.onChange(formattedDate);
                                             onChange(formattedDate);

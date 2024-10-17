@@ -83,7 +83,7 @@ export default function ContentNews({
             <h2 className="text-center text-[30px] font-semibold md:text-[40px]">
               { news.title }
             </h2>
-            <div className="my-5 mb-[6px] flex items-center justify-center gap-2 text-[14px]">
+            <div className="my-2 mb-5 flex items-center justify-center gap-2 text-[14px]">
               <div className="font-bold text-primary-700">Tin Tức</div>
               <div className="font-semibold">
                 { new Date(news.createdAt).toLocaleDateString() }
@@ -149,12 +149,13 @@ export default function ContentNews({
                 <div className="flex" key={ index }>
                   <Link
                     to={ `/new/${news.slug}` }
-                    className="flex flex-col overflow-hidden rounded-md bg-white shadow-lg sm:h-[150px] sm:flex-row"
+                    className="flex flex-col overflow-hidden rounded-md bg-white shadow-lg sm:h-[150px] sm:flex-row w-full"
                   >
                     <div className="h-full min-w-[145px] max-w-[145px]">
                       <img
                         className="h-full w-full object-cover"
-                        src={ news.image }
+                        src={ `${import.meta.env.VITE_IMAGE_API_URL}/${news.image}` }
+                        alt={ news.title }
                       />
                     </div>
                     <div className="p-3">

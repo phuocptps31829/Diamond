@@ -4,8 +4,6 @@ import { AiOutlineDoubleRight } from "react-icons/ai";
 export default function DoctorProduct({ doctor }) {
   if (!doctor) return null;
 
-  console.log(doctor);
-
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border">
       <Link
@@ -15,7 +13,7 @@ export default function DoctorProduct({ doctor }) {
         <img
           src={ `${import.meta.env.VITE_IMAGE_API_URL}/${doctor.avatar}` }
           alt={ doctor.fullName }
-          className="ease w-full transform overflow-hidden p-2 transition-transform duration-500 group-hover:scale-[1.05] sm:p-4"
+          className="ease w-full transform overflow-hidden p-2 h-[190px] transition-transform duration-500 group-hover:scale-[1.05] sm:p-4"
         />
       </Link>
       <div className="flex h-full flex-col bg-white px-3 pb-3">

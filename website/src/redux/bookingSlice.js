@@ -9,9 +9,9 @@ const formattedCart = cartData.map((item) => {
       : { medicalPackageID: item.medicalPackageID }),
     bookingDetail: {
       specialtyID: item.specialtyID,
+      price: 0,
       selectedBranchID: "",
       selectedDoctorID: "",
-      price: item.price || "",
       selectedWorkScheduleID: "",
       selectedDate: "",
       selectedTime: "",
