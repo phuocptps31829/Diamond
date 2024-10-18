@@ -8,20 +8,22 @@ import { toastUI } from '@/components/ui/Toastify';
 import { appointmentApi } from '@/services/appointmentsApi';
 
 export default function Form() {
-  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState("");
   const bookingInfo = useSelector((state) => state.infoBooking);
   const cart = useSelector((state) => state.cart.cart);
-  const personHelpInfo = useSelector((state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser);
+  const personHelpInfo = useSelector(
+    (state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser,
+  );
   const profileCustomer = useSelector((state) => state.auth.userProfile);
 
   const { mutate } = useMutation({
     mutationFn: () => appointmentApi.createAppointment(bookingInfo.bookingInfoCheckout, paymentMethod),
     onSuccess: (data) => {
       console.log(data);
-      if (paymentMethod === 'momo') {
+      if (paymentMethod === "momo") {
         location.href = data.data.payUrl;
       }
-      if (paymentMethod === 'vnpay') {
+      if (paymentMethod === "vnpay") {
         location.href = data.data;
       }
       if (paymentMethod === 'cod') {
@@ -30,7 +32,7 @@ export default function Form() {
     },
     onError: (error) => {
       console.log(error);
-    }
+    },
   });
 
   const handleSubmitCheckout = () => {
@@ -40,7 +42,8 @@ export default function Form() {
     }
     mutate();
   };
-
+  const totalAmount = cart.reduce((acc, cur) => (acc += cur.price), 0);
+  // const totalAmountInWords = readNumber(totalAmount);
   return (
     <div className='mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10'>
       <div className='container bg-white mx-auto gap-5 px-10 py-5 pb-10 rounded-lg'>
@@ -143,7 +146,12 @@ export default function Form() {
                   alt='MOMO'
                 />
                 <span>Thanh toán qua MOMO</span>
-                <input type="radio" name="payment" value="momo" className="ml-auto" />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="momo"
+                  className="ml-auto"
+                />
               </label>
               <label
                 onClick={ () => setPaymentMethod("banking") }
@@ -156,7 +164,12 @@ export default function Form() {
                   alt='Ngân hàng'
                 />
                 <span>Thanh toán ngân hàng</span>
-                <input type="radio" name="payment" value="bank" className="ml-auto" />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="bank"
+                  className="ml-auto"
+                />
               </label>
             </div>
             <div className='flex flex-col gap-4 w-full'>
@@ -171,7 +184,12 @@ export default function Form() {
                   className='w-[10%] mr-4'
                 />
                 <span>Thanh toán qua VNPay</span>
-                <input type="radio" name="payment" value="zalopay" className="ml-auto" />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="zalopay"
+                  className="ml-auto"
+                />
               </label>
 
               <label
@@ -185,27 +203,50 @@ export default function Form() {
                   alt='Phòng khám'
                 />
                 <span>Thanh toán tại phòng khám</span>
-                <input type="radio" name="payment" value="clinic" className="ml-auto" />
+                <input
+                  type="radio"
+                  name="payment"
+                  value="clinic"
+                  className="ml-auto"
+                />
               </label>
             </div>
           </div>
         </div>
-        <p className='text-red-600 italic mt-4 text-[16px] md:text-xl'>
-          ! Trường hợp khách hàng hỗ trợ đặt lịch cho người thân, bệnh án sẽ được cập nhật tới tài khoản của người thân.
+        <p className="mt-4 text-[16px] italic text-red-600 md:text-lg">
+          ! Trường hợp khách hàng hỗ trợ đặt lịch cho người thân, bệnh án sẽ
+          được cập nhật tới tài khoản của người thân.
         </p>
         {/* Nút tiếp tục */ }
-        <div className='mt-7'>
-          <p className='flex justify-end text-xl md:text-2xl'>
-            Tổng tiền:
-            <strong className='ml-3 text-red-500'>
-              { cart.reduce((acc, cur) => acc += cur.price, 0).toLocaleString() } ₫
-            </strong>
-          </p>
-          <div className='mt-6 flex flex-row justify-end gap-3'>
-            <Button className='sm:h-10 rounded-md sm:px-8' size="default" variant="outline">
+        <div className="mt-7 ">
+          <div className="w-full flex justify-between">
+            {/* <p className=" flex justify-end text-base">
+              Bằng chữ:
+              <span className=" ml-1 font-bold text-red-500">{ totalAmountInWords }</span>
+            </p> */}
+            <p className="flex justify-end text-xl md:text-2xl">
+              Tổng tiền:
+              <strong className="ml-3 text-red-500 font-medium">
+                { totalAmount.toLocaleString() }₫
+              </strong>
+            </p>
+          </div>
+
+
+          <div className="mt-6 flex flex-row justify-end gap-3">
+            <Button
+              className="rounded-md sm:h-10 sm:px-8"
+              size="default"
+              variant="outline"
+            >
               Trở lại
             </Button>
-            <Button onClick={ handleSubmitCheckout } className='sm:h-10 rounded-md sm:px-8' size="default" variant="primary">
+            <Button
+              onClick={ handleSubmitCheckout }
+              className="rounded-md sm:h-10 sm:px-8"
+              size="default"
+              variant="primary"
+            >
               Tiến hành thanh toán
             </Button>
           </div>

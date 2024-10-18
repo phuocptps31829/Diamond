@@ -48,7 +48,6 @@ import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 import ProtectContainer from "./layouts/protect/ProtectContainer";
 import PaymentSuccess from "./pages/client/PaymentSuccess";
 import ClinicsListPage from "./pages/admin/Clinics";
-import ClinicsFormPage from "./pages/admin/Clinics/form";
 import DoctorsFormPage from "./pages/admin/Doctor/form";
 import DoctorsListPage from "./pages/admin/Doctor";
 import PatientsListPage from "./pages/admin/Patient";
@@ -56,7 +55,6 @@ import PatientsFormAddPage from "./pages/admin/Patient/formAdd";
 import PatientsFormFixPage from "./pages/admin/Patient/formFix";
 import StaffsFormPage from "./pages/admin/Staff/form";
 import StaffsListPage from "./pages/admin/Staff";
-import ServicesListPage from "./pages/admin/Services";
 import PackagesListPage from "./pages/admin/Packages";
 import PackagesFormAddPage from "./pages/admin/Packages/formAdd";
 import PackagesFormFixPage from "./pages/admin/Packages/formFix";
@@ -82,9 +80,13 @@ import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
-import ClinicsEditFormPage from "./pages/admin/Clinics/editForm";
 import PackageDetailPage from './pages/admin/Packages/details';
 import PatientsResult from "./pages/admin/Patient/resultAdd";
+import ClinicsAddPage from "./pages/admin/Clinics/add";
+import ClinicsEditPage from "./pages/admin/Clinics/edit";
+import ServicesDetailPage from "./pages/admin/Services/detail";
+import NewsDetailPage from "./pages/admin/News/detail";
+import ServicesListPage from "./pages/admin/Services/indexServicePage";
 
 const router = createBrowserRouter([
   {
@@ -383,9 +385,14 @@ const router = createBrowserRouter([
         path: "news/create",
         element: <NewsAddPage />,
       },
+
       {
         path: "news/edit/:id",
         element: <NewsEditPage />,
+      },
+      {
+        path: "news/detail/:id",
+        element: <NewsDetailPage />,
       },
       {
         path: "branches/list",
@@ -425,11 +432,11 @@ const router = createBrowserRouter([
       },
       {
         path: "clinics/create",
-        element: <ClinicsFormPage />,
+        element: <ClinicsAddPage />,
       },
       {
         path: "clinics/edit/:id",
-        element: <ClinicsEditFormPage />,
+        element: <ClinicsEditPage />,
       },
       {
         path: 'roles/list',
@@ -451,6 +458,11 @@ const router = createBrowserRouter([
         path: "services/create",
         element: <ServicesAddPage />,
       },
+      {
+        path: "services/detail/:id",
+        element: <ServicesDetailPage />,
+      },
+
       {
         path: "services/edit/:id",
         element: <ServicesEditPage />,

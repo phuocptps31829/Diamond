@@ -26,8 +26,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
+import { Link } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function DataTable({ data, columns }) {
+  const queryClient = useQueryClient();
+
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -72,7 +76,9 @@ export default function DataTable({ data, columns }) {
   React.useEffect(() => {
     table.getColumn("name")?.setFilterValue(debouncedSearchValue);
   }, [debouncedSearchValue, table]);
-
+  const handleRefresh = () => {
+    queryClient.invalidateQueries("branches");
+  };
   return (
     <div className="w-[100%] rounded-lg bg-white px-5 py-2">
       <div className="flex h-[80px]">
@@ -93,9 +99,16 @@ export default function DataTable({ data, columns }) {
               />
             </div>
           </div>
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
-            <FaPlus className="text-primary-500"></FaPlus>
-          </Button>
+          <Link to={"/admin/branches/create"}>
+            <Button
+            onClick={handleRefresh}
+              size="icon"
+              variant="outline"
+              className="mr-1 mt-2 h-11 w-11"
+            >
+              <FaPlus className="text-primary-500"></FaPlus>
+            </Button>
+          </Link>
           <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
             <FaArrowsRotate className="text-primary-500" />
           </Button>
@@ -137,8 +150,8 @@ export default function DataTable({ data, columns }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={data.length} className="h-24 text-center">
-                No results.
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                Không có kết quả.
               </TableCell>
             </TableRow>
           )}

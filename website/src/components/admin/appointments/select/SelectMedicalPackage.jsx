@@ -19,7 +19,12 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 
-export default function SelectMedicalPackage({ control, name, errors, onChange }) {
+export default function SelectMedicalPackage({
+  control,
+  name,
+  errors,
+  onChange,
+}) {
   const [open, setOpen] = useState(false);
   const [medicalPackages, setMedicalPackages] = useState([]);
 
@@ -55,7 +60,9 @@ export default function SelectMedicalPackage({ control, name, errors, onChange }
                 ) }
               >
                 { field.value ? (
-                  medicalPackages.find((medicalPackage) => medicalPackage._id === field.value)?.name
+                  medicalPackages.find(
+                    (medicalPackage) => medicalPackage._id === field.value,
+                  )?.name
                 ) : (
                   <span className="text-gray-600">Chọn gói khám</span>
                 ) }
@@ -76,7 +83,11 @@ export default function SelectMedicalPackage({ control, name, errors, onChange }
                           field.onChange(
                             currentValue === field.value ? "" : currentValue,
                           );
-                          onChange(currentValue, medicalPackage.specialtyID);
+                          onChange(
+                            currentValue,
+                            medicalPackage.specialty._id,
+                            medicalPackage.services,
+                          );
                           setOpen(false);
                         } }
                       >

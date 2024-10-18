@@ -1,19 +1,16 @@
+import Loading from "@/components/ui/Loading";
 import DataTable from "./table";
 import { columns } from "./table/columns";
-import { useQuery } from "@tanstack/react-query";
 import { clinicsApi } from "@/services/clinicApi";
+import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/components/client/notFound";
-import Loading from "@/components/ui/Loading";
 const ClinicsList = () => {
-  const {
-    data: clinicsData = [],
-    error,
-    isLoading
-  } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["clinics"],
-    queryFn: clinicsApi.getAllClinics,
-
+    queryFn: () => clinicsApi.getAllClinics({ limit: 9999 }),
+    keepPreviousData: true,
   });
+
   if (isLoading) {
     return <Loading />;
   }
@@ -21,12 +18,6 @@ const ClinicsList = () => {
   if (error) {
     return <NotFound />;
   }
-  console.log("aaaaaa:", clinicsData);
-  return (
-    <DataTable
-      columns={ columns }
-      data={ clinicsData }
-    />
-  );
+  return <DataTable columns={ columns } data={ data } />;
 };
 export default ClinicsList;

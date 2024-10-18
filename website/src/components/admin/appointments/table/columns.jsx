@@ -3,7 +3,8 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 
 import { ArrowUpDown } from "lucide-react";
-import { getStatusStyle } from "../utils/StatusStyle";
+import { getStatusPaymentStyle } from "../utils/StatusStyle";
+
 import {
   Select,
   SelectContent,
@@ -39,8 +40,10 @@ import Action from "./action";
 // };
 
 const statusOptions = [
-  { value: "Chờ xác nhận", label: "Chờ xác nhận" },
-  { value: "Chưa khám", label: "Chưa khám" },
+  { value: "PENDING", label: "Chờ xác nhận" },
+  { value: "CONFIRMED", label: "Đã xác nhận" },
+  { value: "EXAMINED", label: "Đã khám" },
+  { value: "CANCELLED", label: "Đã hủy" },
 ];
 export const columns = [
   {
@@ -257,18 +260,12 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => {
-      const paymentStatus =
-        row.original.payment?.status === "Đã thanh toán"
-          ? "Đã thanh toán"
-          : "Chưa thanh toán";
-
+      const { stylePayment, textPayment } = getStatusPaymentStyle(row.original.payment.status);
       return (
         <div
-          className={ `flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${getStatusStyle(
-            paymentStatus,
-          )}` }
+          className={ `flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${stylePayment}` }
         >
-          <span className="whitespace-nowrap">{ paymentStatus }</span>
+          <span className="whitespace-nowrap">{ textPayment }</span>
         </div>
       );
     },

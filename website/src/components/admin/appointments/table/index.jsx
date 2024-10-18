@@ -20,17 +20,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import InputCustom from "@/components/ui/InputCustom";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import InputCustomSearch from "@/components/ui/InputCustomSearch";
+import { useDebounce } from "use-debounce";
+import { useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 
 export default function DataTable({ data, columns }) {
+  const queryClient = useQueryClient();
+
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [searchValue, setSearchValue] = React.useState("");
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -39,7 +47,8 @@ export default function DataTable({ data, columns }) {
     resolver: zodResolver(),
     defaultValues: {},
   });
- 
+  const onSubmit = () => {};
+
   const table = useReactTable({
     data,
     columns,
@@ -59,31 +68,48 @@ export default function DataTable({ data, columns }) {
     },
   });
 
-  const onSubmit = () => {};
-
+  React.useEffect(() => {
+    table.getColumn("patient")?.setFilterValue(debouncedSearchValue);
+  }, [debouncedSearchValue, table]);
+  const handleRefresh = () => {
+    queryClient.invalidateQueries("appointments");
+  };
   return (
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */}
-      <div className="flex  w-full justify-between mb-10">
+      <div className="mb-10 flex w-full justify-between">
         <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
-              <InputCustom
+              <InputCustomSearch
+                value={table.getColumn("patient")?.getFilterValue() ?? ""}
+                onChange={(event) => setSearchValue(event.target.value)}
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm lịch khám"
-                name="staffName"
+                name="newsName"
                 type="text"
-                id="staffName"
-                icon={<FaSearch></FaSearch>}
+                id="newsName"
+                icon={<FaSearch />}
                 control={control}
                 errors={errors}
               />
             </div>
           </div>
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
-            <FaPlus className="text-primary-500"></FaPlus>
-          </Button>
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
+          <Link to="/admin/appointments/create">
+            <Button
+              size="icon"
+              variant="outline"
+              className="mr-1 mt-2 h-11 w-11"
+            >
+              <FaPlus className="text-primary-500"></FaPlus>
+            </Button>
+          </Link>
+          <Button
+            onClick={handleRefresh}
+            size="icon"
+            variant="outline"
+            className="mr-1 mt-2 h-11 w-11"
+          >
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>
@@ -141,7 +167,7 @@ export default function DataTable({ data, columns }) {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  Không có dữ liệu
+                  Không có kết quả.
                 </TableCell>
               </TableRow>
             )}
