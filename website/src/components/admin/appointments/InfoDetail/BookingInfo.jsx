@@ -26,11 +26,11 @@ import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import { Link } from "react-router-dom";
 import { FaUserInjured } from "react-icons/fa6";
-
+import { formatCurrency } from "@/utils/format";
 const BookingInfo = ({ data }) => {
   const bookingData = data;
   const { stylePayment, textPayment } = getStatusPaymentStyle(
-    bookingData.payment.status,
+    bookingData.payment.status
   );
   const { style, text } = getStatusStyle(bookingData.status);
 
@@ -147,17 +147,13 @@ const BookingInfo = ({ data }) => {
             </div>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(bookingData.invoice.price)}
+              {formatCurrency(
+                bookingData.invoice.price + bookingData.invoice.arisePrice
+              )}
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(bookingData.invoice.arisePrice)}
+              {formatCurrency(bookingData.invoice.arisePrice)}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">
@@ -300,9 +296,32 @@ const BookingInfo = ({ data }) => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button variant="custom" className="ml-2">
-                Thanh toán
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="custom" className="ml-2">
+                    Thanh toán
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Bạn có chắc chắn muốn thanh toán{" "}
+                      <span className="font-bold text-black">
+                        {formatCurrency(
+                          bookingData.invoice.price +
+                            bookingData.invoice.arisePrice
+                        )}
+                      </span>{" "}
+                      đơn khám bệnh này không?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <Button variant="custom">Xác nhận </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         )}
