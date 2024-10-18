@@ -10,12 +10,12 @@ import SelectBranch from './select/SelectBranch';
 import { useState, useEffect } from 'react';
 import SelectSpecialty from './select/SelectSpecialty';
 import { imageApi } from '@/services/imageApi';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import ImagePreview from '@/components/ui/ImagePreview';
 import RadioGroupField from '@/components/ui/RadioGroupField';
 import { doctorApi } from '@/services/doctorsApi';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toastUI as toast } from '@/components/ui/Toastify';
 import { Certificate } from '@/components/admin/doctor/dialog/Certificate';
 import SpinLoader from '@/components/ui/SpinLoader';
@@ -23,7 +23,7 @@ const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 import { PiCertificate } from 'react-icons/pi';
 
 export default function DoctorsFormFix({ dataDoctor }) {
-    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = useState(false);
     const [fileImage, setFileImage] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
@@ -33,6 +33,7 @@ export default function DoctorsFormFix({ dataDoctor }) {
         handleSubmit,
         formState: { errors },
         control,
+        reset,
     } = useForm({
         resolver: zodResolver(doctorAdminSchema),
         defaultValues: {
@@ -57,7 +58,6 @@ export default function DoctorsFormFix({ dataDoctor }) {
         },
     });
 
-
     useEffect(() => {
         if (isInitialized) return;
         setImagePreview(dataDoctor?.avatar || null);
@@ -65,19 +65,25 @@ export default function DoctorsFormFix({ dataDoctor }) {
         setIsInitialized(true);
     }, [isInitialized, dataDoctor]);
 
-    // const { mutate: createDoctor, isPending } = useMutation({
-    //     mutationFn: doctorApi.createDoctors,
-    //     onSuccess: () => {
-    //         toast('Tạo mới bác sĩ thành công!', 'success');
-    //         navigate('/admin/doctors/list');
-    //         setIsLoading(false);
-    //     },
-    //     onError: (error) => {
-    //         console.error('Lỗi khi tạo mới bác sĩ:', error);
-    //         toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-    //         setIsLoading(false);
-    //     },
-    // });
+    const handleClickDeleteImage = (index) => {
+        const newImages = arrayImages.filter((_, i) => i !== index);
+        setArrayImages(newImages);
+    };
+
+    const { mutate: updateDoctorMutation, isPending } = useMutation({
+        mutationFn: ({ id, newData }) => doctorApi.updateDoctors(id, newData),
+        onSuccess: (data) => {
+            console.log('dataUpate', data);
+            reset(data);
+            queryClient.invalidateQueries('doctors');
+            setIsLoading(false);
+        },
+        onError: (error) => {
+            console.error('Lỗi khi chỉnh sửa bác sĩ:', error);
+            toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            setIsLoading(false);
+        },
+    });
 
     const onSubmit = async (data) => {
         if (!fileImage && !imagePreview) {
@@ -115,65 +121,10 @@ export default function DoctorsFormFix({ dataDoctor }) {
             updateDoctor.password = password;
         }
 
-        console.log('updateDoctor', updateDoctor);
-
-        // setIsLoading(true);
-
-        // const newDoctor = {
-        //     fullName: data.fullName,
-        //     phoneNumber: data.phoneNumber,
-        //     email: data.email,
-        //     dateOfBirth: data.dateOfBirth,
-        //     address: data.address,
-        //     gender: data.gender,
-        //     password: data.password,
-        //     avatar: '',
-        //     isActivated: data.isActivated,
-        //     citizenIdentificationNumber: data.citizenIdentificationNumber,
-        //     otherInfo: {
-        //         specialtyID: data.specialty,
-        //         branchID: data.branchID,
-        //         title: data.title,
-        //         yearsExperience: data.yearsExperience,
-        //         detail: data.detail,
-        //         isInternal: data.isInternal,
-        //         verification: {
-        //             practicingCertificate: data.practicingCertificate,
-        //             imagesPracticingCertificate: [],
-        //         },
-        //     },
-        // };
-
-        // const formData = new FormData();
-        // formData.append('file', fileImage);
-
-        // const imageResponse = await imageApi.createImage(formData);
-        // const imageUrl = imageResponse?.data;
-
-        // newDoctor.avatar = imageUrl;
-
-        // try {
-        //     const { imagesPracticingCertificate } = data;
-        //     const uploadedImages = await Promise.all(
-        //         imagesPracticingCertificate.map(async (image) => {
-        //             const formData = new FormData();
-        //             formData.append('file', image);
-
-        //             const response = await imageApi.createImage(formData);
-        //             return response.data;
-        //         })
-        //     );
-
-        //     newDoctor.otherInfo.verification.imagesPracticingCertificate = uploadedImages;
-
-        //     console.log('Data sau khi upload ảnh:', newDoctor);
-        //     // createDoctor(newDoctor);
-        //     toast('Tạo mới bác sĩ thành công!', 'success');
-        //     setIsLoading(false);
-        // } catch (error) {
-        //     console.error('Lỗi khi tải ảnh hoặc tạo mới bác sĩ:', error);
-        //     toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-        // }
+        updateDoctorMutation({
+            id: dataDoctor._id,
+            newData: updateDoctor,
+        });
     };
 
     return (
@@ -283,7 +234,6 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
                                         label={'Mật khẩu'}
-                                        required
                                         className="col-span-1 sm:col-span-1"
                                         name="password"
                                         type="password"
@@ -296,7 +246,6 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
                                         label={'Xác nhận mật khẩu'}
-                                        required
                                         className="col-span-1 sm:col-span-1"
                                         name="confirmPassword"
                                         type="password"
@@ -308,65 +257,83 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="block">
-                            <div className="w-full gap-5 md:flex">
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <InputCustom
-                                        label={'Mã căn cước công dân'}
-                                        required
-                                        className="col-span-1 sm:col-span-1"
-                                        name="citizenIdentificationNumber"
-                                        type="text"
-                                        id="citizenIdentificationNumber"
-                                        placeholder="Nhập mã căn cước công dân"
-                                        control={control}
-                                        errors={errors}
-                                    />
-                                </div>
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <label
-                                        htmlFor="hoten"
-                                        className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
-                                    >
-                                        Khoa <span className="text-red-500">*</span>
-                                    </label>
-                                    <SelectDepartment
-                                        control={control}
-                                        options={[
-                                            { value: true, label: 'Nội khoa' },
-                                            { value: false, label: 'Ngoại khoa' },
-                                        ]}
-                                        name="isInternal"
-                                    />
-                                </div>
-                            </div>
+                    </div>
+                </div>
+                <div className="block">
+                    <div className="my-1 mb-2 flex w-full items-center gap-5">
+                        {/* isActivated */}
+                        <div className="w-1/3">
+                            <RadioGroupField
+                                name="isActivated"
+                                label="Trạng thái tài khoản:"
+                                options={[
+                                    { value: true, label: 'Hoạt động' },
+                                    { value: false, label: 'Khóa tài khoản' },
+                                ]}
+                                control={control}
+                            />
+                        </div>
+                        <div className="relative md:mb-4 md:w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Chọn ảnh chứng nhận hành nghề{' '}
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <>
+                                <Certificate
+                                    data={arrayImages}
+                                    button={
+                                        <Button
+                                            variant="custom"
+                                            type="button"
+                                            className="w-fit bg-primary-400 text-[13px]"
+                                        >
+                                            Xem chứng chỉ{' '}
+                                            <PiCertificate size={20} className="ml-2" />
+                                        </Button>
+                                    }
+                                    onClickDeleteImage={handleClickDeleteImage}
+                                    name="imagesPracticingCertificate"
+                                    control={control}
+                                />
+                            </>
+                        </div>
+                        <div className="relative mb-4 w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Khoa <span className="text-red-500">*</span>
+                            </label>
+                            <SelectDepartment
+                                control={control}
+                                options={[
+                                    { value: true, label: 'Nội khoa' },
+                                    { value: false, label: 'Ngoại khoa' },
+                                ]}
+                                name="isInternal"
+                            />
                         </div>
                     </div>
                 </div>
                 {/* Line 4 */}
-                <div className="my-4 flex gap-5">
-                    <div className="relative md:mb-4 md:w-1/4">
-                        <label
-                            htmlFor="hoten"
-                            className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
-                        >
-                            Chọn ảnh chứng nhận hành nghề <span className="text-red-500">*</span>
-                        </label>
-                        <>
-                            <Certificate
-                                data={arrayImages}
-                                button={
-                                    <Button
-                                        variant="custom"
-                                        type="button"
-                                        className="bg-primary-400 text-[13px]"
-                                    >
-                                        Xem chứng chỉ <PiCertificate size={20} className="ml-2" />
-                                    </Button>
-                                }
-                            />
-                        </>
+                <div className="my-2 flex gap-5">
+                    <div className="relative mb-4 w-1/3">
+                        <InputCustom
+                            label={'Mã căn cước công dân'}
+                            required
+                            className="col-span-1 sm:col-span-1"
+                            name="citizenIdentificationNumber"
+                            type="text"
+                            id="citizenIdentificationNumber"
+                            placeholder="Nhập mã căn cước công dân"
+                            control={control}
+                            errors={errors}
+                        />
                     </div>
+
                     <div className="relative md:mb-4 md:w-1/3">
                         <InputCustom
                             label={'Chứng chỉ hành nghề'}
@@ -456,22 +423,11 @@ export default function DoctorsFormFix({ dataDoctor }) {
                     </label>
                     <DoctorEditor name="detail" control={control} errors={errors} />
                 </div>
-                {/* isActivated */}
-                <div className="mt-5">
-                    <RadioGroupField
-                        name="isActivated"
-                        label="Trạng thái tài khoản:"
-                        options={[
-                            { value: true, label: 'Hoạt động' },
-                            { value: false, label: 'Khóa tài khoản' },
-                        ]}
-                        control={control}
-                    />
-                </div>
+
                 {/* Button */}
                 <div className="flex justify-end">
-                    <Button variant="custom" type="submit" disabled={isLoading}>
-                        {isLoading ? <SpinLoader /> : 'Thêm mới'}
+                    <Button variant="custom" type="submit" disabled={isLoading || isPending}>
+                        {isLoading || isPending ? <SpinLoader /> : 'Thêm mới'}
                     </Button>
                 </div>
             </form>

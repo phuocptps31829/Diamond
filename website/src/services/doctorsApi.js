@@ -39,6 +39,19 @@ export const doctorApi = {
         return res.data;
     },
 
+    updateDoctors: async (id, updatedDoctors) => {
+        const res = await axiosInstanceCUD.post(
+            '/doctors/update/' + id + '?_method=PUT',
+            updatedDoctors,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return res.data.data;
+    },
+
     deleteDoctors: async (id) => {
         const res = await axiosInstanceCUD.post('/doctors/delete/' + id + '?_method=DELETE');
         return res.data.data;
