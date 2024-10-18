@@ -150,7 +150,9 @@ const BookingInfo = ({ data }) => {
               {new Intl.NumberFormat("vi-VN", {
                 style: "currency",
                 currency: "VND",
-              }).format(bookingData.invoice.price)}
+              }).format(
+                bookingData.invoice.price + bookingData.invoice.arisePrice,
+              )}
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
@@ -300,9 +302,36 @@ const BookingInfo = ({ data }) => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button variant="custom" className="ml-2">
-                Thanh toán
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="custom" className="ml-2">
+                    Thanh toán
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Bạn có chắc chắn muốn thanh toán{" "}
+                      <span className="font-bold text-black">
+                        {" "}
+                        {new Intl.NumberFormat("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        }).format(
+                          bookingData.invoice.price +
+                            bookingData.invoice.arisePrice,
+                        )}
+                      </span>{" "}
+                      đơn khám bệnh này không?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <Button variant="custom">Xác nhận </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         )}

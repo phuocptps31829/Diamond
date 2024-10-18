@@ -86,7 +86,7 @@ const AppointmentsAdd = () => {
   console.log(selectedService, "selectedService");
 
   const handleChangeLevel = (levelId, price) => {
-    setSelectedLevel({ levelId, price });
+    setSelectedLevel({ levelId, price },'level');
   };
   const handleChangeMedicalPackage = (
     medicalPackageId,
