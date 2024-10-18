@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
 import { useMatch, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
-import {  serviceApi } from "@/services/servicesApi";
-import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
+import { serviceApi } from "@/services/servicesApi";
+import { medicalPackageApi } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
-import notFoundImg from "@/assets/images/no-product.png";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/Pagination";
-import PackageItem from "../product/Package";
-import ServiceItem from "../product/Service";
 import SidebarFilter from "../categoryService/SidebarFilter";
+import NotFound from "@/components/ui/NotFound";
+import Product from "../product/Product";
 
 const ServicesContainer = () => {
   const location = useLocation();
@@ -26,7 +24,7 @@ const ServicesContainer = () => {
   const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
-  const currentLimit = parseInt(queryParams.get("limit")) || 3;
+  const currentLimit = parseInt(queryParams.get("limit")) | 6;
 
   const [filters, setFilters] = useState({
     page: currentPage,
@@ -36,12 +34,11 @@ const ServicesContainer = () => {
     branch: [],
     gender: [],
   });
-  console.log('re', filters);
 
   useEffect(() => {
     setFilters({
       page: 1,
-      limit: 3,
+      limit: 6,
       sort: "",
       specialtyID: [],
       branch: [],
@@ -94,7 +91,7 @@ const ServicesContainer = () => {
       if (type === "service") {
         return await serviceApi.getAllServices(filters);
       } else if (type === "package") {
-        return await getAllMedicalPackages(filters);
+        return await medicalPackageApi.getAllMedicalPackages(filters);
       }
     },
     enabled: !!type,
@@ -116,36 +113,18 @@ const ServicesContainer = () => {
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
-                  { Array(12)
+                  { Array(6)
                     .fill(null)
                     .map((_, index) => (
                       <Skeleton key={ index } className="h-80 w-full" />
                     )) }
                 </>
               ) : error ? (
-                <div className="col-span-3 flex flex-col items-center justify-center p-4">
-                  <img
-                    src={ notFoundImg }
-                    alt="Not Found"
-                    className="w-full max-w-xs rounded-md md:max-w-md lg:max-w-lg"
-                  />
-                  <h1 className="mt-4 text-center text-lg font-semibold text-gray-700">
-                    { type === "package"
-                      ? "Gói khám không tồn tại"
-                      : "Dịch vụ không tồn tại" }
-                  </h1>
-                </div>
-              ) : (
-                <>
-                  { type === "package"
-                    ? data.data.map((item) => (
-                      <PackageItem key={ item._id } { ...item } />
-                    ))
-                    : data.data.map((item) => (
-                      <ServiceItem key={ item._id } { ...item } />
-                    )) }
-                </>
-              ) }
+                type === "package"
+                  ? <NotFound message={ "Không tìm thấy gói khám nào." } />
+                  : <NotFound message={ "Không tìm thấy dịch vụ nào." } />
+              ) : data?.data.map((item) =>
+                <Product key={ item._id } product={ item } />) }
             </div>
             <Pagination className="pt-5">
               { totalPages ?

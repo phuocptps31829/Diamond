@@ -1,6 +1,8 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/Table";
+import { appointmentApi } from "@/services/appointmentsApi";
+import { useQuery } from "@tanstack/react-query";
 
-const AppointmentDetail = ({props}) => {
+const AppointmentDetail = ({ props }) => {
   const appointmentData = {
     serviceName: "Dịch vụ Tầm soát ung thư phổi",
     doctor: "Ths.Bs Trần Thị Hồng Lê",
@@ -14,81 +16,90 @@ const AppointmentDetail = ({props}) => {
     result: "Ung thư giai đoạn giữa",
   };
 
+  const { data: appointments, isLoading } = useQuery({
+    queryKey: ["allAppointments"],
+    queryFn: appointmentApi.getAllAppointments
+  });
+
+  if (isLoading) {
+    return;
+  }
+
   return (
     <div className="p-3 md:p-6">
-      <h2 className="mb-6 text-xl font-bold">{appointmentData.serviceName}</h2>
+      <h2 className="mb-3 text-xl font-bold">{ appointmentData.serviceName }</h2>
       <Table className="rounded-md border">
         <TableBody>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
-              Người khám
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+              Nơi khám
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.doctor}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.doctor }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+              Bác sĩ
+            </TableCell>
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.doctor }
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Chuyên khoa
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.specialty}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.specialty }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
-              Phòng khám
-            </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.clinic}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
-              Bệnh viện
-            </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.hospital}
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Ngày giờ khám
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.date}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.date }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Loại khám
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.type}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.type }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Trạng thái
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.status}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.status }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Phương thức thanh toán
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.payment}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.payment }
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="w-1/5 whitespace-nowrap border-r">
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+              Hình ảnh chuẩn đoán
+            </TableCell>
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.result }
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Kết quả khám
             </TableCell>
-            <TableCell className="whitespace-nowrap">
-              {appointmentData.result}
+            <TableCell className="px-4 whitespace-nowrap">
+              { appointmentData.result }
             </TableCell>
           </TableRow>
         </TableBody>

@@ -39,6 +39,34 @@ router.get(
     newsController.getAllNews
 );
 
+
+/**
+ * @openapi
+ * '/api/v1/news/slug/{slug}':
+ *  get:
+ *    tags:
+ *    - News Routes
+ *    summary: Get news by slug
+ *    parameters:
+ *      - in: path
+ *        name: slug
+ *        required: true
+ *        description: News slug
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/slug/:slug',
+    newsController.getNewsBySlug
+);
+
 /**
  * @openapi
  * '/api/v1/news/{id}':

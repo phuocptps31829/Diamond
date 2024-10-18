@@ -99,7 +99,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/medicines/create",
             label: "Thêm thuốc",
-            active: pathname === "/admin/medicine/create",
+            active: pathname === "/admin/medicines/create",
           },
         ],
       },
@@ -218,7 +218,6 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
-
         ],
       },
     ],
@@ -330,7 +329,8 @@ export const getMenuList = (pathname) => [
         href: "",
         label: "Vai trò",
         active:
-          pathname === "/admin/roles/list" || pathname === "/admin/roles/create",
+          pathname === "/admin/roles/list" ||
+          pathname === "/admin/roles/create",
         icon: IoSettingsSharp,
         submenus: [
           {

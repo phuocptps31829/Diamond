@@ -37,13 +37,13 @@ export default function BottomLists({ dataUpcomingAppointments }) {
         const appointmentEndTime = new Date(appointment.time);
         return appointmentEndTime <= now;
       })
-      .sort((a, b) => new Date(a.time) - new Date(b.time));
+      .sort((a, b) => new Date(b.time) - new Date(a.time));
 
     setClosestPatients(closestPatientsList.slice(0, 5));
   }, [dataUpcomingAppointments]);
 
   return (
-    <div className="mt-6 grid w-full grid-cols-[32%_65.8%] justify-between">
+    <div className="mt-6 grid w-full grid-cols-[35%_62.8%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Bệnh nhân gần đây</h3>
@@ -61,15 +61,11 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {closestPatients.map((appointment, index) => (
-              <TableRow key={index} className="p-0 text-[13px]">
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{appointment.fullName}</TableCell>
-                <TableCell>
-                  {appointment.result.length === 0
-                    ? "Chưa có kết quả"
-                    : "Render chẩn đoán"}
-                </TableCell>
+            { closestPatients.map((appointment, index) => (
+              <TableRow key={ index } className="p-0 text-[13px]">
+                <TableCell>{ index + 1 }</TableCell>
+                <TableCell>{ appointment.patient.fullName }</TableCell>
+                <TableCell>{ appointment.result.diagnose }</TableCell>
                 <TableCell>
                   <Menubar className="border-none bg-transparent shadow-none">
                     <MenubarMenu>
@@ -78,7 +74,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       </MenubarTrigger>
                       <MenubarContent>
                         <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                          <FaEdit className="mr-2" size={18} />{" "}
+                          <FaEdit className="mr-2" size={ 18 } />{ " " }
                           <span>Xem chi tiết</span>
                         </MenubarItem>
                       </MenubarContent>
@@ -86,7 +82,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                   </Menubar>
                 </TableCell>
               </TableRow>
-            ))}
+            )) }
           </TableBody>
         </Table>
       </div>
@@ -110,39 +106,39 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAppointments.length === 0 ? (
+            { filteredAppointments.length === 0 ? (
               <TableRow className="h-14 text-center text-[13px]">
-                <TableCell colSpan={6}>Không có lịch hẹn nào !</TableCell>
+                <TableCell colSpan={ 6 }>Không có lịch hẹn nào !</TableCell>
               </TableRow>
             ) : (
               filteredAppointments.map((appointment, index) => (
-                <TableRow key={index} className="h-12 text-[13px]">
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{appointment.user?.[0].fullName}</TableCell>
+                <TableRow key={ index } className="h-12 text-[13px]">
+                  <TableCell>{ index + 1 }</TableCell>
+                  <TableCell>{ appointment.user?.[0].fullName }</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <img
                         src={
-                          appointment.user.avatar ||
+                          appointment.user?.avatar ||
                           "https://github.com/shadcn.png"
                         }
                         alt="Doctor"
                         className="h-6 w-6 rounded-full"
                       />
-                      <span>{appointment["user-doctor"]?.[0].fullName}</span>
+                      <span>{ appointment["user-doctor"]?.[0].fullName }</span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    {new Date(appointment.time).toLocaleString("vi-VN", {
+                    { new Date(appointment.time).toLocaleString("vi-VN", {
                       weekday: "long",
                       day: "numeric",
                       month: "numeric",
                       year: "numeric",
                       hour: "numeric",
                       minute: "numeric",
-                    })}
+                    }) }
                   </TableCell>
-                  <TableCell>{appointment.service?.[0].name}</TableCell>
+                  <TableCell>{ appointment.service?.[0]?.name }</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
@@ -151,7 +147,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                         </MenubarTrigger>
                         <MenubarContent>
                           <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            <FaEdit className="mr-2" size={18} />{" "}
+                            <FaEdit className="mr-2" size={ 18 } />{ " " }
                             <span>Xem chi tiết</span>
                           </MenubarItem>
                         </MenubarContent>
@@ -160,7 +156,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                   </TableCell>
                 </TableRow>
               ))
-            )}
+            ) }
           </TableBody>
         </Table>
       </div>

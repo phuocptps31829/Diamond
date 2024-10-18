@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./header";
 import Footer from "./Footer";
 import { Toaster } from "@/components/ui/Toaster";
@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 
 export default function AppLayout() {
   const dispatch = useDispatch();
-  const profile = useSelector((state) => state.auth.userProfile);
+  const navigate = useNavigate();
 
   const { data: profileFetched } = useQuery({
     queryKey: ["userProfile"],
@@ -21,8 +21,11 @@ export default function AppLayout() {
   });
 
   useEffect(() => {
+    if (profileFetched?.data && profileFetched.data.role.name !== "PATIENT") {
+      navigate('/admin');
+    }
     dispatch(setUserProfile(profileFetched?.data));
-  }, [profileFetched, dispatch]);
+  }, [profileFetched, navigate, dispatch]);
 
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");

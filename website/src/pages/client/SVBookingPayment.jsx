@@ -22,7 +22,7 @@ export default function SVCheckOut() {
   }
 
   return (
-    <div >
+    <div className='bg-[#E8F2F7]' >
       <Form />
       <Collaborate />
     </div>

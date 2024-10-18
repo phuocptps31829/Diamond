@@ -1,23 +1,20 @@
-import { useParams } from "react-router-dom";
-import DescriptionService from "../../components/client/serviceDetail/DescriptionService";
-import MedicalPackageService from "../../components/client/serviceDetail/MedicalPackageService";
-import PackageServiceOther from "../../components/client/serviceDetail/PackageServiceOther";
-import Rules from "../../components/client/serviceDetail/Rules";
-import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
-import { useQuery } from "@tanstack/react-query";
-import {
-  getMedicalPackageById,
-  getMedicalPackageBySpecialty,
-} from "@/services/medicalPackagesApi";
-import useScrollToTop from "@/hooks/useScrollToTop";
-import NotFound from "@/components/client/notFound";
-import { serviceApi } from "@/services/servicesApi";
+import { useParams } from 'react-router-dom';
+import DescriptionService from '../../components/client/serviceDetail/DescriptionService';
+import MedicalPackageService from '../../components/client/serviceDetail/MedicalPackageService';
+import PackageServiceOther from '../../components/client/serviceDetail/PackageServiceOther';
+import Rules from '../../components/client/serviceDetail/Rules';
+import ServiceDetail from '../../components/client/serviceDetail/ServiceDetail';
+import { useQuery } from '@tanstack/react-query';
+import useScrollToTop from '@/hooks/useScrollToTop';
+import NotFound from '@/components/client/notFound';
+import { medicalPackageApi } from '@/services/medicalPackagesApi';
+import { serviceApi } from '@/services/servicesApi';
 
 const DetailService = () => {
   useScrollToTop();
 
-  const { serviceId, packageId } = useParams();
-  const id = serviceId || packageId;
+  const { serviceSlug, packageSlug } = useParams();
+  const slug = serviceSlug || packageSlug;
 
   // Fetch medical package if packageId is present
   const {
@@ -25,9 +22,9 @@ const DetailService = () => {
     error: errorMedicalPackage,
     isLoading: isLoadingMedicalPackage,
   } = useQuery({
-    queryKey: ["medical-packages", id],
-    queryFn: () => getMedicalPackageById(id),
-    enabled: !!packageId,
+    queryKey: ["medical-packages", slug],
+    queryFn: () => medicalPackageApi.getMedicalPackageBySlug(packageSlug),
+    enabled: !!packageSlug,
   });
 
   // Fetch service if serviceId is present
@@ -36,10 +33,9 @@ const DetailService = () => {
     error: errorService,
     isLoading: isLoadingService,
   } = useQuery({
-    queryKey: ["service", id],
-    queryFn: () => serviceApi.getServiceById(id),
-
-    enabled: !!serviceId,
+    queryKey: ["service", slug],
+    queryFn: () => serviceApi.getServiceBySlug(serviceSlug),
+    enabled: !!serviceSlug,
   });
 
   const {
@@ -47,16 +43,17 @@ const DetailService = () => {
     error: errorMedicalPackageSpecialty,
     isLoading: isLoadingMedicalPackageSpecialty,
   } = useQuery({
-    queryKey: ["medical-packages-specialty", medicalPackage?.specialtyID],
-    queryFn: () => getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
-    enabled: !!medicalPackage?.specialtyID,
+    queryKey: ['medical-packages-specialty', medicalPackage?.specialty._id],
+    queryFn: () =>
+      medicalPackageApi.getMedicalPackageBySpecialty(medicalPackage?.specialty._id),
+    enabled: !!medicalPackage?.specialty._id,
   });
   const {
     data: serviceSpecialty,
     error: errorServiceSpecialty,
     isLoading: isLoadingServiceSpecialty,
   } = useQuery({
-    queryKey: ["service-specialty", service?.specialtyID],
+    queryKey: ['service-specialty', service?.specialtyID],
     queryFn: () => serviceApi.getServiceBySpecialty(service?.specialtyID),
     enabled: !!service?.specialtyID,
   });
@@ -70,37 +67,37 @@ const DetailService = () => {
     return <NotFound />;
   }
 
-  
   const isLoading =
     isLoadingMedicalPackage ||
     isLoadingService ||
     isLoadingMedicalPackageSpecialty ||
     isLoadingServiceSpecialty;
+
   return (
-    <div className="bg-bg-gray p-8">
+    <div className="bg-[#E8F2F7] p-8">
       <ServiceDetail
-        medicalPackage={medicalPackage}
-        service={service}
-        isLoading={isLoading}
+        medicalPackage={ medicalPackage }
+        service={ service }
+        isLoading={ isLoading }
       />
       <DescriptionService
-        medicalPackage={medicalPackage}
-        service={service}
-        isLoading={isLoading}
+        medicalPackage={ medicalPackage }
+        service={ service }
+        isLoading={ isLoading }
       />
-      {!service && (
+      { !service && (
         <MedicalPackageService
-          medicalPackage={medicalPackage}
-          service={service}
-          isLoading={isLoading}
+          medicalPackage={ medicalPackage }
+          service={ service }
+          isLoading={ isLoading }
         />
-      )}
+      ) }
 
       <Rules />
       <PackageServiceOther
-        serviceSpecialty={serviceSpecialty}
-        medicalPackageSpecialty={medicalPackageSpecialty}
-        isLoading={isLoading}
+        serviceSpecialty={ serviceSpecialty }
+        medicalPackageSpecialty={ medicalPackageSpecialty }
+        isLoading={ isLoading }
       />
     </div>
   );

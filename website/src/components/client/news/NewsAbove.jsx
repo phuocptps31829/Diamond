@@ -3,7 +3,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import NewsCard from "@/components/ui/NewsCard";
 
 export default function NewsAbove({ news, isLoading }) {
-  console.log("news", news[3]);
   return (
     <div className="mx-auto max-w-screen-xl p-3 md:p-5 md:py-10">
       <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
@@ -13,7 +12,7 @@ export default function NewsAbove({ news, isLoading }) {
         <img src="https://benhviennamsaigon.com.vn/skins/default/images/line.png" />
       </div>
 
-      {isLoading ? (
+      { isLoading ? (
         <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
           <div className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid">
             <Skeleton className="h-[200px] w-full md:h-[300px]" />
@@ -93,22 +92,22 @@ export default function NewsAbove({ news, isLoading }) {
       ) : (
         <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
           <NewsCard
-            newsItem={news[news.length - 1]}
+            newsItem={ news[news.length - 1] }
             className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
-            firstNews={true}
+            firstNews={ true }
           />
-          {news
+          { news
             .slice(news.length - 4, news.length - 1)
             .reverse()
             .map((newsItem, index) => (
               <NewsCard
-                key={index}
-                newsItem={newsItem}
+                key={ index }
+                newsItem={ newsItem }
                 className="sm:h-[200px] sm:flex-row"
               />
-            ))}
+            )) }
         </div>
-      )}
+      ) }
     </div>
   );
 }

@@ -129,27 +129,27 @@ const ServicesAdd = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-3 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-2">
               <ImagePreview
-                imagePreview={imagePreview}
-                setFileImage={setFileImage}
-                setImagePreview={setImagePreview}
+                imagePreview={ imagePreview }
+                setFileImage={ setFileImage }
+                setImagePreview={ setImagePreview }
               />
-              {!fileImage && (
+              { !fileImage && (
                 <p className="mt-3 text-center text-sm text-red-500">
                   Vui lòng chọn ảnh
                 </p>
-              )}
+              ) }
               <div className="mt-7 w-full">
                 <InputCustom
                   className="w-full"
                   name="duration"
                   label="Thời lượng khám (phút):"
                   type="number"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                   placeholder="Nhập thời lượng khám (phút)"
                 />
               </div>
@@ -163,8 +163,8 @@ const ServicesAdd = () => {
                     id="name"
                     label="Tên dịch vụ:"
                     type="text"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                     placeholder="Nhập tên dịch vụ"
                   />
                 </div>
@@ -177,9 +177,9 @@ const ServicesAdd = () => {
                   </Label>
                   <SelectSpecialty
                     name="specialtyID"
-                    control={control}
-                    errors={errors}
-                    onChange={handleSpecialtyChange}
+                    control={ control }
+                    errors={ errors }
+                    onChange={ handleSpecialtyChange }
                   />
                 </div>
 
@@ -189,8 +189,8 @@ const ServicesAdd = () => {
                     name="price"
                     label="Giá:"
                     type="number"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                     placeholder="Nhập giá"
                   />
                 </div>
@@ -200,8 +200,8 @@ const ServicesAdd = () => {
                     name="discountPrice"
                     label="Giá giảm:"
                     type="number"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                     placeholder="Nhập giá giảm"
                   />
                 </div>
@@ -211,9 +211,9 @@ const ServicesAdd = () => {
                     name="minAge"
                     label="Tuổi tối thiểu:"
                     type="number"
-                    control={control}
-                    errors={errors}
-                    min={0}
+                    control={ control }
+                    errors={ errors }
+                    min={ 0 }
                     placeholder="Nhập tuổi tối thiểu"
                   />
                 </div>
@@ -223,9 +223,9 @@ const ServicesAdd = () => {
                     name="maxAge"
                     label="Tuổi tối đa:"
                     type="number"
-                    control={control}
-                    errors={errors}
-                    min={0}
+                    control={ control }
+                    errors={ errors }
+                    min={ 0 }
                     placeholder="Nhập tuổi tối đa"
                   />
                 </div>
@@ -239,21 +239,21 @@ const ServicesAdd = () => {
                 </Label>
                 <Controller
                   name="shortDescription"
-                  control={control}
-                  render={({ field }) => (
+                  control={ control }
+                  render={ ({ field }) => (
                     <Textarea
                       placeholder="Nhập mô tả."
                       id="shortDescription"
                       className="w-full rounded-md border p-2"
-                      {...field}
+                      { ...field }
                     />
-                  )}
+                  ) }
                 />
-                {errors.shortDescription && (
+                { errors.shortDescription && (
                   <p className="mt-1 text-sm text-red-500">
-                    {errors.shortDescription.message}
+                    { errors.shortDescription.message }
                   </p>
-                )}
+                ) }
               </div>
             </div>
           </div>
@@ -262,11 +262,11 @@ const ServicesAdd = () => {
               <Label>Giới tính</Label>
               <Controller
                 name="gender"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
+                    value={ field.value }
+                    onValueChange={ field.onChange }
                     className="mt-5 flex items-center justify-start gap-5"
                   >
                     <div className="flex items-center space-x-2">
@@ -282,71 +282,71 @@ const ServicesAdd = () => {
                       <Label htmlFor="gender_all">Tất cả</Label>
                     </div>
                   </RadioGroup>
-                )}
+                ) }
               />
             </div>
             <div className="w-full border-l-2 border-r-2 border-dashed border-primary-500 px-5">
               <Label>Gia đình</Label>
               <Controller
                 name="isFamily"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
+                    value={ field.value }
+                    onValueChange={ field.onChange }
                     className="mt-5 flex items-center justify-start gap-5"
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={true} id="family_yes" />
+                      <RadioGroupItem value={ true } id="family_yes" />
                       <Label htmlFor="family_yes">Có</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={false} id="family_no" />
+                      <RadioGroupItem value={ false } id="family_no" />
                       <Label htmlFor="family_no">Không</Label>
                     </div>
                   </RadioGroup>
-                )}
+                ) }
               />
             </div>
             <div className="w-full px-5">
               <Label>Trạng thái</Label>
               <Controller
                 name="isHidden"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
+                    value={ field.value }
+                    onValueChange={ field.onChange }
                     className="mt-5 flex items-center justify-start gap-5"
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={true} id="hidden_yes" />
+                      <RadioGroupItem value={ true } id="hidden_yes" />
                       <Label htmlFor="hidden_yes">Ẩn</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={false} id="hidden_no" />
+                      <RadioGroupItem value={ false } id="hidden_no" />
                       <Label htmlFor="hidden_no">Hiện</Label>
                     </div>
                   </RadioGroup>
-                )}
+                ) }
               />
             </div>
           </div>
 
-          <ServiceEditor control={control} name="content" errors={errors} />
+          <ServiceEditor control={ control } name="content" errors={ errors } />
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={ isPending || mutation.isPending }
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              { isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
                 "Thêm dịch vụ"
-              )}
+              ) }
             </Button>
           </div>
         </form>

@@ -35,6 +35,11 @@ const newsSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    slug: {
+        type: String,
+        trim: true,
+        required: true
+    },
     isHidden: {
         type: Boolean,
         default: false

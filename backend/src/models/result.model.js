@@ -23,6 +23,10 @@ const resultSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
 }, {
     collection: 'Result',
     timestamps: true

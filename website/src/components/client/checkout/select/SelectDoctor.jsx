@@ -23,19 +23,20 @@ import { toastUI } from "@/components/ui/Toastify";
 export default function SelectDoctor({
   control,
   name,
-  errors,
-  branchId,
-  onChange,
+  branchID,
   specialtyID,
+  errors,
+  onChange,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-
+  console.log(branchID,
+    specialtyID,);
   useEffect(() => {
-    if (!specialtyID || !branchId) return;
+    if (!specialtyID || !branchID) return;
     const fetchDoctors = async () => {
       try {
-        const data = await doctorApi.getDoctorsByBranch(branchId, specialtyID);
+        const data = await doctorApi.getDoctorsByBranch(branchID, specialtyID);
         console.log(data);
         setOptions(data);
       } catch (error) {
@@ -44,45 +45,44 @@ export default function SelectDoctor({
     };
 
     fetchDoctors();
-  }, [branchId, specialtyID]);
+  }, [branchID, specialtyID]);
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [branchId, specialtyID, errors, name]);
+  }, [branchID, specialtyID, errors, name]);
 
   const handleClick = () => {
-    if (!branchId) {
+    if (!branchID) {
       toastUI("Vui lòng chọn chi nhánh", "warning");
       return;
     }
   };
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={ handleClick }>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Vui lòng chọn bác sĩ" }}
-        render={({ field }) => {
+        control={ control }
+        name={ name }
+        rules={ { required: "Vui lòng chọn bác sĩ" } }
+        render={ ({ field }) => {
           return (
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={ open } onOpenChange={ setOpen }>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
-                  aria-expanded={open}
-                  className={cn(
+                  aria-expanded={ open }
+                  className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500",
-                    branchId ? "pointer-events-auto" : "pointer-events-none",
-                  )}
+                    branchID ? 'pointer-events-auto' : 'pointer-events-none'
+                  ) }
                 >
-                  {field.value ? (
-                    options.find((doctor) => doctor._id === field.value)
-                      ?.fullName
+                  { field.value ? (
+                    options.find((doctor) => doctor._id === field.value)?.fullName
                   ) : (
                     <span className="text-gray-600">Chọn bác sĩ</span>
-                  )}
+                  ) }
                   <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -92,38 +92,38 @@ export default function SelectDoctor({
                   <CommandList>
                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
                     <CommandGroup>
-                      {options.map((doctor) => (
+                      { options.map((doctor) => (
                         <CommandItem
-                          key={doctor._id}
-                          value={doctor._id}
-                          onSelect={(currentValue) => {
+                          key={ doctor._id }
+                          value={ doctor._id }
+                          onSelect={ (currentValue) => {
                             field.onChange(currentValue);
                             onChange(currentValue);
                             setOpen(false);
-                          }}
+                          } }
                         >
                           <Check
-                            className={cn(
+                            className={ cn(
                               "mr-2 h-4 w-4",
                               field.value === doctor._id
                                 ? "opacity-100"
                                 : "opacity-0",
-                            )}
+                            ) }
                           />
-                          {doctor.fullName}
+                          { doctor.fullName }
                         </CommandItem>
-                      ))}
+                      )) }
                     </CommandGroup>
                   </CommandList>
                 </Command>
               </PopoverContent>
             </Popover>
           );
-        }}
+        } }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }

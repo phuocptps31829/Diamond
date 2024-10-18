@@ -70,16 +70,15 @@ module.exports = {
                 }
             ];
 
-            const branch = await BranchModel.aggregate(pipeline);
+            const branches = await BranchModel.aggregate(pipeline);
 
-
-            if (!branch) {
-                createError(404, "Branch not found.");
+            if (!branches) {
+                createError(404, "No branches found.");
             }
 
             return res.status(200).json({
-                message: 'Branch retrieved successfully.',
-                data: branch,
+                message: 'Branches retrieved successfully.',
+                data: branches,
             });
         } catch (error) {
             next(error);

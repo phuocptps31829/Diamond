@@ -63,6 +63,34 @@ router.get(
     serviceController.getAllServices
 );
 
+
+/**
+ * @openapi
+ * '/api/v1/services/slug/{slug}':
+ *  get:
+ *    tags:
+ *    - Service Routes
+ *    summary: Get service by slug
+ *    parameters:
+ *      - in: path
+ *        name: slug
+ *        required: true
+ *        description: Service slug
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/slug/:slug',
+    serviceController.getServiceBySlug
+);
+
 /**
  * @openapi
  * '/api/v1/services/{id}':

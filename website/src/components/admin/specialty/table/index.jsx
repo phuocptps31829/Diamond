@@ -22,7 +22,29 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { specialtyApi } from "@/services/specialtiesApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toastUI } from "@/components/ui/Toastify";
+import Loading from "@/components/ui/Loading";
+
 export default function DataTable({ data, columns,branchData }) {
+  const queryClient = useQueryClient();
+  const { mutate: deleteSpecialty, isPending } = useMutation({
+    mutationFn: specialtyApi.deleteSpecialty,
+    onSuccess: () => {
+        toastUI("Xóa chuyên khoa thành công", "success");
+        queryClient.invalidateQueries('roles');
+    },
+    onError: (err) => {
+        console.log(err);
+        toastUI("Xóa chuyên khoa không thành công", "error");
+    },
+});
+
+const handleDeleteSpecialty = (id) => {
+  if (!confirm("Chắc chắn muốn xóa?")) return;
+  deleteSpecialty(id);
+};
   const {
     handleSubmit,
     formState: { errors },
@@ -45,7 +67,7 @@ export default function DataTable({ data, columns,branchData }) {
   const table = useReactTable({
     data,
     branchData,
-    columns,
+    columns: columns(handleDeleteSpecialty),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -66,6 +88,9 @@ export default function DataTable({ data, columns,branchData }) {
       },
     },
   });
+  if (isPending) {
+    return <Loading />;
+}
   return (
     <div className="bg-white w-[100%] px-6 py-3 rounded-lg">
       {/* Search */ }

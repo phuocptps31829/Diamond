@@ -3,10 +3,10 @@ import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 
 const breadcrumbData = [
   {
-    title: "Dịch vụ",
+    title: "Sản phẩm",
   },
   {
-    href: "/admin/services/create",
+    href: "/admin/services/list",
     title: "Danh sách dịch vụ",
   },
 ];

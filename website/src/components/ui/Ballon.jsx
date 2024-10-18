@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { MdAddShoppingCart } from "react-icons/md";
+import { FaSuitcaseMedical } from "react-icons/fa6";
 import { motion, useAnimation } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "./Toast";
+import { toastUI } from "./Toastify";
 
 const Balloon = () => {
   const cartItems = useSelector((state) => state.cart.cart);
@@ -13,7 +12,6 @@ const Balloon = () => {
   const prevCountRef = useRef(0);
   const controls = useAnimation();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   useEffect(() => {
     const newCount = cartItems.length || 0;
@@ -32,12 +30,8 @@ const Balloon = () => {
     if (userProfile) {
       navigate('/services-booking');
     } else {
-      toast({
-        variant: "warning",
-        title: "Vui lòng đăng nhập để đặt lịch!",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
+      return;
     }
   };
 
@@ -52,7 +46,7 @@ const Balloon = () => {
           <button className="group relative h-16 w-16 rounded-full">
             <div className="floater absolute left-0 top-0 h-full w-full rounded-full bg-primary-800"></div>
             <div className="icon relative z-10 flex h-full w-full items-center justify-center rounded-full">
-              <MdAddShoppingCart className="h-7 w-7 text-white duration-300 group-hover:scale-125" />
+              <FaSuitcaseMedical className="h-7 w-7 text-white duration-300 group-hover:scale-125" />
             </div>
           </button>
           { productCount > 0 && (

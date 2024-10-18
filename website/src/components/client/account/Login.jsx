@@ -47,7 +47,7 @@ export default function LoginComponent() {
     onError: (error) => {
       console.log(error);
       const errorMessage =
-        error.response?.data?.error ||
+        error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
       toastUI(errorMessage || "Đăng nhập thất bại!", "error");
@@ -63,7 +63,7 @@ export default function LoginComponent() {
   };
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-3 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
       <div className="max-w-screen-xl py-5 px-3 md:px-5">
         <div className="grid grid-cols-1 md:grid-cols-2 h-fit">
           {/* ADS BANNER */ }

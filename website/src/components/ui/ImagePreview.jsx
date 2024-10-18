@@ -53,7 +53,7 @@ const ImagePreview = ({ imagePreview, setFileImage, setImagePreview }) => {
               className="absolute -right-3 -top-3 rounded-full bg-red-500 p-1"
               onClick={handleRemoveImage}
             >
-              <MdClose size={20} color="#000" />
+              <MdClose size={20} color="white" />
             </button>
           </>
         )}

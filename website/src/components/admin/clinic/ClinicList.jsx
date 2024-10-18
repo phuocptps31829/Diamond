@@ -18,6 +18,6 @@ const ClinicsList = () => {
   if (error) {
     return <NotFound />;
   }
-  return <DataTable columns={columns} data={data} />;
+  return <DataTable columns={ columns } data={ data } />;
 };
 export default ClinicsList;

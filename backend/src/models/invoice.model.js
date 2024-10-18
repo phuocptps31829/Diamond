@@ -5,10 +5,6 @@ const invoiceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',
     },
-    prescriptionID: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Prescription',
-    },
     price: {
         type: Number,
         required: true

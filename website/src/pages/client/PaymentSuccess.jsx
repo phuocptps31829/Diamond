@@ -13,7 +13,7 @@ export default function PaymentSuccess() {
     }, [dispatch]);
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center bg-[#E8F2F7]">
             <div className="p-20 text-center">
                 <div className="flex items-center justify-center mb-4">
                     <FaCircleCheck className="text-8xl text-primary-500" />

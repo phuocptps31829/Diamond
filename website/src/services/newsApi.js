@@ -39,6 +39,17 @@ export const newsApi = {
     }
   },
 
+  getNewsBySlug: async (slug) => {
+    try {
+      const res = await axiosInstanceGET.get("/news/slug/" + slug);
+      console.log("res.data.data: ", res.data.data);
+      return res.data.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
   createNews: async (data) => {
     try {
       const res = await axiosInstanceCUD.post("/news/add", data, {
@@ -65,6 +76,17 @@ export const newsApi = {
           },
         },
       );
+      console.log("res.data.data: ", res.data.data);
+      return res.data.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  plusOneViewCount: async (id) => {
+    try {
+      const res = await axiosInstanceCUD.patch(`/news/plus-view-count/${id}`);
       console.log("res.data.data: ", res.data.data);
       return res.data.data;
     } catch (error) {

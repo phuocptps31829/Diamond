@@ -17,10 +17,10 @@ import {
   PaginationPrevious,
 } from "@/components/ui/Pagination";
 import { useQuery } from "@tanstack/react-query";
-import { doctorApi } from "@/services/doctorsApi";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import DoctorItem from "../product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { doctorApi } from "@/services/doctorsApi";
 
 export default function ListDoctors() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
@@ -67,9 +67,9 @@ export default function ListDoctors() {
     if (doctors) {
       const filtered = doctors.filter((doctor) => {
         const matchesSpecialty =
-          selectedSpecialty === "" || doctor.specialtyID === selectedSpecialty;
+          selectedSpecialty === "" || doctor.otherInfo.specialty._id === selectedSpecialty;
         const matchesGender =
-          selectedGender === "" || doctor.userID.gender === selectedGender;
+          selectedGender === "" || doctor.gender === selectedGender;
         return matchesSpecialty && matchesGender;
       });
       setFilteredDoctors(filtered);
@@ -107,10 +107,10 @@ export default function ListDoctors() {
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+          { Array.from({ length: 4 }).map((_, index) => (
             <div
               className="flex flex-col overflow-hidden rounded-lg border"
-              key={index}
+              key={ index }
             >
               <div className="group flex w-full items-center justify-center !bg-white">
                 <Skeleton className="ease h-[200px] w-full transform overflow-hidden p-2 transition-transform duration-500 sm:h-[300px] sm:p-4" />
@@ -127,13 +127,13 @@ export default function ListDoctors() {
                 </div>
               </div>
             </div>
-          ))}
+          )) }
         </div>
       </div>
     );
   }
 
-  if (errorDoctors || errorSpecialties) {
+  if (!doctors.length) {
     return <div>Error loading doctors</div>;
   }
 
@@ -157,21 +157,21 @@ export default function ListDoctors() {
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp theo:</h2>
         <div className="flex flex-row items-center justify-center gap-3">
           <Select
-            value={selectedSpecialty}
-            onValueChange={handleSpecialtyChange}
+            value={ selectedSpecialty }
+            onValueChange={ handleSpecialtyChange }
           >
             <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn chuyên khoa" />
             </SelectTrigger>
             <SelectContent>
-              {specialties?.map((specialty) => (
-                <SelectItem key={specialty._id} value={specialty._id}>
-                  {specialty.name}
+              { specialties?.map((specialty) => (
+                <SelectItem key={ specialty._id } value={ specialty._id }>
+                  { specialty.name }
                 </SelectItem>
-              ))}
+              )) }
             </SelectContent>
           </Select>
-          <Select value={selectedGender} onValueChange={handleDoctorChange}>
+          <Select value={ selectedGender } onValueChange={ handleDoctorChange }>
             <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn giới tính" />
             </SelectTrigger>
@@ -182,27 +182,27 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-      {currentRecords.length === 0 ? (
+      { currentRecords.length === 0 ? (
         <div className="p-6 text-center">Không có dữ liệu.</div>
       ) : (
         <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-          {currentRecords.map((doctor) => {
+          { currentRecords.map((doctor) => {
             return (
               <DoctorItem
-                key={doctor._id}
-                {...doctor}
-                specialtyName={specialtyMap[doctor.specialtyID]}
+                key={ doctor?._id }
+                doctor={ doctor }
+                specialtyName={ specialtyMap[doctor?.specialty?._id] }
               />
             );
-          })}
+          }) }
         </div>
-      )}
-      {totalPages > 1 && (
+      ) }
+      { totalPages > 1 && (
         <Pagination className="py-5">
           <PaginationContent className="hover:cursor-pointer">
             <PaginationItem>
               <PaginationPrevious
-                onClick={() =>
+                onClick={ () =>
                   handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
                 }
                 className={
@@ -210,22 +210,22 @@ export default function ListDoctors() {
                 }
               />
             </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
+            { Array.from({ length: totalPages }).map((_, index) => (
+              <PaginationItem key={ index }>
                 <PaginationLink
-                  onClick={() => handlePageChange(index + 1)}
-                  isActive={currentPage === index + 1}
+                  onClick={ () => handlePageChange(index + 1) }
+                  isActive={ currentPage === index + 1 }
                 >
-                  {index + 1}
+                  { index + 1 }
                 </PaginationLink>
               </PaginationItem>
-            ))}
+            )) }
             <PaginationItem>
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
               <PaginationNext
-                onClick={() =>
+                onClick={ () =>
                   handlePageChange(
                     currentPage + 1 > totalPages ? totalPages : currentPage + 1,
                   )
@@ -239,7 +239,7 @@ export default function ListDoctors() {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-      )}
+      ) }
     </div>
   );
 }

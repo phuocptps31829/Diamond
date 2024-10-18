@@ -7,6 +7,17 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from "@/components/ui/AlertDialog";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -95,7 +106,7 @@ export const getColumnsRoles = (onDelete) =>
             id: "actions",
             enableHiding: false,
             cell: ({ row }) => {
-                return (
+                return !row.original.isSystem && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild className="text-end">
                             <Button
@@ -113,11 +124,35 @@ export const getColumnsRoles = (onDelete) =>
                                     </span>
                                 </DropdownMenuItem>
                             </Link>
-                            <DropdownMenuItem className="w-fit flex items-center gap-2" onClick={ () => onDelete(row.original._id) }>
-                                <RiDeleteBin6Line className="text-[15px]" />
-                                <span>
-                                    Xóa
-                                </span>
+                            <DropdownMenuItem className="w-fit flex items-center gap-2" >
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <div
+                                            className="flex cursor-pointer items-center gap-2"
+                                            onClick={ (e) => e.stopPropagation() }
+                                        >
+                                            <RiDeleteBin6Line className="text-[15px]" />
+                                            <span>Xóa</span>
+                                        </div>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Bạn có chắc chắn muốn xóa vai trò này?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Hành động này không thể hoàn tác. Vai trò sẽ bị xóa vĩnh
+                                                viễn khỏi hệ thống.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Hủy</AlertDialogCancel>
+                                            <AlertDialogAction onClick={ () => onDelete(row.original._id) }>
+                                                Xóa
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
@@ -125,32 +160,3 @@ export const getColumnsRoles = (onDelete) =>
             },
         },
     ];
-
-export const mockData = [
-    {
-        id: Date.now(),
-        name: "Super Admin",
-        description: "Quyền quản trị cao cấp nhâts",
-    },
-    {
-        id: Date.now(),
-        name: "Super Admin",
-        description: "Quyền quản trị cao cấp nhâts",
-    },
-    {
-        id: Date.now(),
-        name: "Super Admin",
-        description: "Quyền quản trị cao cấp nhâts",
-    },
-    {
-        id: Date.now(),
-        name: "Super Admin",
-        description: "Quyền quản trị cao cấp nhâts",
-    },
-    {
-        id: Date.now(),
-        name: "Super Admin",
-        description: "Quyền quản trị cao cấp nhâts",
-    },
-];
-

@@ -47,29 +47,29 @@ export default function SelectDepartment({
   return (
     <div>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Chọn chi nhánh" }}
-        render={({ field }) => (
-          <Popover open={open} onOpenChange={setOpen}>
+        control={ control }
+        name={ name }
+        rules={ { required: "Chọn chi nhánh" } }
+        render={ ({ field }) => (
+          <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={open}
-                className={cn(
+                aria-expanded={ open }
+                className={ cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "",
-                )}
-                disabled={disabled}
+                ) }
+                disabled={ disabled }
               >
-                {field.value ? (
+                { field.value ? (
                   departments?.data.find(
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
                   <span className="text-gray-600">Chọn chi nhánh</span>
-                )}
+                ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -77,40 +77,40 @@ export default function SelectDepartment({
               <Command className="text-left">
                 <CommandList>
                   <CommandGroup>
-                    {departments?.data.map((department) => (
+                    { departments?.data.map((department) => (
                       <CommandItem
-                        key={department._id}
-                        value={department._id}
-                        onSelect={(currentValue) => {
+                        key={ department._id }
+                        value={ department._id }
+                        onSelect={ (currentValue) => {
                           if (!disabled) {
                             field.onChange(currentValue);
                             onChange(currentValue);
                             setOpen(false);
                           }
-                        }}
-                        disabled={disabled}
+                        } }
+                        disabled={ disabled }
                       >
                         <Check
-                          className={cn(
+                          className={ cn(
                             "mr-2 h-4 w-4",
                             field.value === department._id
                               ? "opacity-100"
                               : "opacity-0",
-                          )}
+                          ) }
                         />
-                        {department.name}
+                        { department.name }
                       </CommandItem>
-                    ))}
+                    )) }
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        )}
+        ) }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }

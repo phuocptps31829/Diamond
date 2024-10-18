@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { Skeleton } from "@/components/ui/Skeleton";
+
 export default function AboveInformation({ doctor, isLoading }) {
   if (isLoading)
     return (
@@ -37,25 +38,23 @@ export default function AboveInformation({ doctor, isLoading }) {
       </div>
     );
 
-  const { yearsExperience } = doctor;
-  const { fullName, phoneNumber, gender, avatar } = doctor.userID;
-  const { street, ward, district, province } = doctor.userID.address;
+  const { fullName, address, phoneNumber, gender, avatar } = doctor;
 
   return (
     <>
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-10 md:px-10">
           <div className="block overflow-hidden rounded-full">
-            <img src={avatar} />
+            <img src={ `${import.meta.env.VITE_IMAGE_API_URL}/${avatar}` } />
           </div>
           <div className="flex flex-col space-y-4">
+            <div className="text-3xl font-semibold uppercase">{ fullName }</div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Chi nhánh:
               </strong>
-              {province}
+              { doctor.otherInfo?.branch?.name }
             </div>
-            <div className="text-3xl font-semibold uppercase">{fullName}</div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Chức vụ:
@@ -66,13 +65,13 @@ export default function AboveInformation({ doctor, isLoading }) {
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Kinh nghiệm:
               </strong>
-              {yearsExperience} năm kinh nghiệm
+              { new Date().getFullYear() - new Date(doctor.otherInfo.yearsExperience).getFullYear() } năm kinh nghiệm
             </div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Giới tính:
               </strong>
-              {gender}
+              { gender }
             </div>
             <button className="rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-orange-500">
               Đặt lịch hẹn
@@ -82,13 +81,13 @@ export default function AboveInformation({ doctor, isLoading }) {
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Đặt lịch:
                 </strong>
-                {phoneNumber}
+                { phoneNumber }
               </div>
               <div className="flex text-[14px] md:text-[15px]">
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Địa chỉ:
                 </strong>
-                {`${street} - ${ward} - ${district} - ${province}`}
+                { address }
               </div>
               <Link
                 to="/none"
