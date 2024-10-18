@@ -48,7 +48,6 @@ import AppointmentsDetailPage from "./pages/admin/Appointments/detail";
 import ProtectContainer from "./layouts/protect/ProtectContainer";
 import PaymentSuccess from "./pages/client/PaymentSuccess";
 import ClinicsListPage from "./pages/admin/Clinics";
-import DoctorsFormPage from "./pages/admin/Doctor/form";
 import DoctorsListPage from "./pages/admin/Doctor";
 import PatientsListPage from "./pages/admin/Patient";
 import PatientsFormAddPage from "./pages/admin/Patient/formAdd";
@@ -77,7 +76,6 @@ import ServicesAddPage from "./pages/admin/Services/add";
 import ServicesEditPage from "./pages/admin/Services/edit";
 import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
-import DoctorsEditFormPage from "./pages/admin/Doctor/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
 import PackageDetailPage from './pages/admin/Packages/details';
@@ -87,6 +85,8 @@ import ClinicsEditPage from "./pages/admin/Clinics/edit";
 import ServicesDetailPage from "./pages/admin/Services/detail";
 import NewsDetailPage from "./pages/admin/News/detail";
 import ServicesListPage from "./pages/admin/Services/indexServicePage";
+import DoctorsFormAddPage from "./pages/admin/Doctor/formAdd";
+import DoctorsFormFixPage from "./pages/admin/Doctor/formFix";
 
 const router = createBrowserRouter([
   {
@@ -331,11 +331,11 @@ const router = createBrowserRouter([
       },
       {
         path: 'doctors/create',
-        element: <DoctorsFormPage />,
+        element: <DoctorsFormAddPage />,
       },
       {
         path: 'doctor/edit/:id',
-        element: <DoctorsEditFormPage />,
+        element: <DoctorsFormFixPage />,
       },
       {
         path: "patients/list",

@@ -31,7 +31,7 @@ export default function SelectBirthDate({ control, name, errors }) {
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
                                 {field.value ? (
-                                    format(new Date(field.value), 'yyyy/MM/dd', { locale: vi })
+                                    format(new Date(field.value), 'yyyy-MM-dd', { locale: vi })
                                 ) : (
                                     <span className="text-gray-600">Chọn ngày sinh</span>
                                 )}

@@ -115,7 +115,7 @@ export const columnsSchedule = [
         ),
     },
     {
-        accessorKey: 'specialty[0].name',
+        accessorKey: 'specialty.name',
         header: ({ column }) => (
             <Button
                 className="px-0 text-base"
@@ -126,7 +126,7 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{row.original?.specialty[0].name || 'null'}</div>,
+        cell: ({ row }) => <div className="">{row.original?.specialty.name || 'null'}</div>,
     },
     {
         accessorKey: 'createdAt',

@@ -1,6 +1,5 @@
-import { axiosInstanceGET } from './axiosInstance';
+import { axiosInstanceGET, axiosInstanceIMG } from './axiosInstance';
 import { axiosInstanceCUD } from './axiosInstance';
-import { axiosInstanceIMG } from './axiosInstance';
 
 export const doctorApi = {
   getAllDoctors: async () => {
