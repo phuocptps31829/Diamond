@@ -14,9 +14,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import InputCustom from "@/components/ui/InputCustom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
-import { createAppointment } from "@/services/appointmentApi";
 import SelectLevelMedicalPackage from "./select/SelectLevelMedicalPackage";
 import SpinLoader from "@/components/ui/SpinLoader";
+import { appointmentApi } from "@/services/appointmentsApi";
 
 const AppointmentsAdd = () => {
   const { id } = useParams();
@@ -86,12 +86,12 @@ const AppointmentsAdd = () => {
   console.log(selectedService, "selectedService");
 
   const handleChangeLevel = (levelId, price) => {
-    setSelectedLevel({ levelId, price },'level');
+    setSelectedLevel({ levelId, price });
   };
   const handleChangeMedicalPackage = (
     medicalPackageId,
     specialtyID,
-    services,
+    services
   ) => {
     setSelectedPackage({ medicalPackageId, specialtyID, services });
     setSelectedLevel("");
@@ -173,7 +173,7 @@ const AppointmentsAdd = () => {
     setValue("isServiceSelected", isServiceSelected);
   };
   const mutation = useMutation({
-    mutationFn: (appointmentData) => createAppointment(appointmentData, "cod"),
+    mutationFn: (appointmentData) => appointmentApi.createAppointment(appointmentData, "cod"),
     onSuccess: () => {
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công lịch hẹn!", "success");
@@ -232,16 +232,19 @@ const AppointmentsAdd = () => {
                 />
               </div>
             ) : (
-              <div className="flex-1">
-                <SelectMedicalPackage
-                  control={control}
-                  name="medicalPackage"
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeMedicalPackage}
-                />
+              <div className="flex flex-col gap-4 md:flex-row">
+                <div className="flex-1">
+                  <SelectMedicalPackage
+                    control={control}
+                    name="medicalPackage"
+                    errors={errors}
+                    setValue={setValue}
+                    onChange={handleChangeMedicalPackage}
+                  />
+                </div>
+
                 {selectedPackage && (
-                  <div className="mt-4">
+                  <div className="flex-1">
                     <SelectLevelMedicalPackage
                       control={control}
                       name="level"

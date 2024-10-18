@@ -1,23 +1,28 @@
-import { Button } from '@/components/ui/Button';
-import { useMutation } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { Button } from "@/components/ui/Button";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
-import VNPAYICON from '../../../assets/images/vnpay.webp';
-import { toastUI } from '@/components/ui/Toastify';
-import { appointmentApi } from '@/services/appointmentsApi';
+import VNPAYICON from "../../../assets/images/vnpay.webp";
+import { toastUI } from "@/components/ui/Toastify";
+import { appointmentApi } from "@/services/appointmentsApi";
+import { useReadNumber } from "@/hooks/useReadNumber";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const bookingInfo = useSelector((state) => state.infoBooking);
   const cart = useSelector((state) => state.cart.cart);
   const personHelpInfo = useSelector(
-    (state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser,
+    (state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser
   );
   const profileCustomer = useSelector((state) => state.auth.userProfile);
-
+  const readNumber = useReadNumber();
   const { mutate } = useMutation({
-    mutationFn: () => appointmentApi.createAppointment(bookingInfo.bookingInfoCheckout, paymentMethod),
+    mutationFn: () =>
+      appointmentApi.createAppointment(
+        bookingInfo.bookingInfoCheckout,
+        paymentMethod
+      ),
     onSuccess: (data) => {
       console.log(data);
       if (paymentMethod === "momo") {
@@ -26,8 +31,8 @@ export default function Form() {
       if (paymentMethod === "vnpay") {
         location.href = data.data;
       }
-      if (paymentMethod === 'cod') {
-        location.href = '/payment-success';
+      if (paymentMethod === "cod") {
+        location.href = "/payment-success";
       }
     },
     onError: (error) => {
@@ -43,107 +48,136 @@ export default function Form() {
     mutate();
   };
   const totalAmount = cart.reduce((acc, cur) => (acc += cur.price), 0);
-  // const totalAmountInWords = readNumber(totalAmount);
+  const totalAmountInWords = readNumber(totalAmount);
   return (
-    <div className='mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10'>
-      <div className='container bg-white mx-auto gap-5 px-10 py-5 pb-10 rounded-lg'>
+    <div className="mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10">
+      <div className="container mx-auto gap-5 rounded-lg bg-white px-10 py-5 pb-10">
         <div>
-          <div className='flex flex-col md:flex-row justify-between items-center my-3'>
-            <h1 className='font-bold text-[16px] md:text-[24px]'>Thông tin đặt lịch khám</h1>
-            <span className='text-[16px] md:text-[20px] mt-4 md:mt-0'>
-              <strong>Tổng dịch vụ:</strong> { bookingInfo.bookingDetails?.length } dịch vụ
+          <div className="my-3 flex flex-col items-center justify-between md:flex-row">
+            <h1 className="text-[16px] font-bold md:text-[24px]">
+              Thông tin đặt lịch khám
+            </h1>
+            <span className="mt-4 text-[16px] md:mt-0 md:text-[20px]">
+              <strong>Tổng dịch vụ:</strong>{" "}
+              {bookingInfo.bookingDetails?.length} dịch vụ
             </span>
           </div>
-          <div className='flex flex-col md:flex-row justify-between text-[16px] md:text-[18px] mb-6'>
-            <div className='w-full md:w-[50%]'>
+          <div className="mb-6 flex flex-col justify-between text-[16px] md:flex-row md:text-[18px]">
+            <div className="w-full md:w-[50%]">
               <p>Dịch vụ đã chọn:</p>
-              { cart.map((item, index) => (
+              {cart.map((item, index) => (
                 <div
-                  key={ index }
-                  className='mt-2 px-2 py-2 md:px-3 md:py-2 border border-primary-500 rounded-lg relative mb-3 max-w-full'
+                  key={index}
+                  className="relative mb-3 mt-2 max-w-full rounded-lg border border-primary-500 px-2 py-2 md:px-3 md:py-2"
                 >
-                  <div className='flex flex-row md:flex-row items-center'>
+                  <div className="flex flex-row items-center md:flex-row">
                     <img
-                      src={ `${import.meta.env.VITE_IMAGE_API_URL}/${item.image}` }
-                      className='w-[60px] md:w-[110px] sm:w-[80px]'
-                      alt={ item.name }
+                      src={`${import.meta.env.VITE_IMAGE_API_URL}/${item.image}`}
+                      className="w-[60px] sm:w-[80px] md:w-[110px]"
+                      alt={item.name}
                     />
-                    <div className='ml-3 flex flex-col'>
-                      <a href='/' className='font-bold uppercase text-[12px] sm:text-[16px] md:text-[18px]'>
-                        { item.name }
+                    <div className="ml-3 flex flex-col">
+                      <a
+                        href="/"
+                        className="text-[12px] font-bold uppercase sm:text-[16px] md:text-[18px]"
+                      >
+                        {item.name}
                       </a>
                     </div>
                   </div>
                 </div>
-              )) }
+              ))}
             </div>
           </div>
         </div>
         <hr />
-        <h1 className='font-bold text-[16px] md:text-[24px] my-3'>Thông tin người khám</h1>
-        <div className='flex flex-col md:flex-row justify-between mb-7'>
-          <div className='text-[14px] md:text-[18px] w-full md:w-[48%] mb-0 md:mb-4'>
-            <p className='mb-2'>
+        <h1 className="my-3 text-[16px] font-bold md:text-[24px]">
+          Thông tin người khám
+        </h1>
+        <div className="mb-7 flex flex-col justify-between md:flex-row">
+          <div className="mb-0 w-full text-[14px] md:mb-4 md:w-[48%] md:text-[18px]">
+            <p className="mb-2">
               <strong>Họ tên: </strong>
-              { personHelpInfo ? personHelpInfo.fullName : profileCustomer.fullName }
+              {personHelpInfo
+                ? personHelpInfo.fullName
+                : profileCustomer.fullName}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Email: </strong>
-              { personHelpInfo ? personHelpInfo.email : profileCustomer.email }
+              {personHelpInfo ? personHelpInfo.email : profileCustomer.email}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Số điện thoại: </strong>
-              { personHelpInfo ? personHelpInfo.phoneNumber : profileCustomer.phoneNumber }
+              {personHelpInfo
+                ? personHelpInfo.phoneNumber
+                : profileCustomer.phoneNumber}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Giới tính: </strong>
-              { personHelpInfo ? personHelpInfo.gender : profileCustomer.gender }
+              {personHelpInfo ? personHelpInfo.gender : profileCustomer.gender}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Ngày sinh: </strong>
-              { new Intl.DateTimeFormat('vi-VN').format(
-                new Date(personHelpInfo ? personHelpInfo.dateOfBirth : profileCustomer.dateOfBirth)
-              ) }
+              {new Intl.DateTimeFormat("vi-VN").format(
+                new Date(
+                  personHelpInfo
+                    ? personHelpInfo.dateOfBirth
+                    : profileCustomer.dateOfBirth
+                )
+              )}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Địa chỉ: </strong>
-              { personHelpInfo ? personHelpInfo.address : profileCustomer.address }
+              {personHelpInfo
+                ? personHelpInfo.address
+                : profileCustomer.address}
             </p>
           </div>
-          <div className='text-[14px] md:text-[18px] w-full md:w-[48%]'>
-            <p className='mb-2'>
+          <div className="w-full text-[14px] md:w-[48%] md:text-[18px]">
+            <p className="mb-2">
               <strong>Nghề nghiệp: </strong>
-              { personHelpInfo ? personHelpInfo.occupation : profileCustomer.otherInfo.occupation }
+              {personHelpInfo
+                ? personHelpInfo.occupation
+                : profileCustomer.otherInfo.occupation}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Dân tộc: </strong>
-              { personHelpInfo ? personHelpInfo.ethnic : profileCustomer.otherInfo.ethnic }
+              {personHelpInfo
+                ? personHelpInfo.ethnic
+                : profileCustomer.otherInfo.ethnic}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Số CCCD: </strong>
-              { personHelpInfo ? personHelpInfo.citizenIdentificationNumber : profileCustomer.citizenIdentificationNumber }
+              {personHelpInfo
+                ? personHelpInfo.citizenIdentificationNumber
+                : profileCustomer.citizenIdentificationNumber}
             </p>
-            <p className='mb-2'>
+            <p className="mb-2">
               <strong>Số BHYT: </strong>
-              { personHelpInfo ? personHelpInfo.insuranceCode : profileCustomer.otherInfo.insuranceCode }
+              {personHelpInfo
+                ? personHelpInfo.insuranceCode
+                : profileCustomer.otherInfo.insuranceCode}
             </p>
           </div>
         </div>
         <hr />
-        {/* Thanh toán */ }
-        <div className='mt-3'>
-          <h1 className='font-bold text-[16px] md:text-[24px] mb-3'>Phương thức thanh toán</h1>
-          <div className='flex flex-col md:flex-row justify-between gap-4'>
-            <div className='flex flex-col gap-4 w-full'>
+        {/* Thanh toán */}
+        <div className="mt-3">
+          <h1 className="mb-3 text-[16px] font-bold md:text-[24px]">
+            Phương thức thanh toán
+          </h1>
+          <div className="flex flex-col justify-between gap-4 md:flex-row">
+            <div className="flex w-full flex-col gap-4">
               <label
-                onClick={ () => setPaymentMethod("momo") }
-                className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'momo' ? 'border-primary-500' : ''
-                  }` }
+                onClick={() => setPaymentMethod("momo")}
+                className={`flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${
+                  paymentMethod === "momo" ? "border-primary-500" : ""
+                }`}
               >
                 <img
-                  src='https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png'
-                  className='w-[10%] mr-4'
-                  alt='MOMO'
+                  src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                  className="mr-4 w-[10%]"
+                  alt="MOMO"
                 />
                 <span>Thanh toán qua MOMO</span>
                 <input
@@ -154,14 +188,15 @@ export default function Form() {
                 />
               </label>
               <label
-                onClick={ () => setPaymentMethod("banking") }
-                className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'banking' ? 'border-primary-500' : ''
-                  }` }
+                onClick={() => setPaymentMethod("banking")}
+                className={`flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${
+                  paymentMethod === "banking" ? "border-primary-500" : ""
+                }`}
               >
                 <img
-                  src='https://cdn-icons-png.flaticon.com/512/6963/6963703.png'
-                  className='w-[10%] mr-4'
-                  alt='Ngân hàng'
+                  src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png"
+                  className="mr-4 w-[10%]"
+                  alt="Ngân hàng"
                 />
                 <span>Thanh toán ngân hàng</span>
                 <input
@@ -172,17 +207,14 @@ export default function Form() {
                 />
               </label>
             </div>
-            <div className='flex flex-col gap-4 w-full'>
+            <div className="flex w-full flex-col gap-4">
               <label
-                onClick={ () => setPaymentMethod("vnpay") }
-                className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'vnpay' ? 'border-primary-500' : ''
-                  }` }
+                onClick={() => setPaymentMethod("vnpay")}
+                className={`flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${
+                  paymentMethod === "vnpay" ? "border-primary-500" : ""
+                }`}
               >
-                <img
-                  src={ VNPAYICON }
-                  alt='VNPAYICON'
-                  className='w-[10%] mr-4'
-                />
+                <img src={VNPAYICON} alt="VNPAYICON" className="mr-4 w-[10%]" />
                 <span>Thanh toán qua VNPay</span>
                 <input
                   type="radio"
@@ -193,14 +225,15 @@ export default function Form() {
               </label>
 
               <label
-                onClick={ () => setPaymentMethod("cod") }
-                className={ `cursor-pointer flex items-center border-2 border-gray-200 rounded-md p-4 ${paymentMethod === 'ccc' ? 'border-primary-500' : ''
-                  }` }
+                onClick={() => setPaymentMethod("cod")}
+                className={`flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${
+                  paymentMethod === "ccc" ? "border-primary-500" : ""
+                }`}
               >
                 <img
-                  src='https://cdn-icons-png.flaticon.com/512/1019/1019607.png'
-                  className='w-[10%] mr-4'
-                  alt='Phòng khám'
+                  src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png"
+                  className="mr-4 w-[10%]"
+                  alt="Phòng khám"
                 />
                 <span>Thanh toán tại phòng khám</span>
                 <input
@@ -217,21 +250,22 @@ export default function Form() {
           ! Trường hợp khách hàng hỗ trợ đặt lịch cho người thân, bệnh án sẽ
           được cập nhật tới tài khoản của người thân.
         </p>
-        {/* Nút tiếp tục */ }
-        <div className="mt-7 ">
-          <div className="w-full flex justify-between">
-            {/* <p className=" flex justify-end text-base">
+        {/* Nút tiếp tục */}
+        <div className="mt-7">
+          <div className="flex w-full justify-between">
+            <p className="flex justify-end text-base">
               Bằng chữ:
-              <span className=" ml-1 font-bold text-red-500">{ totalAmountInWords }</span>
-            </p> */}
+              <span className="ml-1 font-bold text-red-500">
+                {totalAmountInWords}
+              </span>
+            </p>
             <p className="flex justify-end text-xl md:text-2xl">
               Tổng tiền:
-              <strong className="ml-3 text-red-500 font-medium">
-                { totalAmount.toLocaleString() }₫
+              <strong className="ml-3 font-medium text-red-500">
+                {totalAmount.toLocaleString()}₫
               </strong>
             </p>
           </div>
-
 
           <div className="mt-6 flex flex-row justify-end gap-3">
             <Button
@@ -242,7 +276,7 @@ export default function Form() {
               Trở lại
             </Button>
             <Button
-              onClick={ handleSubmitCheckout }
+              onClick={handleSubmitCheckout}
               className="rounded-md sm:h-10 sm:px-8"
               size="default"
               variant="primary"

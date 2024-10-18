@@ -26,11 +26,11 @@ import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import { Link } from "react-router-dom";
 import { FaUserInjured } from "react-icons/fa6";
-
+import { formatCurrency } from "@/utils/format";
 const BookingInfo = ({ data }) => {
   const bookingData = data;
   const { stylePayment, textPayment } = getStatusPaymentStyle(
-    bookingData.payment.status,
+    bookingData.payment.status
   );
   const { style, text } = getStatusStyle(bookingData.status);
 
@@ -147,19 +147,13 @@ const BookingInfo = ({ data }) => {
             </div>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(
-                bookingData.invoice.price + bookingData.invoice.arisePrice,
+              {formatCurrency(
+                bookingData.invoice.price + bookingData.invoice.arisePrice
               )}
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {new Intl.NumberFormat("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              }).format(bookingData.invoice.arisePrice)}
+              {formatCurrency(bookingData.invoice.arisePrice)}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">
@@ -314,13 +308,9 @@ const BookingInfo = ({ data }) => {
                     <AlertDialogDescription>
                       Bạn có chắc chắn muốn thanh toán{" "}
                       <span className="font-bold text-black">
-                        {" "}
-                        {new Intl.NumberFormat("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        }).format(
+                        {formatCurrency(
                           bookingData.invoice.price +
-                            bookingData.invoice.arisePrice,
+                            bookingData.invoice.arisePrice
                         )}
                       </span>{" "}
                       đơn khám bệnh này không?
