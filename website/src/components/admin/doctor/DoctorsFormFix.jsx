@@ -425,9 +425,9 @@ export default function DoctorsFormFix({ dataDoctor }) {
                 </div>
 
                 {/* Button */}
-                <div className="flex justify-end">
+                <div className="flex justify-end mt-5">
                     <Button variant="custom" type="submit" disabled={isLoading || isPending}>
-                        {isLoading || isPending ? <SpinLoader /> : 'Thêm mới'}
+                        {isLoading || isPending ? <SpinLoader /> : 'Cập nhật'}
                     </Button>
                 </div>
             </form>
