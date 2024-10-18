@@ -45,7 +45,7 @@ import ProtectContainer from './layouts/protect/ProtectContainer';
 import PaymentSuccess from './pages/client/PaymentSuccess';
 import ClinicsListPage from './pages/admin/Clinics';
 import ClinicsFormPage from './pages/admin/Clinics/form';
-import DoctorsFormPage from './pages/admin/Doctor/form';
+import DoctorsFormAddPage from './pages/admin/Doctor/formAdd';
 import DoctorsListPage from './pages/admin/Doctor';
 import PatientsListPage from './pages/admin/Patient';
 import PatientsFormAddPage from './pages/admin/Patient/formAdd';
@@ -76,7 +76,7 @@ import ServicesAddPage from './pages/admin/Services/add';
 import ServicesEditPage from './pages/admin/Services/edit';
 import AppointmentsEditPage from './pages/admin/Appointments/edit';
 import SpecialtiesEditFormPage from './pages/admin/Specialty/editForm';
-import DoctorsEditFormPage from './pages/admin/Doctor/editForm';
+import DoctorsFormFixPage from './pages/admin/Doctor/formFix';
 import MedicinesCategoriesFormFixPage from './pages/admin/MedicinesCategories/formFix';
 import MedicinesFormFixPage from './pages/admin/Medicine/formFix';
 import ClinicsEditFormPage from './pages/admin/Clinics/editForm';
@@ -325,11 +325,11 @@ const router = createBrowserRouter([
             },
             {
                 path: 'doctors/create',
-                element: <DoctorsFormPage />,
+                element: <DoctorsFormAddPage />,
             },
             {
                 path: 'doctor/edit/:id',
-                element: <DoctorsEditFormPage />,
+                element: <DoctorsFormFixPage />,
             },
             {
                 path: 'patients/list',

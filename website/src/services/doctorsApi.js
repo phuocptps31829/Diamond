@@ -1,6 +1,5 @@
 import { axiosInstanceGET } from './axiosInstance';
 import { axiosInstanceCUD } from './axiosInstance';
-import { axiosInstanceIMG } from './axiosInstance';
 
 export const doctorApi = {
     getAllDoctors: async () => {
@@ -9,7 +8,7 @@ export const doctorApi = {
     },
     getDoctorById: async (id) => {
         try {
-            const res = await axiosInstanceGET.get(`/users/get-by-id/${id}`);
+            const res = await axiosInstanceGET.get(`/doctors/${id}`);
             console.log(res.data.data);
             return res.data.data;
         } catch (error) {
@@ -43,23 +42,5 @@ export const doctorApi = {
     deleteDoctors: async (id) => {
         const res = await axiosInstanceCUD.post('/doctors/delete/' + id + '?_method=DELETE');
         return res.data.data;
-    },
-
-    uploadIMG: async (newIMG) => {
-        const formData = new FormData();
-        formData.append('file', newIMG);
-        console.log('FormData:', Array.from(formData));
-        try {
-            const res = await axiosInstanceIMG.post('', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            console.log('img data create: ', res.data);
-            return res.data;
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            throw error;
-        }
     },
 };

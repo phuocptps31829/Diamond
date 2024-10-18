@@ -55,7 +55,7 @@ const ActionMenu = ({ row }) => {
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem
                             className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/medicines/edit/${row.original._id}`)}
+                            onClick={() => navigate(`/admin/doctor/edit/${row.original._id}`)}
                         >
                             <FiEdit className="text-[15px]" />
                             <span>Chỉnh sửa</span>
