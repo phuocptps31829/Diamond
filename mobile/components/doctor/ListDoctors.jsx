@@ -1,5 +1,6 @@
 import { Text, View, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
+import { URL_IMAGE } from "../../configs/variables";
 
 const ListDoctors = ({ listDoctors }) => {
   const router = useRouter();
@@ -26,7 +27,7 @@ const ListDoctors = ({ listDoctors }) => {
                 }}
               >
                 <Image
-                  source={{ uri: item.userID.avatar }}
+                  source={{ uri: URL_IMAGE + item.avatar }}
                   className="w-[70px] h-[70px] rounded-full"
                 />
               </Pressable>
@@ -40,7 +41,7 @@ const ListDoctors = ({ listDoctors }) => {
                     });
                   }}
                 >
-                  <Text className="font-bold">BS. {item.userID.fullName}</Text>
+                  <Text className="font-bold">BS. {item.fullName}</Text>
                   <Text className="text-[12px] text-gray-400 font-semibold">
                     Bác sĩ
                   </Text>

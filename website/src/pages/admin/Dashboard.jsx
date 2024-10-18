@@ -1,140 +1,140 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllPatients } from "@/services/patientsApi";
-import { getAllInvoices } from "@/services/invoicesApi";
-import TopStats from "../../components/admin/dashboard/TopStats";
-import MiddleCharts from "../../components/admin/dashboard/MiddleCharts";
-import BottomLists from "../../components/admin/dashboard/BottomLists";
-import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
-import NotFound from "@/components/client/notFound";
-import Loading from "@/components/ui/Loading";
-import { appointmentApi } from "@/services/appointmentsApi";
-import { getAllSpecialties } from "@/services/specialtiesApi";
-import { newsApi } from "@/services/newsApi";
+import { useQuery } from '@tanstack/react-query';
+import { patientApi } from '@/services/patientsApi';
+import { invoicesApi } from '@/services/invoicesApi';
+import TopStats from '../../components/admin/dashboard/TopStats';
+import MiddleCharts from '../../components/admin/dashboard/MiddleCharts';
+import BottomLists from '../../components/admin/dashboard/BottomLists';
+import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
+import NotFound from '@/components/client/notFound';
+import Loading from '@/components/ui/Loading';
+import { appointmentApi } from '@/services/appointmentsApi';
+import { getAllSpecialties } from '@/services/specialtiesApi';
+import { newsApi } from '@/services/newsApi';
 
 const breadcrumbData = [
-  {
-    title: "Thống kê",
-  },
-  {
-    href: "/admin/dashboard",
-    title: "Thống kê quản trị",
-  },
+    {
+        title: 'Thống kê',
+    },
+    {
+        href: '/admin/dashboard',
+        title: 'Thống kê quản trị',
+    },
 ];
 
 export default function Dashboard() {
-  const {
-    data: upcomingAppointments,
-    error: errorUpcomingAppointments,
-    isLoadingNews: isLoadingUpcomingAppointments,
-  } = useQuery({
-    queryKey: ["upcomingAppointments"],
-    queryFn: appointmentApi.get5UpcomingAppointments,
-  });
+    const {
+        data: upcomingAppointments,
+        error: errorUpcomingAppointments,
+        isLoadingNews: isLoadingUpcomingAppointments,
+    } = useQuery({
+        queryKey: ['upcomingAppointments'],
+        queryFn: appointmentApi.get5UpcomingAppointments,
+    });
 
-  const {
-    data: appointmentsByAges,
-    error: errorAppointmentsByAges,
-    isLoading: isLoadingAppointmentsByAges,
-  } = useQuery({
-    queryKey: ["appointmentsByAges"],
-    queryFn: appointmentApi.getAppointmentByAges,
-  });
+    const {
+        data: appointmentsByAges,
+        error: errorAppointmentsByAges,
+        isLoading: isLoadingAppointmentsByAges,
+    } = useQuery({
+        queryKey: ['appointmentsByAges'],
+        queryFn: appointmentApi.getAppointmentByAges,
+    });
 
-  const {
-    data: allNews,
-    error: errorAllNews,
-    isLoadingNews: isLoadingNews,
-  } = useQuery({
-    queryKey: ["news"],
-    queryFn: newsApi.takeItAllNews,
-  });
+    const {
+        data: allNews,
+        error: errorAllNews,
+        isLoadingNews: isLoadingNews,
+    } = useQuery({
+        queryKey: ['news'],
+        queryFn: newsApi.takeItAllNews,
+    });
 
-  const {
-    data: allSpecialties,
-    error: errorSpecialties,
-    isLoading: isLoadingSpecialties,
-  } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
-  });
+    const {
+        data: allSpecialties,
+        error: errorSpecialties,
+        isLoading: isLoadingSpecialties,
+    } = useQuery({
+        queryKey: ['specialties'],
+        queryFn: getAllSpecialties,
+    });
 
-  const {
-    data: allPatients,
-    error: errorPatients,
-    isLoading: isLoadingPatients,
-  } = useQuery({
-    queryKey: ["patients"],
-    queryFn: getAllPatients,
-  });
+    const {
+        data: allPatients,
+        error: errorPatients,
+        isLoading: isLoadingPatients,
+    } = useQuery({
+        queryKey: ['patients'],
+        queryFn: patientApi.getAllPatients,
+    });
 
-  const {
-    data: allAppointments,
-    error: errorAppointments,
-    isLoading: isLoadingAppointments,
-  } = useQuery({
-    queryKey: ["appointments"],
-    queryFn: appointmentApi.getAllAppointments,
-  });
+    const {
+        data: allAppointments,
+        error: errorAppointments,
+        isLoading: isLoadingAppointments,
+    } = useQuery({
+        queryKey: ['appointments'],
+        queryFn: appointmentApi.getAllAppointments,
+    });
 
-  const {
-    data: allInvoices,
-    error: errorInvoices,
-    isLoading: isLoadingInvoices,
-  } = useQuery({
-    queryKey: ["invoices"],
-    queryFn: getAllInvoices,
-  });
+    const {
+        data: allInvoices,
+        error: errorInvoices,
+        isLoading: isLoadingInvoices,
+    } = useQuery({
+        queryKey: ['invoices'],
+        queryFn: invoicesApi.getAllInvoices,
+    });
 
-  const {
-    data: totalPatientsBySpecialty,
-    error: errorTotalPatientsBySpecialty,
-    isLoading: isLoadingTotalPatientsBySpecialty,
-  } = useQuery({
-    queryKey: ["totalAppointmentsBySpecialty"],
-    queryFn: appointmentApi.getTotalPatientsBySpecialty,
-  });
+    const {
+        data: totalPatientsBySpecialty,
+        error: errorTotalPatientsBySpecialty,
+        isLoading: isLoadingTotalPatientsBySpecialty,
+    } = useQuery({
+        queryKey: ['totalAppointmentsBySpecialty'],
+        queryFn: appointmentApi.getTotalPatientsBySpecialty,
+    });
 
-  if (
-    errorAllNews ||
-    errorPatients ||
-    errorAppointments ||
-    errorInvoices ||
-    errorTotalPatientsBySpecialty ||
-    errorSpecialties ||
-    errorUpcomingAppointments ||
-    errorAppointmentsByAges
-  ) {
-    return <NotFound />;
-  }
+    if (
+        errorAllNews ||
+        errorPatients ||
+        errorAppointments ||
+        errorInvoices ||
+        errorTotalPatientsBySpecialty ||
+        errorSpecialties ||
+        errorUpcomingAppointments ||
+        errorAppointmentsByAges
+    ) {
+        return <NotFound />;
+    }
 
-  return (
-    <>
-      { isLoadingNews ||
-        isLoadingPatients ||
-        isLoadingAppointments ||
-        isLoadingInvoices ||
-        isLoadingTotalPatientsBySpecialty ||
-        isLoadingSpecialties ||
-        isLoadingUpcomingAppointments ||
-        isLoadingAppointmentsByAges ? (
-        <Loading />
-      ) : (
+    return (
         <>
-          <BreadcrumbCustom data={ breadcrumbData } />
-          <TopStats
-            allNews={ allNews }
-            allPatients={ allPatients?.data }
-            allAppointments={ allAppointments?.data }
-            allInvoices={ allInvoices?.data }
-          />
-          <MiddleCharts
-            dataTotalPatients={ totalPatientsBySpecialty }
-            dataAllSpecialties={ allSpecialties }
-            dataPatientsByAges={ appointmentsByAges }
-          />
-          <BottomLists dataUpcomingAppointments={ upcomingAppointments } />
+            {isLoadingNews ||
+            isLoadingPatients ||
+            isLoadingAppointments ||
+            isLoadingInvoices ||
+            isLoadingTotalPatientsBySpecialty ||
+            isLoadingSpecialties ||
+            isLoadingUpcomingAppointments ||
+            isLoadingAppointmentsByAges ? (
+                <Loading />
+            ) : (
+                <>
+                    <BreadcrumbCustom data={breadcrumbData} />
+                    <TopStats
+                        allNews={allNews}
+                        allPatients={allPatients?.data}
+                        allAppointments={allAppointments?.data}
+                        allInvoices={allInvoices?.data}
+                    />
+                    <MiddleCharts
+                        dataTotalPatients={totalPatientsBySpecialty}
+                        dataAllSpecialties={allSpecialties}
+                        dataPatientsByAges={appointmentsByAges}
+                    />
+                    <BottomLists dataUpcomingAppointments={upcomingAppointments} />
+                </>
+            )}
         </>
-      ) }
-    </>
-  );
+    );
 }

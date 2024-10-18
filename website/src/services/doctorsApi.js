@@ -1,6 +1,6 @@
-import { axiosInstanceGET } from "./axiosInstance";
-import { axiosInstanceCUD } from "./axiosInstance";
-import { axiosInstanceIMG } from "./axiosInstance";
+import { axiosInstanceGET } from './axiosInstance';
+import { axiosInstanceCUD } from './axiosInstance';
+import { axiosInstanceIMG } from './axiosInstance';
 
 export const doctorApi = {
   getAllDoctors: async () => {
@@ -30,42 +30,32 @@ export const doctorApi = {
   },
   createDoctors: async (newDoctors) => {
     console.log(newDoctors);
-    const res = await axiosInstanceCUD.post(
-      '/doctors/add',
-      newDoctors,
-      {
-        headers: {
-          "Content-Type": 'application/json'
-        }
-      }
-    );
-    console.log("doctors data: ", res.data);
+    const res = await axiosInstanceCUD.post('/doctors/add', newDoctors, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log('doctors data: ', res.data);
     return res.data;
   },
-  // Delete Doctors
   deleteDoctors: async (id) => {
-    console.log(id);
-    const res = await axiosInstanceCUD.post(
-      '/doctors/delete/' + id + '?_method=DELETE',
-    );
-    console.log("doctors deleted data: ", res.data.data);
+    const res = await axiosInstanceCUD.post('/doctors/delete/' + id + '?_method=DELETE');
     return res.data.data;
   },
-
   uploadIMG: async (newIMG) => {
     const formData = new FormData();
-    formData.append("file", newIMG);
-    console.log("FormData:", Array.from(formData));
+    formData.append('file', newIMG);
+    console.log('FormData:', Array.from(formData));
     try {
       const res = await axiosInstanceIMG.post('', formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
-      console.log("img data create: ", res.data);
+      console.log('img data create: ', res.data);
       return res.data;
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error('Error uploading image:', error);
       throw error;
     }
   },

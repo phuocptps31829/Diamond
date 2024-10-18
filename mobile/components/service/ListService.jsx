@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { Text, FlatList, TouchableOpacity, Image } from "react-native";
 import { useWindowDimensions } from "react-native";
+import { URL_IMAGE } from "../../configs/variables";
 
 const ListService = ({ listServices }) => {
   const { width } = useWindowDimensions();
@@ -23,7 +24,7 @@ const ListService = ({ listServices }) => {
           >
             <Image
               source={{
-                uri: item?.image,
+                uri: URL_IMAGE + item?.image,
               }}
               className="h-[110px]"
             />

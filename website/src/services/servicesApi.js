@@ -1,4 +1,4 @@
-import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
+import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 
 export const serviceApi = {
   getAllServices: async (filter) => {
@@ -6,13 +6,9 @@ export const serviceApi = {
     const params = {
       ...(page !== undefined && page !== null && { page }),
       ...(limit !== undefined && limit !== null && { limit }),
-      ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
-      ...(gender !== undefined &&
-        gender !== null &&
-        gender !== "" && { gender }),
-      ...(branch !== undefined &&
-        branch !== null &&
-        branch.length > 0 && { branch }),
+      ...(sort !== undefined && sort !== null && sort !== '' && { sort }),
+      ...(gender !== undefined && gender !== null && gender !== '' && { gender }),
+      ...(branch !== undefined && branch !== null && branch.length > 0 && { branch }),
       ...(specialtyID !== undefined &&
         specialtyID !== null &&
         specialtyID.length > 0 && { specialtyID }),
@@ -21,7 +17,6 @@ export const serviceApi = {
     const res = await axiosInstanceGET.get('/services', {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
-
     console.log(res.data.data);
     return res.data;
   },

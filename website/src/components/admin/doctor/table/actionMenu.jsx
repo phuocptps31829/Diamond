@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { MoreHorizontal } from 'lucide-react';
-import { CiViewTimeline } from 'react-icons/ci';
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,9 +10,6 @@ import {
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { FiEdit } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
-import { packageApi } from '@/services/medicalPackagesApi';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toastUI as toast } from '@/components/ui/Toastify';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,19 +21,22 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/AlertDialog';
+import { doctorApi } from '@/services/doctorsApi';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toastUI as toast } from '@/components/ui/Toastify';
 
 const ActionMenu = ({ row }) => {
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    const { mutate: deletePackageMutation, isPending } = useMutation({
-        mutationFn: (packageId) => packageApi.deletePackage(packageId),
+    const { mutate: deleteDoctorMutation, isPending } = useMutation({
+        mutationFn: (id) => doctorApi.deleteDoctors(id),
         onSuccess: () => {
-            queryClient.invalidateQueries('takeItAllPackages');
-            toast('Xóa gói sản phẩm thành công.', 'success');
+            queryClient.invalidateQueries('doctors');
+            toast('Xóa bác sĩ thành công.', 'success');
         },
         onError: () => {
-            toast('Xóa gói sản phẩm thất bại.');
+            toast('Xóa bác sĩ thất bại.');
         },
     });
 
@@ -55,14 +55,7 @@ const ActionMenu = ({ row }) => {
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem
                             className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/package/details/${row.original._id}`)}
-                        >
-                            <CiViewTimeline className="text-[15px]" />
-                            <span>Chi tiết gói</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/packages/edit/${row.original._id}`)}
+                            onClick={() => navigate(`/admin/medicines/edit/${row.original._id}`)}
                         >
                             <FiEdit className="text-[15px]" />
                             <span>Chỉnh sửa</span>
@@ -81,17 +74,17 @@ const ActionMenu = ({ row }) => {
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>
-                                            Bạn có chắc chắn muốn xóa gói sản phẩm này?
+                                            Bạn có chắc chắn muốn xóa bác sĩ này?
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
-                                            Hành động này không thể hoàn tác. Gói sản phẩm sẽ bị xóa
-                                            vĩnh viễn khỏi hệ thống.
+                                            Hành động này không thể hoàn tác. Bác sĩ sẽ bị xóa vĩnh
+                                            viễn khỏi hệ thống.
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Hủy</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => deletePackageMutation(row.original._id)}
+                                            onClick={() => deleteDoctorMutation(row.original._id)}
                                         >
                                             Xóa
                                         </AlertDialogAction>

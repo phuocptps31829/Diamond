@@ -1,9 +1,9 @@
-import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
+import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 
 export const appointmentApi = {
   getAppointmentByAges: async () => {
     try {
-      const res = await axiosInstanceGET.get("/appointments/ages-dashboard");
+      const res = await axiosInstanceGET.get('/appointments/ages-dashboard');
       return res.data.data;
     } catch (error) {
       console.error(error);
@@ -12,7 +12,7 @@ export const appointmentApi = {
   },
   get5UpcomingAppointments: async () => {
     try {
-      const res = await axiosInstanceGET.get("/appointments/?limit=9999&sort=-time");
+      const res = await axiosInstanceGET.get('/appointments?limit=9999&sort=-time');
       return res.data.data;
     } catch (error) {
       console.error(error);
@@ -21,7 +21,7 @@ export const appointmentApi = {
   },
   getPatientsByGender: async () => {
     try {
-      const res = await axiosInstanceGET.get("/appointments/gender-years");
+      const res = await axiosInstanceGET.get('/appointments/gender-years');
       return res.data.data;
     } catch (error) {
       console.error(error);
@@ -30,7 +30,7 @@ export const appointmentApi = {
   },
   getAllAppointments: async () => {
     try {
-      const res = await axiosInstanceGET.get("/appointments");
+      const res = await axiosInstanceGET.get('/appointments');
       console.log(res.data.data);
       return res.data;
     } catch (error) {
@@ -49,7 +49,7 @@ export const appointmentApi = {
   },
   getTotalPatientsBySpecialty: async () => {
     try {
-      const res = await axiosInstanceGET.get("/patients/total-by-specialty");
+      const res = await axiosInstanceGET.get('/appointments/specialty');
       return res.data.data;
     } catch (error) {
       console.error(error);
@@ -73,13 +73,7 @@ export const appointmentApi = {
     }
 
     console.log(endpoint);
-
-    try {
-      const res = await axiosInstanceCUD.post(endpoint, data);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post(endpoint, data);
+    console.log(res.data);
   }
 };

@@ -1,4 +1,5 @@
-const API_URL = "https://api.cosstewn.io.vn/api/v1";
+const API_URL = "https://nodejs.diamond.id.vn/api/v1";
+const URL_IMAGE = "https://laravel.diamond.id.vn/images/";
 
 //service
 const API_URL_GET_ALL_SERVICES = `${API_URL}/services`;
@@ -43,9 +44,8 @@ const API_PROVINCES = `${API_URL}/provinces`;
 const API_DISTRICTS = `${API_URL}/provinces/districts`;
 const API_WARDS = `${API_URL}/provinces/wards`;
 
-
-
 export {
+  URL_IMAGE,
   API_URL_GET_ALL_SERVICES,
   API_URL_GET_ALL_MEDICAL_PACKAGES,
   API_URL_GET_ALL_SPECIALTIES,
@@ -70,5 +70,5 @@ export {
   API_LOGOUT,
   API_PROVINCES,
   API_DISTRICTS,
-  API_WARDS
+  API_WARDS,
 };

@@ -1,30 +1,13 @@
-import { useRouter } from "expo-router";
 import { Text, View, FlatList, TouchableOpacity, Image } from "react-native";
 import { useWindowDimensions } from "react-native";
-
-const transformData = (listPackages) => {
-  const transformedData = [];
-
-  listPackages.forEach((pkg) => {
-    pkg.services.forEach((service) => {
-      transformedData.push({
-        ...pkg,
-        service,
-      });
-    });
-  });
-
-  return transformedData;
-};
+import { URL_IMAGE } from "../../configs/variables";
 
 const ListPackage = ({ listPackages }) => {
   const { width } = useWindowDimensions();
-  const transformedPackages = transformData(listPackages);
-  const router = useRouter();
 
   return (
     <FlatList
-      data={transformedPackages}
+      data={listPackages}
       className="w-full mt-2"
       contentContainerStyle={{ paddingHorizontal: 10 }}
       renderItem={({ item, index }) => (
@@ -35,18 +18,18 @@ const ListPackage = ({ listPackages }) => {
           }}
           className="flex-column relative bg-white flex-1 m-1 rounded-[10px] overflow-hidden"
           onPress={() => {
-            console.log(`Button pressed for ${item.service.levelName}!`);
+            console.log(`Button pressed for ${item.services[0].servicesID}!`);
           }}
         >
           <Image
             source={{
-              uri: item.image,
+              uri: URL_IMAGE + item.image,
             }}
             className="h-[110px] rounded-md"
           />
           <View className="p-2 space-y-1">
             <Text className="text-black font-medium text-[12px]">
-              {item.service.levelName}
+              {item.services[0].levelName}
             </Text>
             <Text
               className="text-black font-semibold"

@@ -1,6 +1,7 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { URL_IMAGE } from "../../configs/variables";
 
 const News = ({ listNews }) => {
   const router = useRouter();
@@ -30,7 +31,7 @@ const News = ({ listNews }) => {
       >
         <Image
           source={{
-            uri: listNews[0]?.image,
+            uri: URL_IMAGE + listNews[0]?.image,
           }}
           className="w-full h-[200px] rounded-2xl mt-4"
         />
@@ -51,7 +52,7 @@ const News = ({ listNews }) => {
         >
           <Image
             source={{
-              uri: item?.image,
+              uri: URL_IMAGE + item?.image,
             }}
             className="w-[40%] h-full rounded-lg"
           />

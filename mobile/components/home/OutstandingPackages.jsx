@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { URL_IMAGE } from "../../configs/variables";
 
 const pairData = (data) => {
   const paired = [];
@@ -55,7 +56,7 @@ const OutstandingPackages = ({ listPackages }) => {
                 >
                   <Image
                     source={{
-                      uri: service.image,
+                      uri: URL_IMAGE + service.image,
                     }}
                     style={[{ height: 150, borderRadius: 15 }]}
                   />

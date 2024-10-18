@@ -1,14 +1,14 @@
-import { useParams } from "react-router-dom";
-import DescriptionService from "../../components/client/serviceDetail/DescriptionService";
-import MedicalPackageService from "../../components/client/serviceDetail/MedicalPackageService";
-import PackageServiceOther from "../../components/client/serviceDetail/PackageServiceOther";
-import Rules from "../../components/client/serviceDetail/Rules";
-import ServiceDetail from "../../components/client/serviceDetail/ServiceDetail";
-import { useQuery } from "@tanstack/react-query";
-import useScrollToTop from "@/hooks/useScrollToTop";
-import NotFound from "@/components/client/notFound";
-import { medicalPackageApi } from "@/services/medicalPackagesApi";
-import { serviceApi } from "@/services/servicesApi";
+import { useParams } from 'react-router-dom';
+import DescriptionService from '../../components/client/serviceDetail/DescriptionService';
+import MedicalPackageService from '../../components/client/serviceDetail/MedicalPackageService';
+import PackageServiceOther from '../../components/client/serviceDetail/PackageServiceOther';
+import Rules from '../../components/client/serviceDetail/Rules';
+import ServiceDetail from '../../components/client/serviceDetail/ServiceDetail';
+import { useQuery } from '@tanstack/react-query';
+import useScrollToTop from '@/hooks/useScrollToTop';
+import NotFound from '@/components/client/notFound';
+import { medicalPackageApi } from '@/services/medicalPackagesApi';
+import { serviceApi } from '@/services/servicesApi';
 
 const DetailService = () => {
   useScrollToTop();
@@ -43,16 +43,17 @@ const DetailService = () => {
     error: errorMedicalPackageSpecialty,
     isLoading: isLoadingMedicalPackageSpecialty,
   } = useQuery({
-    queryKey: ["medical-packages-specialty", medicalPackage?.specialtyID],
-    queryFn: () => medicalPackageApi.getMedicalPackageBySpecialty(medicalPackage?.specialtyID),
-    enabled: !!medicalPackage?.specialtyID,
+    queryKey: ['medical-packages-specialty', medicalPackage?.specialty._id],
+    queryFn: () =>
+      medicalPackageApi.getMedicalPackageBySpecialty(medicalPackage?.specialty._id),
+    enabled: !!medicalPackage?.specialty._id,
   });
   const {
     data: serviceSpecialty,
     error: errorServiceSpecialty,
     isLoading: isLoadingServiceSpecialty,
   } = useQuery({
-    queryKey: ["service-specialty", service?.specialtyID],
+    queryKey: ['service-specialty', service?.specialtyID],
     queryFn: () => serviceApi.getServiceBySpecialty(service?.specialtyID),
     enabled: !!service?.specialtyID,
   });

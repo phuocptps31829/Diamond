@@ -286,7 +286,7 @@ module.exports = {
                 .populate('serviceID')
                 .populate('medicalPackageID');
 
-            console.log('all', 1);
+            console.log('all', appointments);
             if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
@@ -295,7 +295,7 @@ module.exports = {
 
             for (let i = 0; i < appointments.length; i++) {
                 const item = appointments[i];
-                console.log(item, 'ok');
+                // console.log(item, 'ok');
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
                     ? item.serviceID.specialtyID.toString()
