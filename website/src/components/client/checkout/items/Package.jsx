@@ -29,6 +29,7 @@ const Package = ({
             changeBookingDetails({
                 medicalPackageID: pkg.medicalPackageID,
                 newChange: {
+                    levelID,
                     price: pkg.services.find(service => {
                         return service._id === levelID;
                     }).discountPrice,

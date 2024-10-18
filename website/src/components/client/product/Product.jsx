@@ -64,6 +64,7 @@ export default function Product({ product }) {
     } : {
       medicalPackageID: _id,
       name,
+      levelID: services[0]._id,
       specialtyID: specialty._id,
       price: services[0].discountPrice,
       levelName: services[0].levelName,
@@ -82,6 +83,7 @@ export default function Product({ product }) {
           }),
           bookingDetail: {
             specialtyID: specialty._id,
+            levelID: isService ? "" : services[0]._id,
             name,
             image,
             price: discountPrice || 0,

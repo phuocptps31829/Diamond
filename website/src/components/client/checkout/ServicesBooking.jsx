@@ -11,16 +11,9 @@ import SelectBirthDate from "./select/SelectBirthday";
 import SelectGender from "./select/SelectGender";
 import SelectEthnic from "./select/SelectEthnicity";
 import { useEffect, useState } from "react";
-import {
-  SelectDistrict,
-  SelectProvince,
-  SelectWard,
-} from "./select/SelectLocation";
-
 import { useDispatch, useSelector } from "react-redux";
 import { removeFromCart } from "@/redux/cartSlice";
 import SelectDoctor from "./select/SelectDoctor";
-import { IoMdRemove } from "react-icons/io";
 import { Switch } from "@/components/ui/Switch";
 import {
   removeItemInfo,
@@ -45,6 +38,9 @@ export default function Form() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
   const [relatedPatientID, setRelatedPatientID] = useState("");
+  const [packageLevel, setPackageLevel] = useState(
+    selectedProduct?.services?.[0]._id || ''
+  );
   const [isBlocking, setIsBlocking] = useNavigationPrompt(
     "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất.",
   );
@@ -348,7 +344,9 @@ export default function Form() {
         workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
         ...(selectedProduct?.serviceID
           ? { serviceID: selectedProduct.serviceID }
-          : { medicalPackageID: selectedProduct?.medicalPackageID }),
+          : {
+            medicalPackageID: detail.bookingDetail?.levelID
+          }),
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedProduct()?.bookingDetail.selectedDate, getCurSelectedProduct()?.bookingDetail.selectedTime),
         status: "Chờ xác nhận",
