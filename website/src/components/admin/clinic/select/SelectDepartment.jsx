@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import React from "react";
+import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import { Controller } from "react-hook-form";
 import {
   Popover,
   PopoverContent,
@@ -10,69 +10,46 @@ import {
 } from "@/components/ui/Popover";
 import {
   Command,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { branchApi } from "@/services/branchesApi";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 
 export default function SelectDepartment({
   control,
   name,
   errors,
-  specialtyID,
+  disabled,
   onChange,
-  selectedServiceID,
-  selectedMedicalPackageID,
 }) {
-  const [open, setOpen] = useState(false);
-  const [departments, setDepartments] = useState([]);
-  console.log(selectedServiceID);
-  console.log(selectedMedicalPackageID);
+  const [open, setOpen] = React.useState(false);
+  const {
+    data: departments,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["departments"],
+    queryFn: () => branchApi.getAllBranches({ limit: 999 }),
+  });
+  console.log(departments, "branches");
 
-  const { toast } = useToast();
+  if (isLoading) {
+    return <Skeleton className="h-10 w-full" />;
+  }
 
-  useEffect(() => {
-    const fetchDepartments = async () => {
-      if (!specialtyID) return;
-      try {
-        const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
-        setDepartments(data);
-      } catch (error) {
-        console.error("Failed to fetch departments:", error);
-      }
-    };
-
-    fetchDepartments();
-  }, [specialtyID]);
-
-  useEffect(() => {
-    errors[name] = undefined;
-  }, [specialtyID, selectedServiceID, selectedMedicalPackageID, errors, name]);
-
-  const handleClick = () => {
-    if (!selectedServiceID && !selectedMedicalPackageID) {
-      toast({
-        variant: "warning",
-        title: "Vui lòng chọn dịch vụ hoặc gói",
-        status: "warning",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
-      return;
-    }
-  };
-
+  if (error) {
+    return <div> Lỗi khi tải chi nhánh</div>;
+  }
   return (
-    <div onClick={handleClick}>
+    <div>
       <Controller
         control={control}
         name={name}
-        rules={{ required: "Vui lòng chọn chi nhánh." }}
+        rules={{ required: "Chọn chi nhánh" }}
         render={({ field }) => (
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -82,14 +59,12 @@ export default function SelectDepartment({
                 aria-expanded={open}
                 className={cn(
                   "w-full justify-between py-[21px]",
-                  errors[name] && "border-red-500",
-                  selectedServiceID || selectedMedicalPackageID
-                    ? "pointer-events-auto"
-                    : "pointer-events-none",
+                  errors[name] && "",
                 )}
+                disabled={disabled}
               >
                 {field.value ? (
-                  departments.find(
+                  departments?.data.find(
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
@@ -99,22 +74,21 @@ export default function SelectDepartment({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command>
-                <CommandInput placeholder="Nhập tên khoa" />
-                <CommandList className="">
-                  <CommandEmpty>Không tìm thấy!</CommandEmpty>
+              <Command className="text-left">
+                <CommandList>
                   <CommandGroup>
-                    {departments.map((department) => (
+                    {departments?.data.map((department) => (
                       <CommandItem
                         key={department._id}
                         value={department._id}
                         onSelect={(currentValue) => {
-                          field.onChange(
-                            currentValue === field.value ? "" : currentValue,
-                          );
-                          onChange(currentValue);
-                          setOpen(false);
+                          if (!disabled) {
+                            field.onChange(currentValue);
+                            onChange(currentValue);
+                            setOpen(false);
+                          }
                         }}
+                        disabled={disabled}
                       >
                         <Check
                           className={cn(
@@ -135,7 +109,7 @@ export default function SelectDepartment({
         )}
       />
       {errors[name] && (
-        <p className="mt-2 text-sm text-red-600">{errors[name].message}</p>
+        <span className="text-sm text-red-500">{errors[name].message}</span>
       )}
     </div>
   );

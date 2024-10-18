@@ -16,11 +16,15 @@ import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import { useNavigate } from "react-router-dom";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const ServicesAdd = () => {
   const queryClient = useQueryClient();
   const [imagePreview, setImagePreview] = useState(null);
   const [fileImage, setFileImage] = useState(null);
+  const navigate = useNavigate();
+  const [isPending, setIsPending] = useState(false);
 
   const {
     handleSubmit,
@@ -57,6 +61,8 @@ const ServicesAdd = () => {
       toastUI("Thêm dịch vụ thành công.", "success");
       reset();
       setImagePreview(null);
+
+      navigate("/admin/services/list");
     },
     onError: (error) => {
       toastUI("Thêm dịch vụ thất bại.", "error");
@@ -74,6 +80,7 @@ const ServicesAdd = () => {
     if (fileImage) {
       const formData = new FormData();
       formData.append("file", fileImage);
+      setIsPending(true);
 
       try {
         const response = await axiosInstanceCUD.post(
@@ -90,7 +97,8 @@ const ServicesAdd = () => {
       } catch (error) {
         toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
         console.error("Error uploading image:", error);
-        return;
+      } finally {
+        setIsPending(false);
       }
     }
 
@@ -134,20 +142,20 @@ const ServicesAdd = () => {
                   Vui lòng chọn ảnh
                 </p>
               )}
-               <div className="w-full mt-7">
-                  <InputCustom
-                    className="w-full"
-                    name="duration"
-                    label="Thời lượng khám (phút):"
-                    type="number"
-                    control={control}
-                    errors={errors}
-                    placeholder="Nhập thời lượng khám (phút)"
-                  />
-                </div>
+              <div className="mt-7 w-full">
+                <InputCustom
+                  className="w-full"
+                  name="duration"
+                  label="Thời lượng khám (phút):"
+                  type="number"
+                  control={control}
+                  errors={errors}
+                  placeholder="Nhập thời lượng khám (phút)"
+                />
+              </div>
             </div>
             <div className="w-full">
-              <div className="grid grid-cols-1 gap-y-3 gap-x-5 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-x-5 gap-y-3 sm:grid-cols-2">
                 <div className="w-full">
                   <InputCustom
                     className="w-full"
@@ -221,35 +229,32 @@ const ServicesAdd = () => {
                     placeholder="Nhập tuổi tối đa"
                   />
                 </div>
-
-               
-               
               </div>
-              <div className="w-full mt-5">
-                  <Label
-                    htmlFor="shortDescription"
-                    className="mb-2 block text-sm font-medium leading-none text-gray-700"
-                  >
-                    Nhập mô tả ngắn:
-                  </Label>
-                  <Controller
-                    name="shortDescription"
-                    control={control}
-                    render={({ field }) => (
-                      <Textarea
-                        placeholder="Nhập mô tả."
-                        id="shortDescription"
-                        className="w-full rounded-md border p-2"
-                        {...field}
-                      />
-                    )}
-                  />
-                  {errors.shortDescription && (
-                    <p className="mt-1 text-sm text-red-500">
-                      {errors.shortDescription.message}
-                    </p>
+              <div className="mt-5 w-full">
+                <Label
+                  htmlFor="shortDescription"
+                  className="mb-2 block text-sm font-medium leading-none text-gray-700"
+                >
+                  Nhập mô tả ngắn:
+                </Label>
+                <Controller
+                  name="shortDescription"
+                  control={control}
+                  render={({ field }) => (
+                    <Textarea
+                      placeholder="Nhập mô tả."
+                      id="shortDescription"
+                      className="w-full rounded-md border p-2"
+                      {...field}
+                    />
                   )}
-                </div>
+                />
+                {errors.shortDescription && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.shortDescription.message}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
           <div className="mb-3 flex w-full justify-around gap-2 py-1">
@@ -330,11 +335,14 @@ const ServicesAdd = () => {
 
           <ServiceEditor control={control} name="content" errors={errors} />
           <div className="mt-10 w-full text-end">
-            <Button type="submit" disabled={mutation.isPending} variant="custom">
-              {mutation.isPending ? (
+            <Button
+              type="submit"
+              disabled={isPending || mutation.isPending}
+              variant="custom"
+            >
+              {isPending || mutation.isPending ? (
                 <>
-                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Đang xử lý...
+                  <SpinLoader />
                 </>
               ) : (
                 "Thêm dịch vụ"

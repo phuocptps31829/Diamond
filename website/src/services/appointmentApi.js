@@ -1,26 +1,28 @@
-import { API_CREATE_APPOINTMENT_MOMO, API_CREATE_APPOINTMENT_VNPAY } from "@/configs/varibles";
-import axios from "axios";
+import { axiosInstanceCUD } from "./axiosInstance";
 
 export const createAppointment = async (data, provider) => {
-    let endpoint = null;
-    switch (provider) {
-        case 'vnpay':
-            endpoint = API_CREATE_APPOINTMENT_VNPAY;
-            break;
-        case 'momo':
-            endpoint = API_CREATE_APPOINTMENT_MOMO;
-            break;
-        default:
-            break;
-    }
+  let endpoint = null;
+  switch (provider) {
+    case "vnpay":
+      endpoint = "/invoices/payment/vnpay";
+      break;
+    case "momo":
+      endpoint = "/invoices/payment/momo";
+      break;
+    case "cod":
+      endpoint = "/invoices/payment/cod";
+      break;
+    default:
+      break;
+  }
 
-    console.log(endpoint);
+  console.log(endpoint);
 
-    try {
-        const res = await axios.post(endpoint, data);
-        return res.data;
-    } catch (error) {
-        console.error(error);
-        throw error;
-    }
+  try {
+    const res = await axiosInstanceCUD.post(endpoint, data);
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

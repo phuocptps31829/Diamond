@@ -10,12 +10,21 @@ import { AppointmentAdminSchema } from "@/zods/admin/appointmentsAdmin";
 import SelectService from "./select/SelectServices";
 import SelectMedicalPackage from "./select/SelectMedicalPackage";
 import { Switch } from "@/components/ui/Switch";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import InputCustom from "@/components/ui/InputCustom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toastUI } from "@/components/ui/Toastify";
+import { createAppointment } from "@/services/appointmentApi";
+import SelectLevelMedicalPackage from "./select/SelectLevelMedicalPackage";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const AppointmentsAdd = () => {
   const { id } = useParams();
-
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const combineDateTime = (date, time) => {
+    return `${date}T${time}:00.000`;
+  };
   const {
     handleSubmit,
     formState: { errors },
@@ -29,6 +38,7 @@ const AppointmentsAdd = () => {
       doctor: "",
       time: "",
       room: "",
+      level: "",
       date: "",
       type: "",
       service: "",
@@ -36,11 +46,20 @@ const AppointmentsAdd = () => {
       isServiceSelected: true,
     },
   });
-  console.log();
+  console.log("errors", errors);
 
   const [selectedService, setSelectedService] = useState({
     serviceId: null,
     specialtyID: null,
+  });
+  const [selectedPackage, setSelectedPackage] = useState({
+    medicalPackageId: null,
+    specialtyID: null,
+    services: [],
+  });
+  const [selectedLevel, setSelectedLevel] = useState({
+    levelId: null,
+    price: null,
   });
   const [selectedBranchId, setSelectedBranchId] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
@@ -49,6 +68,7 @@ const AppointmentsAdd = () => {
   const [clinic, setClinic] = useState("");
   const [workScheduleID, setWorkScheduleID] = useState("");
   const [isServiceSelected, setIsServiceSelected] = useState(true);
+  console.log(selectedLevel, "selectedLevel");
 
   const handleChangeService = (serviceId, specialtyID, price) => {
     setSelectedService({ serviceId, specialtyID, price });
@@ -63,20 +83,32 @@ const AppointmentsAdd = () => {
     setValue("date", "");
     setValue("room", "");
   };
+  console.log(selectedService, "selectedService");
 
-  const handleChangeMedicalPackage = (medicalPackageId, specialtyID) => {
-    setSelectedService({ serviceId: medicalPackageId, specialtyID });
+  const handleChangeLevel = (levelId, price) => {
+    setSelectedLevel({ levelId, price });
+  };
+  const handleChangeMedicalPackage = (
+    medicalPackageId,
+    specialtyID,
+    services,
+  ) => {
+    setSelectedPackage({ medicalPackageId, specialtyID, services });
+    setSelectedLevel("");
     setSelectedBranchId("");
     setSelectedDoctorId("");
     setSelectedDate("");
+    setSelectedLevel("");
     setSelectedTime("");
     setClinic("");
     setValue("department", "");
+    setValue("level", "");
     setValue("doctor", "");
     setValue("time", "");
     setValue("date", "");
     setValue("room", "");
   };
+  console.log(selectedPackage, "selectedPackage");
 
   const handleChangeBranch = (branchId) => {
     setSelectedBranchId(branchId);
@@ -118,34 +150,60 @@ const AppointmentsAdd = () => {
     const isServiceSelected = !checked;
     setIsServiceSelected(!checked);
     setSelectedService({ serviceId: null, specialtyID: null, price: null });
+    setSelectedPackage({
+      medicalPackageId: null,
+      specialtyID: null,
+      services: [],
+    });
     setSelectedBranchId("");
     setSelectedDoctorId("");
     setSelectedDate("");
     setSelectedTime("");
     setClinic("");
+    setSelectedLevel({ levelId: null, price: null });
     setValue("service", "");
     setValue("medicalPackage", "");
     setValue("department", "");
     setValue("doctor", "");
+    setValue("level", "");
     setValue("time", "");
     setValue("type", "");
     setValue("date", "");
     setValue("room", "");
     setValue("isServiceSelected", isServiceSelected);
   };
-
+  const mutation = useMutation({
+    mutationFn: (appointmentData) => createAppointment(appointmentData, "cod"),
+    onSuccess: () => {
+      queryClient.invalidateQueries("appointments");
+      toastUI("Đã thêm thành công lịch hẹn!", "success");
+      reset();
+      navigate("/admin/appointments/list");
+    },
+    onError: (error) => {
+      toastUI("Đã xảy ra lỗi khi thêm lịch hẹn.", "error");
+      console.error("Error creating appointment:", error);
+    },
+  });
   const onSubmit = (data) => {
     const submissionData = {
       patientID: id,
-      workScheduleID: workScheduleID,
-      serviceID: isServiceSelected ? selectedService.serviceId : "",
-      medicalPackageID: !isServiceSelected ? selectedService.serviceId : "",
-      type: data.type,
-      time: selectedTime,
-      price: isServiceSelected ? selectedService.price : null,
+      data: [
+        {
+          workScheduleID: workScheduleID,
+          type: data.type,
+          time: combineDateTime(selectedDate, selectedTime),
+          status: "PENDING",
+          price: selectedService?.price ?? selectedLevel.price,
+          ...(isServiceSelected
+            ? { serviceID: selectedService.serviceId }
+            : { medicalPackageID: selectedLevel.levelId }),
+        },
+      ],
     };
 
     console.log("Submitted Data:", submissionData);
+    mutation.mutate(submissionData);
   };
 
   return (
@@ -155,8 +213,8 @@ const AppointmentsAdd = () => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <span>Dịch vụ</span>
-              <Switch 
-              className="bg-primary-500"
+              <Switch
+                className="bg-primary-500"
                 checked={!isServiceSelected}
                 onCheckedChange={handleSwitchChange}
               />
@@ -182,6 +240,17 @@ const AppointmentsAdd = () => {
                   setValue={setValue}
                   onChange={handleChangeMedicalPackage}
                 />
+                {selectedPackage && (
+                  <div className="mt-4">
+                    <SelectLevelMedicalPackage
+                      control={control}
+                      name="level"
+                      errors={errors}
+                      levels={selectedPackage.services}
+                      onChange={handleChangeLevel}
+                    />
+                  </div>
+                )}
               </div>
             )}
 
@@ -192,8 +261,11 @@ const AppointmentsAdd = () => {
                   control={control}
                   name="department"
                   selectedServiceID={selectedService.serviceId}
+                  selectedMedicalPackageID={selectedPackage.medicalPackageId}
                   errors={errors}
-                  specialtyID={selectedService.specialtyID || ""}
+                  specialtyID={
+                    selectedService.specialtyID || selectedPackage.specialtyID
+                  }
                   setValue={setValue}
                   onChange={handleChangeBranch}
                 />
@@ -205,9 +277,14 @@ const AppointmentsAdd = () => {
                   errors={errors}
                   branchId={selectedBranchId}
                   setValue={setValue}
-                  specialtyID={selectedService.specialtyID || ""}
+                  specialtyID={
+                    selectedService.specialtyID || selectedPackage.specialtyID
+                  }
                   onChange={handleChangeDoctor}
-                  selectedServiceID={selectedService.serviceId}
+                  selectedServiceID={
+                    selectedService.serviceId ||
+                    selectedPackage.medicalPackageId
+                  }
                 />
               </div>
             </div>
@@ -265,8 +342,18 @@ const AppointmentsAdd = () => {
             </div>
 
             <div className="w-full text-end">
-              <Button type="submit" variant="primary">
-                Thêm lịch hẹn
+              <Button
+                type="submit"
+                disabled={mutation.isPending}
+                variant="custom"
+              >
+                {mutation.isPending ? (
+                  <>
+                    <SpinLoader />
+                  </>
+                ) : (
+                  "Thêm lịch hẹn"
+                )}
               </Button>
             </div>
           </div>

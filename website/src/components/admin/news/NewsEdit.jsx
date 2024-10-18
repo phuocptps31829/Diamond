@@ -21,8 +21,8 @@ import SpinLoader from "@/components/ui/SpinLoader";
 const NewsEdit = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
-  const [isPending, setIsPending] = useState(false); 
-
+  const [isPending, setIsPending] = useState(false);
+  const [initialData, setInitialData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [fileImage, setFileImage] = useState(null);
   const {
@@ -49,6 +49,14 @@ const NewsEdit = () => {
 
   useEffect(() => {
     if (data) {
+      const initialFormData = {
+        title: data.title,
+        category: data.specialtyID,
+        author: data.author,
+        content: data.content,
+        status: data.isHidden ? "Ẩn" : "Hiện",
+      };
+      setInitialData(initialFormData);
       setValue("title", data.title);
       setValue("category", data.specialtyID);
       setValue("author", data.author);
@@ -81,12 +89,17 @@ const NewsEdit = () => {
       toastUI("Vui lòng chọn ảnh!", "error");
       return;
     }
+  
+    if (JSON.stringify(data) === JSON.stringify(initialData)) {
+      toastUI("Không có thay đổi nào được thực hiện.", "warning");
+      return;
+    }
     let imageName = null;
 
     if (fileImage) {
       const formData = new FormData();
       formData.append("file", fileImage);
-      setIsPending(true); 
+      setIsPending(true);
 
       try {
         const response = await axiosInstanceCUD.post(
@@ -104,10 +117,9 @@ const NewsEdit = () => {
         toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
         console.error("Error uploading image:", error);
         return;
-      }finally{
-        setIsPending(false)
+      } finally {
+        setIsPending(false);
       }
-
     } else {
       imageName = imagePreview.split("/").pop();
     }
@@ -216,10 +228,9 @@ const NewsEdit = () => {
             <Button
               type="submit"
               disabled={isPending || mutation.isPending}
-
               variant="custom"
             >
-              {isPending || mutation.isPending  ? (
+              {isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>

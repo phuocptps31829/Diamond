@@ -17,7 +17,7 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import {  serviceApi } from "@/services/servicesApi";
+import { serviceApi } from "@/services/servicesApi";
 
 export default function SelectService({ control, name, errors, onChange }) {
   const [open, setOpen] = useState(false);
@@ -76,7 +76,11 @@ export default function SelectService({ control, name, errors, onChange }) {
                           field.onChange(
                             currentValue === field.value ? "" : currentValue,
                           );
-                          onChange(currentValue, service.specialtyID, service.discountPrice || service.price);
+                          onChange(
+                            currentValue,
+                            service?.specialty._id,
+                            service.discountPrice || service.price,
+                          );
                           setOpen(false);
                         }}
                       >
