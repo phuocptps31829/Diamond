@@ -11,16 +11,16 @@ import { axiosInstanceIMG } from "./axiosInstance";
 
 export const specialtyApi = {
   // Get all
-  getAllSpecialties: async () =>{
+  getAllSpecialties: async () => {
     const res = await axiosInstanceGET.get('/specialties/');
     return res.data.data;
   },
-  getSpecialtiesById:  async (id) => {
+  getSpecialtiesById: async (id) => {
     const res = await axiosInstanceGET.get(`/specialties/${id}`);
     console.log("specialties data by id: ", res.data.data);
     return res.data.data;
   },
-  createSpecialty: async (newSpecialty)=>{
+  createSpecialty: async (newSpecialty) => {
     const res = await axiosInstanceCUD.post(
       '/specialties/add',
       newSpecialty,
@@ -36,7 +36,7 @@ export const specialtyApi = {
   // Up img
   uploadIMG: async (newIMG) => {
     const formData = new FormData();
-    formData.append("file", newIMG); 
+    formData.append("file", newIMG);
     console.log("FormData:", Array.from(formData));
     try {
       const res = await axiosInstanceIMG.post('', formData, {
@@ -50,30 +50,30 @@ export const specialtyApi = {
       console.error("Error uploading image:", error);
       throw error;
     }
-  },  
+  },
   // Del
   deleteSpecialty: async (id) => {
     const res = await axiosInstanceCUD.post(
-        '/specialties/delete/' + id + '?_method=DELETE',
+      '/specialties/delete/' + id + '?_method=DELETE',
     );
     console.log("specialty data: ", res.data.data);
     return res.data.data;
-},
-updateSpecialty: async ({ updateSpecialty, id }) => {
-  console.log(updateSpecialty, id);
-  const res = await axiosInstanceCUD.put(
-      `/specialties/update/${id}`, 
-      updateSpecialty,
+  },
+  updateSpecialty: async ({ updatedSpecialty, id }) => {
+    console.log(updatedSpecialty, id);
+    const res = await axiosInstanceCUD.put(
+      `/specialties/update/${id}`,
+      updatedSpecialty,
       {
-          headers: {
-              "Content-Type": 'application/json',
-          },
+        headers: {
+          "Content-Type": 'application/json',
+        },
       }
-  );
-  console.log("Specialtys data updated: ", res.data);
-  return res.data;
-},
-}
+    );
+    console.log("Specialtys data updated: ", res.data);
+    return res.data;
+  },
+};
 
 
 

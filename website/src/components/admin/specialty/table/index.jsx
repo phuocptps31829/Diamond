@@ -1,4 +1,3 @@
-import InputCustom from "@/components/ui/InputCustom";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { patientSchema } from "@/zods/patient";
@@ -26,25 +25,28 @@ import { specialtyApi } from "@/services/specialtiesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
+import { useDebounce } from "use-debounce";
+import { Link } from "react-router-dom";
+import InputCustomSearch from "@/components/ui/InputCustomSearch";
 
-export default function DataTable({ data, columns,branchData }) {
+export default function DataTable({ data, columns, branchData }) {
   const queryClient = useQueryClient();
   const { mutate: deleteSpecialty, isPending } = useMutation({
     mutationFn: specialtyApi.deleteSpecialty,
     onSuccess: () => {
-        toastUI("Xóa chuyên khoa thành công", "success");
-        queryClient.invalidateQueries('roles');
+      toastUI("Xóa chuyên khoa thành công", "success");
+      queryClient.invalidateQueries('roles');
     },
     onError: (err) => {
-        console.log(err);
-        toastUI("Xóa chuyên khoa không thành công", "error");
+      console.log(err);
+      toastUI("Xóa chuyên khoa không thành công", "error");
     },
-});
+  });
 
-const handleDeleteSpecialty = (id) => {
-  if (!confirm("Chắc chắn muốn xóa?")) return;
-  deleteSpecialty(id);
-};
+  const handleDeleteSpecialty = (id) => {
+    if (!confirm("Chắc chắn muốn xóa?")) return;
+    deleteSpecialty(id);
+  };
   const {
     handleSubmit,
     formState: { errors },
@@ -64,6 +66,8 @@ const handleDeleteSpecialty = (id) => {
   const [columnVisibility, setColumnVisibility] =
     React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [searchValue, setSearchValue] = React.useState("");
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
   const table = useReactTable({
     data,
     branchData,
@@ -88,32 +92,49 @@ const handleDeleteSpecialty = (id) => {
       },
     },
   });
+
+  React.useEffect(() => {
+    table.getColumn("name")?.setFilterValue(debouncedSearchValue);
+  }, [debouncedSearchValue, table]);
+  const handleRefresh = () => {
+    queryClient.invalidateQueries("specialties");
+  };
+
   if (isPending) {
     return <Loading />;
-}
+  }
   return (
     <div className="bg-white w-[100%] px-6 py-3 rounded-lg">
       {/* Search */ }
       <div className="flex h-[80px]">
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
-          <div className="mb-2 ">
-            <div className="relative w-[300px] mr-1">
-              <InputCustom
+          <div className="mb-2">
+            <div className="relative mr-1 w-[300px]">
+              <InputCustomSearch
+                value={ table.getColumn("name")?.getFilterValue() ?? "" }
+                onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm chuyên khoa"
-                name="patientName"
+                name="specialtyName"
                 type="text"
-                id="patientName"
-                icon={ <FaSearch></FaSearch> }
+                id="specialtyName"
+                icon={ <FaSearch /> }
                 control={ control }
                 errors={ errors }
               />
             </div>
           </div>
-          <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
-            <FaPlus className="text-primary-500"></FaPlus>
-          </Button>
-          <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+          <Link to={ "/admin/specialties/create" }>
+            <Button
+              onClick={ handleRefresh }
+              size="icon"
+              variant="outline"
+              className="mr-1 mt-2 h-11 w-11"
+            >
+              <FaPlus className="text-primary-500"></FaPlus>
+            </Button>
+          </Link>
+          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>

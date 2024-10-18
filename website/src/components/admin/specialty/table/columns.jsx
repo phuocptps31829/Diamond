@@ -7,10 +7,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
-import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import Action from "./action";
 
 // export const columns =
 export const columns = (onDelete) =>
@@ -85,13 +93,31 @@ export const columns = (onDelete) =>
       ),
       cell: ({ row }) => {
         const img = row.original.image;
-        const imageUrl = `${import.meta.env.VITE_IMAGE_API_URL}/${img}`;
+        const [open, setOpen] = useState(false);
 
         return (
-          <Avatar className="size-8 rounded-sm w-[80px] h-[80px]">
-            <AvatarImage src={ imageUrl } alt={ row.getValue("name") } />
-            <h1>{ imageUrl }</h1>
-          </Avatar>
+          <>
+            <Dialog open={ open } onOpenChange={ setOpen }>
+              <DialogTrigger asChild>
+                <img
+                  src={ `${import.meta.env.VITE_IMAGE_API_URL}/${img}` }
+                  alt="thumbnail"
+                  width={ 60 }
+                  height={ 60 }
+                  className="cursor-pointer"
+                />
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Hình ảnh lớn</DialogTitle>
+                </DialogHeader>
+                <img
+                  src={ `${import.meta.env.VITE_IMAGE_API_URL}/${img}` }
+                  alt="large-thumbnail w-full h-auto"
+                />
+              </DialogContent>
+            </Dialog>
+          </>
         );
       },
     },
@@ -120,29 +146,7 @@ export const columns = (onDelete) =>
       id: "actions",
       enableHiding: false,
       cell: ({ row }) => {
-        const payment = row.original;
-        const id = payment._id;
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 rotate-90 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-fit min-w-0">
-              <DropdownMenuItem className="flex w-full items-center gap-2">
-                <FiEdit className="text-[15px]" />
-                <Link to={ `/admin/specialty/edit/${id}` }>Sửa</Link>
-              </DropdownMenuItem>
-              {/* <DropdownMenuItem className="flex w-full items-center gap-2" > */ }
-              <DropdownMenuItem className="flex w-full items-center gap-2" onClick={ () => onDelete(row.original._id) }>
-                <RiDeleteBin6Line className="text-[15px]" />
-                <span>Xóa</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        );
+        return <Action row={ row } />;
       },
     },
   ];

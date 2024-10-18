@@ -6,10 +6,7 @@ import {
     getSortedRowModel,
     useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
-
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import {
     Table,
     TableBody,
@@ -19,11 +16,7 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { getColumnsRoles } from "./columns";
-
-import { Checkbox } from "@/components/ui/Checkbox";
-import { ArrowUpDown } from "lucide-react";
-import { useState } from "react";
-import InputCustom from "@/components/ui/InputCustom";
+import { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
@@ -34,6 +27,8 @@ import { roleApi } from "@/services/roleApi";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
 import { Link } from "react-router-dom";
+import { useDebounce } from "use-debounce";
+import InputCustomSearch from "@/components/ui/InputCustomSearch";
 
 export default function DataTableRole({ data }) {
     const [sorting, setSorting] = useState([]);
@@ -47,6 +42,8 @@ export default function DataTableRole({ data }) {
         pageIndex: 0,
         pageSize: 10,
     });
+    const [searchValue, setSearchValue] = useState("");
+    const [debouncedSearchValue] = useDebounce(searchValue, 500);
     const queryClient = useQueryClient();
 
     const { mutate: deleteRole, isPending } = useMutation({
@@ -61,7 +58,6 @@ export default function DataTableRole({ data }) {
         },
     });
     const {
-        handleSubmit,
         formState: { errors },
         control,
     } = useForm({
@@ -70,8 +66,7 @@ export default function DataTableRole({ data }) {
             patientName: "",
         },
     });
-    const onSubmit = () => {
-    };
+
     const handleDeleteRole = (id) => {
         deleteRole(id);
     };
@@ -97,6 +92,13 @@ export default function DataTableRole({ data }) {
         },
     });
 
+    useEffect(() => {
+        table.getColumn("name")?.setFilterValue(debouncedSearchValue);
+    }, [debouncedSearchValue, table]);
+    const handleRefresh = () => {
+        queryClient.invalidateQueries("roles");
+    };
+
     if (isPending) {
         return <Loading />;
     }
@@ -105,26 +107,33 @@ export default function DataTableRole({ data }) {
         <div className="w-full p-4 bg-white rounded-sm">
             <div className="flex h-[80px]">
                 <form className="mr-1 flex">
-                    <div className="mb-2 ">
-                        <div className="relative w-[300px] mr-1">
-                            <InputCustom
+                    <div className="mb-2">
+                        <div className="relative mr-1 w-[300px]">
+                            <InputCustomSearch
+                                value={ table.getColumn("name")?.getFilterValue() ?? "" }
+                                onChange={ (event) => setSearchValue(event.target.value) }
                                 className="col-span-1 sm:col-span-1"
                                 placeholder="Tìm kiếm vai trò"
-                                name="patientName"
+                                name="roleName"
                                 type="text"
-                                id="patientName"
-                                icon={ <FaSearch></FaSearch> }
+                                id="roleName"
+                                icon={ <FaSearch /> }
                                 control={ control }
                                 errors={ errors }
                             />
                         </div>
                     </div>
-                    <Link to="/admin/roles/create">
-                        <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                    <Link to={ "/admin/roles/create" }>
+                        <Button
+                            onClick={ handleRefresh }
+                            size="icon"
+                            variant="outline"
+                            className="mr-1 mt-2 h-11 w-11"
+                        >
                             <FaPlus className="text-primary-500"></FaPlus>
                         </Button>
                     </Link>
-                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                    <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
                         <FaArrowsRotate className="text-primary-500" />
                     </Button>
                 </form>
