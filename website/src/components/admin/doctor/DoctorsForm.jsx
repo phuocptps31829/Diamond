@@ -19,15 +19,13 @@ import { MdCloudUpload } from "react-icons/md";
 import { useForm, Controller } from "react-hook-form";
 import { Label } from "@/components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-// import Modal from 'react-modal';
+import Modal from 'react-modal';
 import { doctorApi } from "@/services/doctorsApi";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-
 import { toastUI } from "@/components/ui/Toastify";
 
-// Modal.setAppElement("#root");
-
+Modal.setAppElement("#root");
 export default function DoctorsForm() {
   const navigate = useNavigate();
   const [selectedProvinceId, setSelectedProvinceId] = useState(null);
@@ -66,6 +64,7 @@ export default function DoctorsForm() {
       address: "",
       isActivated: "",
       detail: "abc",
+      role: "1",
     },
   });
 
@@ -154,19 +153,10 @@ export default function DoctorsForm() {
       image: imageUrl,
       citizenIdentificationNumber: data.citizenIdentificationNumber,
       otherInfo: {
-        // branchID: {
-        //   _id: data.branch, 
-        // },
-        branchID: data.branch,
-
-        // specialtyID: {
-        //   _id: data.specialty, 
-        // },
-        specialtyID: data.specialty,
-
+        branchID: data.branch, 
+        specialtyID: data.specialty, 
         isInternal: data.isInternal,
         yearsExperience: data.yearsExperience,
-        // specialtyID: data.specialty, 
         verification: {
           practicingCertificate: "112131312",
           images: ["123", "456", "789"],
