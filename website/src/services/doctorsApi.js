@@ -1,31 +1,22 @@
-import { axiosInstanceGET, axiosInstanceIMG } from './axiosInstance';
+import { axiosInstanceGET } from './axiosInstance';
 import { axiosInstanceCUD } from './axiosInstance';
 
 export const doctorApi = {
   getAllDoctors: async () => {
     const res = await axiosInstanceGET.get('/doctors');
-    console.log("All doctors data: ", res.data.data);
     return res.data.data;
   },
   getDoctorById: async (id) => {
-    try {
-      const res = await axiosInstanceGET.get(`/doctors/${id}`);
-      console.log(res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get(`/doctors/${id}`);
+    console.log(res.data.data);
+    return res.data.data;
   },
   getDoctorsByBranch: async (branchId, specialtyId) => {
-    try {
-      const res = await axiosInstanceGET.get(`/doctors/get-by-branch-and-specialty?specialtyID=${specialtyId}&branchID=${branchId}`);
-      console.log(res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get(
+      `/doctors/get-by-branch-and-specialty?specialtyID=${specialtyId}&branchID=${branchId}`
+    );
+    console.log(res.data.data);
+    return res.data.data;
   },
   createDoctors: async (newDoctors) => {
     console.log(newDoctors);
@@ -37,25 +28,22 @@ export const doctorApi = {
     console.log('doctors data: ', res.data);
     return res.data;
   },
+
+  updateDoctors: async (id, updatedDoctors) => {
+    const res = await axiosInstanceCUD.post(
+      '/doctors/update/' + id + '?_method=PUT',
+      updatedDoctors,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return res.data.data;
+  },
+
   deleteDoctors: async (id) => {
     const res = await axiosInstanceCUD.post('/doctors/delete/' + id + '?_method=DELETE');
     return res.data.data;
-  },
-  uploadIMG: async (newIMG) => {
-    const formData = new FormData();
-    formData.append('file', newIMG);
-    console.log('FormData:', Array.from(formData));
-    try {
-      const res = await axiosInstanceIMG.post('', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log('img data create: ', res.data);
-      return res.data;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      throw error;
-    }
   },
 };
