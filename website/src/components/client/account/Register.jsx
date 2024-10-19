@@ -12,13 +12,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustom from "@/components/ui/InputCustom";
 import { registerSchema } from "@/zods/register";
 import AdsProduct from "../product/Ads";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
-import { registerSendOtp } from "@/services/authApi";
+import { toastUI } from "@/components/ui/Toastify";
+import { authApi } from "@/services/authApi";
 
 export default function RegisterComponent() {
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   const {
@@ -35,17 +33,13 @@ export default function RegisterComponent() {
   });
 
   const mutation = useMutation({
-    mutationFn: registerSendOtp,
+    mutationFn: authApi.registerSendOtp,
     onSuccess: (data) => {
-      toast({
-        variant: "success",
-        title: "Gửi mã OTP thành công!",
-        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      console.log(data);
+      toastUI("Gửi mã OTP thành công!", "success");
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTime", currentTime);
-      sessionStorage.setItem("otpToken", data.otpToken);
+      sessionStorage.setItem("otpToken", data.data.otpToken);
       navigate("/accuracy");
     },
     onError: (error) => {
@@ -53,12 +47,7 @@ export default function RegisterComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Gửi mã OTP thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Gửi mã OTP thất bại!", "success");
       sessionStorage.removeItem("phoneNumber");
       sessionStorage.removeItem("fullName");
       sessionStorage.removeItem("password");
