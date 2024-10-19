@@ -63,7 +63,7 @@ export default function StaffsForm() {
 
 
   return (
-    <div className="bg-white w-[100%] px-7 py-6 rounded-lg shadow-gray ">
+    <div className="bg-white w-[100%] px-7 py-6 rounded-lg ">
       <h1 className="mr-2 bg-white h-fit mb-4 text-2xl font-bold">Thông tin nhân viên</h1>
 
       <form onSubmit={ handleSubmit(onSubmit) } >

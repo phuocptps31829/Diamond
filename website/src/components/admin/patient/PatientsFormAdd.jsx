@@ -104,7 +104,7 @@ export default function PatientFormAdd() {
     };
 
     return (
-        <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
+        <div className="w-[100%] rounded-lg bg-white px-7 py-6 ">
             <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">Thông tin người dùng</h1>
 
             <form onSubmit={handleSubmit(onSubmit)}>

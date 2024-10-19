@@ -78,7 +78,7 @@ import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
-import PackageDetailPage from './pages/admin/Packages/details';
+import PackageDetailPage from "./pages/admin/Packages/details";
 import PatientsResult from "./pages/admin/Patient/resultAdd";
 import ClinicsAddPage from "./pages/admin/Clinics/add";
 import ClinicsEditPage from "./pages/admin/Clinics/edit";
@@ -262,27 +262,27 @@ const router = createBrowserRouter([
         element: <Navigate to="dashboard" />,
       },
       {
-        path: 'services/list',
+        path: "services/list",
         element: <ServicesListPage />,
       },
       {
-        path: 'services/create',
+        path: "services/create",
         element: <ServicesAddPage />,
       },
       {
-        path: 'packages/list',
+        path: "packages/list",
         element: <PackagesListPage />,
       },
       {
-        path: 'packages/create',
+        path: "packages/create",
         element: <PackagesFormAddPage />,
       },
       {
-        path: 'packages/edit/:id',
+        path: "packages/edit/:id",
         element: <PackagesFormFixPage />,
       },
       {
-        path: 'package/details/:id',
+        path: "package/details/:id",
         element: <PackageDetailPage />,
       },
       {
@@ -326,15 +326,15 @@ const router = createBrowserRouter([
         element: <ScheduleDetailsPage />,
       },
       {
-        path: 'doctors/list',
+        path: "doctors/list",
         element: <DoctorsListPage />,
       },
       {
-        path: 'doctors/create',
+        path: "doctors/create",
         element: <DoctorsFormAddPage />,
       },
       {
-        path: 'doctor/edit/:id',
+        path: "doctor/edit/:id",
         element: <DoctorsFormFixPage />,
       },
       {
@@ -438,8 +438,8 @@ const router = createBrowserRouter([
         element: <ClinicsEditPage />,
       },
       {
-        path: 'roles/list',
-        element: <ListRolePage />
+        path: "roles/list",
+        element: <ListRolePage />,
       },
       {
         path: "roles/create",
@@ -472,8 +472,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }
