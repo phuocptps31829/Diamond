@@ -61,7 +61,7 @@ export default function Form() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (dataForm) => {
     try {
       if (!fileImage && !imagePreview) {
         toastUI('Vui lòng chọn ảnh!', 'error');
@@ -70,15 +70,20 @@ export default function Form() {
 
       const newSpecialty = {
         updatedSpecialty: {
-          name: data.name,
-          isHidden: data.status,
-          description: "Đâu có cần mô tả???",
+          name: dataForm.name,
+          isHidden: dataForm.status,
         },
         id
       };
 
       if (!fileImage) {
-        updateSpecialty(newSpecialty);
+        updateSpecialty({
+          ...newSpecialty,
+          updatedSpecialty: {
+            ...newSpecialty.updatedSpecialty,
+            image: data.image
+          }
+        });
         return;
       }
 

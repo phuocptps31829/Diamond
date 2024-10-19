@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const AppointmentModel = require('../models/appointment.model');
 const InvoiceModel = require('../models/invoice.model');
+const MedicalPackageModel = require('../models/medical-package.model');
 const OrderNumberModel = require('../models/order-number.model');
 const ResultModel = require('../models/result.model');
 const PrescriptionModel = require('../models/prescription.model');
@@ -136,7 +137,6 @@ module.exports = {
                 .find({ isDeleted: false })
                 .populate('patientID')
                 .populate('serviceID')
-                .populate('medicalPackageID')
                 .populate({
                     path: 'workScheduleID',
                     populate: {
@@ -169,6 +169,17 @@ module.exports = {
                     .findOne({ isDeleted: false, appointmentID: appointment._id })
                     .lean();
 
+                let medicalPackage = null;
+                let level = null;
+                if (appointment?.medicalPackageID) {
+                    medicalPackage = await MedicalPackageModel
+                        .findOne({
+                            isDeleted: false,
+                            'services._id': appointment.medicalPackageID
+                        });
+                    level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
+                }
+
                 const formattedAppointment = {
                     ...appointment,
                     patient: {
@@ -196,13 +207,21 @@ module.exports = {
                     ...(appointment.serviceID ? {
                         service: {
                             _id: appointment.serviceID._id,
-                            name: appointment.serviceID.name
+                            name: appointment.serviceID.name,
+                            image: appointment.serviceID.image,
+                            price: appointment.serviceID.price
                         }
                     } : {}),
-                    ...(appointment.medicalPackageID ? {
+                    ...(medicalPackage ? {
                         medicalPackage: {
-                            _id: appointment.medicalPackageID._id,
-                            name: appointment.medicalPackageID.name
+                            _id: medicalPackage._id,
+                            name: medicalPackage.name,
+                            image: medicalPackage.image,
+                            level: {
+                                _id: level._id,
+                                name: level.levelName,
+                                price: level.price
+                            },
                         }
                     } : {})
                 };
@@ -283,8 +302,7 @@ module.exports = {
         try {
             const appointments = await AppointmentModel
                 .find({ isDeleted: false })
-                .populate('serviceID')
-                .populate('medicalPackageID');
+                .populate('serviceID');
 
             console.log('all', appointments);
             if (!appointments.length) {
@@ -294,13 +312,24 @@ module.exports = {
             const result = [];
 
             for (let i = 0; i < appointments.length; i++) {
+                console.log(i);
                 const item = appointments[i];
-                // console.log(item, 'ok');
+
+                let medicalPackage = null;
+                if (appointments[i]?.medicalPackageID) {
+                    medicalPackage = await MedicalPackageModel
+                        .findOne({
+                            isDeleted: false,
+                            'services._id': appointments[i].medicalPackageID
+                        });
+                }
+
+                console.log(item, 'ok');
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
                     ? item.serviceID.specialtyID.toString()
-                    : item.medicalPackageID.specialtyID.toString();
-                console.log(specialtyID);
+                    : medicalPackage.specialtyID.toString();
+
                 let yearObj = result.find(obj => obj.year === year);
                 if (!yearObj) {
                     yearObj = {
@@ -389,9 +418,11 @@ module.exports = {
         const { id } = req.params;
         try {
             const appointment = await AppointmentModel
-                .findOne({ _id: id, isDeleted: false })
+                .findOne({
+                    _id: id,
+                    isDeleted: false
+                })
                 .populate('serviceID')
-                .populate('medicalPackageID')
                 .populate('patientHelpID')
                 .populate('patientID')
                 .populate({
@@ -421,6 +452,18 @@ module.exports = {
                 createError(404, 'Appointment not found');
             }
 
+            let medicalPackage = null;
+            let level = null;
+
+            if (appointment?.medicalPackageID) {
+                medicalPackage = await MedicalPackageModel
+                    .findOne({
+                        isDeleted: false,
+                        'services._id': appointment.medicalPackageID
+                    });
+                level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
+            }
+
             const [invoice, result, orderNumber] = await Promise.all([
                 InvoiceModel
                     .findOne({ appointmentID: appointment._id, isDeleted: false })
@@ -433,12 +476,17 @@ module.exports = {
                     .lean(),
             ]);
 
+            // Kiểm tra kết quả trả về
+            console.log('Invoice:', invoice);
+            console.log('Result:', result);
+            console.log('OrderNumber:', orderNumber);
+
             const prescription = invoice
                 ? await PrescriptionModel
                     .findOne({ isDeleted: false, invoiceID: invoice._id })
                     .lean() : null;
 
-            const prescriptionMedicinesPromises = prescription ? prescription.medicines.map(async m => {
+            const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
                 const medicine = await MedicineModel
                     .findById({ _id: m.medicineID })
                     .populate("medicineCategoryID")
@@ -459,9 +507,7 @@ module.exports = {
                 delete formattedMedicine.medicineCategoryID;
 
                 return formattedMedicine;
-            }) : null;
-
-            const prescriptionMedicines = await Promise.all(prescriptionMedicinesPromises);
+            }) : []);
 
             const formattedAppointment = {
                 ...appointment,
@@ -485,26 +531,34 @@ module.exports = {
                 ...(appointment.serviceID ? {
                     service: {
                         _id: appointment.serviceID._id,
-                        name: appointment.serviceID.name
+                        name: appointment.serviceID.name,
+                        image: appointment.serviceID.image,
+                        price: appointment.serviceID.price,
                     }
                 } : {}),
-                ...(appointment.medicalPackageID ? {
-                    service: {
-                        _id: appointment.medicalPackageID._id,
-                        name: appointment.medicalPackageID.name
+                ...(medicalPackage ? {
+                    medicalPackage: {
+                        _id: medicalPackage._id,
+                        name: medicalPackage.name,
+                        image: medicalPackage.image,
+                        level: {
+                            _id: level._id,
+                            name: level.levelName,
+                            price: level.price
+                        },
                     }
                 } : {}),
                 orderNumber: {
-                    number: orderNumber.number,
-                    priority: orderNumber.priority,
+                    number: orderNumber?.number,
+                    priority: orderNumber?.priority,
                 },
                 result: {
-                    diagnose: result.diagnose,
-                    images: result.images,
-                    description: result.description,
+                    diagnose: result?.diagnose || 'Chưa có',
+                    images: result?.images || 'Chưa có',
+                    description: result?.description || 'Chưa có',
                 },
                 invoice: {
-                    price: invoice.price,
+                    price: invoice?.price || 0,
                     arisePrice: invoice?.arisePrice || 0,
                 },
                 ...(prescription ? {

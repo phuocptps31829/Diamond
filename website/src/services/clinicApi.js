@@ -17,6 +17,19 @@ export const clinicsApi = {
     }
   },
 
+  getClinicBySpecialtyAndBranch: async ({ branchID, specialtyID }) => {
+    const res = await axiosInstanceGET.get(
+      "/clinics/get-by-specialty-and-branch",
+      {
+        params: {
+          branchID,
+          specialtyID,
+        },
+      },
+    );
+    return res.data.data;
+  },
+
   getClinicsById: async (id) => {
     try {
       const res = await axiosInstanceGET.get(`/clinics/${id}`);

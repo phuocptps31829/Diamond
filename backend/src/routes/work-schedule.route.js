@@ -36,7 +36,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 router.get(
     '/',
     helperMiddleware.checkQueryParams,
-    workScheduleController.getAllWorkSchedule
+    workScheduleController.getAllWorkSchedules
 );
 
 /**
@@ -76,6 +76,33 @@ router.get(
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     workScheduleController.getAllWorkScheduleOfDoctor
+);
+
+
+/**
+ * @openapi
+ * '/api/v1/work-schedules/get-by-doctor-id/{id}':
+ *  get:
+ *    tags:
+ *    - Work schedule Routes
+ *    summary: Get Work schedule by doctor id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-doctor-id/:id',
+    helperMiddleware.checkValidId,
+    workScheduleController.getWorkScheduleByDoctorId
 );
 
 /**

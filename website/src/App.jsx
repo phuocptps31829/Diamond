@@ -37,8 +37,8 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import AdminLayout from "./layouts/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
-import ScheduleTablePage from "./pages/admin/ScheduleTable";
-import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
+import ScheduleTablePage from "./pages/admin/Schedules/ScheduleTable";
+import ScheduleDetailsPage from "./pages/admin/Schedules/ScheduleDetails";
 import DoctorDashboard from "./pages/admin/DoctorDashboard";
 import NewsListPage from "./pages/admin/News";
 import BranchesListPage from "./pages/admin/Branches";
@@ -322,7 +322,7 @@ const router = createBrowserRouter([
         element: <ScheduleTablePage />,
       },
       {
-        path: "schedules/details",
+        path: "schedules/details/:id",
         element: <ScheduleDetailsPage />,
       },
       {
@@ -370,7 +370,7 @@ const router = createBrowserRouter([
         element: <SpecialtiesFormPage />,
       },
       {
-        path: "specialty/edit/:id",
+        path: "specialties/edit/:id",
         element: <SpecialtiesEditFormPage />,
       },
       {
@@ -385,7 +385,6 @@ const router = createBrowserRouter([
         path: "news/create",
         element: <NewsAddPage />,
       },
-
       {
         path: "news/edit/:id",
         element: <NewsEditPage />,

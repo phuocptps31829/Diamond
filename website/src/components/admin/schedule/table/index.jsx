@@ -18,19 +18,20 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/Table";
-import { columnsSchedule, mockData } from "./columns";
-
-import { Checkbox } from "@/components/ui/Checkbox";
-import { ArrowUpDown } from "lucide-react";
-import { useState } from "react";
-import InputCustom from "@/components/ui/InputCustom";
+import { columnsSchedule } from "./columns";
+import { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { patientSchema } from "@/zods/patient";
+import InputCustomSearch from "@/components/ui/InputCustomSearch";
+import { Link } from "react-router-dom";
+import { useDebounce } from "use-debounce";
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function DataTableSchedule() {
+export default function DataTableSchedule({ workSchedules }) {
+    const queryClient = useQueryClient();
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState(
         []
@@ -42,6 +43,8 @@ export default function DataTableSchedule() {
         pageIndex: 0,
         pageSize: 10,
     });
+    const [searchValue, setSearchValue] = useState("");
+    const [debouncedSearchValue] = useDebounce(searchValue, 500);
     const {
         handleSubmit,
         formState: { errors },
@@ -56,7 +59,7 @@ export default function DataTableSchedule() {
     };
 
     const table = useReactTable({
-        data: mockData,
+        data: workSchedules,
         columns: columnsSchedule,
         onPaginationChange: setPagination,
         onSortingChange: setSorting,
@@ -76,28 +79,49 @@ export default function DataTableSchedule() {
         },
     });
 
+    useEffect(() => {
+        table.getColumn("fullName")?.setFilterValue(debouncedSearchValue);
+    }, [debouncedSearchValue, table]);
+    const handleRefresh = () => {
+        queryClient.invalidateQueries("workSchedules");
+    };
+
     return (
         <div className="w-full p-4 bg-white rounded-sm">
             <div className="flex h-[80px]">
-                <form className="mr-1 flex">
-                    <div className="mb-2 ">
-                        <div className="relative w-[300px] mr-1">
-                            <InputCustom
+                <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
+                    <div className="mb-2">
+                        <div className="relative mr-1 w-[300px]">
+                            <InputCustomSearch
+                                value={ table.getColumn("fullName")?.getFilterValue() ?? "" }
+                                onChange={ (event) => setSearchValue(event.target.value) }
                                 className="col-span-1 sm:col-span-1"
-                                placeholder="Tìm kiếm bác sĩ"
-                                name="patientName"
+                                placeholder="Tìm kiếm lịch làm việc"
+                                name="doctorName"
                                 type="text"
-                                id="patientName"
-                                icon={ <FaSearch></FaSearch> }
+                                id="doctorName"
+                                icon={ <FaSearch /> }
                                 control={ control }
                                 errors={ errors }
                             />
                         </div>
                     </div>
-                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
-                        <FaPlus className="text-primary-500"></FaPlus>
-                    </Button>
-                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                    <Link to={ "/admin/services/create" }>
+                        <Button
+                            size="icon"
+                            variant="outline"
+                            className="mr-1 mt-2 h-11 w-11"
+                        >
+                            <FaPlus className="text-primary-500"></FaPlus>
+                        </Button>
+                    </Link>
+
+                    <Button
+                        onClick={ handleRefresh }
+                        size="icon"
+                        variant="outline"
+                        className="mr-1 mt-2 h-11 w-11"
+                    >
                         <FaArrowsRotate className="text-primary-500" />
                     </Button>
                 </form>

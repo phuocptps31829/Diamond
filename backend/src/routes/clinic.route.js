@@ -41,6 +41,35 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/clinics/get-by-specialty-and-branch':
+ *  get:
+ *    tags:
+ *    - Clinic Routes
+ *    summary: Get clinics by specialty and branch
+ *    parameters:
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-specialty-and-branch',
+    clinicController.getClinicsBySpecialtyAndBranch
+);
+
+/**
+ * @openapi
  * '/api/v1/clinics/{id}':
  *  get:
  *    tags:
