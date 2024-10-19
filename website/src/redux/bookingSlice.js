@@ -4,13 +4,16 @@ const cartData = JSON.parse(localStorage.getItem("cart")) || [];
 console.log('cartInit', cartData);
 const formattedCart = cartData.map((item) => {
   return {
-    serviceId: item.id,
+    ...(item.serviceID
+      ? { serviceID: item.serviceID }
+      : { medicalPackageID: item.medicalPackageID }),
     bookingDetail: {
       specialtyID: item.specialtyID,
-      selectedBranchId: "",
-      selectedDoctorId: "",
-      price: item.price || "",
-      selectedWorkScheduleId: "",
+      levelID: item.levelID || "",
+      price: 0,
+      selectedBranchID: "",
+      selectedDoctorID: "",
+      selectedWorkScheduleID: "",
       selectedDate: "",
       selectedTime: "",
       clinic: "",
@@ -30,14 +33,11 @@ const infoBookingSlice = createSlice({
   initialState,
   reducers: {
     changeBookingDetails: (state, action) => {
-      // state.bookingDetails = state.bookingDetails.filter(
-      //   (detail) => detail.serviceId != null,
-      // );
-      console.log(action.payload);
       const existingIndex = state.bookingDetails.findIndex(
-        (detail) => detail.serviceId === action.payload.serviceId,
+        (detail) => detail.serviceID
+          ? detail.serviceID === action.payload.serviceID
+          : detail.medicalPackageID === action.payload.medicalPackageID,
       );
-
       if (existingIndex >= 0) {
         state.bookingDetails[existingIndex] = {
           ...state.bookingDetails[existingIndex],
@@ -50,11 +50,15 @@ const infoBookingSlice = createSlice({
     },
     initBookingDetails: (state, action) => {
       state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId != null,
+        (detail) => detail?.serviceID
+          ? detail?.serviceID !== null
+          : detail?.medicalPackageID !== null,
       );
 
       const existingIndex = state.bookingDetails.findIndex(
-        (detail) => detail.serviceId === action.payload.serviceId,
+        (detail) => detail?.serviceID
+          ? detail?.serviceID === action.payload.serviceID
+          : detail?.medicalPackageID === action.payload.medicalPackageID,
       );
 
       if (existingIndex >= 0) {
@@ -64,8 +68,11 @@ const infoBookingSlice = createSlice({
       }
     },
     removeItemInfo: (state, action) => {
-      state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId !== action.payload,
+      const isService = action.payload.isService;
+      state.bookingDetails = state.bookingDetails.filter((detail) =>
+        isService
+          ? detail.serviceID !== action.payload._id
+          : detail.medicalPackageID !== action.payload._id
       );
     },
     clearBookingDetails: (state) => {
@@ -73,9 +80,9 @@ const infoBookingSlice = createSlice({
         serviceId: item.serviceId,
         bookingDetail: {
           specialtyID: item.bookingDetail.specialtyID,
-          selectedBranchId: "",
-          selectedDoctorId: "",
-          selectedWorkScheduleId: "",
+          selectedBranchID: "",
+          selectedDoctorID: "",
+          selectedWorkScheduleID: "",
           selectedDate: "",
           price: item.bookingDetail.price,
           selectedTime: "",
@@ -92,5 +99,11 @@ const infoBookingSlice = createSlice({
   },
 });
 
-export const { changeBookingDetails, removeItemInfo, clearBookingDetails, saveBookingInfo, initBookingDetails } = infoBookingSlice.actions;
+export const {
+  changeBookingDetails,
+  removeItemInfo,
+  clearBookingDetails,
+  saveBookingInfo,
+  initBookingDetails
+} = infoBookingSlice.actions;
 export default infoBookingSlice.reducer;

@@ -7,3 +7,14 @@ export const formatDateTimeLocale = (time) => {
         minute: '2-digit',
     }).format(new Date(time));
 };
+
+export const formatPrice = (price) => {
+    return price.toLocaleString() + '₫';
+};
+
+export const formatCurrency = (value) => {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    }).format(value);
+};

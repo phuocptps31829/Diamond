@@ -15,7 +15,7 @@ import {
     CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-// Value
+
 const genders = [
     {
         name: "Nam",
@@ -26,7 +26,8 @@ const genders = [
         value: "Nữ"
     },
 ];
-export default function SelectGender({ control, name, errors }) {
+
+export default function SelectGender({ control, name, errors, required }) {
     const [open, setOpen] = React.useState(false);
     return (
         <div>
@@ -52,7 +53,7 @@ export default function SelectGender({ control, name, errors }) {
                         </PopoverTrigger>
                         <PopoverContent className="p-0 popover-content-width-same-as-its-trigger">
                             <Command className='text-left '>
-                                <CommandList >
+                                <CommandList>
                                     <CommandGroup >
                                         { genders.map((gender) => (
                                             <CommandItem

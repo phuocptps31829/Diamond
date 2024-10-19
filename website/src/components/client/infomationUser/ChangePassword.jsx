@@ -1,6 +1,9 @@
 import InputCustom from "@/components/ui/InputCustom";
+import { toastUI } from "@/components/ui/Toastify";
+import { authApi } from "@/services/authApi";
 import { changePasswordSchema } from "@/zods/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 const ChangePassword = () => {
@@ -11,15 +14,32 @@ const ChangePassword = () => {
   } = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      oldPassword: "",
+      password: "",
       newPassword: "",
       confirmPassword: "",
     },
   });
 
+  const { mutate: changePassword, isPending } = useMutation({
+    mutationFn: authApi.changePassword,
+    onSuccess: (data) => {
+      console.log(data);
+    },
+    onError: (error) => {
+      console.log(error);
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toastUI(errorMessage || "Có lỗi xảy ra khi đổi mật khẩu", "error");
+    }
+  });
+
   const onSubmit = (data) => {
-    console.log("Form submitted");
+    console.log("Form submittedd");
     console.log(data);
+    changePassword({ password: data.password, newPassword: data.newPassword });
   };
 
   return (
@@ -29,12 +49,12 @@ const ChangePassword = () => {
         <div className="mb-4 flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-end">
           <InputCustom
             className="col-span-1 sm:col-span-1"
-            name="oldPassword"
-            label="Mật khẩu cũ"
-            type="text"
+            name="password"
+            label="Mật khẩu hiện tại"
+            type="password"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Nhập mật khẩu hiện tại"
           />
           <InputCustom
             className="col-span-1 sm:col-span-1"
@@ -43,7 +63,7 @@ const ChangePassword = () => {
             type="password"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Nhập mật khẩu mới"
           />
           <InputCustom
             className="col-span-1 sm:col-span-1"
@@ -52,7 +72,7 @@ const ChangePassword = () => {
             type="password"
             control={ control }
             errors={ errors }
-            placeholder="**************"
+            placeholder="Xác nhận mật khẩu mới"
           />
         </div>
         <div className="flex w-full items-end justify-end">

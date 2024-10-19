@@ -76,15 +76,35 @@ module.exports = {
                     roleID: process.env.ROLE_DOCTOR
                 })
                 .populate('roleID')
+                .populate({
+                    path: 'otherInfo.specialtyID',
+                    model: SpecialtyModel
+                })
+                .populate({
+                    path: 'otherInfo.branchID',
+                    model: BranchModel
+                })
                 .lean();
 
             if (!doctor) {
                 createError(404, 'User not found.');
             }
 
-            doctor.role._id = doctor.roleID._id;
-            doctor.role.name = doctor.roleID.name;
+            doctor.role = {
+                _id: doctor.roleID._id,
+                name: doctor.roleID.name
+            };
+            doctor.otherInfo.specialty = {
+                _id: doctor.otherInfo.specialtyID._id,
+                name: doctor.otherInfo.specialtyID.name
+            };
+            doctor.otherInfo.branch = {
+                _id: doctor.otherInfo.branchID._id,
+                name: doctor.otherInfo.branchID.name
+            };
             delete doctor.roleID;
+            delete doctor.otherInfo.specialtyID;
+            delete doctor.otherInfo.branchID;
 
             return res.status(200).json({
                 message: 'Doctor retrieved successfully.',

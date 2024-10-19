@@ -10,19 +10,7 @@ import {
 } from "@/components/ui/Dialog";
 import { ArrowUpDown } from "lucide-react";
 
-import { getSpecialtyById } from "@/services/specialtiesApi";
-import { useQuery } from "@tanstack/react-query";
-
 import Action from "./action";
-
-const useSpecialtyName = (specialtyID) => {
-  return useQuery({
-    queryKey: ["specialty", specialtyID],
-    queryFn: () => getSpecialtyById(specialtyID),
-    enabled: !!specialtyID,
-    keepPreviousData: true,
-  });
-};
 
 export const columns = [
   {
@@ -82,18 +70,9 @@ export const columns = [
       </div>
     ),
     cell: ({ row }) => {
-      const {
-        data: specialty,
-        error,
-        isLoading,
-      } = useSpecialtyName(row.original.specialtyID);
-
-      if (isLoading) return <span>Đang tải..</span>;
-      if (error) return <span>Không có chuyên khoa</span>;
-
       return (
         <div className="w-full max-w-[270px]">
-          <span className="block w-[90px]">{specialty?.name}</span>
+          <span className="block w-[90px]">{row.original.specialty?.name}</span>
         </div>
       );
     },

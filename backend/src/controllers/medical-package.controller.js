@@ -4,7 +4,7 @@ const ServiceModel = require('../models/service.model');
 const { createError } = require("../utils/helper.util");
 
 module.exports = {
-    getAllMedicalPackages: async (req, res, next) => {
+    getAllMedicalPackages1: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
@@ -26,6 +26,7 @@ module.exports = {
                         isDeleted: { $first: '$isDeleted' },
                         createdAt: { $first: '$createdAt' },
                         updatedAt: { $first: '$updatedAt' },
+                        slug: { $first: '$slug' },
                         image: { $first: '$image' },
                         orderCount: { $first: '$orderCount' }
                     }
@@ -127,6 +128,61 @@ module.exports = {
             next(error);
         }
     },
+    getAllMedicalPackages: async (req, res, next) => {
+        try {
+            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { branchID, specialtyID, gender } = req.checkValueQuery;
+
+            const queryOptions = {
+                ...(branchID ? { branchID } : {}),
+                ...(specialtyID ? { specialtyID } : {}),
+                ...(gender ? { "applicableObject.gender": gender } : {})
+            };
+
+            const totalRecords = await MedicalPackageModel
+                .countDocuments({
+                    isDeleted: false,
+                    ...queryOptions
+                });
+
+            const medicalPackages = await MedicalPackageModel
+                .find({
+                    isDeleted: false,
+                    ...queryOptions
+                })
+                .populate('specialtyID')
+                .limit(limitDocuments)
+                .skip(skip)
+                .sort(sortOptions)
+                .lean();
+
+            if (!medicalPackages.length) {
+                createError(404, 'No medicalPackages found.');
+            }
+
+            const formattedMedicalPackages = medicalPackages.map(package => {
+                const formattedPackage = {
+                    ...package,
+                    specialty: {
+                        _id: package.specialtyID._id,
+                        name: package.specialtyID.name,
+                    }
+                };
+
+                delete formattedPackage.specialtyID;
+                return formattedPackage;
+            });
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'MedicalPackages retrieved successfully.',
+                data: formattedMedicalPackages,
+                totalRecords
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
     getAllMedicalPackagesBySpecialtyId: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
@@ -163,10 +219,13 @@ module.exports = {
         try {
             const { id } = req.params;
 
-            const medicalPackage = await MedicalPackageModel.findOne({
-                _id: id,
-                isDeleted: false,
-            });
+            const medicalPackage = await MedicalPackageModel
+                .findOne({
+                    _id: id,
+                    isDeleted: false,
+                })
+                .lean()
+                .populate("specialtyID");
 
             if (!medicalPackage) {
                 createError(404, 'Medical package not found.');
@@ -176,21 +235,75 @@ module.exports = {
                 return b.servicesID.length - a.servicesID.length;
             });
 
-            const services = await ServiceModel.find({
-                _id: { $in: arrayServices[0].servicesID },
-                isDeleted: false,
-            }, {
-                _id: 1, name: 1
-            });
+            const services = await ServiceModel
+                .find({
+                    _id: { $in: arrayServices[0].servicesID },
+                    isDeleted: false,
+                }, {
+                    _id: 1, name: 1
+                });
 
-            const newMedicalPackage = {
-                ...medicalPackage.toObject(),
+            const formattedMedicalPackage = {
+                ...medicalPackage,
                 allServices: services
             };
 
+            formattedMedicalPackage.specialty = {
+                _id: formattedMedicalPackage.specialtyID._id,
+                name: formattedMedicalPackage.specialtyID.name
+            };
+            delete formattedMedicalPackage.specialtyID;
+
             return res.status(200).json({
                 message: 'Medical package retrieved successfully.',
-                data: newMedicalPackage,
+                data: formattedMedicalPackage,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getMedicalPackageBySlug: async (req, res, next) => {
+        try {
+            const { slug } = req.params;
+
+            const medicalPackage = await MedicalPackageModel
+                .findOne({
+                    slug: slug,
+                    isDeleted: false,
+                })
+                .populate("specialtyID")
+                .lean();
+
+            if (!medicalPackage) {
+                createError(404, 'Medical package not found.');
+            }
+
+            const arrayServices = medicalPackage.services.sort((a, b) => {
+                return b.servicesID.length - a.servicesID.length;
+            });
+
+            const services = await ServiceModel
+                .find({
+                    _id: { $in: arrayServices[0].servicesID },
+                    isDeleted: false,
+                }, {
+                    _id: 1, name: 1
+                });
+
+            const formattedMedicalPackage = {
+                ...medicalPackage,
+                allServices: services
+            };
+
+            formattedMedicalPackage.specialty = {
+                _id: formattedMedicalPackage.specialtyID._id,
+                name: formattedMedicalPackage.specialtyID.name
+            };
+            delete formattedMedicalPackage.specialtyID;
+
+            return res.status(200).json({
+                message: 'Medical package retrieved successfully.',
+                data: formattedMedicalPackage,
             });
         } catch (error) {
             next(error);

@@ -21,6 +21,7 @@ import { toastUI } from "@/components/ui/Toastify";
 import { newsApi } from "@/services/newsApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
+import { BiDetail } from "react-icons/bi";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
@@ -55,14 +56,20 @@ const Action = ({ row }) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-fit min-w-0">
+      <DropdownMenuContent align="end" className="w-full min-w-0">
+      <Link to={`/admin/news/detail/${row.original._id}`}>
+          <DropdownMenuItem className="flex w-full items-center gap-2">
+            <BiDetail className="text-[15px]" />
+            <span> Chi tiết</span>
+          </DropdownMenuItem>
+        </Link>
         <Link to={`/admin/news/edit/${row.original._id}`}>
-          <DropdownMenuItem className="flex w-fit items-center gap-2">
+          <DropdownMenuItem className="flex w-full items-center gap-2">
             <FiEdit className="text-[15px]" />
             <span>Sửa</span>
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="flex w-fit items-center gap-2">
+        <DropdownMenuItem className="flex w-full items-center gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div

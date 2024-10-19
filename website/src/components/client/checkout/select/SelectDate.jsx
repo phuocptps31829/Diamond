@@ -19,19 +19,19 @@ export default function SelectDate({
   control,
   name,
   errors,
-  doctorId,
-  branchId,
+  doctorID,
+  branchID,
   disabled,
   onChange,
 }) {
   const [availableDates, setAvailableDates] = useState([]);
 
   useEffect(() => {
-    if (!doctorId) return;
+    if (!doctorID) return;
 
     const fetchDates = async () => {
       try {
-        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorId);
+        const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorID);
         console.log(data);
         const dates = data.data.map((option) =>
           parse(option.day, "yyyy-MM-dd", new Date()),
@@ -43,11 +43,11 @@ export default function SelectDate({
     };
 
     fetchDates();
-  }, [doctorId, branchId]);
+  }, [doctorID, branchID]);
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [doctorId, branchId, errors, name]);
+  }, [doctorID, branchID, errors, name]);
 
   const isDateAvailable = (date) => {
     return availableDates.some(
@@ -59,65 +59,65 @@ export default function SelectDate({
   };
 
   const handleClick = () => {
-    if (!doctorId) {
+    if (!doctorID) {
       toastUI("Vui lòng chọn bác sĩ", "warning");
       return;
     }
   };
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={ handleClick }>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Vui lòng chọn ngày khám" }}
-        render={({ field }) => {
+        control={ control }
+        name={ name }
+        rules={ { required: "Vui lòng chọn ngày khám" } }
+        render={ ({ field }) => {
           return (
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant={"outline"}
-                  disabled={disabled}
-                  className={cn(
+                  variant={ "outline" }
+                  disabled={ disabled }
+                  className={ cn(
                     "w-full justify-start py-[21px] text-left font-normal",
                     !field.value && "text-muted-foreground",
                     errors[name] && "border-red-500",
-                    doctorId ? "pointer-events-auto" : "pointer-events-none",
-                  )}
+                    doctorID ? "pointer-events-auto" : "pointer-events-none",
+                  ) }
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {field.value && availableDates.length > 0 ? (
+                  { field.value && availableDates.length > 0 ? (
                     format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
                   ) : (
                     <span>Chọn ngày khám</span>
-                  )}
+                  ) }
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={field.value ? new Date(field.value) : null}
-                  onSelect={(selectedDate) => {
+                  selected={ field.value ? new Date(field.value) : null }
+                  onSelect={ (selectedDate) => {
                     if (selectedDate && isDateAvailable(selectedDate)) {
                       const formattedDate = format(selectedDate, "yyyy-MM-dd");
                       field.onChange(formattedDate);
                       onChange(formattedDate);
                     }
-                  }}
+                  } }
                   initialFocus
-                  disabled={(date) => !isDateAvailable(date) || disabled}
-                  modifiers={{
+                  disabled={ (date) => !isDateAvailable(date) || disabled }
+                  modifiers={ {
                     available: (date) => isDateAvailable(date),
-                  }}
+                  } }
                 />
               </PopoverContent>
             </Popover>
           );
-        }}
+        } }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }

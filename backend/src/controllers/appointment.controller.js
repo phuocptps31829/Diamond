@@ -143,6 +143,21 @@ module.exports = {
                         path: 'doctorID'
                     }
                 })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID'
+                    }
+                })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID',
+                        populate: {
+                            path: 'branchID'
+                        }
+                    }
+                })
                 .lean();
 
             if (!appointments.length) {
@@ -164,6 +179,14 @@ module.exports = {
                     doctor: {
                         _id: appointment.workScheduleID.doctorID._id,
                         fullName: appointment.workScheduleID.doctorID.fullName
+                    },
+                    clinic: {
+                        _id: appointment.workScheduleID.clinicID._id,
+                        name: appointment.workScheduleID.clinicID.name
+                    },
+                    branch: {
+                        _id: appointment.workScheduleID.clinicID.branchID._id,
+                        name: appointment.workScheduleID.clinicID.branchID.name
                     },
                     result: {
                         diagnose: result?.diagnose || 'Chưa có',
@@ -263,7 +286,7 @@ module.exports = {
                 .populate('serviceID')
                 .populate('medicalPackageID');
 
-            console.log('all', 1);
+            console.log('all', appointments);
             if (!appointments.length) {
                 createError(404, 'No Appointments found.');
             }
@@ -272,7 +295,7 @@ module.exports = {
 
             for (let i = 0; i < appointments.length; i++) {
                 const item = appointments[i];
-                console.log(item, 'ok');
+                // console.log(item, 'ok');
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
                     ? item.serviceID.specialtyID.toString()
@@ -377,6 +400,21 @@ module.exports = {
                         path: 'doctorID'
                     }
                 })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID'
+                    }
+                })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID',
+                        populate: {
+                            path: 'branchID'
+                        }
+                    }
+                })
                 .lean();
 
             if (!appointment) {
@@ -435,6 +473,14 @@ module.exports = {
                 doctor: {
                     _id: appointment.workScheduleID.doctorID._id,
                     fullName: appointment.workScheduleID.doctorID.fullName
+                },
+                clinic: {
+                    _id: appointment.workScheduleID.clinicID._id,
+                    name: appointment.workScheduleID.clinicID.name
+                },
+                branch: {
+                    _id: appointment.workScheduleID.clinicID.branchID._id,
+                    name: appointment.workScheduleID.clinicID.branchID.name
                 },
                 ...(appointment.serviceID ? {
                     service: {

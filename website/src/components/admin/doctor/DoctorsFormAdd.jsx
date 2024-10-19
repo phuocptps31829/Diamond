@@ -141,69 +141,69 @@ export default function DoctorsFormAdd() {
     return (
         <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
             <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">Thông tin bác sĩ</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
                 <div className="grid-cols-1 gap-5 sm:grid md:flex">
                     <div className="mr-5">
                         <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
                             Ảnh đại diện <span className="text-red-500">*</span>
                         </label>
                         <ImagePreview
-                            imagePreview={imagePreview}
-                            setFileImage={setFileImage}
-                            setImagePreview={setImagePreview}
+                            imagePreview={ imagePreview }
+                            setFileImage={ setFileImage }
+                            setImagePreview={ setImagePreview }
                         />
-                        {!fileImage && (
+                        { !fileImage && (
                             <p className="mt-3 text-center text-sm text-red-500">
                                 Vui lòng chọn ảnh
                             </p>
-                        )}
+                        ) }
                     </div>
                     <div className="w-full">
                         <div className="block">
                             <div className="w-full grid-cols-1 md:flex md:gap-5">
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
-                                        label={'Họ và tên'}
+                                        label={ 'Họ và tên' }
                                         required
                                         className="col-span-1 sm:col-span-1"
                                         name="fullName"
                                         type="text"
                                         id="fullName"
-                                        placeholder={'Nhập họ và tên'}
-                                        control={control}
-                                        errors={errors}
+                                        placeholder={ 'Nhập họ và tên' }
+                                        control={ control }
+                                        errors={ errors }
                                     />
                                 </div>
 
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
-                                        label={'Số điện thoại'}
+                                        label={ 'Số điện thoại' }
                                         required
                                         className="col-span-1 sm:col-span-1"
                                         name="phoneNumber"
                                         type="text"
                                         id="phoneNumber"
-                                        placeholder={'Nhập số điện thoại'}
-                                        control={control}
-                                        errors={errors}
+                                        placeholder={ 'Nhập số điện thoại' }
+                                        control={ control }
+                                        errors={ errors }
                                     />
                                 </div>
                             </div>
                         </div>
-                        {/* Line 2 */}
+                        {/* Line 2 */ }
                         <div className="flex w-full gap-5">
                             <div className="w-full gap-5 md:flex">
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
-                                        label={'Email'}
+                                        label={ 'Email' }
                                         required
                                         className="col-span-1 sm:col-span-1"
                                         name="email"
                                         type="email"
                                         id="email"
-                                        placeholder={'Nhập email'}
-                                        control={control}
-                                        errors={errors}
+                                        placeholder={ 'Nhập email' }
+                                        control={ control }
+                                        errors={ errors }
                                     />
                                 </div>
 
@@ -216,52 +216,52 @@ export default function DoctorsFormAdd() {
                                             Ngày sinh <span className="text-red-500">*</span>
                                         </label>
                                         <SelectBirthDate
-                                            control={control}
+                                            control={ control }
                                             name="dateOfBirth"
-                                            errors={errors}
+                                            errors={ errors }
                                         />
                                     </div>
                                     <div className="w-1/3">
                                         <RadioGroupField
                                             name="gender"
                                             label="Giới tính:"
-                                            options={[
+                                            options={ [
                                                 { value: 'Nam', label: 'Nam' },
                                                 { value: 'Nữ', label: 'Nữ' },
-                                            ]}
-                                            control={control}
+                                            ] }
+                                            control={ control }
                                         />
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {/* Line 3 */}
+                        {/* Line 3 */ }
                         <div className="block">
                             <div className="w-full gap-5 md:flex">
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
-                                        label={'Mật khẩu'}
+                                        label={ 'Mật khẩu' }
                                         required
                                         className="col-span-1 sm:col-span-1"
                                         name="password"
                                         type="password"
                                         id="Password"
                                         placeholder="Nhập mật khẩu"
-                                        control={control}
-                                        errors={errors}
+                                        control={ control }
+                                        errors={ errors }
                                     />
                                 </div>
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
-                                        label={'Xác nhận mật khẩu'}
+                                        label={ 'Xác nhận mật khẩu' }
                                         required
                                         className="col-span-1 sm:col-span-1"
                                         name="confirmPassword"
                                         type="password"
                                         id="confirmPassword"
                                         placeholder="Nhập lại mật khẩu"
-                                        control={control}
-                                        errors={errors}
+                                        control={ control }
+                                        errors={ errors }
                                     />
                                 </div>
                             </div>
@@ -270,16 +270,16 @@ export default function DoctorsFormAdd() {
                 </div>
                 <div className="block">
                     <div className="w-full gap-5 md:flex">
-                        {/* isActivated */}
+                        {/* isActivated */ }
                         <div className="mt-5 md:w-1/3">
                             <RadioGroupField
                                 name="isActivated"
                                 label="Trạng thái tài khoản:"
-                                options={[
+                                options={ [
                                     { value: true, label: 'Hoạt động' },
                                     { value: false, label: 'Khóa tài khoản' },
-                                ]}
-                                control={control}
+                                ] }
+                                control={ control }
                             />
                         </div>
                         <div className="relative md:mb-4 md:w-1/3">
@@ -287,28 +287,28 @@ export default function DoctorsFormAdd() {
                                 htmlFor="hoten"
                                 className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
                             >
-                                Chọn ảnh chứng nhận hành nghề{' '}
+                                Chọn ảnh chứng nhận hành nghề{ ' ' }
                                 <span className="text-red-500">*</span>
                             </label>
                             <Controller
                                 name="imagesPracticingCertificate"
-                                control={control}
-                                render={({ field }) => (
+                                control={ control }
+                                render={ ({ field }) => (
                                     <input
                                         type="file"
                                         multiple
-                                        onChange={(e) => {
+                                        onChange={ (e) => {
                                             const files = Array.from(e.target.files);
                                             field.onChange(files);
-                                        }}
+                                        } }
                                     />
-                                )}
+                                ) }
                             />
-                            {errors.imagesPracticingCertificate && (
+                            { errors.imagesPracticingCertificate && (
                                 <small className="mt-3 block text-sm text-red-500">
-                                    {errors.imagesPracticingCertificate.message}
+                                    { errors.imagesPracticingCertificate.message }
                                 </small>
-                            )}
+                            ) }
                         </div>
 
                         <div className="relative md:mb-4 md:w-1/3">
@@ -319,42 +319,42 @@ export default function DoctorsFormAdd() {
                                 Khoa <span className="text-red-500">*</span>
                             </label>
                             <SelectDepartment
-                                control={control}
-                                options={[
+                                control={ control }
+                                options={ [
                                     { value: true, label: 'Nội khoa' },
                                     { value: false, label: 'Ngoại khoa' },
-                                ]}
+                                ] }
                                 name="isInternal"
                             />
                         </div>
                     </div>
                 </div>
-                {/* Line 4 */}
+                {/* Line 4 */ }
                 <div className="my-4 flex gap-5">
                     <div className="relative md:mb-4 md:w-1/3">
                         <InputCustom
-                            label={'Mã căn cước công dân'}
+                            label={ 'Mã căn cước công dân' }
                             required
                             className="col-span-1 sm:col-span-1"
                             name="citizenIdentificationNumber"
                             type="text"
                             id="citizenIdentificationNumber"
                             placeholder="Nhập mã căn cước công dân"
-                            control={control}
-                            errors={errors}
+                            control={ control }
+                            errors={ errors }
                         />
                     </div>
                     <div className="relative md:mb-4 md:w-1/3">
                         <InputCustom
-                            label={'Chứng chỉ hành nghề'}
+                            label={ 'Chứng chỉ hành nghề' }
                             required
                             className="col-span-1 sm:col-span-1"
                             name="practicingCertificate"
                             type="text"
                             id="practicingCertificate"
-                            placeholder={'Nhập chứng chỉ hành nghề'}
-                            control={control}
-                            errors={errors}
+                            placeholder={ 'Nhập chứng chỉ hành nghề' }
+                            control={ control }
+                            errors={ errors }
                         />
                     </div>
                     <div className="relative md:mb-4 md:w-1/3">
@@ -364,23 +364,23 @@ export default function DoctorsFormAdd() {
                         >
                             Ngày bắt đầu vào nghề: <span className="text-red-500">*</span>
                         </label>
-                        <SelectBirthDate control={control} name="yearsExperience" errors={errors} />
+                        <SelectBirthDate control={ control } name="yearsExperience" errors={ errors } />
                     </div>
                 </div>
-                {/* Line 5 */}
+                {/* Line 5 */ }
                 <div className="flex w-full gap-5">
                     <div className="w-full gap-5 md:flex">
                         <div className="relative md:mb-4 md:w-1/2">
                             <InputCustom
-                                label={'Trình độ chuyên môn'}
+                                label={ 'Trình độ chuyên môn' }
                                 className="col-span-1 sm:col-span-1"
                                 required
-                                placeholder={'Nhập trình độ chuyên môn'}
+                                placeholder={ 'Nhập trình độ chuyên môn' }
                                 name="title"
                                 type="text"
                                 id="title"
-                                control={control}
-                                errors={errors}
+                                control={ control }
+                                errors={ errors }
                             />
                         </div>
                         <div className="relative mb-3 md:w-1/2">
@@ -390,7 +390,7 @@ export default function DoctorsFormAdd() {
                             >
                                 Chuyên khoa <span className="text-red-500">*</span>
                             </label>
-                            <SelectSpecialty control={control} name="specialty" errors={errors} />
+                            <SelectSpecialty control={ control } name="specialty" errors={ errors } />
                         </div>
                         <div className="relative mb-3 md:w-1/2">
                             <label
@@ -400,10 +400,10 @@ export default function DoctorsFormAdd() {
                                 Chi nhánh làm việc <span className="text-red-500">*</span>
                             </label>
                             <SelectBranch
-                                control={control}
+                                control={ control }
                                 name="branchID"
-                                errors={errors}
-                                setValue={(value) =>
+                                errors={ errors }
+                                setValue={ (value) =>
                                     console.log('Giá trị branchID được chọn: ', value)
                                 }
                             />
@@ -411,19 +411,19 @@ export default function DoctorsFormAdd() {
                     </div>
                 </div>
 
-                {/* Line 7 */}
+                {/* Line 7 */ }
                 <div className="flex w-full gap-5">
                     <div className="relative mb-3 w-full">
                         <InputCustom
-                            label={'Địa chỉ'}
+                            label={ 'Địa chỉ' }
                             required
                             className="col-span-1 sm:col-span-1"
                             name="address"
                             type="text"
                             id="address"
-                            placeholder={'Nhập địa chỉ'}
-                            control={control}
-                            errors={errors}
+                            placeholder={ 'Nhập địa chỉ' }
+                            control={ control }
+                            errors={ errors }
                         />
                     </div>
                 </div>
@@ -431,7 +431,7 @@ export default function DoctorsFormAdd() {
                     <label htmlFor="hoten" className="left-[15px] mb-2 block bg-white px-1 text-sm">
                         Chi tiết về bác sĩ <span className="text-red-500">*</span>
                     </label>
-                    <DoctorEditor name="detail" control={control} errors={errors} />
+                    <DoctorEditor name="detail" control={ control } errors={ errors } />
                 </div>
 
                 {/* Button */}

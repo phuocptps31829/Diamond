@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getStatusStyle } from "../utils/StatusStyle";
+import { getStatusPaymentStyle, getStatusStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
 import { MdOutlineConfirmationNumber } from "react-icons/md";
@@ -26,9 +26,14 @@ import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import { Link } from "react-router-dom";
 import { FaUserInjured } from "react-icons/fa6";
-
+import { formatCurrency } from "@/utils/format";
 const BookingInfo = ({ data }) => {
   const bookingData = data;
+  const { stylePayment, textPayment } = getStatusPaymentStyle(
+    bookingData.payment.status
+  );
+  const { style, text } = getStatusStyle(bookingData.status);
+
   const isValidAvatar = (avatar) => {
     const validExtensions = [".jpg", ".jpeg", ".png"];
     return validExtensions.some((ext) => avatar.endsWith(ext));
@@ -120,6 +125,11 @@ const BookingInfo = ({ data }) => {
               {bookingData.doctor.fullName}
             </p>
             <p className="text-gray-600">
+              <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
+              {bookingData.branch.name}
+            </p>
+
+            <p className="text-gray-600">
               <strong className="font-medium text-black">Loại khám:</strong>{" "}
               {bookingData.type}
             </p>
@@ -127,23 +137,23 @@ const BookingInfo = ({ data }) => {
               <strong className="font-medium text-black">Thời gian:</strong>{" "}
               {new Date(bookingData.time).toLocaleString()}
             </p>
-            <p
-              className={
-                bookingData.status === "Chờ xác nhận"
-                  ? "text-red-600"
-                  : "text-green-600"
-              }
-            >
-              <strong className="font-medium text-black">Trạng thái:</strong>{" "}
-              {bookingData.status}
-            </p>
+            <div className="flex w-max items-center justify-center gap-2">
+              <strong className="font-medium text-black">Trạng thái :</strong>
+              <div
+                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${style}`}
+              >
+                <span>{text}</span>
+              </div>
+            </div>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
-              {bookingData.invoice.price.toLocaleString("vi-VN")}đ
+              {formatCurrency(
+                bookingData.invoice.price + bookingData.invoice.arisePrice
+              )}
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {bookingData.invoice.arisePrice.toLocaleString("vi-VN")}đ
+              {formatCurrency(bookingData.invoice.arisePrice)}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">
@@ -156,11 +166,9 @@ const BookingInfo = ({ data }) => {
                 Trạng thái thanh toán:
               </strong>
               <div
-                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${getStatusStyle(
-                  bookingData.payment.status,
-                )}`}
+                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${stylePayment}`}
               >
-                <span>{bookingData.payment.status}</span>
+                <span>{textPayment}</span>
               </div>
             </div>
           </div>
@@ -236,7 +244,7 @@ const BookingInfo = ({ data }) => {
             <div className="w-full text-end">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="custom" className="">
+                  <Button variant="outline" className="">
                     Xem kết quả
                   </Button>
                 </AlertDialogTrigger>
@@ -285,6 +293,32 @@ const BookingInfo = ({ data }) => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Đóng</AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="custom" className="ml-2">
+                    Thanh toán
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Bạn có chắc chắn muốn thanh toán{" "}
+                      <span className="font-bold text-black">
+                        {formatCurrency(
+                          bookingData.invoice.price +
+                            bookingData.invoice.arisePrice
+                        )}
+                      </span>{" "}
+                      đơn khám bệnh này không?
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <Button variant="custom">Xác nhận </Button>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

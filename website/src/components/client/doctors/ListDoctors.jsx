@@ -189,9 +189,9 @@ export default function ListDoctors() {
           { currentRecords.map((doctor) => {
             return (
               <DoctorItem
-                key={ doctor._id }
+                key={ doctor?._id }
                 doctor={ doctor }
-                specialtyName={ specialtyMap[doctor.specialtyID] }
+                specialtyName={ specialtyMap[doctor?.specialty?._id] }
               />
             );
           }) }

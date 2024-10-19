@@ -111,6 +111,10 @@ export const medicalPackageApi = {
     const res = await axiosInstanceGET.get(`/medical-packages/${id}`);
     return res.data.data;
   },
+  getMedicalPackageBySlug: async (slug) => {
+    const res = await axiosInstanceGET.get(`/medical-packages/slug/${slug}`);
+    return res.data.data;
+  },
   getMedicalPackageBySpecialty: async (id, page, limit, sort) => {
     const params = {
       ...(page !== undefined && page !== null && { page }),

@@ -11,6 +11,7 @@ import { data } from "autoprefixer";
 import Loading from "@/components/ui/Loading";
 import { useNavigate } from "react-router-dom";
 import { toastUI } from "@/components/ui/Toastify";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const CreateRoleForm = () => {
     const queryClient = useQueryClient();
@@ -49,9 +50,6 @@ const CreateRoleForm = () => {
         createRole(data);
         console.log("onSubmit called with data:", data);
     };
-    if (isPending) {
-        return <Loading />;
-    }
 
     return (
         <div className="w-full">
@@ -80,8 +78,8 @@ const CreateRoleForm = () => {
                         />
                     </div>
                     <div className="mt-3 w-full text-end">
-                        <Button variant="custom" type="submit">
-                            Thêm
+                        <Button variant="custom" type="submit" disabled={ isPending }>
+                            { isPending ? <SpinLoader /> : "Thêm vai trò" }
                         </Button>
                     </div>
                 </form>

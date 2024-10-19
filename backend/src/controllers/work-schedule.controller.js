@@ -179,6 +179,8 @@ module.exports = {
                 createError(404, 'No work schedule found.');
             }
 
+            console.log(workSchedules);
+
             const formattedWorkSchedules = workSchedules.map(w => {
                 const result = {
                     ...w,

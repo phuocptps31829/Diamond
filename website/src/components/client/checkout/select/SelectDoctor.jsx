@@ -23,19 +23,20 @@ import { toastUI } from "@/components/ui/Toastify";
 export default function SelectDoctor({
   control,
   name,
-  errors,
-  branchId,
-  onChange,
+  branchID,
   specialtyID,
+  errors,
+  onChange,
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-
+  console.log(branchID,
+    specialtyID,);
   useEffect(() => {
-    if (!specialtyID || !branchId) return;
+    if (!specialtyID || !branchID) return;
     const fetchDoctors = async () => {
       try {
-        const data = await doctorApi.getDoctorsByBranch(branchId, specialtyID);
+        const data = await doctorApi.getDoctorsByBranch(branchID, specialtyID);
         console.log(data);
         setOptions(data);
       } catch (error) {
@@ -44,14 +45,14 @@ export default function SelectDoctor({
     };
 
     fetchDoctors();
-  }, [branchId, specialtyID]);
+  }, [branchID, specialtyID]);
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [branchId, specialtyID, errors, name]);
+  }, [branchID, specialtyID, errors, name]);
 
   const handleClick = () => {
-    if (!branchId) {
+    if (!branchID) {
       toastUI("Vui lòng chọn chi nhánh", "warning");
       return;
     }
@@ -74,7 +75,7 @@ export default function SelectDoctor({
                   className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500",
-                    branchId ? 'pointer-events-auto' : 'pointer-events-none'
+                    branchID ? 'pointer-events-auto' : 'pointer-events-none'
                   ) }
                 >
                   { field.value ? (

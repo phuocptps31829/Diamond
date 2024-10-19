@@ -26,11 +26,11 @@ export default function SelectDepartment({
   errors,
   specialtyID,
   onChange,
-  selectedServiceID
+  selectedProductID
 }) {
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
-  console.log(selectedServiceID);
+  console.log('s', selectedProductID, 'a', specialtyID);
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -48,10 +48,10 @@ export default function SelectDepartment({
 
   useEffect(() => {
     errors[name] = undefined;
-  }, [specialtyID, selectedServiceID, errors, name]);
+  }, [specialtyID, selectedProductID, errors, name]);
 
   const handleClick = () => {
-    if (!selectedServiceID) {
+    if (!selectedProductID) {
       toastUI("Vui lòng chọn dịch vụ", "warning");
       return;
     }
@@ -73,7 +73,7 @@ export default function SelectDepartment({
                 className={ cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "border-red-500",
-                  selectedServiceID ? 'pointer-events-auto' : 'pointer-events-none'
+                  selectedProductID ? 'pointer-events-auto' : 'pointer-events-none'
                 ) }
               >
                 { field.value ? (

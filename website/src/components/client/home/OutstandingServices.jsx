@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { serviceApi } from "@/services/servicesApi";
 import NotFound from "@/components/ui/NotFound";
+import Product from "../product/Product";
 
 export default function OutstandingServices() {
   const [OutstandingMedicalPackages, setOutstandingMedicalPackages] = useState(
@@ -91,7 +92,7 @@ export default function OutstandingServices() {
           <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
             { OutstandingMedicalPackages?.map((medicalPackage) => {
               return (
-                <ServiceItem key={ medicalPackage._id } { ...medicalPackage } />
+                <Product key={ medicalPackage._id } product={ medicalPackage } />
               );
             }) }
           </div>

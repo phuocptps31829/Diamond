@@ -11,7 +11,12 @@ const itemSlice = createSlice({
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     removeFromCart: (state, action) => {
-      state.cart = state.cart.filter(item => item.id !== action.payload);
+      const isService = action.payload.isService;
+      state.cart = state.cart.filter(item =>
+        isService
+          ? item.serviceID !== action.payload._id
+          : item.medicalPackageID !== action.payload._id
+      );
       localStorage.setItem("cart", JSON.stringify(state.cart));
     },
     clearCart: (state) => {

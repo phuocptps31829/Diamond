@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
-import { IoMdAdd } from "react-icons/io";
+import { GiHeartPlus } from "react-icons/gi";
 import { ImBin } from "react-icons/im";
 import {
   Tooltip,
@@ -115,11 +115,11 @@ export default function ServiceItem({
             to={ `/detail-service/${_id}` }
             className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
           >
-            Chi tiết <AiOutlineDoubleRight />
+            Đặt ngay <AiOutlineDoubleRight />
           </Link>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger className="h-full flex-[3] items-center justify-center">
+              <TooltipTrigger className="h-full flex-[2] items-center justify-center">
                 <button
                   onClick={ handleAddClick }
                   className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
@@ -130,12 +130,12 @@ export default function ServiceItem({
                   { isInCart ? (
                     <ImBin className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
                   ) : (
-                    <IoMdAdd className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
+                    <GiHeartPlus className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
                   ) }
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{ isInCart ? "Xóa khỏi giỏ hàng" : "Thêm giỏ hàng" }</p>
+                <p>{ isInCart ? "Xóa khỏi y tế" : "Thêm giỏ y tế" }</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>

@@ -43,7 +43,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
   }, [dataUpcomingAppointments]);
 
   return (
-    <div className="mt-6 grid w-full grid-cols-[35%_62.8%] justify-between">
+    <div className="mt-6 grid w-full grid-cols-[32%_65.8%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Bệnh nhân gần đây</h3>
@@ -114,18 +114,18 @@ export default function BottomLists({ dataUpcomingAppointments }) {
               filteredAppointments.map((appointment, index) => (
                 <TableRow key={index} className="h-12 text-[13px]">
                   <TableCell>{index + 1}</TableCell>
-                  <TableCell>{appointment.user?.[0].fullName}</TableCell>
+                  <TableCell>{appointment.patient.fullName}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
                       <img
                         src={
-                          appointment.user.avatar ||
+                          appointment.user?.avatar ||
                           "https://github.com/shadcn.png"
                         }
                         alt="Doctor"
                         className="h-6 w-6 rounded-full"
                       />
-                      <span>{appointment["user-doctor"]?.[0].fullName}</span>
+                      <span>{appointment.doctor.fullName}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -138,7 +138,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       minute: "numeric",
                     })}
                   </TableCell>
-                  <TableCell>{appointment.service?.[0].name}</TableCell>
+                  <TableCell>{appointment.service.name}</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>

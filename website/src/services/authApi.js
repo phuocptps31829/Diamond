@@ -135,16 +135,37 @@ export const authApi = {
         return res.data.data;
     },
     refreshToken: async (refreshToken) => {
-        const res = await axiosInstanceCUD.post(
-            '/auth/refresh-token',
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${refreshToken}`,
-                },
-            }
-        );
+        const res = await axiosInstanceCUD.post('/auth/refresh-token', {}, {
+            headers: {
+                Authorization: `Bearer ${refreshToken}`,
+            },
+        });
         console.log(res.data);
         return res.data;
+    },
+    changePassword: async ({ password, newPassword }) => {
+        const res = await axiosInstanceCUD.put('/auth/change-password', {
+            password,
+            newPassword
+        });
+        console.log(res.data);
+        return res.data;
+    },
+    registerSendOtp: async (data) => {
+        const res = await axiosInstanceCUD.post('/auth/register', data);
+        return res.data;
+    },
+    otpUserVerification: async (data) => {
+        const res = await axiosInstanceCUD.post('/patients/add', data);
+        return res.data.data;
+    },
+    sendOtpForgotPassword: async (phone) => {
+        const res = await axiosInstanceCUD.post(`${'/auth/forgot-password/send-otp'}/${phone}`);
+        console.log(res.data);
+        return res.data;
+    },
+    checkOtpForgotPassword: async (data) => {
+        const res = await axiosInstanceCUD.post('/auth/forgot-password/check-otp', data);
+        return res.data.data;
     },
 };

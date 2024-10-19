@@ -17,13 +17,15 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { toastUI } from "@/components/ui/Toastify";
 import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
-import { ReloadIcon } from "@radix-ui/react-icons";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const ServicesEdit = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [imagePreview, setImagePreview] = useState(null);
   const [fileImage, setFileImage] = useState(null);
+  const [initialData, setInitialData] = useState(null);
+  const [isPending, setIsPending] = useState(false);
 
   const {
     handleSubmit,
@@ -56,6 +58,21 @@ const ServicesEdit = () => {
 
   useEffect(() => {
     if (data) {
+      const initialFormData = {
+        name: data.name,
+        specialtyID: data.specialtyID,
+        content: data.details,
+        duration: Number(data.duration),
+        price: data.price,
+        discountPrice: data.discountPrice,
+        shortDescription: data.shortDescription,
+        gender: data.applicableObject.gender,
+        isFamily: data.applicableObject.isFamily,
+        isHidden: data.isHidden,
+        minAge: data.applicableObject.age.min,
+        maxAge: data.applicableObject.age.max,
+      };
+      setInitialData(initialFormData);
       setValue("name", data.name);
       setValue("specialtyID", data.specialtyID);
       setValue("price", data.price);
@@ -89,11 +106,20 @@ const ServicesEdit = () => {
       toastUI("Vui lòng chọn ảnh!", "error");
       return;
     }
+    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(initialData));
+
+    if (JSON.stringify(data) === JSON.stringify(initialData)) {
+      toastUI("Không có thay đổi nào được thực hiện.", "warning");
+      return;
+    }
+
     let imageName = null;
 
     if (fileImage) {
       const formData = new FormData();
       formData.append("file", fileImage);
+      setIsPending(true);
 
       try {
         const response = await axiosInstanceCUD.post(
@@ -110,7 +136,8 @@ const ServicesEdit = () => {
       } catch (error) {
         toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
         console.error("Error uploading image:", error);
-        return;
+      } finally {
+        setIsPending(false);
       }
     } else {
       imageName = imagePreview.split("/").pop();
@@ -135,7 +162,7 @@ const ServicesEdit = () => {
         isFamily: data.isFamily,
       },
     };
-    console.log(serviceData);
+    console.log(JSON.stringify(serviceData));
 
     mutation.mutate(serviceData);
   };
@@ -364,11 +391,14 @@ const ServicesEdit = () => {
           </div>
           <ServiceEditor control={ control } name="content" errors={ errors } />
           <div className="mt-10 w-full text-end">
-            <Button type="submit" disabled={ mutation.isPending } variant="custom">
-              { mutation.isPending ? (
+            <Button
+              type="submit"
+              disabled={ isPending || mutation.isPending }
+              variant="custom"
+            >
+              { isPending || mutation.isPending ? (
                 <>
-                  <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
-                  Đang xử lý...
+                  <SpinLoader />
                 </>
               ) : (
                 "Cập nhật dịch vụ"
