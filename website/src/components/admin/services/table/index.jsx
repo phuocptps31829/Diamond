@@ -157,7 +157,7 @@ export default function DataTable({ data, columns }) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                   colSpan={columns ? columns.length : 1}
                   className="h-24 text-center"
                 >
                   Không có kết quả.

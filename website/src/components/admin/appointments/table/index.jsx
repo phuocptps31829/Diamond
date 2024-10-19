@@ -26,8 +26,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { getColumnsAppointments } from "./columns";
+import { invoicesApi } from "@/services/invoicesApi";
+import { toastUI } from "@/components/ui/Toastify";
+import Loading from "@/components/ui/Loading";
+import { appointmentApi } from "@/services/appointmentsApi";
 
 export default function DataTable({ data, columns }) {
   const queryClient = useQueryClient();
@@ -48,10 +53,41 @@ export default function DataTable({ data, columns }) {
     defaultValues: {},
   });
   const onSubmit = () => {};
+  const { mutate: updateStatus, isPending } = useMutation({
+    mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
+    onSuccess: () => {
+      toastUI("Chỉnh sửa trạng thái thành công", "success");
+      queryClient.invalidateQueries("appointments");
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Chỉnh sửa trạng thái không thành công", "error");
+    },
+  });
+  const handleChangeStatus = (id, status) => {
+    updateStatus({ id, status });
+  };
+  const { mutate: deleteAppointment } = useMutation({
+    mutationFn: invoicesApi.deleteInvoice,
+    onSuccess: () => {
+      toastUI("Xóa lịch khám thành công", "success");
+      queryClient.invalidateQueries("appointments");
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Xóa lịch khám không thành công", "error");
+    },
+  });
+  const handleDeleteAppointment = (id) => {
+    deleteAppointment(id);
+  };
 
   const table = useReactTable({
     data,
-    columns,
+    columns: getColumnsAppointments(
+      handleChangeStatus,
+      handleDeleteAppointment
+    ),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -74,6 +110,9 @@ export default function DataTable({ data, columns }) {
   const handleRefresh = () => {
     queryClient.invalidateQueries("appointments");
   };
+  if (isPending) {
+    return <Loading />;
+  }
   return (
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */}
@@ -136,7 +175,7 @@ export default function DataTable({ data, columns }) {
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -155,7 +194,7 @@ export default function DataTable({ data, columns }) {
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}
@@ -164,7 +203,7 @@ export default function DataTable({ data, columns }) {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={columns ? columns.length : 1}
                   className="h-24 text-center"
                 >
                   Không có kết quả.
