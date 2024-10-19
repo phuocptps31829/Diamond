@@ -58,7 +58,6 @@ export default function DoctorsFormAdd() {
         onSuccess: () => {
             toast('Tạo mới bác sĩ thành công!', 'success');
             navigate('/admin/doctors/list');
-            toast('Tạo mới bác sĩ thành công!', 'success');
             setIsLoading(false);
         },
         onError: (error) => {
@@ -71,6 +70,9 @@ export default function DoctorsFormAdd() {
     const onSubmit = async (data) => {
         if (!fileImage) {
             toast('Vui lòng chọn ảnh!', 'error');
+            return;
+        } else if (data.imagesPracticingCertificate.length === 0) {
+            toast('Vui lòng chọn ảnh chứng chỉ hành nghề!', 'error');
             return;
         }
 
@@ -115,9 +117,14 @@ export default function DoctorsFormAdd() {
                 imagesPracticingCertificate.map(async (image) => {
                     const formData = new FormData();
                     formData.append('file', image);
-
-                    const response = await imageApi.createImage(formData);
-                    return response.data;
+                    try {
+                        const response = await imageApi.createImage(formData);
+                        console.log('Response from API:', response);
+                        return response.data;
+                    } catch (error) {
+                        console.error('Lỗi khi upload ảnh:', error.response?.data || error.message);
+                        throw error;
+                    }
                 })
             );
 
@@ -127,6 +134,7 @@ export default function DoctorsFormAdd() {
         } catch (error) {
             console.error('Lỗi khi tải ảnh hoặc tạo mới bác sĩ:', error);
             toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            setIsLoading(false);
         }
     };
 
@@ -427,7 +435,7 @@ export default function DoctorsFormAdd() {
                 </div>
 
                 {/* Button */}
-                <div className="flex justify-end mt-5">
+                <div className="mt-5 flex justify-end">
                     <Button variant="custom" type="submit" disabled={isLoading || isPending}>
                         {isLoading || isPending ? <SpinLoader /> : 'Thêm mới'}
                     </Button>

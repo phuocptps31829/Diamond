@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/Command';
 import { Check, ChevronsUpDown } from 'lucide-react';
 
-export default function SelectDepartment({ control, options, name, onChange }) {
+export default function SelectDepartment({ control, options, name }) {
     const [open, setOpen] = useState(false);
 
     return (
@@ -52,7 +52,6 @@ export default function SelectDepartment({ control, options, name, onChange }) {
                                                 onSelect={() => {
                                                     const value = option.value;
                                                     field.onChange(value);
-                                                    onChange(value);
                                                     setOpen(false);
                                                 }}
                                             >

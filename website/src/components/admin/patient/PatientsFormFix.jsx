@@ -133,7 +133,6 @@ export default function PatientFormFix({ patientDetail }) {
 
             updatePatientMutation({ id: patientDetail._id, requestBody });
         } else {
-            console.log('trường hợp 2');
             requestBody.avatar = imagePreview;
             updatePatientMutation({ id: patientDetail._id, requestBody });
         }
