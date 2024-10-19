@@ -23,28 +23,7 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
-//   const useDeleteNews = () => {
-//     const queryClient = useQueryClient();
-//     return useMutation({
-//       mutationFn: (newsId) => newsApi.deleteNews(newsId),
-//       onSuccess: () => {
-//         queryClient.invalidateQueries("news");
-//           toastUI("Xóa tin tức thành công.", "success");
-//       },
-//       onError: (error) => {
-//           toastUI("Xóa tin tức thất bại.", "error");
-//         console.error("Error deleting news:", error);
-//       },
-//     });
-//   };
-
-const Action = ({ row }) => {
-  // const deleteMutation = useDeleteNews();
-
-  // const handleDelete = () => {
-  //   deleteMutation.mutate(row.original._id);
-  // };
-
+const Action = ({ row, onDelete }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -93,12 +72,13 @@ const Action = ({ row }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction>ok</AlertDialogAction>
+                <AlertDialogAction onClick={() => onDelete(row.original._id)}>
+                  Xác nhận
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
         </DropdownMenuItem>
-       
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -7,6 +7,7 @@ import { FcHighPriority } from "react-icons/fc";
 import { Button } from "@/components/ui/Button";
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -18,20 +19,32 @@ import {
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/Dialog";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import { Link } from "react-router-dom";
 import { FaUserInjured } from "react-icons/fa6";
 import { formatCurrency } from "@/utils/format";
+import { FaRegEdit } from "react-icons/fa";
+import { Input } from "@/components/ui/Input";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { invoicesApi } from "@/services/invoicesApi";
+import { toastUI } from "@/components/ui/Toastify";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const BookingInfo = ({ data }) => {
   const bookingData = data;
   const { stylePayment, textPayment } = getStatusPaymentStyle(
     bookingData.payment.status
   );
+  const queryClient = useQueryClient();
+
   const { style, text } = getStatusStyle(bookingData.status);
 
   const isValidAvatar = (avatar) => {
@@ -41,9 +54,42 @@ const BookingInfo = ({ data }) => {
 
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [newPriority, setNewPriority] = useState(null);
   const handleOpen = (image) => {
     setSelectedImage(image);
     setOpen(true);
+  };
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: ({ id, priority }) =>
+      invoicesApi.updateOrderNumber(id, priority),
+    onSuccess: () => {
+      queryClient.invalidateQueries("appointments");
+      toastUI("Cập nhật số ưu tiên thành công!", "success");
+    },
+    onError: (error) => {
+      toastUI("Đã xảy ra lỗi khi cập nhật số ưu tiên.", "error");
+      console.error("Error updating priority:", error);
+    },
+  });
+
+  const handleSave = () => {
+    const newPriorityNumber = Number(newPriority);
+    mutate({ id: bookingData._id, priority: newPriorityNumber });
+  };
+  const paymentMutation = useMutation({
+    mutationFn: ({ id, status }) => invoicesApi.updatePaymentStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries("appointments");
+      toastUI("Đã cập nhật trạng thái thanh toán!", "success");
+    },
+    onError: (error) => {
+      toastUI("Đã xảy ra lỗi khi cập nhật trạng thái thanh toán.", "error");
+      console.error("Error updating payment status:", error);
+    },
+  });
+  const handlePayment = () => {
+    paymentMutation.mutate({ id: bookingData._id, status: "PAID" });
   };
   return (
     <div className="mt-8 w-full">
@@ -62,9 +108,43 @@ const BookingInfo = ({ data }) => {
           {bookingData.orderNumber.priority !== undefined && (
             <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
               <FcHighPriority className="text-xl" />
-              <strong className="font-medium text-primary-900">
-                Số ưu tiên : {bookingData.orderNumber.priority}
-              </strong>
+              {isPending ? (
+                <AiOutlineLoading3Quarters className="animate-spin" />
+              ) : (
+                <strong className="font-medium text-primary-900">
+                  Số ưu tiên : {bookingData.orderNumber?.priority}
+                </strong>
+              )}
+
+              <Dialog>
+                <DialogTrigger>
+                  <FaRegEdit className="ml-1 cursor-pointer text-xl text-black" />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Chỉnh sửa số ưu tiên</DialogTitle>
+                    <DialogDescription>
+                      Nhập số ưu tiên mới cho đơn đặt chỗ này.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="mt-4">
+                    <Input
+                      type="number"
+                      min="1"
+                      value={newPriority}
+                      onChange={(e) => setNewPriority(e.target.value)}
+                      className="w-full rounded-md border border-gray-300 px-3 py-2"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="custom" onClick={handleSave}>
+                        Lưu
+                      </Button>
+                    </DialogClose>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           )}
         </div>
@@ -93,25 +173,44 @@ const BookingInfo = ({ data }) => {
         </div>
       </div>
 
-      <div className="rounded-xl bg-white px-4 py-4 shadow-md sm:px-6 sm:py-6">
+      <div className="rounded-xl bg-white px-4 py-4 sm:px-6 sm:py-6">
         <div className="grid grid-cols-1 items-start gap-8 sm:grid-cols-1 md:grid-cols-10">
           <div className="col-span-6 md:col-span-4">
             <strong className="text-lg font-semibold text-gray-700">
               Dịch vụ / gói khám:
             </strong>
             <ul className="list-disc">
-              <div className="relative py-3" key={bookingData.service._id}>
+              <div
+                className="relative py-3"
+                key={
+                  bookingData.medicalPackage
+                    ? bookingData.medicalPackage?._id
+                    : bookingData.service._id
+                }
+              >
                 <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
                   <div className="ml-4 flex items-center gap-12">
                     <img
-                      src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                      src={`${import.meta.env.VITE_IMAGE_API_URL}/${bookingData.service?.image || bookingData.medicalPackage?.image}`}
                       className="w-[60px] sm:w-[75px] md:w-[100px]"
-                      alt={`Image of ${bookingData.service.name}`}
+                      alt={`Image of ${bookingData.medicalPackage ? bookingData.medicalPackage.name : bookingData.service.name}`}
                     />
                     <div className="flex flex-col">
                       <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
-                        {bookingData.service.name}
+                        {bookingData.medicalPackage
+                          ? bookingData.medicalPackage.name
+                          : bookingData.service.name}
                       </p>
+                      {bookingData.medicalPackage ? (
+                        <p className="text-[12px] sm:text-[14px] md:text-[16px]">
+                          Cấp độ: {bookingData.medicalPackage.level.name} - Giá:{" "}
+                          {bookingData.medicalPackage.level.price}
+                        </p>
+                      ) : (
+                        <p className="text-[12px] sm:text-[14px] md:text-[16px]">
+                          Giá: {formatCurrency(bookingData.service.price)}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </label>
@@ -244,7 +343,14 @@ const BookingInfo = ({ data }) => {
             <div className="w-full text-end">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="">
+                  <Button
+                    variant={
+                      bookingData.payment.status === "PENDING"
+                        ? "outline"
+                        : "custom"
+                    }
+                    className=""
+                  >
                     Xem kết quả
                   </Button>
                 </AlertDialogTrigger>
@@ -296,32 +402,39 @@ const BookingInfo = ({ data }) => {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="custom" className="ml-2">
-                    Thanh toán
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Bạn có chắc chắn muốn thanh toán{" "}
-                      <span className="font-bold text-black">
-                        {formatCurrency(
-                          bookingData.invoice.price +
-                            bookingData.invoice.arisePrice
-                        )}
-                      </span>{" "}
-                      đơn khám bệnh này không?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <Button variant="custom">Xác nhận </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              {bookingData.payment.status === "PENDING" && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="custom" className="ml-2">
+                      Thanh toán
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Bạn có chắc chắn muốn thanh toán{" "}
+                        <span className="font-bold text-black">
+                          {formatCurrency(
+                            bookingData.invoice.price +
+                              bookingData.invoice.arisePrice
+                          )}
+                        </span>{" "}
+                        đơn khám bệnh này không?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Hủy</AlertDialogCancel>
+                      <AlertDialogAction>
+                        {" "}
+                        <Button variant="custom" onClick={handlePayment}>
+                          Xác nhận
+                        </Button>
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </div>
         )}

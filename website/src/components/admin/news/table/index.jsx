@@ -101,12 +101,20 @@ export default function DataTable({ data, columns }) {
             </div>
           </div>
           <Link to={"/admin/news/create"}>
-
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
-            <FaPlus className="text-primary-500"></FaPlus>
-          </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="mr-1 mt-2 h-11 w-11"
+            >
+              <FaPlus className="text-primary-500"></FaPlus>
+            </Button>
           </Link>
-          <Button onClick={handleRefresh} size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
+          <Button
+            onClick={handleRefresh}
+            size="icon"
+            variant="outline"
+            className="mr-1 mt-2 h-11 w-11"
+          >
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>
@@ -122,7 +130,7 @@ export default function DataTable({ data, columns }) {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 );
@@ -147,7 +155,10 @@ export default function DataTable({ data, columns }) {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={columns ? columns.length : 1}
+                className="h-24 text-center"
+              >
                 Không có kết quả.
               </TableCell>
             </TableRow>
