@@ -132,6 +132,7 @@ export default function AccurancyComponent() {
   }, []);
 
   const handleSendAgainOtp = () => {
+    setOtp(new Array(6).fill(""));
     if (timeLeft > 0) {
       toastUI("Gửi lại mã OTP thất bại!", "error");
       return;

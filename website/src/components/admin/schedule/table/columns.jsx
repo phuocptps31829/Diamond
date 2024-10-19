@@ -45,7 +45,7 @@ export const columnsSchedule = [
         },
         cell: ({ row }) => <div className="flex items-center gap-3">
             <Avatar className="size-8">
-                <img src={ `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.image}` } alt={ row.original.fullName } />
+                <img src={ `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.avatar}` } alt={ row.original.fullName } />
             </Avatar>
             <span className="w-full whitespace-nowrap">
                 { row.original.fullName }

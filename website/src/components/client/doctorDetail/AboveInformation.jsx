@@ -43,8 +43,8 @@ export default function AboveInformation({ doctor, isLoading }) {
   return (
     <>
       <div className="mx-auto max-w-screen-xl">
-        <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-10 md:px-10">
-          <div className="block overflow-hidden rounded-full">
+        <div className="flex flex-col items-center space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
+          <div className="block overflow-hidden rounded-full w-96 h-96">
             <img src={ `${import.meta.env.VITE_IMAGE_API_URL}/${avatar}` } />
           </div>
           <div className="flex flex-col space-y-4">
@@ -73,7 +73,7 @@ export default function AboveInformation({ doctor, isLoading }) {
               </strong>
               { gender }
             </div>
-            <button className="rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-orange-500">
+            <button className="rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-primary-600 w-full">
               Đặt lịch hẹn
             </button>
             <div className="flex flex-col space-y-3 rounded-md bg-white p-5 lg:min-w-[550px]">
@@ -102,8 +102,3 @@ export default function AboveInformation({ doctor, isLoading }) {
     </>
   );
 }
-
-AboveInformation.propTypes = {
-  doctor: PropTypes.object,
-  isLoading: PropTypes.bool,
-};
