@@ -1,4 +1,5 @@
 import InputCustom from "@/components/ui/InputCustom";
+import SpinLoader from "@/components/ui/SpinLoader";
 import { toastUI } from "@/components/ui/Toastify";
 import { authApi } from "@/services/authApi";
 import { changePasswordSchema } from "@/zods/changePassword";
@@ -11,6 +12,7 @@ const ChangePassword = () => {
     handleSubmit,
     formState: { errors },
     control,
+    reset
   } = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
@@ -24,6 +26,12 @@ const ChangePassword = () => {
     mutationFn: authApi.changePassword,
     onSuccess: (data) => {
       console.log(data);
+      toastUI("Cập nhật thành công", "success");
+      reset({
+        password: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     },
     onError: (error) => {
       console.log(error);
@@ -78,9 +86,9 @@ const ChangePassword = () => {
         <div className="flex w-full items-end justify-end">
           <button
             type="submit"
-            className="md:w-2/12 mt-4 h-fit w-4/12 rounded-md bg-primary-500 p-2 text-white text-[15px]"
+            className="md:w-2/12 text-center mt-4 h-fit w-4/12 rounded-md bg-primary-500 p-2 text-white text-[15px]"
           >
-            Cập nhật
+            { isPending ? <SpinLoader /> : "Cập nhật" }
           </button>
         </div>
       </form>

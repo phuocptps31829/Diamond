@@ -18,6 +18,7 @@ import { patientApi } from "@/services/patientsApi";
 import { Controller } from "react-hook-form";
 import SelectEthnic from "../checkout/select/SelectEthnicity";
 import SelectDateOfBirth from "./SelectDateOfBirth";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 const UserInfoForm = () => {
   const queryClient = useQueryClient();
@@ -39,6 +40,7 @@ const UserInfoForm = () => {
     },
     onSuccess: () => {
       toastUI("Cập nhật thành công", "success");
+      setFileImage(null);
       queryClient.invalidateQueries(["userProfile"]);
     },
     onError: (error) => {
@@ -175,6 +177,7 @@ const UserInfoForm = () => {
               className="col-span-1 sm:col-span-1"
               name="phoneNumber"
               label="Số điện thoại"
+              disabled
               type="text"
               control={ control }
               errors={ errors }
@@ -295,7 +298,7 @@ const UserInfoForm = () => {
               type="submit"
               className="mt-5 hidden h-fit w-full rounded-md bg-primary-500 p-2 text-white md:block"
             >
-              Cập nhật
+              { isPendingUpdate ? <SpinLoader /> : "Cập nhật" }
             </button>
           </div>
         </div>
