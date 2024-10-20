@@ -32,7 +32,6 @@ import { getColumnsAppointments } from "./columns";
 import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
-import { appointmentApi } from "@/services/appointmentsApi";
 
 export default function DataTable({ data, columns }) {
   const queryClient = useQueryClient();
@@ -82,11 +81,13 @@ export default function DataTable({ data, columns }) {
     deleteAppointment(id);
   };
 
+ 
+  
   const table = useReactTable({
     data,
     columns: getColumnsAppointments(
       handleChangeStatus,
-      handleDeleteAppointment
+      handleDeleteAppointment,
     ),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -110,6 +111,23 @@ export default function DataTable({ data, columns }) {
   const handleRefresh = () => {
     queryClient.invalidateQueries("appointments");
   };
+  // const { mutate: deleteAppointmentMultiple } = useMutation({
+  //   mutationFn: invoicesApi.deleteInvoiceMultiple,
+  //   onSuccess: () => {
+  //     toastUI("Xóa lịch khám thành công", "success");
+  //     queryClient.invalidateQueries("appointments");
+  //   },
+  //   onError: (err) => {
+  //     console.log(err);
+  //     toastUI("Xóa lịch khám không thành công", "error");
+  //   },
+  // });
+
+  // const handleDeleteAppointmentMultiple = (ids) => {
+  //   deleteAppointmentMultiple(ids);
+  // };
+  // const selectedRowIds = table.getSelectedRowModel().rows.map(row => row.original._id);
+  
   if (isPending) {
     return <Loading />;
   }
@@ -219,6 +237,15 @@ export default function DataTable({ data, columns }) {
           {table.getFilteredSelectedRowModel().rows.length} trên{" "}
           {table.getFilteredRowModel().rows.length} trong danh sách.
         </div>
+        {/* {selectedRowIds.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDeleteAppointmentMultiple(selectedRowIds)}
+          >
+            Xóa tất cả
+          </Button>
+        )} */}
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
