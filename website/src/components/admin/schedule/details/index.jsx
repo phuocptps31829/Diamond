@@ -58,6 +58,11 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
              * */
             onEventUpdate(updatedEvent) {
                 console.log('onEventUpdate', updatedEvent);
+                onSetInfoForm(prev => ({
+                    ...prev,
+                    isOpen: true,
+                    date: new Date(updatedEvent.start).toISOString().slice(0, 10)
+                }));
             },
 
             /**

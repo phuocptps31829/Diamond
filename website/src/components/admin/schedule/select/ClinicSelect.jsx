@@ -78,7 +78,7 @@ export default function Selectclinic({
                                     { field.value ? (
                                         options.find((clinic) => clinic._id === field.value)?.name
                                     ) : (
-                                        <span className="text-gray-600">Chọn bác sĩ</span>
+                                        <span className="text-gray-600">Chọn phòng khám</span>
                                     ) }
                                     <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                                 </Button>

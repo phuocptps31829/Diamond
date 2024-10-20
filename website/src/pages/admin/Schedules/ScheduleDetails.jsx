@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import Loading from "@/components/ui/Loading";
+import { createPortal } from "react-dom";
 
 const getBreadcrumbData = (id, name) => [
     {
@@ -56,8 +57,16 @@ const ScheduleDetailsPage = () => {
                 setNewSchedule={ setNewSchedule }
                 schedules={ data?.data }
             />
+            {/* <PP infoForm={ infoForm } /> */ }
         </>
     );
 };
+
+// function PP({ infoForm }) {
+//     return createPortal(infoForm.isOpen && <div className="absolute bg-slate-400 z-50 bg-opacity-20 top-0 left-0 w-full h-full">
+//         <h1>Details</h1>
+//         dialog
+//     </div>, document.body);
+// }
 
 export default ScheduleDetailsPage;
