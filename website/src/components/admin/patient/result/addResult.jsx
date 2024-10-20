@@ -84,7 +84,6 @@ export default function PatientResult() {
   const [workScheduleID, setWorkScheduleID] = useState("");
   const [isServiceSelected, setIsServiceSelected] = useState(true);
 
-
   const handleChangeService = (serviceId, specialtyID, price) => {
     setSelectedService({ serviceId, specialtyID, price });
     setSelectedBranchId("");
