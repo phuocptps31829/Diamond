@@ -218,6 +218,11 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch đặt",
             active: pathname === "/admin/appointments/list",
           },
+          {
+            href: "/admin/appointments/create",
+            label: "Thêm lịch đặt",
+            active: pathname === "/admin/appointments/create",
+          },
         ],
       },
     ],

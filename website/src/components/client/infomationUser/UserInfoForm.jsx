@@ -137,7 +137,7 @@ const UserInfoForm = () => {
       updatePatient({ id: profileFetched?.data?._id, requestBody });
     }
   };
-
+  console.log(errors);
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {

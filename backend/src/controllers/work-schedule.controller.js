@@ -486,6 +486,13 @@ module.exports = {
                     }
                 })
                 .populate({
+                    path: 'doctorID',
+                    populate: {
+                        path: 'otherInfo.branchID',
+                        model: 'Branch'
+                    }
+                })
+                .populate({
                     path: 'clinicID',
                     populate: {
                         path: 'branchID',
@@ -493,7 +500,12 @@ module.exports = {
                 });
 
             if (!workSchedules.length) {
-                createError(404, 'No workSchedule found.');
+                if (!workSchedules.length) {
+                    return res.status(200).json({
+                        message: 'WorkSchedule retrieved successfully.',
+                        data: [],
+                    });
+                }
             }
 
             const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
@@ -526,8 +538,8 @@ module.exports = {
                         name: doctor.otherInfo.specialtyID.name,
                     },
                     branch: {
-                        _id: schedules[0].clinicID.branchID._id,
-                        name: schedules[0].clinicID.branchID.name,
+                        _id: doctor.otherInfo.branchID._id,
+                        name: doctor.otherInfo.branchID.name,
                     },
                     schedules: schedules.map(schedule => ({
                         _id: schedule._id,

@@ -350,10 +350,6 @@ const router = createBrowserRouter([
         element: <PatientsFormFixPage />,
       },
       {
-        path: "patients/result",
-        element: <PatientsResult />,
-      },
-      {
         path: "staffs/list",
         element: <StaffsListPage />,
       },
@@ -426,6 +422,10 @@ const router = createBrowserRouter([
         element: <AppointmentsFormPage />,
       },
       {
+        path: "appointments/create",
+        element: <PatientsResult />,
+      },
+      {
         path: "clinics/list",
         element: <ClinicsListPage />,
       },
@@ -472,8 +472,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }

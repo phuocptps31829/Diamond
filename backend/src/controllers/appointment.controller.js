@@ -183,20 +183,20 @@ module.exports = {
                 const formattedAppointment = {
                     ...appointment,
                     patient: {
-                        _id: appointment.patientID._id,
+                        _id: appointment.patientID?._id,
                         fullName: appointment.patientID.fullName,
                         avatar: appointment.patientID.avatar,
                     },
                     doctor: {
-                        _id: appointment.workScheduleID.doctorID._id,
+                        _id: appointment.workScheduleID.doctorID?._id,
                         fullName: appointment.workScheduleID.doctorID.fullName
                     },
                     clinic: {
-                        _id: appointment.workScheduleID.clinicID._id,
+                        _id: appointment.workScheduleID.clinicID?._id,
                         name: appointment.workScheduleID.clinicID.name
                     },
                     branch: {
-                        _id: appointment.workScheduleID.clinicID.branchID._id,
+                        _id: appointment.workScheduleID.clinicID.branchID?._id,
                         name: appointment.workScheduleID.clinicID.branchID.name
                     },
                     result: {
@@ -214,11 +214,11 @@ module.exports = {
                     } : {}),
                     ...(medicalPackage ? {
                         medicalPackage: {
-                            _id: medicalPackage._id,
+                            _id: medicalPackage?._id,
                             name: medicalPackage.name,
                             image: medicalPackage.image,
                             level: {
-                                _id: level._id,
+                                _id: level?._id,
                                 name: level.levelName,
                                 price: level.price
                             },
@@ -229,7 +229,7 @@ module.exports = {
                 delete formattedAppointment.medicalPackageID;
                 delete formattedAppointment.patientID;
                 delete formattedAppointment.workScheduleID;
-
+                console.log(formattedAppointment);
                 return formattedAppointment;
             });
 

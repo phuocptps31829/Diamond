@@ -157,14 +157,16 @@ function CalendarSchedule({ newSchedule, onSetInfoForm, defaultEvents }) {
         }
     }, [newSchedule]);
 
-    defaultEvents?.forEach(event => {
-        eventsServicePlugin.add({
-            id: event._id,
-            title: event.clinic.name,
-            start: `${event.day} ${event.hour.startTime}`,
-            end: `${event.day} ${event.hour.endTime}`,
+    if (defaultEvents.length) {
+        defaultEvents?.forEach(event => {
+            eventsServicePlugin.add({
+                id: event._id,
+                title: event.clinic.name,
+                start: `${event.day} ${event.hour.startTime}`,
+                end: `${event.day} ${event.hour.endTime}`,
+            });
         });
-    });
+    }
 
     return (
         <div className='w-full'>
