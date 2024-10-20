@@ -133,14 +133,13 @@ export default function PatientFormFix({ patientDetail }) {
 
             updatePatientMutation({ id: patientDetail._id, requestBody });
         } else {
-            console.log('trường hợp 2');
             requestBody.avatar = imagePreview;
             updatePatientMutation({ id: patientDetail._id, requestBody });
         }
     };
 
     return (
-        <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
+        <div className="w-[100%] rounded-lg bg-white px-7 py-6 ">
             <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">Thông tin người dùng</h1>
 
             <form onSubmit={handleSubmit(onSubmit)}>

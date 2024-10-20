@@ -18,3 +18,9 @@ export const formatCurrency = (value) => {
         currency: 'VND',
     }).format(value);
 };
+
+export const formatWeekday = (date) => {
+    return new Date(date).toLocaleString("vi-VN", {
+        weekday: "long",
+    });
+};

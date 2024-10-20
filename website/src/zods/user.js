@@ -7,7 +7,7 @@ export const userInfoSchema = z.object({
   citizenIdentificationNumber: z.string().min(1, "Số CMND/CCCD không được để trống"),
   address: z.string().min(1, "Địa chỉ không được để trống"),
   email: z.string().email("Email không hợp lệ").optional().or(z.literal('')),
-  gender: z.string(),
-  ethnic: z.string(),
-  occupation: z.string(),
+  gender: z.string().optional(),
+  ethnic: z.string().optional(),
+  occupation: z.string().optional(),
 });

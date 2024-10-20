@@ -151,4 +151,21 @@ export const authApi = {
         console.log(res.data);
         return res.data;
     },
+    registerSendOtp: async (data) => {
+        const res = await axiosInstanceCUD.post('/auth/register', data);
+        return res.data;
+    },
+    otpUserVerification: async (data) => {
+        const res = await axiosInstanceCUD.post('/patients/add', data);
+        return res.data.data;
+    },
+    sendOtpForgotPassword: async (phone) => {
+        const res = await axiosInstanceCUD.post(`${'/auth/forgot-password/send-otp'}/${phone}`);
+        console.log(res.data);
+        return res.data;
+    },
+    checkOtpForgotPassword: async (data) => {
+        const res = await axiosInstanceCUD.post('/auth/forgot-password/check-otp', data);
+        return res.data.data;
+    },
 };

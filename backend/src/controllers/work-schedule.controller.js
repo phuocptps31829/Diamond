@@ -3,7 +3,7 @@ const { createError, timeDivision } = require("../utils/helper.util");
 const mongoose = require("mongoose");
 
 module.exports = {
-    getAllWorkSchedule: async (req, res, next) => {
+    getAllWorkSchedules: async (req, res, next) => {
         try {
             const {
                 limitDocuments,
@@ -12,24 +12,74 @@ module.exports = {
                 sortOptions
             } = req.customQueries;
 
-            const totalRecords = await WorkScheduleModel.countDocuments({
-                isDeleted: false,
-            });
+            const totalRecords = await WorkScheduleModel.countDocuments({ isDeleted: false });
 
-            const workSchedule = await WorkScheduleModel
+            const workSchedules = await WorkScheduleModel
                 .find({ isDeleted: false })
-                .limit(limitDocuments)
-                .skip(skip)
+                .populate("doctorID")
+                .populate({
+                    path: 'clinicID',
+                    populate: {
+                        path: 'branchID',
+                    }
+                })
                 .sort(sortOptions);
 
-            if (!workSchedule.length) {
+            if (!workSchedules.length) {
                 createError(404, 'No workSchedule found.');
             }
+
+            const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
+                const doctorId = schedule.doctorID._id.toString();
+                console.log('doctorId', schedule);
+                if (!acc[doctorId]) {
+                    acc[doctorId] = {
+                        doctor: schedule.doctorID,
+                        schedules: [],
+                        count: 0
+                    };
+                }
+
+                acc[doctorId].schedules.push(schedule);
+                acc[doctorId].count += 1;
+                return acc;
+            }, {});
+
+            const groupedArray = Object.values(groupedByDoctor);
+            const formattedGroupedArray = groupedArray.map(group => {
+                const { doctor, schedules } = group;
+                console.log('doctor', group);
+                const formattedGroup = {
+                    _id: doctor._id,
+                    fullName: doctor.fullName,
+                    email: doctor.email,
+                    phoneNumber: doctor.phoneNumber,
+                    address: doctor.address,
+                    avatar: doctor.avatar,
+                    branch: {
+                        _id: schedules[0].clinicID.branchID._id,
+                        name: schedules[0].clinicID.branchID.name,
+                    },
+                    schedules: schedules.map(schedule => ({
+                        _id: schedule._id,
+                        day: schedule.day,
+                        hour: schedule.hour,
+                        clinic: {
+                            _id: schedules[0].clinicID._id,
+                            name: schedules[0].clinicID.name,
+                        }
+                    })),
+                };
+
+                return formattedGroup;
+            });
+
+            const paginatedGroupedArray = formattedGroupedArray.slice(skip, skip + limitDocuments);
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'WorkSchedule retrieved successfully.',
-                data: workSchedule,
+                data: paginatedGroupedArray,
                 totalRecords
             });
         } catch (error) {
@@ -422,4 +472,95 @@ module.exports = {
             next(error);
         }
     },
+    getWorkScheduleByDoctorId: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const workSchedules = await WorkScheduleModel
+                .find({ doctorID: id, isDeleted: false })
+                .populate({
+                    path: 'doctorID',
+                    populate: {
+                        path: 'otherInfo.specialtyID',
+                        model: 'Specialty'
+                    }
+                })
+                .populate({
+                    path: 'doctorID',
+                    populate: {
+                        path: 'otherInfo.branchID',
+                        model: 'Branch'
+                    }
+                })
+                .populate({
+                    path: 'clinicID',
+                    populate: {
+                        path: 'branchID',
+                    }
+                });
+
+            if (!workSchedules.length) {
+                if (!workSchedules.length) {
+                    return res.status(200).json({
+                        message: 'WorkSchedule retrieved successfully.',
+                        data: [],
+                    });
+                }
+            }
+
+            const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
+                const doctorId = schedule.doctorID._id.toString();
+                if (!acc[doctorId]) {
+                    acc[doctorId] = {
+                        doctor: schedule.doctorID,
+                        schedules: [],
+                        count: 0
+                    };
+                }
+
+                acc[doctorId].schedules.push(schedule);
+                acc[doctorId].count += 1;
+                return acc;
+            }, {});
+
+            const groupedArray = Object.values(groupedByDoctor);
+            const formattedGroupedArray = groupedArray.map(group => {
+                const { doctor, schedules } = group;
+                const formattedGroup = {
+                    _id: doctor._id,
+                    fullName: doctor.fullName,
+                    email: doctor.email,
+                    phoneNumber: doctor.phoneNumber,
+                    address: doctor.address,
+                    avatar: doctor.avatar,
+                    specialty: {
+                        _id: doctor.otherInfo.specialtyID._id,
+                        name: doctor.otherInfo.specialtyID.name,
+                    },
+                    branch: {
+                        _id: doctor.otherInfo.branchID._id,
+                        name: doctor.otherInfo.branchID.name,
+                    },
+                    schedules: schedules.map(schedule => ({
+                        _id: schedule._id,
+                        day: schedule.day,
+                        hour: schedule.hour,
+                        clinic: {
+                            _id: schedules[0].clinicID._id,
+                            name: schedules[0].clinicID.name,
+                        }
+                    })),
+                };
+
+                return formattedGroup;
+            });
+
+            return res.status(200).json({
+                message: 'WorkSchedule retrieved successfully.',
+                data: formattedGroupedArray[0],
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 };

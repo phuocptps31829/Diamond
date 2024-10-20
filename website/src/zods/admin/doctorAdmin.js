@@ -11,7 +11,10 @@ export const doctorAdminSchema = z
         confirmPassword: z.string().min(6, 'Nhập lại mật khẩu phải có ít nhất 6 ký tự').optional(),
         citizenIdentificationNumber: z.string().min(1, 'Số CMND không được để trống'),
         practicingCertificate: z.string().min(1, 'Chứng chỉ làm việc không được để trống'),
-        imagesPracticingCertificate: z.array(z.any()).min(1, 'Ảnh chứng chỉ không được để trống'),
+        imagesPracticingCertificate: z
+            .array(z.any())
+            .min(1, 'Ảnh chứng chỉ không được để trống')
+            .optional(),
         title: z.string().min(1, 'Trình độ chuyên môn không được để trống'),
         isActivated: z.boolean().refine((value) => value !== undefined, {
             message: 'Trạng thái tài khoản không được để trống',

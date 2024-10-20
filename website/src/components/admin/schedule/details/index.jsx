@@ -1,38 +1,32 @@
-import { useCalendarApp, ScheduleXCalendar } from '@schedule-x/react';
+import { ScheduleXCalendar } from '@schedule-x/react';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventModalPlugin } from '@schedule-x/event-modal';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
+import { createCalendarControlsPlugin } from '@schedule-x/calendar-controls';
 import {
+    createCalendar,
     createViewDay,
     createViewMonthAgenda,
     createViewMonthGrid,
     createViewWeek,
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
+import { useEffect } from 'react';
 
 const eventsServicePlugin = createEventsServicePlugin();
+const calendarControls = createCalendarControlsPlugin();
 
 const getConfigCalendarSchedule = (onSetInfoForm) => {
     return {
-        views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-        events: [
-            {
-                id: '1',
-                title: 'Event 1',
-                start: '2024-09-19 09:00',
-                end: '2024-09-19 18:00',
-                people: ['chinh(7:30)', 'phuoc', 'phuong', 'chinh', 'phuoc', 'phuong']
-            },
-            {
-                id: '2',
-                title: 'Event 1',
-                start: '2024-09-19 09:00',
-                end: '2024-09-19 18:00',
-                people: ['chinh(7:30)', 'phuoc', 'phuong', 'chinh', 'phuoc', 'phuong']
-            },
+        views: [
+            createViewDay(),
+            createViewWeek(),
+            createViewMonthGrid(),
+            createViewMonthAgenda()
         ],
+        events: [],
         dayBoundaries: {
-            start: '08:00',
+            start: '07:00',
             end: '22:00',
         },
         monthGridOptions: {
@@ -42,7 +36,12 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
             nEventsPerDay: 1
         },
         locale: 'vi-VN',
-        plugins: [createDragAndDropPlugin(), createEventModalPlugin(), eventsServicePlugin],
+        plugins: [
+            createDragAndDropPlugin(),
+            createEventModalPlugin(),
+            eventsServicePlugin,
+            calendarControls
+        ],
         callbacks: {
             /**
              * Is called when:
@@ -79,12 +78,7 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
             * Is called when clicking somewhere in the time grid of a week or day view
             * */
             onClickDateTime(dateTime) {
-                console.log(dateTime, dateTime.slice(0, 10) + ' 18:00');
-                onSetInfoForm(prev => ({
-                    ...prev,
-                    isOpen: true,
-                    date: dateTime.slice(0, 10)
-                }));
+                // console.log('ll');
                 // eventsServicePlugin.add({
                 //     title: 'Ngày' + dateTime.slice(0, 10),
                 //     start: dateTime,
@@ -92,6 +86,11 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
                 //     description: 'Moi' + dateTime,
                 //     id: Date.now()
                 // });
+                // onSetInfoForm(prev => ({
+                //     ...prev,
+                //     isOpen: true,
+                //     date: dateTime.slice(0, 10)
+                // }));
             },
 
             /**
@@ -112,7 +111,11 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
             * Is called when double clicking somewhere in the time grid of a week or day view
             * */
             onDoubleClickDateTime(dateTime) {
-                console.log('onDoubleClickDateTime', dateTime); // e.g. 2024-01-01 12:37
+                onSetInfoForm(prev => ({
+                    ...prev,
+                    isOpen: true,
+                    date: dateTime.slice(0, 10)
+                }));
             },
 
             /**
@@ -132,11 +135,38 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
     };
 };
 
-
-function CalendarSchedule({ onSetInfoForm }) {
-    const calendar = useCalendarApp(
+function CalendarSchedule({ newSchedule, onSetInfoForm, defaultEvents }) {
+    const calendar = createCalendar(
         getConfigCalendarSchedule(onSetInfoForm)
     );
+    // useEffect(() => {
+    //     calendarControls.setView('week');
+    //     calendarControls.setDate('2024-10-19');
+    // }, [onSetInfoForm]);
+
+    useEffect(() => {
+        if (newSchedule) {
+            console.log(newSchedule);
+            eventsServicePlugin.add(newSchedule);
+            // eventsServicePlugin.add({
+            //     title: 'Ngày' + '2024-10-26',
+            //     start: '2024-10-26 08:00',
+            //     end: '2024-10-26 18:00',
+            //     id: Date.now()
+            // });
+        }
+    }, [newSchedule]);
+
+    if (defaultEvents.length) {
+        defaultEvents?.forEach(event => {
+            eventsServicePlugin.add({
+                id: event._id,
+                title: event.clinic.name,
+                start: `${event.day} ${event.hour.startTime}`,
+                end: `${event.day} ${event.hour.endTime}`,
+            });
+        });
+    }
 
     return (
         <div className='w-full'>

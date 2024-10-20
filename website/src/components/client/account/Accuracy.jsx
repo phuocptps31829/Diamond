@@ -1,17 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
-import { otpUserVerification, registerSendOtp } from "@/services/authApi";
 import NotFound from "@/components/client/notFound";
 import { formatTime } from "@/utils/formatTime";
+import { authApi } from "@/services/authApi";
+import { toastUI } from "@/components/ui/Toastify";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 export default function AccurancyComponent() {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const inputRefs = useRef([]);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -72,14 +71,9 @@ export default function AccurancyComponent() {
   };
 
   const mutation = useMutation({
-    mutationFn: otpUserVerification,
+    mutationFn: authApi.otpUserVerification,
     onSuccess: () => {
-      toast({
-        variant: "success",
-        title: "Xác thực thành công!",
-        description: "Bạn đã xác thực tài khoản thành công.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Xác thực thành công!", "success");
       setOtp(new Array(6).fill(""));
       sessionStorage.removeItem("phoneNumber");
       sessionStorage.removeItem("otpToken");
@@ -93,24 +87,14 @@ export default function AccurancyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Xác thực thất bại!",
-        description: errorMessage,
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Xác thực thất bại!", "error");
     },
   });
 
   const mutationSendOtpAgain = useMutation({
-    mutationFn: registerSendOtp,
+    mutationFn: authApi.registerSendOtp,
     onSuccess: (data) => {
-      toast({
-        variant: "success",
-        title: "Gửi lại mã OTP thành công!",
-        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Gửi lại mã OTP thành công!", "success");
       sessionStorage.setItem("otpToken", data.otpToken);
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTime", currentTime);
@@ -121,12 +105,7 @@ export default function AccurancyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Gửi mã OTP thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Gửi mã OTP thất bại!", "error");
     },
   });
 
@@ -134,12 +113,7 @@ export default function AccurancyComponent() {
     const otpValue = otp.join("");
 
     if (otpValue.length < 6) {
-      toast({
-        variant: "destructive",
-        title: "Xác thực thất bại!",
-        description: "Vui lòng nhập đủ 6 số.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng nhập đủ 6 số.", "error");
       return;
     }
 
@@ -158,13 +132,9 @@ export default function AccurancyComponent() {
   }, []);
 
   const handleSendAgainOtp = () => {
+    setOtp(new Array(6).fill(""));
     if (timeLeft > 0) {
-      toast({
-        variant: "destructive",
-        title: "Gửi lại mã OTP thất bại!",
-        description: "Sau 1 phút 30 giây mới có thể gửi lại mã OTP.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Gửi lại mã OTP thất bại!", "error");
       return;
     }
 
@@ -182,12 +152,12 @@ export default function AccurancyComponent() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-10 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
-            <h1 className="mb-4 text-center text-4xl font-bold md:text-5xl">
+          <div className="bg-white px-5 py-6 md:px-11 md:py-10 rounded-md">
+            <h1 className="mb-4 text-center text-3xl font-bold md:text-4xl">
               Xác thực tài khoản
             </h1>
             <p className="mb-2 text-center text-sm text-gray-700">
@@ -231,7 +201,7 @@ export default function AccurancyComponent() {
                 disabled={ mutationSendOtpAgain.isPending }
               >
                 { mutationSendOtpAgain.isPending
-                  ? "Đang xử lí"
+                  ? <SpinLoader />
                   : "Gửi lại mã OTP" }
                 { mutation.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
@@ -246,7 +216,7 @@ export default function AccurancyComponent() {
             >
               { mutation.isPending ? "Đang xử lí" : "Xác thực" }
               { mutation.isPending && (
-                <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                <div className="mr-2 inline-block py-2 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
               ) }
             </button>
 
@@ -257,19 +227,19 @@ export default function AccurancyComponent() {
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-
             {/* GG - FB LOGIN */ }
             <div className="block justify-center md:flex md:space-x-2">
               <button
+                onClick={ () => { } }
                 type="button"
                 className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
               >
                 <img
-                  src="https://static-00.iconduck.com/assets.00/google-icon-512x512-tqc9el3r.png"
-                  className="mr-2 w-7 md:mr-2"
-                  alt="Google icon"
-                />
-                <span className="mr-4 block md:mr-0">Tài khoản Google</span>
+                  src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg"
+                  className="w-7 mr-2 md:mr-2" alt="Google icon" />
+                <span className="block mr-4 md:mr-0">
+                  Tài khoản Google
+                </span>
               </button>
               <button
                 type="button"
@@ -283,15 +253,14 @@ export default function AccurancyComponent() {
                 <span className="block">Tài khoản Facebook</span>
               </button>
             </div>
-
             <div className="mb-10 mt-3 flex flex-col items-center">
               <p className="text-center">
-                Bạn đã có tài khoản?
+                Bạn chưa có tài khoản?
                 <Link
-                  to={ "/login" }
+                  to={ "/register" }
                   className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                 >
-                  Đăng nhập ngay!
+                  Đăng kí ngay!
                 </Link>
               </p>
             </div>

@@ -66,7 +66,9 @@ export default function Form() {
 
   const isFullInfoToCheckout = !bookingDetails.some(booking => {
     const { bookingDetail } = booking;
-    return Object.values(bookingDetail).some(value => value === "" || value === null || value === undefined);
+    return Object.values(bookingDetail).some(
+      value => value === "" || value === null || value === undefined
+    );
   });
 
   // useEffect(() => {

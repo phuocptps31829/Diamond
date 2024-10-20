@@ -1,28 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
-import {
-    AlertDialog,
-    AlertDialogTrigger,
-    AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogCancel,
-    AlertDialogAction,
-} from "@/components/ui/AlertDialog";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { ArrowUpDown } from "lucide-react";
+import Action from "./action";
 
-export const getColumnsRoles = (onDelete) =>
+export const getColumnsRoles = () =>
     [
         {
             id: "select",
@@ -106,57 +87,7 @@ export const getColumnsRoles = (onDelete) =>
             id: "actions",
             enableHiding: false,
             cell: ({ row }) => {
-                return !row.original.isSystem && (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild className="text-end">
-                            <Button
-                                variant="ghost" className="h-8 w-8 p-0 rotate-90">
-                                <span className="sr-only">Open menu</span>
-                                <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-fit min-w-0">
-                            <Link to={ `/admin/roles/update/${row.original._id}` }>
-                                <DropdownMenuItem className="w-fit flex items-center gap-2">
-                                    <FiEdit className="text-[15px]" />
-                                    <span>
-                                        Sửa
-                                    </span>
-                                </DropdownMenuItem>
-                            </Link>
-                            <DropdownMenuItem className="w-fit flex items-center gap-2" >
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <div
-                                            className="flex cursor-pointer items-center gap-2"
-                                            onClick={ (e) => e.stopPropagation() }
-                                        >
-                                            <RiDeleteBin6Line className="text-[15px]" />
-                                            <span>Xóa</span>
-                                        </div>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>
-                                                Bạn có chắc chắn muốn xóa vai trò này?
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Hành động này không thể hoàn tác. Vai trò sẽ bị xóa vĩnh
-                                                viễn khỏi hệ thống.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Hủy</AlertDialogCancel>
-                                            <AlertDialogAction onClick={ () => onDelete(row.original._id) }>
-                                                Xóa
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                );
+                return <Action row={ row } />;
             },
         },
     ];

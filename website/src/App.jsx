@@ -37,8 +37,8 @@ import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import AdminLayout from "./layouts/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
-import ScheduleTablePage from "./pages/admin/ScheduleTable";
-import ScheduleDetailsPage from "./pages/admin/ScheduleDetails";
+import ScheduleTablePage from "./pages/admin/Schedules/ScheduleTable";
+import ScheduleDetailsPage from "./pages/admin/Schedules/ScheduleDetails";
 import DoctorDashboard from "./pages/admin/DoctorDashboard";
 import NewsListPage from "./pages/admin/News";
 import BranchesListPage from "./pages/admin/Branches";
@@ -78,7 +78,7 @@ import AppointmentsEditPage from "./pages/admin/Appointments/edit";
 import SpecialtiesEditFormPage from "./pages/admin/Specialty/editForm";
 import MedicinesCategoriesFormFixPage from "./pages/admin/MedicinesCategories/formFix";
 import MedicinesFormFixPage from "./pages/admin/Medicine/formFix";
-import PackageDetailPage from './pages/admin/Packages/details';
+import PackageDetailPage from "./pages/admin/Packages/details";
 import PatientsResult from "./pages/admin/Patient/resultAdd";
 import ClinicsAddPage from "./pages/admin/Clinics/add";
 import ClinicsEditPage from "./pages/admin/Clinics/edit";
@@ -262,27 +262,27 @@ const router = createBrowserRouter([
         element: <Navigate to="dashboard" />,
       },
       {
-        path: 'services/list',
+        path: "services/list",
         element: <ServicesListPage />,
       },
       {
-        path: 'services/create',
+        path: "services/create",
         element: <ServicesAddPage />,
       },
       {
-        path: 'packages/list',
+        path: "packages/list",
         element: <PackagesListPage />,
       },
       {
-        path: 'packages/create',
+        path: "packages/create",
         element: <PackagesFormAddPage />,
       },
       {
-        path: 'packages/edit/:id',
+        path: "packages/edit/:id",
         element: <PackagesFormFixPage />,
       },
       {
-        path: 'package/details/:id',
+        path: "package/details/:id",
         element: <PackageDetailPage />,
       },
       {
@@ -322,19 +322,19 @@ const router = createBrowserRouter([
         element: <ScheduleTablePage />,
       },
       {
-        path: "schedules/details",
+        path: "schedules/details/:id",
         element: <ScheduleDetailsPage />,
       },
       {
-        path: 'doctors/list',
+        path: "doctors/list",
         element: <DoctorsListPage />,
       },
       {
-        path: 'doctors/create',
+        path: "doctors/create",
         element: <DoctorsFormAddPage />,
       },
       {
-        path: 'doctor/edit/:id',
+        path: "doctor/edit/:id",
         element: <DoctorsFormFixPage />,
       },
       {
@@ -348,10 +348,6 @@ const router = createBrowserRouter([
       {
         path: "patients/edit/:id",
         element: <PatientsFormFixPage />,
-      },
-      {
-        path: "patients/result",
-        element: <PatientsResult />,
       },
       {
         path: "staffs/list",
@@ -370,7 +366,7 @@ const router = createBrowserRouter([
         element: <SpecialtiesFormPage />,
       },
       {
-        path: "specialty/edit/:id",
+        path: "specialties/edit/:id",
         element: <SpecialtiesEditFormPage />,
       },
       {
@@ -385,7 +381,6 @@ const router = createBrowserRouter([
         path: "news/create",
         element: <NewsAddPage />,
       },
-
       {
         path: "news/edit/:id",
         element: <NewsEditPage />,
@@ -427,6 +422,10 @@ const router = createBrowserRouter([
         element: <AppointmentsFormPage />,
       },
       {
+        path: "appointments/create",
+        element: <PatientsResult />,
+      },
+      {
         path: "clinics/list",
         element: <ClinicsListPage />,
       },
@@ -439,8 +438,8 @@ const router = createBrowserRouter([
         element: <ClinicsEditPage />,
       },
       {
-        path: 'roles/list',
-        element: <ListRolePage />
+        path: "roles/list",
+        element: <ListRolePage />,
       },
       {
         path: "roles/create",

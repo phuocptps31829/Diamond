@@ -46,7 +46,7 @@ const API_TAKE_IT_ALL_NEWS = `${API_URL}/news?limit=9999`;
 const API_URL_GET_ALL_NEWS = `${API_URL}/news`;
 const API_URL_CREATE_NEWS = `${API_CURD_URL}/news/add`;
 const API_URL_UPDATE_NEWS = `${API_CURD_URL}/news/update`;
-const API_URL_DELETE_NEWS = `${API_CURD_URL}/news/delete`; 
+const API_URL_DELETE_NEWS = `${API_CURD_URL}/news/delete`;
 // patients
 const API_URL_GET_PATIENTS_BY_ID = `${API_URL}/patients`;
 

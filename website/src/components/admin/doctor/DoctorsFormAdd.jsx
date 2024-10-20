@@ -58,7 +58,6 @@ export default function DoctorsFormAdd() {
         onSuccess: () => {
             toast('Tạo mới bác sĩ thành công!', 'success');
             navigate('/admin/doctors/list');
-            toast('Tạo mới bác sĩ thành công!', 'success');
             setIsLoading(false);
         },
         onError: (error) => {
@@ -71,6 +70,9 @@ export default function DoctorsFormAdd() {
     const onSubmit = async (data) => {
         if (!fileImage) {
             toast('Vui lòng chọn ảnh!', 'error');
+            return;
+        } else if (data.imagesPracticingCertificate.length === 0) {
+            toast('Vui lòng chọn ảnh chứng chỉ hành nghề!', 'error');
             return;
         }
 
@@ -115,9 +117,14 @@ export default function DoctorsFormAdd() {
                 imagesPracticingCertificate.map(async (image) => {
                     const formData = new FormData();
                     formData.append('file', image);
-
-                    const response = await imageApi.createImage(formData);
-                    return response.data;
+                    try {
+                        const response = await imageApi.createImage(formData);
+                        console.log('Response from API:', response);
+                        return response.data;
+                    } catch (error) {
+                        console.error('Lỗi khi upload ảnh:', error.response?.data || error.message);
+                        throw error;
+                    }
                 })
             );
 
@@ -127,6 +134,7 @@ export default function DoctorsFormAdd() {
         } catch (error) {
             console.error('Lỗi khi tải ảnh hoặc tạo mới bác sĩ:', error);
             toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            setIsLoading(false);
         }
     };
 
@@ -258,69 +266,83 @@ export default function DoctorsFormAdd() {
                                 </div>
                             </div>
                         </div>
-                        <div className="block">
-                            <div className="w-full gap-5 md:flex">
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <InputCustom
-                                        label={ 'Mã căn cước công dân' }
-                                        required
-                                        className="col-span-1 sm:col-span-1"
-                                        name="citizenIdentificationNumber"
-                                        type="text"
-                                        id="citizenIdentificationNumber"
-                                        placeholder="Nhập mã căn cước công dân"
-                                        control={ control }
-                                        errors={ errors }
+                    </div>
+                </div>
+                <div className="block">
+                    <div className="w-full gap-5 md:flex">
+                        {/* isActivated */ }
+                        <div className="mt-5 md:w-1/3">
+                            <RadioGroupField
+                                name="isActivated"
+                                label="Trạng thái tài khoản:"
+                                options={ [
+                                    { value: true, label: 'Hoạt động' },
+                                    { value: false, label: 'Khóa tài khoản' },
+                                ] }
+                                control={ control }
+                            />
+                        </div>
+                        <div className="relative md:mb-4 md:w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Chọn ảnh chứng nhận hành nghề{ ' ' }
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <Controller
+                                name="imagesPracticingCertificate"
+                                control={ control }
+                                render={ ({ field }) => (
+                                    <input
+                                        type="file"
+                                        multiple
+                                        onChange={ (e) => {
+                                            const files = Array.from(e.target.files);
+                                            field.onChange(files);
+                                        } }
                                     />
-                                </div>
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <label
-                                        htmlFor="hoten"
-                                        className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
-                                    >
-                                        Khoa <span className="text-red-500">*</span>
-                                    </label>
-                                    <SelectDepartment
-                                        control={ control }
-                                        options={ [
-                                            { value: true, label: 'Nội khoa' },
-                                            { value: false, label: 'Ngoại khoa' },
-                                        ] }
-                                        name="isInternal"
-                                    />
-                                </div>
-                            </div>
+                                ) }
+                            />
+                            { errors.imagesPracticingCertificate && (
+                                <small className="mt-3 block text-sm text-red-500">
+                                    { errors.imagesPracticingCertificate.message }
+                                </small>
+                            ) }
+                        </div>
+
+                        <div className="relative md:mb-4 md:w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Khoa <span className="text-red-500">*</span>
+                            </label>
+                            <SelectDepartment
+                                control={ control }
+                                options={ [
+                                    { value: true, label: 'Nội khoa' },
+                                    { value: false, label: 'Ngoại khoa' },
+                                ] }
+                                name="isInternal"
+                            />
                         </div>
                     </div>
                 </div>
                 {/* Line 4 */ }
                 <div className="my-4 flex gap-5">
-                    <div className="relative md:mb-4 md:w-[28.5%]">
-                        <label
-                            htmlFor="hoten"
-                            className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
-                        >
-                            Chọn ảnh chứng nhận hành nghề <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="imagesPracticingCertificate"
+                    <div className="relative md:mb-4 md:w-1/3">
+                        <InputCustom
+                            label={ 'Mã căn cước công dân' }
+                            required
+                            className="col-span-1 sm:col-span-1"
+                            name="citizenIdentificationNumber"
+                            type="text"
+                            id="citizenIdentificationNumber"
+                            placeholder="Nhập mã căn cước công dân"
                             control={ control }
-                            render={ ({ field }) => (
-                                <input
-                                    type="file"
-                                    multiple
-                                    onChange={ (e) => {
-                                        const files = Array.from(e.target.files);
-                                        field.onChange(files);
-                                    } }
-                                />
-                            ) }
+                            errors={ errors }
                         />
-                        { errors.imagesPracticingCertificate && (
-                            <small className="mt-3 block text-sm text-red-500">
-                                { errors.imagesPracticingCertificate.message }
-                            </small>
-                        ) }
                     </div>
                     <div className="relative md:mb-4 md:w-1/3">
                         <InputCustom
@@ -411,22 +433,11 @@ export default function DoctorsFormAdd() {
                     </label>
                     <DoctorEditor name="detail" control={ control } errors={ errors } />
                 </div>
-                {/* isActivated */ }
-                <div className="mt-5">
-                    <RadioGroupField
-                        name="isActivated"
-                        label="Trạng thái tài khoản:"
-                        options={ [
-                            { value: true, label: 'Hoạt động' },
-                            { value: false, label: 'Khóa tài khoản' },
-                        ] }
-                        control={ control }
-                    />
-                </div>
-                {/* Button */ }
-                <div className="flex justify-end">
-                    <Button variant="custom" type="submit" disabled={ isLoading || isPending }>
-                        { isLoading || isPending ? <SpinLoader /> : 'Thêm mới' }
+
+                {/* Button */}
+                <div className="mt-5 flex justify-end">
+                    <Button variant="custom" type="submit" disabled={isLoading || isPending}>
+                        {isLoading || isPending ? <SpinLoader /> : 'Thêm mới'}
                     </Button>
                 </div>
             </form>

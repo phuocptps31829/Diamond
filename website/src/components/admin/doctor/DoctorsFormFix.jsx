@@ -4,35 +4,39 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import SelectBirthDate from './select/SelectBirthday';
 import SelectDepartment from '@/components/client/checkout/select/SelectDepartmentDoctor';
 import 'react-quill/dist/quill.snow.css';
-import { Button } from '@/components/ui/Button';
 import DoctorEditor from './editor';
 import SelectBranch from './select/SelectBranch';
 import { useState, useEffect } from 'react';
 import SelectSpecialty from './select/SelectSpecialty';
 import { imageApi } from '@/services/imageApi';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import ImagePreview from '@/components/ui/ImagePreview';
 import RadioGroupField from '@/components/ui/RadioGroupField';
 import { doctorApi } from '@/services/doctorsApi';
-import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toastUI as toast } from '@/components/ui/Toastify';
 import { Certificate } from '@/components/admin/doctor/dialog/Certificate';
+import { AddCertificateImages } from '@/components/admin/doctor/dialog/AddCertificateImages';
 import SpinLoader from '@/components/ui/SpinLoader';
+import { Button } from '@/components/ui/Button';
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
-import { PiCertificate } from 'react-icons/pi';
 
 export default function DoctorsFormFix({ dataDoctor }) {
-    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+    const [loadingCertificate, setLoadingCertificate] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fileImage, setFileImage] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [otherInfo, setOtherInfo] = useState(null);
     const [arrayImages, setArrayImages] = useState([]);
     const {
         handleSubmit,
         formState: { errors },
         control,
+        reset,
+        setValue,
     } = useForm({
         resolver: zodResolver(doctorAdminSchema),
         defaultValues: {
@@ -46,9 +50,8 @@ export default function DoctorsFormFix({ dataDoctor }) {
             confirmPassword: undefined,
             practicingCertificate: dataDoctor?.otherInfo?.verification?.practicingCertificate || '',
             citizenIdentificationNumber: dataDoctor?.citizenIdentificationNumber.toString() || '',
-            imagesPracticingCertificate: dataDoctor?.otherInfo?.verification?.images,
             title: dataDoctor?.otherInfo?.title || '',
-            isInternal: true,
+            isInternal: dataDoctor?.otherInfo?.isInternal || true,
             yearsExperience: dataDoctor?.otherInfo?.yearsExperience || '',
             specialty: dataDoctor?.otherInfo?.specialty?._id || '',
             branchID: dataDoctor?.otherInfo?.branch?._id || '',
@@ -57,33 +60,115 @@ export default function DoctorsFormFix({ dataDoctor }) {
         },
     });
 
-
     useEffect(() => {
         if (isInitialized) return;
         setImagePreview(dataDoctor?.avatar || null);
         setArrayImages(dataDoctor?.otherInfo?.verification?.images || []);
+        const otherInfoFormated = {
+            specialtyID: dataDoctor.otherInfo.specialty?._id || '',
+            branchID: dataDoctor.otherInfo.branch?._id || '',
+            title: dataDoctor.otherInfo.title || '',
+            yearsExperience: dataDoctor.otherInfo.yearsExperience || '',
+            detail: dataDoctor.otherInfo.detail || '',
+            isInternal: dataDoctor.otherInfo.isInternal || true,
+            verification: {
+                practicingCertificate:
+                    dataDoctor.otherInfo.verification.practicingCertificate || '',
+                images: dataDoctor.otherInfo.verification.images || [],
+            },
+        };
+
+        setOtherInfo(otherInfoFormated);
         setIsInitialized(true);
     }, [isInitialized, dataDoctor]);
 
-    // const { mutate: createDoctor, isPending } = useMutation({
-    //     mutationFn: doctorApi.createDoctors,
-    //     onSuccess: () => {
-    //         toast('Tạo mới bác sĩ thành công!', 'success');
-    //         navigate('/admin/doctors/list');
-    //         setIsLoading(false);
-    //     },
-    //     onError: (error) => {
-    //         console.error('Lỗi khi tạo mới bác sĩ:', error);
-    //         toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-    //         setIsLoading(false);
-    //     },
-    // });
+    const handleClickDeleteImage = (index) => {
+        const newImages = arrayImages.filter((_, i) => i !== index);
+
+        const updateDoctor = {
+            otherInfo: {
+                ...otherInfo,
+                verification: {
+                    ...otherInfo.verification,
+                    images: newImages,
+                },
+            },
+        };
+
+        updateDoctorMutation({
+            id: dataDoctor._id,
+            newData: updateDoctor,
+        });
+    };
+
+    const handleClickDeleteImagesAll = () => {
+        const updateDoctor = {
+            otherInfo: {
+                ...otherInfo,
+                verification: {
+                    ...otherInfo.verification,
+                    images: [],
+                },
+            },
+        };
+
+        updateDoctorMutation({
+            id: dataDoctor._id,
+            newData: updateDoctor,
+        });
+    };
+
+    const { mutate: updateDoctorMutation, isPending } = useMutation({
+        mutationFn: ({ id, newData }) => {
+            console.log('newData: ', newData);
+            return doctorApi.updateDoctors(id, newData);
+        },
+        onSuccess: (newData) => {
+            reset({
+                fullName: newData.fullName,
+                phoneNumber: newData.phoneNumber,
+                email: newData.email,
+                dateOfBirth: newData.dateOfBirth,
+                address: newData.address,
+                gender: newData.gender,
+                password: undefined,
+                confirmPassword: undefined,
+                isActivated: newData.isActivated,
+            });
+
+            setValue('practicingCertificate', newData.otherInfo.verification.practicingCertificate);
+            setValue('citizenIdentificationNumber', newData.citizenIdentificationNumber);
+            setValue('title', newData.otherInfo.title);
+            setValue('isInternal', newData.otherInfo.isInternal);
+            setValue('yearsExperience', newData.otherInfo.yearsExperience);
+            setValue('specialty', newData.otherInfo.specialtyID);
+            setValue('branchID', newData.otherInfo.branchID);
+            setValue('detail', newData.otherInfo.detail);
+            setArrayImages(newData.otherInfo.verification.images);
+            setOtherInfo(newData.otherInfo);
+            setImagePreview(newData.avatar);
+
+            queryClient.invalidateQueries('doctor');
+            setFileImage(null);
+            setIsLoading(false);
+            setLoadingCertificate(false);
+            setIsOpen(false);
+            toast('Chỉnh sửa bác sĩ thành công!', 'success');
+        },
+        onError: (error) => {
+            console.error('Lỗi khi chỉnh sửa bác sĩ:', error);
+            toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
+            setIsLoading(false);
+        },
+    });
 
     const onSubmit = async (data) => {
         if (!fileImage && !imagePreview) {
             toast('Vui lòng chọn ảnh!', 'error');
             return;
         }
+
+        setIsLoading(true);
 
         const { password } = data;
 
@@ -111,69 +196,28 @@ export default function DoctorsFormFix({ dataDoctor }) {
             },
         };
 
+        if (fileImage) {
+            const formData = new FormData();
+            formData.append('file', fileImage);
+            const imageResponse = await imageApi.createImage(formData);
+            const imageUrl = imageResponse?.data;
+            if (!imageUrl) {
+                setIsLoading(false);
+                throw new Error('Không thể upload ảnh');
+            }
+            updateDoctor.avatar = imageUrl;
+        } else {
+            updateDoctor.avatar = imagePreview;
+        }
+
         if (password !== undefined) {
             updateDoctor.password = password;
         }
 
-        console.log('updateDoctor', updateDoctor);
-
-        // setIsLoading(true);
-
-        // const newDoctor = {
-        //     fullName: data.fullName,
-        //     phoneNumber: data.phoneNumber,
-        //     email: data.email,
-        //     dateOfBirth: data.dateOfBirth,
-        //     address: data.address,
-        //     gender: data.gender,
-        //     password: data.password,
-        //     avatar: '',
-        //     isActivated: data.isActivated,
-        //     citizenIdentificationNumber: data.citizenIdentificationNumber,
-        //     otherInfo: {
-        //         specialtyID: data.specialty,
-        //         branchID: data.branchID,
-        //         title: data.title,
-        //         yearsExperience: data.yearsExperience,
-        //         detail: data.detail,
-        //         isInternal: data.isInternal,
-        //         verification: {
-        //             practicingCertificate: data.practicingCertificate,
-        //             imagesPracticingCertificate: [],
-        //         },
-        //     },
-        // };
-
-        // const formData = new FormData();
-        // formData.append('file', fileImage);
-
-        // const imageResponse = await imageApi.createImage(formData);
-        // const imageUrl = imageResponse?.data;
-
-        // newDoctor.avatar = imageUrl;
-
-        // try {
-        //     const { imagesPracticingCertificate } = data;
-        //     const uploadedImages = await Promise.all(
-        //         imagesPracticingCertificate.map(async (image) => {
-        //             const formData = new FormData();
-        //             formData.append('file', image);
-
-        //             const response = await imageApi.createImage(formData);
-        //             return response.data;
-        //         })
-        //     );
-
-        //     newDoctor.otherInfo.verification.imagesPracticingCertificate = uploadedImages;
-
-        //     console.log('Data sau khi upload ảnh:', newDoctor);
-        //     // createDoctor(newDoctor);
-        //     toast('Tạo mới bác sĩ thành công!', 'success');
-        //     setIsLoading(false);
-        // } catch (error) {
-        //     console.error('Lỗi khi tải ảnh hoặc tạo mới bác sĩ:', error);
-        //     toast('Có lỗi xảy ra, vui lòng thử lại.', 'error');
-        // }
+        updateDoctorMutation({
+            id: dataDoctor._id,
+            newData: updateDoctor,
+        });
     };
 
     return (
@@ -195,9 +239,9 @@ export default function DoctorsFormFix({ dataDoctor }) {
                             setImagePreview={setImagePreview}
                         />
                         {!imagePreview && (
-                            <p className="mt-3 text-center text-sm text-red-500">
+                            <div className="mt-3 text-center text-sm text-red-500">
                                 Vui lòng chọn ảnh
-                            </p>
+                            </div>
                         )}
                     </div>
                     <div className="w-full">
@@ -283,7 +327,6 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
                                         label={'Mật khẩu'}
-                                        required
                                         className="col-span-1 sm:col-span-1"
                                         name="password"
                                         type="password"
@@ -296,7 +339,6 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 <div className="relative md:mb-4 md:w-1/2">
                                     <InputCustom
                                         label={'Xác nhận mật khẩu'}
-                                        required
                                         className="col-span-1 sm:col-span-1"
                                         name="confirmPassword"
                                         type="password"
@@ -308,65 +350,86 @@ export default function DoctorsFormFix({ dataDoctor }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="block">
-                            <div className="w-full gap-5 md:flex">
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <InputCustom
-                                        label={'Mã căn cước công dân'}
-                                        required
-                                        className="col-span-1 sm:col-span-1"
-                                        name="citizenIdentificationNumber"
-                                        type="text"
-                                        id="citizenIdentificationNumber"
-                                        placeholder="Nhập mã căn cước công dân"
-                                        control={control}
-                                        errors={errors}
+                    </div>
+                </div>
+                <div className="block">
+                    <div className="my-1 mb-2 flex w-full items-center gap-5">
+                        {/* isActivated */}
+                        <div className="w-1/3">
+                            <RadioGroupField
+                                name="isActivated"
+                                label="Trạng thái tài khoản:"
+                                options={[
+                                    { value: true, label: 'Hoạt động' },
+                                    { value: false, label: 'Khóa tài khoản' },
+                                ]}
+                                control={control}
+                            />
+                        </div>
+                        <div className="relative md:mb-4 md:w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Chọn ảnh chứng nhận hành nghề{' '}
+                                <span className="text-red-500">*</span>
+                            </label>
+                            <>
+                                <div className="flex gap-3">
+                                    <Certificate
+                                        data={arrayImages}
+                                        onClickDeleteImage={handleClickDeleteImage}
+                                        isPending={isPending}
+                                        handleClickDeleteImagesAll={handleClickDeleteImagesAll}
+                                    />
+                                    <AddCertificateImages
+                                        isOpen={isOpen}
+                                        setIsOpen={setIsOpen}
+                                        otherInfo={otherInfo}
+                                        setArrayImages={setArrayImages}
+                                        id={dataDoctor._id}
+                                        updateDoctorMutation={updateDoctorMutation}
+                                        isPending={isPending}
+                                        isLoading={loadingCertificate}
+                                        setIsLoading={setLoadingCertificate}
                                     />
                                 </div>
-                                <div className="relative md:mb-4 md:w-1/2">
-                                    <label
-                                        htmlFor="hoten"
-                                        className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
-                                    >
-                                        Khoa <span className="text-red-500">*</span>
-                                    </label>
-                                    <SelectDepartment
-                                        control={control}
-                                        options={[
-                                            { value: true, label: 'Nội khoa' },
-                                            { value: false, label: 'Ngoại khoa' },
-                                        ]}
-                                        name="isInternal"
-                                    />
-                                </div>
-                            </div>
+                            </>
+                        </div>
+                        <div className="relative mb-4 w-1/3">
+                            <label
+                                htmlFor="hoten"
+                                className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
+                            >
+                                Khoa <span className="text-red-500">*</span>
+                            </label>
+                            <SelectDepartment
+                                control={control}
+                                options={[
+                                    { value: true, label: 'Nội khoa' },
+                                    { value: false, label: 'Ngoại khoa' },
+                                ]}
+                                name="isInternal"
+                            />
                         </div>
                     </div>
                 </div>
                 {/* Line 4 */}
-                <div className="my-4 flex gap-5">
-                    <div className="relative md:mb-4 md:w-1/4">
-                        <label
-                            htmlFor="hoten"
-                            className="left-[15px] mb-4 block bg-white px-1 text-lg md:text-sm"
-                        >
-                            Chọn ảnh chứng nhận hành nghề <span className="text-red-500">*</span>
-                        </label>
-                        <>
-                            <Certificate
-                                data={arrayImages}
-                                button={
-                                    <Button
-                                        variant="custom"
-                                        type="button"
-                                        className="bg-primary-400 text-[13px]"
-                                    >
-                                        Xem chứng chỉ <PiCertificate size={20} className="ml-2" />
-                                    </Button>
-                                }
-                            />
-                        </>
+                <div className="my-2 flex gap-5">
+                    <div className="relative mb-4 w-1/3">
+                        <InputCustom
+                            label={'Mã căn cước công dân'}
+                            required
+                            className="col-span-1 sm:col-span-1"
+                            name="citizenIdentificationNumber"
+                            type="text"
+                            id="citizenIdentificationNumber"
+                            placeholder="Nhập mã căn cước công dân"
+                            control={control}
+                            errors={errors}
+                        />
                     </div>
+
                     <div className="relative md:mb-4 md:w-1/3">
                         <InputCustom
                             label={'Chứng chỉ hành nghề'}
@@ -456,22 +519,11 @@ export default function DoctorsFormFix({ dataDoctor }) {
                     </label>
                     <DoctorEditor name="detail" control={control} errors={errors} />
                 </div>
-                {/* isActivated */}
-                <div className="mt-5">
-                    <RadioGroupField
-                        name="isActivated"
-                        label="Trạng thái tài khoản:"
-                        options={[
-                            { value: true, label: 'Hoạt động' },
-                            { value: false, label: 'Khóa tài khoản' },
-                        ]}
-                        control={control}
-                    />
-                </div>
+
                 {/* Button */}
-                <div className="flex justify-end">
-                    <Button variant="custom" type="submit" disabled={isLoading}>
-                        {isLoading ? <SpinLoader /> : 'Thêm mới'}
+                <div className="mt-5 flex justify-end">
+                    <Button variant="custom" type="submit" disabled={isLoading || isPending}>
+                        {isLoading || isPending ? <SpinLoader /> : 'Cập nhật'}
                     </Button>
                 </div>
             </form>

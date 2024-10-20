@@ -23,7 +23,7 @@ const Sidebar = () => {
         <li className="p-2">
           <NavLink
             to="/user-profile"
-            className={navLinkClasses("/user-profile")}
+            className={ navLinkClasses("/user-profile") }
           >
             <FaUser className="mr-2" />
             <span>Thông tin tài khoản</span>
@@ -32,7 +32,7 @@ const Sidebar = () => {
         <li className="p-2">
           <NavLink
             to="/user-profile/medical-records"
-            className={navLinkClasses("/user-profile/medical-records")}
+            className={ navLinkClasses("/user-profile/medical-records") }
           >
             <FaFileMedical className="mr-2" />
             <span>Hồ sơ bệnh án</span>
@@ -41,7 +41,7 @@ const Sidebar = () => {
         <li className="p-2">
           <NavLink
             to="/user-profile/appointment-history"
-            className={navLinkClasses("/user-profile/appointment-history")}
+            className={ navLinkClasses("/user-profile/appointment-history") }
           >
             <FaHistory className="mr-2" />
             <span>Lịch sử đặt lịch</span>
@@ -50,7 +50,7 @@ const Sidebar = () => {
         <li className="p-2">
           <NavLink
             to="/user-profile/change-password"
-            className={navLinkClasses("/user-profile/change-password")}
+            className={ navLinkClasses("/user-profile/change-password") }
           >
             <FaLock className="mr-2" />
             <span>Thay đổi mật khẩu</span>
@@ -59,7 +59,7 @@ const Sidebar = () => {
         <li className="p-2">
           <NavLink
             to="/user-profile/logout"
-            className={navLinkClasses("/user-profile/logout")}
+            className={ navLinkClasses("/user-profile/logout") }
           >
             <FaSignOutAlt className="mr-2" />
             <span>Đăng xuất</span>

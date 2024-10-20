@@ -42,7 +42,7 @@ const ActionMenu = ({ row }) => {
 
     return (
         <>
-            {isPending ? (
+            { isPending ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
             ) : (
                 <DropdownMenu>
@@ -55,17 +55,24 @@ const ActionMenu = ({ row }) => {
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem
                             className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/doctor/edit/${row.original._id}`)}
+                            onClick={ () => navigate(`/admin/doctor/edit/${row.original._id}`) }
                         >
                             <FiEdit className="text-[15px]" />
                             <span>Chỉnh sửa</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            className="flex w-full items-center gap-2"
+                            onClick={ () => navigate(`/admin/schedules/details/${row.original._id}`) }
+                        >
+                            <FiEdit className="text-[15px]" />
+                            <span>Thêm lịch làm việc</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex w-full items-center gap-2">
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <div
                                         className="flex w-full cursor-pointer items-center gap-2"
-                                        onClick={(e) => e.stopPropagation()}
+                                        onClick={ (e) => e.stopPropagation() }
                                     >
                                         <RiDeleteBin6Line className="text-[15px]" />
                                         <span>Xóa</span>
@@ -84,7 +91,7 @@ const ActionMenu = ({ row }) => {
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Hủy</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => deleteDoctorMutation(row.original._id)}
+                                            onClick={ () => deleteDoctorMutation(row.original._id) }
                                         >
                                             Xóa
                                         </AlertDialogAction>
@@ -94,7 +101,7 @@ const ActionMenu = ({ row }) => {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            )}
+            ) }
         </>
     );
 };

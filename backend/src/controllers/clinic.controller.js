@@ -92,4 +92,53 @@ module.exports = {
             next(error);
         }
     },
+    getClinicsBySpecialtyAndBranch: async (req, res, next) => {
+        try {
+            const { specialtyID, branchID } = req.query;
+
+            if (!specialtyID || !branchID) {
+                createError(400, "SpecialtyID and BranchID are required.");
+            }
+
+            const clinics = await ClinicModel
+                .find({
+                    isDeleted: false,
+                    specialtyID,
+                    branchID
+                })
+                .populate("branchID")
+                .populate("specialtyID")
+                .lean();
+
+            if (!clinics.length) {
+                createError(404, "No clinics found.");
+            }
+
+            const clinicsFormatted = clinics.map(clinic => {
+                const formattedClinic = {
+                    ...clinic,
+                    branch: {
+                        _id: clinic.branchID._id,
+                        name: clinic.branchID.name,
+                        address: clinic.branchID.address,
+                    },
+                    specialty: {
+                        _id: clinic.specialtyID._id,
+                        name: clinic.specialtyID.name,
+                    }
+                };
+                delete formattedClinic.branchID;
+                delete formattedClinic.specialtyID;
+
+                return formattedClinic;
+            });
+
+            return res.status(200).json({
+                message: 'Clinics retrieved successfully.',
+                data: clinicsFormatted,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 };

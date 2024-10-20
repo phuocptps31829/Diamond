@@ -5,13 +5,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/Button";
-import { MdCloudUpload } from "react-icons/md";
 import { specialtyApi } from "@/services/specialtiesApi";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
 import { useNavigate } from "react-router-dom";
 import { Label } from "@/components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
+import ImagePreview from "@/components/ui/ImagePreview";
+import { imageApi } from "@/services/imageApi";
+import SpinLoader from "@/components/ui/SpinLoader";
 export default function Form() {
   const navigate = useNavigate();
   const {
@@ -28,59 +30,77 @@ export default function Form() {
       status: true,
     },
   });
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setPreviewImage(URL.createObjectURL(file));
-      setValue("image", file);
-      setFileName(file.name);
-    }
-  };
-  const [fileName, setFileName] = useState(""); 
-  const removeImage = () => {
-    setSelectedFile(null);
-    setPreviewImage(null);
-    setValue("image", null); 
-  };
-  const [previewImage, setPreviewImage] = useState(null);
-  const { mutate: createSpecialty } = useMutation({
+  const [fileImage, setFileImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const queryClient = useQueryClient();
+
+  const { mutate: createSpecialty, isPending } = useMutation({
     mutationFn: (newSpecialty) => specialtyApi.createSpecialty(newSpecialty),
     onSuccess: () => {
-      toastUI("Thêm chuyên khoa mới thành công", "success");
+      toastUI("Thêm chuyên khoa thành công", "success");
       navigate('/admin/specialties/list');
+      queryClient.invalidateQueries("branches");
     },
     onError: (err) => {
       console.error(err);
       toastUI("Có lỗi xảy ra: " + err.message, "error");
     },
   });
+
   const onSubmit = async (data) => {
-    let imageUrl = "";
-    if (selectedFile) {
-      setUploading(true);
-      const imageResponse = await specialtyApi.uploadIMG(selectedFile);
-      setUploading(false);
-      imageUrl = imageResponse?.data; 
+    try {
+      if (!fileImage && !imagePreview) {
+        toastUI('Vui lòng chọn ảnh!', 'error');
+        return;
+      }
+
+      const newSpecialty = {
+        name: data.name,
+        isHidden: data.status,
+        description: "Đâu có cần mô tả???",
+      };
+
+      const formData = new FormData();
+      formData.append('file', fileImage);
+
+      const imageResponse = await imageApi.createImage(formData);
+      const imageUrl = imageResponse?.data;
+
+      newSpecialty.image = imageUrl;
+      createSpecialty(newSpecialty);
+    } catch (error) {
+      console.error("Error during submission:", error);
+      toastUI("Có lỗi xảy ra: " + error.message, "error");
     }
-    const specialtyData = {
-      name: data.name,
-      image: imageUrl,
-      isHidden: data.status,
-      description: "Description of the new specialty",
-    };
-    createSpecialty(specialtyData);
-    console.log("Submit DATA: ", specialtyData);
   };
+
   return (
-    <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
+    <div className="w-[100%] rounded-lg bg-white px-7 py-6">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
-        Thêm chuyên khoa
+        Thông tin chuyên khoa
       </h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="grid-cols-1 gap-[60px] sm:grid md:flex mb-6">
+          {/* Image */ }
+          <div className="mr-5">
+            <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
+              Ảnh <span className="text-red-500">*</span>
+            </label>
+            <ImagePreview
+              imagePreview={
+                imagePreview && fileImage
+                  ? imagePreview
+                  : imagePreview && import.meta.env.VITE_IMAGE_API_URL + '/' + imagePreview
+              }
+              setFileImage={ setFileImage }
+              setImagePreview={ setImagePreview }
+            />
+            { !imagePreview && (
+              <p className="mt-3 text-center text-sm text-red-500">
+                Vui lòng chọn ảnh
+              </p>
+            ) }
+          </div>
           <div className="w-1/2">
             <div className="block">
               <div className="relative md:mb-1 xl:mb-[4px] 2xl:mb-3">
@@ -93,79 +113,39 @@ export default function Form() {
                   type="text"
                   id="name"
                   placeholder="Nhập tên chuyên khoa"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
               </div>
-              {/* Status */}
+              {/* Status */ }
               <div className="mt-2">
-              <Label>Trạng thái</Label>
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="mt-5 flex items-center justify-start gap-5"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={true} id="r1" />
-                      <Label htmlFor="r1">Ẩn</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value={false} id="r2" />
-                      <Label htmlFor="r2">Hiện</Label>
-                    </div>
-                  </RadioGroup>
-                )}
-              />
+                <Label>Trạng thái</Label>
+                <Controller
+                  name="status"
+                  control={ control }
+                  render={ ({ field }) => (
+                    <RadioGroup
+                      value={ field.value }
+                      onValueChange={ field.onChange }
+                      className="mt-5 flex items-center justify-start gap-5"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value={ true } id="r1" />
+                        <Label htmlFor="r1">Ẩn</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value={ false } id="r2" />
+                        <Label htmlFor="r2">Hiện</Label>
+                      </div>
+                    </RadioGroup>
+                  ) }
+                />
               </div>
-            </div>
-          </div>
-          {/* Image */}
-          <div className="mr-5">
-            <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
-              Ảnh <span className="text-red-500">*</span>
-            </label>
-            <div className="relative h-[250px] min-w-[250px] rounded-3xl border-2 border-dashed border-primary-500">
-              {previewImage ? (
-                <div className="relative h-full w-full">
-                  <img
-                    src={previewImage}
-                    alt="Ảnh đã chọn"
-                    className="h-full w-full rounded-3xl object-cover"
-                  />
-                  <button
-                    type="button"
-                    className="absolute p-2 top-4 right-4 rounded-sm bg-red-500 text-white hover:bg-red-600"
-                    onClick={removeImage}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ) : (
-                <div className="absolute top-0 flex h-full w-full items-center justify-center rounded-3xl">
-                  <label className="flex h-full w-full cursor-pointer items-center justify-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <MdCloudUpload size={45} color="#007BBB" />
-                      <p className="mt-2 text-sm">Chọn ảnh</p>
-                    </div>
-                    <input
-                      name="image"
-                      type="file"
-                      id="fileImage"
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                </div>
-              )}
             </div>
           </div>
         </div>
 
-        {/* Button */}
+        {/* Button */ }
         <div className="flex justify-end gap-2">
           <Button
             size=""
@@ -179,9 +159,9 @@ export default function Form() {
             size=""
             variant="primary"
             className="border-none bg-primary-500 px-6 hover:bg-primary-600"
-            disabled={uploading} // Disable nút khi đang upload
+            disabled={ isPending } // Disable nút khi đang upload
           >
-            {uploading ? "Đang tải..." : "Thêm chuyên khoa"}
+            { isPending ? <SpinLoader /> : "Thêm chuyên khoa" }
           </Button>
         </div>
       </form>
