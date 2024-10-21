@@ -41,6 +41,34 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/medicines/get-by-category/{id}':
+ *  get:
+ *    tags:
+ *    - Medicine Routes
+ *    summary: Get medicine by category id
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: category id
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-category/:id',
+    helperMiddleware.checkValidId,
+    medicineController.getMedicineByCategoryID
+);
+
+/**
+ * @openapi
  * '/api/v1/medicines/{id}':
  *  get:
  *    tags:

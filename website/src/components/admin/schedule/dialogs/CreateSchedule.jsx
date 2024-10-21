@@ -50,6 +50,7 @@ const CreateSchedule = ({ schedules, infoForm, setInfoForm, setNewSchedule }) =>
             setPayload(null);
             toastUI('Thêm lịch làm việc thành công', 'success');
             queryClient.invalidateQueries(['schedule', schedules._id]);
+            window.location.reload();
         },
         onError: (error) => {
             console.error('Create work schedule error: ', error);

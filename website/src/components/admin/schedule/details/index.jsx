@@ -141,6 +141,7 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
 };
 
 function CalendarSchedule({ newSchedule, onSetInfoForm, defaultEvents }) {
+    console.log('render');
     const calendar = createCalendar(
         getConfigCalendarSchedule(onSetInfoForm)
     );

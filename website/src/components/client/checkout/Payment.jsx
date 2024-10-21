@@ -2,11 +2,10 @@ import { Button } from "@/components/ui/Button";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-
-import VNPAYICON from "../../../assets/images/vnpay.webp";
-import { toastUI } from "@/components/ui/Toastify";
 import { appointmentApi } from "@/services/appointmentsApi";
+import { toastUI } from "@/components/ui/Toastify";
 import { useReadNumber } from "@/hooks/useReadNumber";
+import VNPAYICON from "../../../assets/images/vnpay.webp";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -17,6 +16,7 @@ export default function Form() {
   );
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const readNumber = useReadNumber();
+
   const { mutate } = useMutation({
     mutationFn: () =>
       appointmentApi.createAppointment(
@@ -41,6 +41,7 @@ export default function Form() {
   });
 
   const handleSubmitCheckout = () => {
+    console.log(bookingInfo.bookingInfoCheckout);
     if (!paymentMethod) {
       toastUI("Vui lòng chọn phương thức thanh toán", "warning");
       return;
@@ -49,6 +50,7 @@ export default function Form() {
   };
   const totalAmount = cart.reduce((acc, cur) => (acc += cur.price), 0);
   const totalAmountInWords = readNumber(totalAmount);
+
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10">
       <div className="container mx-auto gap-5 rounded-lg bg-white px-10 py-5 pb-10">
@@ -94,7 +96,7 @@ export default function Form() {
         <h1 className="my-3 text-[16px] font-bold md:text-[24px]">
           Thông tin người khám
         </h1>
-        <div className="mb-7 flex flex-col justify-between md:flex-row">
+        <div className="mb-3 flex flex-col justify-between md:flex-row">
           <div className="mb-0 w-full text-[14px] md:mb-4 md:w-[48%] md:text-[18px]">
             <p className="mb-2">
               <strong>Họ tên: </strong>
@@ -104,7 +106,8 @@ export default function Form() {
             </p>
             <p className="mb-2">
               <strong>Email: </strong>
-              { personHelpInfo ? personHelpInfo.email : profileCustomer.email }
+              { (personHelpInfo ? personHelpInfo.email : profileCustomer.email)
+                || "Không có" }
             </p>
             <p className="mb-2">
               <strong>Số điện thoại: </strong>
@@ -136,15 +139,17 @@ export default function Form() {
           <div className="w-full text-[14px] md:w-[48%] md:text-[18px]">
             <p className="mb-2">
               <strong>Nghề nghiệp: </strong>
-              { personHelpInfo
+              { (personHelpInfo
                 ? personHelpInfo.occupation
-                : profileCustomer.otherInfo.occupation }
+                : profileCustomer.otherInfo.occupation)
+                || "Không có" }
             </p>
             <p className="mb-2">
               <strong>Dân tộc: </strong>
-              { personHelpInfo
+              { (personHelpInfo
                 ? personHelpInfo.ethnic
-                : profileCustomer.otherInfo.ethnic }
+                : profileCustomer.otherInfo.ethnic)
+                || "Không có" }
             </p>
             <p className="mb-2">
               <strong>Số CCCD: </strong>
@@ -154,9 +159,10 @@ export default function Form() {
             </p>
             <p className="mb-2">
               <strong>Số BHYT: </strong>
-              { personHelpInfo
+              { (personHelpInfo
                 ? personHelpInfo.insuranceCode
-                : profileCustomer.otherInfo.insuranceCode }
+                : profileCustomer.otherInfo.insuranceCode)
+                || "Không có" }
             </p>
           </div>
         </div>

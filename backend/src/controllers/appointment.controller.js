@@ -553,11 +553,13 @@ module.exports = {
                     priority: orderNumber?.priority,
                 },
                 result: {
+                    _id: result?._id,
                     diagnose: result?.diagnose || 'Chưa có',
                     images: result?.images || 'Chưa có',
                     description: result?.description || 'Chưa có',
                 },
                 invoice: {
+                    _id: invoice?._id,
                     price: invoice?.price || 0,
                     arisePrice: invoice?.arisePrice || 0,
                 },

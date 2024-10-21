@@ -34,7 +34,7 @@ export default function SelectBirthDate({ control, name, errors }) {
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 { field.value ? (
-                  format(new Date(field.value), "yyyy/MM/dd", { locale: vi })
+                  format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
                 ) : (
                   <span className="text-gray-600">Chọn ngày sinh</span>
                 ) }
@@ -46,7 +46,8 @@ export default function SelectBirthDate({ control, name, errors }) {
                 selected={ field.value ? new Date(field.value) : null }
                 onSelect={ (selectedDate) => {
                   if (selectedDate && selectedDate <= today) {
-                    field.onChange(selectedDate);
+                    const formattedDate = format(selectedDate, "yyyy-MM-dd");
+                    field.onChange(formattedDate);
                   } else {
                     console.error("Ngày sinh không thể là ngày trong tương lai");
                   }

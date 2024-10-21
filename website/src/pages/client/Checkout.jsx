@@ -1,4 +1,4 @@
-import Form from '@/components/client/checkout/SVBookingPayment';
+import Form from '@/components/client/checkout/Payment';
 import Collaborate from '@/components/client/home/Collaborate';
 import useScrollToTop from '@/hooks/useScrollToTop';
 import { useEffect } from 'react';
@@ -11,7 +11,7 @@ export default function SVCheckOut() {
 
   useEffect(() => {
     if (!bookingInfoCheckout) {
-      navigate('/services-booking');
+      navigate('/booking');
     }
   }, [bookingInfoCheckout, navigate]);
 

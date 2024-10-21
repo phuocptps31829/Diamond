@@ -30,9 +30,9 @@ import AppointmentDetail from "./components/client/infomationUser/AppointmentDet
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 import NotFound from "@/components/client/notFound";
 import PackageBooking from "./pages/client/PackageBooking";
-import ServicesBooking from "./pages/client/ServicesBooking";
+import Booking from "./pages/client/Booking";
 import PKCheckOut from "./pages/client/PKBookingPayment";
-import SVCheckOut from "./pages/client/SVBookingPayment";
+import SVCheckOut from "./pages/client/Checkout";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
 import AdminLayout from "./layouts/admin/AdminLayout";
@@ -192,10 +192,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "services-booking",
+        path: "booking",
         element: (
           <ProtectContainer>
-            <ServicesBooking />
+            <Booking />
           </ProtectContainer>
         ),
       },
@@ -208,7 +208,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "services-booking-checkout",
+        path: "checkout",
         element: (
           <ProtectContainer>
             <SVCheckOut />

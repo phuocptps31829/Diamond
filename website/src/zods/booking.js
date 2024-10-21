@@ -19,7 +19,7 @@ export const otherBookingSchema = z.object({
 
   gender: z.string().min(1, "Giới tính không được để trống!"),
 
-  dateOfBirth: z.date(),
+  dateOfBirth: z.string().min(1, "Ngày sinh không được để trống!"),
 
   citizenIdentificationNumber: z
     .string()

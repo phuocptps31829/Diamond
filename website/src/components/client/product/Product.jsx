@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
@@ -19,6 +19,7 @@ import { formatPrice } from "@/utils/format";
 
 export default function Product({ product }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cartItems = useSelector((state) => state.cart.cart);
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const [isInCart, setIsInCart] = useState(false);
@@ -48,7 +49,7 @@ export default function Product({ product }) {
     setIsInCart(isExists);
   }, [cartItems, _id, isService]);
 
-  const handleAddClick = () => {
+  const handleAddClick = (isNavigate) => {
     console.log('prd', product);
     if (!profileCustomer) {
       toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
@@ -83,7 +84,9 @@ export default function Product({ product }) {
           }),
           bookingDetail: {
             specialtyID: specialty._id,
-            levelID: isService ? "" : services[0]._id,
+            ...(isService
+              ? {}
+              : { levelID: services[0]._id }),
             name,
             image,
             price: discountPrice || 0,
@@ -97,10 +100,16 @@ export default function Product({ product }) {
         }),
       );
     } else {
-      console.log('del', product);
-      dispatch(removeFromCart({ _id, isService: isService }));
-      dispatch(removeItemInfo({ _id, isService: isService }));
-      setIsInCart(false);
+      if (!isNavigate) {
+        dispatch(removeFromCart({ _id, isService: isService }));
+        dispatch(removeItemInfo({ _id, isService: isService }));
+        setIsInCart(false);
+      }
+    }
+
+    if (isNavigate) {
+      console.log('navigate');
+      navigate("/booking");
     }
   };
 
@@ -153,17 +162,17 @@ export default function Product({ product }) {
           </div>
         </div>
         <div className="mt-2 flex w-full items-center justify-center gap-2">
-          <Link
-            to={ isService ? `/service/${slug}` : `/package/${slug}` }
-            className="flex h-full flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
+          <div
+            onClick={ () => handleAddClick(true) }
+            className="flex h-full cursor-pointer flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
           >
             Đặt ngay <AiOutlineDoubleRight />
-          </Link>
+          </div>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger className="h-full flex-[2] items-center justify-center">
                 <button
-                  onClick={ handleAddClick }
+                  onClick={ () => handleAddClick(false) }
                   className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
                     ? "bg-red-500 text-white"
                     : "bg-primary-500 text-primary-500"

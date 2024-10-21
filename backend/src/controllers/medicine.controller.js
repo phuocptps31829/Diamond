@@ -70,5 +70,44 @@ module.exports = {
         } catch (error) {
             next(error);
         }
+    },
+    getMedicineByCategoryID: async (req, res, next) => {
+        try {
+            const { id } = req.params;
+
+            const totalRecords = await MedicineModel.countDocuments({
+                medicineCategoryID: id,
+                isDeleted: false,
+            });
+
+            const medicines = await MedicineModel
+                .find({
+                    medicineCategoryID: id,
+                    isDeleted: false,
+                })
+                .populate('medicineCategoryID');
+
+            if (!medicines.length) {
+                createError(404, 'No medicines found.');
+            }
+
+            const formattedMedicines = medicines.map((medicine) => {
+                const newMedicine = { ...medicine.toObject() };
+                newMedicine.medicineCategory = {
+                    _id: newMedicine.medicineCategoryID._id,
+                    name: newMedicine.medicineCategoryID.name,
+                };
+                delete newMedicine.medicineCategoryID;
+                return newMedicine;
+            });
+
+            return res.status(200).json({
+                message: 'Medicines retrieved successfully.',
+                data: formattedMedicines,
+                totalRecords
+            });
+        } catch (error) {
+            next(error);
+        }
     }
 };

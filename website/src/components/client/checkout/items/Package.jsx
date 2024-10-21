@@ -20,9 +20,11 @@ const Package = ({
     const isSelected = !!bookingDetail;
     const hasEmptyFields = bookingDetail
         ? Object.values(bookingDetail.bookingDetail).some(
-            (value) => !value,
+            (value) => value !== 0 && !value,
         )
         : false;
+
+    console.log(hasEmptyFields);
 
     const handleChangePackageLevel = (levelID) => {
         dispatch(
@@ -88,7 +90,7 @@ const Package = ({
                             <p className="mt-1">
                                 Giá: <span>{ formatCurrency(pkg.services.find(service => {
                                     return service._id === packageLevel;
-                                }).discountPrice) }</span>
+                                })?.discountPrice) }</span>
                             </p>
                             { isSelected && (
                                 <span

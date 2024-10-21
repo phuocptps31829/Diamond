@@ -36,6 +36,27 @@ const ScheduleDetailsPage = () => {
         enabled: !!id
     });
 
+    // useEffect(() => {
+    //     const calendarWrapper = document.querySelector('.sx-react-calendar-wrapper');
+
+    //     if (infoForm.isOpen) {
+    //         console.log('in');
+    //         if (calendarWrapper) {
+    //             calendarWrapper.style.display = 'none';
+    //         }
+    //     } else {
+    //         if (calendarWrapper) {
+    //             calendarWrapper.style.display = 'block';
+    //         }
+    //     }
+
+    //     return () => {
+    //         if (calendarWrapper) {
+    //             calendarWrapper.style.display = 'block';
+    //         }
+    //     };
+    // }, [infoForm.isOpen]);
+
     console.log(infoForm);
     const breadcrumbData = getBreadcrumbData(id, data?.data.fullName);
 
@@ -62,11 +83,11 @@ const ScheduleDetailsPage = () => {
     );
 };
 
-// function PP({ infoForm }) {
-//     return createPortal(infoForm.isOpen && <div className="absolute bg-slate-400 z-50 bg-opacity-20 top-0 left-0 w-full h-full">
-//         <h1>Details</h1>
-//         dialog
-//     </div>, document.body);
-// }
+function PP({ infoForm }) {
+    return createPortal(infoForm.isOpen && <div className="absolute bg-slate-400 z-50 bg-opacity-20 top-0 left-0 w-full h-full">
+        <h1>Details</h1>
+        dialog
+    </div>, document.body.querySelector('#root'));
+}
 
 export default ScheduleDetailsPage;

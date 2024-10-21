@@ -6,8 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { authApi } from "@/services/authApi";
 import { setAccessToken, setUserProfile } from "@/redux/authSlice";
-import Balloon from "@/components/ui/Ballon";
-import BalloonMessage from "@/components/ui/BallonMessage";
+import Balloon from "@/components/ui/Balloon";
+import BalloonMessage from "@/components/ui/BalloonMessage";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
 

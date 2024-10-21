@@ -10,11 +10,13 @@ const Service = ({
     const bookingDetail = bookingDetails.find(
         (detail) => detail?.serviceID === svc.serviceID,
     );
-    console.log(svc);
+
+    delete bookingDetail?.levelID;
+
     const isSelected = !!bookingDetail;
     const hasEmptyFields = bookingDetail
         ? Object.values(bookingDetail.bookingDetail).some(
-            (value) => !value,
+            (value) => value !== 0 && !value,
         )
         : false;
 

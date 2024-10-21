@@ -1,8 +1,8 @@
-import Form from '@/components/client/checkout/ServicesBooking';
+import Form from '@/components/client/checkout/Booking';
 import Collaborate from '@/components/client/home/Collaborate';
 import useScrollToTop from '@/hooks/useScrollToTop';
 
-export default function ServicesBooking() {
+export default function Booking() {
   useScrollToTop();
 
   return (

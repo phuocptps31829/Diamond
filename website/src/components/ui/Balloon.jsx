@@ -18,7 +18,6 @@ const Balloon = () => {
     if (newCount > prevCountRef.current) {
       controls.start({
         y: [0, -7, 7, -7, 7, 0],
-
         transition: { duration: 0.6 },
       });
     }
@@ -28,7 +27,7 @@ const Balloon = () => {
 
   const handleNavigate = () => {
     if (userProfile) {
-      navigate('/services-booking');
+      navigate('/booking');
     } else {
       toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
       return;

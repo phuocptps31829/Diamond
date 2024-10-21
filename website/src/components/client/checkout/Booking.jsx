@@ -71,14 +71,6 @@ export default function Form() {
     );
   });
 
-  // useEffect(() => {
-  //   setSelectedProduct({
-  //     ...cartItems[0], serviceId: cartItems[0]?.id, bookingDetail: {
-  //       specialtyID: cartItems[0]?.specialtyID
-  //     }
-  //   });
-  // }, [cartItems]);
-
   const handleRemoveItem = (id, isService) => {
     dispatch(removeFromCart({
       _id: id,
@@ -314,7 +306,7 @@ export default function Form() {
 
   useEffect(() => {
     if (!isBlocking && shouldNavigate) {
-      navigate("/services-booking-checkout");
+      navigate("/checkout");
     }
   }, [isBlocking, shouldNavigate, navigate]);
 
@@ -344,8 +336,8 @@ export default function Form() {
         : undefined,
       data: bookingDetails.map((detail) => ({
         workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
-        ...(selectedProduct?.serviceID
-          ? { serviceID: selectedProduct.serviceID }
+        ...(detail?.serviceID
+          ? { serviceID: detail.serviceID }
           : {
             medicalPackageID: detail.bookingDetail?.levelID
           }),
@@ -362,7 +354,7 @@ export default function Form() {
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
 
-    navigate('/services-booking-checkout');
+    navigate('/checkout');
   };
 
   return (
