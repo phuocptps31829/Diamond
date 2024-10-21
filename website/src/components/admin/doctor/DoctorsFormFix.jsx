@@ -15,7 +15,7 @@ import RadioGroupField from "@/components/ui/RadioGroupField";
 import { doctorApi } from "@/services/doctorsApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI as toast } from "@/components/ui/Toastify";
-import { Certificate } from "@/components/admin/doctor/dialog/Certificate";
+import { CertificateInFixPage } from "@/components/admin/doctor/dialog/CertificateInFixPage";
 import { AddCertificateImages } from "@/components/admin/doctor/dialog/AddCertificateImages";
 import SpinLoader from "@/components/ui/SpinLoader";
 import { Button } from "@/components/ui/Button";
@@ -228,12 +228,12 @@ export default function DoctorsFormFix({ dataDoctor }) {
     updateDoctorMutation({
       id: dataDoctor._id,
       newData: updateDoctor,
-      index: 0,
+      location: 0,
     });
   };
 
   return (
-    <div className="w-[100%] rounded-lg bg-white px-7 py-6 shadow-gray">
+    <div className="w-[100%] rounded-lg bg-white px-7 py-6">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
         Thông tin bác sĩ
       </h1>
@@ -390,7 +390,7 @@ export default function DoctorsFormFix({ dataDoctor }) {
               </label>
               <>
                 <div className="flex gap-3">
-                  <Certificate
+                  <CertificateInFixPage
                     data={arrayImages}
                     onClickDeleteImage={handleClickDeleteImage}
                     isPending={isPending}

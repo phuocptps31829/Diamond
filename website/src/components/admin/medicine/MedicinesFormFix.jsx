@@ -1,4 +1,5 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { medicineAdminSchema } from "@/zods/admin/medicineAdmin";
@@ -66,7 +67,7 @@ const MedicinesFormFix = ({ medicineDetail }) => {
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4 flex w-full gap-[20px]">
-            <div className="relative md:mb-1 md:w-1/3">
+            <div className="relative min-w-[370px]">
               <InputCustom
                 label={"Tên thuốc"}
                 required
@@ -104,7 +105,7 @@ const MedicinesFormFix = ({ medicineDetail }) => {
             </div>
           </div>
           <div className="mb-4 flex w-full gap-[20px]">
-            <div className="md:w-1/4">
+            <div className="min-w-[370px]">
               <InputCustom
                 required
                 className="col-span-1 sm:col-span-1"
@@ -131,30 +132,41 @@ const MedicinesFormFix = ({ medicineDetail }) => {
             </div>
           </div>
           <div className="mb-4 flex w-full gap-[20px]">
-            <div className="md:w-1/4">
-              <Label className="mb-3 block text-sm font-medium leading-none text-black">
-                Đơn vị: <span className="text-red-500">*</span>
-              </Label>
-              <SelectUnit name="unit" control={control} errors={errors} />
-            </div>
-            <div className="md:w-1/4">
-              <Label className="mb-3 block text-sm font-medium leading-none text-black">
-                Loại: <span className="text-red-500">*</span>
-              </Label>
-              <SelectType name="type" control={control} errors={errors} />
+            <div className="flex flex-col gap-5">
+              <div className="w-[370px]">
+                <Label className="mb-3 block text-sm font-medium leading-none text-black">
+                  Đơn vị: <span className="text-red-500">*</span>
+                </Label>
+                <SelectUnit name="unit" control={control} errors={errors} />
+              </div>
+              <div className="w-[370px]">
+                <Label className="mb-3 block text-sm font-medium leading-none text-black">
+                  Loại: <span className="text-red-500">*</span>
+                </Label>
+                <SelectType name="type" control={control} errors={errors} />
+              </div>
             </div>
             <div className="relative flex-1">
-              <InputCustom
-                label={"Hướng dẫn sử dụng"}
-                required
-                className="col-span-1 sm:col-span-1"
+              <Label className="mb-3 block" htmlFor="shortDescription">
+                Hướng dẫn sử dụng: <span className="text-red-500">*</span>
+              </Label>
+              <Controller
                 name="instruction"
-                type="text"
-                id="instruction"
-                placeholder="Nhập hướng dẫn sử dụng"
                 control={control}
-                errors={errors}
+                render={({ field }) => (
+                  <Textarea
+                    placeholder="Nhập hướng dẫn sử dụng"
+                    id="instruction"
+                    className="min-h-[135px] w-full"
+                    {...field}
+                  />
+                )}
               />
+              {errors.instruction && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.instruction.message}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex w-full gap-[20px]">

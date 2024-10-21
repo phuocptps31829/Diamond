@@ -25,7 +25,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
-export const Certificate = ({
+export const CertificateInFixPage = ({
   data,
   onClickDeleteImage,
   isPending,
