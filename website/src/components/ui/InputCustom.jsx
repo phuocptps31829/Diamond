@@ -45,7 +45,7 @@ function InputCustom({
   return (
     <div className={`w-full ${className}`}>
       <label
-        className="mb-2 block text-sm font-medium text-black"
+        className="mb-2 block text-sm font-medium text-black w-fit"
         htmlFor={`${name}Input`}
       >
         {label} {required && <span className="text-red-500">*</span>}

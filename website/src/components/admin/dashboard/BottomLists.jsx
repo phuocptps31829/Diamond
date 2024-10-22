@@ -106,6 +106,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
+            {console.log("filteredAppointments", filteredAppointments)}
             {filteredAppointments.length === 0 ? (
               <TableRow className="h-14 text-center text-[13px]">
                 <TableCell colSpan={6}>Không có lịch hẹn nào !</TableCell>
@@ -138,7 +139,10 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       minute: "numeric",
                     })}
                   </TableCell>
-                  <TableCell>{appointment.service.name}</TableCell>
+                  <TableCell>
+                    {appointment.service?.name ||
+                      appointment.medicalPackage?.name}
+                  </TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
