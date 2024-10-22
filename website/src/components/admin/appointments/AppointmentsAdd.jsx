@@ -248,6 +248,7 @@ const AppointmentsAdd = () => {
                     <SelectLevelMedicalPackage
                       control={control}
                       name="level"
+                      setValue={setValue}
                       errors={errors}
                       levels={selectedPackage.services}
                       onChange={handleChangeLevel}

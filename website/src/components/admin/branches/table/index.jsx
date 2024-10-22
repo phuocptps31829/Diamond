@@ -137,7 +137,7 @@ export default function DataTable({ data, columns }) {
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
-                className=""
+                className="h-[80px]"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
