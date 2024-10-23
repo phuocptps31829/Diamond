@@ -4,24 +4,23 @@ import NewsCard from "@/components/ui/NewsCard";
 
 export default function NewsAbove({ news, isLoading }) {
   return (
-    <div className="mx-auto max-w-screen-xl p-3 md:p-5 md:py-10">
-      <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
-        Tin tức
+    <div className="mx-auto max-w-screen-xl p-3 py-5 pb-4 md:p-5">
+      <div className="flex items-center gap-5">
+        <h2 className="mt-2 whitespace-nowrap text-[22px] font-bold text-primary-500 sm:text-[28px]">
+          Tin tức mới nhất
+        </h2>
+        <div className="h-[2.5px] w-full bg-[linear-gradient(to_right,#007BBB,#F57116)]"></div>
       </div>
-      <div className="my-3 flex items-center justify-center text-2xl text-[#797676]">
-        <img src="https://benhviennamsaigon.com.vn/skins/default/images/line.png" />
-      </div>
-
-      { isLoading ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
-          <div className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid">
-            <Skeleton className="h-[200px] w-full md:h-[300px]" />
+      {isLoading ? (
+        <div className="mt-6 flex flex-col gap-5 md:flex-row">
+          <div className="min-w-[60%] gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid">
+            <Skeleton className="h-[300px] w-full" />{" "}
             <div className="p-5">
-              <div className="mb-[6px] flex gap-2 text-[12px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-4 w-24" />
-                <div>|</div>
-                <Skeleton className="h-4 w-16" />
+              <div className="mb-[6px] flex flex-wrap gap-2 text-[12px]">
+                <Skeleton className="h-4 w-16 flex-shrink-0" />
+                <Skeleton className="h-4 w-24 flex-shrink-0" />
+                <div className="flex-shrink-0">|</div>
+                <Skeleton className="h-4 w-16 flex-shrink-0" />
               </div>
               <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
               <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
@@ -31,83 +30,56 @@ export default function NewsAbove({ news, isLoading }) {
               </div>
             </div>
           </div>
-          <div className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row">
-            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-              <Skeleton className="h-full w-full" />
-            </div>
-            <div className="p-3">
-              <div className="mb-[6px] flex gap-2 text-[12px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-4 w-24" />
-                <div>|</div>
-                <Skeleton className="h-4 w-16" />
+          <div className="flex flex-col gap-5">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex flex-row items-center overflow-hidden rounded-md bg-white"
+              >
+                <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
+                  <Skeleton className="h-full max-h-[126px] w-full" />
+                </div>
+                <div className="p-3">
+                  <div className="mb-[6px] flex flex-wrap gap-2 text-[12px]">
+                    <Skeleton className="h-4 w-16 flex-shrink-0" />
+                    <Skeleton className="h-4 w-24 flex-shrink-0" />
+                    <div className="flex-shrink-0">|</div>
+                    <Skeleton className="h-4 w-16 flex-shrink-0" />
+                  </div>
+                  <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
+                  <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
+                  <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                    <Skeleton className="h-4 w-8" />
+                    <Skeleton className="h-4 w-8" />
+                  </div>
+                </div>
               </div>
-              <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-              <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-              <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                <Skeleton className="h-4 w-8" />
-                <Skeleton className="h-4 w-8" />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row">
-            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-              <Skeleton className="h-full w-full" />
-            </div>
-            <div className="p-3">
-              <div className="mb-[6px] flex gap-2 text-[12px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-4 w-24" />
-                <div>|</div>
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-              <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-              <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                <Skeleton className="h-4 w-8" />
-                <Skeleton className="h-4 w-8" />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col overflow-hidden rounded-md bg-white sm:h-[200px] sm:flex-row">
-            <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-              <Skeleton className="h-full w-full" />
-            </div>
-            <div className="p-3">
-              <div className="mb-[6px] flex gap-2 text-[12px]">
-                <Skeleton className="h-4 w-16" />
-                <Skeleton className="h-4 w-24" />
-                <div>|</div>
-                <Skeleton className="h-4 w-16" />
-              </div>
-              <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-              <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-              <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                <Skeleton className="h-4 w-8" />
-                <Skeleton className="h-4 w-8" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
-          <NewsCard
-            newsItem={ news[news.length - 1] }
-            className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
-            firstNews={ true }
-          />
-          { news
-            .slice(news.length - 4, news.length - 1)
-            .reverse()
-            .map((newsItem, index) => (
-              <NewsCard
-                key={ index }
-                newsItem={ newsItem }
-                className="sm:h-[200px] sm:flex-row"
-              />
-            )) }
+        <div className="mt-6 flex flex-col gap-5 md:flex-row">
+          <div className="min-w-[60%]">
+            <NewsCard
+              newsItem={news[news.length - 1]}
+              className="flex-col gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
+              firstNews={true}
+            />
+          </div>
+          <div className="flex flex-col gap-5">
+            {news
+              .slice(news.length - 6, news.length - 1)
+              .reverse()
+              .map((newsItem, index) => (
+                <NewsCard
+                  key={index}
+                  newsItem={newsItem}
+                  className="flex-row items-center"
+                />
+              ))}
+          </div>
         </div>
-      ) }
+      )}
     </div>
   );
 }

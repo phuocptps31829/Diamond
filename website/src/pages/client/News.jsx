@@ -12,7 +12,6 @@ export default function News() {
     queryKey: ["news"],
     queryFn: newsApi.getAllNews,
   });
-  console.log(data, "data");
 
   if (error) {
     return <NotFound />;
