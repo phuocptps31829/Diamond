@@ -240,7 +240,7 @@ const router = createBrowserRouter([
         element: <ChangePass />,
       },
       {
-        path: "*",
+        path: "/",
         element: <NotFound />,
       },
     ],

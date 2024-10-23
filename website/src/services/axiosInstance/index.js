@@ -2,18 +2,25 @@ import Cookies from "js-cookie";
 import { authApi } from "../authApi";
 import axios from "axios";
 
+const BACKEND_SECRET = import.meta.env.VITE_BACKEND_SECRET;
 const GET_API_URL = import.meta.env.VITE_GET_API_URL;
 const CUD_API_URL = import.meta.env.VITE_CUD_API_URL;
 const IMG_API_URL = import.meta.env.VITE_UPLOAD_IMAGE_API_URL;
 
 export const axiosInstanceGET = axios.create({
-  baseURL: GET_API_URL
+  baseURL: GET_API_URL,
 });
 export const axiosInstanceCUD = axios.create({
-  baseURL: CUD_API_URL
+  baseURL: CUD_API_URL,
+  headers: {
+    secret: BACKEND_SECRET
+  }
 });
 export const axiosInstanceIMG = axios.create({
-  baseURL: IMG_API_URL
+  baseURL: IMG_API_URL,
+  headers: {
+    secret: BACKEND_SECRET
+  }
 });
 
 const interceptors = (axiosInstance) => {

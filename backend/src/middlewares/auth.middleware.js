@@ -11,12 +11,14 @@ const verifyAccessToken = (req, res, next) => {
         if (!token) {
             createError(401, 'Không có quyền truy cập.');
         }
-
+        console.log('re', token);
         const verifiedUser = jwt.verify(
             token,
             process.env.ACCESS_TOKEN_SECRET,
             { algorithms: ['HS256'] }
         );
+        console.log('re', verifiedUser);
+
         req.user = { id: verifiedUser.id };
 
         next();
@@ -58,7 +60,6 @@ const verifyRefreshToken = async (req, res, next) => {
         });
 
         req.user = { id: verifiedUser.id };
-
         next();
     } catch (error) {
         next(error);
@@ -66,8 +67,8 @@ const verifyRefreshToken = async (req, res, next) => {
 };
 
 const verifyAdmin = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user.isAdmin) {
+    verifyAccessToken(req, res, () => {
+        if (req.user?.isAdmin) {
             next();
         } else {
             createError(403, 'Không phải admin.');

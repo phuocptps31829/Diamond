@@ -17,6 +17,9 @@ import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import brandLogo from "@/assets/images/brandLogo.png";
 import { toastUI } from "@/components/ui/Toastify";
+import { FaRegUser } from "react-icons/fa";
+import { FaPowerOff } from "react-icons/fa6";
+import { clearCart } from "@/redux/cartSlice";
 
 const dataNav = [
   {
@@ -57,9 +60,8 @@ export default function MainHeader() {
   const userProfile = useSelector((state) => state.auth.userProfile);
 
   const handleLogout = () => {
-    // const accessToken = localStorage.getItem("accessToken");
-    // mutation.mutate(accessToken);
     dispatch(logoutAction());
+    dispatch(clearCart());
     toastUI("Đăng xuất thành công!", "success");
     navigate("/");
   };
@@ -97,7 +99,9 @@ export default function MainHeader() {
                       </div>
 
                       <Avatar>
-                        <AvatarImage src={ userProfile?.avatar || 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png' } />
+                        <AvatarImage src={ userProfile?.avatar
+                          ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
+                          : 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png' } />
                       </Avatar>
                     </div>
                   </DropdownMenuTrigger>
@@ -107,11 +111,13 @@ export default function MainHeader() {
                     <Link to={ "/user-profile" }>
                       <DropdownMenuItem>
                         { " " }
+                        <FaRegUser className="mr-2" />
                         Thông tin
                       </DropdownMenuItem>
                     </Link>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={ handleLogout }>
+                      <FaPowerOff className="mr-2" />
                       Đăng xuất
                     </DropdownMenuItem>
                   </DropdownMenuContent>

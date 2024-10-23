@@ -84,7 +84,7 @@ export default function ContactForm() {
                         </div>
                     </div>
                     <form
-                        onSubmit={handleSubmit(onSubmit)}
+                        onSubmit={ handleSubmit(onSubmit) }
                         className="flex w-full flex-col space-y-5 lg:ml-[12%] lg:max-w-[50%]"
                     >
                         <div className="flex flex-col text-[14px]">
@@ -93,8 +93,8 @@ export default function ContactForm() {
                                 name="fullName"
                                 label="Họ và tên"
                                 type="text"
-                                control={control}
-                                errors={errors}
+                                control={ control }
+                                errors={ errors }
                                 placeholder="Nhập họ và tên"
                             />
                         </div>
@@ -104,8 +104,8 @@ export default function ContactForm() {
                                 name="email"
                                 label="Email"
                                 type="email"
-                                control={control}
-                                errors={errors}
+                                control={ control }
+                                errors={ errors }
                                 placeholder="Nhập email"
                             />
                         </div>
@@ -115,8 +115,8 @@ export default function ContactForm() {
                                 name="phoneNumber"
                                 label="Số điện thoại"
                                 type="text"
-                                control={control}
-                                errors={errors}
+                                control={ control }
+                                errors={ errors }
                                 placeholder="Nhập số điện thoại"
                             />
                         </div>
@@ -128,22 +128,22 @@ export default function ContactForm() {
                                 id="note"
                                 className="rounded-md border border-gray-300 p-3 focus:outline-none focus:ring-1 focus:ring-primary-300"
                                 placeholder="Nhập ghi chú"
-                                {...control.register('note')}
+                                { ...control.register('note') }
                             ></textarea>
-                            {errors.note && (
+                            { errors.note && (
                                 <small className="mt-2 block text-sm text-red-400">
-                                    {errors.note.message}
+                                    { errors.note.message }
                                 </small>
-                            )}
+                            ) }
                         </div>
                         <button
-                            className="flex w-fit items-center gap-2 self-end rounded-lg bg-gradient-to-r from-primary-500 to-primary-300 px-3 py-2 font-semibold text-white"
-                            disabled={mutation.isPending}
+                            className="flex w-fit items-center gap-2 self-end rounded-lg bg-gradient-to-r bg-primary-500  px-3 py-2 font-semibold text-white"
+                            disabled={ mutation.isPending }
                         >
-                            {mutation.isPending ? 'Đang gửi' : 'Gửi ngay'}
-                            {mutation.isPending && (
+                            { mutation.isPending ? 'Đang gửi' : 'Gửi ngay' }
+                            { mutation.isPending && (
                                 <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                            )}
+                            ) }
                         </button>
                     </form>
                 </div>
@@ -153,23 +153,23 @@ export default function ContactForm() {
                         Hệ thống Cơ sở Y tế triển khai
                     </h3>
                     <Carousel
-                        opts={{
+                        opts={ {
                             align: 'start',
                             loop: true,
-                        }}
+                        } }
                         className="my-4 w-full"
-                        plugins={[
+                        plugins={ [
                             Autoplay({
                                 delay: 2500,
                                 stopOnInteraction: false,
                                 stopOnMouseEnter: false,
                             }),
-                        ]}
+                        ] }
                     >
                         <CarouselContent>
-                            {Array.from({ length: 12 }).map((_, index) => (
+                            { Array.from({ length: 12 }).map((_, index) => (
                                 <CarouselItem
-                                    key={index}
+                                    key={ index }
                                     className="pl-4 sm:basis-1/2 lg:basis-1/3"
                                 >
                                     <div className="flex flex-col items-center rounded-md bg-white">
@@ -185,7 +185,7 @@ export default function ContactForm() {
                                         </div>
                                     </div>
                                 </CarouselItem>
-                            ))}
+                            )) }
                         </CarouselContent>
                         <CarouselPrevious />
                         <CarouselNext />

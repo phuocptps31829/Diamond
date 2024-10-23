@@ -5,15 +5,15 @@ import NewsCard from "@/components/ui/NewsCard";
 export default function NewsAbove({ news, isLoading }) {
   return (
     <div className="mx-auto max-w-screen-xl p-3 md:p-5 md:py-10">
-      <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
+      {/* <div className="w-full text-center text-[23px] font-bold uppercase md:text-[35px]">
         Tin tức
       </div>
       <div className="my-3 flex items-center justify-center text-2xl text-[#797676]">
         <img src="https://benhviennamsaigon.com.vn/skins/default/images/line.png" />
-      </div>
+      </div> */}
 
       { isLoading ? (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
+        <div className="mt-1 grid gap-4 md:grid-cols-2 md:grid-rows-1">
           <div className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid">
             <Skeleton className="h-[200px] w-full md:h-[300px]" />
             <div className="p-5">
@@ -90,7 +90,7 @@ export default function NewsAbove({ news, isLoading }) {
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-4 md:grid-cols-2 md:grid-rows-1">
+        <div className="mt-1 grid gap-4 md:grid-cols-2 md:grid-rows-1">
           <NewsCard
             newsItem={ news[news.length - 1] }
             className="gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
@@ -111,8 +111,3 @@ export default function NewsAbove({ news, isLoading }) {
     </div>
   );
 }
-
-NewsAbove.propTypes = {
-  news: PropTypes.array,
-  isLoading: PropTypes.bool,
-};

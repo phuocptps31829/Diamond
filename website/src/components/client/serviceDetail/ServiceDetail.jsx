@@ -36,7 +36,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     if (isLoading) {
         return (
             <div className="mx-auto max-w-screen-2xl pb-4">
-                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
+                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md  bg-white p-8 md:grid-cols-2 md:py-10">
                     <div className="container flex items-center justify-center">
                         <Skeleton className="h-[400px] w-[400px] overflow-hidden rounded-md" />
                     </div>
@@ -61,19 +61,19 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
 
     return (
         <div className="mx-auto max-w-screen-2xl pb-4">
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
-                <div className="container flex items-center justify-center">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 rounded-md bg-white md:grid-cols-2 p-4">
+                <div className="flex items-center justify-center">
                     <img
                         src={ `${import.meta.env.VITE_IMAGE_API_URL}/${service?.image || medicalPackage?.image}` }
                         alt={ service?.name || medicalPackage?.name }
-                        className="h-80 w-9/12"
+                        className="h-96 rounded-md"
                     />
                 </div>
-                <div className="flex w-full flex-col items-start justify-center text-start">
+                <div className="flex w-full pt-4 flex-col items-start justify-start text-start">
                     { service ? (
                         <>
-                            <h3 className="mb-4 text-xl font-bold md:text-3xl">{ service.name }</h3>
-                            <div className="my-4 flex items-center gap-2">
+                            <h3 className="text-xl font-bold md:text-3xl">{ service.name }</h3>
+                            <div className="my-2 flex items-center gap-2">
                                 <AiOutlineSchedule size={ 25 } />
                                 <span className="text-sm font-bold !text-gray-700">
                                     { service.orderCount } lượt đã đặt
@@ -81,11 +81,8 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                             </div>
                             <p className="mb-4 w-full text-justify text-sm font-normal leading-[27px] text-gray-600">
                                 { service.shortDescription }
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
                             </p>
-                            <span className="mb-6 block text-lg font-medium">
-                                <strong className="font-semibold">Giá:</strong>{ ' ' }
-                                { service.price.toLocaleString() } đ
-                            </span>
                         </>
                     ) : (
                         <>
@@ -139,15 +136,21 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                             </span>
                         </>
                     ) }
-                    <div className="mb-4 flex w-full items-center gap-3">
-                        <Button
-                            className="w-full"
-                            size="lg"
-                            variant="custom"
-                            onClick={ handleAddToCart }
-                        >
-                            { isInCart ? 'Thanh toán ngay' : 'Đặt lịch ngay' }
-                        </Button>
+                    <div className="flex flex-1 w-full items-end gap-3">
+                        <div className='w-full'>
+                            <span className="mb-6 block text-lg font-medium">
+                                <strong className="font-semibold">Giá:</strong>{ ' ' }
+                                { service.price.toLocaleString() } đ
+                            </span>
+                            <Button
+                                className="w-[80%]"
+                                size="lg"
+                                variant="custom"
+                                onClick={ handleAddToCart }
+                            >
+                                { isInCart ? 'Thanh toán ngay' : 'Đặt lịch ngay' }
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

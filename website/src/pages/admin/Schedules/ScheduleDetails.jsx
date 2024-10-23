@@ -60,6 +60,10 @@ const ScheduleDetailsPage = () => {
     console.log(infoForm);
     const breadcrumbData = getBreadcrumbData(id, data?.data.fullName);
 
+    // useEffect(() => {
+    //     return () => window.location.reload();
+    // }, [infoForm.isOpen]);
+
     if (isLoading) {
         return <Loading />;
     }

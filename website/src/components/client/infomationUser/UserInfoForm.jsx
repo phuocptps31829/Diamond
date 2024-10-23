@@ -15,7 +15,6 @@ import Loading from "@/components/ui/Loading";
 import { imageApi } from "@/services/imageApi";
 import { toastUI } from "@/components/ui/Toastify";
 import { patientApi } from "@/services/patientsApi";
-import { Controller } from "react-hook-form";
 import SelectEthnic from "../checkout/select/SelectEthnicity";
 import SelectDateOfBirth from "./SelectDateOfBirth";
 import SpinLoader from "@/components/ui/SpinLoader";
@@ -31,7 +30,7 @@ const UserInfoForm = () => {
   const { data: profileFetched, isLoading } = useQuery({
     queryKey: ["userProfile"],
     queryFn: authApi.getProfileInfo,
-    enabled: !!profile
+    enabled: !profile
   });
 
   const { mutate: updatePatient, isPending: isPendingUpdate } = useMutation({
@@ -76,6 +75,8 @@ const UserInfoForm = () => {
   });
 
   useEffect(() => {
+    if (!profileFetched) return;
+
     if (profileFetched?.role) {
       if (profileFetched?.role && profileFetched.role?.name !== "PATIENT") {
         dispatch(logoutAction());
@@ -98,9 +99,7 @@ const UserInfoForm = () => {
     setValue('insuranceCode', profileFetched?.data?.otherInfo?.insuranceCode);
   }, [profileFetched, dispatch, setValue, navigate]);
 
-  console.log(errors);
   const onSubmit = async (data) => {
-    console.log(data);
     const requestBody = {
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
@@ -233,16 +232,15 @@ const UserInfoForm = () => {
               required
               control={ control }
               errors={ errors }
-              placeholder="**************"
+              placeholder="Nhap số CMND/CCCD"
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="insuranceCode"
               label="Số thẻ BH"
-              type="password"
               control={ control }
               errors={ errors }
-              placeholder="**************"
+              placeholder="Nhập số thẻ BHYT"
             />
             <div className="flex flex-col gap-1 col-span-2">
               <InputCustom

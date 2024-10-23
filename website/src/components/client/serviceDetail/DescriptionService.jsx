@@ -6,7 +6,7 @@ const DescriptionService = ({ medicalPackage, isLoading, service }) => {
     return (
       <div className="mx-auto max-w-screen-2xl">
         <div className="mx-auto max-w-7xl py-0 md:py-4">
-          <div className="container rounded-md border bg-white p-5">
+          <div className="container rounded-md bg-white p-5">
             <Skeleton className="mb-4 h-8 w-3/4" />
             <Skeleton className="mb-4 h-6 w-full" />
             <Skeleton className="mb-4 h-6 w-full" />
@@ -25,10 +25,10 @@ const DescriptionService = ({ medicalPackage, isLoading, service }) => {
   return (
     <div className="mx-auto max-w-screen-2xl">
       <div className="mx-auto max-w-7xl py-0 md:py-4">
-        <div className="container rounded-md border bg-white p-5">
-          <h2 className="mb-4 text-2xl font-bold">CHI TIẾT VỀ {name} </h2>
+        <div className="container rounded-md bg-white p-5">
+          <h2 className="mb-4 text-2xl font-bold">CHI TIẾT VỀ { name } </h2>
           <div
-            dangerouslySetInnerHTML={{ __html: details }}
+            dangerouslySetInnerHTML={ { __html: details } }
             className="render-details"
           />
         </div>

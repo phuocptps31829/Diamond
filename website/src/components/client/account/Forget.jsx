@@ -9,6 +9,8 @@ import { sendOtpForgotPassword } from "@/services/authApi";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
+import { toastUI } from "@/components/ui/Toastify";
+import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 
 export default function ForgetComponent() {
   const { toast } = useToast();
@@ -28,12 +30,7 @@ export default function ForgetComponent() {
   const mutation = useMutation({
     mutationFn: sendOtpForgotPassword,
     onSuccess: (data) => {
-      toast({
-        variant: "success",
-        title: "Thành công!",
-        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Mã OTP đã được gửi đến số điện thoại của bạn.", "success");
       sessionStorage.setItem("otpTokenForgot", data.otpToken);
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTimeForgot", currentTime);
@@ -44,12 +41,7 @@ export default function ForgetComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.", "error");
       sessionStorage.removeItem("phoneNumberForgot");
     },
   });
@@ -59,13 +51,17 @@ export default function ForgetComponent() {
     sessionStorage.setItem("phoneNumberForgot", data.phoneNumber);
   };
 
+  const handleLoginGoogle = async () => {
+    window.location.href = API_LOGIN_GOOGLE;
+  };
+
   return (
-    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
-      <div className="w-full max-w-2xl">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
+      <div className="max-w-screen-2xl py-5 px-3 md:px-5">
         <div className="grid grid-cols-1">
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
-            <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
+          <div className="bg-white px-5 py-4 md:px-11 md:py-8 rounded-md">
+            <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl">
               Quên mật khẩu
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">
@@ -124,15 +120,16 @@ export default function ForgetComponent() {
               {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
+                  onClick={ handleLoginGoogle }
                   type="button"
                   className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
                 >
                   <img
                     src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg"
-                    className="mr-2 w-7 md:mr-2"
-                    alt="Google icon"
-                  />
-                  <span className="mr-4 block md:mr-0">Tài khoản Google</span>
+                    className="w-7 mr-2 md:mr-2" alt="Google icon" />
+                  <span className="block mr-4 md:mr-0">
+                    Tài khoản Google
+                  </span>
                 </button>
                 <button
                   type="button"

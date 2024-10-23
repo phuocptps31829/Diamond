@@ -125,7 +125,6 @@ export const refreshTokenApi = async (refreshToken) => {
 export const authApi = {
     getProfileInfo: async () => {
         const res = await axiosInstanceGET.get(`/auth/get-user-by-token`);
-        console.log(res.data);
         return res.data;
     },
     login: async (data) => {

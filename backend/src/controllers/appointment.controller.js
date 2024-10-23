@@ -200,9 +200,9 @@ module.exports = {
                         name: appointment.workScheduleID.clinicID.branchID.name
                     },
                     result: {
-                        diagnose: result?.diagnose || 'Chưa có',
-                        images: result?.images || 'Chưa có',
-                        description: result?.description || 'Chưa có',
+                        diagnose: result?.diagnose || '',
+                        images: result?.images || '',
+                        description: result?.description || '',
                     },
                     ...(appointment.serviceID ? {
                         service: {
@@ -476,11 +476,6 @@ module.exports = {
                     .lean(),
             ]);
 
-            // Kiểm tra kết quả trả về
-            console.log('Invoice:', invoice);
-            console.log('Result:', result);
-            console.log('OrderNumber:', orderNumber);
-
             const prescription = invoice
                 ? await PrescriptionModel
                     .findOne({ isDeleted: false, invoiceID: invoice._id })
@@ -554,9 +549,9 @@ module.exports = {
                 },
                 result: {
                     _id: result?._id,
-                    diagnose: result?.diagnose || 'Chưa có',
-                    images: result?.images || 'Chưa có',
-                    description: result?.description || 'Chưa có',
+                    diagnose: result?.diagnose || '',
+                    images: result?.images || '',
+                    description: result?.description || '',
                 },
                 invoice: {
                     _id: invoice?._id,
