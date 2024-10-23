@@ -216,31 +216,31 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/login",
+        path: "login",
         element: <Login />,
       },
       {
-        path: "/register",
+        path: "register",
         element: <Register />,
       },
       {
-        path: "/accuracy",
+        path: "accuracy",
         element: <Accuracy />,
       },
       {
-        path: "/forget-password",
+        path: "forget-password",
         element: <ForgetPassword />,
       },
       {
-        path: "/changepassword-accuracy",
+        path: "changepassword-accuracy",
         element: <ChangePassAccuracy />,
       },
       {
-        path: "/change-password",
+        path: "change-password",
         element: <ChangePass />,
       },
       {
-        path: "/",
+        path: "*",
         element: <NotFound />,
       },
     ],

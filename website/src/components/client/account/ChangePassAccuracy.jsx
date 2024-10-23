@@ -1,20 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
 import NotFound from "@/components/client/notFound";
-import {
-  checkOtpForgotPassword,
-  sendOtpForgotPassword,
-} from "@/services/authApi";
+import { authApi } from "@/services/authApi";
 import { formatTime } from "@/utils/formatTime";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function ChangePassAccuracyComponent() {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const inputRefs = useRef([]);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -75,18 +70,14 @@ export default function ChangePassAccuracyComponent() {
   };
 
   const mutation = useMutation({
-    mutationFn: checkOtpForgotPassword,
+    mutationFn: authApi.checkOtpForgotPassword,
     onSuccess: (data) => {
-      toast({
-        variant: "success",
-        title: "Xác thực thành công!",
-        description: "Bạn đã xác thực tài khoản thành công.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Xác thực thành công!", "success");
       setOtp(new Array(6).fill(""));
+      console.log(data);
       sessionStorage.removeItem("phoneNumberForgot");
-      sessionStorage.setItem("otpForgot", data.OTP);
-      sessionStorage.setItem("otpTokenForgot", data.otpToken);
+      sessionStorage.setItem("otpForgot", data.data.OTP);
+      sessionStorage.setItem("otpTokenForgot", data.data.otpToken);
       navigate("/change-password");
     },
     onError: (error) => {
@@ -94,25 +85,15 @@ export default function ChangePassAccuracyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Xác thực thất bại!",
-        description: errorMessage,
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage, "error");
     },
   });
 
   const mutationSendOtpAgain = useMutation({
-    mutationFn: sendOtpForgotPassword,
+    mutationFn: authApi.sendOtpForgotPassword,
     onSuccess: (data) => {
-      toast({
-        variant: "success",
-        title: "Gửi lại mã OTP thành công!",
-        description: "Mã OTP đã được gửi đến số điện thoại của bạn.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
-      sessionStorage.setItem("otpTokenForgot", data.otpToken);
+      toastUI("Gửi lại mã OTP thành công!", "success");
+      sessionStorage.setItem("otpTokenForgot", data.data.otpToken);
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTimeForgot", currentTime);
       setSendOtpAgain(true);
@@ -122,12 +103,7 @@ export default function ChangePassAccuracyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage, "error");
     },
   });
 
@@ -135,12 +111,7 @@ export default function ChangePassAccuracyComponent() {
     const otpValue = otp.join("");
 
     if (otpValue.length < 6) {
-      toast({
-        variant: "destructive",
-        title: "Xác thực thất bại!",
-        description: "Vui lòng nhập đủ 6 số.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Vui lòng nhập đủ 6 số.", "warning");
       return;
     }
 
@@ -161,12 +132,7 @@ export default function ChangePassAccuracyComponent() {
 
   const handleSendAgainOtp = () => {
     if (timeLeft > 0) {
-      toast({
-        variant: "destructive",
-        title: "Gửi lại mã OTP thất bại!",
-        description: "Sau 1 phút 30 giây mới có thể gửi lại mã OTP.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Sau 1 phút 30 giây mới có thể gửi lại mã OTP.", "warning");
       return;
     }
 
@@ -178,12 +144,12 @@ export default function ChangePassAccuracyComponent() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-10 md:px-3">
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
-            <h1 className="mb-4 text-center text-4xl font-bold md:text-5xl">
+          <div className="bg-white px-5 py-6 md:px-11 md:py-10 rounded-md">
+            <h1 className="mb-4 text-center text-3xl font-bold md:text-4xl">
               Xác thực tài khoản
             </h1>
             <p className="mb-2 text-center text-sm text-gray-700">

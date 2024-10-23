@@ -59,7 +59,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 */
 router.get(
     '/',
-    authMiddleware.verifyAdmin,
+    authMiddleware.verifySuperAdmin,
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     roleController.getAllRoles

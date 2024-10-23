@@ -4,6 +4,5 @@ export default function ChangePass() {
     useScrollToTop();
     return (
         <ChangePassComponent />
-    )
-        ;
+    );
 }

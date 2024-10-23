@@ -65,9 +65,9 @@ export default function LoginComponent() {
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
       <div className="max-w-screen-xl py-5 px-3 md:px-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 h-fit">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-fit rounded-lg overflow-hidden">
           {/* ADS BANNER */ }
-          <div className="hidden bg-gray-200 shadow-lg md:block overflow-hidden">
+          <div className="hidden bg-gray-200 md:block overflow-hidden">
             <Carousel
               opts={ {
                 align: "start",
@@ -92,7 +92,7 @@ export default function LoginComponent() {
             </Carousel>
           </div>
           {/* FORM */ }
-          <div className="bg-white px-5 py-4 shadow-lg md:px-11 md:py-10 border-l">
+          <div className="bg-white px-5 py-4 md:px-11 md:py-10 border-l">
             <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl">
               Đăng nhập
             </h1>
