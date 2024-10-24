@@ -87,6 +87,7 @@ import NewsDetailPage from "./pages/admin/News/detail";
 import ServicesListPage from "./pages/admin/Services/indexServicePage";
 import DoctorsFormAddPage from "./pages/admin/Doctor/formAdd";
 import DoctorsFormFixPage from "./pages/admin/Doctor/formFix";
+import ScheduleFormPage from "./pages/admin/Schedules/ScheduleForm";
 
 const router = createBrowserRouter([
   {
@@ -326,6 +327,14 @@ const router = createBrowserRouter([
         element: <ScheduleDetailsPage />,
       },
       {
+        path: "schedules/form/:doctorID/create",
+        element: <ScheduleFormPage />,
+      },
+      {
+        path: "schedules/form/:doctorID/edit/:scheduleID",
+        element: <ScheduleFormPage />,
+      },
+      {
         path: "doctors/list",
         element: <DoctorsListPage />,
       },
@@ -461,7 +470,6 @@ const router = createBrowserRouter([
         path: "services/detail/:id",
         element: <ServicesDetailPage />,
       },
-
       {
         path: "services/edit/:id",
         element: <ServicesEditPage />,

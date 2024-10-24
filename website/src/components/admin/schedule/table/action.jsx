@@ -21,7 +21,6 @@ import { serviceApi } from "@/services/servicesApi";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BiDetail } from "react-icons/bi";
-import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -60,15 +59,6 @@ const Action = ({ row }) => {
                     <DropdownMenuItem className="flex w-full items-center gap-2">
                         <BiDetail className="text-[15px]" />
                         <span> Chi tiết</span>
-                    </DropdownMenuItem>
-                </Link>
-                <Link
-                    to={ `/admin/services/edit/${row.original._id}` }
-                    className="flex w-full gap-2"
-                >
-                    <DropdownMenuItem className="flex w-full items-center gap-2">
-                        <FiEdit className="text-[15px]" />
-                        <span>Sửa</span>
                     </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem className="flex w-full items-center gap-2">

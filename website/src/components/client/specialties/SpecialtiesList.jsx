@@ -5,10 +5,10 @@ import { Skeleton } from "@/components/ui/Skeleton";
 const SpecialtiesList = ({ specialties, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl py-5 lg:py-10">
+      <div className="container mx-auto max-w-screen-xl py-5">
         <div className="mx-auto w-full">
           <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
-            Chọn một chuyên khoa:
+            Tìm kiếm theo chuyên khoa:
           </h1>
           <div className="grid grid-cols-2 gap-4 rounded-lg bg-white p-6 md:grid-cols-3 lg:grid-cols-5 lg:p-6">
             { Array.from({ length: 8 }).map((_, index) => (
@@ -21,10 +21,10 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-5 md:px-4 lg:py-10">
+    <div className="container mx-auto max-w-screen-xl py-5 md:px-4">
       <div className="mx-auto w-full">
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
-          Chọn một chuyên khoa:
+          Tìm kiếm theo chuyên khoa:
         </h1>
         <div className="grid grid-cols-2 gap-4 rounded-lg bg-white p-6 md:grid-cols-3 lg:grid-cols-5 lg:p-6">
           { specialties.map((item) => (
@@ -35,13 +35,13 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
               <div className="absolute inset-0 flex cursor-pointer items-center justify-center gap-2 px-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                 <Link
                   to={ `/services?specialtyID=${item._id}` }
-                  className="flex h-8 w-24 whitespace-nowrap cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
+                  className="flex h-8 w-24 whitespace-nowrap cursor-pointer items-center justify-center rounded-md bg-primary-500 px-7 text-center text-[12px] text-white shadow transition duration-500 hover:scale-105"
                 >
                   Dịch vụ
                 </Link>
                 <Link
                   to={ `/packages?specialtyID=${item._id}` }
-                  className="flex h-8 w-24 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-3 text-center text-[10px] text-white shadow transition duration-500 hover:scale-105"
+                  className="flex h-8 w-24 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-3 text-center text-[12px] text-white shadow transition duration-500 hover:scale-105"
                 >
                   Gói khám
                 </Link>

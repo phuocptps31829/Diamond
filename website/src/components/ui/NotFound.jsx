@@ -6,7 +6,7 @@ const NotFound = ({ message }) => {
       <img
         src={ notFoundImg }
         alt="Not Found"
-        className="w-full max-w-xs rounded-md md:max-w-md lg:max-w-lg"
+        className="w-full max-w-xs rounded-md md:max-w-md lg:max-w-md"
       />
       <h1 className="mt-4 text-center text-lg font-semibold text-gray-700">
         { message }

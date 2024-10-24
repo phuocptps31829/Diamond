@@ -15,8 +15,13 @@ export const workScheduleApi = {
         );
         return res.data;
     },
-    createSchedule: async (data) => {
+    createWorkSchedule: async (data) => {
         const res = await axiosInstanceCUD.post('/work-schedules/add', data);
+        return res.data;
+    },
+    updateWorkSchedule: async ({ data, id }) => {
+        console.log('data', data);
+        const res = await axiosInstanceCUD.put('/work-schedules/update/' + id, data);
         return res.data;
     }
 };

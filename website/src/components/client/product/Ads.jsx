@@ -1,8 +1,15 @@
-export default function AdsProduct() {
+import ads1 from "../../../assets/images/loginBanners/01.png";
+import ads2 from "../../../assets/images/loginBanners/02.png";
+import ads3 from "../../../assets/images/loginBanners/03.png";
+
+const ads = [ads1, ads2, ads3];
+
+export default function AdsProduct({ index, isLoginForm }) {
+  console.log(isLoginForm);
   return (
     <img
-      src="https://psfiles.com/wp-content/uploads/2020/02/PsFiles-Dental-Clinic-Free-PSD-Flyer-Template-preview-785x1024.jpg.webp"
-      className="h-full w-full object-cover"
+      src={ ads[index] }
+      className={ `${isLoginForm ? 'h-[600px]' : 'h-[700px]'} w-full object-fill` }
       alt="Ad Banner"
     />
   );

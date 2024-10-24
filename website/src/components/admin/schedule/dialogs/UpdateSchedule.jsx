@@ -11,10 +11,13 @@ import { toastUI } from "@/components/ui/Toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import SpinLoader from "@/components/ui/SpinLoader";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { timesSchedule } from "@/constants/schedule-times";
 
-const UpdateSchedule = ({ schedules, infoForm, setInfoForm, setNewSchedule }) => {
+const UpdateSchedule = ({ schedules, infoForm, scheduleID, setInfoForm }) => {
     const [payload, setPayload] = useState(null);
-    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
 
     const {
         handleSubmit,
@@ -31,36 +34,32 @@ const UpdateSchedule = ({ schedules, infoForm, setInfoForm, setNewSchedule }) =>
         },
     });
 
-    const { mutate: createWorkSchedule, isPending } = useMutation({
-        mutationFn: (data) => workScheduleApi.createSchedule(data),
-        onSuccess: (data) => {
-            console.log('Create work schedule success', data);
-            setNewSchedule({
-                id: data.data.id,
-                title: "Lịch làm việc",
-                start: `${data.data.day} ${data.data.hour.startTime}`,
-                end: `${data.data.day} ${data.data.hour.endTime}`,
-            });
-            reset({
-                startTime: '',
-                endTime: '',
-                clinicID: ''
-            });
-            setInfoForm({ isOpen: false });
-            setPayload(null);
-            toastUI('Thêm lịch làm việc thành công', 'success');
-            queryClient.invalidateQueries(['schedule', schedules._id]);
+    const { mutate: updateWorkSchedule, isPending } = useMutation({
+        mutationFn: workScheduleApi.updateWorkSchedule,
+        onSuccess: () => {
+            toastUI('Cập nhật lịch làm việc thành công', 'success');
+            navigate(`/admin/schedules/details/${schedules._id}/?date=${infoForm.date}`);
             window.location.reload();
         },
         onError: (error) => {
-            console.error('Create work schedule error: ', error);
             toastUI('Có lỗi xảy ra: ' + error.message, 'error');
         }
     });
 
     useEffect(() => {
         setValue('date', infoForm.date);
-    }, [infoForm.date, setValue]);
+        if (searchParams.has("startTime")) {
+            const defaultStartTime = searchParams.get("startTime");
+            const foundStartTime = timesSchedule.find((time) => time.slice(0, 2) === defaultStartTime.slice(0, 2));
+            setValue('startTime', foundStartTime);
+            setValue('endTime', foundStartTime);
+            setPayload(prevPayload => ({
+                ...prevPayload,
+                startTime: foundStartTime,
+                endTime: foundStartTime
+            }));
+        }
+    }, [infoForm.date, setValue, searchParams]);
 
     useEffect(() => {
         reset({
@@ -79,15 +78,17 @@ const UpdateSchedule = ({ schedules, infoForm, setInfoForm, setNewSchedule }) =>
 
     const onSubmit = (_, event) => {
         event.preventDefault();
-
-        createWorkSchedule({
-            ...payload,
-            hour: {
-                startTime: payload.startTime,
-                endTime: payload.endTime
+        updateWorkSchedule({
+            data: {
+                ...payload,
+                hour: {
+                    startTime: payload.startTime,
+                    endTime: payload.endTime
+                },
+                day: infoForm.date,
+                doctorID: schedules._id
             },
-            day: infoForm.date,
-            doctorID: schedules._id
+            id: scheduleID
         });
     };
 
@@ -149,7 +150,7 @@ const UpdateSchedule = ({ schedules, infoForm, setInfoForm, setNewSchedule }) =>
                             className="bg-primary-500 hover:bg-primary-600 mt-4 -mb-1"
                             onClick={ () => onSubmit() }
                         >
-                            { isPending ? <SpinLoader /> : "Thêm lịch" }
+                            { isPending ? <SpinLoader /> : "Cập nhật" }
                         </Button>
                     </DialogFooter>
                 </form>

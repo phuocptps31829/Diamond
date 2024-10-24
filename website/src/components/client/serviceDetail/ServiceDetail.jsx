@@ -98,12 +98,12 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                             { product?.services?.map((item) => (
                                 <li
                                     key={ item._id }
-                                    className={ `hover:border-primary-600 text-sm border py-2 px-3 rounded-lg font-normal text-gray-600 cursor-pointer ${selectedService._id === item._id ? 'border-primary-600 bg-primary-50 text-primary-500' : 'border-primary-200'}` }
+                                    className={ `hover:border-primary-600 text-sm border py-2 px-3 rounded-lg font-normal text-gray-600 cursor-pointer ${selectedService?._id === item._id ? 'border-primary-600 bg-primary-50 text-primary-500' : 'border-primary-200'}` }
                                     onClick={ () => setSelectedService(item) }
                                 >
                                     { item.levelName }
                                 </li>
-                            )).reverse() }
+                            )) }
                         </ul>
                     </div> }
 
