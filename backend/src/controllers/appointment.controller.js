@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const AppointmentModel = require('../models/appointment.model');
+const ServiceModel = require('../models/service.model');
 const InvoiceModel = require('../models/invoice.model');
 const MedicalPackageModel = require('../models/medical-package.model');
 const OrderNumberModel = require('../models/order-number.model');
@@ -454,6 +455,7 @@ module.exports = {
 
             let medicalPackage = null;
             let level = null;
+            let services = null;
 
             if (appointment?.medicalPackageID) {
                 medicalPackage = await MedicalPackageModel
@@ -461,7 +463,18 @@ module.exports = {
                         isDeleted: false,
                         'services._id': appointment.medicalPackageID
                     });
+
                 level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
+
+                services = await Promise.all(
+                    medicalPackage.services.find(s => s._id === level._id)?.servicesID.map(async s => {
+                        const service = await ServiceModel
+                            .findById(s._id)
+                            .select('_id name price discountPrice')
+                            .lean();
+                        return service;
+                    })
+                );
             }
 
             const [invoice, result, orderNumber] = await Promise.all([
@@ -536,6 +549,7 @@ module.exports = {
                         _id: medicalPackage._id,
                         name: medicalPackage.name,
                         image: medicalPackage.image,
+                        services,
                         level: {
                             _id: level._id,
                             name: level.levelName,

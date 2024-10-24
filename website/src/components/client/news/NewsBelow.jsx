@@ -1,85 +1,141 @@
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import NewsItem from "../product/News";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/Carousel";
-import Autoplay from "embla-carousel-autoplay";
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+} from "@/components/ui/Pagination";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function NewsBelow({ news, isLoading }) {
-  if (!news) return null;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(queryParams.get("page")) || 1
+  );
+  const [totalPages, setTotalPages] = useState(0);
+  const [paginatedNews, setPaginatedNews] = useState([]);
+  const itemsPerPage = 6;
+
+  useEffect(() => {
+    if (!isLoading && news) {
+      const trimmedNews = news.slice(0, news.length - 6).reverse();
+      setTotalPages(Math.ceil(trimmedNews.length / itemsPerPage));
+
+      if (currentPage > totalPages) {
+        setCurrentPage(1);
+        navigate(`${location.pathname}?page=1`);
+      } else {
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setPaginatedNews(trimmedNews.slice(startIndex, endIndex));
+      }
+    }
+  }, [currentPage, news, isLoading, totalPages, navigate, location.pathname]);
+
+  const handlePageChange = (newPage) => {
+    if (totalPages <= 1) {
+      setCurrentPage(1);
+      navigate(`${location.pathname}?page=1`);
+      return;
+    }
+    setCurrentPage(newPage);
+    queryParams.set("page", newPage);
+    window.history.pushState({}, "", `${location.pathname}?${queryParams}`);
+  };
 
   return (
-    <>
-      { news.slice(0, news.length - 4) > 0 && (
-        <div className="mx-auto max-w-screen-xl p-4 lg:p-6">
-          <h2 className="relative flex text-[24px] font-bold uppercase">
-            <span className="absolute h-[90%] w-[8px] animate-pulse bg-orange-500 duration-300"></span>
-            <span className="sm:text-md pl-5 text-[18px]">Tin tức khác</span>
-          </h2>
-          <Carousel
-            opts={ {
-              align: "start",
-              loop: true,
-            } }
-            className="my-4 w-full"
-            plugins={ [
-              Autoplay({
-                delay: 3500,
-                stopOnInteraction: false,
-                stopOnMouseEnter: false,
-              }),
-            ] }
-          >
-            <CarouselContent>
-              { isLoading
-                ? [...Array(3)].map((_, index) => (
-                  <CarouselItem
-                    key={ index }
-                    className="pl-4 sm:basis-1/2 lg:basis-1/3"
-                  >
-                    <div className="h-full overflow-hidden rounded-xl bg-white shadow-sm">
-                      <div className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid">
-                        <div className="h-[250px] w-full">
-                          <Skeleton className="block h-full w-full object-cover" />
-                        </div>
-                        <div className="p-5">
-                          <div className="mb-[6px] flex gap-2 text-[12px]">
-                            <Skeleton className="h-4 w-16" />
-                            <Skeleton className="h-4 w-24" />
-                            <div>|</div>
-                            <Skeleton className="h-4 w-16" />
-                          </div>
-                          <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-                          <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-                          <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                            <Skeleton className="h-4 w-8" />
-                            <Skeleton className="h-4 w-8" />
-                          </div>
-                        </div>
+    <div className="mx-auto max-w-screen-xl p-4 lg:pb-6">
+      <div className="flex items-center gap-5">
+        <h2 className="whitespace-nowrap text-[22px] font-bold text-primary-500 sm:text-[28px]">
+          Tin tức khác
+        </h2>
+        <div className="h-[2.5px] w-full bg-[linear-gradient(to_right,#007BBB,#F57116)]"></div>
+      </div>
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {isLoading
+          ? Array.from({ length: itemsPerPage }).map((_, index) => (
+              <div key={index}>
+                <div className="h-full overflow-hidden rounded-xl bg-[#ffffff84] shadow-sm">
+                  <div className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid">
+                    <div className="h-[250px] w-full rounded-lg">
+                      <Skeleton className="h-full w-full rounded-t-lg" />
+                    </div>
+                    <div className="flex h-full flex-col p-5">
+                      <Skeleton className="mb-2 h-[18px] w-3/4 rounded-md" />
+                      <div className="mb-[6px] flex items-center gap-2 text-[12px]">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-[14px] w-1/2 rounded-md" />
+                        <div>|</div>
+                        <Skeleton className="h-[14px] w-1/4 rounded-md" />
+                      </div>
+                      <Skeleton className="line-clamp-2 h-[36px] w-full overflow-hidden text-ellipsis rounded-md text-[12px] text-[#6D7280] sm:text-[14px]" />
+                      <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                        <Skeleton className="h-4 w-4" />
+                        <Skeleton className="h-[14px] w-1/4 rounded-md" />
                       </div>
                     </div>
-                  </CarouselItem>
-                ))
-                : news.slice(0, news.length - 4).map((newsItem, index) => (
-                  <CarouselItem
-                    key={ index }
-                    className="pl-4 sm:basis-1/2 lg:basis-1/3"
-                  >
-                    <NewsItem { ...newsItem } />
-                  </CarouselItem>
-                )) }
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-        </div>
-      ) }
-    </>
+                  </div>
+                </div>
+              </div>
+            ))
+          : paginatedNews.map((newsItem, index) => (
+              <div key={index}>
+                <NewsItem {...newsItem} />
+              </div>
+            ))}
+      </div>
+      {totalPages > 1 && (
+        <Pagination className="py-5">
+          <PaginationContent className="hover:cursor-pointer">
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() =>
+                  handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
+                }
+                className={
+                  currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
+                }
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  onClick={() => handlePageChange(index + 1)}
+                  isActive={currentPage === index + 1}
+                >
+                  {index + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                onClick={() =>
+                  handlePageChange(
+                    currentPage < totalPages ? currentPage + 1 : totalPages
+                  )
+                }
+                className={
+                  currentPage === totalPages
+                    ? "opacity-50 hover:cursor-default"
+                    : ""
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </div>
   );
 }
 
