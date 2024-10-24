@@ -52,7 +52,8 @@ export const invoicesApi = {
   },
   deleteInvoiceMultiple: async (ids) => {
     try {
-      const res = await axiosInstanceCUD.post(`/v1/invoices/delete-in-id`, 
+      const res = await axiosInstanceCUD.post(
+        `/invoices/delete-in-id`,
 
         {
           ids: [...ids],
@@ -63,5 +64,5 @@ export const invoicesApi = {
       console.error(error);
       throw error;
     }
-  }
+  },
 };

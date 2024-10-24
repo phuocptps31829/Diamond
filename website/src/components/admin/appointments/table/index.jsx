@@ -11,7 +11,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/Button";
-
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/AlertDialog";
 import {
   Table,
   TableBody,
@@ -33,7 +33,7 @@ import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
 
-export default function DataTable({ data, columns }) {
+export default function DataTable({ data }) {
   const queryClient = useQueryClient();
 
   const [sorting, setSorting] = React.useState([]);
@@ -81,13 +81,11 @@ export default function DataTable({ data, columns }) {
     deleteAppointment(id);
   };
 
- 
-  
   const table = useReactTable({
     data,
     columns: getColumnsAppointments(
       handleChangeStatus,
-      handleDeleteAppointment,
+      handleDeleteAppointment
     ),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -111,23 +109,26 @@ export default function DataTable({ data, columns }) {
   const handleRefresh = () => {
     queryClient.invalidateQueries("appointments");
   };
-  // const { mutate: deleteAppointmentMultiple } = useMutation({
-  //   mutationFn: invoicesApi.deleteInvoiceMultiple,
-  //   onSuccess: () => {
-  //     toastUI("Xóa lịch khám thành công", "success");
-  //     queryClient.invalidateQueries("appointments");
-  //   },
-  //   onError: (err) => {
-  //     console.log(err);
-  //     toastUI("Xóa lịch khám không thành công", "error");
-  //   },
-  // });
+  const { mutate: deleteAppointmentMultiple } = useMutation({
+    mutationFn: invoicesApi.deleteInvoiceMultiple,
+    onSuccess: () => {
+      toastUI("Xóa lịch khám thành công", "success");
+      queryClient.invalidateQueries("appointments");
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Xóa lịch khám không thành công", "error");
+    },
+  });
 
-  // const handleDeleteAppointmentMultiple = (ids) => {
-  //   deleteAppointmentMultiple(ids);
-  // };
-  // const selectedRowIds = table.getSelectedRowModel().rows.map(row => row.original._id);
-  
+  const handleDeleteAppointmentMultiple = (ids) => {
+    deleteAppointmentMultiple(ids);
+    console.log(ids);
+  };
+  const selectedRowIds = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original._id);
+
   if (isPending) {
     return <Loading />;
   }
@@ -135,7 +136,7 @@ export default function DataTable({ data, columns }) {
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */}
       <div className="mb-10 flex w-full justify-between">
-        <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
+        <form className="mr-1 flex items-center" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
@@ -152,23 +153,54 @@ export default function DataTable({ data, columns }) {
               />
             </div>
           </div>
-          <Link to="/admin/appointments/create">
+
+            <Link to="/admin/appointments/create">
+              <Button
+                size="icon"
+                variant="outline"
+                className="mr-1  h-11 w-11"
+              >
+                <FaPlus className="text-primary-500"></FaPlus>
+              </Button>
+            </Link>
             <Button
+              onClick={handleRefresh}
               size="icon"
               variant="outline"
-              className="mr-1 mt-2 h-11 w-11"
+              className="mr-1  h-11 w-11"
             >
-              <FaPlus className="text-primary-500"></FaPlus>
+              <FaArrowsRotate className="text-primary-500" />
             </Button>
-          </Link>
-          <Button
-            onClick={handleRefresh}
-            size="icon"
-            variant="outline"
-            className="mr-1 mt-2 h-11 w-11"
-          >
-            <FaArrowsRotate className="text-primary-500" />
-          </Button>
+            {selectedRowIds.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-11"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Xóa tất cả
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Bạn có chắc chắn muốn xóa tất cả các lịch khám đã chọn?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Hành động này không thể hoàn tác. Các lịch khám sẽ bị xóa vĩnh viễn khỏi hệ thống.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Hủy</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDeleteAppointmentMultiple(selectedRowIds)}>
+                      Xác nhận
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
         </form>
         <div className="flex gap-4">
           <div className="flex items-center">
@@ -209,7 +241,7 @@ export default function DataTable({ data, columns }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell className="h-16" key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -220,10 +252,7 @@ export default function DataTable({ data, columns }) {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns ? columns.length : 1}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={data.length} className="h-24 text-center">
                   Không có kết quả.
                 </TableCell>
               </TableRow>
@@ -237,15 +266,7 @@ export default function DataTable({ data, columns }) {
           {table.getFilteredSelectedRowModel().rows.length} trên{" "}
           {table.getFilteredRowModel().rows.length} trong danh sách.
         </div>
-        {/* {selectedRowIds.length > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleDeleteAppointmentMultiple(selectedRowIds)}
-          >
-            Xóa tất cả
-          </Button>
-        )} */}
+
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

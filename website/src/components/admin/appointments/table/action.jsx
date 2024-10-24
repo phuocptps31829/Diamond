@@ -63,10 +63,10 @@ const Action = ({ row, onDelete }) => {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Bạn có chắc chắn muốn xóa chi nhánh này?
+                  Bạn có chắc chắn muốn xóa lịch khám này?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này không thể hoàn tác. Chi nhánh sẽ bị xóa vĩnh
+                  Hành động này không thể hoàn tác. Lịch khám sẽ bị xóa vĩnh
                   viễn khỏi hệ thống.
                 </AlertDialogDescription>
               </AlertDialogHeader>

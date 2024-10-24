@@ -26,6 +26,7 @@ export default function SelectMedicineCategories({
   name,
   errors,
   disabled,
+  onChange,
 }) {
   const [open, setOpen] = React.useState(false);
   const {
@@ -38,7 +39,7 @@ export default function SelectMedicineCategories({
   });
 
   if (isLoading) {
-    return <Skeleton className="h-[10px] w-[50px]" />;
+    return <Skeleton className="h-9 w-full" />;
   }
 
   if (error) {
@@ -90,7 +91,9 @@ export default function SelectMedicineCategories({
                             );
                             field.onChange(selectedItem?._id);
                             setOpen(false);
+                            onChange(selectedItem?._id);
                           }
+
                         }}
                         disabled={disabled}
                       >

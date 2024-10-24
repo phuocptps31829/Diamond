@@ -20,6 +20,10 @@ export const medicineApi = {
     const res = await axiosInstanceGET.get(`/medicine-categories/${id}`);
     return res.data.data;
   },
+  getMedicineByCategory: async (id) => {
+    const res = await axiosInstanceGET.get(`/medicines/get-by-category/${id}`);
+    return res.data.data;
+  },
 
   createMedicine: async (data) => {
     const res = await axiosInstanceCUD.post("/medicines/add", data, {

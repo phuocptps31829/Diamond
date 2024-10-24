@@ -60,7 +60,7 @@ const ServicesEdit = () => {
     if (data) {
       const initialFormData = {
         name: data.name,
-        specialtyID: data.specialtyID,
+        specialtyID: data.specialty._id,
         content: data.details,
         duration: Number(data.duration),
         price: data.price,
@@ -74,7 +74,7 @@ const ServicesEdit = () => {
       };
       setInitialData(initialFormData);
       setValue("name", data.name);
-      setValue("specialtyID", data.specialtyID);
+      setValue("specialtyID", data.specialty._id);
       setValue("price", data.price);
       setValue("discountPrice", data.discountPrice);
       setValue("shortDescription", data.shortDescription);
@@ -227,7 +227,7 @@ const ServicesEdit = () => {
                 <div className="w-full">
                   <Label
                     htmlFor="specialtyID"
-                    className="mb-2 block text-sm font-medium leading-none text-gray-700"
+                    className="mb-3 block text-sm font-medium leading-none text-gray-700"
                   >
                     Chuyên khoa:
                   </Label>

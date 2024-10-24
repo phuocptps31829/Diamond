@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import React from "react";
 import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -17,30 +16,55 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import { medicineApi } from "@/services/medicineApi";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
+export default function SelectMedicine({
+  control,
+  name,
+  errors,
+  disabled,
+  medicineCategoryID,
+  onChange,
+}) {
+  const [open, setOpen] = useState(false);
+  const [medicines, setMedicines] = useState([]);
+  const { toast } = useToast();
 
-export default function SelectMedicine({ control, name, errors, disabled }) {
-  const [open, setOpen] = React.useState(false);
-  const {
-    data: allMedicine,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["allMedicine"],
-    queryFn: () => medicineApi.getAllMedicines(),
-  });
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      if (!medicineCategoryID) return;
+      try {
+        const data =
+          await medicineApi.getMedicineByCategory(medicineCategoryID);
+        setMedicines(data);
+      } catch (error) {
+        console.error("Failed to fetch medicines:", error);
+      }
+    };
 
-  if (isLoading) {
-    return <Skeleton className="h-[10px] w-[50px]" />;
-  }
+    fetchMedicines();
+  }, [medicineCategoryID]);
 
-  if (error) {
-    return <div>Lỗi khi tải </div>;
-  }
+  useEffect(() => {
+    errors[name] = undefined;
+  }, [medicineCategoryID, errors, name]);
+
+  const handleClick = () => {
+    if (!medicineCategoryID) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng chọn danh mục thuốc",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+  };
+
   return (
-    <div>
+    <div onClick={handleClick}>
       <Controller
         control={control}
         name={name}
@@ -53,13 +77,16 @@ export default function SelectMedicine({ control, name, errors, disabled }) {
                 role="combobox"
                 aria-expanded={open}
                 className={cn(
-                  "w-full justify-between border border-gray-300 py-[21px] shadow-none",
-                  errors[name] && ""
+                  "w-full justify-between py-[21px]",
+                  errors[name] && "border-red-500",
+                  medicineCategoryID
+                    ? "pointer-events-auto"
+                    : "pointer-events-none"
                 )}
                 disabled={disabled}
               >
                 {field.value ? (
-                  allMedicine.find((item) => item._id === field.value)?.name
+                  medicines.find((item) => item._id === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn thuốc</span>
                 )}
@@ -73,17 +100,19 @@ export default function SelectMedicine({ control, name, errors, disabled }) {
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
 
                   <CommandGroup>
-                    {allMedicine.map((item) => (
+                    {medicines.map((item) => (
                       <CommandItem
                         key={item._id}
                         value={item.name}
                         onSelect={(currentValue) => {
                           if (!disabled) {
-                            const selectedItem = allMedicine.find(
-                              (category) => category.name === currentValue
+                            const selectedItem = medicines.find(
+                              (medicine) => medicine.name === currentValue
                             );
+
                             field.onChange(selectedItem?._id);
                             setOpen(false);
+                            onChange(selectedItem?._id, selectedItem?.price);
                           }
                         }}
                         disabled={disabled}
@@ -107,7 +136,6 @@ export default function SelectMedicine({ control, name, errors, disabled }) {
         )}
       />
       {errors[name] && (
-        
         <span className="text-sm text-red-500">{errors[name].message}</span>
       )}
     </div>
