@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import NewsEditor from "./editor";
 import SelectSpecialty from "./select/SelectSpecialty";
-import CheckboxServices from "../appointments/select/CheckboxServices";
 import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { packageAdminSchema } from "@/zods/admin/packagesAdmin";
@@ -19,6 +18,7 @@ import { packageApi } from "@/services/medicalPackagesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import CheckboxServices from "./select/CheckboxServices";
 
 const PackagesFormFix = ({ packageDetail }) => {
   const queryClient = useQueryClient();

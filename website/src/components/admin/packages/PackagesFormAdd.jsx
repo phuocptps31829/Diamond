@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import NewsEditor from "./editor";
 import SelectSpecialty from "./select/SelectSpecialty";
-import CheckboxServices from "../appointments/select/CheckboxServices";
 import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { packageAdminSchema } from "@/zods/admin/packagesAdmin";
@@ -19,6 +18,7 @@ import RadioGroupField from "@/components/ui/RadioGroupField";
 import AgeField from "@/components/ui/AgeField";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
+import CheckboxServices from "./select/CheckboxServices";
 
 const PackagesFormAdd = () => {
   const navigate = useNavigate();
