@@ -174,11 +174,7 @@ export const columns = [
       </div>
     ),
   },
-  {
-    accessorKey: "shortDescription",
-    header: "Mô tả ngắn",
-    cell: ({ row }) => <div className="">{ row.original.shortDescription }</div>,
-  },
+ 
   {
     id: "actions",
     enableHiding: false,

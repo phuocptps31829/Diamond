@@ -16,7 +16,7 @@ const libraries = ["places"];
 
 const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AlzaSysMMrXjUSsW4houlFqVSk-I51EFQTK0YbJ",
+    googleMapsApiKey: "AlzaSytrHWQJELhQysT-JQJ4Syk6SPOO4AFZqwo",
     libraries,
   });
 

@@ -15,7 +15,6 @@ import { toastUI } from "@/components/ui/Toastify";
 import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-import { ReloadIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
 import SpinLoader from "@/components/ui/SpinLoader";
 
@@ -129,6 +128,9 @@ const ServicesAdd = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
+      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+          Thêm dịch vụ
+        </h1>
         <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-3 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-2">

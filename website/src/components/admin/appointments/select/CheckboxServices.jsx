@@ -11,6 +11,7 @@ const RadioServices = ({
   onChange,
   index,
   services,
+  defaultValue, 
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -25,6 +26,7 @@ const RadioServices = ({
     <Controller
       control={control}
       name={name}
+      defaultValue={defaultValue}
       render={({ field }) => (
         <div>
           <Input
@@ -36,7 +38,7 @@ const RadioServices = ({
           />
           <div className="scrollable-services">
             <RadioGroup
-              value={field.value}
+              value={field.value || defaultValue} // Thiết lập giá trị mặc định cho RadioGroup
               onValueChange={(newValue) => {
                 field.onChange(newValue);
                 if (onChange) {
@@ -56,7 +58,7 @@ const RadioServices = ({
                       className="flex items-center space-x-3"
                     >
                       <RadioGroupItem
-                      className="w-5 h-5 bg-white"
+                        className="h-5 w-5 bg-white"
                         id={`${index}${item._id}`}
                         value={item._id}
                       />

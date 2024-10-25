@@ -21,7 +21,6 @@ const AppointmentsEdit = () => {
     formState: { errors },
     control,
     setValue,
-    reset,
   } = useForm({
     resolver: zodResolver(AppointmentAdminSchema),
     defaultValues: {
@@ -180,6 +179,9 @@ const AppointmentsEdit = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
+        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+          Chỉnh sửa lịch hẹn
+        </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
