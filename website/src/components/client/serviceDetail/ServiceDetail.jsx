@@ -5,10 +5,12 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '@/redux/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { toastUI } from '@/components/ui/Toastify';
 
 const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     const [selectedService, setSelectedService] = useState(null);
     const servicesInStore = useSelector((state) => state.cart.cart);
+    const userProfile = useSelector((state) => state.auth.userProfile);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     useEffect(() => {
@@ -26,17 +28,25 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     };
 
     const handleAddToCart = () => {
+        if (!userProfile) {
+            toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
+            return;
+        }
+
         if (!isInCart) {
             dispatch(addToCart(serviceData));
-            navigate('/services-booking');
-        } else {
-            navigate('/package-booking');
         }
+        navigate('/booking');
     };
+
+    const product = service || medicalPackage;
+    const isService = !(product?.services?.length > 0);
+    console.log(medicalPackage, service);
+
     if (isLoading) {
         return (
             <div className="mx-auto max-w-screen-2xl pb-4">
-                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
+                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md  bg-white p-8 md:grid-cols-2 md:py-10">
                     <div className="container flex items-center justify-center">
                         <Skeleton className="h-[400px] w-[400px] overflow-hidden rounded-md" />
                     </div>
@@ -61,93 +71,68 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
 
     return (
         <div className="mx-auto max-w-screen-2xl pb-4">
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md border bg-white p-8 md:grid-cols-2 md:py-10">
-                <div className="container flex items-center justify-center">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 rounded-md bg-white md:grid-cols-2 p-4">
+                <div className="flex items-center justify-center">
                     <img
-                        src={ `${import.meta.env.VITE_IMAGE_API_URL}/${service?.image || medicalPackage?.image}` }
-                        alt={ service?.name || medicalPackage?.name }
-                        className="h-80 w-9/12"
+                        src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
+                        alt={ product?.name }
+                        className="h-96 rounded-md"
                     />
                 </div>
-                <div className="flex w-full flex-col items-start justify-center text-start">
-                    { service ? (
-                        <>
-                            <h3 className="mb-4 text-xl font-bold md:text-3xl">{ service.name }</h3>
-                            <div className="my-4 flex items-center gap-2">
-                                <AiOutlineSchedule size={ 25 } />
-                                <span className="text-sm font-bold !text-gray-700">
-                                    { service.orderCount } lượt đã đặt
+                <div className="flex w-full pt-4 flex-col items-start justify-start text-start">
+                    <h3 className="text-xl font-bold md:text-3xl">{ product.name }</h3>
+                    <div className="my-2 flex items-center gap-2">
+                        <AiOutlineSchedule size={ 25 } />
+                        <span className="text-sm font-bold !text-gray-700">
+                            { product.orderCount } lượt đã đặt
+                        </span>
+                    </div>
+                    <p className="mb-4 w-full text-justify text-sm font-normal leading-[27px] text-gray-600">
+                        { product.shortDescription }
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+                    </p>
+
+                    { product?.services && <div className="w-full">
+                        <h4 className="text-lg font-semibold mb-2">Cấp độ gói:</h4>
+                        <ul className="flex items-center gap-3 list-inside">
+                            { product?.services?.map((item) => (
+                                <li
+                                    key={ item._id }
+                                    className={ `hover:border-primary-600 text-sm border py-2 px-3 rounded-lg font-normal text-gray-600 cursor-pointer ${selectedService?._id === item._id ? 'border-primary-600 bg-primary-50 text-primary-500' : 'border-primary-200'}` }
+                                    onClick={ () => setSelectedService(item) }
+                                >
+                                    { item.levelName }
+                                </li>
+                            )) }
+                        </ul>
+                    </div> }
+
+                    <div className="flex flex-1 w-full items-end gap-3">
+                        <div className='w-full'>
+                            <span className="mb-4 block text-lg font-medium">
+                                <strong className="font-semibold mr-2">Giá:</strong>
+                                <span className="text-gray-600 line-through mr-2 font-semibold text-base">
+                                    { !isService
+                                        ? selectedService?.price.toLocaleString()
+                                        : service.price.toLocaleString()
+                                    } đ
                                 </span>
-                            </div>
-                            <p className="mb-4 w-full text-justify text-sm font-normal leading-[27px] text-gray-600">
-                                { service.shortDescription }
-                            </p>
-                            <span className="mb-6 block text-lg font-medium">
-                                <strong className="font-semibold">Giá:</strong>{ ' ' }
-                                { service.price.toLocaleString() } đ
-                            </span>
-                        </>
-                    ) : (
-                        <>
-                            <h3 className="mb-4 text-xl font-bold md:text-3xl">
-                                { medicalPackage.name }
-                            </h3>
-                            <div className="my-4 flex items-center gap-2">
-                                <AiOutlineSchedule size={ 25 } />
-                                <span className="text-sm font-bold !text-gray-700">
-                                    { medicalPackage.orderCount } lượt đặt lịch
+                                <span className="text-primary-500 font-semibold">
+                                    { !isService
+                                        ? selectedService?.discountPrice.toLocaleString()
+                                        : service.discountPrice.toLocaleString()
+                                    } đ
                                 </span>
-                            </div>
-                            <p className="mb-4 line-clamp-3 w-full break-words text-justify text-sm font-normal leading-[27px] text-gray-600">
-                                { medicalPackage.shortDescription }
-                            </p>
-                            <div className="mb-3">
-                                <h2 className="mb-4 font-medium">Chọn gói khám:</h2>
-                                <div className="my-3 flex flex-wrap items-center justify-start gap-x-4 gap-y-7 md:justify-center md:gap-3">
-                                    { medicalPackage.services
-                                        .slice()
-                                        .reverse()
-                                        .map((service) => (
-                                            <div key={ service._id } className="relative">
-                                                <input
-                                                    className="peer hidden"
-                                                    id={ `radio_${service._id}` }
-                                                    type="radio"
-                                                    name="radio"
-                                                    onChange={ () => setSelectedService(service) }
-                                                    value={ service._id }
-                                                    checked={ selectedService?._id === service._id }
-                                                />
-                                                <label
-                                                    className="cursor-pointer select-none rounded-lg border border-gray-300 p-2 peer-checked:border-primary-600 peer-checked:bg-gray-50 peer-checked:outline-2"
-                                                    htmlFor={ `radio_${service._id}` }
-                                                >
-                                                    <span className="text-base font-medium">
-                                                        { service.levelName }
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        )) }
-                                </div>
-                            </div>
-                            <span className="mb-6 block text-lg font-medium">
-                                <strong className="font-semibold">Giá:</strong>{ ' ' }
-                                { selectedService?.price
-                                    ? selectedService.price.toLocaleString()
-                                    : 'N/A' }{ ' ' }
-                                đ
                             </span>
-                        </>
-                    ) }
-                    <div className="mb-4 flex w-full items-center gap-3">
-                        <Button
-                            className="w-full"
-                            size="lg"
-                            variant="custom"
-                            onClick={ handleAddToCart }
-                        >
-                            { isInCart ? 'Thanh toán ngay' : 'Đặt lịch ngay' }
-                        </Button>
+                            <Button
+                                className="w-[80%]"
+                                size="lg"
+                                variant="custom"
+                                onClick={ handleAddToCart }
+                            >
+                                { isInCart ? 'Thanh toán ngay' : 'Đặt lịch ngay' }
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>

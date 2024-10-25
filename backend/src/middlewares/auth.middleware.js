@@ -3,6 +3,14 @@ const OtpModel = require('../models/otp.model');
 const RevokedTokenModel = require('../models/revoked-token');
 const { createError, compareHashedValue } = require('../utils/helper.util');
 
+// # Roles ID in database
+const ROLE_SUPER_ADMIN = process.env.ROLE_SUPER_ADMIN;
+const ROLE_ADMIN = process.env.ROLE_ADMIN;
+const ROLE_DOCTOR = process.env.ROLE_DOCTOR;
+const ROLE_STAFF = process.env.ROLE_STAFF;
+const ROLE_EDITOR = process.env.ROLE_EDITOR;
+const ROLE_PATIENT = process.env.ROLE_PATIENT;
+
 const verifyAccessToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -17,7 +25,9 @@ const verifyAccessToken = (req, res, next) => {
             process.env.ACCESS_TOKEN_SECRET,
             { algorithms: ['HS256'] }
         );
-        req.user = { id: verifiedUser.id };
+        console.log('re', verifiedUser);
+
+        req.user = { id: verifiedUser.id, role: verifiedUser.role };
 
         next();
     } catch (error) {
@@ -57,17 +67,27 @@ const verifyRefreshToken = async (req, res, next) => {
             token: refreshToken
         });
 
-        req.user = { id: verifiedUser.id };
-
+        req.user = { id: verifiedUser.id, role: verifiedUser.role };
         next();
     } catch (error) {
         next(error);
     }
 };
 
+const verifySuperAdmin = (req, res, next) => {
+    verifyAccessToken(req, res, () => {
+        console.log(req.user);
+        if (req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
+            next();
+        } else {
+            createError(403, 'Không phải super admin.');
+        }
+    });
+};
+
 const verifyAdmin = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user.isAdmin) {
+    verifyAccessToken(req, res, () => {
+        if (req.user?.role?.toString() === ROLE_ADMIN) {
             next();
         } else {
             createError(403, 'Không phải admin.');
@@ -146,5 +166,6 @@ module.exports = {
     verifyRefreshToken,
     verifyAdmin,
     verifyOTP,
-    resendOTP
+    resendOTP,
+    verifySuperAdmin
 };

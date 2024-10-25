@@ -71,7 +71,6 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                     <TableCell className="whitespace-nowrap text-left font-normal hover:underline">
                       <Link to={ `/detail-service/${row._id}` }>
                         { row.name }</Link>
-
                     </TableCell>
                     { levelNames.map((levelName, index) => (
                       <TableCell
@@ -83,7 +82,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                             checked={ servicesByLevel[levelName].includes(
                               row._id,
                             ) }
-                            className="h-8 w-8 rounded-lg  transition-all duration-500 ease-in-out"
+                            className="h-8 w-8 rounded-md transition-all duration-500 ease-in-out cursor-default"
                             type="checkbox"
                             readOnly
                             checkIconSize="h-8 w-8"
@@ -111,7 +110,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                   );
                 }) }
               </TableRow>
-              <TableRow className="bg-primary-100 ">
+              <TableRow className="bg-primary-100 hover:bg-primary-100">
                 <TableCell colSpan={ 2 } className="text-right font-semibold p-3">
                   Giá khuyến mãi:
                 </TableCell>

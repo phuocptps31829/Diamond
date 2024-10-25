@@ -501,7 +501,8 @@ export default function Form() {
                         errors={ errors }
                         name="relatedPatient"
                         patientList={ profile.otherInfo.relatedPatients }
-                        onChange={ setRelatedPatientID } /> : '' }
+                        onChange={ setRelatedPatientID } />
+                      : '' }
                   </div>
                 </div>
                 <div className={ `${relatedPatientID ? 'pointer-events-none' : 'pointer-events-auto'} rounded-md bg-gray-500/30 px-5 py-6 pt-2` }>

@@ -64,10 +64,10 @@ export default function LoginComponent() {
 
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
-      <div className="max-w-screen-xl py-5 px-3 md:px-5">
-        <div className="grid grid-cols-1 md:grid-cols-2 h-fit">
+      <div className="max-w-screen-lg py-5 px-3 md:px-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-fit rounded-lg overflow-hidden">
           {/* ADS BANNER */ }
-          <div className="hidden bg-gray-200 shadow-lg md:block overflow-hidden">
+          <div className="hidden bg-gray-200 md:block overflow-hidden">
             <Carousel
               opts={ {
                 align: "start",
@@ -83,17 +83,17 @@ export default function LoginComponent() {
               ] }
             >
               <CarouselContent>
-                { Array.from({ length: 12 }).map((_, index) => (
+                { Array.from({ length: 3 }).map((_, index) => (
                   <CarouselItem key={ index } className="pl-4 h-full">
-                    <AdsProduct />
+                    <AdsProduct index={ index } isLoginForm={ true } />
                   </CarouselItem>
                 )) }
               </CarouselContent>
             </Carousel>
           </div>
           {/* FORM */ }
-          <div className="bg-white px-5 py-4 shadow-lg md:px-11 md:py-10 border-l">
-            <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl">
+          <div className="bg-white px-5 py-4 md:px-11 md:py-4 border-l rounded-lg sm:rounded-none">
+            <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl pt-4">
               Đăng nhập
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">
@@ -162,13 +162,9 @@ export default function LoginComponent() {
                 </Link>
               </div>
               <button
-                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
+                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-lg font-semibold text-white hover:bg-primary-500"
               // disabled={mutation.isPending}
               >
-                {/* {mutation.isPending ? "Đang xử lí" : "Đăng ký"}
-                {mutation.isPending && (
-                  <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )} */}
                 Đăng nhập
               </button>
               <div className="my-2 flex items-center">
@@ -183,28 +179,28 @@ export default function LoginComponent() {
                 <button
                   onClick={ handleLoginGoogle }
                   type="button"
-                  className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 py-3 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1"
+                  className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1 py-[10px]"
                 >
                   <img
                     src="https://t3.ftcdn.net/jpg/05/18/09/32/360_F_518093233_bYlgthr8ZLyAUQ3WryFSSSn3ruFJLZHM.jpg"
                     className="w-7 mr-2 md:mr-2" alt="Google icon" />
                   <span className="block mr-4 md:mr-0">
-                    Tài khoản Google
+                    Google
                   </span>
                 </button>
                 <button
                   type="button"
-                  className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-2 py-1 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 md:flex-1 md:px-1 md:py-1"
+                  className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-2 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50 md:flex-1 md:px-1"
                 >
                   <img
                     src="https://static.vecteezy.com/system/resources/previews/018/930/698/original/facebook-logo-facebook-icon-transparent-free-png.png"
-                    className="mr-0 w-12 md:mr-0"
+                    className="mr-0 w-10 md:mr-2"
                     alt="Facebook icon"
                   />
-                  <span className="block">Tài khoản Facebook</span>
+                  <span className="block">Facebook</span>
                 </button>
               </div>
-              <div className="mb-10 mt-3 flex flex-col items-center">
+              <div className="mb-4 mt-3 flex flex-col items-center">
                 <p className="text-center">
                   Bạn chưa có tài khoản?
                   <Link

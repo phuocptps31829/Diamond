@@ -1,0 +1,60 @@
+import CreateSchedule from "@/components/admin/schedule/dialogs/CreateSchedule";
+import UpdateSchedule from "@/components/admin/schedule/dialogs/UpdateSchedule";
+import { workScheduleApi } from "@/services/workSchedulesApi";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+
+const ScheduleFormPage = () => {
+    const { doctorID, scheduleID } = useParams();
+    const [searchParams] = useSearchParams();
+    console.log('searchParams', searchParams.get('startTime'));
+    const [infoForm, setInfoForm] = useState({
+        isOpen: true,
+        date: '',
+        startTime: '',
+        endTime: '',
+    });
+
+    const navigate = useNavigate();
+
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ['schedule', doctorID],
+        queryFn: () => workScheduleApi.getWorkSchedulesByDoctorID(doctorID),
+        enabled: !!doctorID
+    });
+
+    useEffect(() => {
+        setInfoForm(prev => ({
+            ...prev,
+            startTime: searchParams.get('startTime'),
+            date: searchParams.get('date')
+        }));
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (!infoForm.isOpen) {
+            navigate('/admin/schedules/details/' + doctorID);
+        }
+    }, [doctorID, infoForm.isOpen, navigate]);
+
+    if (!searchParams.get('date')) {
+        return;
+    }
+
+    return (
+        scheduleID
+            ? <UpdateSchedule
+                infoForm={ infoForm }
+                setInfoForm={ setInfoForm }
+                scheduleID={ scheduleID }
+                schedules={ data?.data }
+            /> : <CreateSchedule
+                infoForm={ infoForm }
+                setInfoForm={ setInfoForm }
+                schedules={ data?.data }
+            />
+    );
+};
+
+export default ScheduleFormPage;

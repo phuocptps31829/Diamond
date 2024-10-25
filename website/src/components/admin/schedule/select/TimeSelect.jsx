@@ -17,20 +17,8 @@ import {
     CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-
-const timesSchedule = [
-    "08:00", "08:15", "08:30", "08:45",
-    "09:00", "09:15", "09:30", "09:45",
-    "10:00", "10:15", "10:30", "10:45",
-    "11:00", "11:15", "11:30", "11:45",
-    "12:00", "12:15", "12:30", "12:45",
-    "13:00", "13:15", "13:30", "13:45",
-    "14:00", "14:15", "14:30", "14:45",
-    "15:00", "15:15", "15:30", "15:45",
-    "16:00", "16:15", "16:30", "16:45",
-    "17:00", "17:15", "17:30", "17:45",
-    "18:00"
-];
+import { useSearchParams } from "react-router-dom";
+import { timesSchedule } from "@/constants/schedule-times";
 
 export default function TimeSelect({
     control,
@@ -41,6 +29,10 @@ export default function TimeSelect({
     onChange,
 }) {
     const [open, setOpen] = useState(false);
+    const [searchParams] = useSearchParams();
+
+    const defaultStartTime = searchParams.get("startTime");
+    const foundStartTime = timesSchedule.find((time) => time.slice(0, 2) === defaultStartTime.slice(0, 2));
 
     useEffect(() => {
         errors[name] = undefined;
@@ -73,7 +65,7 @@ export default function TimeSelect({
                                 >
                                     { field.value ? (
                                         timesSchedule.find((time) => time === field.value)
-                                    ) : (
+                                    ) : defaultStartTime ? foundStartTime : (
                                         <span className="text-gray-600">Chọn { type }</span>
                                     ) }
                                     <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />

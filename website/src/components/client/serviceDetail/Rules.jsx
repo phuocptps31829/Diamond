@@ -13,7 +13,7 @@ const Rules = () => {
                 </div>
                 <div className="w-full rounded-lg bg-white p-4 text-justify text-black md:w-3/5 md:rounded-br-3xl md:rounded-tl-3xl md:p-6">
                     <h2 className="mb-4 text-2xl font-bold">
-                        Điều kiện sử dụng gói khám:
+                        Điều kiện sử dụng dịch vụ/gói khám:
                     </h2>
                     <ul className="space-y-1">
                         <li className="flex items-start">

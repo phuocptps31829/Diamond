@@ -1,4 +1,4 @@
-import { ScheduleXCalendar } from '@schedule-x/react';
+import { ScheduleXCalendar, useCalendarApp } from '@schedule-x/react';
 import { createDragAndDropPlugin } from '@schedule-x/drag-and-drop';
 import { createEventModalPlugin } from '@schedule-x/event-modal';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
@@ -11,12 +11,16 @@ import {
     createViewWeek,
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
-import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const eventsServicePlugin = createEventsServicePlugin();
 const calendarControls = createCalendarControlsPlugin();
 
-const getConfigCalendarSchedule = (onSetInfoForm) => {
+const getConfigCalendarSchedule = (
+    allSchedules,
+    navigate,
+    setSearchParams,
+    doctorID) => {
     return {
         views: [
             createViewDay(),
@@ -58,11 +62,21 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
              * */
             onEventUpdate(updatedEvent) {
                 console.log('onEventUpdate', updatedEvent);
-                onSetInfoForm(prev => ({
-                    ...prev,
-                    isOpen: true,
-                    date: new Date(updatedEvent.start).toISOString().slice(0, 10)
-                }));
+                console.log('allSchedules', allSchedules);
+
+                const foundSchedule = allSchedules.find(schedule => schedule.id === updatedEvent.id);
+                console.log('foundSchedule', foundSchedule);
+
+                // if (foundSchedule.start.slice(0, 10) !== updatedEvent.start.slice(0, 10)) {
+                //     return;
+                // }
+
+                navigate(`/admin/schedules/form/${doctorID}/edit/${updatedEvent.id}`);
+                setSearchParams({
+                    date: updatedEvent.start.slice(0, 10),
+                    startTime: updatedEvent.start.slice(11, 16),
+                    endTime: updatedEvent.end.slice(11, 16),
+                });
             },
 
             /**
@@ -91,7 +105,7 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
                 //     description: 'Moi' + dateTime,
                 //     id: Date.now()
                 // });
-                // onSetInfoForm(prev => ({
+                // navigate(prev => ({
                 //     ...prev,
                 //     isOpen: true,
                 //     date: dateTime.slice(0, 10)
@@ -116,11 +130,19 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
             * Is called when double clicking somewhere in the time grid of a week or day view
             * */
             onDoubleClickDateTime(dateTime) {
-                onSetInfoForm(prev => ({
-                    ...prev,
-                    isOpen: true,
-                    date: dateTime.slice(0, 10)
-                }));
+                console.log('onDoubleClickDateTime', dateTime);
+                navigate(`/admin/schedules/form/${doctorID}/create/`);
+                setSearchParams({
+                    date: dateTime.slice(0, 10),
+                    startTime: dateTime.slice(11, 16),
+                });
+                // document.querySelector('.sx-react-calendar-wrapper').style.display = 'none';
+                // onSetInfoForm(prev => ({
+                //     ...prev,
+                //     isOpen: true,
+                //     date: dateTime.slice(0, 10)
+                // }));
+
             },
 
             /**
@@ -140,30 +162,30 @@ const getConfigCalendarSchedule = (onSetInfoForm) => {
     };
 };
 
-function CalendarSchedule({ newSchedule, onSetInfoForm, defaultEvents }) {
+function CalendarSchedule({ doctorID, defaultEvents }) {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+
+    const allSchedules = defaultEvents?.map(event => ({
+        id: event._id,
+        title: event.clinic.name,
+        start: `${event.day} ${event.hour.startTime}`,
+        end: `${event.day} ${event.hour.endTime}`,
+    }));
+
     console.log('render');
-    const calendar = createCalendar(
-        getConfigCalendarSchedule(onSetInfoForm)
+    const calendar = useCalendarApp(
+        getConfigCalendarSchedule(
+            allSchedules,
+            navigate,
+            setSearchParams,
+            doctorID
+        )
     );
-    // useEffect(() => {
-    //     calendarControls.setView('week');
-    //     calendarControls.setDate('2024-10-19');
-    // }, [onSetInfoForm]);
 
-    useEffect(() => {
-        if (newSchedule) {
-            console.log(newSchedule);
-            eventsServicePlugin.add(newSchedule);
-            // eventsServicePlugin.add({
-            //     title: 'Ngày' + '2024-10-26',
-            //     start: '2024-10-26 08:00',
-            //     end: '2024-10-26 18:00',
-            //     id: Date.now()
-            // });
-        }
-    }, [newSchedule]);
+    // calendarControls.setView('week');
 
-    if (defaultEvents.length) {
+    if (defaultEvents?.length) {
         defaultEvents?.forEach(event => {
             eventsServicePlugin.add({
                 id: event._id,

@@ -11,7 +11,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  console.log('re');
+
   const handleResetFilters = () => {
     const resetFilters = {
       sort: "",
@@ -26,26 +26,26 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   useEffect(() => {
     const page = searchParams.get("page") || 1;
     const limit = searchParams.get("limit") || 6;
-    const specialties = searchParams.getAll("specialtyID");
-    const branches = searchParams.getAll("branch");
-    const gender = searchParams.getAll("gender").map(decodeURIComponent);
+    const specialties = searchParams.get("specialtyID");
+    const branches = searchParams.get("branch");
+    const gender = searchParams.get("gender")?.map(decodeURIComponent);
     const sort = searchParams.get("sort") || "";
 
     const newFilters = {
       page,
       limit,
       sort,
-      specialtyID: specialties[0] || !specialties.length ? specialties : [],
-      branch: branches[0] || !branches.length ? branches : [],
-      gender: gender[0] || !gender.length ? gender : [],
+      specialtyID: specialties ? specialties.split(',') : [],
+      branch: branches ? branches.split(',') : [],
+      gender: gender ? gender.split(',') : []
     };
 
     console.log("new", newFilters);
 
-    if (specialties.length > 0 && specialties[0]) {
+    if (specialties) {
       const updatedFilters = {
         ...newFilters,
-        specialtyID: [...new Set(specialties)],
+        specialtyID: specialties ? specialties.split(',') : [],
       };
 
       onFilterApply(updatedFilters);
@@ -84,7 +84,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   if (specialtiesLoading || branchesLoading)
     return (
       <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-6">
-        <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
+        <div className="box w-full rounded-xl border-gray-300 bg-white p-6">
           <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
             <Skeleton className="h-6 w-24" />
             <Skeleton className="h-4 w-16" />
@@ -163,7 +163,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
-      <div className="box w-full rounded-xl border border-gray-300 bg-white p-6">
+      <div className="box w-full rounded-xl border-gray-300 bg-white p-6">
         <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
           <p className="text-base font-medium leading-7 text-black">Lọc</p>
           <p
@@ -244,8 +244,20 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
                     >
                       <Checkbox
                         checked={ filters.specialtyID.includes(specialty._id) }
-                        onCheckedChange={ () =>
-                          handleChangeFilter({ specialtyID: specialty._id })
+                        onCheckedChange={ () => {
+                          if (filters.specialtyID.includes(specialty._id)) {
+                            handleChangeFilter({
+                              specialtyID:
+                                filters.specialtyID.filter((item) => item !== specialty._id)
+                            });
+                            return;
+                          }
+
+                          handleChangeFilter({
+                            specialtyID:
+                              [...filters.specialtyID, specialty._id]
+                          });
+                        }
                         }
                         id={ `checkbox-${specialty._id}` }
                       />
@@ -272,7 +284,20 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
                 <Checkbox
                   id={ `checkbox-${branch._id}` }
                   checked={ filters.branch.includes(branch._id) }
-                  onCheckedChange={ () => handleChangeFilter({ branch: branch._id }) }
+                  onCheckedChange={ () => {
+                    if (filters.branch.includes(branch._id)) {
+                      handleChangeFilter({
+                        branch:
+                          filters.branch.filter((item) => item !== branch._id)
+                      });
+                      return;
+                    }
+
+                    handleChangeFilter({
+                      branch:
+                        [...filters.branch, branch._id]
+                    });
+                  } }
                 />
                 <label
                   htmlFor={ `checkbox-${branch._id}` }
@@ -293,7 +318,20 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
               <Checkbox
                 id="checkbox-male"
                 checked={ filters.gender.includes("Nam") }
-                onCheckedChange={ () => handleChangeFilter({ gender: "Nam" }) }
+                onCheckedChange={ () => {
+                  if (filters.gender.includes("Nam")) {
+                    handleChangeFilter({
+                      gender:
+                        filters.gender.filter((item) => item !== "Nam")
+                    });
+                    return;
+                  }
+
+                  handleChangeFilter({
+                    gender:
+                      [...filters.gender, "Nam"]
+                  });
+                } }
               />
               <label
                 htmlFor="checkbox-male"
@@ -306,7 +344,20 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
               <Checkbox
                 id="checkbox-female"
                 checked={ filters.gender.includes("Nữ") }
-                onCheckedChange={ () => handleChangeFilter({ gender: "Nữ" }) }
+                onCheckedChange={ () => {
+                  if (filters.gender.includes("Nữ")) {
+                    handleChangeFilter({
+                      gender:
+                        filters.gender.filter((item) => item !== "Nữ")
+                    });
+                    return;
+                  }
+
+                  handleChangeFilter({
+                    gender:
+                      [...filters.gender, "Nữ"]
+                  });
+                } }
               />
               <label
                 htmlFor="checkbox-female"

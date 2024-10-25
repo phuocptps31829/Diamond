@@ -1,4 +1,4 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaFileMedical,
@@ -6,9 +6,22 @@ import {
   FaLock,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { logoutAction } from "@/redux/authSlice";
+import { clearCart } from "@/redux/cartSlice";
+import { toastUI } from "@/components/ui/Toastify";
+import { useDispatch } from "react-redux";
 
 const Sidebar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    dispatch(clearCart());
+    toastUI("Đăng xuất thành công!", "success");
+    navigate("/");
+  };
 
   const isActiveLink = (path) => location.pathname === path;
 
@@ -56,14 +69,14 @@ const Sidebar = () => {
             <span>Thay đổi mật khẩu</span>
           </NavLink>
         </li>
-        <li className="p-2">
-          <NavLink
-            to="/user-profile/logout"
-            className={ navLinkClasses("/user-profile/logout") }
+        <li className="p-2 cursor-pointer">
+          <div
+            onClick={ handleLogout }
+            className="flex items-center rounded-lg p-3 text-gray-600 hover:bg-bg-gray hover:text-primary-700 active:bg-bg-gray active:text-primary-600"
           >
             <FaSignOutAlt className="mr-2" />
             <span>Đăng xuất</span>
-          </NavLink>
+          </div>
         </li>
       </ul>
     </div>

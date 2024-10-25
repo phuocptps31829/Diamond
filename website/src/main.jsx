@@ -8,7 +8,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import "./index.css";
 
 const queryClient = new QueryClient({
-  keepPreviousData: true
+  keepPreviousData: true,
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(

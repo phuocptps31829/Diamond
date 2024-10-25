@@ -36,14 +36,16 @@ const ServicesContainer = () => {
   });
 
   useEffect(() => {
-    setFilters({
-      page: 1,
-      limit: 6,
-      sort: "",
-      specialtyID: [],
-      branch: [],
-      gender: [],
-    });
+    if (!currentLimit && !currentPage) {
+      setFilters({
+        page: 1,
+        limit: 6,
+        sort: "",
+        specialtyID: [],
+        branch: [],
+        gender: [],
+      });
+    }
   }, [location, currentPage, currentLimit]);
 
   const handleFilterApply = (newFilters) => {
@@ -58,7 +60,8 @@ const ServicesContainer = () => {
       })
       .map(([key, value]) => {
         if (Array.isArray(value)) {
-          return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+          console.log(value);
+          return `${encodeURIComponent(key)}=${encodeURIComponent(value.join(','))}`;
         }
         return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
       })
@@ -77,14 +80,53 @@ const ServicesContainer = () => {
       })
       .map(([key, value]) => {
         if (Array.isArray(value)) {
-          return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+          console.log(value);
+          return `${encodeURIComponent(key)}=${encodeURIComponent(value.join(','))}`;
         }
         return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
       })
       .join('&'));
     setFilters(updatedFilters);
   };
+  // const handleFilterApply = (newFilters) => {
+  //   const updatedFilters = { ...filters, ...newFilters };
+  //   console.log(updatedFilters);
+  //   window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
+  //     .filter(([, value]) => {
+  //       if (Array.isArray(value)) {
+  //         return value.length > 0;
+  //       }
+  //       return value !== undefined && value !== null && value !== '';
+  //     })
+  //     .map(([key, value]) => {
+  //       if (Array.isArray(value)) {
+  //         return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+  //       }
+  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+  //     })
+  //     .join('&'));
+  //   setFilters(updatedFilters);
+  // };
 
+  // const handlePageChange = (newPage) => {
+  //   const updatedFilters = { ...filters, page: +newPage, limit: +filters.limit };
+  //   window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
+  //     .filter(([, value]) => {
+  //       if (Array.isArray(value)) {
+  //         return value.length > 0;
+  //       }
+  //       return value !== undefined && value !== null && value !== '';
+  //     })
+  //     .map(([key, value]) => {
+  //       if (Array.isArray(value)) {
+  //         return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
+  //       }
+  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+  //     })
+  //     .join('&'));
+  //   setFilters(updatedFilters);
+  // };
+  console.log(filters);
   const { data, error, isLoading } = useQuery({
     queryKey: [type, filters],
     queryFn: async () => {
@@ -94,10 +136,11 @@ const ServicesContainer = () => {
         return await medicalPackageApi.getAllMedicalPackages(filters);
       }
     },
+    retry: 1,
     enabled: !!type,
   });
 
-  const totalItems = data?.totalRecords?.[0]?.totalRecords || 0;
+  const totalItems = data?.totalRecords || 0;
   const limit = filters.limit;
   const totalPages = Math.ceil(totalItems / limit);
 

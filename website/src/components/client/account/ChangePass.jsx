@@ -5,14 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordSchema } from "@/zods/password";
 import InputCustom from "@/components/ui/InputCustom";
-import { changePasswordForgot } from "@/services/authApi";
-import { useToast } from "@/hooks/useToast";
-import { ToastAction } from "@/components/ui/Toast";
+import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
 import NotFound from "@/components/client/notFound";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function ChangePassComponent() {
-  const { toast } = useToast();
   const navigate = useNavigate();
   const [otp, setOTP] = useState("");
   const [otpToken, setOtpToken] = useState("");
@@ -37,14 +35,9 @@ export default function ChangePassComponent() {
   });
 
   const mutation = useMutation({
-    mutationFn: changePasswordForgot,
+    mutationFn: authApi.changePasswordForgot,
     onSuccess: () => {
-      toast({
-        variant: "success",
-        title: "Thành công!",
-        description: "Mật khẩu đã được thay đổi thành công.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI("Đổi mật khẩu thành công.", "success");
       sessionStorage.removeItem("otpForgot");
       sessionStorage.removeItem("otpTokenForgot");
       sessionStorage.removeItem("otpSentTimeForgot");
@@ -55,12 +48,7 @@ export default function ChangePassComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toast({
-        variant: "destructive",
-        title: "Thất bại!",
-        description: errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.",
-        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
-      });
+      toastUI(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.", "error");
     },
   });
 
@@ -78,12 +66,12 @@ export default function ChangePassComponent() {
   }
 
   return (
-    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-20 md:px-3">
-      <div className="w-full max-w-2xl">
-        <div className="grid grid-cols-1">
+    <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
+      <div className="py-5 px-3 md:px-5 w-[40%]">
+        <div className="grid grid-cols-1 rounded-md overflow-hidden">
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 shadow-lg md:px-11 md:py-20">
-            <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
+          <div className="bg-white px-5 py-4 md:px-11 md:py-8">
+            <h1 className="mb-2 text-center text-2xl font-bold md:text-3xl">
               Đặt lại mật khẩu
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">
@@ -140,7 +128,7 @@ export default function ChangePassComponent() {
               </div>
 
               <button
-                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
+                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-lg font-semibold text-white hover:bg-primary-500"
                 disabled={ mutation.isPending }
               >
                 { mutation.isPending ? "Đang xử lí" : "Xác nhận" }

@@ -30,7 +30,6 @@ export default function SelectDepartment({
 }) {
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
-  console.log('s', selectedProductID, 'a', specialtyID);
 
   useEffect(() => {
     const fetchDepartments = async () => {

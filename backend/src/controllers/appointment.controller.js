@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const AppointmentModel = require('../models/appointment.model');
+const ServiceModel = require('../models/service.model');
 const InvoiceModel = require('../models/invoice.model');
 const MedicalPackageModel = require('../models/medical-package.model');
 const OrderNumberModel = require('../models/order-number.model');
@@ -200,9 +201,9 @@ module.exports = {
                         name: appointment.workScheduleID.clinicID.branchID.name
                     },
                     result: {
-                        diagnose: result?.diagnose || 'Chưa có',
-                        images: result?.images || 'Chưa có',
-                        description: result?.description || 'Chưa có',
+                        diagnose: result?.diagnose || '',
+                        images: result?.images || '',
+                        description: result?.description || '',
                     },
                     ...(appointment.serviceID ? {
                         service: {
@@ -454,6 +455,7 @@ module.exports = {
 
             let medicalPackage = null;
             let level = null;
+            let services = null;
 
             if (appointment?.medicalPackageID) {
                 medicalPackage = await MedicalPackageModel
@@ -461,7 +463,18 @@ module.exports = {
                         isDeleted: false,
                         'services._id': appointment.medicalPackageID
                     });
+
                 level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
+
+                services = await Promise.all(
+                    medicalPackage.services.find(s => s._id === level._id)?.servicesID.map(async s => {
+                        const service = await ServiceModel
+                            .findById(s._id)
+                            .select('_id name price discountPrice')
+                            .lean();
+                        return service;
+                    })
+                );
             }
 
             const [invoice, result, orderNumber] = await Promise.all([
@@ -475,11 +488,6 @@ module.exports = {
                     .findOne({ appointmentID: appointment._id, isDeleted: false })
                     .lean(),
             ]);
-
-            // Kiểm tra kết quả trả về
-            console.log('Invoice:', invoice);
-            console.log('Result:', result);
-            console.log('OrderNumber:', orderNumber);
 
             const prescription = invoice
                 ? await PrescriptionModel
@@ -541,6 +549,7 @@ module.exports = {
                         _id: medicalPackage._id,
                         name: medicalPackage.name,
                         image: medicalPackage.image,
+                        services,
                         level: {
                             _id: level._id,
                             name: level.levelName,
@@ -554,9 +563,9 @@ module.exports = {
                 },
                 result: {
                     _id: result?._id,
-                    diagnose: result?.diagnose || 'Chưa có',
-                    images: result?.images || 'Chưa có',
-                    description: result?.description || 'Chưa có',
+                    diagnose: result?.diagnose || '',
+                    images: result?.images || '',
+                    description: result?.description || '',
                 },
                 invoice: {
                     _id: invoice?._id,
