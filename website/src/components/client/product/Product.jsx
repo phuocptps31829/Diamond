@@ -33,57 +33,57 @@ export default function Product({ product }) {
     discountPrice,
     image,
     orderCount,
-    services
+    services,
   } = product;
   const isService = !services || !services?.length;
 
   useEffect(() => {
     const isExists = cartItems.some((item) =>
-      isService
-        ? item.serviceID === _id
-        : item.medicalPackageID === _id
+      isService ? item.serviceID === _id : item.medicalPackageID === _id
     );
     setIsInCart(isExists);
   }, [cartItems, _id, isService]);
 
   const handleAddClick = (isNavigate) => {
-    console.log('prd', product);
+    console.log("prd", product);
     if (!profileCustomer) {
       toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
       return;
     }
 
-    const newItem = isService ? {
-      serviceID: _id,
-      name,
-      specialtyID: specialty._id,
-      price: discountPrice,
-      image
-    } : {
-      medicalPackageID: _id,
-      name,
-      levelID: services[0]._id,
-      specialtyID: specialty._id,
-      price: services[0].discountPrice,
-      levelName: services[0].levelName,
-      image,
-      services
-    };
+    const newItem = isService
+      ? {
+        serviceID: _id,
+        name,
+        specialtyID: specialty._id,
+        price: discountPrice,
+        image,
+      }
+      : {
+        medicalPackageID: _id,
+        name,
+        levelID: services[0]._id,
+        specialtyID: specialty._id,
+        price: services[0].discountPrice,
+        levelName: services[0].levelName,
+        image,
+        services,
+      };
 
     if (!isInCart) {
       dispatch(addToCart(newItem));
       dispatch(
         initBookingDetails({
-          ...(isService ? {
-            serviceID: _id
-          } : {
-            medicalPackageID: _id
-          }),
+          ...(isService
+            ? {
+              serviceID: _id,
+            }
+            : {
+              medicalPackageID: _id,
+            }),
           bookingDetail: {
             specialtyID: specialty._id,
-            ...(isService
-              ? {}
-              : { levelID: services[0]._id }),
+            ...(isService ? {} : { levelID: services[0]._id }),
             name,
             image,
             price: discountPrice || 0,
@@ -94,7 +94,7 @@ export default function Product({ product }) {
             selectedTime: "",
             clinic: "",
           },
-        }),
+        })
       );
     } else {
       if (!isNavigate) {
@@ -113,7 +113,7 @@ export default function Product({ product }) {
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={ isService ? `/service/${slug}` : `/package/${slug}` }
-        className="group block min-h-[125px] w-full overflow-hidden h-[210px]"
+        className="group block max-h-[125px] sm:max-h-full w-full overflow-hidden sm:h-[210px] min-h-[125px]"
       >
         <img
           src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }

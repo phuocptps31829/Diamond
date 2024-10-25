@@ -11,11 +11,10 @@ import {
   PaginationPrevious,
   PaginationEllipsis,
 } from "@/components/ui/Pagination";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export default function NewsBelow({ news, isLoading }) {
   const location = useLocation();
-  const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const [currentPage, setCurrentPage] = useState(
     parseInt(queryParams.get("page")) || 1
@@ -26,26 +25,21 @@ export default function NewsBelow({ news, isLoading }) {
 
   useEffect(() => {
     if (!isLoading && news) {
-      const trimmedNews = news.slice(0, news.length - 6).reverse();
-      setTotalPages(Math.ceil(trimmedNews.length / itemsPerPage));
+      const trimmedNews = news;
+      const total = Math.ceil(trimmedNews.length / itemsPerPage);
+      setTotalPages(total);
 
-      if (currentPage > totalPages) {
-        setCurrentPage(1);
-        navigate(`${location.pathname}?page=1`);
+      if (currentPage > total) {
+        setCurrentPage(total);
       } else {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         setPaginatedNews(trimmedNews.slice(startIndex, endIndex));
       }
     }
-  }, [currentPage, news, isLoading, totalPages, navigate, location.pathname]);
+  }, [currentPage, news, isLoading, totalPages]);
 
   const handlePageChange = (newPage) => {
-    if (totalPages <= 1) {
-      setCurrentPage(1);
-      navigate(`${location.pathname}?page=1`);
-      return;
-    }
     setCurrentPage(newPage);
     queryParams.set("page", newPage);
     window.history.pushState({}, "", `${location.pathname}?${queryParams}`);
@@ -63,7 +57,7 @@ export default function NewsBelow({ news, isLoading }) {
         {isLoading
           ? Array.from({ length: itemsPerPage }).map((_, index) => (
               <div key={index}>
-                <div className="h-full overflow-hidden rounded-xl bg-[#ffffff84] shadow-sm">
+                <div className="h-full overflow-hidden rounded-xl bg-[#ffffff56] shadow-sm">
                   <div className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid">
                     <div className="h-[250px] w-full rounded-lg">
                       <Skeleton className="h-full w-full rounded-t-lg" />

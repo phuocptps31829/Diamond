@@ -75,7 +75,7 @@ export const newsApi = {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
       console.log("res.data.data: ", res.data.data);
       return res.data.data;
@@ -99,7 +99,7 @@ export const newsApi = {
   deleteNews: async (id) => {
     try {
       const res = await axiosInstanceCUD.post(
-        `/news/delete/${id}?_method=DELETE`,
+        `/news/delete/${id}?_method=DELETE`
       );
       console.log("res.data.data: ", res.data.data);
       return res.data.data;

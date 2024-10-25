@@ -35,8 +35,8 @@ export default function NewsAbove({ news, isLoading }) {
                 key={ index }
                 className="flex flex-row items-center overflow-hidden rounded-md bg-white"
               >
-                <div className="h-full min-w-[155px] max-w-[155px] lg:min-w-[195px] lg:max-w-[195px]">
-                  <Skeleton className="h-full max-h-[126px] w-full" />
+                <div className="h-full min-w-[195px] max-w-[195px]">
+                  <Skeleton className="h-full min-h-[126px] w-full" />
                 </div>
                 <div className="p-3">
                   <div className="mb-[6px] flex flex-wrap gap-2 text-[12px]">
@@ -61,7 +61,7 @@ export default function NewsAbove({ news, isLoading }) {
           <div className="min-w-[60%]">
             <NewsCard
               newsItem={ news[news.length - 1] }
-              className="flex-col gap-4 overflow-hidden rounded-md border bg-white md:row-span-3 md:grid-rows-subgrid"
+              className="flex-col overflow-hidden rounded-md border md:row-span-3 md:grid-rows-subgrid"
               firstNews={ true }
             />
           </div>

@@ -68,7 +68,7 @@ export const getMedicalPackageBySpecialty = async (id, page, limit, sort) => {
       `${API_URL_GET_MEDICAL_PACKAGE_BY_SPECIALTIES}/${id}`,
       {
         params: Object.keys(params).length > 0 ? params : undefined,
-      },
+      }
     );
     console.log(res.data.data);
     return res.data.data;
@@ -97,7 +97,7 @@ export const medicalPackageApi = {
       notHidden: true,
     };
 
-    const res = await axiosInstanceGET.get('/medical-packages', {
+    const res = await axiosInstanceGET.get("/medical-packages", {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
 
@@ -105,7 +105,7 @@ export const medicalPackageApi = {
     return res.data;
   },
   takeItAllPackages: async () => {
-    const res = await axiosInstanceGET.get('/medical-packages?limit=9999');
+    const res = await axiosInstanceGET.get("/medical-packages?limit=9999");
     return res.data.data;
   },
   getMedicalPackageById: async (id) => {
@@ -126,11 +126,11 @@ export const medicalPackageApi = {
       `/medical-packages/specialty/${id}`,
       {
         params: Object.keys(params).length > 0 ? params : undefined,
-      },
+      }
     );
     console.log(res.data.data);
     return res.data.data;
-  }
+  },
 };
 
 export const packageApi = {
@@ -142,25 +142,25 @@ export const packageApi = {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return res.data;
   },
   updatePackage: async (id, requestBody) => {
-    const res = await axiosInstanceCUD.post(
-      `/medical-packages/update/${id}?_method=PUT`,
+    const res = await axiosInstanceCUD.put(
+      `/medical-packages/update/${id}`,
       requestBody,
       {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return res.data.data;
   },
   deletePackage: async (id) => {
     const res = await axiosInstanceCUD.post(
-      `/medical-packages/delete/${id}?_method=DELETE`,
+      `/medical-packages/delete/${id}?_method=DELETE`
     );
     return res.data;
   },
