@@ -1,9 +1,9 @@
-// import { getAllSpecialties } from "@/services/specialtiesApi";
 import DataTable from "./table";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
 import { specialtyApi } from "@/services/specialtiesApi";
 import Loading from "@/components/ui/Loading";
+
 const SpecialtiesList = () => {
   const {
     data: specialtiesDataResponse,
@@ -11,7 +11,7 @@ const SpecialtiesList = () => {
     isError: errorLoadingSpecialties,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: specialtyApi.getAllSpecialties,
+    queryFn: specialtyApi.getNoPaginate,
   });
 
   const specialtiesData = specialtiesDataResponse || [];

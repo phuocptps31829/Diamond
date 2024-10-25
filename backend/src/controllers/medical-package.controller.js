@@ -6,6 +6,7 @@ const { createError } = require("../utils/helper.util");
 module.exports = {
     getAllMedicalPackages: async (req, res, next) => {
         try {
+            const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
 
@@ -18,12 +19,14 @@ module.exports = {
             const totalRecords = await MedicalPackageModel
                 .countDocuments({
                     isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
 
             const medicalPackages = await MedicalPackageModel
                 .find({
                     isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 })
                 .populate('specialtyID')

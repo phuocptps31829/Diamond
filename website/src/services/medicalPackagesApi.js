@@ -94,6 +94,7 @@ export const medicalPackageApi = {
       ...(specialtyID !== undefined &&
         specialtyID !== null &&
         specialtyID.length > 0 && { specialtyID }),
+      notHidden: true,
     };
 
     const res = await axiosInstanceGET.get('/medical-packages', {

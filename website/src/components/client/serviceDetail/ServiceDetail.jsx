@@ -72,11 +72,11 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     return (
         <div className="mx-auto max-w-screen-2xl pb-4">
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 rounded-md bg-white md:grid-cols-2 p-4">
-                <div className="flex items-center justify-center">
+                <div className="flex items-center">
                     <img
                         src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
                         alt={ product?.name }
-                        className="h-96 rounded-md"
+                        className="rounded-md object-fill w-full"
                     />
                 </div>
                 <div className="flex w-full pt-4 flex-col items-start justify-start text-start">

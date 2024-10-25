@@ -48,7 +48,7 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
               </div>
               <img
                 className="h-full w-full rounded-lg object-cover"
-                src={ item.image }
+                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${item.image}` }
                 alt={ item.name }
               />
               <div className="absolute inset-0 top-28 flex items-center justify-center">

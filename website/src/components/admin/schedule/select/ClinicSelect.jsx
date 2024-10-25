@@ -29,9 +29,10 @@ export default function Selectclinic({
 }) {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-
+    console.log(branchID, specialtyID);
     useEffect(() => {
         if (!specialtyID || !branchID) return;
+
         const fetchClinics = async () => {
             try {
                 const data = await clinicsApi.getClinicBySpecialtyAndBranch({ branchID, specialtyID });

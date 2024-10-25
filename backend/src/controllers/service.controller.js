@@ -1,10 +1,10 @@
 const ServiceModel = require('../models/service.model');
 const { createError } = require("../utils/helper.util");
-const mongoose = require("mongoose");
 
 module.exports = {
     getAllServices: async (req, res, next) => {
         try {
+            const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
 
@@ -17,12 +17,14 @@ module.exports = {
             const totalRecords = await ServiceModel
                 .countDocuments({
                     isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
 
             const services = await ServiceModel
                 .find({
                     isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 })
                 .populate('specialtyID')

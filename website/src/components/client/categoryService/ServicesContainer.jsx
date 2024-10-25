@@ -88,50 +88,12 @@ const ServicesContainer = () => {
       .join('&'));
     setFilters(updatedFilters);
   };
-  // const handleFilterApply = (newFilters) => {
-  //   const updatedFilters = { ...filters, ...newFilters };
-  //   console.log(updatedFilters);
-  //   window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
-  //     .filter(([, value]) => {
-  //       if (Array.isArray(value)) {
-  //         return value.length > 0;
-  //       }
-  //       return value !== undefined && value !== null && value !== '';
-  //     })
-  //     .map(([key, value]) => {
-  //       if (Array.isArray(value)) {
-  //         return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
-  //       }
-  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-  //     })
-  //     .join('&'));
-  //   setFilters(updatedFilters);
-  // };
 
-  // const handlePageChange = (newPage) => {
-  //   const updatedFilters = { ...filters, page: +newPage, limit: +filters.limit };
-  //   window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
-  //     .filter(([, value]) => {
-  //       if (Array.isArray(value)) {
-  //         return value.length > 0;
-  //       }
-  //       return value !== undefined && value !== null && value !== '';
-  //     })
-  //     .map(([key, value]) => {
-  //       if (Array.isArray(value)) {
-  //         return value.map(v => `${encodeURIComponent(key)}=${encodeURIComponent(v)}`).join('&');
-  //       }
-  //       return `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-  //     })
-  //     .join('&'));
-  //   setFilters(updatedFilters);
-  // };
-  console.log(filters);
   const { data, error, isLoading } = useQuery({
     queryKey: [type, filters],
     queryFn: async () => {
       if (type === "service") {
-        return await serviceApi.getAllServices(filters);
+        return await serviceApi.getAllServices({ filters, notHidden: true });
       } else if (type === "package") {
         return await medicalPackageApi.getAllMedicalPackages(filters);
       }
@@ -166,7 +128,7 @@ const ServicesContainer = () => {
                 type === "package"
                   ? <NotFound message={ "Không tìm thấy gói khám nào." } />
                   : <NotFound message={ "Không tìm thấy dịch vụ nào." } />
-              ) : data?.data.map((item) =>
+              ) : data?.data?.map((item) =>
                 <Product key={ item._id } product={ item } />) }
             </div>
             <Pagination className="pt-5">

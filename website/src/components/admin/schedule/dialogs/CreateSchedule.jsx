@@ -8,17 +8,19 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import TimeSelect from "../select/TimeSelect";
 import { toastUI } from "@/components/ui/Toastify";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import SpinLoader from "@/components/ui/SpinLoader";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { timesSchedule } from "@/constants/schedule-times";
+import { doctorApi } from "@/services/doctorsApi";
 
-const CreateSchedule = ({ schedules, infoForm, setInfoForm }) => {
+const CreateSchedule = ({ infoForm, setInfoForm }) => {
     const [payload, setPayload] = useState(null);
-    const queryClient = useQueryClient();
+    const [doctorID, setDoctorID] = useState(null);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
+    const { doctorID: doctorIDParams } = useParams();
 
     const {
         handleSubmit,
@@ -35,13 +37,24 @@ const CreateSchedule = ({ schedules, infoForm, setInfoForm }) => {
         },
     });
 
+    useEffect(() => {
+        if (doctorIDParams) {
+            setDoctorID(doctorIDParams);
+        }
+    }, [doctorIDParams]);
+
+    const { data: doctorDetail, isLoading } = useQuery({
+        queryKey: ['doctor', doctorIDParams],
+        queryFn: () => doctorApi.getDoctorById(doctorIDParams),
+        enabled: !!doctorIDParams,
+    });
+
     const { mutate: createWorkSchedule, isPending } = useMutation({
         mutationFn: (data) => workScheduleApi.createWorkSchedule(data),
         onSuccess: (data) => {
             console.log('Create work schedule success', data);
             toastUI('Thêm lịch làm việc thành công', 'success');
-            queryClient.invalidateQueries(['schedule', schedules._id]);
-            navigate(`/admin/schedules/details/${schedules._id}/?date=${infoForm.date}`);
+            navigate(`/admin/schedules/details/${doctorID}/?date=${infoForm.date}`);
             window.location.reload();
         },
         onError: (error) => {
@@ -89,10 +102,10 @@ const CreateSchedule = ({ schedules, infoForm, setInfoForm }) => {
                 endTime: payload.endTime
             },
             day: infoForm.date,
-            doctorID: schedules._id
+            doctorID: doctorID
         });
     };
-
+    console.log(doctorDetail);
     return (
         <Dialog
             open={ infoForm.isOpen }
@@ -118,8 +131,8 @@ const CreateSchedule = ({ schedules, infoForm, setInfoForm }) => {
                         </div>
                         <div>
                             <ClinicSelect
-                                branchID={ schedules.branch._id }
-                                specialtyID={ schedules.specialty._id }
+                                branchID={ doctorDetail?.otherInfo?.branch._id }
+                                specialtyID={ doctorDetail?.otherInfo?.specialty._id }
                                 control={ control }
                                 errors={ errors }
                                 name="clinicID"

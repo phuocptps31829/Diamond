@@ -35,9 +35,6 @@ export default function Product({ product }) {
     orderCount,
     services
   } = product;
-
-  console.log(product);
-
   const isService = !services || !services?.length;
 
   useEffect(() => {
@@ -108,7 +105,6 @@ export default function Product({ product }) {
     }
 
     if (isNavigate) {
-      console.log('navigate');
       navigate("/booking");
     }
   };
@@ -125,71 +121,74 @@ export default function Product({ product }) {
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex flex-col p-3 md:p-5 md:pt-2">
+      <div className="flex flex-col p-3 mt-1 md:p-5 md:pt-2 flex-1 justify-between">
         { services && services?.length > 0 ? <Link
           to={ `/package/${slug}` }
           className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
         >
           { services[0].levelName }
         </Link> : '' }
-        <Link
-          to={ isService ? `/service/${slug}` : `/package/${slug}` }
-          className="py-1 text-sm font-bold md:text-xl"
-        >
-          { name }
-        </Link>
-        <hr className="mb-1" />
-        <div className="flex items-center space-x-2 py-1">
-          <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-            { formatPrice(services && services?.length > 0 ? services[0].discountPrice : discountPrice) }
-          </span>
-          <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-            { formatPrice(services && services?.length > 0 ? services[0].price : price) }
-          </span>
-        </div>
-
-        <hr className="mb-1" />
-        <div className="flex items-center justify-between sm:mt-2">
-          <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
-            <FaHeart />
-            <FaHeart />
-            <FaHeart />
-            <FaHeart />
-            <FaHeart />
-          </div>
-          <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-            <SiTicktick /> { orderCount }
-          </div>
-        </div>
-        <div className="mt-2 flex w-full items-center justify-center gap-2">
-          <div
-            onClick={ () => handleAddClick(true) }
-            className="flex h-full cursor-pointer flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
+        <div className="mb-1">
+          <Link
+            to={ isService ? `/service/${slug}` : `/package/${slug}` }
+            className="py-1 text-sm text-[#3e3e3e] font-bold md:text-xl"
           >
-            Đặt ngay <AiOutlineDoubleRight />
+            { name }
+          </Link>
+        </div>
+        <div>
+          <hr className="mb-1" />
+          <div className="flex items-center space-x-2 py-1">
+            <span className="text-xs font-semibold text-primary-500 sm:text-lg">
+              { formatPrice(services && services?.length > 0 ? services[0].discountPrice : discountPrice) }
+            </span>
+            <span className="text-[10px] text-gray-400 line-through sm:text-sm">
+              { formatPrice(services && services?.length > 0 ? services[0].price : price) }
+            </span>
           </div>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger className="h-full flex-[2] items-center justify-center">
-                <button
-                  onClick={ () => handleAddClick(false) }
-                  className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
-                    ? "bg-red-500 text-white"
-                    : "bg-primary-500 text-primary-500"
-                    }` }
-                >
-                  { isInCart ? (
-                    <RiDeleteBackFill className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
-                  ) : (
-                    <MdOutlineAddCircle className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
-                  ) }
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>{ isInCart ? "Xóa khỏi y tế" : "Thêm giỏ y tế" }</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <hr className="mb-1" />
+          <div className="flex items-center justify-between sm:mt-2">
+            <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
+              <FaHeart />
+              <FaHeart />
+              <FaHeart />
+              <FaHeart />
+              <FaHeart />
+            </div>
+            <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
+              <SiTicktick /> { orderCount }
+            </div>
+          </div>
+          <div className="mt-2 flex w-full items-center justify-center gap-2">
+            <div
+              onClick={ () => handleAddClick(true) }
+              className="flex h-full cursor-pointer flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
+            >
+              Đặt ngay <AiOutlineDoubleRight />
+            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger className="h-full flex-[2] items-center justify-center">
+                  <button
+                    onClick={ () => handleAddClick(false) }
+                    className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
+                      ? "bg-red-500 text-white"
+                      : "bg-primary-500 text-primary-500"
+                      }` }
+                  >
+                    { isInCart ? (
+                      <RiDeleteBackFill className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
+                    ) : (
+                      <MdOutlineAddCircle className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
+                    ) }
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{ isInCart ? "Xóa khỏi y tế" : "Thêm giỏ y tế" }</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </div>
     </div>

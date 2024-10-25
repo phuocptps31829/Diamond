@@ -18,6 +18,7 @@ export const newsApi = {
         params: {
           page,
           limit,
+          notHidden: true,
         },
       });
       console.log("res.data.data: ", res.data.data);

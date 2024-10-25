@@ -343,7 +343,7 @@ export default function Form() {
           }),
         type: "Khám lần 1",
         time: combineDateTime(getCurSelectedProduct()?.bookingDetail.selectedDate, getCurSelectedProduct()?.bookingDetail.selectedTime),
-        status: "Chờ xác nhận",
+        status: "PENDING",
         price: detail.bookingDetail.price,
       })),
     };

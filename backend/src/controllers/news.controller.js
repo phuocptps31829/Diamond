@@ -4,12 +4,19 @@ const { createError } = require('../utils/helper.util');
 module.exports = {
     getAllNews: async (req, res, next) => {
         try {
+            const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
-            const totalRecords = await NewsModel.countDocuments({ isDeleted: false });
+            const totalRecords = await NewsModel.countDocuments({
+                isDeleted: false,
+                ...(notHidden ? { isHidden: false } : {}),
+            });
 
             const news = await NewsModel
-                .find({ isDeleted: false })
+                .find({
+                    isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
+                })
                 .skip(skip)
                 .limit(limitDocuments)
                 .sort(sortOptions)

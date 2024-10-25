@@ -4,6 +4,7 @@ const { createError } = require("../utils/helper.util");
 module.exports = {
     getAllSpecialties: async (req, res, next) => {
         try {
+            const notHidden = req.query.notHidden === 'true';
             const {
                 limitDocuments,
                 page,
@@ -13,9 +14,14 @@ module.exports = {
 
             const totalRecords = await SpecialtyModel.countDocuments({
                 isDeleted: false,
+                ...(notHidden ? { isHidden: false } : {}),
             });
+
             const specialties = await SpecialtyModel
-                .find({ isDeleted: false })
+                .find({
+                    isDeleted: false,
+                    ...(notHidden ? { isHidden: false } : {}),
+                })
                 .limit(limitDocuments)
                 .skip(skip)
                 .sort(sortOptions);

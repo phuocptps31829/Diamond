@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import NewsEditor from "./editor";
 import SelectSpecialty from "./select/SelectSpecialty";
-import CheckboxServices from "../appointments/select/CheckboxServices";
 import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { packageAdminSchema } from "@/zods/admin/packagesAdmin";
@@ -19,6 +18,7 @@ import { packageApi } from "@/services/medicalPackagesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
+import CheckboxServices from "./select/CheckboxServices";
 
 const PackagesFormFix = ({ packageDetail }) => {
   const queryClient = useQueryClient();
@@ -229,7 +229,7 @@ const PackagesFormFix = ({ packageDetail }) => {
         <h1 className="mr-2 h-fit bg-white text-2xl font-bold">
           Thông tin gói sản phẩm
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-8 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-5 mt-5">
               <ImagePreview
@@ -238,14 +238,14 @@ const PackagesFormFix = ({ packageDetail }) => {
                     ? imagePreview
                     : imagePreview && URL_IMAGE + "/" + imagePreview
                 }
-                setFileImage={setFileImage}
-                setImagePreview={setImagePreview}
+                setFileImage={ setFileImage }
+                setImagePreview={ setImagePreview }
               />
-              {!imagePreview && (
+              { !imagePreview && (
                 <p className="mt-3 text-center text-sm text-red-500">
                   Vui lòng chọn ảnh
                 </p>
-              )}
+              ) }
             </div>
             <div className="mt-3 w-full">
               <div className="grid grid-cols-1 items-center justify-center gap-5 sm:grid-cols-2">
@@ -256,8 +256,8 @@ const PackagesFormFix = ({ packageDetail }) => {
                   id="name"
                   label="Tên gói:"
                   type="text"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                   placeholder="Nhập tên gói"
                 />
                 <div>
@@ -269,8 +269,8 @@ const PackagesFormFix = ({ packageDetail }) => {
                   </Label>
                   <SelectSpecialty
                     name="specialtyID"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -280,52 +280,52 @@ const PackagesFormFix = ({ packageDetail }) => {
                   </Label>
                   <Controller
                     name="shortDescription"
-                    control={control}
-                    render={({ field }) => (
+                    control={ control }
+                    render={ ({ field }) => (
                       <Textarea
                         placeholder="Nhập mô tả."
                         id="shortDescription"
-                        {...field}
+                        { ...field }
                       />
-                    )}
+                    ) }
                   />
-                  {errors.shortDescription && (
+                  { errors.shortDescription && (
                     <p className="mt-1 text-sm text-red-500">
-                      {errors.shortDescription.message}
+                      { errors.shortDescription.message }
                     </p>
-                  )}
+                  ) }
                 </div>
-                <AgeField control={control} errors={errors} />
+                <AgeField control={ control } errors={ errors } />
                 <div className="col-span-2 flex justify-between">
                   <RadioGroupField
                     name="isFamily"
                     label="Dành cho gia đình:"
-                    options={[
+                    options={ [
                       { value: true, label: "Có" },
                       { value: false, label: "Không" },
-                    ]}
-                    control={control}
+                    ] }
+                    control={ control }
                   />
                   <div className="flex h-[50px] w-[1px] border border-dashed border-primary-400"></div>
                   <RadioGroupField
                     name="gender"
                     label="Dành cho giới tính:"
-                    options={[
+                    options={ [
                       { value: "Nam", label: "Nam" },
                       { value: "Nữ", label: "Nữ" },
                       { value: "0", label: "Tất cả" },
-                    ]}
-                    control={control}
+                    ] }
+                    control={ control }
                   />
                   <div className="flex h-[50px] w-[1px] border border-dashed border-primary-400"></div>
                   <RadioGroupField
                     name="isHidden"
                     label="Trạng thái:"
-                    options={[
+                    options={ [
                       { value: false, label: "Hiển thị" },
                       { value: true, label: "Ẩn" },
-                    ]}
-                    control={control}
+                    ] }
+                    control={ control }
                   />
                 </div>
               </div>
@@ -337,13 +337,13 @@ const PackagesFormFix = ({ packageDetail }) => {
               Dịch vụ trong gói: <span className="text-red-500">*</span>
             </Label>
             <div
-              className={`${pageServices % 2 === 0 ? "bg-[#c1e0ff2f]" : "bg-[#d4fff02f]"} flex w-full flex-col rounded-lg border-2 border-dashed border-primary-200 p-5`}
+              className={ `${pageServices % 2 === 0 ? "bg-[#c1e0ff2f]" : "bg-[#d4fff02f]"} flex w-full flex-col rounded-lg border-2 border-dashed border-primary-200 p-5` }
             >
-              {fields.map((item, index) => (
+              { fields.map((item, index) => (
                 <>
                   <div
-                    key={item.id}
-                    className={`${index === pageServices ? "flex" : "hidden"} mb-5 w-full items-center justify-between`}
+                    key={ item.id }
+                    className={ `${index === pageServices ? "flex" : "hidden"} mb-5 w-full items-center justify-between` }
                   >
                     <div className="flex h-full min-h-[330px] w-[40%] flex-col pr-2">
                       <Label
@@ -353,16 +353,16 @@ const PackagesFormFix = ({ packageDetail }) => {
                         Chọn dịch vụ:
                       </Label>
                       <CheckboxServices
-                        name={`services[${index}].servicesID`}
-                        control={control}
-                        errors={errors}
-                        onChange={(servicesID) => {
+                        name={ `services[${index}].servicesID` }
+                        control={ control }
+                        errors={ errors }
+                        onChange={ (servicesID) => {
                           setValue(`services[${index}].servicesID`, servicesID);
                           if (index < fields.length - 1) {
                             syncServicesID(servicesID, index);
                           }
-                        }}
-                        index={index}
+                        } }
+                        index={ index }
                       />
                     </div>
                     <div className="relative w-[60%] space-y-4 pl-10">
@@ -371,24 +371,24 @@ const PackagesFormFix = ({ packageDetail }) => {
                         <InputCustom
                           required
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].levelName`}
+                          name={ `services[${index}].levelName` }
                           label="Cấp độ gói:"
                           type="text"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập tên cấp độ gói"
-                          disabled={true}
+                          disabled={ true }
                         />
                       </div>
                       <div className="w-full">
                         <InputCustom
                           required
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].price`}
+                          name={ `services[${index}].price` }
                           label="Giá gói:"
                           type="number"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập giá gói"
                         />
                       </div>
@@ -396,11 +396,11 @@ const PackagesFormFix = ({ packageDetail }) => {
                         <InputCustom
                           required
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].discountPrice`}
+                          name={ `services[${index}].discountPrice` }
                           label="Giá khuyến mãi:"
                           type="number"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập giá khuyến mãi"
                         />
                       </div>
@@ -408,53 +408,53 @@ const PackagesFormFix = ({ packageDetail }) => {
                         <InputCustom
                           required
                           className="col-span-1 sm:col-span-1"
-                          name={`services[${index}].duration`}
+                          name={ `services[${index}].duration` }
                           label="Thời gian: (phút)"
                           type="number"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           placeholder="Nhập thời gian"
                         />
                       </div>
                     </div>
                   </div>
                 </>
-              ))}
+              )) }
               <div className="mt-4 flex justify-between">
                 <button
                   type="button"
-                  className={`${pageServices === 0 ? "bg-gray-400" : "bg-red-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white`}
-                  onClick={() => setPageServices(pageServices - 1)}
-                  disabled={pageServices === 0}
+                  className={ `${pageServices === 0 ? "bg-gray-400" : "bg-red-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white` }
+                  onClick={ () => setPageServices(pageServices - 1) }
+                  disabled={ pageServices === 0 }
                 >
                   <FaArrowLeft /> Trước
                 </button>
                 <button
                   type="button"
-                  className={`${pageServices === 4 ? "bg-gray-400" : "bg-green-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white`}
-                  onClick={() => setPageServices(pageServices + 1)}
-                  disabled={pageServices === 4}
+                  className={ `${pageServices === 4 ? "bg-gray-400" : "bg-green-500"} flex min-w-[70px] items-center justify-center gap-2 rounded-md p-2 text-[13px] text-white` }
+                  onClick={ () => setPageServices(pageServices + 1) }
+                  disabled={ pageServices === 4 }
                 >
                   Sau <FaArrowRight />
                 </button>
               </div>
             </div>
-            {errors.services && (
-              <p className="mt-3 text-red-500">{errors.services.message}</p>
-            )}
+            { errors.services && (
+              <p className="mt-3 text-red-500">{ errors.services.message }</p>
+            ) }
           </div>
 
           <Label className="mb-3 block" htmlFor="details">
             Nhập mô tả gói: <span className="text-red-500">*</span>
           </Label>
-          <NewsEditor control={control} name="details" errors={errors} />
+          <NewsEditor control={ control } name="details" errors={ errors } />
           <div className="mt-10 w-full text-end">
             <Button
               variant="custom"
               type="submit"
-              disabled={isPending || loadingImage}
+              disabled={ isPending || loadingImage }
             >
-              {isPending || loadingImage ? <SpinLoader /> : "Cập nhật"}
+              { isPending || loadingImage ? <SpinLoader /> : "Cập nhật" }
             </Button>
           </div>
         </form>

@@ -12,6 +12,7 @@ export const serviceApi = {
       ...(specialtyID !== undefined &&
         specialtyID !== null &&
         specialtyID.length > 0 && { specialtyID }),
+      notHidden: true,
     };
 
     const res = await axiosInstanceGET.get('/services', {
