@@ -52,7 +52,7 @@ export default function DataTable({ data, columns }) {
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.ceil(data.length / 3),
+    pageCount: Math.ceil(data.length / 5),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -69,7 +69,7 @@ export default function DataTable({ data, columns }) {
     },
     initialState: {
       pagination: {
-        pageSize: 3,
+        pageSize: 5,
       },
     },
   });
@@ -101,7 +101,7 @@ export default function DataTable({ data, columns }) {
           </div>
           <Link to={"/admin/branches/create"}>
             <Button
-            onClick={handleRefresh}
+              onClick={handleRefresh}
               size="icon"
               variant="outline"
               className="mr-1 mt-2 h-11 w-11"
@@ -125,7 +125,7 @@ export default function DataTable({ data, columns }) {
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext(),
+                          header.getContext()
                         )}
                   </TableHead>
                 );

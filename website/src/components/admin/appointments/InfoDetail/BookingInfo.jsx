@@ -50,8 +50,8 @@ import Uploader from "../utils/Uploader";
 import { prescriptionApi } from "@/services/prescriptionApi";
 import { resultsApi } from "@/services/resultsApi";
 import { imageApi } from "@/services/imageApi";
-import { toast } from "react-toastify";
 import SpinLoader from "@/components/ui/SpinLoader";
+import MedicalPackageBooking from "./MedicalPackageBooking";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -68,7 +68,6 @@ const BookingInfo = ({ data }) => {
   };
 
   const [isOpenForm, setIsOpenForm] = useState(false);
-
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [newPriority, setNewPriority] = useState(null);
@@ -134,6 +133,7 @@ const BookingInfo = ({ data }) => {
     control,
     name: "medicines",
   });
+  console.log(medicines, "medicines");
 
   const addMedicine = () => {
     const currentMedicines = getValues("medicines");
@@ -142,6 +142,7 @@ const BookingInfo = ({ data }) => {
       medicineCategoryID: "",
       medicineID: "",
       quantity: 0,
+      price: 0,
       usage: "",
     };
     setValue("medicines", [...currentMedicines, newMedicine], {
@@ -163,7 +164,22 @@ const BookingInfo = ({ data }) => {
     setValue("medicines", []);
     setSelectedImage(null);
   };
-
+  const handleSelectCategoryMedicine = (index, categoryID) => {
+    const currentMedicines = getValues("medicines");
+    const updatedMedicines = currentMedicines.map((medicine, i) =>
+      i === index ? { ...medicine, medicineCategoryID: categoryID } : medicine
+    );
+    setValue("medicines", updatedMedicines, { shouldValidate: true });
+    trigger("medicines");
+  };
+  const handleSelectMedicine = (index, medicineID, price) => {
+    const currentMedicines = getValues("medicines");
+    const updatedMedicines = currentMedicines.map((medicine, i) =>
+      i === index ? { ...medicine, medicineID, price } : medicine
+    );
+    setValue("medicines", updatedMedicines, { shouldValidate: true });
+    trigger("medicines");
+  };
   const mutation = useMutation({
     mutationFn: async (data) => {
       const [prescriptionResponse, resultResponse] = await Promise.all([
@@ -175,6 +191,8 @@ const BookingInfo = ({ data }) => {
     onSuccess: () => {
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công kết quả khám!", "success");
+      setIsOpenForm(false);
+
       reset();
     },
     onError: (error) => {
@@ -183,52 +201,61 @@ const BookingInfo = ({ data }) => {
     },
   });
   const onSubmit = async (data) => {
-    if (data.images.length === 0) {
-      toast("Vui lòng chọn ảnh!", "error");
-      return;
-    }
+    let imageUrl = [];
 
-    const formData = new FormData();
-    data.images.forEach((file) => {
-      formData.append("file[]", file);
-    });
-    setLoadingImage(true);
-    try {
-      const imageResponse = await imageApi.createImages(formData);
-      const imageUrl = imageResponse?.data;
-
-      if (!imageUrl) {
-        throw new Error("Không thể upload ảnh");
+    if (data.images.length > 0) {
+      setOpen(false);
+      const formData = new FormData();
+      data.images.forEach((file) => {
+        formData.append("file[]", file);
+      });
+      setLoadingImage(true);
+      try {
+        const imageResponse = await imageApi.createImages(formData);
+        imageUrl = imageResponse?.data;
+        console.log(imageUrl, "imageUrl");
+      } catch (error) {
+        toastUI("Đã xảy ra lỗi ,vui lòng thử lại.", "error");
+        console.error("Error creating appointment:", error);
+        setLoadingImage(false);
+        return;
+      } finally {
+        setLoadingImage(false);
       }
-      console.log(data);
-      const dataAll = {
-        prescription: {
-          invoiceID: bookingData.invoice._id,
-          advice: data.advice,
-          medicines: data.medicines.map((medicine) => ({
-            medicineID: medicine.medicineID,
-            quantity: medicine.quantity,
-            dosage: medicine.usage,
-          })),
-        },
-        result: {
-          appointmentID: bookingData._id,
-          serviceID: bookingData.service._id,
-          diagnose: data.diagnosis,
-          images: data.imageUrl,
-          description: data.detail,
-        },
-      };
-      console.log(dataAll);
-
-      mutation.mutate(dataAll);
-    } catch (error) {
-      toastUI("Đã xảy ra lỗi ,vui lòng thử lại.", "error");
-
-      console.error("Error creating appointment:", error);
-    } finally {
-      setLoadingImage(false);
     }
+
+    console.log(data.medicines, "data.medicines");
+
+    const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
+      return total + (medicine.price || 0) * medicine.quantity;
+    }, 0);
+
+    const dataAll = {
+      prescription: {
+        invoiceID: bookingData.invoice._id,
+        advice: data.advice,
+        medicines: data.medicines.map((medicine) => ({
+          medicineID: medicine.medicineID,
+          quantity: medicine.quantity,
+          dosage: medicine.usage,
+        })),
+        price: totalMedicinePrice,
+      },
+      result: {
+        appointmentID: bookingData._id,
+        serviceID: bookingData.service ? bookingData.service._id : undefined,
+        medicalPackageID: bookingData.service
+          ? undefined
+          : bookingData.medicalPackage._id,
+        diagnose: data.diagnosis,
+        images: imageUrl,
+        description: data.detail,
+      },
+    };
+
+    console.log(dataAll);
+
+    mutation.mutate(dataAll);
   };
 
   return (
@@ -412,15 +439,23 @@ const BookingInfo = ({ data }) => {
           </div>
         </div>
         <div className="w-full text-end">
-          {bookingData.status === "EXAMINED" && !isOpenForm && (
-            <Button
-              className=""
-              variant="custom"
-              onClick={() => setIsOpenForm(true)}
-            >
-              Thêm kết quả
-            </Button>
-          )}
+          {!bookingData.prescription &&
+            bookingData.status === "EXAMINED" &&
+            !isOpenForm && (
+              <Button
+                className=""
+                variant="custom"
+                onClick={() => {
+                  if (bookingData.medicalPackage) {
+                    setIsOpenForm("MedicalPackage");
+                  } else {
+                    setIsOpenForm("Service");
+                  }
+                }}
+              >
+                Thêm kết quả
+              </Button>
+            )}
         </div>
 
         {/* Prescription Section */}
@@ -592,8 +627,8 @@ const BookingInfo = ({ data }) => {
         )}
       </div>
       {/*  */}
-      {isOpenForm ? (
-        <div className="mt-6 bg-white p-4">
+      {isOpenForm === "Service" && (
+        <div className="mt-4 rounded-xl bg-white p-4 pt-1">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="block">
               <div className="relative mt-5 md:mb-1 xl:mb-[4px] 2xl:mb-3">
@@ -656,6 +691,9 @@ const BookingInfo = ({ data }) => {
                           name={`medicines[${index}].medicineCategoryID`}
                           control={control}
                           errors={errors}
+                          onChange={(categoryID) =>
+                            handleSelectCategoryMedicine(index, categoryID)
+                          }
                           setValue={setValue}
                         />
                       </div>
@@ -666,7 +704,11 @@ const BookingInfo = ({ data }) => {
                         <SelectMedicine
                           name={`medicines[${index}].medicineID`}
                           control={control}
+                          medicineCategoryID={medicine.medicineCategoryID}
                           errors={errors}
+                          onChange={(medicineID, price) =>
+                            handleSelectMedicine(index, medicineID, price)
+                          }
                           setValue={setValue}
                         />
                       </div>
@@ -733,29 +775,59 @@ const BookingInfo = ({ data }) => {
               errors={errors}
             />
 
-            <div className="mt-3 w-full text-end">
+            <div className="mt-3 flex w-full items-center justify-end text-end">
               <Button variant="outline" onClick={handleCloseForm}>
                 Hủy
               </Button>
-              <Button
-                type="submit"
-                disabled={loadingImage || mutation.isPending}
-                variant="custom"
-                className="ml-2"
-              >
-                {loadingImage || mutation.isPending ? (
-                  <>
-                    <SpinLoader />
-                  </>
-                ) : (
-                  "Lưu kết quả"
-                )}
-              </Button>
+              <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    disabled={loadingImage || mutation.isPending}
+                    variant="custom"
+                    className="ml-2"
+                  >
+                    {loadingImage || mutation.isPending ? (
+                      <>
+                        <SpinLoader />
+                      </>
+                    ) : (
+                      "Lưu kết quả"
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Xác nhận đơn thuốc</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <span>
+                        Bạn có chắc chắn muốn lưu đơn khám bệnh này không?
+                      </span>
+                      <br />
+                      <span className="text-red-500">
+                        Hành động này sẽ không thể chỉnh sửa đơn thuốc.
+                      </span>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setOpen(false)}>
+                      Hủy
+                    </AlertDialogCancel>
+                    <AlertDialogAction onClick={handleSubmit(onSubmit)}>
+                      Xác nhận
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </form>
         </div>
-      ) : (
-        ""
+      )}
+      {isOpenForm === "MedicalPackage" && (
+        <MedicalPackageBooking
+          bookingData={bookingData}
+          handleCloseForm={handleCloseForm}
+        />
       )}
     </div>
   );

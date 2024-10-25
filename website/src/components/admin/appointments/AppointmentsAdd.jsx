@@ -9,7 +9,6 @@ import SelectTime from "./select/SelectTime";
 import { AppointmentAdminSchema } from "@/zods/admin/appointmentsAdmin";
 import SelectService from "./select/SelectServices";
 import SelectMedicalPackage from "./select/SelectMedicalPackage";
-import { Switch } from "@/components/ui/Switch";
 import { useNavigate, useParams } from "react-router-dom";
 import InputCustom from "@/components/ui/InputCustom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -146,9 +145,8 @@ const AppointmentsAdd = () => {
     setWorkScheduleID(workScheduleID);
   };
 
-  const handleSwitchChange = (checked) => {
-    const isServiceSelected = !checked;
-    setIsServiceSelected(!checked);
+  const handleServiceButtonClick = () => {
+    setIsServiceSelected(true);
     setSelectedService({ serviceId: null, specialtyID: null, price: null });
     setSelectedPackage({
       medicalPackageId: null,
@@ -170,10 +168,37 @@ const AppointmentsAdd = () => {
     setValue("type", "");
     setValue("date", "");
     setValue("room", "");
-    setValue("isServiceSelected", isServiceSelected);
+    setValue("isServiceSelected", true);
   };
+  const handlePackageButtonClick = () => {
+    setIsServiceSelected(false);
+    setSelectedService({ serviceId: null, specialtyID: null, price: null });
+    setSelectedPackage({
+      medicalPackageId: null,
+      specialtyID: null,
+      services: [],
+    });
+    setSelectedBranchId("");
+    setSelectedDoctorId("");
+    setSelectedDate("");
+    setSelectedTime("");
+    setClinic("");
+    setSelectedLevel({ levelId: null, price: null });
+    setValue("service", "");
+    setValue("medicalPackage", "");
+    setValue("department", "");
+    setValue("doctor", "");
+    setValue("level", "");
+    setValue("time", "");
+    setValue("type", "");
+    setValue("date", "");
+    setValue("room", "");
+    setValue("isServiceSelected", false);
+  };
+
   const mutation = useMutation({
-    mutationFn: (appointmentData) => appointmentApi.createAppointment(appointmentData, "cod"),
+    mutationFn: (appointmentData) =>
+      appointmentApi.createAppointment(appointmentData, "cod"),
     onSuccess: () => {
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công lịch hẹn!", "success");
@@ -212,13 +237,18 @@ const AppointmentsAdd = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-              <span>Dịch vụ</span>
-              <Switch
-                className="bg-primary-500"
-                checked={!isServiceSelected}
-                onCheckedChange={handleSwitchChange}
-              />
-              <span>Gói khám</span>
+              <Button
+                variant={isServiceSelected ? "primary" : "outline"}
+                onClick={handleServiceButtonClick}
+              >
+                Dịch vụ
+              </Button>
+              <Button
+                variant={!isServiceSelected ? "primary" : "outline"}
+                onClick={handlePackageButtonClick}
+              >
+                Gói khám
+              </Button>
             </div>
 
             {isServiceSelected ? (

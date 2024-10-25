@@ -25,9 +25,7 @@ const medicineResultSchema = z.object({
         ),
       { message: "Vui lòng nhập đầy đủ thông tin cho các thuốc" }
     ),
-    images: z
-    .array(z.instanceof(File))
-    .nonempty("Hình ảnh không được để trống"),
+  images: z.array(z.instanceof(File)).optional(),
 });
 
 export default medicineResultSchema;
