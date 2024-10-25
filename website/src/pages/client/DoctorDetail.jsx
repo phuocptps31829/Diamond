@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { doctorApi } from "@/services/doctorsApi";
-import { getAllSpecialties } from "@/services/specialtiesApi";
 import AboveInformation from "../../components/client/doctorDetail/AboveInformation";
 import BelowInformation from "../../components/client/doctorDetail/BelowInformation";
 import OtherDoctor from "../../components/client/doctorDetail/OtherDoctor";
@@ -32,28 +31,16 @@ export default function DoctorDetail() {
     queryFn: doctorApi.getAllDoctors,
   });
 
-  // gọi API để lấy danh sách chuyên khoa
-  const {
-    data: specialties,
-    error: errorSpecialties,
-    isLoading: loadingSpecialties,
-  } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
-  });
-
-  if (errorDoctor || errorDoctors || errorSpecialties) return <NotFound />;
+  if (errorDoctor || errorDoctors) return <NotFound />;
 
   return (
     <div className="bg-[#E8F2F7] py-5">
-      <AboveInformation doctor={ doctor } isLoading={ isLoadingDoctor } />
+      <AboveInformation doctor={doctor} isLoading={isLoadingDoctor} />
       <BelowInformation />
       <OtherDoctor
-        doctor={ doctor }
-        doctors={ doctors }
-        specialties={ specialties }
-        isLoading={ isLoadingDoctors }
-        isLoadingSpecialties={ loadingSpecialties }
+        doctor={doctor}
+        doctors={doctors}
+        isLoading={isLoadingDoctors}
       />
     </div>
   );

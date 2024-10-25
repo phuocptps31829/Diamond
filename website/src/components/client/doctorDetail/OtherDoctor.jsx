@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -9,36 +9,21 @@ import {
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Skeleton } from "@/components/ui/Skeleton";
-import DoctorProduct from "../product/Doctor";
+import DoctorItem from "@/components/client/product/Doctor";
 
-export default function OtherDoctor({
-  doctor = {},
-  doctors = [],
-  isLoading,
-  specialties = [],
-  isLoadingSpecialties,
-}) {
-  const [specialtyMap, setSpecialtyMap] = useState({});
-
-  useEffect(() => {
-    if (specialties && specialties.length > 0) {
-      const map = {};
-      specialties.forEach((specialty) => {
-        map[specialty._id] = specialty.name;
-      });
-      setSpecialtyMap(map);
-    }
-  }, [specialties]);
-
+export default function OtherDoctor({ doctor = {}, doctors = [], isLoading }) {
   const doctorsBySpecialty = useMemo(() => {
-    if (doctor.specialtyID) {
+    if (doctor.otherInfo?.specialty._id) {
       return doctors.filter(
         (item) =>
-          item.specialtyID === doctor.specialtyID && item._id !== doctor._id,
+          item.otherInfo?.specialty._id === doctor.otherInfo?.specialty._id &&
+          item._id !== doctor._id
       );
     }
     return doctors;
   }, [doctor, doctors]);
+
+  if (doctorsBySpecialty.length === 0) return null;
 
   return (
     <div className="mx-auto max-w-screen-xl px-5">
@@ -64,7 +49,7 @@ export default function OtherDoctor({
         ]}
       >
         <CarouselContent>
-          {isLoadingSpecialties && isLoading
+          {isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
                 <CarouselItem
                   key={index}
@@ -87,11 +72,7 @@ export default function OtherDoctor({
                   key={index}
                   className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
                 >
-                  <DoctorProduct
-                    key={doctor._id}
-                    {...doctor}
-                    specialtyName={specialtyMap[doctor.specialtyID]}
-                  />
+                  <DoctorItem key={doctor._id} doctor={doctor} />
                 </CarouselItem>
               ))}
         </CarouselContent>

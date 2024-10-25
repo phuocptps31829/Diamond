@@ -18,6 +18,7 @@ export const newsApi = {
         params: {
           page,
           limit,
+          notHidden: true,
         },
       });
       console.log("res.data.data: ", res.data.data);
@@ -74,7 +75,7 @@ export const newsApi = {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
       console.log("res.data.data: ", res.data.data);
       return res.data.data;
@@ -98,7 +99,7 @@ export const newsApi = {
   deleteNews: async (id) => {
     try {
       const res = await axiosInstanceCUD.post(
-        `/news/delete/${id}?_method=DELETE`,
+        `/news/delete/${id}?_method=DELETE`
       );
       console.log("res.data.data: ", res.data.data);
       return res.data.data;

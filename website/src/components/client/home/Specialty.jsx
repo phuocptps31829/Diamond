@@ -9,6 +9,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useQuery } from "@tanstack/react-query";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export default function Specialty() {
   const {
@@ -73,15 +74,15 @@ export default function Specialty() {
                     key={index}
                     className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
                   >
-                    <div className="flex flex-col items-center rounded-md bg-white p-4 pb-10 max-h-[264px]">
+                    <div className="flex max-h-[264px] flex-col items-center rounded-md bg-white p-4 pb-10">
                       <div className="w-full">
                         <img
-                          src={specialty.image}
+                          src={URL_IMAGE + "/" + specialty.image}
                           alt=""
                           className="h-40 w-full rounded-md object-cover"
                         />
                       </div>
-                      <div className="my-3 text-[16px] font-bold uppercase text-center">
+                      <div className="my-3 text-center text-[16px] font-bold uppercase">
                         {specialty.name}
                       </div>
                     </div>

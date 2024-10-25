@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -43,17 +42,19 @@ export default function AboveInformation({ doctor, isLoading }) {
   return (
     <>
       <div className="mx-auto max-w-screen-xl">
-        <div className="flex flex-col items-center space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
-          <div className="block overflow-hidden rounded-full w-96 h-96">
-            <img src={ `${import.meta.env.VITE_IMAGE_API_URL}/${avatar}` } />
+        <div className="flex flex-col items-center justify-center  space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
+          <div className="block rounded-lg overflow-hidden w-full max-h-[400px] max-w-[400px]">
+            <img src={`${import.meta.env.VITE_IMAGE_API_URL}/${avatar}`}
+              className="w-full h-full object-cover object-center"
+            />
           </div>
           <div className="flex flex-col space-y-4">
-            <div className="text-3xl font-semibold uppercase">{ fullName }</div>
+            <div className="text-3xl font-semibold uppercase">{fullName}</div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Chi nhánh:
               </strong>
-              { doctor.otherInfo?.branch?.name }
+              {doctor.otherInfo?.branch?.name}
             </div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
@@ -65,15 +66,17 @@ export default function AboveInformation({ doctor, isLoading }) {
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Kinh nghiệm:
               </strong>
-              { new Date().getFullYear() - new Date(doctor.otherInfo.yearsExperience).getFullYear() } năm kinh nghiệm
+              {new Date().getFullYear() -
+                new Date(doctor.otherInfo.yearsExperience).getFullYear()}{" "}
+              năm kinh nghiệm
             </div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Giới tính:
               </strong>
-              { gender }
+              {gender}
             </div>
-            <button className="rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-primary-600 w-full">
+            <button className="w-full rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-primary-600">
               Đặt lịch hẹn
             </button>
             <div className="flex flex-col space-y-3 rounded-md bg-white p-5 lg:min-w-[550px]">
@@ -81,13 +84,13 @@ export default function AboveInformation({ doctor, isLoading }) {
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Đặt lịch:
                 </strong>
-                { phoneNumber }
+                {phoneNumber}
               </div>
               <div className="flex text-[14px] md:text-[15px]">
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Địa chỉ:
                 </strong>
-                { address }
+                {address}
               </div>
               <Link
                 to="/none"

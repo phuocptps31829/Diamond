@@ -4,7 +4,6 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 export default function NewsProduct({
   slug,
   title,
-  author,
   viewCount,
   createdAt,
   image,
@@ -39,8 +38,6 @@ export default function NewsProduct({
                 minute: "2-digit",
               })}
             </div>
-            <div>|</div>
-            <div className="font-semibold">{author}</div>
           </div>
           <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] sm:text-[14px]">
             {shortDescription}
