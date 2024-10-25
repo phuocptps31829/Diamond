@@ -146,6 +146,9 @@ const NewsEdit = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
+      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+          Chỉnh sửa tin tức
+        </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 grid-cols-1 gap-[10px] sm:grid md:flex">
             {/* Form inputs */}

@@ -200,6 +200,15 @@ const BookingInfo = ({ data }) => {
       console.error("Error creating appointment:", error);
     },
   });
+  const handleConfirmSave = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
+
   const onSubmit = async (data) => {
     let imageUrl = [];
 
@@ -779,23 +788,23 @@ const BookingInfo = ({ data }) => {
               <Button variant="outline" onClick={handleCloseForm}>
                 Hủy
               </Button>
+              <Button
+                type="button"
+                disabled={loadingImage || mutation.isPending}
+                variant="custom"
+                className="ml-2"
+                onClick={handleConfirmSave}
+              >
+                {loadingImage || mutation.isPending ? (
+                  <>
+                    <SpinLoader />
+                  </>
+                ) : (
+                  "Lưu kết quả"
+                )}
+              </Button>
+
               <AlertDialog open={open} onOpenChange={setOpen}>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    type="button"
-                    disabled={loadingImage || mutation.isPending}
-                    variant="custom"
-                    className="ml-2"
-                  >
-                    {loadingImage || mutation.isPending ? (
-                      <>
-                        <SpinLoader />
-                      </>
-                    ) : (
-                      "Lưu kết quả"
-                    )}
-                  </Button>
-                </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>Xác nhận đơn thuốc</AlertDialogTitle>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputCustom from "@/components/ui/InputCustom";
 import { Label } from "@/components/ui/Label";
 import DoctorEditor from "../../doctor/editor";
@@ -21,7 +21,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/AlertDialog";
 import SpinLoader from "@/components/ui/SpinLoader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,7 +34,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
   const [selectedService, setSelectedService] = useState(null);
   const [validationError, setValidationError] = useState(null);
   const queryClient = useQueryClient();
-
+  const defaultServiceID = bookingData.medicalPackage?.services?.[0]?._id || "";
   const {
     handleSubmit,
     formState: { errors },
@@ -54,7 +53,11 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       images: [],
     },
   });
-  console.log(errors);
+  useEffect(() => {
+    if (defaultServiceID) {
+      handleSelectService(defaultServiceID);
+    }
+  }, [defaultServiceID]);
   const validateServiceResults = () => {
     const serviceIDs = bookingData.medicalPackage?.services.map(
       (service) => service._id
@@ -74,6 +77,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
     setValidationError(null);
     return null;
   };
+
   const handleSelectService = (serviceID) => {
     const currentValues = getValues();
 
@@ -89,6 +93,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             diagnosis: currentValues.diagnosis,
             detail: currentValues.detail,
             advice: currentValues.advice,
+            images: currentValues.images,
           },
         };
 
@@ -111,14 +116,17 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       setValue("diagnosis", selectedServiceResult.result.diagnosis);
       setValue("detail", selectedServiceResult.result.detail);
       setValue("advice", selectedServiceResult.result.advice);
+      setValue("images", selectedServiceResult.result.images);
     } else {
       setValue("diagnosis", "");
       setValue("detail", "");
       setValue("advice", "");
+      setValue("images", []);
     }
     trigger("diagnosis");
     trigger("detail");
     trigger("advice");
+    trigger("images");
   };
 
   const closeForm = () => {
@@ -178,6 +186,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
   };
   const handleSaveAllServices = () => {
     const currentValues = getValues();
+    console.log("call");
 
     if (selectedService) {
       setServiceResults((prevResults) => {
@@ -191,6 +200,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             diagnosis: currentValues.diagnosis,
             detail: currentValues.detail,
             advice: currentValues.advice,
+            images: currentValues.images,
           },
         };
 
@@ -204,6 +214,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       });
     }
   };
+
   const mutation = useMutation({
     mutationFn: async (data) => {
       const [prescriptionResponse, resultResponse] = await Promise.all([
@@ -223,67 +234,95 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       console.error("Error creating appointment:", error);
     },
   });
-  const onSubmit = async (data) => {
+
+  const handleConfirmSave = async () => {
     handleSaveAllServices();
+    const isValid = await trigger();
+    if (isValid) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
+  const uploadServiceImages = async (images) => {
+    if (images.length === 0) return [];
+
+    const formData = new FormData();
+    images.forEach((file) => {
+      formData.append("file[]", file);
+    });
+
+    try {
+      const imageResponse = await imageApi.createImages(formData);
+      return imageResponse?.data || [];
+    } catch (error) {
+      toastUI("Đã xảy ra lỗi khi upload hình ảnh, vui lòng thử lại.", "error");
+      console.error("Error uploading images:", error);
+      return [];
+    }
+  };
+  const onSubmit = async (data) => {
+    setOpen(false);
     const validationError = validateServiceResults();
     if (validationError) {
       setValidationError(validationError);
       return;
     }
 
-    let imageUrl = [];
+    setLoadingImage(true);
+    try {
+      const updatedServiceResults = await Promise.all(
+        serviceResults.map(async (serviceResult) => {
+          const imageUrl = await uploadServiceImages(
+            serviceResult.result.images
+          );
+          return {
+            ...serviceResult,
+            result: {
+              ...serviceResult.result,
+              images: imageUrl,
+            },
+          };
+        })
+      );
 
-    if (data.images.length > 0) {
-      const formData = new FormData();
-      data.images.forEach((file) => {
-        formData.append("file[]", file);
-      });
-      setLoadingImage(true);
-      try {
-        const imageResponse = await imageApi.createImages(formData);
-        imageUrl = imageResponse?.data;
-        console.log(imageUrl, "imageUrl");
-      } catch (error) {
-        toastUI("Đã xảy ra lỗi ,vui lòng thử lại.", "error");
-        console.error("Error creating appointment:", error);
-        setLoadingImage(false);
-        return;
-      } finally {
-        setLoadingImage(false);
-      }
+      setServiceResults(updatedServiceResults);
+
+      const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
+        return total + (medicine.price || 0) * medicine.quantity;
+      }, 0);
+
+      const dataAll = {
+        prescription: {
+          invoiceID: bookingData.invoice._id,
+          advice: data.advice,
+          medicines: data.medicines.map((medicine) => ({
+            medicineID: medicine.medicineID,
+            quantity: medicine.quantity,
+            dosage: medicine.usage,
+          })),
+          price: totalMedicinePrice,
+        },
+        result: {
+          appointmentID: bookingData._id,
+          serviceID: bookingData.service ? bookingData.service._id : undefined,
+          medicalPackageID: bookingData.service
+            ? undefined
+            : bookingData.medicalPackage._id,
+          diagnose: data.diagnosis,
+          images: [], // Không cần thiết vì đã set trong serviceResults
+          description: data.detail,
+        },
+      };
+
+      console.log(dataAll);
+
+      // mutation.mutate(dataAll);
+    } catch (error) {
+      console.error("Error in onSubmit:", error);
+    } finally {
+      setLoadingImage(false);
     }
-
-    console.log(data.medicines, "data.medicines");
-    const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
-      return total + (medicine.price || 0) * medicine.quantity;
-    }, 0);
-
-    const dataAll = {
-      prescription: {
-        invoiceID: bookingData.invoice._id,
-        advice: data.advice,
-        medicines: data.medicines.map((medicine) => ({
-          medicineID: medicine.medicineID,
-          quantity: medicine.quantity,
-          dosage: medicine.usage,
-        })),
-        price: totalMedicinePrice,
-      },
-      result: {
-        appointmentID: bookingData._id,
-        serviceID: bookingData.service ? bookingData.service._id : undefined,
-        medicalPackageID: bookingData.service
-          ? undefined
-          : bookingData.medicalPackage._id,
-        diagnose: data.diagnosis,
-        images: imageUrl,
-        description: data.detail,
-      },
-    };
-
-    console.log(dataAll);
-
-    mutation.mutate(dataAll);
   };
 
   return (
@@ -300,6 +339,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                 name="serviceID"
                 onChange={handleSelectService}
                 control={control}
+                defaultValue={defaultServiceID}
               />
             </div>
             <div className="w-[70%] space-y-4 pl-10">
@@ -448,23 +488,23 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             <Button variant="outline" type="button" onClick={closeForm}>
               Hủy
             </Button>
+            <Button
+              type="button"
+              disabled={loadingImage || mutation.isPending}
+              variant="custom"
+              className="ml-2"
+              onClick={handleConfirmSave}
+            >
+              {loadingImage || mutation.isPending ? (
+                <>
+                  <SpinLoader />
+                </>
+              ) : (
+                "Lưu kết quả"
+              )}
+            </Button>
+
             <AlertDialog open={open} onOpenChange={setOpen}>
-              <AlertDialogTrigger asChild>
-                <Button
-                  type="button"
-                  disabled={loadingImage || mutation.isPending}
-                  variant="custom"
-                  className="ml-2"
-                >
-                  {loadingImage || mutation.isPending ? (
-                    <>
-                      <SpinLoader />
-                    </>
-                  ) : (
-                    "Lưu kết quả"
-                  )}
-                </Button>
-              </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Xác nhận đơn thuốc</AlertDialogTitle>

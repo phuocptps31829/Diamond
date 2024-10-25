@@ -103,6 +103,9 @@ export default function ClinicEdit() {
   if (error) return <NotFound />;
   return (
     <div className="rounded-xl bg-white px-6 py-6">
+        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+          Chỉnh sửa phòng khám
+        </h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="w-full">
           <div className="block">
