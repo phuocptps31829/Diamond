@@ -203,6 +203,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       return (
         <div className="w-full">
           <Select
+            disabled={row.original.prescription}
             value={row.original.status}
             onValueChange={(value) => {
               onChangeStatus(row.original._id, value);
@@ -243,7 +244,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       );
       return (
         <div
-          className={`flex items-center justify-center rounded-md py-1 text-center text-xs font-bold uppercase ${stylePayment}`}
+          className={`flex items-center justify-center rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${stylePayment}`}
         >
           <span className="whitespace-nowrap">{textPayment}</span>
         </div>

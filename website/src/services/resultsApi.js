@@ -19,6 +19,19 @@ export const resultsApi = {
       throw error;
     }
   },
+  addResultAndPrescription: async (data) => {
+    try {
+      const res = await axiosInstanceCUD.post("/results/result-prescription/add", data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return res.data.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
   deleteResult: async (id) => {
     try {
       const res = await axiosInstanceCUD.delete(`/results/delete/${id}`);

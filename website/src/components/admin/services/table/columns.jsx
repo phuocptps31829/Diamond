@@ -10,19 +10,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/Dialog";
 
-import { useQuery } from "@tanstack/react-query";
-import { getSpecialtyById } from "@/services/specialtiesApi";
+
 
 import Action from "./action";
 import { AlertDialogHeader } from "@/components/ui/AlertDialog";
 
-const useSpecialtyName = (specialtyID) => {
-  return useQuery({
-    queryKey: ["specialty", specialtyID],
-    queryFn: () => getSpecialtyById(specialtyID),
-    enabled: !!specialtyID,
-  });
-};
 
 export const columns = [
   {
@@ -127,8 +119,10 @@ export const columns = [
 
       return (
         <div className="w-full max-w-[270px]">
-          <span className="block w-[90px]">{ row.original.specialty?.name }</span>
-        </div>
+        <span className="block w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
+          {row.original.specialty?.name}
+        </span>
+      </div>
       );
     },
   },
