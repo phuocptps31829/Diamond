@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/Carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useQuery } from "@tanstack/react-query";
-import { getAllSpecialties } from "@/services/specialtiesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { specialtyApi } from "@/services/specialtiesApi";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export default function Specialty() {
@@ -18,7 +18,7 @@ export default function Specialty() {
     isLoading: loadingSpecialties,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtyApi.getAllSpecialties,
   });
 
   return (
@@ -30,64 +30,64 @@ export default function Specialty() {
         <span className="block w-full text-center text-[14px] text-white md:text-[16px]">
           Danh sách toàn bộ các Khoa & Chuyên khoa tại Hệ Thống Y Khoa Diamond
         </span>
-        {error && (
+        { error && (
           <div className="mt-5 text-center text-white">
             Đã xảy ra lỗi khi tải dữ liệu, vui lòng thử lại.
           </div>
-        )}
+        ) }
         <Carousel
-          opts={{
+          opts={ {
             align: "start",
             loop: true,
-          }}
+          } }
           className="my-4 w-full"
-          plugins={[
+          plugins={ [
             Autoplay({
               delay: 2500,
               stopOnInteraction: false,
               stopOnMouseEnter: false,
             }),
-          ]}
+          ] }
         >
           <CarouselContent>
-            {loadingSpecialties
+            { loadingSpecialties
               ? Array.from({ length: 6 }).map((_, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
+                <CarouselItem
+                  key={ index }
+                  className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
+                >
+                  <div
+                    className="flex flex-col items-center rounded-md bg-white p-4 pb-10"
+                    key={ index }
                   >
-                    <div
-                      className="flex flex-col items-center rounded-md bg-white p-4 pb-10"
-                      key={index}
-                    >
-                      <div className="w-full">
-                        <Skeleton className="h-40 w-full rounded-md" />
-                      </div>
-                      <div className="my-3 flex h-[24px] w-full justify-center text-[16px] font-bold uppercase">
-                        <Skeleton className="h-[24px] w-3/4 rounded-md" />
-                      </div>
+                    <div className="w-full">
+                      <Skeleton className="h-40 w-full rounded-md" />
                     </div>
-                  </CarouselItem>
-                ))
+                    <div className="my-3 flex h-[24px] w-full justify-center text-[16px] font-bold uppercase">
+                      <Skeleton className="h-[24px] w-3/4 rounded-md" />
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))
               : specialties.map((specialty, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
-                  >
-                    <div className="flex max-h-[264px] flex-col items-center rounded-md bg-white p-4 pb-10">
-                      <div className="w-full">
-                        <img
-                          src={URL_IMAGE + "/" + specialty.image}
-                          alt=""
-                          className="h-40 w-full rounded-md object-cover"
-                        />
-                      </div>
-                      <div className="my-3 text-center text-[16px] font-bold uppercase">
-                        {specialty.name}
-                      </div>
+                <CarouselItem
+                  key={ index }
+                  className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
+                >
+                  <div className="flex max-h-[264px] flex-col items-center rounded-md bg-white p-4 pb-10">
+                    <div className="w-full">
+                      <img
+                        src={ URL_IMAGE + "/" + specialty.image }
+                        alt=""
+                        className="h-40 w-full rounded-md object-cover"
+                      />
                     </div>
-                  </CarouselItem>
-                ))}
+                    <div className="my-3 text-center text-[16px] font-bold uppercase">
+                      { specialty.name }
+                    </div>
+                  </div>
+                </CarouselItem>
+              )) }
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />

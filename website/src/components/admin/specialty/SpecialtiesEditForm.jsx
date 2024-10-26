@@ -4,9 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";
 import { Button } from "@/components/ui/Button";
-import { Label } from "@/components/ui/Label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { specialtyApi } from "@/services/specialtiesApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,6 +13,7 @@ import ImagePreview from "@/components/ui/ImagePreview";
 import { imageApi } from "@/services/imageApi";
 import SpinLoader from "@/components/ui/SpinLoader";
 import Loading from "@/components/ui/Loading";
+import RadioGroupField from "@/components/ui/RadioGroupField";
 export default function Form() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ export default function Form() {
     defaultValues: {
       name: "",
       image: null,
-      status: true,
+      isHidden: "",
     },
   });
   const [fileImage, setFileImage] = useState(null);
@@ -41,8 +40,9 @@ export default function Form() {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       setValue("name", data.name);
-      setValue("status", data.isHidden ? "Ẩn" : "Hiện");
+      setValue("isHidden", data.isHidden ? true : false);
       setImagePreview(
         `${import.meta.env.VITE_IMAGE_API_URL}/${data.image}`,
       );
@@ -50,7 +50,7 @@ export default function Form() {
   }, [data, setValue]);
 
   const { mutate: updateSpecialty, isPending: isSubmitting } = useMutation({
-    mutationFn: (newSpecialty) => specialtyApi.updateSpecialty(newSpecialty),
+    mutationFn: (updatedSpecialty) => specialtyApi.updateSpecialty(updatedSpecialty),
     onSuccess: () => {
       toastUI("Cập nhật chuyên khoa thành công", "success");
       navigate("/admin/specialties/list");
@@ -67,20 +67,20 @@ export default function Form() {
         toastUI('Vui lòng chọn ảnh!', 'error');
         return;
       }
-
-      const newSpecialty = {
+      console.log(dataForm);
+      const updatedSpecialty = {
         updatedSpecialty: {
           name: dataForm.name,
-          isHidden: dataForm.status,
+          isHidden: dataForm.isHidden,
         },
         id
       };
 
       if (!fileImage) {
         updateSpecialty({
-          ...newSpecialty,
+          ...updatedSpecialty,
           updatedSpecialty: {
-            ...newSpecialty.updatedSpecialty,
+            ...updatedSpecialty.updatedSpecialty,
             image: data.image
           }
         });
@@ -93,8 +93,8 @@ export default function Form() {
       const imageResponse = await imageApi.createImage(formData);
       const imageUrl = imageResponse?.data;
 
-      newSpecialty.updatedSpecialty.image = imageUrl;
-      updateSpecialty(newSpecialty);
+      updatedSpecialty.updatedSpecialty.image = imageUrl;
+      updateSpecialty(updatedSpecialty);
     } catch (error) {
       console.error("Error during submission:", error);
       toastUI("Có lỗi xảy ra: " + error.message, "error");
@@ -146,29 +146,15 @@ export default function Form() {
                   errors={ errors }
                 />
               </div>
-              <div className="">
-                <Label htmlFor="" className="mb-2 block text-sm font-medium leading-none text-black">
-                  Trạng thái
-                </Label>
-                <Controller
-                  name="status"
+              <div className="mt-5">
+                <RadioGroupField
+                  name="isHidden"
+                  label="Trạng thái"
+                  options={ [
+                    { value: true, label: "Ẩn" },
+                    { value: false, label: "Hiện" },
+                  ] }
                   control={ control }
-                  render={ ({ field }) => (
-                    <RadioGroup
-                      value={ field.value }
-                      onValueChange={ (value) => field.onChange(value) }
-                      className="mt-5 flex items-center justify-start gap-5"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Ẩn" id="r1" />
-                        <Label htmlFor="r1">Ẩn</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="Hiện" id="r2" />
-                        <Label htmlFor="r2">Hiện</Label>
-                      </div>
-                    </RadioGroup>
-                  ) }
                 />
               </div>
             </div>

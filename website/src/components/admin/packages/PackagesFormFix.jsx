@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/Label";
 import { Button } from "@/components/ui/Button";
 import NewsEditor from "./editor";
 import SelectSpecialty from "./select/SelectSpecialty";
+import CheckboxServices from "./select/CheckboxServices";
 import { Textarea } from "@/components/ui/Textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { packageAdminSchema } from "@/zods/admin/packagesAdmin";
@@ -18,7 +19,6 @@ import { packageApi } from "@/services/medicalPackagesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
-import CheckboxServices from "./select/CheckboxServices";
 
 const PackagesFormFix = ({ packageDetail }) => {
   const queryClient = useQueryClient();
@@ -34,7 +34,6 @@ const PackagesFormFix = ({ packageDetail }) => {
     control,
     setValue,
     getValues,
-    reset,
   } = useForm({
     resolver: zodResolver(packageAdminSchema),
     defaultValues: {
@@ -44,7 +43,7 @@ const PackagesFormFix = ({ packageDetail }) => {
       details: packageDetail.details || "",
       isHidden: packageDetail.isHidden || false,
       isFamily: packageDetail.applicableObject.isFamily || false,
-      gender: packageDetail.applicableObject.specialtyID || "0",
+      gender: packageDetail.applicableObject.gender || "0",
       age: {
         min: packageDetail.applicableObject.age.min || 0,
         max: packageDetail.applicableObject.age.max || 0,
@@ -122,12 +121,15 @@ const PackagesFormFix = ({ packageDetail }) => {
           discountPrice: service.discountPrice,
           duration: String(service.duration),
           _id: service._id.$oid,
+          isHidden: service.isHidden,
         })),
       };
 
-      console.log("transformedData", transformedData);
+      setValue("isFamily", newData.applicableObject.isFamily);
+      setValue("gender", newData.applicableObject.gender);
+      setValue("age.min", newData.applicableObject.age.min);
+      setValue("age.max", newData.applicableObject.age.max);
 
-      reset(newData);
       setIsInitialized(false);
       setDataNewUpdate(transformedData);
       setImagePreview(null);
