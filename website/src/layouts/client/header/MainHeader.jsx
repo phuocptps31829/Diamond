@@ -108,7 +108,7 @@ export default function MainHeader() {
                   <DropdownMenuContent className="mt-1">
                     <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <Link to={ "/user-profile" }>
+                    <Link to={ "/profile" }>
                       <DropdownMenuItem>
                         { " " }
                         <FaRegUser className="mr-2" />

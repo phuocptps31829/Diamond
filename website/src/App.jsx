@@ -151,7 +151,7 @@ const router = createBrowserRouter([
         element: <DoctorDetail />,
       },
       {
-        path: "user-profile",
+        path: "profile",
         element: (
           <ProtectContainer type="client">
             <UserProfileLayout />
@@ -171,11 +171,11 @@ const router = createBrowserRouter([
             element: <MedicalRecordDetail />,
           },
           {
-            path: "appointment-history",
+            path: "appointments",
             element: <AppointmentHistory />,
           },
           {
-            path: "appointment-history/detail/:id",
+            path: "appointments/detail/:id",
             element: <AppointmentDetail />,
           },
           {

@@ -45,10 +45,10 @@ export default function RegisterComponent() {
     },
     onError: (error) => {
       const errorMessage =
-        error.response?.data?.error ||
+        error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Gửi mã OTP thất bại!", "success");
+      toastUI(errorMessage, "error");
       sessionStorage.removeItem("phoneNumber");
       sessionStorage.removeItem("fullName");
       sessionStorage.removeItem("password");

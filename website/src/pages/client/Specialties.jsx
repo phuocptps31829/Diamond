@@ -5,9 +5,9 @@ import useScrollToTop from "@/hooks/useScrollToTop";
 import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/components/client/notFound";
 import { specialtyApi } from "@/services/specialtiesApi";
+
 const Specialties = () => {
   // const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
   useScrollToTop();
   const {
     data: specialties,

@@ -28,7 +28,7 @@ export default function PaymentSuccess() {
                     <Link className="border-primary-500 border px-10 py-3 rounded-lg mr-4 text-primary-500" to="/">
                         Quay về trang chủ
                     </Link>
-                    <Link className="bg-primary-500 px-10 py-3 rounded-lg text-white" to="/user-profile/appointment-history/detail/1">
+                    <Link className="bg-primary-500 px-10 py-3 rounded-lg text-white" to="/profile/appointments/detail/1">
                         Xem lịch sử đặt
                     </Link>
                 </div>

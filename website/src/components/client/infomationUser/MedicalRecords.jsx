@@ -28,7 +28,7 @@ const MedicalRecords = () => {
     navigate(`detail/${id}`);
   };
   const handlePageChange = (page) => {
-    navigate(`/user-profile/medical-records?page=${page}`);
+    navigate(`/profile/medical-records?page=${page}`);
   };
 
   let count = 1;
@@ -134,41 +134,41 @@ const MedicalRecords = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {currentRecords.map((record, index) => (
-            <TableRow key={index}>
-              <TableCell className="whitespace-nowrap">{record.id}</TableCell>
-              <TableCell className="whitespace-nowrap">{record.date}</TableCell>
+          { currentRecords.map((record, index) => (
+            <TableRow key={ index }>
+              <TableCell className="whitespace-nowrap">{ record.id }</TableCell>
+              <TableCell className="whitespace-nowrap">{ record.date }</TableCell>
               <TableCell className="whitespace-nowrap">
-                {record.status}
+                { record.status }
               </TableCell>
               <TableCell className="whitespace-nowrap">
-                {record.payment}
+                { record.payment }
               </TableCell>
               <TableCell className="whitespace-nowrap">
-                {record.doctor}
+                { record.doctor }
               </TableCell>
               <TableCell className="whitespace-nowrap">
-                {record.service}
+                { record.service }
               </TableCell>
               <TableCell>
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={() => handleViewDetail(record.id)}
+                  onClick={ () => handleViewDetail(record.id) }
                   className="bg-primary-500 px-6 text-white"
                 >
                   Xem chi tiết
                 </Button>
               </TableCell>
             </TableRow>
-          ))}
+          )) }
         </TableBody>
       </Table>
       <Pagination className="py-5">
         <PaginationContent className="hover:cursor-pointer">
           <PaginationItem>
             <PaginationPrevious
-              onClick={() =>
+              onClick={ () =>
                 handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
               }
               className={
@@ -176,22 +176,22 @@ const MedicalRecords = () => {
               }
             />
           </PaginationItem>
-          {Array.from({ length: totalPages }).map((_, index) => (
-            <PaginationItem key={index}>
+          { Array.from({ length: totalPages }).map((_, index) => (
+            <PaginationItem key={ index }>
               <PaginationLink
-                onClick={() => handlePageChange(index + 1)}
-                isActive={currentPage === index + 1}
+                onClick={ () => handlePageChange(index + 1) }
+                isActive={ currentPage === index + 1 }
               >
-                {index + 1}
+                { index + 1 }
               </PaginationLink>
             </PaginationItem>
-          ))}
+          )) }
           <PaginationItem>
             <PaginationEllipsis />
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
-              onClick={() =>
+              onClick={ () =>
                 handlePageChange(
                   currentPage + 1 > totalPages ? totalPages : currentPage + 1,
                 )

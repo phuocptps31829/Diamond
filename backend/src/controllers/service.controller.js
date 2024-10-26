@@ -20,7 +20,7 @@ module.exports = {
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
-
+            console.log("totalRecords: ", totalRecords);
             const services = await ServiceModel
                 .find({
                     isDeleted: false,
