@@ -26,7 +26,7 @@ export default function SelectRelatedPatient({
     onChange
 }) {
     const [open, setOpen] = React.useState(false);
-
+    console.log(patientList);
     return (
         <div className='w-52'>
             <Controller

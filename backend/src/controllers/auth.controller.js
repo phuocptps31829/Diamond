@@ -39,7 +39,7 @@ module.exports = {
                         const relatedPatient = await UserModel.findById(id);
                         return relatedPatient ? {
                             _id: relatedPatient._id,
-                            name: relatedPatient.fullName
+                            fullName: relatedPatient.fullName
                         } : null;
                     });
 
