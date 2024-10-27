@@ -3,6 +3,7 @@ import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 export const serviceApi = {
   getAllServices: async (filter) => {
     const { page, limit, sort, gender, branch, specialtyID } = filter;
+    console.log(filter);
     const params = {
       ...(page !== undefined && page !== null && { page }),
       ...(limit !== undefined && limit !== null && { limit }),

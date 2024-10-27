@@ -1,6 +1,6 @@
 import { changeBookingDetails } from "@/redux/bookingSlice";
 import { formatCurrency } from "@/utils/format";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdRemove } from "react-icons/io";
 import { useDispatch } from "react-redux";
 
@@ -25,6 +25,10 @@ const Package = ({
         : false;
 
     console.log(hasEmptyFields);
+
+    useEffect(() => {
+        setPackageLevel(pkg.levelID);
+    }, [pkg.levelID]);
 
     const handleChangePackageLevel = (levelID) => {
         dispatch(

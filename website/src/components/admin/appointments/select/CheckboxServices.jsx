@@ -11,7 +11,7 @@ const RadioServices = ({
   onChange,
   index,
   services,
-  defaultValue, 
+  defaultValue, // Thêm defaultValue vào props
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);

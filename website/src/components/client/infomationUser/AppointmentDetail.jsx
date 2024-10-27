@@ -1,25 +1,22 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { appointmentApi } from "@/services/appointmentsApi";
+import { formatCurrency, formatDateTimeLocale } from "@/utils/format";
 import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { status } from "./AppointmentHistory";
 
-const AppointmentDetail = ({ props }) => {
-  const appointmentData = {
-    serviceName: "Dịch vụ Tầm soát ung thư phổi",
-    doctor: "Ths.Bs Trần Thị Hồng Lê",
-    specialty: "Phổi - Hô hấp",
-    clinic: "Phòng khám 234",
-    hospital: "Bệnh viện 175, Gò Vấp, Hồ Chí Minh",
-    date: "13:00 02/07/2024",
-    type: "Tái khám",
-    status: "Đã khám",
-    payment: "Chuyển khoản ngân hàng",
-    result: "Ung thư giai đoạn giữa",
-  };
+const AppointmentDetail = () => {
+  const { id } = useParams();
 
-  const { data: appointments, isLoading } = useQuery({
-    queryKey: ["allAppointments"],
-    queryFn: appointmentApi.getAllAppointments
+  const { data: appointment, isLoading } = useQuery({
+    queryKey: ["appointment", id],
+    queryFn: () => appointmentApi.getAppointmentById(id),
+    enabled: !!id,
   });
+
+  console.log(appointment);
+
+  const product = appointment?.service || appointment?.medicalPackage;
 
   if (isLoading) {
     return;
@@ -27,7 +24,7 @@ const AppointmentDetail = ({ props }) => {
 
   return (
     <div className="p-3 md:p-6">
-      <h2 className="mb-3 text-xl font-bold">{ appointmentData.serviceName }</h2>
+      <h2 className="mb-3 text-xl font-bold">{ product?.name }</h2>
       <Table className="rounded-md border">
         <TableBody>
           <TableRow>
@@ -35,7 +32,7 @@ const AppointmentDetail = ({ props }) => {
               Nơi khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.doctor }
+              { appointment?.clinic?.name + " - " + appointment?.branch?.name }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -43,15 +40,7 @@ const AppointmentDetail = ({ props }) => {
               Bác sĩ
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.doctor }
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
-              Chuyên khoa
-            </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.specialty }
+              { appointment?.doctor?.fullName }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -59,7 +48,7 @@ const AppointmentDetail = ({ props }) => {
               Ngày giờ khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.date }
+              { formatDateTimeLocale(appointment?.time) }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -67,7 +56,7 @@ const AppointmentDetail = ({ props }) => {
               Loại khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.type }
+              { appointment?.type }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -75,7 +64,15 @@ const AppointmentDetail = ({ props }) => {
               Trạng thái
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.status }
+              { status[appointment?.status] }
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+              Tổng tiền
+            </TableCell>
+            <TableCell className="px-4 whitespace-nowrap">
+              { formatCurrency(appointment?.invoice?.price) }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -83,7 +80,9 @@ const AppointmentDetail = ({ props }) => {
               Phương thức thanh toán
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.payment }
+              { appointment?.payment?.method === "COD"
+                ? "Thanh toán trực tiếp"
+                : appointment?.payment?.method }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -91,7 +90,7 @@ const AppointmentDetail = ({ props }) => {
               Hình ảnh chuẩn đoán
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.result }
+              { }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -99,7 +98,7 @@ const AppointmentDetail = ({ props }) => {
               Kết quả khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointmentData.result }
+              { }
             </TableCell>
           </TableRow>
         </TableBody>

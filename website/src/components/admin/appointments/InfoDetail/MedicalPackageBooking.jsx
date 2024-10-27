@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import InputCustom from "@/components/ui/InputCustom";
 import { Label } from "@/components/ui/Label";
-import DoctorEditor from "../../doctor/editor";
 import SelectMedicineCategories from "../select/SelectMedicineCategories";
 import SelectMedicine from "../select/SelectMedicine";
 import { Button } from "@/components/ui/Button";
@@ -24,8 +23,8 @@ import {
 } from "@/components/ui/AlertDialog";
 import SpinLoader from "@/components/ui/SpinLoader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { prescriptionApi } from "@/services/prescriptionApi";
 import { resultsApi } from "@/services/resultsApi";
+import { Textarea } from "@/components/ui/Textarea";
 
 const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
   const [serviceResults, setServiceResults] = useState([]);
@@ -173,14 +172,17 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       i === index ? { ...medicine, medicineCategoryID: categoryID } : medicine
     );
     setValue("medicines", updatedMedicines, { shouldValidate: true });
+    setValue(`medicines[${index}].medicineID`, "");
     trigger("medicines");
   };
 
   const handleSelectMedicine = (index, medicineID, price) => {
     const currentMedicines = getValues("medicines");
+    console.log("Before update:", currentMedicines);
     const updatedMedicines = currentMedicines.map((medicine, i) =>
       i === index ? { ...medicine, medicineID, price } : medicine
     );
+    console.log("After update:", updatedMedicines);
     setValue("medicines", updatedMedicines, { shouldValidate: true });
     trigger("medicines");
   };
@@ -217,17 +219,13 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
 
   const mutation = useMutation({
     mutationFn: async (data) => {
-      const [prescriptionResponse, resultResponse] = await Promise.all([
-        prescriptionApi.addPrescription(data.prescription),
-        resultsApi.addResult(data.result),
-      ]);
-      return { prescriptionResponse, resultResponse };
+      const response = await resultsApi.addResultAndPrescription(data);
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công kết quả khám!", "success");
-
-      reset();
+      closeForm();
     },
     onError: (error) => {
       toastUI("Đã xảy ra lỗi khi thêm kết quả khám.", "error");
@@ -244,6 +242,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       setOpen(false);
     }
   };
+
   const uploadServiceImages = async (images) => {
     if (images.length === 0) return [];
 
@@ -261,6 +260,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       return [];
     }
   };
+
   const onSubmit = async (data) => {
     setOpen(false);
     const validationError = validateServiceResults();
@@ -287,12 +287,26 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       );
 
       setServiceResults(updatedServiceResults);
+      console.log(data.medicines, "data.medicines");
 
-      const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
+      const totalMedicinePrice = medicines.reduce((total, medicine) => {
+        console.log(total, medicine.price, medicine.quantity);
+
         return total + (medicine.price || 0) * medicine.quantity;
       }, 0);
+      console.log(data.medicines);
+
+      const finalTotalPrice =
+        totalMedicinePrice + (bookingData.level?.price || 0);
 
       const dataAll = {
+        result: updatedServiceResults.map((serviceResult) => ({
+          appointmentID: bookingData._id,
+          serviceID: serviceResult.serviceID,
+          diagnose: serviceResult.result.diagnosis,
+          images: serviceResult.result.images,
+          description: serviceResult.result.detail,
+        })),
         prescription: {
           invoiceID: bookingData.invoice._id,
           advice: data.advice,
@@ -301,23 +315,13 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             quantity: medicine.quantity,
             dosage: medicine.usage,
           })),
-          price: totalMedicinePrice,
-        },
-        result: {
-          appointmentID: bookingData._id,
-          serviceID: bookingData.service ? bookingData.service._id : undefined,
-          medicalPackageID: bookingData.service
-            ? undefined
-            : bookingData.medicalPackage._id,
-          diagnose: data.diagnosis,
-          images: [], // Không cần thiết vì đã set trong serviceResults
-          description: data.detail,
+          price: finalTotalPrice,
         },
       };
 
       console.log(dataAll);
 
-      // mutation.mutate(dataAll);
+      mutation.mutate(dataAll);
     } catch (error) {
       console.error("Error in onSubmit:", error);
     } finally {
@@ -382,7 +386,24 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                     Nhập chi tiết chẩn đoán:{" "}
                     <span className="text-red-500">*</span>
                   </Label>
-                  <DoctorEditor name="detail" control={control} />
+
+                  <Controller
+                    name="detail"
+                    control={control}
+                    render={({ field }) => (
+                      <Textarea
+                        placeholder="Nhập chi tiết chuẩn đoán"
+                        id="detail"
+                        className="min-h-[100px] w-full"
+                        {...field}
+                      />
+                    )}
+                  />
+                  {errors.detail && (
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.detail.message}
+                    </p>
+                  )}
                 </div>
                 <div className="mt-3">
                   <InputCustom
@@ -448,6 +469,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                         control={control}
                         medicineCategoryID={medicine.medicineCategoryID}
                         errors={errors}
+                        min={1}
                         name={`medicines[${index}].quantity`}
                         type="number"
                         placeholder="Số lượng thuốc"

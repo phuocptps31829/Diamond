@@ -35,8 +35,8 @@ const Sidebar = () => {
       <ul>
         <li className="p-2">
           <NavLink
-            to="/user-profile"
-            className={ navLinkClasses("/user-profile") }
+            to="/profile"
+            className={ navLinkClasses("/profile") }
           >
             <FaUser className="mr-2" />
             <span>Thông tin tài khoản</span>
@@ -44,8 +44,8 @@ const Sidebar = () => {
         </li>
         <li className="p-2">
           <NavLink
-            to="/user-profile/medical-records"
-            className={ navLinkClasses("/user-profile/medical-records") }
+            to="/profile/medical-records"
+            className={ navLinkClasses("/profile/medical-records") }
           >
             <FaFileMedical className="mr-2" />
             <span>Hồ sơ bệnh án</span>
@@ -53,8 +53,8 @@ const Sidebar = () => {
         </li>
         <li className="p-2">
           <NavLink
-            to="/user-profile/appointment-history"
-            className={ navLinkClasses("/user-profile/appointment-history") }
+            to="/profile/appointments"
+            className={ navLinkClasses("/profile/appointments") }
           >
             <FaHistory className="mr-2" />
             <span>Lịch sử đặt lịch</span>
@@ -62,8 +62,8 @@ const Sidebar = () => {
         </li>
         <li className="p-2">
           <NavLink
-            to="/user-profile/change-password"
-            className={ navLinkClasses("/user-profile/change-password") }
+            to="/profile/change-password"
+            className={ navLinkClasses("/profile/change-password") }
           >
             <FaLock className="mr-2" />
             <span>Thay đổi mật khẩu</span>

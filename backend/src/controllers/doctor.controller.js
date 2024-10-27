@@ -33,7 +33,7 @@ module.exports = {
             let transformedDoctorsPromises = doctors.map(async doctor => {
                 const specialty = await SpecialtyModel.findById(doctor.otherInfo.specialtyID);
                 const branch = await BranchModel.findById(doctor.otherInfo.branchID);
-
+                console.log(doctor.fullName, specialty, branch);
                 doctor.role = {
                     _id: doctor.roleID._id,
                     name: doctor.roleID.name

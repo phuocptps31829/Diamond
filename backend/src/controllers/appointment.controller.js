@@ -166,6 +166,49 @@ module.exports = {
             }
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
+                const [invoice, results, orderNumber] = await Promise.all([
+                    InvoiceModel
+                        .findOne({ appointmentID: appointment._id, isDeleted: false })
+                        .lean(),
+                    ResultModel
+                        .find({ appointmentID: appointment._id, isDeleted: false })
+                        .populate('serviceID')
+                        .lean(),
+                    OrderNumberModel
+                        .findOne({ appointmentID: appointment._id, isDeleted: false })
+                        .lean(),
+                ]);
+
+                console.log(invoice, results, orderNumber);
+
+                const prescription = invoice
+                    ? await PrescriptionModel
+                        .findOne({ isDeleted: false, invoiceID: invoice._id })
+                        .lean() : null;
+
+                const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
+                    const medicine = await MedicineModel
+                        .findById({ _id: m.medicineID })
+                        .populate("medicineCategoryID")
+                        .lean();
+
+                    delete medicine.createdAt;
+                    delete medicine.updatedAt;
+                    delete medicine.isDeleted;
+                    delete medicine.__v;
+
+                    const formattedMedicine = {
+                        ...medicine,
+                        medicineCategory: {
+                            _id: medicine.medicineCategoryID._id,
+                            name: medicine.medicineCategoryID.name
+                        }
+                    };
+                    delete formattedMedicine.medicineCategoryID;
+
+                    return formattedMedicine;
+                }) : []);
+
                 const result = await ResultModel
                     .findOne({ isDeleted: false, appointmentID: appointment._id })
                     .lean();
@@ -200,6 +243,12 @@ module.exports = {
                         _id: appointment.workScheduleID.clinicID.branchID?._id,
                         name: appointment.workScheduleID.clinicID.branchID.name
                     },
+                    ...(prescription ? {
+                        prescription: {
+                            advice: prescription.advice,
+                            medicines: prescriptionMedicines
+                        }
+                    } : {}),
                     result: {
                         diagnose: result?.diagnose || '',
                         images: result?.images || '',
@@ -239,7 +288,7 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
-                data: formattedAppointments,
+                data: formattedAppointments.slice(skip, skip + limitDocuments),
                 totalRecords: formattedAppointments.length
             });
         } catch (error) {
@@ -477,17 +526,20 @@ module.exports = {
                 );
             }
 
-            const [invoice, result, orderNumber] = await Promise.all([
+            const [invoice, results, orderNumber] = await Promise.all([
                 InvoiceModel
                     .findOne({ appointmentID: appointment._id, isDeleted: false })
                     .lean(),
                 ResultModel
-                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .find({ appointmentID: appointment._id, isDeleted: false })
+                    .populate('serviceID')
                     .lean(),
                 OrderNumberModel
                     .findOne({ appointmentID: appointment._id, isDeleted: false })
                     .lean(),
             ]);
+
+            console.log(results);
 
             const prescription = invoice
                 ? await PrescriptionModel
@@ -561,12 +613,16 @@ module.exports = {
                     number: orderNumber?.number,
                     priority: orderNumber?.priority,
                 },
-                result: {
+                results: results?.map(result => ({
                     _id: result?._id,
+                    service: {
+                        _id: result?.serviceID._id,
+                        name: result?.serviceID.name,
+                    },
                     diagnose: result?.diagnose || '',
                     images: result?.images || '',
                     description: result?.description || '',
-                },
+                })),
                 invoice: {
                     _id: invoice?._id,
                     price: invoice?.price || 0,

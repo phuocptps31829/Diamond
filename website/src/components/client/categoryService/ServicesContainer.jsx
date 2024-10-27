@@ -15,6 +15,7 @@ import {
 import SidebarFilter from "../categoryService/SidebarFilter";
 import NotFound from "@/components/ui/NotFound";
 import Product from "../product/Product";
+import useScrollToTop from "@/hooks/useScrollToTop";
 
 const ServicesContainer = () => {
   const location = useLocation();
@@ -89,11 +90,19 @@ const ServicesContainer = () => {
     setFilters(updatedFilters);
   };
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [filters]);
+
   const { data, error, isLoading } = useQuery({
     queryKey: [type, filters],
     queryFn: async () => {
       if (type === "service") {
-        return await serviceApi.getAllServices({ filters, notHidden: true });
+        return await serviceApi.getAllServices(filters);
       } else if (type === "package") {
         return await medicalPackageApi.getAllMedicalPackages(filters);
       }

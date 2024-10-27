@@ -495,7 +495,7 @@ export default function Form() {
                 <div className="flex mt-1 justify-between items-center">
                   <p className="text-xl font-bold">Thông tin người khám</p>
                   <div>
-                    { profile.otherInfo?.relatedPatients?.length
+                    { profile?.otherInfo?.relatedPatients?.length
                       ? <SelectRelatedPatient
                         control={ control }
                         errors={ errors }

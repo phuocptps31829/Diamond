@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getStatusPaymentStyle, getStatusStyle } from "../utils/StatusStyle";
+import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
 import { MdOutlineConfirmationNumber } from "react-icons/md";
@@ -38,7 +38,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import DoctorEditor from "../../doctor/editor";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -52,6 +51,14 @@ import { resultsApi } from "@/services/resultsApi";
 import { imageApi } from "@/services/imageApi";
 import SpinLoader from "@/components/ui/SpinLoader";
 import MedicalPackageBooking from "./MedicalPackageBooking";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -60,7 +67,12 @@ const BookingInfo = ({ data }) => {
   );
   const queryClient = useQueryClient();
 
-  const { style, text } = getStatusStyle(bookingData.status);
+  const statusOptions = [
+    { value: "PENDING", label: "Chờ xác nhận" },
+    { value: "CONFIRMED", label: "Đã xác nhận" },
+    { value: "EXAMINED", label: "Đã khám" },
+    { value: "CANCELLED", label: "Đã hủy" },
+  ];
 
   const isValidAvatar = (avatar) => {
     const validExtensions = [".jpg", ".jpeg", ".png"];
@@ -170,6 +182,7 @@ const BookingInfo = ({ data }) => {
       i === index ? { ...medicine, medicineCategoryID: categoryID } : medicine
     );
     setValue("medicines", updatedMedicines, { shouldValidate: true });
+    setValue(`medicines[${index}].medicineID`, "");
     trigger("medicines");
   };
   const handleSelectMedicine = (index, medicineID, price) => {
@@ -200,6 +213,22 @@ const BookingInfo = ({ data }) => {
       console.error("Error creating appointment:", error);
     },
   });
+
+  const { mutate: updateStatus } = useMutation({
+    mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
+    onSuccess: () => {
+      toastUI("Chỉnh sửa trạng thái thành công", "success");
+      queryClient.invalidateQueries("appointments");
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Chỉnh sửa trạng thái không thành công", "error");
+    },
+  });
+
+  const handleChangeStatus = (status) => {
+    updateStatus({ id: bookingData._id, status });
+  };
   const handleConfirmSave = async () => {
     const isValid = await trigger();
     if (isValid) {
@@ -378,8 +407,11 @@ const BookingInfo = ({ data }) => {
                       </p>
                       {bookingData.medicalPackage ? (
                         <p className="text-[12px] sm:text-[14px] md:text-[16px]">
-                          Cấp độ: {bookingData.medicalPackage.level.name} - Giá:{" "}
-                          {bookingData.medicalPackage.level.price}
+                          Cấp độ:{" "}
+                          <span className="text-primary-500">
+                            {bookingData.medicalPackage.level.name}
+                          </span>{" "}
+                          - Giá: {bookingData.medicalPackage.level.price}
                         </p>
                       ) : (
                         <p className="text-[12px] sm:text-[14px] md:text-[16px]">
@@ -411,14 +443,7 @@ const BookingInfo = ({ data }) => {
               <strong className="font-medium text-black">Thời gian:</strong>{" "}
               {new Date(bookingData.time).toLocaleString()}
             </p>
-            <div className="flex w-max items-center justify-center gap-2">
-              <strong className="font-medium text-black">Trạng thái :</strong>
-              <div
-                className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${style}`}
-              >
-                <span>{text}</span>
-              </div>
-            </div>
+
             <p className="text-gray-600">
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
               {formatCurrency(
@@ -427,7 +452,7 @@ const BookingInfo = ({ data }) => {
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {formatCurrency(bookingData.invoice.arisePrice)}
+              {formatCurrency(bookingData.invoice.arisePrice || 0)}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">
@@ -435,6 +460,7 @@ const BookingInfo = ({ data }) => {
               </strong>{" "}
               {bookingData.payment.method}
             </p>
+
             <div className="flex w-max items-center justify-center gap-2">
               <strong className="font-medium text-black">
                 Trạng thái thanh toán:
@@ -443,6 +469,28 @@ const BookingInfo = ({ data }) => {
                 className={`relative grid select-none items-center whitespace-nowrap rounded-md px-2 py-1 font-sans text-xs font-bold uppercase ${stylePayment}`}
               >
                 <span>{textPayment}</span>
+              </div>
+            </div>
+            <div className="flex w-max items-center justify-center gap-2">
+              <strong className="font-medium text-black">Trạng thái :</strong>
+              <div className=" ">
+                <Select
+                  disabled={bookingData.prescription}
+                  className="w-full"
+                  value={bookingData.status}
+                  onValueChange={handleChangeStatus}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn trạng thái" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
@@ -548,51 +596,66 @@ const BookingInfo = ({ data }) => {
                     Xem kết quả
                   </Button>
                 </AlertDialogTrigger>
-                <AlertDialogContent className="!max-w-4xl">
+                <AlertDialogContent className="!max-w-6xl">
                   <AlertDialogHeader>
                     <AlertDialogTitle>Kết quả khám bệnh</AlertDialogTitle>
                     <AlertDialogDescription>
-                      <div className="my-4">
-                        <strong>Chẩn đoán:</strong>{" "}
-                        {bookingData.result.diagnose || "Chưa có kết quả"}
-                      </div>
-                      <div className="my-4">
-                        <strong>Mô tả:</strong>{" "}
-                        {bookingData.result.description || "Không có mô tả"}
-                      </div>
-                      <div className="my-4">
-                        <strong>Hình ảnh liên quan:</strong>
-                        <div className="mx-auto my-3 flex flex-wrap gap-4">
-                          {Array.isArray(bookingData.result?.images) &&
-                          bookingData.result.images.length > 0 ? (
-                            bookingData.result.images.map((image, index) => (
-                              <div key={index}>
-                                <img
-                                  src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
-                                  alt={`Kết quả khám bệnh ${index}`}
-                                  className="h-[150px] w-[150px] cursor-pointer rounded-md object-cover"
-                                  onClick={() => handleOpen(image)}
-                                />
+                      <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto">
+                        {bookingData.results.map((result) => (
+                          <div
+                            key={result._id}
+                            className="m-4 mx-1 rounded-md border-2 border-dashed border-primary-200 px-4"
+                          >
+                            <div className="my-4">
+                              <strong>Dịch vụ:</strong>{" "}
+                              <span className="text-primary-500">
+                                {result.service.name || "Không có dịch vụ"}
+                              </span>
+                            </div>
+                            <div className="my-4">
+                              <strong>Chẩn đoán:</strong>{" "}
+                              {result.diagnose || "Chưa có kết quả"}
+                            </div>
+                            <div className="my-4">
+                              <strong>Mô tả:</strong>{" "}
+                              {result.description || "Không có mô tả"}
+                            </div>
+                            <div className="my-4">
+                              <strong>Hình ảnh liên quan:</strong>
+                              <div className="mx-auto my-3 flex flex-wrap gap-4">
+                                {Array.isArray(result.images) &&
+                                result.images.length > 0 ? (
+                                  result.images.map((image, imgIndex) => (
+                                    <div key={imgIndex}>
+                                      <img
+                                        src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
+                                        alt={`Kết quả khám bệnh ${imgIndex}`}
+                                        className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
+                                        onClick={() => handleOpen(image)}
+                                      />
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p>Không có hình ảnh</p>
+                                )}
+                                {selectedImage && (
+                                  <Dialog open={open} onOpenChange={setOpen}>
+                                    <DialogContent className="max-w-[1000px]">
+                                      <DialogHeader>
+                                        <DialogTitle>Hình ảnh lớn</DialogTitle>
+                                      </DialogHeader>
+                                      <img
+                                        src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
+                                        alt="Hình ảnh lớn"
+                                        className="large-thumbnail h-auto w-full"
+                                      />
+                                    </DialogContent>
+                                  </Dialog>
+                                )}
                               </div>
-                            ))
-                          ) : (
-                            <p>Không có hình ảnh</p>
-                          )}
-                          {selectedImage && (
-                            <Dialog open={open} onOpenChange={setOpen}>
-                              <DialogContent className="max-w-[1000px]">
-                                <DialogHeader>
-                                  <DialogTitle>Hình ảnh lớn</DialogTitle>
-                                </DialogHeader>
-                                <img
-                                  src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
-                                  alt="Hình ảnh lớn"
-                                  className="large-thumbnail h-auto w-full"
-                                />
-                              </DialogContent>
-                            </Dialog>
-                          )}
-                        </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
@@ -655,13 +718,27 @@ const BookingInfo = ({ data }) => {
               </div>
             </div>
             <div className="w-full">
-              <label
-                htmlFor="hoten"
-                className="left-[15px] mb-2 block bg-white px-1 text-base"
-              >
+              <Label className="mb-2 block bg-white px-1 text-base">
                 Nhập chi tiết chẩn đoán: <span className="text-red-500">*</span>
-              </label>
-              <DoctorEditor name="detail" control={control} errors={errors} />
+              </Label>
+
+              <Controller
+                name="detail"
+                control={control}
+                render={({ field }) => (
+                  <Textarea
+                    placeholder="Nhập chi tiết chuẩn đoán"
+                    id="detail"
+                    className="min-h-[100px] w-full"
+                    {...field}
+                  />
+                )}
+              />
+              {errors.detail && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.detail.message}
+                </p>
+              )}
             </div>
             <Controller
               name="images"
@@ -728,6 +805,7 @@ const BookingInfo = ({ data }) => {
                           className="col-span-1 sm:col-span-1"
                           name={`medicines[${index}].quantity`}
                           type="number"
+                          min={1}
                           id={`quantity-${index}`}
                           placeholder="Số lượng thuốc"
                           control={control}

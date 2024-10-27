@@ -42,7 +42,7 @@ export default function LoginComponent() {
       Cookies.set('refreshToken', data.refreshToken.token, {
         expires: new Date(data.refreshToken.expires * 1000)
       });
-      navigate('/user-profile');
+      navigate('/profile');
     },
     onError: (error) => {
       console.log(error);
@@ -50,7 +50,7 @@ export default function LoginComponent() {
         error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Đăng nhập thất bại!", "error");
+      toastUI(errorMessage, "error");
     },
   });
 

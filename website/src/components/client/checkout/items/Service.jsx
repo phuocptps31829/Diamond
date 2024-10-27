@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/utils/format";
 import { IoMdRemove } from "react-icons/io";
 
 const Service = ({
@@ -47,6 +48,9 @@ const Service = ({
                     <div className="flex flex-col">
                         <p className="text-[13px] font-bold sm:text-[16px] md:text-[18px]">
                             { svc.name }
+                        </p>
+                        <p className="mt-1">
+                            Giá: <span>{ formatCurrency(svc.price) }</span>
                         </p>
                         { isSelected && (
                             <span

@@ -73,7 +73,7 @@ export default function NewsAbove({ news, isLoading }) {
                 <NewsCard
                   key={ index }
                   newsItem={ newsItem }
-                  className="flex-row items-center"
+                  className="flex-row items-center pl-2"
                 />
               )) }
           </div>
