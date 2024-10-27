@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   Select,
@@ -7,15 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/Pagination";
+import CustomPagination from "@/components/ui/CustomPagination";
 import { useQuery } from "@tanstack/react-query";
 import { getAllSpecialties } from "@/services/specialtiesApi";
 import DoctorItem from "@/components/client/product/Doctor";
@@ -23,6 +15,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { doctorApi } from "@/services/doctorsApi";
 
 export default function ListDoctors() {
+  const containerRef = useRef(null);
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
   const [filteredDoctors, setFilteredDoctors] = useState([]);
@@ -68,7 +61,7 @@ export default function ListDoctors() {
 
   useEffect(() => {
     if (filteredDoctors) {
-      const recordsPerPage = 4;
+      const recordsPerPage = 8;
       const indexOfLastRecord = currentPage * recordsPerPage;
       const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
       const current = filteredDoctors.slice(
@@ -143,10 +136,20 @@ export default function ListDoctors() {
 
   const handlePageChange = (page) => {
     navigate(`/doctors?page=${page}`);
+
+    if (containerRef.current) {
+      window.scrollTo({
+        top: containerRef.current.offsetTop - 100,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-xl p-4 md:p-5">
+    <div
+      ref={containerRef}
+      className="mx-auto w-full max-w-screen-xl p-4 md:p-5"
+    >
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp theo:</h2>
         <div className="flex flex-row items-center justify-center gap-3">
@@ -189,47 +192,11 @@ export default function ListDoctors() {
       </div>
 
       {totalPages > 1 && (
-        <Pagination className="py-5">
-          <PaginationContent className="hover:cursor-pointer">
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() =>
-                  handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-                }
-                className={
-                  currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
-                }
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }).map((_, index) => (
-              <PaginationItem key={index}>
-                <PaginationLink
-                  onClick={() => handlePageChange(index + 1)}
-                  isActive={currentPage === index + 1}
-                >
-                  {index + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  handlePageChange(
-                    currentPage + 1 > totalPages ? totalPages : currentPage + 1
-                  )
-                }
-                className={
-                  currentPage === totalPages
-                    ? "opacity-50 hover:cursor-default"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <CustomPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );
