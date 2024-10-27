@@ -6,15 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/Pagination";
+import CustomPagination from "@/components/ui/CustomPagination";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -45,8 +37,8 @@ const AppointmentHistory = () => {
   const recordsPerPage = 5;
 
   const { data: appointments, isLoading } = useQuery({
-    queryKey: ["allAppointments"],
-    queryFn: appointmentApi.getAppointmentByPatientId
+    queryKey: ["patientAppointments"],
+    queryFn: appointmentApi.getAppointmentByPatient
   });
 
   const totalPages = Math.ceil(appointments?.data?.totalRecords / recordsPerPage);
@@ -125,47 +117,13 @@ const AppointmentHistory = () => {
           )) }
         </TableBody>
       </Table>
-      <Pagination className="py-5">
-        <PaginationContent className="hover:cursor-pointer">
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={ () =>
-                handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-              }
-              className={
-                currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
-              }
-            />
-          </PaginationItem>
-          { Array.from({ length: totalPages }).map((_, index) => (
-            <PaginationItem key={ index }>
-              <PaginationLink
-                onClick={ () => handlePageChange(index + 1) }
-                isActive={ currentPage === index + 1 }
-              >
-                { index + 1 }
-              </PaginationLink>
-            </PaginationItem>
-          )) }
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext
-              onClick={ () =>
-                handlePageChange(
-                  currentPage + 1 > totalPages ? totalPages : currentPage + 1,
-                )
-              }
-              className={
-                currentPage === totalPages
-                  ? "opacity-50 hover:cursor-default"
-                  : ""
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      { totalPages > 1 && (
+        <CustomPagination
+          currentPage={ currentPage }
+          totalPages={ totalPages }
+          onPageChange={ handlePageChange }
+        />
+      ) }
     </div>
   );
 };

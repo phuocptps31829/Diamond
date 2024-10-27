@@ -154,7 +154,6 @@ const UserInfoForm = () => {
     }
   }, [imagePreview]);
 
-  // if (error) return <p>Error fetching profile data.</p>;
   return (
     <div className="w-full p-6">
       { isLoading && <Loading /> }

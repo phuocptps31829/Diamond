@@ -105,6 +105,16 @@ const AppointmentDetail = () => {
               </p>
             </TableCell>
           </TableRow>
+          <TableRow>
+            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+              Chi tiết bệnh án
+            </TableCell>
+            <TableCell className="px-4 whitespace-nowrap">
+              <p className="text-blue-500 underline cursor-pointer">
+                Xem chi tiết
+              </p>
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </div>

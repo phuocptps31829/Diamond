@@ -160,6 +160,10 @@ const router = createBrowserRouter([
         children: [
           {
             path: "",
+            element: <Navigate to="information" />,
+          },
+          {
+            path: "information",
             element: <UserInfoForm />,
           },
           {

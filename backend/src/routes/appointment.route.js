@@ -118,18 +118,12 @@ router.get(
 
 /**
  * @openapi
- * '/api/v1/appointments/get-by-patient-id':
+ * '/api/v1/appointments/get-by-patient':
  *  get:
  *    tags:
  *    - Appointment Routes
- *    summary: Get all Appointments by patient id
+ *    summary: Get all Appointments by patient
  *    parameters:
- *      - in: path
- *        name: id
- *        required: true
- *        description: Patient id
- *        schema:
- *          type: string
  *      - in: query
  *        name: page
  *        schema:
@@ -159,11 +153,55 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/get-by-patient-id',
+    '/get-by-patient',
     authMiddleware.verifyAccessToken,
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsOfPatient
+);
+
+/**
+ * @openapi
+ * '/api/v1/appointments/get-by-doctor':
+ *  get:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Get all Appointments by doctor 
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: startDay
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: endDay
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-doctor',
+    authMiddleware.verifyAccessToken,
+    helperMiddleware.checkValueQuery,
+    helperMiddleware.checkQueryParams,
+    appointmentController.getAllAppointmentsOfDoctor
 );
 
 /**

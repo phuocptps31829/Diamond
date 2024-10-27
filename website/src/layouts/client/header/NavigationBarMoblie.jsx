@@ -84,7 +84,7 @@ export default function NavigationBarMobile() {
                 <div className="flex w-full items-center justify-center space-x-3">
                   <Link
                     onClick={ () => setIsNavbarVisible(false) }
-                    to="/profile"
+                    to="/profile/information"
                     className="w-full rounded bg-blue-500 px-4 py-2 text-center text-white"
                   >
                     Thông tin
