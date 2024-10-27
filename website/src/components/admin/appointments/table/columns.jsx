@@ -18,6 +18,7 @@ import Action from "./action";
 const statusOptions = [
   { value: "PENDING", label: "Chờ xác nhận" },
   { value: "CONFIRMED", label: "Đã xác nhận" },
+  { value: "WAITING", label: "Chờ khám" }, 
   { value: "EXAMINED", label: "Đã khám" },
   { value: "CANCELLED", label: "Đã hủy" },
 ];
@@ -203,7 +204,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       return (
         <div className="w-full">
           <Select
-            disabled={row.original.prescription}
+            // disabled={row.original.prescription}
             value={row.original.status}
             onValueChange={(value) => {
               onChangeStatus(row.original._id, value);

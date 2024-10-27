@@ -23,7 +23,7 @@ export const AppointmentAdminSchema = z
     {
       message: "Dịch vụ không được để trống!",
       path: ["service"],
-    },
+    }
   )
   .refine(
     (data) => {
@@ -38,11 +38,14 @@ export const AppointmentAdminSchema = z
     {
       message: "Gói khám không được để trống!",
       path: ["medicalPackage"],
-    },
+    }
   )
   .refine(
     (data) => {
-      if (!data.isServiceSelected && (!data.level || data.level.trim().length === 0)) {
+      if (
+        !data.isServiceSelected &&
+        (!data.level || data.level.trim().length === 0)
+      ) {
         return false;
       }
       return true;
@@ -50,5 +53,5 @@ export const AppointmentAdminSchema = z
     {
       message: "Cấp độ không được để trống!",
       path: ["level"],
-    },
+    }
   );
