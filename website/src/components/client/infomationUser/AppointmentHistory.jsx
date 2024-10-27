@@ -46,7 +46,7 @@ const AppointmentHistory = () => {
 
   const { data: appointments, isLoading } = useQuery({
     queryKey: ["allAppointments"],
-    queryFn: appointmentApi.getAllAppointments
+    queryFn: appointmentApi.getAppointmentByPatientId
   });
 
   const totalPages = Math.ceil(appointments?.data?.totalRecords / recordsPerPage);

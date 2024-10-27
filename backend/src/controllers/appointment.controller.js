@@ -295,6 +295,182 @@ module.exports = {
             next(error);
         }
     },
+    getAllAppointmentsOfPatient: async (req, res, next) => {
+        try {
+            const { id } = req.user;
+            const {
+                limitDocuments,
+                page,
+                skip,
+                sortOptions
+            } = req.customQueries;
+
+            let { startDay, endDay } = req.checkValueQuery;
+
+            const appointments = await AppointmentModel
+                .find({
+                    isDeleted: false,
+                    patientID: id
+                })
+                .populate('patientID')
+                .populate('serviceID')
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'doctorID'
+                    }
+                })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID'
+                    }
+                })
+                .populate({
+                    path: 'workScheduleID',
+                    populate: {
+                        path: 'clinicID',
+                        populate: {
+                            path: 'branchID'
+                        }
+                    }
+                })
+                .lean();
+
+            if (!appointments.length) {
+                createError(404, 'No Appointments found.');
+            }
+
+            const formattedAppointmentsPromises = appointments.map(async appointment => {
+                const [invoice, results, orderNumber] = await Promise.all([
+                    InvoiceModel
+                        .findOne({ appointmentID: appointment._id, isDeleted: false })
+                        .lean(),
+                    ResultModel
+                        .find({ appointmentID: appointment._id, isDeleted: false })
+                        .populate('serviceID')
+                        .lean(),
+                    OrderNumberModel
+                        .findOne({ appointmentID: appointment._id, isDeleted: false })
+                        .lean(),
+                ]);
+
+                console.log(invoice, results, orderNumber);
+
+                const prescription = invoice
+                    ? await PrescriptionModel
+                        .findOne({ isDeleted: false, invoiceID: invoice._id })
+                        .lean() : null;
+
+                const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
+                    const medicine = await MedicineModel
+                        .findById({ _id: m.medicineID })
+                        .populate("medicineCategoryID")
+                        .lean();
+
+                    delete medicine.createdAt;
+                    delete medicine.updatedAt;
+                    delete medicine.isDeleted;
+                    delete medicine.__v;
+
+                    const formattedMedicine = {
+                        ...medicine,
+                        medicineCategory: {
+                            _id: medicine.medicineCategoryID._id,
+                            name: medicine.medicineCategoryID.name
+                        }
+                    };
+                    delete formattedMedicine.medicineCategoryID;
+
+                    return formattedMedicine;
+                }) : []);
+
+                const result = await ResultModel
+                    .findOne({ isDeleted: false, appointmentID: appointment._id })
+                    .lean();
+
+                let medicalPackage = null;
+                let level = null;
+                if (appointment?.medicalPackageID) {
+                    medicalPackage = await MedicalPackageModel
+                        .findOne({
+                            isDeleted: false,
+                            'services._id': appointment.medicalPackageID
+                        });
+                    level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
+                }
+
+                const formattedAppointment = {
+                    ...appointment,
+                    patient: {
+                        _id: appointment.patientID?._id,
+                        fullName: appointment.patientID.fullName,
+                        avatar: appointment.patientID.avatar,
+                    },
+                    doctor: {
+                        _id: appointment.workScheduleID.doctorID?._id,
+                        fullName: appointment.workScheduleID.doctorID.fullName
+                    },
+                    clinic: {
+                        _id: appointment.workScheduleID.clinicID?._id,
+                        name: appointment.workScheduleID.clinicID.name
+                    },
+                    branch: {
+                        _id: appointment.workScheduleID.clinicID.branchID?._id,
+                        name: appointment.workScheduleID.clinicID.branchID.name
+                    },
+                    ...(prescription ? {
+                        prescription: {
+                            advice: prescription.advice,
+                            medicines: prescriptionMedicines
+                        }
+                    } : {}),
+                    result: {
+                        diagnose: result?.diagnose || '',
+                        images: result?.images || '',
+                        description: result?.description || '',
+                    },
+                    ...(appointment.serviceID ? {
+                        service: {
+                            _id: appointment.serviceID._id,
+                            name: appointment.serviceID.name,
+                            image: appointment.serviceID.image,
+                            price: appointment.serviceID.price
+                        }
+                    } : {}),
+                    ...(medicalPackage ? {
+                        medicalPackage: {
+                            _id: medicalPackage?._id,
+                            name: medicalPackage.name,
+                            image: medicalPackage.image,
+                            level: {
+                                _id: level?._id,
+                                name: level.levelName,
+                                price: level.price
+                            },
+                        }
+                    } : {})
+                };
+                delete formattedAppointment.serviceID;
+                delete formattedAppointment.medicalPackageID;
+                delete formattedAppointment.patientID;
+                delete formattedAppointment.workScheduleID;
+                console.log(formattedAppointment);
+                return formattedAppointment;
+            });
+
+            const formattedAppointments = await Promise.all(formattedAppointmentsPromises);
+
+            return res.status(200).json({
+                page: page || 1,
+                message: 'Appointments retrieved successfully.',
+                data: formattedAppointments.slice(skip, skip + limitDocuments),
+                totalRecords: formattedAppointments.length
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
     getAllAppointmentsForGenderYears: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel

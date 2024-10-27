@@ -90,7 +90,9 @@ const AppointmentDetail = () => {
               Hình ảnh chuẩn đoán
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { }
+              <p className="text-blue-500 underline cursor-pointer">
+                Xem hình ảnh
+              </p>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -98,7 +100,9 @@ const AppointmentDetail = () => {
               Kết quả khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { }
+              <p className="text-blue-500 underline cursor-pointer">
+                Xem kết quả
+              </p>
             </TableCell>
           </TableRow>
         </TableBody>

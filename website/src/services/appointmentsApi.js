@@ -40,6 +40,15 @@ export const appointmentApi = {
       throw error;
     }
   },
+  getAppointmentByPatientId: async () => {
+    try {
+      const res = await axiosInstanceGET.get(`/appointments/get-by-patient-id`);
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
   getAppointmentById: async (id) => {
     try {
       const res = await axiosInstanceGET.get(`/appointments/${id}`);
