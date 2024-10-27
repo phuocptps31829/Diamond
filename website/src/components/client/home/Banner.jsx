@@ -5,7 +5,7 @@ export default function Banner() {
   return (
     <div className="relative h-[55vw] w-full text-primary-500 md:h-[20vw]">
       <div className="absolute bottom-0 h-10 w-full bg-gradient-to-t from-[#e8f2f7f7] to-transparent"></div>
-      <img src={ banner } alt="Banner" className="h-full w-full object-cover" />
+      <img src={banner} alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
         <div className="mb-2 font-medium text-primary-500 sm:mb-0 md:text-[20px]">
           Nền tảng công nghệ
@@ -14,7 +14,7 @@ export default function Banner() {
           <p className="whitespace-nowrap font-bold">Kết nối người dân với </p>
           <p className="whitespace-nowrap font-bold"> Cơ sở - Dịch vụ Y tế</p>
         </div>
-        <div className="mt-3 flex w-[65%] max-w-[635px] items-center gap-2 rounded-full bg-white p-2 px-5 sm:mt-6 sm:gap-0 md:w-[55%]">
+        <div className="mt-3 flex w-[65%] max-w-[635px] items-center gap-2 rounded-full bg-white p-2 px-5 shadow-[0_1px_3px_rgba(0,123,187,0.3)] sm:mt-6 sm:gap-0 md:w-[55%]">
           <CiSearch className="text-2xl" />
           <input
             type="text"

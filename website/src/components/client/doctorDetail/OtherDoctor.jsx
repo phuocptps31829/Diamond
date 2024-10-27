@@ -23,6 +23,8 @@ export default function OtherDoctor({ doctor = {}, doctors = [], isLoading }) {
     return doctors;
   }, [doctor, doctors]);
 
+  const shouldShowNavigation = doctorsBySpecialty.length > 2;
+
   if (doctorsBySpecialty.length === 0) return null;
 
   return (
@@ -76,8 +78,8 @@ export default function OtherDoctor({ doctor = {}, doctors = [], isLoading }) {
                 </CarouselItem>
               ))}
         </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
+        {shouldShowNavigation && <CarouselPrevious />}
+        {shouldShowNavigation && <CarouselNext />}
       </Carousel>
     </div>
   );
@@ -87,6 +89,4 @@ OtherDoctor.propTypes = {
   doctor: PropTypes.object,
   doctors: PropTypes.array,
   isLoading: PropTypes.bool,
-  specialties: PropTypes.array,
-  isLoadingSpecialties: PropTypes.bool,
 };
