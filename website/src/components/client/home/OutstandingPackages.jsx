@@ -31,7 +31,7 @@ export default function OutstandingPackages() {
   }, [loadingMedicalPackages, medicalPackages]);
 
   return (
-    <div className="mx-auto my-5 max-w-screen-xl md:my-10">
+    <div className="mx-auto my-5 max-w-screen-xl">
       <div className="w-full text-center text-[23px] font-bold md:text-[35px]">
         Gói khám nổi bật
       </div>

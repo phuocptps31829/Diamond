@@ -5,24 +5,8 @@ export const newsApi = {
   takeItAllNews: async () => {
     try {
       const res = await axiosInstanceGET.get("/news?limit=9999");
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
-  getAllNews: async ({ page, limit }) => {
-    try {
-      const res = await axiosInstanceGET.get("/news", {
-        params: {
-          page,
-          limit,
-          notHidden: true,
-        },
-      });
       console.log("res.data.data: ", res.data.data);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       throw error;
@@ -43,7 +27,6 @@ export const newsApi = {
   getNewsBySlug: async (slug) => {
     try {
       const res = await axiosInstanceGET.get("/news/slug/" + slug);
-      console.log("res.data.data: ", res.data.data);
       return res.data.data;
     } catch (error) {
       console.error(error);

@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import NewsBanner from "../../components/client/news/NewsBanner";
-import NewsAbove from "../../components/client/news/NewsAbove";
-import NewsBelow from "../../components/client/news/NewsBelow";
+import NewsBanner from "@/components/client/news/NewsBanner";
+import NewsAbove from "@/components/client/news/NewsAbove";
+import NewsBelow from "@/components/client/news/NewsBelow";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { newsApi } from "@/services/newsApi";
 import NotFound from "@/components/client/notFound";
 export default function News() {
   useScrollToTop();
-
   const { data, error, isLoading } = useQuery({
     queryKey: ["news"],
-    queryFn: newsApi.getAllNews,
+    queryFn: newsApi.takeItAllNews,
   });
 
   if (error) {
@@ -20,8 +19,8 @@ export default function News() {
   return (
     <div className="bg-[#E8F2F7]">
       <NewsBanner />
-      <NewsAbove news={data?.data} isLoading={isLoading} />
-      <NewsBelow news={data?.data} isLoading={isLoading} />
+      <NewsAbove news={data} isLoading={isLoading} />
+      <NewsBelow news={data} isLoading={isLoading} />
     </div>
   );
 }
