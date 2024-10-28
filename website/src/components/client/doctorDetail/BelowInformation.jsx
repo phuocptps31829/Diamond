@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { LiaCertificateSolid } from "react-icons/lia";
+import { IoMdImages } from "react-icons/io";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 
-export default function BelowInformation() {
+const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
+
+export default function BelowInformation({ doctor, isLoading }) {
+  console.log("doctor", doctor);
   const [activeTab, setActiveTab] = useState("certification");
+  const [selectedZoomImage, setSelectedZoomImage] = useState(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const handleZoomImage = (image) => {
+    setSelectedZoomImage(image);
+    setIsZoomed(true);
+  };
 
   return (
     <div className="mx-auto my-10 max-w-screen-xl px-5">
@@ -16,13 +29,13 @@ export default function BelowInformation() {
             value="certification"
             className={`w-full p-3 ${activeTab === "certification" ? "shadcn-tabs-active" : ""}`}
           >
-            Chứng nhận
+            Giới thiệu
           </TabsTrigger>
           <TabsTrigger
             value="experience"
             className={`w-full p-3 ${activeTab === "experience" ? "shadcn-tabs-active" : ""}`}
           >
-            Kinh nghiệm
+            Chứng chỉ
           </TabsTrigger>
         </TabsList>
 
@@ -31,40 +44,16 @@ export default function BelowInformation() {
           className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
         >
           <div className="space-y-5">
-            <div className="flex flex-col">
-              <strong className="mb-2">Trường y:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Bác sĩ y khoa, Đại học Y Dược, Thành phố Hồ Chí Minh, Việt
-                  Nam, 2002
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <strong className="mb-2">Bằng cấp chuyên môn:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Thạc sĩ y khoa, Đại học Y Dược, Thành phố Hồ Chí Minh, Việt
-                  Nam, 2009
-                </li>
-                <li className="list-disc">
-                  Bác sĩ chuyên khoa II, Gây mê hồi sức, Đại học Y Dược, Hà Nội,
-                  Việt Nam, 2020
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <strong className="mb-2">Đào tạo nâng cao:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Hồi sức Cấp cứu, Đại học Nantes, Pháp, 2006
-                </li>
-                <li className="list-disc">
-                  Liệu pháp thay thế thận liên tục (CRRT), Bệnh viện 115, Thành
-                  phố Hồ Chí Minh, Việt Nam, 2012
-                </li>
-              </ul>
-            </div>
+            {isLoading ? (
+              <p>Đang tải...</p>
+            ) : (
+              <div
+                className="content-news w-full"
+                dangerouslySetInnerHTML={{
+                  __html: doctor.otherInfo?.detail || "",
+                }}
+              ></div>
+            )}
           </div>
         </TabsContent>
         <TabsContent
@@ -72,23 +61,63 @@ export default function BelowInformation() {
           className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
         >
           <div className="space-y-5">
-            <div className="flex flex-col">
-              <strong className="mb-2">Kinh nghiệm:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Kinh nghiệm hơn 5 năm làm bác sĩ khoa ngoại, 3 năm làm bác sĩ
-                  nội thần kinh
-                </li>
-                <li className="list-disc">
-                  Bác sĩ chuyên khoa II, Gây mê hồi sức, Đại học Y Dược, Hà Nội,
-                  Việt Nam, 2020
-                </li>
-              </ul>
+            <div className="flex gap-2">
+              <strong className="flex items-center gap-2">
+                <LiaCertificateSolid size={22} /> Mã chứng chỉ :
+              </strong>
+              {isLoading ? (
+                <p>Đang tải...</p>
+              ) : (
+                doctor.otherInfo?.verification?.practicingCertificate ||
+                "Lỗi dữ liệu"
+              )}
             </div>
+            <div className="flex items-center gap-2">
+              <strong className="flex items-center gap-2">
+                <IoMdImages size={22} /> Hình ảnh chứng chỉ:
+              </strong>
+            </div>
+            {isLoading ? (
+              <p>Đang tải...</p>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                {doctor.otherInfo?.verification?.images?.length > 0 ? (
+                  doctor.otherInfo?.verification?.images?.map(
+                    (image, index) => (
+                      <img
+                        key={index}
+                        src={`${URL_IMAGE}/${image}`}
+                        alt="certificate"
+                        className="h-full w-full object-cover cursor-pointer"
+                        onClick={() => handleZoomImage(image)}
+                      />
+                    )
+                  )
+                ) : (
+                  <span className="text-[14px] opacity-50 ml-7">
+                    Không có hình ảnh nào.
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>
+
+      {isZoomed && (
+        <Dialog open={isZoomed} onOpenChange={() => setIsZoomed(false)}>
+          <DialogContent className="max-w-[50vw]">
+            <DialogHeader>
+              <DialogTitle>Ảnh chứng chỉ</DialogTitle>
+            </DialogHeader>
+            <img
+              src={`${URL_IMAGE}/${selectedZoomImage}`}
+              alt="Zoomed certificate"
+              className="h-full w-full object-cover"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
-

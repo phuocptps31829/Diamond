@@ -42,19 +42,26 @@ export default function AboveInformation({ doctor, isLoading }) {
   return (
     <>
       <div className="mx-auto max-w-screen-xl">
-        <div className="flex flex-col items-center justify-center  space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
-          <div className="block rounded-lg overflow-hidden w-full max-h-[400px] max-w-[400px]">
-            <img src={`${import.meta.env.VITE_IMAGE_API_URL}/${avatar}`}
-              className="w-full h-full object-cover object-center"
+        <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
+          <div className="block max-h-[300px] w-full overflow-hidden rounded-lg sm:max-h-[400px] md:max-w-[400px]">
+            <img
+              src={`${import.meta.env.VITE_IMAGE_API_URL}/${avatar}`}
+              className="h-full w-full object-cover object-center"
             />
           </div>
-          <div className="flex flex-col space-y-4">
+          <div className="flex w-full flex-col space-y-4 md:w-auto">
             <div className="text-3xl font-semibold uppercase">{fullName}</div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
                 Chi nhánh:
               </strong>
               {doctor.otherInfo?.branch?.name}
+            </div>
+            <div className="flex text-sm">
+              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+                Chuyên khoa:
+              </strong>
+              {doctor.otherInfo?.specialty?.name}
             </div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
@@ -68,7 +75,7 @@ export default function AboveInformation({ doctor, isLoading }) {
               </strong>
               {new Date().getFullYear() -
                 new Date(doctor.otherInfo.yearsExperience).getFullYear()}{" "}
-              năm kinh nghiệm
+              năm
             </div>
             <div className="flex text-sm">
               <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
@@ -82,7 +89,7 @@ export default function AboveInformation({ doctor, isLoading }) {
             <div className="flex flex-col space-y-3 rounded-md bg-white p-5 lg:min-w-[550px]">
               <div className="flex text-[14px] md:text-[15px]">
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
-                  Đặt lịch:
+                  Liên hệ:
                 </strong>
                 {phoneNumber}
               </div>

@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { FaRegCalendarAlt } from "react-icons/fa";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
-const NewsCard = ({ newsItem, className, firstNews, colorWhite }) => (
+const NewsCard = ({ newsItem, className, firstNews }) => (
   <Link
     to={`/new/${newsItem.slug}`}
-    className={`flex h-full overflow-hidden rounded-md backdrop-blur-lg ${className} ${colorWhite ? "bg-[#0000003f] text-white" : "bg-[#ffffff56] text-black"}`}
+    className={`flex h-full overflow-hidden rounded-md backdrop-blur-lg ${className} text-black" bg-white`}
   >
     {firstNews ? (
       <>
@@ -56,8 +56,8 @@ const NewsCard = ({ newsItem, className, firstNews, colorWhite }) => (
             />
           </span>
         </div>
-        <div className="w-full p-3 pt-2">
-          <h2 className="mb-2 line-clamp-2 text-[14px] font-bold">
+        <div className="ml-2 h-full w-full">
+          <h2 className="mb-2 line-clamp-2 text-[14px] font-bold mt-2">
             {newsItem.title}
           </h2>
           <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280]">
@@ -78,7 +78,7 @@ const NewsCard = ({ newsItem, className, firstNews, colorWhite }) => (
               })}
             </div>
           </div>
-          <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+          <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50 mb-1">
             <FaRegEye />
             <div>{newsItem.viewCount}</div>
           </div>
