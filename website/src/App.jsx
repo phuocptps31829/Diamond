@@ -88,8 +88,13 @@ import ServicesListPage from "./pages/admin/Services/indexServicePage";
 import DoctorsFormAddPage from "./pages/admin/Doctor/formAdd";
 import DoctorsFormFixPage from "./pages/admin/Doctor/formFix";
 import ScheduleFormPage from "./pages/admin/Schedules/ScheduleForm";
+import ChatPage from "./pages/client/Chat";
 
 const router = createBrowserRouter([
+  {
+    path: "support",
+    element: <ChatPage />,
+  },
   {
     path: "/",
     element: <AppLayout />,
@@ -480,8 +485,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }

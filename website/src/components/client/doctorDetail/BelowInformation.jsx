@@ -4,6 +4,7 @@ import { LiaCertificateSolid } from "react-icons/lia";
 import { IoMdImages } from "react-icons/io";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 
+
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export default function BelowInformation({ doctor, isLoading }) {
@@ -35,7 +36,7 @@ export default function BelowInformation({ doctor, isLoading }) {
             value="experience"
             className={`w-full p-3 ${activeTab === "experience" ? "shadcn-tabs-active" : ""}`}
           >
-            Chứng chỉ
+            Lịch làm việc
           </TabsTrigger>
         </TabsList>
 

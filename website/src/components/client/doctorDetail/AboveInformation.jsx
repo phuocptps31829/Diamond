@@ -1,13 +1,18 @@
 import { Link } from "react-router-dom";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { LuGitBranchPlus } from "react-icons/lu";
+import { FaRegHospital } from "react-icons/fa";
+import { FaUserDoctor } from "react-icons/fa6";
+import { ImProfile } from "react-icons/im";
+import { FaTransgender } from "react-icons/fa6";
 
 export default function AboveInformation({ doctor, isLoading }) {
   if (isLoading)
     return (
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-10 md:px-10">
-          <Skeleton className="block h-[400px] w-[400px] overflow-hidden rounded-full" />
+          <Skeleton className="block h-[400px] w-[400px] overflow-hidden rounded-lg" />
           <div className="flex flex-col space-y-4">
             <div className="flex gap-4">
               <Skeleton className="h-4 w-[80px]" />
@@ -52,25 +57,29 @@ export default function AboveInformation({ doctor, isLoading }) {
           <div className="flex w-full flex-col space-y-4 md:w-auto">
             <div className="text-3xl font-semibold uppercase">{fullName}</div>
             <div className="flex text-sm">
-              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+              <FaRegHospital size={17} className="mr-2" />
+              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Chi nhánh:
               </strong>
               {doctor.otherInfo?.branch?.name}
             </div>
             <div className="flex text-sm">
-              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+              <LuGitBranchPlus size={17} className="mr-2" />
+              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Chuyên khoa:
               </strong>
               {doctor.otherInfo?.specialty?.name}
             </div>
             <div className="flex text-sm">
-              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+              <FaUserDoctor size={17} className="mr-2" />
+              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Chức vụ:
               </strong>
               Trưởng khoa Tai Mũi Họng
             </div>
             <div className="flex text-sm">
-              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+              <ImProfile size={17} className="mr-2" />
+              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Kinh nghiệm:
               </strong>
               {new Date().getFullYear() -
@@ -78,7 +87,8 @@ export default function AboveInformation({ doctor, isLoading }) {
               năm
             </div>
             <div className="flex text-sm">
-              <strong className="block w-[110px] whitespace-nowrap pr-2 md:pr-0">
+              <FaTransgender size={17} className="mr-2" />
+              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Giới tính:
               </strong>
               {gender}

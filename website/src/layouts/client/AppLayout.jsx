@@ -2,7 +2,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Header from "./header";
 import Footer from "./Footer";
 import { Toaster } from "@/components/ui/Toaster";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { authApi } from "@/services/authApi";
 import { setAccessToken, setUserProfile } from "@/redux/authSlice";
@@ -22,7 +22,7 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (profileFetched?.data && profileFetched.data.role.name !== "PATIENT") {
-      navigate('/admin');
+      navigate("/admin");
     }
     dispatch(setUserProfile(profileFetched?.data));
   }, [profileFetched, navigate, dispatch]);
@@ -33,7 +33,6 @@ export default function AppLayout() {
     if (accessToken) {
       dispatch(setAccessToken(accessToken));
     }
-
   }, [dispatch]);
 
   return (
