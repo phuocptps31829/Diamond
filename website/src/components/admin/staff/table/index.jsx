@@ -24,7 +24,7 @@ import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function DataTable({data,columns}) {
+export default function DataTable({ data, columns }) {
   const {
     handleSubmit,
     formState: { errors },
@@ -138,7 +138,7 @@ export default function DataTable({data,columns}) {
                   colSpan={ columns.length }
                   className="h-24 text-center "
                 >
-                  No results.
+                  Không có kết quả.
                 </TableCell>
               </TableRow>
             ) }

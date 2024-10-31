@@ -172,8 +172,6 @@ module.exports = {
                         .lean(),
                 ]);
 
-                console.log(invoice, results, orderNumber);
-
                 const prescription = invoice
                     ? await PrescriptionModel
                         .findOne({ isDeleted: false, invoiceID: invoice._id })
@@ -272,7 +270,6 @@ module.exports = {
                 delete formattedAppointment.medicalPackageID;
                 delete formattedAppointment.patientID;
                 delete formattedAppointment.workScheduleID;
-                console.log(formattedAppointment);
                 return formattedAppointment;
             });
 
@@ -303,7 +300,6 @@ module.exports = {
             const appointments = await AppointmentModel
                 .find({
                     isDeleted: false,
-                    patientID: id
                 })
                 .populate('patientID')
                 .populate('serviceID')

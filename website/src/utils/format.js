@@ -1,4 +1,6 @@
 export const formatDateTimeLocale = (time) => {
+    if (!time) return '';
+
     return new Intl.DateTimeFormat('vi-VN', {
         year: 'numeric',
         month: '2-digit',

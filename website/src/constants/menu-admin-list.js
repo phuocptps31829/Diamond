@@ -131,7 +131,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -221,6 +221,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/appointments/create",
             label: "Thêm lịch đặt",
+            exceptRoles: ["DOCTOR"],
             active: pathname === "/admin/appointments/create",
           },
         ],
@@ -245,6 +246,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/schedules/details",
             label: "Thêm lịch làm việc",
+            exceptRoles: ["DOCTOR"],
             active: pathname === "/admin/schedules/details",
           },
         ],

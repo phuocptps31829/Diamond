@@ -3,6 +3,7 @@ import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import Loading from "@/components/ui/Loading";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 
 const breadcrumbData = [
     {
@@ -15,12 +16,30 @@ const breadcrumbData = [
 ];
 
 const ScheduleTablePage = () => {
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ['workSchedules'],
-        queryFn: workScheduleApi.getAllWorkSchedules
-    });
+    const userProfile = useSelector((state) => state.auth.userProfile);
 
-    console.log(data);
+    const roleID = userProfile?.role?._id;
+
+    let options = {};
+    switch (roleID) {
+        case import.meta.env.VITE_ROLE_DOCTOR:
+            options = {
+                queryKey: ['workSchedules', userProfile?._id],
+                queryFn: () => workScheduleApi.getWorkSchedulesByDoctorID(userProfile?._id),
+                enabled: !!userProfile
+            };
+            break;
+        case import.meta.env.VITE_ROLE_SUPER_ADMIN:
+            options = {
+                queryKey: ['workSchedules'],
+                queryFn: workScheduleApi.getAllWorkSchedules
+            };
+            break;
+        default:
+            options = {};
+    }
+
+    const { data, isLoading, isError } = useQuery(options);
 
     if (isLoading) {
         return <Loading />;
@@ -29,7 +48,7 @@ const ScheduleTablePage = () => {
     return (
         <>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <DataTableSchedule workSchedules={ data.data } />
+            <DataTableSchedule workSchedules={ data?.data } />
         </>
     );
 };

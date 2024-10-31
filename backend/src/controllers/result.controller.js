@@ -15,7 +15,7 @@ module.exports = {
                 .sort(sortOptions);
 
             if (!results.length) {
-                createError(404, "No results found.");
+                createError(404, "Không có kết quả.s found.");
             }
 
             return res.status(200).json({

@@ -4,6 +4,7 @@ import { formatCurrency, formatDateTimeLocale } from "@/utils/format";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { status } from "./AppointmentHistory";
+import ResultDialog from "./dialogs/ResultDialog";
 
 const AppointmentDetail = () => {
   const { id } = useParams();
@@ -87,22 +88,15 @@ const AppointmentDetail = () => {
           </TableRow>
           <TableRow>
             <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
-              Hình ảnh chuẩn đoán
-            </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              <p className="text-blue-500 underline cursor-pointer">
-                Xem hình ảnh
-              </p>
-            </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               Kết quả khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              <p className="text-blue-500 underline cursor-pointer">
-                Xem kết quả
-              </p>
+              <ResultDialog
+                trigger={
+                  <p className="text-blue-500 underline cursor-pointer">Xem kết quả</p>
+                }
+                appointment={ appointment }
+              />
             </TableCell>
           </TableRow>
           <TableRow>

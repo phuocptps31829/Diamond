@@ -8,7 +8,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 const ScheduleFormPage = () => {
     const { doctorID, scheduleID } = useParams();
     const [searchParams] = useSearchParams();
-    console.log('searchParams', searchParams.get('startTime'));
     const [infoForm, setInfoForm] = useState({
         isOpen: true,
         date: '',
@@ -48,11 +47,11 @@ const ScheduleFormPage = () => {
                 infoForm={ infoForm }
                 setInfoForm={ setInfoForm }
                 scheduleID={ scheduleID }
-                schedules={ data?.data }
+                schedules={ data?.data[0] }
             /> : <CreateSchedule
                 infoForm={ infoForm }
                 setInfoForm={ setInfoForm }
-                schedules={ data?.data }
+                schedules={ data?.data[0] }
             />
     );
 };

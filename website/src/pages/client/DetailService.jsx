@@ -80,18 +80,18 @@ const DetailService = () => {
         service={ service }
         isLoading={ isLoading }
       />
+        { !service && (
+          <MedicalPackageService
+            medicalPackage={ medicalPackage }
+            service={ service }
+            isLoading={ isLoading }
+          />
+        ) }
       <DescriptionService
         medicalPackage={ medicalPackage }
         service={ service }
         isLoading={ isLoading }
       />
-      { !service && (
-        <MedicalPackageService
-          medicalPackage={ medicalPackage }
-          service={ service }
-          isLoading={ isLoading }
-        />
-      ) }
 
       <Rules />
       <PackageServiceOther

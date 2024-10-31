@@ -31,7 +31,6 @@ module.exports = {
 
             const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
                 const doctorId = schedule.doctorID._id.toString();
-                console.log('doctorId', schedule);
                 if (!acc[doctorId]) {
                     acc[doctorId] = {
                         doctor: schedule.doctorID,
@@ -48,7 +47,6 @@ module.exports = {
             const groupedArray = Object.values(groupedByDoctor);
             const formattedGroupedArray = groupedArray.map(group => {
                 const { doctor, schedules } = group;
-                console.log('doctor', group);
                 const formattedGroup = {
                     _id: doctor._id,
                     fullName: doctor.fullName,
@@ -500,12 +498,10 @@ module.exports = {
                 });
 
             if (!workSchedules.length) {
-                if (!workSchedules.length) {
-                    return res.status(200).json({
-                        message: 'WorkSchedule retrieved successfully.',
-                        data: [],
-                    });
-                }
+                return res.status(200).json({
+                    message: 'WorkSchedule retrieved successfully.',
+                    data: [],
+                });
             }
 
             const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
@@ -557,7 +553,7 @@ module.exports = {
 
             return res.status(200).json({
                 message: 'WorkSchedule retrieved successfully.',
-                data: formattedGroupedArray[0],
+                data: formattedGroupedArray,
             });
         } catch (error) {
             next(error);

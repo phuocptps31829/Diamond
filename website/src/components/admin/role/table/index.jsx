@@ -181,7 +181,7 @@ export default function DataTableRole({ data }) {
                                     colSpan={ data.length }
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Không có kết quả.
                                 </TableCell>
                             </TableRow>
                         ) }

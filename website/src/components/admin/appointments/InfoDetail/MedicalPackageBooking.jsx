@@ -52,30 +52,32 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       images: [],
     },
   });
+  console.log(errors, "errors");
+  
   useEffect(() => {
     if (defaultServiceID) {
       handleSelectService(defaultServiceID);
     }
   }, [defaultServiceID]);
-  const validateServiceResults = () => {
-    const serviceIDs = bookingData.medicalPackage?.services.map(
-      (service) => service._id
-    );
-    const resultServiceIDs = serviceResults.map((result) => result.serviceID);
-    for (const serviceID of serviceIDs) {
-      if (!resultServiceIDs.includes(serviceID)) {
-        return "Vui lòng điền đầy đủ kết quả dịch vụ.";
-      }
-    }
-    for (const result of serviceResults) {
-      const { diagnosis, detail, advice } = result.result;
-      if (!diagnosis || !detail || !advice) {
-        return "Vui lòng điền đầy đủ kết quả dịch vụ.";
-      }
-    }
-    setValidationError(null);
-    return null;
-  };
+  // const validateServiceResults = () => {
+  //   const serviceIDs = bookingData.medicalPackage?.services.map(
+  //     (service) => service._id
+  //   );
+  //   const resultServiceIDs = serviceResults.map((result) => result.serviceID);
+  //   for (const serviceID of serviceIDs) {
+  //     if (!resultServiceIDs.includes(serviceID)) {
+  //       return "Vui lòng điền đầy đủ kết quả dịch vụ 1.";
+  //     }
+  //   }
+  //   for (const result of serviceResults) {
+  //     const { diagnosis, detail, advice } = result.result;
+  //     if (!diagnosis || !detail || !advice) {
+  //       return "Vui lòng điền đầy đủ kết quả dịch vụ. 2";
+  //     }
+  //   }
+  //   setValidationError(null);
+  //   return null;
+  // };
 
   const handleSelectService = (serviceID) => {
     const currentValues = getValues();
@@ -94,6 +96,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             advice: currentValues.advice,
             images: currentValues.images,
           },
+          prescription: currentValues.medicines,
         };
 
         if (existingResultIndex !== -1) {
@@ -116,17 +119,21 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       setValue("detail", selectedServiceResult.result.detail);
       setValue("advice", selectedServiceResult.result.advice);
       setValue("images", selectedServiceResult.result.images);
+      setValue("medicines", selectedServiceResult.prescription);
     } else {
       setValue("diagnosis", "");
       setValue("detail", "");
       setValue("advice", "");
       setValue("images", []);
+      setValue("medicines", []);
     }
     trigger("diagnosis");
     trigger("detail");
     trigger("advice");
     trigger("images");
+    trigger("medicines");
   };
+  console.log("result", serviceResults);
 
   const closeForm = () => {
     handleCloseForm();
@@ -204,6 +211,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
             advice: currentValues.advice,
             images: currentValues.images,
           },
+          prescription: currentValues.medicines,
         };
 
         if (existingResultIndex !== -1) {
@@ -263,11 +271,11 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
 
   const onSubmit = async (data) => {
     setOpen(false);
-    const validationError = validateServiceResults();
-    if (validationError) {
-      setValidationError(validationError);
-      return;
-    }
+    // const validationError = validateServiceResults();
+    // if (validationError) {
+    //   setValidationError(validationError);
+    //   return;
+    // }
 
     setLoadingImage(true);
     try {
@@ -289,34 +297,25 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       setServiceResults(updatedServiceResults);
       console.log(data.medicines, "data.medicines");
 
-      const totalMedicinePrice = medicines.reduce((total, medicine) => {
-        console.log(total, medicine.price, medicine.quantity);
-
-        return total + (medicine.price || 0) * medicine.quantity;
-      }, 0);
-      console.log(data.medicines);
-
-      const finalTotalPrice =
-        totalMedicinePrice + (bookingData.level?.price || 0);
-
       const dataAll = {
-        result: updatedServiceResults.map((serviceResult) => ({
-          appointmentID: bookingData._id,
-          serviceID: serviceResult.serviceID,
-          diagnose: serviceResult.result.diagnosis,
-          images: serviceResult.result.images,
-          description: serviceResult.result.detail,
+        payload: updatedServiceResults.map((serviceResult) => ({
+          result: {
+            appointmentID: bookingData._id,
+            serviceID: serviceResult.serviceID,
+            diagnose: serviceResult.result.diagnosis,
+            images: serviceResult.result.images,
+            description: serviceResult.result.detail,
+          },
+          prescription: {
+            invoiceID: bookingData.invoice._id,
+            advice: serviceResult.result.advice,
+            medicines: serviceResult.prescription.map((medicine) => ({
+              medicineID: medicine.medicineID,
+              quantity: medicine.quantity,
+              dosage: medicine.usage,
+            })),
+          },
         })),
-        prescription: {
-          invoiceID: bookingData.invoice._id,
-          advice: data.advice,
-          medicines: data.medicines.map((medicine) => ({
-            medicineID: medicine.medicineID,
-            quantity: medicine.quantity,
-            dosage: medicine.usage,
-          })),
-          price: finalTotalPrice,
-        },
       };
 
       console.log(dataAll);
@@ -346,7 +345,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                 defaultValue={defaultServiceID}
               />
             </div>
-            <div className="w-[70%] space-y-4 pl-10">
+            <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] w-[70%] space-y-4 overflow-y-auto px-2 pl-10">
               <div className="mb-1 rounded-xl bg-white p-4 pt-1">
                 <div className="block">
                   <div className="relative mb-0 mt-5">
@@ -420,92 +419,96 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
               {validationError && (
                 <span className="text-red-500">{validationError}</span>
               )}
-            </div>
-          </div>
-          <div className="my-3">
-            <Label className="">Thêm đơn thuốc (nếu có):</Label>
-            <div className="mt-1 w-full rounded-lg border-2 border-dashed border-primary-200 bg-white p-6">
-              {medicines.map((medicine, index) => (
-                <div key={medicine.id || Date.now()}>
-                  <h4 className="mb-2 text-lg font-semibold">
-                    Thuốc{" "}
-                    <strong className="text-primary-500">{index + 1}</strong>
-                    <span className="text-red-500"> *</span>
-                  </h4>
-                  <div className="mb-2 flex w-full gap-[15px]">
-                    <div className="md:w-2/5">
-                      <Label className="mb-3 block text-sm font-medium leading-none text-black">
-                        Danh mục: <span className="text-red-500">*</span>
-                      </Label>
-                      <SelectMedicineCategories
-                        name={`medicines[${index}].medicineCategoryID`}
-                        control={control}
-                        errors={errors}
-                        onChange={(categoryID) =>
-                          handleSelectCategoryMedicine(index, categoryID)
-                        }
-                        setValue={setValue}
-                      />
-                    </div>
-                    <div className="md:w-2/5">
-                      <Label className="mb-3 block text-sm font-medium leading-none text-black">
-                        Chọn thuốc: <span className="text-red-500">*</span>
-                      </Label>
-                      <SelectMedicine
-                        name={`medicines[${index}].medicineID`}
-                        control={control}
-                        errors={errors}
-                        medicineCategoryID={medicine.medicineCategoryID}
-                        setValue={setValue}
-                        onChange={(medicineID, price) =>
-                          handleSelectMedicine(index, medicineID, price)
-                        }
-                      />
-                    </div>
-                    <div className="w-1/5">
+
+              <div className="my-3">
+                <Label className="">Thêm đơn thuốc (nếu có):</Label>
+                <div className="mt-1 w-full rounded-lg border-2 border-dashed border-primary-200 bg-white p-6">
+                  {medicines.map((medicine, index) => (
+                    <div key={medicine.id || Date.now()}>
+                      <h4 className="mb-2 text-lg font-semibold">
+                        Thuốc{" "}
+                        <strong className="text-primary-500">
+                          {index + 1}
+                        </strong>
+                        <span className="text-red-500"> *</span>
+                      </h4>
+                      <div className="mb-2 flex w-full gap-[15px]">
+                        <div className="md:w-2/5">
+                          <Label className="mb-3 block text-sm font-medium leading-none text-black">
+                            Danh mục: <span className="text-red-500">*</span>
+                          </Label>
+                          <SelectMedicineCategories
+                            name={`medicines[${index}].medicineCategoryID`}
+                            control={control}
+                            errors={errors}
+                            onChange={(categoryID) =>
+                              handleSelectCategoryMedicine(index, categoryID)
+                            }
+                            setValue={setValue}
+                          />
+                        </div>
+                        <div className="md:w-2/5">
+                          <Label className="mb-3 block text-sm font-medium leading-none text-black">
+                            Chọn thuốc: <span className="text-red-500">*</span>
+                          </Label>
+                          <SelectMedicine
+                            name={`medicines[${index}].medicineID`}
+                            control={control}
+                            errors={errors}
+                            medicineCategoryID={medicine.medicineCategoryID}
+                            setValue={setValue}
+                            onChange={(medicineID, price) =>
+                              handleSelectMedicine(index, medicineID, price)
+                            }
+                          />
+                        </div>
+                        <div className="w-1/5">
+                          <InputCustom
+                            label={"Số lượng"}
+                            required
+                            control={control}
+                            medicineCategoryID={medicine.medicineCategoryID}
+                            errors={errors}
+                            min={1}
+                            name={`medicines[${index}].quantity`}
+                            type="number"
+                            placeholder="Số lượng thuốc"
+                          />
+                        </div>
+                      </div>
                       <InputCustom
-                        label={"Số lượng"}
+                        label={"Hướng dẫn dùng thuốc"}
                         required
+                        name={`medicines[${index}].usage`}
                         control={control}
-                        medicineCategoryID={medicine.medicineCategoryID}
                         errors={errors}
-                        min={1}
-                        name={`medicines[${index}].quantity`}
-                        type="number"
-                        placeholder="Số lượng thuốc"
+                        placeholder="Nhập hướng dẫn"
                       />
+                      <div className="mt-2 flex justify-end">
+                        <Button
+                          className="bg-red-400 text-white hover:bg-red-600"
+                          variant="outline"
+                          type="button"
+                          onClick={() => removeMedicine(index)}
+                        >
+                          Xóa
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                  <InputCustom
-                    label={"Hướng dẫn dùng thuốc"}
-                    required
-                    name={`medicines[${index}].usage`}
-                    control={control}
-                    errors={errors}
-                    placeholder="Nhập hướng dẫn"
-                  />
-                  <div className="mt-2 flex justify-end">
-                    <Button
-                      className="bg-red-400 text-white hover:bg-red-600"
-                      variant="outline"
-                      type="button"
-                      onClick={() => removeMedicine(index)}
-                    >
-                      Xóa
-                    </Button>
-                  </div>
+                  ))}
+                  <Button variant="custom" type="button" onClick={addMedicine}>
+                    Thêm thuốc
+                  </Button>
                 </div>
-              ))}
-              <Button variant="custom" type="button" onClick={addMedicine}>
-                Thêm thuốc
-              </Button>
+                {errors.medicines && (
+                  <span className="text-sm text-red-500">
+                    {errors.medicines.message}
+                  </span>
+                )}
+              </div>
             </div>
-            {errors.medicines && (
-              <span className="text-sm text-red-500">
-                {errors.medicines.message}
-              </span>
-            )}
           </div>
+
           <div className="mt-3 flex w-full items-center justify-end">
             <Button variant="outline" type="button" onClick={closeForm}>
               Hủy

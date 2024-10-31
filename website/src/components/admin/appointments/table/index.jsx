@@ -11,7 +11,17 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/Button";
-import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/AlertDialog";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/AlertDialog";
 import {
   Table,
   TableBody,
@@ -87,6 +97,8 @@ export default function DataTable({ data }) {
       handleChangeStatus,
       handleDeleteAppointment
     ),
+    pageCount: Math.ceil(data.length / 6),
+
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -100,6 +112,11 @@ export default function DataTable({ data }) {
       columnFilters,
       columnVisibility,
       rowSelection,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 6,
+      },
     },
   });
 
@@ -136,7 +153,10 @@ export default function DataTable({ data }) {
     <div className="w-[100%] rounded-lg bg-white px-6 py-3">
       {/* Search */}
       <div className="mb-10 flex w-full justify-between">
-        <form className="mr-1 flex items-center" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="mr-1 flex items-center"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
@@ -154,53 +174,54 @@ export default function DataTable({ data }) {
             </div>
           </div>
 
-            <Link to="/admin/appointments/create">
-              <Button
-                size="icon"
-                variant="outline"
-                className="mr-1  h-11 w-11"
-              >
-                <FaPlus className="text-primary-500"></FaPlus>
-              </Button>
-            </Link>
-            <Button
-              onClick={handleRefresh}
-              size="icon"
-              variant="outline"
-              className="mr-1  h-11 w-11"
-            >
-              <FaArrowsRotate className="text-primary-500" />
+          <Link to="/admin/appointments/create">
+            <Button size="icon" variant="outline" className="mr-1 h-11 w-11">
+              <FaPlus className="text-primary-500"></FaPlus>
             </Button>
-            {selectedRowIds.length > 0 && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-11"
-                    onClick={(e) => e.stopPropagation()}
+          </Link>
+          <Button
+            onClick={handleRefresh}
+            size="icon"
+            variant="outline"
+            className="mr-1 h-11 w-11"
+          >
+            <FaArrowsRotate className="text-primary-500" />
+          </Button>
+          {selectedRowIds.length > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-11"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Xóa tất cả
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Bạn có chắc chắn muốn xóa tất cả các lịch khám đã chọn?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Hành động này không thể hoàn tác. Các lịch khám sẽ bị xóa
+                    vĩnh viễn khỏi hệ thống.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Hủy</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() =>
+                      handleDeleteAppointmentMultiple(selectedRowIds)
+                    }
                   >
-                    Xóa tất cả
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Bạn có chắc chắn muốn xóa tất cả các lịch khám đã chọn?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Hành động này không thể hoàn tác. Các lịch khám sẽ bị xóa vĩnh viễn khỏi hệ thống.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDeleteAppointmentMultiple(selectedRowIds)}>
-                      Xác nhận
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
+                    Xác nhận
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </form>
         <div className="flex gap-4">
           <div className="flex items-center">
@@ -252,7 +273,10 @@ export default function DataTable({ data }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={data.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={table.getAllColumns().length}
+                  className="h-24 text-center"
+                >
                   Không có kết quả.
                 </TableCell>
               </TableRow>
@@ -266,7 +290,6 @@ export default function DataTable({ data }) {
           {table.getFilteredSelectedRowModel().rows.length} trên{" "}
           {table.getFilteredRowModel().rows.length} trong danh sách.
         </div>
-
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"

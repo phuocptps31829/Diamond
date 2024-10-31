@@ -1,6 +1,11 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import PropTypes from "prop-types";
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/Accordion";
 const DescriptionService = ({ medicalPackage, isLoading, service }) => {
   if (isLoading) {
     return (
@@ -25,12 +30,21 @@ const DescriptionService = ({ medicalPackage, isLoading, service }) => {
   return (
     <div className="mx-auto max-w-screen-2xl">
       <div className="mx-auto max-w-7xl py-0 md:py-4">
-        <div className="container rounded-md bg-white p-5">
-          <h2 className="mb-4 text-2xl font-bold">CHI TIẾT VỀ { name } </h2>
-          <div
-            dangerouslySetInnerHTML={ { __html: details } }
-            className="render-details"
-          />
+        <div className="container rounded-md bg-white py-2">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="details" className="border-none">
+              <AccordionTrigger className="p-0" toggleLabel>
+                <h2 className="text-2xl font-bold">Chi tiết về {name}</h2>
+              </AccordionTrigger>
+
+              <AccordionContent>
+                <div
+                  dangerouslySetInnerHTML={{ __html: details }}
+                  className="render-details"
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
     </div>

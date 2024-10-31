@@ -234,20 +234,28 @@ const AppointmentsAdd = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
-      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Thêm lịch hẹn
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Button
-                variant={isServiceSelected ? "primary" : "outline"}
+                className={
+                  isServiceSelected
+                    ? "bg-white text-primary-600 outline outline-2 outline-primary-600 hover:bg-white"
+                    : "bg-white text-black hover:bg-white"
+                }
                 onClick={handleServiceButtonClick}
               >
                 Dịch vụ
               </Button>
               <Button
-                variant={!isServiceSelected ? "primary" : "outline"}
+                className={
+                  !isServiceSelected
+                    ? "bg-white text-primary-600 outline outline-2 outline-primary-600 hover:bg-white"
+                    : "bg-white text-black hover:bg-white"
+                }
                 onClick={handlePackageButtonClick}
               >
                 Gói khám

@@ -70,6 +70,7 @@ const BookingInfo = ({ data }) => {
   const statusOptions = [
     { value: "PENDING", label: "Chờ xác nhận" },
     { value: "CONFIRMED", label: "Đã xác nhận" },
+    { value: "WAITING", label: "Chờ khám" }, 
     { value: "EXAMINED", label: "Đã khám" },
     { value: "CANCELLED", label: "Đã hủy" },
   ];
@@ -352,7 +353,7 @@ const BookingInfo = ({ data }) => {
               </Dialog>
             </div>
           )}
-        </div>
+        </div>{" "}
         <div className="my-2 flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
           <FaUserInjured className="text-xl text-primary-500" />
           <span className="font-medium text-primary-900"> Bệnh nhân :</span>
@@ -393,7 +394,7 @@ const BookingInfo = ({ data }) => {
                 }
               >
                 <label className="flex cursor-pointer select-none rounded-lg p-3 outline outline-black">
-                  <div className="ml-4 flex items-center gap-12">
+                  <div className="ml-4 flex items-center gap-10">
                     <img
                       src={`${import.meta.env.VITE_IMAGE_API_URL}/${bookingData.service?.image || bookingData.medicalPackage?.image}`}
                       className="w-[60px] sm:w-[75px] md:w-[100px]"
@@ -406,15 +407,15 @@ const BookingInfo = ({ data }) => {
                           : bookingData.service.name}
                       </p>
                       {bookingData.medicalPackage ? (
-                        <p className="text-[12px] sm:text-[14px] md:text-[16px]">
+                        <p className="text-[14px] ">
                           Cấp độ:{" "}
                           <span className="text-primary-500">
                             {bookingData.medicalPackage.level.name}
                           </span>{" "}
-                          - Giá: {bookingData.medicalPackage.level.price}
+                          - Giá: {formatCurrency(bookingData.medicalPackage.level.price)}
                         </p>
                       ) : (
-                        <p className="text-[12px] sm:text-[14px] md:text-[16px]">
+                        <p className="text-[14px] ">
                           Giá: {formatCurrency(bookingData.service.price)}
                         </p>
                       )}
@@ -475,7 +476,7 @@ const BookingInfo = ({ data }) => {
               <strong className="font-medium text-black">Trạng thái :</strong>
               <div className=" ">
                 <Select
-                  disabled={bookingData.prescription}
+                  // disabled={bookingData.prescription}
                   className="w-full"
                   value={bookingData.status}
                   onValueChange={handleChangeStatus}
@@ -497,7 +498,7 @@ const BookingInfo = ({ data }) => {
         </div>
         <div className="w-full text-end">
           {!bookingData.prescription &&
-            bookingData.status === "EXAMINED" &&
+            bookingData.status === "WAITING" &&
             !isOpenForm && (
               <Button
                 className=""
@@ -582,118 +583,130 @@ const BookingInfo = ({ data }) => {
                 ))}
               </ul>
             </div>
-            <div className="w-full text-end">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant={
-                      bookingData.payment.status === "PENDING"
-                        ? "outline"
-                        : "custom"
-                    }
-                    className=""
-                  >
-                    Xem kết quả
+            <div className="flex w-full items-center justify-between">
+              <div className="">
+                {bookingData.prescription && (
+                  <Button className="" variant="custom">
+                    Thêm lịch tái khám
                   </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="!max-w-6xl">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Kết quả khám bệnh</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto">
-                        {bookingData.results.map((result) => (
-                          <div
-                            key={result._id}
-                            className="m-4 mx-1 rounded-md border-2 border-dashed border-primary-200 px-4"
-                          >
-                            <div className="my-4">
-                              <strong>Dịch vụ:</strong>{" "}
-                              <span className="text-primary-500">
-                                {result.service.name || "Không có dịch vụ"}
-                              </span>
-                            </div>
-                            <div className="my-4">
-                              <strong>Chẩn đoán:</strong>{" "}
-                              {result.diagnose || "Chưa có kết quả"}
-                            </div>
-                            <div className="my-4">
-                              <strong>Mô tả:</strong>{" "}
-                              {result.description || "Không có mô tả"}
-                            </div>
-                            <div className="my-4">
-                              <strong>Hình ảnh liên quan:</strong>
-                              <div className="mx-auto my-3 flex flex-wrap gap-4">
-                                {Array.isArray(result.images) &&
-                                result.images.length > 0 ? (
-                                  result.images.map((image, imgIndex) => (
-                                    <div key={imgIndex}>
-                                      <img
-                                        src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
-                                        alt={`Kết quả khám bệnh ${imgIndex}`}
-                                        className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
-                                        onClick={() => handleOpen(image)}
-                                      />
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p>Không có hình ảnh</p>
-                                )}
-                                {selectedImage && (
-                                  <Dialog open={open} onOpenChange={setOpen}>
-                                    <DialogContent className="max-w-[1000px]">
-                                      <DialogHeader>
-                                        <DialogTitle>Hình ảnh lớn</DialogTitle>
-                                      </DialogHeader>
-                                      <img
-                                        src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
-                                        alt="Hình ảnh lớn"
-                                        className="large-thumbnail h-auto w-full"
-                                      />
-                                    </DialogContent>
-                                  </Dialog>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Đóng</AlertDialogCancel>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              {bookingData.payment.status === "PENDING" && (
+                )}
+              </div>
+              <div className="">
+                {" "}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="custom" className="ml-2">
-                      Thanh toán
+                    <Button
+                      variant={
+                        bookingData.payment.status === "PENDING"
+                          ? "outline"
+                          : "custom"
+                      }
+                      className=""
+                    >
+                      Xem kết quả
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent>
+                  <AlertDialogContent className="!max-w-6xl">
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                      <AlertDialogTitle>Kết quả khám bệnh</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Bạn có chắc chắn muốn thanh toán{" "}
-                        <span className="font-bold text-black">
-                          {formatCurrency(
-                            bookingData.invoice.price +
-                              bookingData.invoice.arisePrice
-                          )}
-                        </span>{" "}
-                        đơn khám bệnh này không?
+                        <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto">
+                          {bookingData.results.map((result) => (
+                            <div
+                              key={result._id}
+                              className="m-4 mx-1 rounded-md border-2 border-dashed border-primary-200 px-4"
+                            >
+                              <div className="my-4">
+                                <strong>Dịch vụ:</strong>{" "}
+                                <span className="text-primary-500">
+                                  {result.service.name || "Không có dịch vụ"}
+                                </span>
+                              </div>
+                              <div className="my-4">
+                                <strong>Chẩn đoán:</strong>{" "}
+                                {result.diagnose || "Chưa có kết quả"}
+                              </div>
+                              <div className="my-4">
+                                <strong>Mô tả:</strong>{" "}
+                                {result.description || "Không có mô tả"}
+                              </div>
+                              <div className="my-4">
+                                <strong>Hình ảnh liên quan:</strong>
+                                <div className="mx-auto my-3 flex flex-wrap gap-4">
+                                  {Array.isArray(result.images) &&
+                                  result.images.length > 0 ? (
+                                    result.images.map((image, imgIndex) => (
+                                      <div key={imgIndex}>
+                                        <img
+                                          src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
+                                          alt={`Kết quả khám bệnh ${imgIndex}`}
+                                          className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
+                                          onClick={() => handleOpen(image)}
+                                        />
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <p>Không có hình ảnh</p>
+                                  )}
+                                  {selectedImage && (
+                                    <Dialog open={open} onOpenChange={setOpen}>
+                                      <DialogContent className="max-w-[1000px]">
+                                        <DialogHeader>
+                                          <DialogTitle>
+                                            Hình ảnh lớn
+                                          </DialogTitle>
+                                        </DialogHeader>
+                                        <img
+                                          src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
+                                          alt="Hình ảnh lớn"
+                                          className="large-thumbnail h-auto w-full"
+                                        />
+                                      </DialogContent>
+                                    </Dialog>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Hủy</AlertDialogCancel>
-                      <AlertDialogAction onClick={handlePayment}>
-                        Xác nhận
-                      </AlertDialogAction>
+                      <AlertDialogCancel>Đóng</AlertDialogCancel>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              )}
+                {bookingData.payment.status === "PENDING" && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="custom" className="ml-2">
+                        Thanh toán
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Bạn có chắc chắn muốn thanh toán{" "}
+                          <span className="font-bold text-black">
+                            {formatCurrency(
+                              bookingData.invoice.price +
+                                bookingData.invoice.arisePrice
+                            )}
+                          </span>{" "}
+                          đơn khám bệnh này không?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Hủy</AlertDialogCancel>
+                        <AlertDialogAction onClick={handlePayment}>
+                          Xác nhận
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
             </div>
           </div>
         )}
