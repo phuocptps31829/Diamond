@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { status } from "./AppointmentHistory";
 import ResultDialog from "./dialogs/ResultDialog";
+import AppointmentDetailSkeleton from "./skeletons/AppointmentDetailSkeleton";
 
 const AppointmentDetail = () => {
   const { id } = useParams();
@@ -20,7 +21,7 @@ const AppointmentDetail = () => {
   const product = appointment?.service || appointment?.medicalPackage;
 
   if (isLoading) {
-    return;
+    return <AppointmentDetailSkeleton />;
   }
 
   return (

@@ -122,7 +122,7 @@ export default function SelectDepartment({
         ) }
       />
       { errors[name] && (
-        <p className="mt-2 text-sm text-red-600">{ errors[name].message }</p>
+        <p className="mt-[2px] text-sm text-red-600">{ errors[name].message }</p>
       ) }
     </div>
   );

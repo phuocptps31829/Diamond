@@ -1,0 +1,1 @@
+export const getImageUrl = (name) => `${import.meta.env.VITE_IMAGE_API_URL}/${name}`;

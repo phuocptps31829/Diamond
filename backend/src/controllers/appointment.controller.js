@@ -461,6 +461,7 @@ module.exports = {
     getAllAppointmentsOfPatient: async (req, res, next) => {
         try {
             const { id } = req.user;
+            const { status } = req.query;
             const {
                 limitDocuments,
                 page,
@@ -473,7 +474,8 @@ module.exports = {
             const appointments = await AppointmentModel
                 .find({
                     isDeleted: false,
-                    patientID: id
+                    patientID: id,
+                    ...(status ? { status } : {})
                 })
                 .populate('patientID')
                 .populate('serviceID')
@@ -545,10 +547,6 @@ module.exports = {
                     return formattedMedicine;
                 }) : []);
 
-                const result = await ResultModel
-                    .findOne({ isDeleted: false, appointmentID: appointment._id })
-                    .lean();
-
                 let medicalPackage = null;
                 let level = null;
                 if (appointment?.medicalPackageID) {
@@ -585,11 +583,16 @@ module.exports = {
                             medicines: prescriptionMedicines
                         }
                     } : {}),
-                    result: {
+                    results: results?.map(result => ({
+                        _id: result?._id,
+                        service: {
+                            _id: result?.serviceID._id,
+                            name: result?.serviceID.name,
+                        },
                         diagnose: result?.diagnose || '',
                         images: result?.images || '',
                         description: result?.description || '',
-                    },
+                    })),
                     ...(appointment.serviceID ? {
                         service: {
                             _id: appointment.serviceID._id,
@@ -866,35 +869,52 @@ module.exports = {
                     .lean(),
             ]);
 
-            console.log(results);
-
-            const prescription = invoice
-                ? await PrescriptionModel
-                    .findOne({ isDeleted: false, invoiceID: invoice._id })
-                    .lean() : null;
-
-            const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
-                const medicine = await MedicineModel
-                    .findById({ _id: m.medicineID })
-                    .populate("medicineCategoryID")
+            const resultPrescriptions = await Promise.all(results.map(async result => {
+                const prescription = await PrescriptionModel
+                    .findOne({ isDeleted: false, resultID: result._id })
                     .lean();
 
-                delete medicine.createdAt;
-                delete medicine.updatedAt;
-                delete medicine.isDeleted;
-                delete medicine.__v;
+                console.log('pr', prescription);
 
-                const formattedMedicine = {
-                    ...medicine,
-                    medicineCategory: {
-                        _id: medicine.medicineCategoryID._id,
-                        name: medicine.medicineCategoryID.name
-                    }
+                const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
+                    const medicine = await MedicineModel
+                        .findById({ _id: m.medicineID })
+                        .populate("medicineCategoryID")
+                        .lean();
+
+                    delete medicine.createdAt;
+                    delete medicine.updatedAt;
+                    delete medicine.isDeleted;
+                    delete medicine.__v;
+
+                    const formattedMedicine = {
+                        ...medicine,
+                        medicineCategory: {
+                            _id: medicine.medicineCategoryID._id,
+                            name: medicine.medicineCategoryID.name
+                        }
+                    };
+                    delete formattedMedicine.medicineCategoryID;
+
+                    return formattedMedicine;
+                }) : []);
+
+                const formatted = {
+                    ...result,
+                    ...(prescription ?
+                        {
+                            prescription: {
+                                advice: prescription.advice,
+                                medicines: prescriptionMedicines
+                            }
+                        } : {}
+                    )
                 };
-                delete formattedMedicine.medicineCategoryID;
 
-                return formattedMedicine;
-            }) : []);
+                return formatted;
+            }));
+
+            console.log('prescriptions', resultPrescriptions);
 
             const formattedAppointment = {
                 ...appointment,
@@ -940,7 +960,7 @@ module.exports = {
                     number: orderNumber?.number,
                     priority: orderNumber?.priority,
                 },
-                results: results?.map(result => ({
+                results: resultPrescriptions?.map(result => ({
                     _id: result?._id,
                     service: {
                         _id: result?.serviceID._id,
@@ -949,18 +969,15 @@ module.exports = {
                     diagnose: result?.diagnose || '',
                     images: result?.images || '',
                     description: result?.description || '',
+                    ...(result?.prescription ? {
+                        prescription: result.prescription
+                    } : {}),
                 })),
                 invoice: {
                     _id: invoice?._id,
                     price: invoice?.price || 0,
                     arisePrice: invoice?.arisePrice || 0,
                 },
-                ...(prescription ? {
-                    prescription: {
-                        advice: prescription.advice,
-                        medicines: prescriptionMedicines
-                    }
-                } : {}),
                 ...(appointment.patientHelpID ? {
                     helper: {
                         _id: appointment.patientHelpID._id,

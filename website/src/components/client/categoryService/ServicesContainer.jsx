@@ -15,7 +15,7 @@ import {
 import SidebarFilter from "../categoryService/SidebarFilter";
 import NotFound from "@/components/ui/NotFound";
 import Product from "../product/Product";
-import useScrollToTop from "@/hooks/useScrollToTop";
+import CustomPagination from "@/components/ui/CustomPagination";
 
 const ServicesContainer = () => {
   const location = useLocation();
@@ -24,7 +24,9 @@ const ServicesContainer = () => {
   const isPackageRoute = useMatch("/packages/:specialtyId?");
   const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
   const queryParams = new URLSearchParams(location.search);
-  const currentPage = parseInt(queryParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(
+    () => parseInt(queryParams.get("page")) || 1
+  );
   const currentLimit = parseInt(queryParams.get("limit")) | 6;
 
   const [filters, setFilters] = useState({
@@ -51,7 +53,6 @@ const ServicesContainer = () => {
 
   const handleFilterApply = (newFilters) => {
     const updatedFilters = { ...filters, ...newFilters };
-    console.log(updatedFilters);
     window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
       .filter(([, value]) => {
         if (Array.isArray(value)) {
@@ -71,6 +72,7 @@ const ServicesContainer = () => {
   };
 
   const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
     const updatedFilters = { ...filters, page: +newPage, limit: +filters.limit };
     window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
       .filter(([, value]) => {
@@ -140,49 +142,11 @@ const ServicesContainer = () => {
               ) : data?.data?.map((item) =>
                 <Product key={ item._id } product={ item } />) }
             </div>
-            <Pagination className="pt-5">
-              { totalPages ?
-                <PaginationContent className="hover:cursor-pointer">
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={ () =>
-                        handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-                      }
-                      className={
-                        filters.page === 1 ? "opacity-50 hover:cursor-default" : ""
-                      }
-                    />
-                  </PaginationItem>
-                  { Array.from({ length: totalPages }).map((_, index) => {
-                    return (
-                      <PaginationItem key={ index }>
-                        <PaginationLink
-                          onClick={ () => handlePageChange(index + 1) }
-                          isActive={ filters.page === index + 1 }
-                        >
-                          { index + 1 }
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  }) }
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={ () =>
-                        handlePageChange(
-                          currentPage + 1 > totalPages ? totalPages : currentPage + 1,
-                        )
-                      }
-                      className={
-                        filters.page === totalPages
-                          ? "opacity-50 hover:cursor-default"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-                : ''
-              }
-            </Pagination>
+            <CustomPagination
+              currentPage={ currentPage }
+              totalPages={ totalPages }
+              onPageChange={ handlePageChange }
+            />
           </div>
         </div>
       </div>

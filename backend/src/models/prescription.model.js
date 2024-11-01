@@ -6,9 +6,9 @@ const prescriptionSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    invoiceID: {
+    resultID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Invoice',
+        ref: 'Result',
         required: true,
     },
     medicines: [{

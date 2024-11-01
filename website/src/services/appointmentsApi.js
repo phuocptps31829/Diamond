@@ -40,9 +40,11 @@ export const appointmentApi = {
       throw error;
     }
   },
-  getAppointmentByPatient: async () => {
+  getAppointmentByPatient: async (params) => {
     try {
-      const res = await axiosInstanceGET.get(`/appointments/get-by-patient`);
+      const res = await axiosInstanceGET.get(`/appointments/get-by-patient`, {
+        params
+      });
       return res.data;
     } catch (error) {
       console.error(error);
