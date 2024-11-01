@@ -70,6 +70,7 @@ const BranchesEdit = () => {
         lng: data.coordinates.lng,
       });
     }
+    
   }, [data, setValue]);
 
   const mutation = useMutation({
