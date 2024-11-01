@@ -88,13 +88,9 @@ import ServicesListPage from "./pages/admin/Services/indexServicePage";
 import DoctorsFormAddPage from "./pages/admin/Doctor/formAdd";
 import DoctorsFormFixPage from "./pages/admin/Doctor/formFix";
 import ScheduleFormPage from "./pages/admin/Schedules/ScheduleForm";
-import ChatPage from "./pages/client/Chat";
+import SupportPage from "./pages/admin/Support/index";
 
 const router = createBrowserRouter([
-  {
-    path: "support",
-    element: <ChatPage />,
-  },
   {
     path: "/",
     element: <AppLayout />,
@@ -266,6 +262,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "support",
+        element: <SupportPage />,
       },
       {
         path: "services/list",

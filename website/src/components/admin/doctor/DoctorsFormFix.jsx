@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/Button";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export default function DoctorsFormFix({ dataDoctor }) {
-  console.log("dataDoctor.isActivated", dataDoctor.isActivated);
   const queryClient = useQueryClient();
   const [loadingCertificate, setLoadingCertificate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -154,8 +153,8 @@ export default function DoctorsFormFix({ dataDoctor }) {
       setValue("title", newData.otherInfo.title);
       setValue("isInternal", newData.otherInfo.isInternal);
       setValue("yearsExperience", newData.otherInfo.yearsExperience);
-      setValue("specialty", newData.otherInfo.specialtyID.$oid);
-      setValue("branchID", newData.otherInfo.branchID.$oid);
+      setValue("specialty", newData.otherInfo.specialtyID);
+      setValue("branchID", newData.otherInfo.branchID);
       setValue("detail", newData.otherInfo.detail);
       setArrayImages(newData.otherInfo.verification.images);
       setOtherInfo(newData.otherInfo);

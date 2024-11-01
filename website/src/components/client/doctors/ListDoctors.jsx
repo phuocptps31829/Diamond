@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/Select";
 import CustomPagination from "@/components/ui/CustomPagination";
 import { useQuery } from "@tanstack/react-query";
-import { getAllSpecialties } from "@/services/specialtiesApi";
+import { specialtyApi } from "@/services/specialtiesApi";
 import DoctorItem from "@/components/client/product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { doctorApi } from "@/services/doctorsApi";
@@ -42,7 +42,7 @@ export default function ListDoctors() {
     isLoading: loadingSpecialties,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtyApi.getAllSpecialties,
   });
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export default function ListDoctors() {
                 <div className="flex h-4 w-[60px] items-center justify-between text-[10px] font-medium sm:text-[14px]">
                   <Skeleton className="h-4 w-[60px]" />
                 </div>
-                <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#918e8e] py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
+                <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#827f7f] py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:text-white md:py-2 md:text-[13px]">
                   <Skeleton className="h-4 w-[80px]" />
                 </div>
               </div>
@@ -190,7 +190,6 @@ export default function ListDoctors() {
           </>
         )}
       </div>
-
       {totalPages > 1 && (
         <CustomPagination
           currentPage={currentPage}

@@ -1,22 +1,18 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { LiaCertificateSolid } from "react-icons/lia";
-import { IoMdImages } from "react-icons/io";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
 
-
-const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
+const sampleSchedule = [
+  { day: "Thứ Hai", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Ba", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Tư", time: "Nghỉ" },
+  { day: "Thứ Năm", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Sáu", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Bảy", time: "08:00 - 12:00" },
+  { day: "Chủ Nhật", time: "Nghỉ" },
+];
 
 export default function BelowInformation({ doctor, isLoading }) {
-  console.log("doctor", doctor);
   const [activeTab, setActiveTab] = useState("certification");
-  const [selectedZoomImage, setSelectedZoomImage] = useState(null);
-  const [isZoomed, setIsZoomed] = useState(false);
-
-  const handleZoomImage = (image) => {
-    setSelectedZoomImage(image);
-    setIsZoomed(true);
-  };
 
   return (
     <div className="mx-auto my-10 max-w-screen-xl px-5">
@@ -61,64 +57,39 @@ export default function BelowInformation({ doctor, isLoading }) {
           value="experience"
           className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
         >
-          <div className="space-y-5">
-            <div className="flex gap-2">
-              <strong className="flex items-center gap-2">
-                <LiaCertificateSolid size={22} /> Mã chứng chỉ :
-              </strong>
-              {isLoading ? (
-                <p>Đang tải...</p>
-              ) : (
-                doctor.otherInfo?.verification?.practicingCertificate ||
-                "Lỗi dữ liệu"
-              )}
-            </div>
-            <div className="flex items-center gap-2">
-              <strong className="flex items-center gap-2">
-                <IoMdImages size={22} /> Hình ảnh chứng chỉ:
-              </strong>
-            </div>
+          <div>
             {isLoading ? (
-              <p>Đang tải...</p>
+              <div>Đang tải...</div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                {doctor.otherInfo?.verification?.images?.length > 0 ? (
-                  doctor.otherInfo?.verification?.images?.map(
-                    (image, index) => (
-                      <img
-                        key={index}
-                        src={`${URL_IMAGE}/${image}`}
-                        alt="certificate"
-                        className="h-full w-full object-cover cursor-pointer"
-                        onClick={() => handleZoomImage(image)}
-                      />
-                    )
-                  )
-                ) : (
-                  <span className="text-[14px] opacity-50 ml-7">
-                    Không có hình ảnh nào.
-                  </span>
-                )}
-              </div>
+              <table className="min-w-full divide-y divide-gray-200 border text-gray-700 shadow-md">
+                <thead>
+                  <tr className="bg-gray-100 text-left text-black">
+                    <th className="border-b px-4 py-3 font-semibold">Ngày</th>
+                    <th className="border-b px-4 py-3 font-semibold">
+                      Thời gian
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-[14px]">
+                  {sampleSchedule.map((entry, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        entry.time === "Nghỉ" ? "bg-red-200" : "bg-green-200"
+                      } ${index % 2 === 0 ? "bg-opacity-75" : "bg-opacity-50"}`}
+                    >
+                      <td className="border-b px-4 py-3 font-semibold">
+                        {entry.day}
+                      </td>
+                      <td className="border-b px-4 py-3">{entry.time}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )}
           </div>
         </TabsContent>
       </Tabs>
-
-      {isZoomed && (
-        <Dialog open={isZoomed} onOpenChange={() => setIsZoomed(false)}>
-          <DialogContent className="max-w-[50vw]">
-            <DialogHeader>
-              <DialogTitle>Ảnh chứng chỉ</DialogTitle>
-            </DialogHeader>
-            <img
-              src={`${URL_IMAGE}/${selectedZoomImage}`}
-              alt="Zoomed certificate"
-              className="h-full w-full object-cover"
-            />
-          </DialogContent>
-        </Dialog>
-      )}
     </div>
   );
 }
