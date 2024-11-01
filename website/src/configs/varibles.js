@@ -1,5 +1,5 @@
-// const API_URL = "http://localhost:3500/api/v1";
-const API_URL = "https://nodejs.diamond.id.vn/api/v1";
+const API_URL = "http://160.30.44.27:3000/api/v1";
+// const API_URL = "https://nodejs.diamond.id.vn/api/v1";
 // const API_CURD_URL = "https://laravel.diamond.id.vn/api/v1";
 const API_CURD_URL = "http://160.30.44.27:8000/api/v1";
 // const API_URL = "https://nodejs.diamond.id.vn/api/v1";

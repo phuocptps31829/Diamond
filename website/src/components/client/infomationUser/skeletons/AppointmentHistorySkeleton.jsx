@@ -43,7 +43,7 @@ const AppointmentHistorySkeleton = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          { Array.from({ length: 10 }).map((_, index) => (
+          { Array.from({ length: 5 }).map((_, index) => (
             <TableRow key={ index }>
               <TableCell className="text-xs md:text-sm">
                 <Skeleton className="h-6 w-6 rounded-md" />

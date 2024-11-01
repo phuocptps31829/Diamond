@@ -14,7 +14,7 @@ export default function Introduce() {
       <div className="my-5 grid gap-4 px-5 md:grid-cols-2 ">
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
-            to="/none"
+            to="/doctors"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
             <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Đội ngũ Y - Bác sĩ</h2>

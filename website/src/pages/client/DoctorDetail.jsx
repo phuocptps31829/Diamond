@@ -36,7 +36,7 @@ export default function DoctorDetail() {
   return (
     <div className="bg-[#E8F2F7] py-5">
       <AboveInformation doctor={doctor} isLoading={isLoadingDoctor} />
-      <BelowInformation />
+      <BelowInformation doctor={doctor} isLoading={isLoadingDoctor} />
       <OtherDoctor
         doctor={doctor}
         doctors={doctors}

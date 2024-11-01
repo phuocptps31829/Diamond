@@ -53,22 +53,22 @@ export default function Product({ product }) {
 
     const newItem = isService
       ? {
-        serviceID: _id,
-        name,
-        specialtyID: specialty._id,
-        price: discountPrice,
-        image,
-      }
+          serviceID: _id,
+          name,
+          specialtyID: specialty._id,
+          price: discountPrice,
+          image,
+        }
       : {
-        medicalPackageID: _id,
-        name,
-        levelID: services[0]._id,
-        specialtyID: specialty._id,
-        price: services[0].discountPrice,
-        levelName: services[0].levelName,
-        image,
-        services,
-      };
+          medicalPackageID: _id,
+          name,
+          levelID: services[0]._id,
+          specialtyID: specialty._id,
+          price: services[0].discountPrice,
+          levelName: services[0].levelName,
+          image,
+          services,
+        };
 
     if (!isInCart) {
       dispatch(addToCart(newItem));
@@ -76,11 +76,11 @@ export default function Product({ product }) {
         initBookingDetails({
           ...(isService
             ? {
-              serviceID: _id,
-            }
+                serviceID: _id,
+              }
             : {
-              medicalPackageID: _id,
-            }),
+                medicalPackageID: _id,
+              }),
           bookingDetail: {
             specialtyID: specialty._id,
             ...(isService ? {} : { levelID: services[0]._id }),
@@ -112,38 +112,48 @@ export default function Product({ product }) {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
-        to={ isService ? `/service/${slug}` : `/package/${slug}` }
-        className="group block max-h-[125px] sm:max-h-full w-full overflow-hidden sm:h-[210px] min-h-[125px]"
+        to={isService ? `/service/${slug}` : `/package/${slug}`}
+        className="group block max-h-[125px] min-h-[125px] w-full overflow-hidden sm:h-[210px] sm:max-h-full"
       >
         <img
-          src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }
-          alt={ name }
+          src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
+          alt={name}
           className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
         />
       </Link>
-      <div className="flex flex-col p-3 mt-1 md:p-5 md:pt-2 flex-1 justify-between">
-        { services && services?.length > 0 ? <Link
-          to={ `/package/${slug}` }
-          className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
-        >
-          { services[0].levelName }
-        </Link> : '' }
+      <div className="mt-1 flex flex-1 flex-col justify-between p-3 md:p-5 md:pt-2">
+        {services && services?.length > 0 ? (
+          <Link
+            to={`/package/${slug}`}
+            className="text-[9px] font-bold uppercase text-[#7a7a7a] md:text-[11px]"
+          >
+            {services[0].levelName}
+          </Link>
+        ) : (
+          ""
+        )}
         <div className="mb-1">
           <Link
-            to={ isService ? `/service/${slug}` : `/package/${slug}` }
-            className="py-1 text-sm text-[#3e3e3e] font-bold md:text-xl"
+            to={isService ? `/service/${slug}` : `/package/${slug}`}
+            className="py-1 text-sm font-bold text-[#3e3e3e] md:text-xl line-clamp-2"
           >
-            { name }
+            {name}
           </Link>
         </div>
         <div>
           <hr className="mb-1" />
           <div className="flex items-center space-x-2 py-1">
             <span className="text-xs font-semibold text-primary-500 sm:text-lg">
-              { formatPrice(services && services?.length > 0 ? services[0].discountPrice : discountPrice) }
+              {formatPrice(
+                services && services?.length > 0
+                  ? services[0].discountPrice
+                  : discountPrice
+              )}
             </span>
             <span className="text-[10px] text-gray-400 line-through sm:text-sm">
-              { formatPrice(services && services?.length > 0 ? services[0].price : price) }
+              {formatPrice(
+                services && services?.length > 0 ? services[0].price : price
+              )}
             </span>
           </div>
           <hr className="mb-1" />
@@ -156,13 +166,13 @@ export default function Product({ product }) {
               <FaHeart />
             </div>
             <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-              <SiTicktick /> { orderCount }
+              <SiTicktick /> {orderCount}
             </div>
           </div>
           <div className="mt-2 flex w-full items-center justify-center gap-2">
             <div
-              onClick={ () => handleAddClick(true) }
-              className="flex h-full cursor-pointer flex-[7] items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
+              onClick={() => handleAddClick(true)}
+              className="flex h-full flex-[7] cursor-pointer items-center justify-center gap-1 rounded-md border border-primary-500 py-1 text-[10px] font-semibold text-primary-500 hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]"
             >
               Đặt ngay <AiOutlineDoubleRight />
             </div>
@@ -170,21 +180,22 @@ export default function Product({ product }) {
               <Tooltip>
                 <TooltipTrigger className="h-full flex-[2] items-center justify-center">
                   <button
-                    onClick={ () => handleAddClick(false) }
-                    className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
-                      ? "bg-red-500 text-white"
-                      : "bg-primary-500 text-primary-500"
-                      }` }
+                    onClick={() => handleAddClick(false)}
+                    className={`group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${
+                      isInCart
+                        ? "bg-red-500 text-white"
+                        : "bg-primary-500 text-primary-500"
+                    }`}
                   >
-                    { isInCart ? (
+                    {isInCart ? (
                       <RiDeleteBackFill className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-lg" />
                     ) : (
                       <MdOutlineAddCircle className="text-base text-white transition-transform duration-300 ease-in-out group-hover:scale-125 md:text-xl" />
-                    ) }
+                    )}
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{ isInCart ? "Xóa khỏi y tế" : "Thêm giỏ y tế" }</p>
+                  <p>{isInCart ? "Xóa khỏi y tế" : "Thêm giỏ y tế"}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

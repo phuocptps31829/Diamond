@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/Select";
 import CustomPagination from "@/components/ui/CustomPagination";
 import { useQuery } from "@tanstack/react-query";
-import { getAllSpecialties } from "@/services/specialtiesApi";
+import { specialtyApi } from "@/services/specialtiesApi";
 import DoctorItem from "@/components/client/product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { doctorApi } from "@/services/doctorsApi";
@@ -42,7 +42,7 @@ export default function ListDoctors() {
     isLoading: loadingSpecialties,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtyApi.getAllSpecialties,
   });
 
   useEffect(() => {
@@ -94,10 +94,10 @@ export default function ListDoctors() {
           </div>
         </div>
         <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+          { Array.from({ length: 4 }).map((_, index) => (
             <div
               className="flex flex-col overflow-hidden rounded-lg border"
-              key={index}
+              key={ index }
             >
               <div className="group flex w-full items-center justify-center !bg-white">
                 <Skeleton className="ease h-[200px] w-full transform overflow-hidden p-2 transition-transform duration-500 sm:h-[300px] sm:p-4" />
@@ -109,12 +109,12 @@ export default function ListDoctors() {
                 <div className="flex h-4 w-[60px] items-center justify-between text-[10px] font-medium sm:text-[14px]">
                   <Skeleton className="h-4 w-[60px]" />
                 </div>
-                <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#918e8e] py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:bg-primary-500 hover:text-white md:py-2 md:text-[13px]">
+                <div className="mt-3 flex items-center justify-center gap-1 rounded-md border border-[#827f7f] py-1 text-[10px] font-semibold text-primary-500 hover:cursor-pointer hover:text-white md:py-2 md:text-[13px]">
                   <Skeleton className="h-4 w-[80px]" />
                 </div>
               </div>
             </div>
-          ))}
+          )) }
         </div>
       </div>
     );
@@ -147,28 +147,28 @@ export default function ListDoctors() {
 
   return (
     <div
-      ref={containerRef}
+      ref={ containerRef }
       className="mx-auto w-full max-w-screen-xl p-4 md:p-5"
     >
       <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
-        <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp theo:</h2>
+        <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp:</h2>
         <div className="flex flex-row items-center justify-center gap-3">
           <Select
-            value={selectedSpecialty}
-            onValueChange={handleSpecialtyChange}
+            value={ selectedSpecialty }
+            onValueChange={ handleSpecialtyChange }
           >
             <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn chuyên khoa" />
             </SelectTrigger>
             <SelectContent>
-              {specialties?.map((specialty) => (
-                <SelectItem key={specialty._id} value={specialty._id}>
-                  {specialty.name}
+              { specialties?.map((specialty) => (
+                <SelectItem key={ specialty._id } value={ specialty._id }>
+                  { specialty.name }
                 </SelectItem>
-              ))}
+              )) }
             </SelectContent>
           </Select>
-          <Select value={selectedGender} onValueChange={handleDoctorChange}>
+          <Select value={ selectedGender } onValueChange={ handleDoctorChange }>
             <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn giới tính" />
             </SelectTrigger>
@@ -179,25 +179,24 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 shadow md:grid-cols-3 lg:grid-cols-4">
-        {currentRecords.length === 0 ? (
+      <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 md:grid-cols-3 lg:grid-cols-4">
+        { currentRecords.length === 0 ? (
           <div className="col-span-full p-6 text-center">Không có dữ liệu.</div>
         ) : (
           <>
-            {currentRecords.map((doctor) => {
-              return <DoctorItem key={doctor?._id} doctor={doctor} />;
-            })}
+            { currentRecords.map((doctor) => {
+              return <DoctorItem key={ doctor?._id } doctor={ doctor } />;
+            }) }
           </>
-        )}
+        ) }
       </div>
-
-      {totalPages > 1 && (
+      { totalPages > 1 && (
         <CustomPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
+          currentPage={ currentPage }
+          totalPages={ totalPages }
+          onPageChange={ handlePageChange }
         />
-      )}
+      ) }
     </div>
   );
 }

@@ -88,6 +88,8 @@ import ServicesListPage from "./pages/admin/Services/indexServicePage";
 import DoctorsFormAddPage from "./pages/admin/Doctor/formAdd";
 import DoctorsFormFixPage from "./pages/admin/Doctor/formFix";
 import ScheduleFormPage from "./pages/admin/Schedules/ScheduleForm";
+import SupportPage from "./pages/admin/Support/index";
+import Form from "./test-socket/Form";
 
 const router = createBrowserRouter([
   {
@@ -265,6 +267,10 @@ const router = createBrowserRouter([
       {
         path: "",
         element: <Navigate to="dashboard" />,
+      },
+      {
+        path: "support",
+        element: <SupportPage />,
       },
       {
         path: "services/list",
@@ -480,6 +486,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "socket",
+    element: <Form />
+  }
 ]);
 
 function App() {

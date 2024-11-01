@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 
-export default function BelowInformation() {
+const sampleSchedule = [
+  { day: "Thứ Hai", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Ba", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Tư", time: "Nghỉ" },
+  { day: "Thứ Năm", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Sáu", time: "08:00 - 12:00, 13:00 - 17:00" },
+  { day: "Thứ Bảy", time: "08:00 - 12:00" },
+  { day: "Chủ Nhật", time: "Nghỉ" },
+];
+
+export default function BelowInformation({ doctor, isLoading }) {
   const [activeTab, setActiveTab] = useState("certification");
 
   return (
@@ -16,13 +26,13 @@ export default function BelowInformation() {
             value="certification"
             className={`w-full p-3 ${activeTab === "certification" ? "shadcn-tabs-active" : ""}`}
           >
-            Chứng nhận
+            Giới thiệu
           </TabsTrigger>
           <TabsTrigger
             value="experience"
             className={`w-full p-3 ${activeTab === "experience" ? "shadcn-tabs-active" : ""}`}
           >
-            Kinh nghiệm
+            Lịch làm việc
           </TabsTrigger>
         </TabsList>
 
@@ -31,64 +41,55 @@ export default function BelowInformation() {
           className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
         >
           <div className="space-y-5">
-            <div className="flex flex-col">
-              <strong className="mb-2">Trường y:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Bác sĩ y khoa, Đại học Y Dược, Thành phố Hồ Chí Minh, Việt
-                  Nam, 2002
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <strong className="mb-2">Bằng cấp chuyên môn:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Thạc sĩ y khoa, Đại học Y Dược, Thành phố Hồ Chí Minh, Việt
-                  Nam, 2009
-                </li>
-                <li className="list-disc">
-                  Bác sĩ chuyên khoa II, Gây mê hồi sức, Đại học Y Dược, Hà Nội,
-                  Việt Nam, 2020
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col">
-              <strong className="mb-2">Đào tạo nâng cao:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Hồi sức Cấp cứu, Đại học Nantes, Pháp, 2006
-                </li>
-                <li className="list-disc">
-                  Liệu pháp thay thế thận liên tục (CRRT), Bệnh viện 115, Thành
-                  phố Hồ Chí Minh, Việt Nam, 2012
-                </li>
-              </ul>
-            </div>
+            {isLoading ? (
+              <p>Đang tải...</p>
+            ) : (
+              <div
+                className="content-news w-full"
+                dangerouslySetInnerHTML={{
+                  __html: doctor.otherInfo?.detail || "",
+                }}
+              ></div>
+            )}
           </div>
         </TabsContent>
         <TabsContent
           value="experience"
           className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
         >
-          <div className="space-y-5">
-            <div className="flex flex-col">
-              <strong className="mb-2">Kinh nghiệm:</strong>
-              <ul className="pl-12">
-                <li className="list-disc">
-                  Kinh nghiệm hơn 5 năm làm bác sĩ khoa ngoại, 3 năm làm bác sĩ
-                  nội thần kinh
-                </li>
-                <li className="list-disc">
-                  Bác sĩ chuyên khoa II, Gây mê hồi sức, Đại học Y Dược, Hà Nội,
-                  Việt Nam, 2020
-                </li>
-              </ul>
-            </div>
+          <div>
+            {isLoading ? (
+              <div>Đang tải...</div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200 border text-gray-700 shadow-md">
+                <thead>
+                  <tr className="bg-gray-100 text-left text-black">
+                    <th className="border-b px-4 py-3 font-semibold">Ngày</th>
+                    <th className="border-b px-4 py-3 font-semibold">
+                      Thời gian
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-[14px]">
+                  {sampleSchedule.map((entry, index) => (
+                    <tr
+                      key={index}
+                      className={`${
+                        entry.time === "Nghỉ" ? "bg-red-200" : "bg-green-200"
+                      } ${index % 2 === 0 ? "bg-opacity-75" : "bg-opacity-50"}`}
+                    >
+                      <td className="border-b px-4 py-3 font-semibold">
+                        {entry.day}
+                      </td>
+                      <td className="border-b px-4 py-3">{entry.time}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </TabsContent>
       </Tabs>
     </div>
   );
 }
-

@@ -23,7 +23,7 @@ export const status = {
   EXAMINED: "Đã khám",
 };
 
-const RECORD_PER_PAGE = 5;
+const RECORD_PER_PAGE = 10;
 
 const AppointmentHistory = () => {
   const location = useLocation();

@@ -4,14 +4,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { serviceApi } from "@/services/servicesApi";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/Pagination";
 import SidebarFilter from "../categoryService/SidebarFilter";
 import NotFound from "@/components/ui/NotFound";
 import Product from "../product/Product";
