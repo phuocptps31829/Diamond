@@ -15,13 +15,7 @@ import {
 import avatarDefault from "@/assets/images/avatar_default.png";
 import Action from "./action";
 
-const statusOptions = [
-  { value: "PENDING", label: "Chờ xác nhận" },
-  { value: "CONFIRMED", label: "Đã xác nhận" },
-  { value: "WAITING", label: "Chờ khám" }, 
-  { value: "EXAMINED", label: "Đã khám" },
-  { value: "CANCELLED", label: "Đã hủy" },
-];
+
 export const getColumnsAppointments = (onChangeStatus, onDelete) => [
   {
     id: "select",
@@ -201,6 +195,12 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       </div>
     ),
     cell: ({ row }) => {
+      const statusOptions = [
+        { value: "PENDING", label: "Chờ xác nhận" },
+        { value: "CONFIRMED", label: row.original.status === "CONFIRMED" ? "Chờ khám" : "Đã xác nhận" },
+        { value: "EXAMINED", label: "Đã khám" },
+        { value: "CANCELLED", label: "Đã hủy" },
+      ];
       return (
         <div className="w-full">
           <Select

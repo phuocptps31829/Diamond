@@ -97,7 +97,7 @@ export default function DataTable({ data }) {
       handleChangeStatus,
       handleDeleteAppointment
     ),
-    pageCount: Math.ceil(data.length / 6),
+    pageCount: Math.ceil(data.length / 7),
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -115,7 +115,7 @@ export default function DataTable({ data }) {
     },
     initialState: {
       pagination: {
-        pageSize: 6,
+        pageSize: 7,
       },
     },
   });

@@ -69,8 +69,7 @@ const BookingInfo = ({ data }) => {
 
   const statusOptions = [
     { value: "PENDING", label: "Chờ xác nhận" },
-    { value: "CONFIRMED", label: "Đã xác nhận" },
-    { value: "WAITING", label: "Chờ khám" }, 
+    { value: "CONFIRMED", label: bookingData.status === "CONFIRMED" ? "Chờ khám" : "Đã xác nhận" },
     { value: "EXAMINED", label: "Đã khám" },
     { value: "CANCELLED", label: "Đã hủy" },
   ];
@@ -263,7 +262,7 @@ const BookingInfo = ({ data }) => {
       }
     }
 
-    console.log(data.medicines, "data.medicines");
+ 
 
     const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
       return total + (medicine.price || 0) * medicine.quantity;
@@ -296,6 +295,8 @@ const BookingInfo = ({ data }) => {
 
     mutation.mutate(dataAll);
   };
+console.log(bookingData, "bookingData");
+
 
   return (
     <div className="mt-8 w-full">
@@ -459,7 +460,7 @@ const BookingInfo = ({ data }) => {
               <strong className="font-medium text-black">
                 Phương thức thanh toán:
               </strong>{" "}
-              {bookingData.payment.method}
+              {bookingData.payment.method === 'COD'? 'Tại phòng khám' : bookingData.payment.method}
             </p>
 
             <div className="flex w-max items-center justify-center gap-2">
@@ -478,7 +479,7 @@ const BookingInfo = ({ data }) => {
                 <Select
                   // disabled={bookingData.prescription}
                   className="w-full"
-                  value={bookingData.status}
+                  value={bookingData.status }
                   onValueChange={handleChangeStatus}
                 >
                   <SelectTrigger className="w-full">
@@ -497,8 +498,8 @@ const BookingInfo = ({ data }) => {
           </div>
         </div>
         <div className="w-full text-end">
-          {!bookingData.prescription &&
-            bookingData.status === "WAITING" &&
+          {
+            bookingData.status === "CONFIRMED" &&
             !isOpenForm && (
               <Button
                 className=""
