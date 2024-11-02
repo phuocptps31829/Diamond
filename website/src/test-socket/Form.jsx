@@ -1,72 +1,57 @@
 import { useEffect, useState } from 'react';
-import { socket } from '../socket';
+import { useSocket } from '@/hooks/useSocket';
 
-const Form = () => {
-    const [isConnected, setIsConnected] = useState(socket.connected);
-    const [fooEvents, setFooEvents] = useState([]);
+const UserChat = () => {
+    const { sendMessage, subscribe, socket } = useSocket('http://localhost:3500');
+    const [messages, setMessages] = useState([]);
     const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log(isConnected, 'socket connected (initial)');
+    useEffect(() => {
+        if (!socket) return;
 
-    const connect = () => {
-        console.log('Connecting...');
-        socket.connect();
-    };
+        const handleNewMessage = (message, type) => {
+            console.log('New message received:', message);
+            setMessages((prevMessages) => [...prevMessages, { type, message }]);
+        };
 
-    const disconnect = () => {
-        console.log('Disconnecting...');
-        socket.disconnect();
-    };
+        const unsubscribeUser = subscribe(
+            'newMessageUser',
+            (data) => handleNewMessage(data.message, 'user', data.room)
+        );
+        const unsubscribeAdmin = subscribe(
+            'newMessageAdmin',
+            (data) => handleNewMessage(data.message, 'admin', data.room)
+        );
+
+        return () => {
+            unsubscribeUser();
+            unsubscribeAdmin();
+        };
+    }, [subscribe, socket]);
 
     const onSubmit = (event) => {
         event.preventDefault();
-        setIsLoading(true);
+        // setIsLoading(true);
 
-        socket.timeout(3000).emit('newMessageClient', value, (err) => {
-            if (err) {
-                console.error('Timeout or error:', err);
-            } else {
-                console.log('Success');
-            }
-            setIsLoading(false);
-        });
+        if (socket) {
+            sendMessage('newMessageUser', value, socket.id, () => {
+                // setIsLoading(false);
+                setValue('');
+            });
+        }
     };
-
-    useEffect(() => {
-        const onConnect = () => {
-            console.log('Connected to socket');
-            setIsConnected(true);
-        };
-
-        const onDisconnect = () => {
-            console.log('Disconnected from socket');
-            setIsConnected(false);
-        };
-
-        const onFooEvent = (value) => {
-            console.log('Received foo event:', value);
-            setFooEvents(previous => [...previous, value]);
-        };
-
-        socket.on('connect', onConnect);
-        socket.on('disconnect', onDisconnect);
-        socket.on('foo', onFooEvent);
-
-        return () => {
-            socket.off('connect', onConnect);
-            socket.off('disconnect', onDisconnect);
-            socket.off('foo', onFooEvent);
-        };
-    }, []);
-
-    console.log(isConnected, 'socket connected (after effect)');
 
     return (
         <div>
             <ul>
-                { fooEvents.map((event, index) => (
-                    <li key={ index }>{ event }</li>
+                { messages.map((message, index) => (
+                    <li
+                        key={ index }
+                        className={ message.type === 'user' ? 'text-red-500' : 'text-blue-500' }
+                    >
+                        { message.message }
+                    </li>
                 )) }
             </ul>
             <form onSubmit={ onSubmit }>
@@ -75,14 +60,10 @@ const Form = () => {
                     value={ value }
                     onChange={ e => setValue(e.target.value) }
                 />
-                <button type="submit" disabled={ isLoading }>Submit</button>
+                <button type="submit" disabled={ isLoading }>Gui</button>
             </form>
-            <>
-                <button onClick={ connect } disabled={ isConnected }>Connect</button>
-                <button onClick={ disconnect } disabled={ !isConnected }>Disconnect</button>
-            </>
         </div>
     );
 };
 
-export default Form;
+export default UserChat;
