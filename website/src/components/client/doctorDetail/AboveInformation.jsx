@@ -4,7 +4,6 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { LuGitBranchPlus } from "react-icons/lu";
 import { FaRegHospital } from "react-icons/fa";
-import { FaUserDoctor } from "react-icons/fa6";
 import { ImProfile } from "react-icons/im";
 import { FaTransgender } from "react-icons/fa6";
 import badgeInternal from "@/assets/images/badgeInternal.png";
@@ -76,13 +75,13 @@ export default function AboveInformation({ doctor, isLoading }) {
     <>
       <div className="mx-auto max-w-screen-xl">
         <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
-          <div className="relative block max-h-[300px] w-full overflow-hidden rounded-lg sm:max-h-[400px] md:max-w-[400px]">
+          <div className="relative block aspect-[4/3] max-w-[500px] w-full overflow-hidden rounded-lg">
             <img
               src={`${URL_IMAGE}/${avatar}`}
-              className="h-full w-full object-cover object-center"
+              className="h-full w-full object-cover object-top"
             />
 
-            <div className="absolute right-2 top-2 z-10 w-9">
+            <div className="absolute right-5 top-5 z-10 w-9">
               <img
                 src={
                   doctor.otherInfo.isInternal ? badgeInternal : badgeExternal
@@ -106,13 +105,6 @@ export default function AboveInformation({ doctor, isLoading }) {
                 Chuyên khoa:
               </strong>
               {doctor.otherInfo?.specialty?.name}
-            </div>
-            <div className="flex text-sm">
-              <FaUserDoctor size={17} className="mr-2" />
-              <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
-                Chức vụ:
-              </strong>
-              Trưởng khoa Tai Mũi Họng
             </div>
             <div className="flex text-sm">
               <ImProfile size={17} className="mr-2" />

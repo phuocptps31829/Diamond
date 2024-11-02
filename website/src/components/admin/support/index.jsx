@@ -49,19 +49,16 @@ const SupportComponent = () => {
       }}
       initial="hidden"
       animate="visible"
-      className="flex h-screen max-h-[550px] max-w-[1500px] overflow-hidden rounded-2xl border text-gray-800 antialiased shadow-md"
+      className="flex h-screen max-h-[550px] max-w-[1500px] overflow-hidden rounded-2xl border-2 border-primary-200 text-gray-800 antialiased shadow-md"
     >
       <div className="flex w-[300px] flex-shrink-0 flex-col bg-gradient-to-t from-[#d6eff9] to-[#bdecff] text-[#F1F7FF]">
-        <div className="relative flex h-20 items-center justify-center border-b-2 border-primary-300">
+        <div className="relative flex h-20 items-center justify-center border-b-2 border-primary-200">
           <Input
             type="text"
             placeholder="Tìm kiếm người dùng..."
             className="h-10 w-[90%] rounded-full bg-white px-4 text-black"
           />
-          <IoSearchSharp
-            size={21}
-            className="absolute right-7 text-black"
-          />
+          <IoSearchSharp size={21} className="absolute right-7 text-black" />
         </div>
         <div className="h-full">
           <div className="scrollable-services min-h-full">
@@ -74,7 +71,7 @@ const SupportComponent = () => {
                   <img
                     src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
                     alt="Chat avatar"
-                    className="h-9 w-9 rounded-full"
+                    className="h-9 w-9 rounded-full border border-primary-800"
                   />
                   <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
                 </div>
@@ -89,7 +86,7 @@ const SupportComponent = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-auto flex-col bg-gradient-to-r bg-white">
+      <div className="flex flex-auto flex-col bg-white bg-gradient-to-r">
         <div className="flex h-full flex-auto flex-shrink-0 flex-col p-4">
           <div className="mb-4 flex h-full flex-col overflow-x-auto">
             <div className="scrollable-services flex min-h-full flex-col py-7">
@@ -97,7 +94,7 @@ const SupportComponent = () => {
                 <div className="grid grid-cols-12 gap-y-5" key={index}>
                   <div className="col-start-1 col-end-8 rounded-lg p-3">
                     <div className="flex flex-row items-center">
-                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-black">
+                      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-primary-800">
                         <img
                           src="https://img.lovepik.com/free-png/20211116/lovepik-customer-service-personnel-icons-png-image_400960942_wh1200.png"
                           alt="Chat avatar"
@@ -120,7 +117,7 @@ const SupportComponent = () => {
                         <img
                           src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
                           alt="Chat avatar"
-                          className="h-full w-full rounded-full border border-black object-cover"
+                          className="h-full w-full rounded-full border border-primary-800 object-cover"
                         />
                       </div>
                       <div className="relative mr-3 rounded-xl bg-primary-600 px-3 py-2 text-sm shadow">

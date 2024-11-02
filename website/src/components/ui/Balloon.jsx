@@ -36,15 +36,17 @@ const Balloon = () => {
 
   return (
     <motion.div
-      className="fixed bottom-32 right-5 flex space-x-4 z-30"
+      className="fixed bottom-32 right-5 z-30 flex space-x-4"
       id="shopping-cart"
       animate={controls}
     >
       <div className="social-button relative" onClick={handleNavigate}>
         <button className="group relative h-16 w-16 rounded-full">
           <div className="floater absolute left-0 top-0 h-full w-full rounded-full bg-primary-800"></div>
-          <div className="icon relative z-10 flex h-full w-full items-center justify-center rounded-full">
-            <FaSuitcaseMedical className="h-7 w-7 text-white duration-300 group-hover:scale-125" />
+          <div
+            className={`${productCount > 0 ? "ring-bell" : ""} icon relative z-10 flex h-full w-full items-center justify-center rounded-full`}
+          >
+            <FaSuitcaseMedical className="h-7 w-7 text-white duration-300 group-hover:scale-110" />
           </div>
         </button>
         {productCount > 0 && (
