@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useSocket } from '@/hooks/useSocket';
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+
 const AdminChat = () => {
-    const { sendMessage, subscribe, socket } = useSocket('http://localhost:3500');
-    const [messages, setMessages] = useState([]);
+    const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
+    const [messages, setMessages] = useState({});
     const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [currentRoom, setCurrentRoom] = useState('');
@@ -17,26 +19,37 @@ const AdminChat = () => {
     useEffect(() => {
         if (!socket) return;
 
-        socket.emit('getActiveRooms');
-
         const handleActiveRooms = (activeRooms) => {
             setRooms(activeRooms);
         };
+        sendEvent('getActiveRooms', null, handleActiveRooms);
 
-        socket.on('activeRooms', handleActiveRooms);
+        const unsubscribeActiveRooms = subscribe('activeRooms', handleActiveRooms);
 
-        return () => {
-            socket.off('activeRooms', handleActiveRooms);
-        };
-    }, [socket]);
+        return () => unsubscribeActiveRooms();
+    }, [socket, subscribe]);
 
-    const handleNewMessage = useCallback((message, type, room) => {
-        console.log('New message received:', message);
-        setMessages((prevMessages) => [...prevMessages, { type, message }]);
+    const handleNewMessage = useCallback((data, type) => {
+        console.log('New message received:', data.message);
         setLatestMessages((prevLatestMessages) => ({
             ...prevLatestMessages,
-            [room]: message,
+            [data.room]: data.message,
         }));
+        setMessages((prevMessages) => {
+            if (prevMessages[data.room]) {
+                return {
+                    ...prevMessages,
+                    [data.room]: [
+                        ...prevMessages[data.room],
+                        { type, message: data.message, name: 'Admin' }
+                    ],
+                };
+            }
+            return {
+                ...prevMessages,
+                [data.room]: [{ type, message: data.message, name: 'Admin' }],
+            };
+        });
     }, []);
 
     useEffect(() => {
@@ -44,11 +57,11 @@ const AdminChat = () => {
 
         const unsubscribeUser = subscribe(
             'newMessageUser',
-            (data) => handleNewMessage(data.message, 'user', data.room)
+            (data) => handleNewMessage(data, 'user')
         );
         const unsubscribeAdmin = subscribe(
             'newMessageAdmin',
-            (data) => handleNewMessage(data.message, 'admin', data.room)
+            (data) => handleNewMessage(data, 'admin')
         );
 
         return () => {
@@ -62,21 +75,21 @@ const AdminChat = () => {
 
         const handlePreviousMessages = (previousMessages) => {
             setMessages(previousMessages);
-            if (previousMessages.length > 0) {
-                const latestMessage = previousMessages[previousMessages.length - 1].message;
-                setLatestMessages((prevLatestMessages) => ({
-                    ...prevLatestMessages,
-                    [currentRoom]: latestMessage,
-                }));
-            }
+
+            const latestMessage = previousMessages[currentRoom]?.[previousMessages[currentRoom].length - 1]?.message;
+
+            setLatestMessages((prevLatestMessages) => ({
+                ...prevLatestMessages,
+                [currentRoom]: latestMessage,
+            }));
         };
 
-        socket.on('previousMessages', handlePreviousMessages);
+        const unsubscribePreviousMessages = subscribe(
+            'previousMessages', handlePreviousMessages
+        );
 
-        return () => {
-            socket.off('previousMessages', handlePreviousMessages);
-        };
-    }, [socket, currentRoom]);
+        return () => unsubscribePreviousMessages();
+    }, [socket, currentRoom, subscribe]);
 
     const joinRoom = (room) => {
         setCurrentRoom(room);
@@ -86,10 +99,15 @@ const AdminChat = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        sendMessage('newMessageAdmin', value, currentRoom, () => {
-            console.log('in admin callback');
-            setValue('');
-        });
+        setIsLoading(true);
+        sendEvent(
+            'newMessageAdmin',
+            { message: value, room: currentRoom, name: 'Admin' },
+            () => {
+                setIsLoading(false);
+                setValue('');
+            }
+        );
     };
 
     return (
@@ -99,20 +117,20 @@ const AdminChat = () => {
                 <ul>
                     { rooms.filter(room => room !== socket?.id).map((room, index) => (
                         <li key={ index } onClick={ () => joinRoom(room) }>
-                            { room } - { latestMessages[room] || 'No messages yet' }
+                            { room }  - { latestMessages[room] || 'Chua co' }
                         </li>
                     )) }
                 </ul>
             </div>
             <ul>
-                { messages.map((message, index) => (
+                { messages[currentRoom] ? messages[currentRoom].map((message, index) => (
                     <li
                         key={ index }
                         className={ message.type === 'user' ? 'text-red-500' : 'text-blue-500' }
                     >
-                        { message.message }
+                        { (message.type === 'user' ? message.name : "Admin") + ": " + message.message }
                     </li>
-                )) }
+                )) : '' }
             </ul>
             <form onSubmit={ onSubmit }>
                 <input

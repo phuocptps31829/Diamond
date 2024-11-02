@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSocket } from '@/hooks/useSocket';
 
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+const userName = "Chinh";
+
 const UserChat = () => {
-    const { sendMessage, subscribe, socket } = useSocket('http://localhost:3500');
+    const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
     const [messages, setMessages] = useState([]);
     const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -10,18 +13,22 @@ const UserChat = () => {
     useEffect(() => {
         if (!socket) return;
 
-        const handleNewMessage = (message, type) => {
+        const handleNewMessage = (message, type, name) => {
             console.log('New message received:', message);
-            setMessages((prevMessages) => [...prevMessages, { type, message }]);
+            setMessages((prevMessages) => [...prevMessages, {
+                type,
+                name,
+                message
+            }]);
         };
 
         const unsubscribeUser = subscribe(
             'newMessageUser',
-            (data) => handleNewMessage(data.message, 'user', data.room)
+            (data) => handleNewMessage(data.message, 'user', data.name)
         );
         const unsubscribeAdmin = subscribe(
             'newMessageAdmin',
-            (data) => handleNewMessage(data.message, 'admin', data.room)
+            (data) => handleNewMessage(data.message, 'admin', data.name)
         );
 
         return () => {
@@ -32,13 +39,17 @@ const UserChat = () => {
 
     const onSubmit = (event) => {
         event.preventDefault();
-        // setIsLoading(true);
+        setIsLoading(true);
 
         if (socket) {
-            sendMessage('newMessageUser', value, socket.id, () => {
-                // setIsLoading(false);
-                setValue('');
-            });
+            sendEvent(
+                'newMessageUser',
+                { message: value, room: socket.id, name: userName },
+                () => {
+                    setIsLoading(false);
+                    setValue('');
+                }
+            );
         }
     };
 
@@ -50,7 +61,7 @@ const UserChat = () => {
                         key={ index }
                         className={ message.type === 'user' ? 'text-red-500' : 'text-blue-500' }
                     >
-                        { message.message }
+                        { (message.type === 'user' ? message.name : "Admin") + ": " + message.message }
                     </li>
                 )) }
             </ul>

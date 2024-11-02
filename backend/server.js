@@ -30,34 +30,52 @@ io.on('connection', (socket) => {
             activeRooms.push(room);
         }
         console.log(`Socket ${socket.id} joined room ${room}`);
-        socket.emit('previousMessages', roomMessages[room] || []);
+        console.log("roomMessages:", roomMessages);
+        socket.emit('previousMessages', { [room]: roomMessages[room] || [] });
+        // io.emit('activeRooms', getActiveRoomsSocket(io));
+    });
+
+    socket.on('newMessageUser', (data, callback) => {
+        console.log('Received newMessageUser:', data.message, 'in room:', data.room);
+        console.log('callback', callback);
+        if (callback && typeof callback === 'function') {
+            callback();
+        }
+        if (!roomMessages[data.room]) {
+            roomMessages[data.room] = [];
+        }
+        roomMessages[data.room].push({
+            type: 'user',
+            message: data.message,
+            name: data.name
+        });
+        console.log("roomMessages:", roomMessages);
+
         io.emit('activeRooms', getActiveRoomsSocket(io));
+        io.to(data.room).emit('newMessageUser', {
+            message: data.message,
+            room: data.room,
+            name: data.name
+        });
     });
 
-    socket.on('newMessageUser', (data, room, callback) => {
-        console.log('Received newMessageUser:', data, 'in room:', room);
+    socket.on('newMessageAdmin', (data, callback) => {
+        console.log('Received newMessageAdmin:', data.message, 'in room:', data.room);
         if (callback && typeof callback === 'function') {
-            callback('Message received successfully');
+            callback();
         }
-        if (!roomMessages[room]) {
-            roomMessages[room] = [];
+        if (!roomMessages[data.room]) {
+            roomMessages[data.room] = [];
         }
-        roomMessages[room].push({ type: 'user', message: data });
-        socket.join(room);
-        io.to(room).emit('newMessageUser', { message: data, room });
-        io.emit('activeRooms', getActiveRoomsSocket(io)); // Emit updated active rooms
-    });
-
-    socket.on('newMessageAdmin', (data, room, callback) => {
-        console.log('Received newMessageAdmin:', data, 'in room:', room);
-        if (callback && typeof callback === 'function') {
-            callback('Message received successfully');
-        }
-        if (!roomMessages[room]) {
-            roomMessages[room] = [];
-        }
-        roomMessages[room].push({ type: 'admin', message: data });
-        io.to(room).emit('newMessageAdmin', { message: data, room });
+        roomMessages[data.room].push({
+            type: 'admin',
+            message: data.message,
+            name: data.name
+        });
+        io.to(data.room).emit('newMessageAdmin', {
+            message: data.message,
+            room: data.room
+        });
     });
 
     socket.on('disconnect', () => {

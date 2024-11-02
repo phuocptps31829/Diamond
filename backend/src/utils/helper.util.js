@@ -256,8 +256,7 @@ function getActiveRoomsSocket(io) {
     // Return only the room name: 
     // ==> ['room1', 'room2']
     const res = arr.map(i => i[0]);
-    console.log(res);
-    console.log(`Liste des rooms actives : ${res}`);
+    console.log(`List des rooms actives : ${res}`);
     return res;
 }
 

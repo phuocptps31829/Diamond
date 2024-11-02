@@ -26,9 +26,9 @@ export const useSocket = (url, options = {}) => {
         };
     }, [url, stableOptions]);
 
-    const sendMessage = useCallback((event, message, callback) => {
+    const sendEvent = useCallback((event, data, callback) => {
         if (socket) {
-            socket.emit(event, message, callback);
+            socket.emit(event, data, callback);
         }
     }, [socket]);
 
@@ -44,5 +44,5 @@ export const useSocket = (url, options = {}) => {
         };
     }, [socket]);
 
-    return { socket, isConnected, sendMessage, subscribe };
+    return { socket, isConnected, sendEvent, subscribe };
 };
