@@ -69,7 +69,10 @@ const BookingInfo = ({ data }) => {
 
   const statusOptions = [
     { value: "PENDING", label: "Chờ xác nhận" },
-    { value: "CONFIRMED", label: bookingData.status === "CONFIRMED" ? "Chờ khám" : "Đã xác nhận" },
+    {
+      value: "CONFIRMED",
+      label: bookingData.status === "CONFIRMED" ? "Chờ khám" : "Đã xác nhận",
+    },
     { value: "EXAMINED", label: "Đã khám" },
     { value: "CANCELLED", label: "Đã hủy" },
   ];
@@ -205,7 +208,7 @@ const BookingInfo = ({ data }) => {
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công kết quả khám!", "success");
       setIsOpenForm(false);
-
+      handleChangeStatus("EXAMINED");
       reset();
     },
     onError: (error) => {
@@ -262,8 +265,6 @@ const BookingInfo = ({ data }) => {
       }
     }
 
- 
-
     const totalMedicinePrice = data.medicines.reduce((total, medicine) => {
       return total + (medicine.price || 0) * medicine.quantity;
     }, 0);
@@ -295,8 +296,7 @@ const BookingInfo = ({ data }) => {
 
     mutation.mutate(dataAll);
   };
-console.log(bookingData, "bookingData");
-
+  console.log(bookingData, "bookingData");
 
   return (
     <div className="mt-8 w-full">
@@ -408,15 +408,18 @@ console.log(bookingData, "bookingData");
                           : bookingData.service.name}
                       </p>
                       {bookingData.medicalPackage ? (
-                        <p className="text-[14px] ">
+                        <p className="text-[14px]">
                           Cấp độ:{" "}
                           <span className="text-primary-500">
                             {bookingData.medicalPackage.level.name}
                           </span>{" "}
-                          - Giá: {formatCurrency(bookingData.medicalPackage.level.price)}
+                          - Giá:{" "}
+                          {formatCurrency(
+                            bookingData.medicalPackage.level.price
+                          )}
                         </p>
                       ) : (
-                        <p className="text-[14px] ">
+                        <p className="text-[14px]">
                           Giá: {formatCurrency(bookingData.service.price)}
                         </p>
                       )}
@@ -460,7 +463,9 @@ console.log(bookingData, "bookingData");
               <strong className="font-medium text-black">
                 Phương thức thanh toán:
               </strong>{" "}
-              {bookingData.payment.method === 'COD'? 'Tại phòng khám' : bookingData.payment.method}
+              {bookingData.payment.method === "COD"
+                ? "Tại phòng khám"
+                : bookingData.payment.method}
             </p>
 
             <div className="flex w-max items-center justify-center gap-2">
@@ -477,9 +482,12 @@ console.log(bookingData, "bookingData");
               <strong className="font-medium text-black">Trạng thái :</strong>
               <div className=" ">
                 <Select
-                  // disabled={bookingData.prescription}
+                 disabled={
+                  bookingData.status === "CANCELLED" ||
+                  bookingData.status === "EXAMINED"
+                }
                   className="w-full"
-                  value={bookingData.status }
+                  value={bookingData.status}
                   onValueChange={handleChangeStatus}
                 >
                   <SelectTrigger className="w-full">
@@ -498,216 +506,191 @@ console.log(bookingData, "bookingData");
           </div>
         </div>
         <div className="w-full text-end">
-          {
-            bookingData.status === "CONFIRMED" &&
-            !isOpenForm && (
-              <Button
-                className=""
-                variant="custom"
-                onClick={() => {
-                  if (bookingData.medicalPackage) {
-                    setIsOpenForm("MedicalPackage");
-                  } else {
-                    setIsOpenForm("Service");
-                  }
-                }}
-              >
-                Thêm kết quả
-              </Button>
-            )}
+          {bookingData.status === "CONFIRMED" && !isOpenForm && (
+            <Button
+              className=""
+              variant="custom"
+              onClick={() => {
+                if (bookingData.medicalPackage) {
+                  setIsOpenForm("MedicalPackage");
+                } else {
+                  setIsOpenForm("Service");
+                }
+              }}
+            >
+              Thêm kết quả
+            </Button>
+          )}
         </div>
 
         {/* Prescription Section */}
-        {bookingData.prescription && (
+        {bookingData.results.length > 0 && (
           <div className="">
-            <h2 className="text-lg font-semibold text-gray-700">Đơn thuốc:</h2>
+            <h2 className="text-lg font-semibold text-gray-700">
+              Kết quả khám bệnh:
+            </h2>
+            <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[500px] overflow-y-auto scroll-smooth">
+              {bookingData.results.map((result) => (
+                <div
+                  key={result._id}
+                  className="m-4 mx-1 rounded-md border-2 border-dashed border-primary-200 px-4"
+                >
+                  <div className="flex items-center justify-center gap-5 py-2">
+                    <div className="w-[40%] border-r border-gray-300">
+                      <div className="my-4">
+                        <strong>Dịch vụ:</strong>{" "}
+                        <span className="text-primary-500">
+                          {result.service.name || "Không có dịch vụ"}
+                        </span>
+                      </div>
+                      <div className="my-4">
+                        <strong>Chẩn đoán:</strong>{" "}
+                        {result.diagnose || "Chưa có kết quả"}
+                      </div>
+                      <div className="my-4">
+                        <strong>Mô tả:</strong>{" "}
+                        {result.description || "Không có mô tả"}
+                      </div>
+                    </div>
 
-            <div className="my-6 mt-1 rounded-md border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-4">
-              <div className="flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
-                <IoBulbOutline className="text-xl text-yellow-500" />
-                <strong className="font-medium text-primary-900">
-                  Lời khuyên :
-                </strong>{" "}
-              </div>
-              <span className="my-3 ml-1 block text-gray-700">
-                {bookingData.prescription.advice}
-              </span>
-              <div className="my-2 flex items-center justify-start">
-                <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
-                  <GiMedicines className="text-xl text-red-500" />
-                  <strong className="font-medium text-primary-900">
-                    Thuốc kê :
-                  </strong>{" "}
-                </div>
-              </div>
-              <ul className="ml-4">
-                {data.prescription.medicines.map((medicine, i) => (
-                  <React.Fragment key={medicine._id}>
-                    {i !== 0 && (
-                      <div className="my-3 border border-dashed border-primary-200"></div>
-                    )}
-                    <li className="mt-2 flex flex-col gap-2">
-                      <ul className="ml-4 list-disc text-gray-600">
-                        <li>
-                          <strong className="font-medium text-black">
-                            Tên thuốc:
+                    <div className="my-4 w-[60%]">
+                      <strong>Hình ảnh liên quan:</strong>
+                      <div className="mx-auto my-3 mt-2 flex max-h-64 flex-wrap gap-4 overflow-y-auto">
+                        {Array.isArray(result.images) &&
+                        result.images.length > 0 ? (
+                          result.images.map((image, imgIndex) => (
+                            <div key={imgIndex} className="flex">
+                              <img
+                                src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
+                                alt={`Kết quả khám bệnh ${imgIndex}`}
+                                className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
+                                onClick={() => handleOpen(image)}
+                                loading="lazy"
+                              />
+                            </div>
+                          ))
+                        ) : (
+                          <p>Không có hình ảnh</p>
+                        )}
+                        {selectedImage && (
+                          <Dialog open={open} onOpenChange={setOpen}>
+                            <DialogContent className="max-w-[1000px]">
+                              <DialogHeader>
+                                <DialogTitle>Hình ảnh lớn</DialogTitle>
+                              </DialogHeader>
+                              <img
+                                src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
+                                alt="Hình ảnh lớn"
+                                className="large-thumbnail h-auto w-full"
+                              />
+                            </DialogContent>
+                          </Dialog>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {result.prescription && (
+                    <div className="my-6 mt-1 rounded-md border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-4">
+                      <div className="flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+                        <IoBulbOutline className="text-xl text-yellow-500" />
+                        <strong className="font-medium text-primary-900">
+                          Lời khuyên :
+                        </strong>{" "}
+                      </div>
+                      <span className="my-3 ml-1 block text-gray-700">
+                        {result.prescription.advice}
+                      </span>
+                      <div className="my-2 flex items-center justify-start">
+                        <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+                          <GiMedicines className="text-xl text-red-500" />
+                          <strong className="font-medium text-primary-900">
+                            Thuốc kê :
                           </strong>{" "}
-                          {medicine.name} - {medicine.unit}
-                        </li>
-                        <li>
-                          <strong className="font-medium text-black">
-                            Thành phần:
-                          </strong>{" "}
-                          {medicine.ingredients}
-                        </li>
-                        <li>
-                          <strong className="font-medium text-black">
-                            Hướng dẫn:
-                          </strong>{" "}
-                          {medicine.instruction}
-                        </li>
-                        <li>
-                          <strong className="font-medium text-black">
-                            Tác dụng phụ:
-                          </strong>{" "}
-                          {medicine.sideEffects}
-                        </li>
-                        <li className="text-black">
-                          <strong className="font-medium text-black">
-                            Lưu ý:
-                          </strong>{" "}
-                          <span className="text-red-500"> {medicine.note}</span>
-                        </li>
+                        </div>
+                      </div>
+                      <ul className="ml-4">
+                        {result.prescription.medicines.map((medicine, i) => (
+                          <React.Fragment key={medicine._id}>
+                            {i !== 0 && (
+                              <div className="my-3 border border-dashed border-primary-200"></div>
+                            )}
+                            <li className="mt-2 flex flex-col gap-2">
+                              <ul className="ml-4 list-disc text-gray-600">
+                                <li>
+                                  <strong className="font-medium text-black">
+                                    Tên thuốc:
+                                  </strong>{" "}
+                                  {medicine.name} - {medicine.unit}
+                                </li>
+                                <li>
+                                  <strong className="font-medium text-black">
+                                    Thành phần:
+                                  </strong>{" "}
+                                  {medicine.ingredients}
+                                </li>
+                                <li>
+                                  <strong className="font-medium text-black">
+                                    Hướng dẫn:
+                                  </strong>{" "}
+                                  {medicine.instruction}
+                                </li>
+                                <li>
+                                  <strong className="font-medium text-black">
+                                    Tác dụng phụ:
+                                  </strong>{" "}
+                                  {medicine.sideEffects}
+                                </li>
+                                <li className="text-black">
+                                  <strong className="font-medium text-black">
+                                    Lưu ý:
+                                  </strong>{" "}
+                                  <span className="text-red-500">
+                                    {" "}
+                                    {medicine.note}
+                                  </span>
+                                </li>
+                              </ul>
+                            </li>
+                          </React.Fragment>
+                        ))}
                       </ul>
-                    </li>
-                  </React.Fragment>
-                ))}
-              </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-            <div className="flex w-full items-center justify-between">
-              <div className="">
-                {bookingData.prescription && (
-                  <Button className="" variant="custom">
-                    Thêm lịch tái khám
-                  </Button>
-                )}
-              </div>
-              <div className="">
-                {" "}
+            <div className="mt-5 w-full text-end">
+              {bookingData.results.length > 0 && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button
-                      variant={
-                        bookingData.payment.status === "PENDING"
-                          ? "outline"
-                          : "custom"
-                      }
-                      className=""
-                    >
-                      Xem kết quả
+                    <Button variant="custom" className="ml-2">
+                      Thanh toán
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="!max-w-6xl">
+                  <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Kết quả khám bệnh</AlertDialogTitle>
+                      <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
                       <AlertDialogDescription>
-                        <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto">
-                          {bookingData.results.map((result) => (
-                            <div
-                              key={result._id}
-                              className="m-4 mx-1 rounded-md border-2 border-dashed border-primary-200 px-4"
-                            >
-                              <div className="my-4">
-                                <strong>Dịch vụ:</strong>{" "}
-                                <span className="text-primary-500">
-                                  {result.service.name || "Không có dịch vụ"}
-                                </span>
-                              </div>
-                              <div className="my-4">
-                                <strong>Chẩn đoán:</strong>{" "}
-                                {result.diagnose || "Chưa có kết quả"}
-                              </div>
-                              <div className="my-4">
-                                <strong>Mô tả:</strong>{" "}
-                                {result.description || "Không có mô tả"}
-                              </div>
-                              <div className="my-4">
-                                <strong>Hình ảnh liên quan:</strong>
-                                <div className="mx-auto my-3 flex flex-wrap gap-4">
-                                  {Array.isArray(result.images) &&
-                                  result.images.length > 0 ? (
-                                    result.images.map((image, imgIndex) => (
-                                      <div key={imgIndex}>
-                                        <img
-                                          src={`${import.meta.env.VITE_IMAGE_API_URL}/${image}`}
-                                          alt={`Kết quả khám bệnh ${imgIndex}`}
-                                          className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
-                                          onClick={() => handleOpen(image)}
-                                        />
-                                      </div>
-                                    ))
-                                  ) : (
-                                    <p>Không có hình ảnh</p>
-                                  )}
-                                  {selectedImage && (
-                                    <Dialog open={open} onOpenChange={setOpen}>
-                                      <DialogContent className="max-w-[1000px]">
-                                        <DialogHeader>
-                                          <DialogTitle>
-                                            Hình ảnh lớn
-                                          </DialogTitle>
-                                        </DialogHeader>
-                                        <img
-                                          src={`${import.meta.env.VITE_IMAGE_API_URL}/${selectedImage}`}
-                                          alt="Hình ảnh lớn"
-                                          className="large-thumbnail h-auto w-full"
-                                        />
-                                      </DialogContent>
-                                    </Dialog>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                        Bạn có chắc chắn muốn thanh toán{" "}
+                        <span className="font-bold text-black">
+                          {formatCurrency(
+                            bookingData.invoice.price +
+                              bookingData.invoice.arisePrice
+                          )}
+                        </span>{" "}
+                        đơn khám bệnh này không?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Đóng</AlertDialogCancel>
+                      <AlertDialogCancel>Hủy</AlertDialogCancel>
+                      <AlertDialogAction onClick={handlePayment}>
+                        Xác nhận
+                      </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                {bookingData.payment.status === "PENDING" && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="custom" className="ml-2">
-                        Thanh toán
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Bạn có chắc chắn muốn thanh toán{" "}
-                          <span className="font-bold text-black">
-                            {formatCurrency(
-                              bookingData.invoice.price +
-                                bookingData.invoice.arisePrice
-                            )}
-                          </span>{" "}
-                          đơn khám bệnh này không?
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Hủy</AlertDialogCancel>
-                        <AlertDialogAction onClick={handlePayment}>
-                          Xác nhận
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -928,6 +911,7 @@ console.log(bookingData, "bookingData");
         <MedicalPackageBooking
           bookingData={bookingData}
           handleCloseForm={handleCloseForm}
+          handleChangeStatus={handleChangeStatus}
         />
       )}
     </div>
