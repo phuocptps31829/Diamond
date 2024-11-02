@@ -20,7 +20,6 @@ const NewsList = () => {
     return <NotFound />;
   }
 
-  console.log("data: ", data);
 
   return <DataTable columns={columns} data={data} />;
 };

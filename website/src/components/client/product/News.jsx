@@ -10,7 +10,7 @@ export default function NewsProduct({
   shortDescription,
 }) {
   return (
-    <div className="h-full overflow-hidden rounded-xl bg-[#ffffff84] shadow-sm">
+    <div className="h-full overflow-hidden rounded-xl bg-white shadow-sm">
       <Link
         to={`/new/${slug}`}
         className="block gap-4 overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid"

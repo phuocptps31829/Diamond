@@ -1,22 +1,26 @@
 export const roles = [
     {
-        value: "STAFF",
-        label: "Nhân viên Y tế",
-    },
-    {
-        value: "EDITOR",
-        label: "Editor",
-    },
-    {
-        value: "DOCTOR",
-        label: "Bác sĩ",
+        value: "SUPER_ADMIN",
+        label: "Super Admin",
     },
     {
         value: "ADMIN",
         label: "Admin",
     },
     {
-        value: "SUPER_ADMIN",
-        label: "Super Admin",
+        value: "DOCTOR",
+        label: "Bác sĩ",
+    },
+    {
+        value: "STAFF_ACCOUNTANT",
+        label: "Nhân viên Kế toán",
+    },
+    {
+        value: "STAFF_RECEPTIONIST",
+        label: "Nhân viên Lễ tân",
+    },
+    {
+        value: "STAFF_EDITOR",
+        label: "Nhân viên Editor",
     },
 ];

@@ -22,7 +22,7 @@ const UserProfileLayout = () => {
       Cookies.set("refreshToken", queryRefreshToken, {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });
-      navigate('/profile');
+      navigate('/profile/information');
     }
   }, [navigate, searchParams, queryAccessToken, queryRefreshToken, dispatch]);
 
@@ -38,7 +38,7 @@ const UserProfileLayout = () => {
             </div>
           </div>
           <div className="col-span-12 md:col-span-9">
-            <div className="grid grid-cols-1 gap-5 rounded-xl bg-white sm:grid-cols-1 lg:grid-cols-1">
+            <div className="grid grid-cols-1 gap-5 rounded-xl min-h-full bg-white sm:grid-cols-1 lg:grid-cols-1">
               <Outlet />
             </div>
           </div>

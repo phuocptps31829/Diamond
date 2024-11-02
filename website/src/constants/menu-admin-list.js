@@ -10,6 +10,7 @@ import { FcDepartment } from "react-icons/fc";
 import { IoSettingsSharp } from "react-icons/io5";
 import { CgAlignLeft } from "react-icons/cg";
 import { GiMedicines } from "react-icons/gi";
+import { BiSupport } from "react-icons/bi";
 
 export const getMenuList = (pathname) => [
   {
@@ -32,6 +33,26 @@ export const getMenuList = (pathname) => [
             href: "/admin/doctordashboard",
             label: "Bảng điều khiển bác sĩ",
             active: pathname.includes("/admin/doctordashboard"),
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    menus: [
+      {
+        href: "/admin/support",
+        label: "Hỗ trợ trực tuyến",
+        active: pathname.includes("/admin/support"),
+        icon: BiSupport,
+        submenus: [
+          {
+            href: "/admin/support",
+            label: "Quản lý tin nhắn",
+            exceptRoles: ["DOCTOR"],
+            active: pathname.includes("/admin/support"),
           },
         ],
       },
@@ -131,7 +152,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN"],
     menus: [
       {
         href: "",
@@ -221,6 +242,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/appointments/create",
             label: "Thêm lịch đặt",
+            exceptRoles: ["DOCTOR"],
             active: pathname === "/admin/appointments/create",
           },
         ],
@@ -245,6 +267,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/schedules/details",
             label: "Thêm lịch làm việc",
+            exceptRoles: ["DOCTOR"],
             active: pathname === "/admin/schedules/details",
           },
         ],

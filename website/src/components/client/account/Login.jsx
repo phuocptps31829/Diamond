@@ -42,7 +42,7 @@ export default function LoginComponent() {
       Cookies.set('refreshToken', data.refreshToken.token, {
         expires: new Date(data.refreshToken.expires * 1000)
       });
-      navigate('/profile');
+      navigate('/profile/information');
     },
     onError: (error) => {
       console.log(error);

@@ -78,8 +78,10 @@ const UserNav = () => {
                   </div>
                   <Avatar>
                     <img
-                      src="https://github.com/shadcn.png"
-                      alt="Doctor"
+                      src={ userProfile?.avatar
+                        ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
+                        : 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png' }
+                      alt={ userProfile?.fullName }
                       className="h-10 w-10 rounded-full"
                     />
                   </Avatar>

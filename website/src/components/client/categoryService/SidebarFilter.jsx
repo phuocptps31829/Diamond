@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { getAllSpecialties } from "@/services/specialtiesApi";
+import { getAllSpecialties, specialtyApi } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -69,7 +69,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
     isLoading: specialtiesLoading,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: () => getAllSpecialties(),
+    queryFn: specialtyApi.getAllSpecialties,
   });
 
   const {

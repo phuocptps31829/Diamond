@@ -41,7 +41,7 @@ export default function DataTableSchedule({ workSchedules }) {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 7,
     });
     const [searchValue, setSearchValue] = useState("");
     const [debouncedSearchValue] = useDebounce(searchValue, 500);
@@ -169,7 +169,7 @@ export default function DataTableSchedule({ workSchedules }) {
                                     colSpan={ columnsSchedule.length }
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    Không có kết quả.
                                 </TableCell>
                             </TableRow>
                         ) }

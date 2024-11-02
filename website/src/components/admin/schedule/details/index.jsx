@@ -12,6 +12,8 @@ import {
 } from '@schedule-x/calendar';
 import '@schedule-x/theme-default/dist/index.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const eventsServicePlugin = createEventsServicePlugin();
 const calendarControls = createCalendarControlsPlugin();
@@ -20,7 +22,8 @@ const getConfigCalendarSchedule = (
     allSchedules,
     navigate,
     setSearchParams,
-    doctorID) => {
+    doctorID,
+    canDragDrop) => {
     return {
         views: [
             createViewDay(),
@@ -41,7 +44,7 @@ const getConfigCalendarSchedule = (
         },
         locale: 'vi-VN',
         plugins: [
-            createDragAndDropPlugin(),
+            canDragDrop && createDragAndDropPlugin(),
             createEventModalPlugin(),
             eventsServicePlugin,
             calendarControls
@@ -165,6 +168,8 @@ const getConfigCalendarSchedule = (
 function CalendarSchedule({ doctorID, defaultEvents }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
+    const userProfile = useSelector(state => state.auth.userProfile);
+    const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_ADMIN;
 
     const allSchedules = defaultEvents?.map(event => ({
         id: event._id,
@@ -173,13 +178,13 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
         end: `${event.day} ${event.hour.endTime}`,
     }));
 
-    console.log('render');
     const calendar = useCalendarApp(
         getConfigCalendarSchedule(
             allSchedules,
             navigate,
             setSearchParams,
-            doctorID
+            doctorID,
+            canDragDrop
         )
     );
 
@@ -187,7 +192,7 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
 
     if (defaultEvents?.length) {
         defaultEvents?.forEach(event => {
-            eventsServicePlugin.add({
+            eventsServicePlugin?.add({
                 id: event._id,
                 title: event.clinic.name,
                 start: `${event.day} ${event.hour.startTime}`,

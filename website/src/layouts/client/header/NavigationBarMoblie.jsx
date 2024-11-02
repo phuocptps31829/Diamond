@@ -5,8 +5,9 @@ import { FaNotesMedical } from "react-icons/fa";
 import { FaBriefcaseMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoMdContacts } from "react-icons/io";
 import { LiaInfoSolid } from "react-icons/lia";
-import { NavbarContext } from "../../../contexts/NavBarContext";
+import { NavbarContext } from "@/contexts/NavBarContext";
 import { useSelector } from "react-redux";
+import brandLogo from "@/assets/images/brandLogo.png";
 export default function NavigationBarMobile() {
   const { isNavbarVisible, setIsNavbarVisible, toggleNavbar } =
     useContext(NavbarContext);
@@ -63,11 +64,7 @@ export default function NavigationBarMobile() {
               to={ "/" }
               className="relative w-44 items-center"
             >
-              <img
-                src="https://ykhoadiamond.com/images/icons/logo.png"
-                alt="Logo"
-                className="w-full"
-              />
+              <img src={ brandLogo } alt="Logo" className="w-full" />
             </Link>
             <span className="cursor-pointer" onClick={ toggleNavbar }>
               <IoCloseSharp className="text-3xl" />

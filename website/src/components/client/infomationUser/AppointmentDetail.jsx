@@ -4,6 +4,8 @@ import { formatCurrency, formatDateTimeLocale } from "@/utils/format";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { status } from "./AppointmentHistory";
+import ResultDialog from "./dialogs/ResultDialog";
+import AppointmentDetailSkeleton from "./skeletons/AppointmentDetailSkeleton";
 
 const AppointmentDetail = () => {
   const { id } = useParams();
@@ -19,7 +21,7 @@ const AppointmentDetail = () => {
   const product = appointment?.service || appointment?.medicalPackage;
 
   if (isLoading) {
-    return;
+    return <AppointmentDetailSkeleton />;
   }
 
   return (
@@ -87,18 +89,25 @@ const AppointmentDetail = () => {
           </TableRow>
           <TableRow>
             <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
-              Hình ảnh chuẩn đoán
+              Kết quả khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { }
+              <ResultDialog
+                trigger={
+                  <p className="text-blue-500 underline cursor-pointer">Xem kết quả</p>
+                }
+                appointment={ appointment }
+              />
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
-              Kết quả khám
+              Chi tiết bệnh án
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { }
+              <p className="text-blue-500 underline cursor-pointer">
+                Xem chi tiết
+              </p>
             </TableCell>
           </TableRow>
         </TableBody>

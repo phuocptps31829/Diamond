@@ -183,7 +183,7 @@ export default function DataTable({ data, columns, branchData }) {
                   colSpan={ columns.length }
                   className="h-24 text-center "
                 >
-                  No results.
+                  Không có kết quả.
                 </TableCell>
               </TableRow>
             ) }
