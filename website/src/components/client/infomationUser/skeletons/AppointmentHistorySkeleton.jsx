@@ -1,24 +1,10 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Table, TableBody, TableCell, TableRow, TableHeader, TableHead } from "@/components/ui/Table";
 
-
 const AppointmentHistorySkeleton = () => {
 
   return (
-    <div className="p-3 md:p-6">
-      <div className="flex items-end justify-between mb-6">
-        <Skeleton className="h-6 w-60 rounded-md" />
-        <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-end">
-          <div className="flex items-center gap-3 md:flex-row">
-            <div className="relative items-center justify-center md:flex">
-              <Skeleton className="h-6 w-40 rounded-md" />
-            </div>
-            <div className="relative items-center justify-center md:flex">
-              <Skeleton className="h-6 w-40 rounded-md" />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="px-3 md:px-6 pb-3 md:pb-6">
       <Table>
         <TableHeader className="bg-gray-100">
           <TableRow>

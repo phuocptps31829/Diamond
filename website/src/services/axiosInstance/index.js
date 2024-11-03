@@ -24,6 +24,17 @@ export const axiosInstanceIMG = axios.create({
 });
 
 const interceptors = (axiosInstance) => {
+  let isRefreshing = false;
+  let refreshSubscribers = [];
+
+  function onRefreshed(token) {
+    refreshSubscribers.map(callback => callback(token));
+  }
+
+  function addRefreshSubscriber(callback) {
+    refreshSubscribers.push(callback);
+  }
+
   axiosInstance.interceptors.request.use((config) => {
     const accessToken = Cookies.get('accessToken');
 
@@ -38,36 +49,50 @@ const interceptors = (axiosInstance) => {
 
   axiosInstance.interceptors.response.use(res => res, async err => {
     const originalRequest = err.config;
-
     const refreshToken = Cookies.get('refreshToken');
 
     if (refreshToken) {
-      if (err.response && err.response.status === 403) {
-        Cookies.remove("refreshToken");
-      }
-
       if (err.response && err.response.status === 401 && !originalRequest._retry) {
+        if (isRefreshing) {
+          return new Promise((resolve) => {
+            addRefreshSubscriber(token => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              resolve(axiosInstance(originalRequest));
+            });
+          });
+        }
+
         originalRequest._retry = true;
+        isRefreshing = true;
 
         try {
           const response = await authApi.refreshToken(refreshToken);
-          Cookies.set('accessToken', response.data.accessToken.token, {
+          const newAccessToken = response.data.accessToken.token;
+          const newRefreshToken = response.data.refreshToken.token;
+
+          Cookies.set('accessToken', newAccessToken, {
             expires: new Date(response.data.accessToken.expires * 1000)
           });
-          Cookies.set('refreshToken', response.data.refreshToken.token, {
+          Cookies.set('refreshToken', newRefreshToken, {
             expires: new Date(response.data.refreshToken.expires * 1000)
           });
 
-          originalRequest.headers["Authorization"] = 'Bearer ' + response.data.accessToken.token;
+          axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          isRefreshing = false;
+          onRefreshed(newAccessToken);
+          refreshSubscribers = [];
 
           return axiosInstance(originalRequest);
-        } catch (error) {
-          return Promise.reject(err);
+        } catch (refreshError) {
+          isRefreshing = false;
+          refreshSubscribers = [];
+          return Promise.reject(refreshError);
         }
       }
     }
 
-    throw err;
+    return Promise.reject(err);
   });
 };
 

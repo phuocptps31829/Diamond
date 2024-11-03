@@ -257,9 +257,11 @@ const UserInfoForm = () => {
           </div>
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
-            <Avatar className="size-36">
-              <AvatarImage src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-cover" />
-            </Avatar>
+            <div className="size-36">
+              <img
+                alt={ profileFetched?.data?.fullName }
+                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-cover" />
+            </div>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">
               <Label htmlFor="picture" className="mb-1.5 block">

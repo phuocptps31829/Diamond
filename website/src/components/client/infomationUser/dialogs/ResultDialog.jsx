@@ -32,7 +32,7 @@ const ResultDialog = ({ trigger, appointment }) => {
             Thời gian: { formatDateTimeLocale(appointment?.time) }
           </DialogDescription>
         </DialogHeader>
-        <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto">
+        <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] overflow-y-auto flex flex-col gap-4">
           { appointment?.results?.length ? appointment.results.map((result) => (
             <div
               key={ result._id }

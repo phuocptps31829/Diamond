@@ -21,7 +21,17 @@ const checkValidId = (req, res, next) => {
 };
 const checkValueQuery = (req, res, next) => {
     try {
-        let { doctorID = null, branchID = null, specialtyID = null, gender = null, startDay = null, endDay = null, date = null, time = null } = req.query;
+        let {
+            doctorID = null,
+            branchID = null,
+            specialtyID = null,
+            gender = null,
+            startDay = null,
+            endDay = new Date().toISOString().slice(0, 10),
+            date = null,
+            time = null
+        } = req.query;
+
         const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
         const timeRegex = /^[0-9]{4}$/;
         if (time) {

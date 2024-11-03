@@ -11,7 +11,12 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
 
-export default function SelectDate({ control, name, errors, label }) {
+export default function SelectDate({
+  control,
+  name,
+  label,
+  onChange
+}) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -26,9 +31,8 @@ export default function SelectDate({ control, name, errors, label }) {
               <Button
                 variant={ "outline" }
                 className={ cn(
-                  "w-full justify-start py-[21px] text-left font-normal",
+                  "w-full justify-start py-[16px] text-left font-normal",
                   !field.value && "text-muted-foreground",
-                  errors[name] && "border-red-500"
                 ) }
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
@@ -47,6 +51,7 @@ export default function SelectDate({ control, name, errors, label }) {
                   if (selectedDate) {
                     const formattedDate = format(selectedDate, "yyyy-MM-dd");
                     field.onChange(formattedDate);
+                    onChange(formattedDate);
                   }
                 } }
                 initialFocus

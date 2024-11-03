@@ -156,6 +156,7 @@ module.exports = {
                         }
                     }
                 })
+                .sort({ time: -1 })
                 .lean();
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
@@ -324,6 +325,7 @@ module.exports = {
                         }
                     }
                 })
+                .sort({ time: -1 })
                 .lean();
 
             const formattedAppointmentsPromises = appointments
@@ -475,7 +477,10 @@ module.exports = {
                 .find({
                     isDeleted: false,
                     patientID: id,
-                    ...(status ? { status } : {})
+                    ...(status ? { status } : {}),
+                    ...(startDay && endDay ? { time: { $gte: startDay, $lte: endDay } } :
+                        startDay ? { time: { $gte: startDay } } :
+                            endDay ? { time: { $lte: endDay } } : {})
                 })
                 .populate('patientID')
                 .populate('serviceID')
@@ -500,8 +505,8 @@ module.exports = {
                         }
                     }
                 })
+                .sort({ time: -1 })
                 .lean();
-
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
                 const [invoice, results, orderNumber] = await Promise.all([
@@ -517,35 +522,48 @@ module.exports = {
                         .lean(),
                 ]);
 
-                console.log(invoice, results, orderNumber);
-
-                const prescription = invoice
-                    ? await PrescriptionModel
-                        .findOne({ isDeleted: false, invoiceID: invoice._id })
-                        .lean() : null;
-
-                const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
-                    const medicine = await MedicineModel
-                        .findById({ _id: m.medicineID })
-                        .populate("medicineCategoryID")
+                const resultPrescriptions = await Promise.all(results.map(async result => {
+                    const prescription = await PrescriptionModel
+                        .findOne({ isDeleted: false, resultID: result._id })
                         .lean();
 
-                    delete medicine.createdAt;
-                    delete medicine.updatedAt;
-                    delete medicine.isDeleted;
-                    delete medicine.__v;
+                    const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
+                        const medicine = await MedicineModel
+                            .findById({ _id: m.medicineID })
+                            .populate("medicineCategoryID")
+                            .lean();
 
-                    const formattedMedicine = {
-                        ...medicine,
-                        medicineCategory: {
-                            _id: medicine.medicineCategoryID._id,
-                            name: medicine.medicineCategoryID.name
-                        }
+                        delete medicine.createdAt;
+                        delete medicine.updatedAt;
+                        delete medicine.isDeleted;
+                        delete medicine.__v;
+
+                        const formattedMedicine = {
+                            ...medicine,
+                            medicineCategory: {
+                                _id: medicine.medicineCategoryID._id,
+                                name: medicine.medicineCategoryID.name
+                            }
+                        };
+                        delete formattedMedicine.medicineCategoryID;
+
+                        return formattedMedicine;
+                    }) : []);
+
+                    const formatted = {
+                        ...result,
+                        ...(prescription ?
+                            {
+                                prescription: {
+                                    advice: prescription.advice,
+                                    medicines: prescriptionMedicines
+                                }
+                            } : {}
+                        )
                     };
-                    delete formattedMedicine.medicineCategoryID;
 
-                    return formattedMedicine;
-                }) : []);
+                    return formatted;
+                }));
 
                 let medicalPackage = null;
                 let level = null;
@@ -577,13 +595,7 @@ module.exports = {
                         _id: appointment.workScheduleID.clinicID.branchID?._id,
                         name: appointment.workScheduleID.clinicID.branchID.name
                     },
-                    ...(prescription ? {
-                        prescription: {
-                            advice: prescription.advice,
-                            medicines: prescriptionMedicines
-                        }
-                    } : {}),
-                    results: results?.map(result => ({
+                    results: resultPrescriptions?.map(result => ({
                         _id: result?._id,
                         service: {
                             _id: result?.serviceID._id,
@@ -592,6 +604,9 @@ module.exports = {
                         diagnose: result?.diagnose || '',
                         images: result?.images || '',
                         description: result?.description || '',
+                        ...(result?.prescription ? {
+                            prescription: result.prescription
+                        } : {}),
                     })),
                     ...(appointment.serviceID ? {
                         service: {
@@ -618,7 +633,6 @@ module.exports = {
                 delete formattedAppointment.medicalPackageID;
                 delete formattedAppointment.patientID;
                 delete formattedAppointment.workScheduleID;
-                console.log(formattedAppointment);
                 return formattedAppointment;
             });
 
