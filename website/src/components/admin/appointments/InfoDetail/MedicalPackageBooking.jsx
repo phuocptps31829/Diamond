@@ -28,8 +28,8 @@ import { Textarea } from "@/components/ui/Textarea";
 
 const MedicalPackageBooking = ({
   bookingData,
-  handleCloseForm,
   handleChangeStatus,
+  setIsOpenForm,
 }) => {
   const [serviceResults, setServiceResults] = useState([]);
   const [loadingImage, setLoadingImage] = useState(false);
@@ -145,7 +145,7 @@ const MedicalPackageBooking = ({
   };
 
   const closeForm = () => {
-    handleCloseForm();
+    setIsOpenForm(false);
     setServiceResults([]);
     setSelectedService(null);
     setValidationError(null);

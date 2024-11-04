@@ -1,11 +1,11 @@
-import NotFound from "@/components/client/notFound";
-import { branchApi } from "@/services/branchesApi";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
+import NotFound from "@/components/ui/NotFound";
 import { columns } from "./table/columns";
 import DataTable from "./table";
+import { branchApi } from "@/services/branchesApi";
 
-const BranchesList = () => {
+const ContractsList = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["branches"],
     queryFn: () => branchApi.getAllBranches({ limit: 999 }),
@@ -23,4 +23,4 @@ const BranchesList = () => {
   return <DataTable columns={columns} data={data.data} />;
 };
 
-export default BranchesList;
+export default ContractsList;

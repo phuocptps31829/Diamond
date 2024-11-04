@@ -12,11 +12,7 @@ export const authApi = {
         return res.data.data;
     },
     refreshToken: async (refreshToken) => {
-        const res = await axiosInstanceCUD.post('/auth/refresh-token', {}, {
-            headers: {
-                Authorization: `Bearer ${refreshToken}`,
-            },
-        });
+        const res = await axiosInstanceCUD.post(`/auth/refresh-token?refreshToken=${refreshToken}`);
         console.log(res.data);
         return res.data;
     },
