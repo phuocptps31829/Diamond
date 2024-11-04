@@ -132,10 +132,10 @@ export default function Product({ product }) {
         ) : (
           ""
         )}
-        <div className="mb-1">
+        <div className="mb-1 flex-1">
           <Link
             to={isService ? `/service/${slug}` : `/package/${slug}`}
-            className="py-1 text-sm font-bold text-[#3e3e3e] md:text-xl line-clamp-2"
+            className="my-1 text-sm font-bold text-[#3e3e3e] md:text-xl line-clamp-2"
           >
             {name}
           </Link>
