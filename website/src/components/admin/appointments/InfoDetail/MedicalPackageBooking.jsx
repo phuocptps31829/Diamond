@@ -26,7 +26,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { resultsApi } from "@/services/resultsApi";
 import { Textarea } from "@/components/ui/Textarea";
 
-const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
+const MedicalPackageBooking = ({
+  bookingData,
+  handleChangeStatus,
+  setIsOpenForm,
+}) => {
   const [serviceResults, setServiceResults] = useState([]);
   const [loadingImage, setLoadingImage] = useState(false);
   const [open, setOpen] = useState(false);
@@ -59,6 +63,14 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       handleSelectService(defaultServiceID);
     }
   }, [defaultServiceID]);
+
+  useEffect(() => {
+    handleSaveAllServices();
+  }, [selectedService, getValues()]);
+
+  useEffect(() => {
+    validateServiceResults();
+  }, [serviceResults, bookingData.medicalPackage?.services]);
 
   const handleSelectService = (serviceID) => {
     const currentValues = getValues();
@@ -133,7 +145,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
   };
 
   const closeForm = () => {
-    handleCloseForm();
+    setIsOpenForm(false);
     setServiceResults([]);
     setSelectedService(null);
     setValidationError(null);
@@ -168,8 +180,8 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
     trigger("medicines");
   };
 
-  console.log(serviceResults,'serviceResults');
-  
+  console.log(serviceResults, "serviceResults");
+
   const handleSelectCategoryMedicine = (index, categoryID) => {
     const currentMedicines = getValues("medicines");
     const updatedMedicines = currentMedicines.map((medicine, i) =>
@@ -198,24 +210,49 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
 
   const validateServiceResults = () => {
     const requiredServices = bookingData.medicalPackage?.services || [];
-  
+
     for (const service of requiredServices) {
       const serviceResult = serviceResults.find(
         (result) => result.serviceID === service._id
       );
-  
+
       if (
         !serviceResult ||
         !serviceResult.result.diagnosis ||
+        serviceResult.result.diagnosis.trim() === "" ||
         !serviceResult.result.detail ||
+        serviceResult.result.detail.trim() === "" ||
         !serviceResult.result.advice ||
+        serviceResult.result.advice.trim() === "" ||
         serviceResult.prescription.length === 0
       ) {
-        setValidationError("Tất cả kết quả và đơn thuốc của dịch vụ phải được điền.");
+        setValidationError(
+          "Tất cả kết quả và đơn thuốc của dịch vụ phải được điền."
+        );
         return false;
       }
+
+      for (const prescription of serviceResult.prescription) {
+        if (
+          !prescription.medicineCategoryID ||
+          prescription.medicineCategoryID.trim() === "" ||
+          !prescription.medicineID ||
+          prescription.medicineID.trim() === "" ||
+          !prescription.price ||
+          prescription.price === 0 ||
+          !prescription.quantity ||
+          prescription.quantity === 0 ||
+          !prescription.usage ||
+          prescription.usage.trim() === ""
+        ) {
+          setValidationError(
+            "Tất cả các trường trong đơn thuốc phải được điền."
+          );
+          return false;
+        }
+      }
     }
-  
+
     setValidationError(null);
     return true;
   };
@@ -226,6 +263,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       return response;
     },
     onSuccess: () => {
+      handleChangeStatus("EXAMINED");
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công kết quả khám!", "success");
       closeForm();
@@ -237,8 +275,10 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
   });
 
   const handleConfirmSave = async () => {
-    handleSaveAllServices();
     const isValid = await trigger();
+    console.log("isValid", isValid);
+    console.log("validateServiceResults()", validateServiceResults());
+
     if (isValid && validateServiceResults()) {
       setOpen(true);
     } else {
@@ -271,7 +311,9 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
     try {
       const updatedServiceResults = await Promise.all(
         serviceResults.map(async (serviceResult) => {
-          const imageUrl = await uploadServiceImages(serviceResult.result.images);
+          const imageUrl = await uploadServiceImages(
+            serviceResult.result.images
+          );
           return {
             ...serviceResult,
             result: {
@@ -304,7 +346,6 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
         })),
       };
       console.log("dataAll", dataAll);
-      
 
       mutation.mutate(dataAll);
     } catch (error) {
@@ -322,7 +363,7 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
       <div className="flex w-full flex-col rounded-lg border-2 border-dashed border-primary-200 bg-[#c1e0ff2f] p-5 pt-8">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-5 flex w-full justify-between">
-            <div className="flex h-full min-h-[330px] w-[34%] flex-col pr-2 gap-2">
+            <div className="flex h-full min-h-[330px] w-[34%] flex-col gap-2 pr-2">
               <RadioServices
                 services={bookingData.medicalPackage?.services}
                 name="serviceID"
@@ -331,12 +372,14 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                 defaultValue={defaultServiceID}
               />
               <div className="">
-              {validationError && (
-                <span className="text-red-500 text-sm ">{validationError}</span>
-              )}
+                {validationError && (
+                  <span className="text-sm text-red-500">
+                    {validationError}
+                  </span>
+                )}
               </div>
             </div>
-            
+
             <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] w-[70%] space-y-4 overflow-y-auto px-2 pl-7">
               <div className="mb-1 rounded-xl bg-white p-4 pt-1">
                 <div className="block">
@@ -408,7 +451,6 @@ const MedicalPackageBooking = ({ bookingData, handleCloseForm }) => {
                   />
                 </div>
               </div>
-           
 
               <div className="my-3">
                 <Label className="">Thêm đơn thuốc (nếu có):</Label>

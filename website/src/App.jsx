@@ -91,6 +91,9 @@ import ScheduleFormPage from "./pages/admin/Schedules/ScheduleForm";
 import SupportPage from "./pages/admin/Support/index";
 import Form from "./test-socket/Form";
 import FormAdmin from "./test-socket/FormAdmin";
+import ContractsAddPage from "./pages/admin/Contracts/add";
+import ContractListPage from "./pages/admin/Contracts";
+import ContractsEditPage from "./pages/admin/Contracts/edit";
 
 const router = createBrowserRouter([
   {
@@ -485,6 +488,19 @@ const router = createBrowserRouter([
         path: "services/edit/:id",
         element: <ServicesEditPage />,
       },
+      {
+        path: "contracts/create/:type",
+        element: <ContractsAddPage />,
+      },
+      {
+        path: "contracts/list",
+        element: <ContractListPage />,
+      },
+      {
+        path: "contracts/edit/:type/:id",
+        element: <ContractsEditPage />,
+      }
+
     ],
   },
   {

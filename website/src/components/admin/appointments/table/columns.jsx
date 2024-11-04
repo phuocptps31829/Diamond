@@ -1,19 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Avatar, AvatarImage } from "@/components/ui/Avatar";
-
 import { ArrowUpDown } from "lucide-react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/Select";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import Action from "./action";
+import StatusCell from "./StatusCell";
 
 
 export const getColumnsAppointments = (onChangeStatus, onDelete) => [
@@ -94,15 +86,13 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         </Button>
       </div>
     ),
-    cell: ({ row }) => {
-      return (
-        <div className="w-full">
-          <span className="w-full whitespace-nowrap">
-            {row.original.doctor.fullName || "Lỗi tên bác sĩ"}
-          </span>
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <div className="w-full">
+        <span className="w-full whitespace-nowrap">
+          {row.original.doctor.fullName || "Lỗi tên bác sĩ"}
+        </span>
+      </div>
+    ),
   },
   {
     accessorKey: "service",
@@ -194,36 +184,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         </Button>
       </div>
     ),
-    cell: ({ row }) => {
-      const statusOptions = [
-        { value: "PENDING", label: "Chờ xác nhận" },
-        { value: "CONFIRMED", label: row.original.status === "CONFIRMED" ? "Chờ khám" : "Đã xác nhận" },
-        { value: "EXAMINED", label: "Đã khám" },
-        { value: "CANCELLED", label: "Đã hủy" },
-      ];
-      return (
-        <div className="w-full">
-          <Select
-            // disabled={row.original.prescription}
-            value={row.original.status}
-            onValueChange={(value) => {
-              onChangeStatus(row.original._id, value);
-            }}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Chọn trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      );
-    },
+    cell: ({ row }) => <StatusCell row={row} onChangeStatus={onChangeStatus} />,
   },
   {
     accessorKey: "invoice",

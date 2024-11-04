@@ -11,7 +11,7 @@ import { IoSettingsSharp } from "react-icons/io5";
 import { CgAlignLeft } from "react-icons/cg";
 import { GiMedicines } from "react-icons/gi";
 import { BiSupport } from "react-icons/bi";
-
+import { FaFileContract } from "react-icons/fa";
 export const getMenuList = (pathname) => [
   {
     groupLabel: "",
@@ -370,6 +370,42 @@ export const getMenuList = (pathname) => [
             href: "/admin/roles/create",
             label: "Thêm vai trò",
             active: pathname === "/admin/roles/create",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Hợp đồng",
+        active:
+          pathname === "/admin/contracts/list" ||
+          pathname === "/admin/contracts/create",
+        icon: FaFileContract,
+        submenus: [
+          {
+            href: "/admin/contracts/create/internist",
+            label: "Thêm hợp đồng bác sĩ cơ hữu",
+            active: pathname === "/admin/contracts/create/internist",
+          },
+          {
+            href: "/admin/contracts/create/surgeon",
+            label: "Thêm hợp đồng bác sĩ ngoại giờ",
+            active: pathname === "/admin/contracts/create/surgeon",
+          },
+          {
+            href: "/admin/contracts/create/clinic",
+            label: "Thêm hợp đồng phòng khám",
+            active: pathname === "/admin/contracts/create/clinic",
+          },
+          {
+            href: "/admin/contracts/list",
+            label: "Danh sách hợp đồng",
+            active: pathname === "/admin/contracts/list",
           },
         ],
       },
