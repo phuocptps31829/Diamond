@@ -7,11 +7,11 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 
 /**
  * @openapi
- * '/api/v1/staff':
+ * '/api/v1/staffs':
  *  get:
  *    tags:
  *    - Staff Routes
- *    summary: Get all staff
+ *    summary: Get all staffs
  *    parameters:
  *      - in: query
  *        name: page
@@ -42,6 +42,33 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/staffs/get-by-role-name/{roleName}':
+ *  get:
+ *    tags:
+ *    - Staff Routes
+ *    summary: Get staff by role name
+ *    parameters:
+ *      - in: path
+ *        name: roleName
+ *        required: true
+ *        description: Staff role name
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/get-by-role-name/:roleName',
+    staffController.getStaffsByRole
+);
+
+/**
+ * @openapi
  * '/api/v1/staff/{id}':
  *  get:
  *    tags:
@@ -67,26 +94,5 @@ router.get(
     helperMiddleware.checkValidId,
     staffController.getStaffByID
 );
-
-// /**
-//  * @openapi
-//  * '/api/v1/users/get-by-token':
-//  *  get:
-//  *    tags:
-//  *    - User Routes
-//  *    summary: Get user by token
-//  *    responses:
-//  *      '200':
-//  *        $ref: '#/components/responses/200'
-//  *      '404':
-//  *        $ref: '#/components/responses/404'
-//  *      '500':
-//  *        $ref: '#/components/responses/500'
-// */
-// router.get(
-//     '/get-by-token',
-//     authMiddleware.verifyAccessToken,
-//     staffController.getUserByID
-// );
 
 module.exports = router;

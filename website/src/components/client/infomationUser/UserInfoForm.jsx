@@ -160,7 +160,7 @@ const UserInfoForm = () => {
       <h2 className="col-span-2 text-xl font-bold">Thông tin tài khoản</h2>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
-          <div className="flex-2 grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2">
+          <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2">
             <InputCustom
               className="col-span-1 sm:col-span-1"
               name="fullName"
@@ -256,7 +256,7 @@ const UserInfoForm = () => {
             </div>
           </div>
 
-          <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
+          <div className="mt-6 flex h-full w-auto flex-col items-center lg:gap-5 p-4 md:mt-0 md:border-l">
             <div className="size-36">
               <img
                 alt={ profileFetched?.data?.fullName }
