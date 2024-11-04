@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useSocket } from "@/hooks/useSocket";
+import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/Input";
 import { motion } from "framer-motion";
 import data from "@emoji-mart/data";
@@ -7,6 +8,8 @@ import Picker from "@emoji-mart/react";
 import { MdInsertEmoticon } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
 import { IoSearchSharp } from "react-icons/io5";
+import emptyUser from "@/assets/images/emptyUser.png";
+import bg_chat from "@/assets/images/bg_chat.png";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const SupportComponent = () => {
@@ -15,9 +18,11 @@ const SupportComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentRoom, setCurrentRoom] = useState("");
   const [rooms, setRooms] = useState([]);
-  const [latestMessages, setLatestMessages] = useState({});
   const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState("");
+  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
   const pickerRef = useRef(null);
 
   const messagesEndRef = useRef(null);
@@ -31,10 +36,22 @@ const SupportComponent = () => {
   }, [messages]);
 
   useEffect(() => {
+    if (debouncedSearchTerm) {
+      const results = rooms.filter((room) =>
+        room.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      );
+      setFilteredRooms(results);
+    } else {
+      setFilteredRooms(rooms); 
+    }
+  }, [debouncedSearchTerm, rooms]);
+
+  useEffect(() => {
     if (!socket) return;
 
     const handleActiveRooms = (activeRooms) => {
-      setRooms(activeRooms);
+      const filteredRooms = activeRooms.filter((room) => room !== socket?.id);
+      setRooms(filteredRooms);
     };
     sendEvent("getActiveRooms", null, handleActiveRooms);
 
@@ -44,10 +61,6 @@ const SupportComponent = () => {
   }, [socket, subscribe, sendEvent]);
 
   const handleNewMessage = useCallback((data, type) => {
-    setLatestMessages((prevLatestMessages) => ({
-      ...prevLatestMessages,
-      [data.room]: data.message,
-    }));
     setMessages((prevMessages) => {
       if (prevMessages[data.room]) {
         return {
@@ -86,16 +99,9 @@ const SupportComponent = () => {
 
     const handlePreviousMessages = (previousMessages) => {
       setMessages(previousMessages);
-
-      const latestMessage =
-        previousMessages[currentRoom]?.[
-          previousMessages[currentRoom].length - 1
-        ]?.message;
-
-      setLatestMessages((prevLatestMessages) => ({
-        ...prevLatestMessages,
-        [currentRoom]: latestMessage,
-      }));
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 700);
     };
 
     const unsubscribePreviousMessages = subscribe(
@@ -107,6 +113,7 @@ const SupportComponent = () => {
   }, [socket, currentRoom, subscribe]);
 
   const joinRoom = (room) => {
+    setIsLoading(true);
     setCurrentRoom(room);
     setMessages([]);
     socket.emit("joinRoom", room);
@@ -114,7 +121,6 @@ const SupportComponent = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    setIsLoading(true);
     sendEvent(
       "newMessageAdmin",
       { message: message, room: currentRoom, name: "Admin" },
@@ -170,44 +176,60 @@ const SupportComponent = () => {
             type="text"
             placeholder="Tìm kiếm người dùng..."
             className="h-10 w-[90%] rounded-full bg-white px-4 text-black"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <IoSearchSharp size={21} className="absolute right-7 text-black" />
         </div>
         <div className="h-full">
           <div className="scrollable-services min-h-full">
-            {rooms
-              .filter((room) => room !== socket?.id)
-              .map((room, index) => (
-                <div
-                  className="flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200"
-                  key={index}
-                  onClick={() => joinRoom(room)}
-                >
-                  <div className="relative">
-                    <img
-                      src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
-                      alt="Chat avatar"
-                      className="h-9 w-9 rounded-full border border-primary-800"
-                    />
-                    <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
-                  </div>
-                  <div className="ml-3">
-                    <div className="text-[14px] font-semibold text-black">
-                      {room}
+            {filteredRooms.length > 0 ? (
+              filteredRooms
+                .map((room, index) => (
+                  <div
+                    className={`${
+                      currentRoom === room ? "bg-primary-200" : ""
+                    } flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200`}
+                    key={index}
+                    onClick={() => joinRoom(room)}
+                  >
+                    <div className="relative">
+                      <img
+                        src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                        alt="Chat avatar"
+                        className="h-9 w-9 rounded-full border border-primary-800"
+                      />
+                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
                     </div>
-                    <div className="text-[12px] text-green-500">Online</div>
+                    <div className="ml-3">
+                      <div className="text-[14px] font-semibold text-black">
+                        {room}
+                      </div>
+                      <div className="text-[12px] text-green-500">Online</div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+            ) : (
+              <img
+                src={emptyUser}
+                alt="Empty user"
+                className="mx-auto mt-10 w-40 opacity-90"
+              />
+            )}
           </div>
         </div>
       </div>
       <div className="flex flex-auto flex-col bg-white bg-gradient-to-r">
         <div className="flex h-full flex-auto flex-shrink-0 flex-col p-4">
-          <div className="flex h-full flex-col overflow-x-auto">
-            <div className="scrollable-services flex min-h-full flex-col">
-              {messages[currentRoom]
-                ? messages[currentRoom].map((msg, index) => {
+          <div className="relative flex h-full flex-col overflow-x-auto">
+            {isLoading ? (
+              <div className="absolute flex h-full w-full items-center justify-center">
+                <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
+              </div>
+            ) : (
+              <div className="scrollable-services flex min-h-full flex-col">
+                {messages[currentRoom] ? (
+                  messages[currentRoom].map((msg, index) => {
                     const isFirstInSequence =
                       index === 0 ||
                       messages[currentRoom][index - 1].type !== msg.type;
@@ -253,48 +275,55 @@ const SupportComponent = () => {
                       </div>
                     );
                   })
-                : ""}
-              <div ref={messagesEndRef}></div>
-              <div className="grid grid-cols-12">
-                <div className="h-4"></div>
-              </div>
-            </div>
-          </div>
-          <div className="flex h-20 w-full flex-row items-center rounded-full bg-white px-4 shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
-            <div className="flex-grow">
-              <div className="relative w-full">
-                <form onSubmit={onSubmit}>
-                  <input
-                    placeholder="Aa"
-                    type="text"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="flex h-10 w-full rounded-xl border-none pl-4 text-black focus:border-none focus:outline-none"
-                  />
-                </form>
-                <button
-                  onClick={() => setShowPicker(!showPicker)}
-                  className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-600 hover:text-gray-900"
-                >
-                  <MdInsertEmoticon size={30} />
-                </button>
-                {showPicker && (
-                  <div ref={pickerRef} className="absolute bottom-12 right-0">
-                    <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <img src={bg_chat} alt="Chat background" className="w-60" />
                   </div>
                 )}
+                <div ref={messagesEndRef}></div>
+                <div className="grid grid-cols-12">
+                  <div className="h-4"></div>
+                </div>
+              </div>
+            )}
+          </div>
+          {currentRoom.trim().length > 0 && (
+            <div className="flex h-20 w-full flex-row items-center rounded-full bg-white px-4 shadow-[0_1px_3px_rgba(0,0,0,0.4)]">
+              <div className="flex-grow">
+                <div className="relative w-full">
+                  <form onSubmit={onSubmit}>
+                    <input
+                      placeholder="Aa"
+                      type="text"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      className="flex h-10 w-full rounded-xl border-none pl-4 text-black focus:border-none focus:outline-none"
+                    />
+                  </form>
+                  <button
+                    onClick={() => setShowPicker(!showPicker)}
+                    className="absolute right-0 top-0 flex h-full w-12 items-center justify-center text-gray-600 hover:text-gray-900"
+                  >
+                    <MdInsertEmoticon size={30} />
+                  </button>
+                  {showPicker && (
+                    <div ref={pickerRef} className="absolute bottom-12 right-0">
+                      <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="ml-2">
+                <button
+                  className={`${isLoading || !message.trim() ? "opacity-50" : ""} flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary-500 to-primary-200 text-white`}
+                  onClick={onSubmit}
+                  disabled={isLoading || !message.trim()}
+                >
+                  <IoIosSend size={30} />
+                </button>
               </div>
             </div>
-            <div className="ml-2">
-              <button
-                className={`${isLoading || !message.trim() ? "opacity-50" : ""} flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-primary-500 to-primary-200 text-white`}
-                onClick={onSubmit}
-                disabled={isLoading || !message.trim()}
-              >
-                <IoIosSend size={30} />
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </motion.div>
