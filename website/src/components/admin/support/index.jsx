@@ -17,6 +17,7 @@ const SupportComponent = () => {
   const [messages, setMessages] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [currentRoom, setCurrentRoom] = useState("");
+  const [totalRooms, setTotalRooms] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState("");
@@ -42,7 +43,7 @@ const SupportComponent = () => {
       );
       setFilteredRooms(results);
     } else {
-      setFilteredRooms(rooms); 
+      setFilteredRooms(rooms);
     }
   }, [debouncedSearchTerm, rooms]);
 
@@ -52,6 +53,7 @@ const SupportComponent = () => {
     const handleActiveRooms = (activeRooms) => {
       const filteredRooms = activeRooms.filter((room) => room !== socket?.id);
       setRooms(filteredRooms);
+      setTotalRooms(filteredRooms);
     };
     sendEvent("getActiveRooms", null, handleActiveRooms);
 
@@ -101,7 +103,7 @@ const SupportComponent = () => {
       setMessages(previousMessages);
       setTimeout(() => {
         setIsLoading(false);
-      }, 700);
+      }, 1000);
     };
 
     const unsubscribePreviousMessages = subscribe(
@@ -178,37 +180,37 @@ const SupportComponent = () => {
             className="h-10 w-[90%] rounded-full bg-white px-4 text-black"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={totalRooms.length < 2}
           />
           <IoSearchSharp size={21} className="absolute right-7 text-black" />
         </div>
         <div className="h-full">
           <div className="scrollable-services min-h-full">
             {filteredRooms.length > 0 ? (
-              filteredRooms
-                .map((room, index) => (
-                  <div
-                    className={`${
-                      currentRoom === room ? "bg-primary-200" : ""
-                    } flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200`}
-                    key={index}
-                    onClick={() => joinRoom(room)}
-                  >
-                    <div className="relative">
-                      <img
-                        src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
-                        alt="Chat avatar"
-                        className="h-9 w-9 rounded-full border border-primary-800"
-                      />
-                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-[14px] font-semibold text-black">
-                        {room}
-                      </div>
-                      <div className="text-[12px] text-green-500">Online</div>
-                    </div>
+              filteredRooms.map((room, index) => (
+                <div
+                  className={`${
+                    currentRoom === room ? "bg-primary-200" : ""
+                  } flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200`}
+                  key={index}
+                  onClick={() => joinRoom(room)}
+                >
+                  <div className="relative">
+                    <img
+                      src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                      alt="Chat avatar"
+                      className="h-9 w-9 rounded-full border border-primary-800"
+                    />
+                    <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
                   </div>
-                ))
+                  <div className="ml-3">
+                    <div className="text-[14px] font-semibold text-black">
+                      {room}
+                    </div>
+                    <div className="text-[12px] text-green-500">Online</div>
+                  </div>
+                </div>
+              ))
             ) : (
               <img
                 src={emptyUser}
@@ -227,62 +229,71 @@ const SupportComponent = () => {
                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
               </div>
             ) : (
-              <div className="scrollable-services flex min-h-full flex-col">
-                {messages[currentRoom] ? (
-                  messages[currentRoom].map((msg, index) => {
-                    const isFirstInSequence =
-                      index === 0 ||
-                      messages[currentRoom][index - 1].type !== msg.type;
-                    const isDifferentUser =
-                      index === 0 ||
-                      messages[currentRoom][index - 1].type !== msg.type;
+              <div className="scrollable-services flex min-h-full">
+                <div className="flex h-full flex-col w-full">
+                  <div className="flex-grow"></div>
+                  {messages[currentRoom] ? (
+                    messages[currentRoom].map((msg, index) => {
+                      const isFirstInSequence =
+                        index === 0 ||
+                        messages[currentRoom][index - 1].type !== msg.type;
+                      const isDifferentUser =
+                        index === 0 ||
+                        messages[currentRoom][index - 1].type !== msg.type;
 
-                    return (
-                      <div
-                        className={`grid grid-cols-12 gap-y-5 ${isDifferentUser ? "mt-4" : ""}`}
-                        key={index}
-                      >
-                        {msg.type === "admin" ? (
-                          <div className="col-start-1 col-end-13 w-full rounded-lg py-[2px]">
-                            <div className="flex flex-row-reverse items-center justify-start">
-                              <div className="relative mr-3 max-w-[70%] break-words rounded-xl bg-primary-400 px-3 py-2 text-sm shadow">
-                                <div className="text-white">{msg.message}</div>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="col-start-1 col-end-13 w-full rounded-lg px-2 py-[2px]">
-                            <div className="flex items-center">
-                              {isFirstInSequence && (
-                                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full">
-                                  <img
-                                    src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
-                                    alt="Admin avatar"
-                                    className="h-full w-full rounded-full border border-primary-800 object-cover"
-                                  />
-                                </div>
-                              )}
-                              <div
-                                className={`relative ${isFirstInSequence ? "ml-3" : "ml-12"} max-w-[70%] break-words rounded-xl bg-gray-700 px-3 py-2 text-sm shadow`}
-                              >
-                                <div className="text-gray-200">
-                                  {msg.message}
+                      return (
+                        <div
+                          className={`grid grid-cols-12 gap-y-5 ${isDifferentUser ? "mt-4" : ""}`}
+                          key={index}
+                        >
+                          {msg.type === "admin" ? (
+                            <div className="col-start-1 col-end-13 w-full rounded-lg py-[2px]">
+                              <div className="flex flex-row-reverse items-center justify-start">
+                                <div className="relative mr-3 max-w-[70%] break-words rounded-xl bg-primary-400 px-3 py-2 text-sm shadow">
+                                  <div className="text-white">
+                                    {msg.message}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <img src={bg_chat} alt="Chat background" className="w-60" />
+                          ) : (
+                            <div className="col-start-1 col-end-13 w-full rounded-lg px-2 py-[2px]">
+                              <div className="flex items-center">
+                                {isFirstInSequence && (
+                                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full">
+                                    <img
+                                      src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                                      alt="Admin avatar"
+                                      className="h-full w-full rounded-full border border-primary-800 object-cover"
+                                    />
+                                  </div>
+                                )}
+                                <div
+                                  className={`relative ${isFirstInSequence ? "ml-3" : "ml-12"} max-w-[70%] break-words rounded-xl bg-gray-700 px-3 py-2 text-sm shadow`}
+                                >
+                                  <div className="text-gray-200">
+                                    {msg.message}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <img
+                        src={bg_chat}
+                        alt="Chat background"
+                        className="w-60"
+                      />
+                    </div>
+                  )}
+                  <div ref={messagesEndRef}></div>
+                  <div className="grid grid-cols-12">
+                    <div className="h-4"></div>
                   </div>
-                )}
-                <div ref={messagesEndRef}></div>
-                <div className="grid grid-cols-12">
-                  <div className="h-4"></div>
                 </div>
               </div>
             )}

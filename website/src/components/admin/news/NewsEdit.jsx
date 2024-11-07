@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom";
 import { newsApi } from "@/services/newsApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import { toastUI } from "@/components/ui/Toastify";
 import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
@@ -140,7 +140,7 @@ const NewsEdit = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
 
   return (

@@ -160,7 +160,7 @@ export default function DataTable({ columns, allPatients }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                    Không có dữ liệu nào.
+                                    Không có người dùng nào.
                                 </TableCell>
                             </TableRow>
                         )}

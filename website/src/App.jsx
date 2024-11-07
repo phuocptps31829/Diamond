@@ -28,7 +28,7 @@ import ChangePass from "./pages/client/ChangePass";
 import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import PackageBooking from "./pages/client/PackageBooking";
 import Booking from "./pages/client/Booking";
 import PKCheckOut from "./pages/client/PKBookingPayment";
@@ -52,7 +52,8 @@ import DoctorsListPage from "./pages/admin/Doctor";
 import PatientsListPage from "./pages/admin/Patient";
 import PatientsFormAddPage from "./pages/admin/Patient/formAdd";
 import PatientsFormFixPage from "./pages/admin/Patient/formFix";
-import StaffsFormPage from "./pages/admin/Staff/form";
+import StaffsFormPageFix from "./pages/admin/Staff/formFix";
+import StaffsFormAddPage from "./pages/admin/Staff/formAdd";
 import StaffsListPage from "./pages/admin/Staff";
 import PackagesListPage from "./pages/admin/Packages";
 import PackagesFormAddPage from "./pages/admin/Packages/formAdd";
@@ -377,8 +378,12 @@ const router = createBrowserRouter([
         element: <StaffsListPage />,
       },
       {
+        path: "staffs/edit/:id",
+        element: <StaffsFormPageFix />,
+      },
+      {
         path: "staffs/create",
-        element: <StaffsFormPage />,
+        element: <StaffsFormAddPage />,
       },
       {
         path: "specialties/list",
@@ -499,24 +504,23 @@ const router = createBrowserRouter([
       {
         path: "contracts/edit/:type/:id",
         element: <ContractsEditPage />,
-      }
-
+      },
     ],
   },
   {
     path: "socket",
-    element: <Form />
+    element: <Form />,
   },
   {
     path: "socket-admin",
-    element: <FormAdmin />
-  }
+    element: <FormAdmin />,
+  },
 ]);
 
 function App() {
   return (
-    <Provider store={ store }>
-      <RouterProvider router={ router }></RouterProvider>
+    <Provider store={store}>
+      <RouterProvider router={router}></RouterProvider>
     </Provider>
   );
 }

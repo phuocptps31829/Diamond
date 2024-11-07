@@ -4,7 +4,7 @@ import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import { authApi } from "@/services/authApi";
 import { formatTime } from "@/utils/formatTime";
 import { toastUI } from "@/components/ui/Toastify";

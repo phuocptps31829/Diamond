@@ -155,7 +155,6 @@ const ChatComponent = ({ setShowChat }) => {
               <div className="flex h-full flex-col">
                 <div className="flex-grow"></div>
                 {messages.map((msg, index) => {
-                  console.log("msg", msg);
                   const isFirstInSequence =
                     index === 0 || messages[index - 1].type !== msg.type;
                   const isDifferentUser =

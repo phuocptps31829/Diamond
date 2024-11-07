@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import ListServiceBanner from "../../components/client/priceListService/ListServiceBanner";
 import PriceServiceContainer from "../../components/client/priceListService/PriceServiceContainer";
 import useScrollToTop from "@/hooks/useScrollToTop";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 
 import { getAllSpecialtiesWithServices } from "@/services/specialtiesApi";
 
@@ -18,7 +18,7 @@ const TablePriceService = () => {
     queryFn: getAllSpecialtiesWithServices,
   });
 
-  if (specialtyError) return <NotFound />;
+  if (specialtyError) return <NotFound message={specialtyError.message} />;
 
   return (
     <div>

@@ -13,7 +13,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 import { clinicsApi } from "@/services/clinicApi";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/Skeleton";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 
 export default function ClinicEdit() {
   const queryClient = useQueryClient();
@@ -100,7 +100,7 @@ export default function ClinicEdit() {
   if (isLoading) {
     return <Skeleton />;
   }
-  if (error) return <NotFound />;
+  if (error) return <NotFound message={error.message} />;
   return (
     <div className="rounded-xl bg-white px-6 py-6">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">

@@ -4,7 +4,7 @@ import { doctorApi } from "@/services/doctorsApi";
 import AboveInformation from "../../components/client/doctorDetail/AboveInformation";
 import BelowInformation from "../../components/client/doctorDetail/BelowInformation";
 import OtherDoctor from "../../components/client/doctorDetail/OtherDoctor";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import useScrollToTop from "@/hooks/useScrollToTop";
 
 export default function DoctorDetail() {

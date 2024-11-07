@@ -3,7 +3,7 @@ import ServiceDetail from "./detail/ServiceDetail";
 import DescriptionService from "./detail/DescriptionService";
 import { serviceApi } from "@/services/servicesApi";
 import { useQuery } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import Rules from "./detail/Rules";
 
 const ServicesDetailAdmin = () => {
