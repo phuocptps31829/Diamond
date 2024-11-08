@@ -543,3 +543,19 @@
 .ring-bell:hover {
   animation: none;
 }
+
+.chat-message-shadow-input {
+  box-shadow: 0 0 0 1px #1f93ff, 0 0 2px 3px #c7e3ff;
+}
+
+.chat-register-shadow {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.chat-bubble-shadow {
+  box-shadow: 0 .25rem 6px #32325d14, 0 1px 3px #0000000d;
+}
+
+.container-chat-shadow {
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+}
