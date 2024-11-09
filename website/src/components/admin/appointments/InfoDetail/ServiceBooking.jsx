@@ -28,7 +28,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 import { Textarea } from "@/components/ui/Textarea";
 import { resultsApi } from "@/services/resultsApi";
 
-const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
+const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
@@ -112,8 +112,8 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
       return response;
     },
     onSuccess: () => {
-      handleChangeStatus("EXAMINED");
       queryClient.invalidateQueries("appointments");
+      // handleChangeStatus("EXAMINED");
       setIsOpenForm(false);
       reset();
       toastUI("Đã thêm thành công kết quả khám!", "success");
@@ -135,7 +135,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
 
   const onSubmit = async (data) => {
     let imageUrl = [];
-
+    setOpen(false);
     if (data.images.length > 0) {
       setOpen(false);
       const formData = new FormData();

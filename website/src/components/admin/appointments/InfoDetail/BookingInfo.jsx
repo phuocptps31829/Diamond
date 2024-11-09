@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
@@ -124,11 +124,22 @@ const BookingInfo = ({ data }) => {
       toastUI("Chỉnh sửa trạng thái không thành công", "error");
     },
   });
+  console.log(bookingData.results.length,'vãi1');
+
+  useEffect(() => {
+    if (bookingData.results.length > 0) {
+      updateStatus({ id: bookingData._id, status: 'EXAMINED' });
+    }
+  }, [bookingData.results.length]);
 
   const handleChangeStatus = (status) => {
+
+    if (status === "EXAMINED" && bookingData.results.length === 0) {
+      toastUI("Vui lòng thêm kết quả trước", "error");
+      return;
+    }
     updateStatus({ id: bookingData._id, status });
   };
-
   return (
     <div className="mt-8 w-full">
       <div className="flex w-full justify-between">
@@ -403,7 +414,7 @@ const BookingInfo = ({ data }) => {
                           )}
                           {selectedImage && (
                             <Dialog open={open} onOpenChange={setOpen}>
-                              <DialogContent className="max-w-[1000px] ">
+                              <DialogContent className="max-w-[1000px]">
                                 <DialogHeader>
                                   <DialogTitle>Hình ảnh lớn</DialogTitle>
                                 </DialogHeader>
@@ -494,6 +505,22 @@ const BookingInfo = ({ data }) => {
               ))}
             </div>
             <div className="mt-5 w-full text-end">
+              {bookingData.results.length > 0 && (
+                <Link
+                  to={`/admin/appointments/create/${bookingData.patient._id}`}
+                >
+                  <Button
+                    variant={
+                      bookingData.payment.status === "PAID"
+                        ? "custom"
+                        : "outline"
+                    }
+                    className="ml-2"
+                  >
+                    Thêm lịch tái khám
+                  </Button>
+                </Link>
+              )}
               {bookingData.results.length > 0 &&
                 bookingData.payment.status !== "PAID" && (
                   <AlertDialog>
@@ -534,14 +561,14 @@ const BookingInfo = ({ data }) => {
         <ServiceBooking
           bookingData={bookingData}
           setIsOpenForm={setIsOpenForm}
-          handleChangeStatus={handleChangeStatus}
+          // handleChangeStatus={handleChangeStatus}
         />
       )}
       {isOpenForm === "MedicalPackage" && (
         <MedicalPackageBooking
           bookingData={bookingData}
           setIsOpenForm={setIsOpenForm}
-          handleChangeStatus={handleChangeStatus}
+          // handleChangeStatus={handleChangeStatus}
         />
       )}
     </div>

@@ -3,7 +3,6 @@ import { Controller } from "react-hook-form";
 import { Input } from "@/components/ui/Input";
 import { useDebounce } from "use-debounce";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-
 const RadioServices = ({
   control,
   name,
@@ -11,7 +10,8 @@ const RadioServices = ({
   onChange,
   index,
   services,
-  defaultValue, // Thêm defaultValue vào props
+  onBeforeChange,
+  selectedService,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -26,7 +26,6 @@ const RadioServices = ({
     <Controller
       control={control}
       name={name}
-      defaultValue={defaultValue}
       render={({ field }) => (
         <div>
           <Input
@@ -38,8 +37,13 @@ const RadioServices = ({
           />
           <div className="scrollable-services">
             <RadioGroup
-              value={field.value || defaultValue} // Thiết lập giá trị mặc định cho RadioGroup
+              value={field.value}
               onValueChange={(newValue) => {
+                if (onBeforeChange && !onBeforeChange(newValue)) {
+                  field.onChange(selectedService);
+                  return;
+                }
+
                 field.onChange(newValue);
                 if (onChange) {
                   onChange(newValue);

@@ -5,11 +5,9 @@ import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
-import { axiosInstanceCUD } from "@/services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SpinLoader from "@/components/ui/SpinLoader";
 import SignatureCanvas from "react-signature-canvas";
-
 import { Label } from "@/components/ui/Label";
 import SelectDoctor from "../select/SelectDoctor";
 import SelectDate from "../select/SelectDate";
