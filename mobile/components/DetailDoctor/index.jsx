@@ -18,15 +18,15 @@ const DetailDoctor = () => {
   if (errorDoctor) {
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <Text>{errorDoctor?.message}</Text>
+        <Text>{ errorDoctor?.message }</Text>
       </View>
     );
   }
 
   return (
     <>
-      {isLoadingDoctor && <Loading />}
-      <DoctorInformation doctor={dataDoctor} />
+      { isLoadingDoctor && <Loading /> }
+      <DoctorInformation doctor={ dataDoctor } />
     </>
   );
 };

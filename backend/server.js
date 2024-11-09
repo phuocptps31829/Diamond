@@ -15,6 +15,7 @@ const io = new Server(server, {
 });
 
 const redisClient = redis.createClient({
+    // url: 'redis://redis:6379',
     legacyMode: true
 });
 

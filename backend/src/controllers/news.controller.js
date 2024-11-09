@@ -19,7 +19,10 @@ module.exports = {
                 })
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions)
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                })
                 .populate("specialtyID")
                 .lean();
 

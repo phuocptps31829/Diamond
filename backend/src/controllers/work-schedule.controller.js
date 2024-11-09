@@ -23,7 +23,10 @@ module.exports = {
                         path: 'branchID',
                     }
                 })
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!workSchedules.length) {
                 createError(404, 'No workSchedule found.');
@@ -217,7 +220,9 @@ module.exports = {
 
             const workSchedules = await WorkScheduleModel
                 .find({
-                    doctorID: doctorID
+                    doctorID: doctorID,
+                    isDeleted: false,
+                    day: { $gte: new Date().toISOString().slice(0, 10) }
                 })
                 .populate("doctorID")
                 .populate("clinicID")

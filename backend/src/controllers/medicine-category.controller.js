@@ -13,7 +13,10 @@ module.exports = {
                 .find({ isDeleted: false })
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!medicineCategories.length) {
                 createError(404, 'No medicine categories found.');

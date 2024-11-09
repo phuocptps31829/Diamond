@@ -14,7 +14,10 @@ module.exports = {
                 .populate("specialtyID")
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions)
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                })
                 .lean();
 
             if (!clinics.length) {

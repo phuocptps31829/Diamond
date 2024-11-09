@@ -156,19 +156,12 @@ module.exports = {
                         }
                     }
                 })
-                .sort({ time: -1 })
+                .sort({ createdAt: -1 })
                 .lean();
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
-                const [invoice, results, orderNumber] = await Promise.all([
+                const [invoice] = await Promise.all([
                     InvoiceModel
-                        .findOne({ appointmentID: appointment._id, isDeleted: false })
-                        .lean(),
-                    ResultModel
-                        .find({ appointmentID: appointment._id, isDeleted: false })
-                        .populate('serviceID')
-                        .lean(),
-                    OrderNumberModel
                         .findOne({ appointmentID: appointment._id, isDeleted: false })
                         .lean(),
                 ]);
@@ -325,7 +318,7 @@ module.exports = {
                         }
                     }
                 })
-                .sort({ time: -1 })
+                .sort({ createdAt: -1 })
                 .lean();
 
             const formattedAppointmentsPromises = appointments
@@ -505,20 +498,14 @@ module.exports = {
                         }
                     }
                 })
-                .sort({ time: -1 })
+                .sort({ createdAt: -1 })
                 .lean();
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
-                const [invoice, results, orderNumber] = await Promise.all([
-                    InvoiceModel
-                        .findOne({ appointmentID: appointment._id, isDeleted: false })
-                        .lean(),
+                const [results] = await Promise.all([
                     ResultModel
                         .find({ appointmentID: appointment._id, isDeleted: false })
                         .populate('serviceID')
-                        .lean(),
-                    OrderNumberModel
-                        .findOne({ appointmentID: appointment._id, isDeleted: false })
                         .lean(),
                 ]);
 

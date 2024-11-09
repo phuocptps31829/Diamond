@@ -20,7 +20,10 @@ module.exports = {
                 .find({ isDeleted: false })
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!users.length) {
                 createError(404, 'No users found.');

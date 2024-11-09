@@ -15,7 +15,10 @@ module.exports = {
                 .populate('medicineCategoryID')
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!medicines.length) {
                 createError(404, 'No medicines found.');

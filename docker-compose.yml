@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    stdin_open: true
+    tty: true
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "3500:3500"
+    depends_on:
+      - redis
+    stdin_open: true
+    tty: true
+  website:
+    build: ./website
+    container_name: website
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true

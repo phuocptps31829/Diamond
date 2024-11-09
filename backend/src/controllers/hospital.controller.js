@@ -1,7 +1,6 @@
 const HospitalModel = require('../models/hospital.model');
 const { createError } = require('../utils/helper.util');
 
-
 module.exports = {
     getAllHospitals: async (req, res, next) => {
         try {

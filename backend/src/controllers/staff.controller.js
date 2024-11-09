@@ -32,7 +32,10 @@ module.exports = {
                 .populate('roleID')
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!staffs.length) {
                 createError(404, 'No staffs found.');

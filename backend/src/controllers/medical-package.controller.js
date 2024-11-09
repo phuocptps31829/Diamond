@@ -32,7 +32,10 @@ module.exports = {
                 .populate('specialtyID')
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions)
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                })
                 .lean();
 
             if (!medicalPackages.length) {

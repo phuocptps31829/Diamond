@@ -12,7 +12,10 @@ module.exports = {
                 .find({ isDeleted: false })
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!invoices.length) {
                 createError(404, "No invoices found.");

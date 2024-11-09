@@ -23,7 +23,10 @@ module.exports = {
                 .populate('roleID')
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions)
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                })
                 .lean();
 
             if (!doctors.length) {

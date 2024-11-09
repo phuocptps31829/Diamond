@@ -18,7 +18,10 @@ module.exports = {
                 .find({ isDeleted: false })
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!roles.length) {
                 createError(404, 'No roles found.');

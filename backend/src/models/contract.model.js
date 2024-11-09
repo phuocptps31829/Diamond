@@ -5,7 +5,7 @@ const contractSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, ref: 'User',
     },
     hospitalID: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Hospital',
+        type: mongoose.Schema.Types.ObjectId, ref: 'Branch',
     },
     startDate: {
         type: Date,
@@ -15,7 +15,23 @@ const contractSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    detail: {
+    time: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: String,
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    file: {
         type: String,
         required: true
     },

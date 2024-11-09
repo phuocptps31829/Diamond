@@ -24,7 +24,10 @@ module.exports = {
                 })
                 .limit(limitDocuments)
                 .skip(skip)
-                .sort(sortOptions);
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                });
 
             if (!specialties.length) {
                 createError(404, 'No specialties found.');
