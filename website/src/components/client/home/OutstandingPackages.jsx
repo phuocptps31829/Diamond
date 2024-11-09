@@ -31,11 +31,11 @@ export default function OutstandingPackages() {
   }, [loadingMedicalPackages, medicalPackages]);
 
   return (
-    <div className="mx-auto my-5 max-w-screen-xl">
+    <div className="mx-auto max-w-screen-xl">
       <div className="w-full text-center text-[23px] font-bold md:text-[35px]">
         Gói khám nổi bật
       </div>
-      <span className="mx-auto my-2 block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
+      <span className="mx-auto -mt-1 block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
         Danh sách gói khám nổi bật, được khách hàng yêu thích nhất.
       </span>
 
@@ -95,7 +95,7 @@ export default function OutstandingPackages() {
           </div>
           <Link
             to="/packages"
-            className="mx-auto my-5 mt-10 flex w-[50%] items-center justify-center gap-2 rounded-md border border-primary-500 py-2 text-[12px] font-semibold uppercase text-primary-500 hover:bg-primary-500 hover:text-white md:w-[40%] md:text-[14px]"
+            className="mx-auto my-1 mt-5 flex w-[50%] items-center justify-center gap-2 rounded-md border border-primary-500 py-2 text-[12px] font-semibold uppercase text-primary-500 hover:bg-primary-500 hover:text-white md:w-[40%] md:text-[14px]"
           >
             Xem tất cả <AiOutlineDoubleRight />
           </Link>

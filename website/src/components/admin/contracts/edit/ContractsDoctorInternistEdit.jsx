@@ -62,11 +62,11 @@ const ContractsDoctorInternistEdit = () => {
     // mutationFn: (updatedData) => contractApi.updateContract(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries("contracts");
-      toastUI("Cập nhật hợp đồng bác sĩ nội khoa thành công.", "success");
+      toastUI("Cập nhật Hợp đồng bác sĩ cơ hữu thành công.", "success");
       navigate("/admin/contracts/list");
     },
     onError: (error) => {
-      toastUI("Cập nhật hợp đồng bác sĩ nội khoa thất bại.", "error");
+      toastUI("Cập nhật Hợp đồng bác sĩ cơ hữu thất bại.", "error");
       console.error("Error updating contract:", error);
     },
   });
@@ -123,22 +123,22 @@ const ContractsDoctorInternistEdit = () => {
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
-          Chỉnh sửa hợp đồng bác sĩ nội khoa
+          Chỉnh sửa Hợp đồng bác sĩ cơ hữu
         </h1>
-        
-        <form onSubmit={handleSubmit(onSubmit)}>
+
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-2">
               <ImagePreview
-                imagePreview={imagePreview}
-                setFileImage={setFileImage}
-                setImagePreview={setImagePreview}
+                imagePreview={ imagePreview }
+                setFileImage={ setFileImage }
+                setImagePreview={ setImagePreview }
               />
-              {!fileImage && !imagePreview && (
+              { !fileImage && !imagePreview && (
                 <p className="mt-3 text-center text-sm text-red-500">
                   Vui lòng chọn ảnh
                 </p>
-              )}
+              ) }
             </div>
             <div className="w-full">
               <div className="grid grid-cols-1 items-center justify-center gap-5">
@@ -148,8 +148,8 @@ const ContractsDoctorInternistEdit = () => {
                   name="doctor_name"
                   label="Tên bác sĩ:"
                   placeholder="Nhập tên bác sĩ"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
                 <InputCustom
                   id="contract_date"
@@ -157,8 +157,8 @@ const ContractsDoctorInternistEdit = () => {
                   name="contract_date"
                   label="Ngày ký hợp đồng:"
                   placeholder="Chọn ngày ký hợp đồng"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
                 <InputCustom
                   id="contract_duration"
@@ -166,8 +166,8 @@ const ContractsDoctorInternistEdit = () => {
                   name="contract_duration"
                   label="Thời hạn hợp đồng:"
                   placeholder="Nhập thời hạn hợp đồng"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
                 <InputCustom
                   id="specialization"
@@ -175,8 +175,8 @@ const ContractsDoctorInternistEdit = () => {
                   name="specialization"
                   label="Chuyên khoa:"
                   placeholder="Nhập chuyên khoa"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
                 <InputCustom
                   id="contact_phone"
@@ -184,8 +184,8 @@ const ContractsDoctorInternistEdit = () => {
                   name="contact_phone"
                   label="Số điện thoại liên hệ:"
                   placeholder="Nhập số điện thoại liên hệ"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
               </div>
             </div>
@@ -194,16 +194,16 @@ const ContractsDoctorInternistEdit = () => {
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={ isPending || mutation.isPending }
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              { isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
-                "Cập nhật hợp đồng bác sĩ nội khoa"
-              )}
+                "Cập nhật Hợp đồng bác sĩ cơ hữu"
+              ) }
             </Button>
           </div>
         </form>

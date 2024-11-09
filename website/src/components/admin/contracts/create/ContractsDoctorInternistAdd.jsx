@@ -29,7 +29,7 @@ const ContractsDoctorInternistAdd = () => {
   const getCurrentDateTime = () => {
     const now = new Date();
     const date = now.toISOString().split("T")[0];
-    const time = now.toTimeString().split(" ")[0].slice(0, 5); 
+    const time = now.toTimeString().split(" ")[0].slice(0, 5);
     return combineDateTime(date, time);
   };
   const {
@@ -54,13 +54,13 @@ const ContractsDoctorInternistAdd = () => {
     mutationFn: (contractData) => contractApi.createContract(contractData),
     onSuccess: () => {
       queryClient.invalidateQueries("contracts");
-      toastUI("Thêm hợp đồng bác sĩ nội khoa thành công.", "success");
+      toastUI("Thêm Hợp đồng bác sĩ cơ hữu thành công.", "success");
       reset();
       sigCanvas.current.clear();
       navigate("/admin/contracts/list");
     },
     onError: (error) => {
-      toastUI("Thêm hợp đồng bác sĩ nội khoa thất bại.", "error");
+      toastUI("Thêm Hợp đồng bác sĩ cơ hữu thất bại.", "error");
       console.error("Error creating contract:", error);
     },
   });
@@ -85,7 +85,7 @@ const ContractsDoctorInternistAdd = () => {
       formData.append("startDate", data.startDate);
       formData.append("endDate", data.endDate);
       formData.append("time", getCurrentDateTime());
-      formData.append("title", 'Hợp đồng bác sĩ nội khoa');
+      formData.append("title", 'Hợp đồng bác sĩ cơ hữu');
       formData.append("address", data.address);
       formData.append("price", data.price);
       formData.append("isInternal", data.isInternal);
@@ -98,41 +98,41 @@ const ContractsDoctorInternistAdd = () => {
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
-          Thêm hợp đồng bác sĩ nội khoa
+          Hợp đồng bác sĩ cơ hữu
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="w-full">
               <SelectDoctor
-                control={control}
+                control={ control }
                 name="doctorID"
-                errors={errors}
-                onChange={(value) => console.log("Selected doctor:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected doctor:", value) }
               />
             </div>
             <div className="w-full">
               <SelectBranch
-                control={control}
+                control={ control }
                 name="hospitalID"
-                errors={errors}
-                onChange={(value) => console.log("Selected hospital:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected hospital:", value) }
               />
             </div>
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 name="startDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected start date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected start date:", value) }
               />
             </div>
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 isEnd
                 name="endDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected end date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected end date:", value) }
               />
             </div>
             <div className="w-full">
@@ -140,12 +140,12 @@ const ContractsDoctorInternistAdd = () => {
                 id="title"
                 type="text"
                 name="title"
-                disabled={true}
+                disabled={ true }
                 label="Tiêu đề:"
-                placeholder="Hợp đồng bác sĩ nội khoa"
-                value="Hợp đồng bác sĩ nội khoa"
-                control={control}
-                errors={errors}
+                placeholder="Hợp đồng bác sĩ cơ hữu"
+                value="Hợp đồng bác sĩ cơ hữu"
+                control={ control }
+                errors={ errors }
               />
             </div>
 
@@ -156,8 +156,8 @@ const ContractsDoctorInternistAdd = () => {
                 name="price"
                 label="Nhập lương:"
                 placeholder="Nhập lương bác sĩ"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
@@ -166,23 +166,23 @@ const ContractsDoctorInternistAdd = () => {
               id="address"
               type="text"
               name="address"
-              label="Địa chỉ:"
-              placeholder="Nhập địa chỉ"
-              control={control}
-              errors={errors}
+              label="Địa điểm ký hợp đồng:"
+              placeholder="Nhập địa điểm ký hợp đồng"
+              control={ control }
+              errors={ errors }
             />
           </div>
           <div className="my-4">
             <Label className="mb-1">Chữ kí:</Label>
             <SignatureCanvas
               penColor="black"
-              canvasProps={{
+              canvasProps={ {
                 className: "sigCanvas border rounded-lg h-[300px] w-full",
-              }}
-              ref={sigCanvas}
+              } }
+              ref={ sigCanvas }
             />
             <div className="mt-2 flex justify-end gap-2">
-              <Button variant="outline" type="button" onClick={clearSignature}>
+              <Button variant="outline" type="button" onClick={ clearSignature }>
                 Xóa
               </Button>
             </div>
@@ -190,16 +190,16 @@ const ContractsDoctorInternistAdd = () => {
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={ isPending || mutation.isPending }
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              { isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
-                "Thêm hợp đồng bác sĩ nội khoa"
-              )}
+                "Thêm Hợp đồng bác sĩ cơ hữu"
+              ) }
             </Button>
           </div>
         </form>

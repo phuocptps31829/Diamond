@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 export default function Banner() {
   return (
-    <div className="relative h-[55vw] w-full text-primary-500 md:h-[20vw]">
+    <div className="relative h-[55vw] w-full text-primary-500 md:h-[16vw]">
       <div className="absolute bottom-0 h-10 w-full bg-gradient-to-t from-[#e8f2f7f7] to-transparent"></div>
-      <img src={banner} alt="Banner" className="h-full w-full object-cover" />
+      <img src={ banner } alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
         <div className="font-medium text-primary-500 sm:mb-2 md:text-[20px]">
           Nền tảng công nghệ
@@ -23,7 +23,7 @@ export default function Banner() {
             className="flex w-32 items-center rounded-lg border border-primary-100 bg-gradient-to-l from-[#163a4d] to-[#000000d5] px-3 py-1 text-white transition-colors sm:w-48 sm:px-4 sm:py-2"
           >
             <div className="mr-3">
-              <img src={chPlay} alt="Google Play" className="h-6 sm:h-7" />
+              <img src={ chPlay } alt="Google Play" className="h-6 sm:h-7" />
             </div>
             <div className="leading-4">
               <div className="text-[8px] sm:text-xs">Tải ứng dụng</div>
@@ -38,7 +38,7 @@ export default function Banner() {
             className="flex w-32 items-center rounded-lg border border-primary-100 bg-gradient-to-l from-[#163a4d] to-[#000000d5] px-3 py-1 text-white transition-colors sm:w-48 sm:px-4 sm:py-2"
           >
             <div className="mr-3">
-              <img src={appStore} alt="App Store" className="h-6 sm:h-7" />
+              <img src={ appStore } alt="App Store" className="h-6 sm:h-7" />
             </div>
             <div className="leading-4">
               <div className="text-[8px] sm:text-xs">Tải ứng dụng</div>

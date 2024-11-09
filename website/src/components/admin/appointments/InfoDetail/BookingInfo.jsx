@@ -403,7 +403,7 @@ const BookingInfo = ({ data }) => {
                           )}
                           {selectedImage && (
                             <Dialog open={open} onOpenChange={setOpen}>
-                              <DialogContent className="max-w-[1000px] ">
+                              <DialogContent className="max-w-[1000px]">
                                 <DialogHeader>
                                   <DialogTitle>Hình ảnh lớn</DialogTitle>
                                 </DialogHeader>
@@ -494,6 +494,11 @@ const BookingInfo = ({ data }) => {
               ))}
             </div>
             <div className="mt-5 w-full text-end">
+              {bookingData.results.length > 0 && (
+                <Button variant="outline" className="ml-2">
+                  Thêm lịch tái khám
+                </Button>
+              )}
               {bookingData.results.length > 0 &&
                 bookingData.payment.status !== "PAID" && (
                   <AlertDialog>

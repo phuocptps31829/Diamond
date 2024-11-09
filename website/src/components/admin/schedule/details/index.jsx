@@ -166,7 +166,9 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const userProfile = useSelector(state => state.auth.userProfile);
-    const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_ADMIN;
+    const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_SUPER_ADMIN;
+
+    console.log(canDragDrop);
 
     const allSchedules = defaultEvents?.map(event => ({
         id: event._id,
