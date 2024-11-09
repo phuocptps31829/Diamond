@@ -6,7 +6,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import PropTypes from "prop-types";
-import NotFound from "../notFound";
+import NotFound from "@/components/ui/NotFound";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 const PriceServiceContainer = ({ specialtyWithService, isLoading }) => {

@@ -6,7 +6,7 @@ import Rules from '../../components/client/serviceDetail/Rules';
 import ServiceDetail from '../../components/client/serviceDetail/ServiceDetail';
 import { useQuery } from '@tanstack/react-query';
 import useScrollToTop from '@/hooks/useScrollToTop';
-import NotFound from '@/components/client/notFound';
+import NotFound from '@/components/ui/NotFound';
 import { medicalPackageApi } from '@/services/medicalPackagesApi';
 import { serviceApi } from '@/services/servicesApi';
 

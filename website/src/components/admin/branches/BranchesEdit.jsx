@@ -12,7 +12,7 @@ import { branchApi } from "@/services/branchesApi";
 import GoogleMapComponent from "./GoogleMapComponent";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { toastUI } from "@/components/ui/Toastify";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
 import SpinLoader from "@/components/ui/SpinLoader";
@@ -22,7 +22,7 @@ const BranchesEdit = () => {
   const [address, setAddress] = useState(null);
   const [fileImage, setFileImage] = useState(null);
   const { id } = useParams();
-  const [isPending, setIsPending] = useState(false); 
+  const [isPending, setIsPending] = useState(false);
   const [initialData, setInitialData] = useState(null);
   const queryClient = useQueryClient();
 
@@ -62,7 +62,7 @@ const BranchesEdit = () => {
       setValue("hotline", data.hotline);
       setValue("address", data.address);
       setImagePreview(
-        `${import.meta.env.VITE_IMAGE_API_URL}/${data.imagesURL[0]}`,
+        `${import.meta.env.VITE_IMAGE_API_URL}/${data.imagesURL[0]}`
       );
       setAddress({
         formatted_address: data.address,
@@ -70,7 +70,6 @@ const BranchesEdit = () => {
         lng: data.coordinates.lng,
       });
     }
-    
   }, [data, setValue]);
 
   const mutation = useMutation({
@@ -93,9 +92,7 @@ const BranchesEdit = () => {
     console.log(JSON.stringify(data));
     console.log(JSON.stringify(initialData));
 
-    
     if (JSON.stringify(data) === JSON.stringify(initialData)) {
-
       toastUI("Không có thay đổi nào được thực hiện.", "warning");
       return;
     }
@@ -111,7 +108,7 @@ const BranchesEdit = () => {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          },
+          }
         );
 
         imageName = response.data.data;
@@ -119,8 +116,8 @@ const BranchesEdit = () => {
         toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
         console.error("Error uploading image:", error);
         return;
-      }finally{
-        setIsPending(false)
+      } finally {
+        setIsPending(false);
       }
     } else {
       imageName = imagePreview.split("/").pop();
@@ -145,12 +142,12 @@ const BranchesEdit = () => {
   if (isLoading) {
     return <Skeleton />;
   }
-  if (error) return <NotFound />;
+  if (error) return <NotFound message={error.message} />;
 
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
-      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Chỉnh sửa chi nhánh
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -218,11 +215,14 @@ const BranchesEdit = () => {
           </div>
 
           <div className="mt-10 w-full text-end">
-            <Button type="submit" disabled={isPending || mutation.isPending} variant="custom">
+            <Button
+              type="submit"
+              disabled={isPending || mutation.isPending}
+              variant="custom"
+            >
               {isPending || mutation.isPending ? (
                 <>
-                    <SpinLoader />
-
+                  <SpinLoader />
                 </>
               ) : (
                 "Cập nhật chi nhánh"

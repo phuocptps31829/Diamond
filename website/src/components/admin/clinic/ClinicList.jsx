@@ -3,7 +3,7 @@ import DataTable from "./table";
 import { columns } from "./table/columns";
 import { clinicsApi } from "@/services/clinicApi";
 import { useQuery } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 const ClinicsList = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["clinics"],
@@ -16,7 +16,7 @@ const ClinicsList = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
   return <DataTable columns={ columns } data={ data } />;
 };

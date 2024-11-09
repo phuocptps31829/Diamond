@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import DataTable from "./table";
 import { columns } from "./table/columns";
 import { newsApi } from "@/services/newsApi";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 
 const NewsList = () => {
@@ -17,7 +17,7 @@ const NewsList = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
 
 

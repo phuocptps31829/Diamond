@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import BookingInfo from "./InfoDetail/BookingInfo";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import { appointmentApi } from "@/services/appointmentsApi";
 import Loading from "@/components/ui/Loading";
 
@@ -19,10 +19,9 @@ const AppointmentsDetailAdmin = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
-  console.log(data);
-
+  
   return (
     <div className="w-full">
       <h1 className="mb-3 text-2xl font-bold">Chi tiết lịch đặt</h1>

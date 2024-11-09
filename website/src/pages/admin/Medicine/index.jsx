@@ -2,7 +2,7 @@ import MedicinesList from "@/components/admin/medicine/MedicinesList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { useQuery } from "@tanstack/react-query";
 import { medicineApi } from "@/services/medicineApi";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 
 const breadcrumbData = [

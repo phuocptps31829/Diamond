@@ -4,7 +4,7 @@ import NewsAbove from "@/components/client/news/NewsAbove";
 import NewsBelow from "@/components/client/news/NewsBelow";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { newsApi } from "@/services/newsApi";
-import NotFound from "@/components/client/notFound";
+import NotFound from '@/components/ui/NotFound';
 export default function News() {
   useScrollToTop();
   const { data, error, isLoading } = useQuery({
@@ -13,7 +13,7 @@ export default function News() {
   });
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
 
   return (

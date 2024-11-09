@@ -1,4 +1,4 @@
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import { branchApi } from "@/services/branchesApi";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
@@ -17,7 +17,7 @@ const BranchesList = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
 
   return <DataTable columns={columns} data={data.data} />;

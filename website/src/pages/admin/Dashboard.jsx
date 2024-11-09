@@ -5,7 +5,7 @@ import TopStats from '../../components/admin/dashboard/TopStats';
 import MiddleCharts from '../../components/admin/dashboard/MiddleCharts';
 import BottomLists from '../../components/admin/dashboard/BottomLists';
 import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
-import NotFound from '@/components/client/notFound';
+import NotFound from '@/components/ui/NotFound';
 import Loading from '@/components/ui/Loading';
 import { appointmentApi } from '@/services/appointmentsApi';
 import { getAllSpecialties } from '@/services/specialtiesApi';
@@ -104,7 +104,8 @@ export default function Dashboard() {
         errorUpcomingAppointments ||
         errorAppointmentsByAges
     ) {
-        return <NotFound />;
+        const error = errorAllNews || errorPatients || errorAppointments || errorInvoices || errorTotalPatientsBySpecialty || errorSpecialties || errorUpcomingAppointments || errorAppointmentsByAges;
+        return <NotFound message={error.message}  />;
     }
 
     return (

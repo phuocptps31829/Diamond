@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import DataTable from "./table";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useSelector } from "react-redux";
@@ -39,9 +39,8 @@ const AppointmentsList = () => {
   }
 
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
-  console.log(data);
 
   return <DataTable data={ data?.data } />;
 };
