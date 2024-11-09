@@ -23,6 +23,12 @@ import { columnsSchedule, mockData } from "./columns";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
 import { useState } from "react";
+import InputCustom from "@/components/ui/InputCustom";
+import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaArrowsRotate } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { patientSchema } from "@/zods/patient";
 
 export default function DataTableSchedule() {
     const [sorting, setSorting] = useState([]);
@@ -36,6 +42,18 @@ export default function DataTableSchedule() {
         pageIndex: 0,
         pageSize: 10,
     });
+    const {
+        handleSubmit,
+        formState: { errors },
+        control,
+    } = useForm({
+        resolver: zodResolver(patientSchema),
+        defaultValues: {
+            patientName: "",
+        },
+    });
+    const onSubmit = () => {
+    };
 
     const table = useReactTable({
         data: mockData,
@@ -60,17 +78,31 @@ export default function DataTableSchedule() {
 
     return (
         <div className="w-full p-4 bg-white rounded-sm">
-            <div className="flex items-center py-4">
-                <Input
-                    placeholder="Filter emails..."
-                    value={ (table.getColumn("email")?.getFilterValue()) ?? "" }
-                    onChange={ (event) =>
-                        table.getColumn("email")?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                />
+            <div className="flex h-[80px]">
+                <form className="mr-1 flex">
+                    <div className="mb-2 ">
+                        <div className="relative w-[300px] mr-1">
+                            <InputCustom
+                                className="col-span-1 sm:col-span-1"
+                                placeholder="Tìm kiếm bác sĩ"
+                                name="patientName"
+                                type="text"
+                                id="patientName"
+                                icon={ <FaSearch></FaSearch> }
+                                control={ control }
+                                errors={ errors }
+                            />
+                        </div>
+                    </div>
+                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                        <FaPlus className="text-primary-500"></FaPlus>
+                    </Button>
+                    <Button size="icon" variant="outline" className="w-11 h-11 mr-1 mt-2">
+                        <FaArrowsRotate className="text-primary-500" />
+                    </Button>
+                </form>
             </div>
-            <div className="rounded-md border">
+            <div>
                 <Table>
                     <TableHeader>
                         { table.getHeaderGroups().map((headerGroup) => (
@@ -122,10 +154,11 @@ export default function DataTableSchedule() {
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="flex-1 text-sm text-muted-foreground">
-                    { table.getFilteredSelectedRowModel().rows.length } of{ " " }
-                    { table.getFilteredRowModel().rows.length } row(s) selected.
+                    <span className="pr-1">Đã chọn</span>
+                    { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
+                    { table.getFilteredRowModel().rows.length } trong danh sách.
                 </div>
-                <div className="space-x-2">
+                <div className="space-x-2 flex items-center">
                     <Button
                         variant="outline"
                         size="sm"
@@ -134,6 +167,35 @@ export default function DataTableSchedule() {
                     >
                         Trước
                     </Button>
+                    { Array.from({ length: table.getPageCount() }, (_, index) => {
+                        const currentPage = table.getState().pagination.pageIndex;
+                        const pageCount = table.getPageCount();
+                        if (
+                            index === 0 ||
+                            index === pageCount - 1 ||
+                            index === currentPage ||
+                            index === currentPage - 1 ||
+                            index === currentPage + 1
+                        ) {
+                            return (
+                                <Button
+                                    key={ index }
+                                    variant={ currentPage === index ? "solid" : "outline" }
+                                    size="sm"
+                                    onClick={ () => table.setPageIndex(index) }
+                                >
+                                    { index + 1 }
+                                </Button>
+                            );
+                        }
+                        if (
+                            (index === currentPage - 2 && currentPage > 2) ||
+                            (index === currentPage + 2 && currentPage < pageCount - 3)
+                        ) {
+                            return <span key={ index }>...</span>;
+                        }
+                        return null;
+                    }) }
                     <Button
                         variant="outline"
                         size="sm"

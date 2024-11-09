@@ -12,19 +12,26 @@ const verifyAccessToken = (req, res, next) => {
             createError(401, 'Không có quyền truy cập.');
         }
 
-        const verifiedUser = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const verifiedUser = jwt.verify(
+            token,
+            process.env.ACCESS_TOKEN_SECRET,
+            { algorithms: ['HS256'] }
+        );
         req.user = { id: verifiedUser.id };
 
         next();
     } catch (error) {
+        console.log('ỉner');
         next(error);
     }
 };
 
 const verifyRefreshToken = async (req, res, next) => {
     try {
-        const refreshToken = req.cookies.refreshToken;
+        const authHeader = req.headers['authorization'];
 
+        const refreshToken = authHeader && authHeader.split(' ')[1];
+        console.log('re', refreshToken);
         if (!refreshToken) {
             createError(403, 'No refresh token found.');
         }
@@ -37,7 +44,11 @@ const verifyRefreshToken = async (req, res, next) => {
             createError(403, 'Refresh token is expired.');
         }
 
-        const verifiedUser = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const verifiedUser = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET,
+            { algorithms: ['HS256'] }
+        );
 
         if (!verifiedUser) {
             createError(403, 'Invalid refresh token.');
@@ -70,10 +81,10 @@ const resendOTP = async (req, res, next) => {
     const { phone } = req.params;
     try {
         if (phone) {
-            phoneNumber = phone
+            phoneNumber = phone;
         }
         const checkPhoneNumber = await OtpModel.findOne({ phoneNumber });
-        console.log(checkPhoneNumber)
+        console.log(checkPhoneNumber);
         if (!checkPhoneNumber) {
             return next();
         }

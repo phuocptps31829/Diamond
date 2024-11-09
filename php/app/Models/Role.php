@@ -14,9 +14,11 @@ class Role extends Model
         'name',
         'description',
         'isDeleted',
+        'isSystem'
     ];
     protected $attributes = [
         'isDeleted' => false,
+        'isSystem'=>false
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';

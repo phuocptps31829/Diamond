@@ -3,9 +3,7 @@ import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
 import { useSelector, useDispatch } from "react-redux";
-import { setUserProfile, logoutAction } from "@/redux/authSlice";
-import { logoutApi } from "@/services/authApi";
-import { useMutation } from "@tanstack/react-query";
+import { logoutAction } from "@/redux/authSlice";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +17,7 @@ import {
 } from "@/components/ui/DropdownMenu";
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import brandLogo from "@/assets/images/brandLogo.png";
 
 const dataNav = [
   {
@@ -99,66 +98,64 @@ export default function MainHeader() {
 
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-3 md:px-5 lg:py-4">
-        <Link to={"/"} className="relative w-44 items-center">
-          <img
-            src="https://ykhoadiamond.com/images/icons/logo.png"
-            className="w-full"
-            alt="Logo"
-          />
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
+        <Link to={ "/" } className="relative w-56 items-center">
+          <img src={ brandLogo } className="w-full" alt="Logo" />
         </Link>
-        <div className="block lg:hidden" role="button" onClick={toggleNavbar}>
+        <div className="block lg:hidden" role="button" onClick={ toggleNavbar }>
           <AiOutlineMenu className="text-2xl" />
         </div>
         <nav className="hidden lg:block">
           <ul className="nav__link flex items-center justify-center space-x-1 text-center text-sm font-semibold">
-            {dataNav.map((item) => (
-              <li key={item.id}>
+            { dataNav.map((item) => (
+              <li key={ item.id }>
                 <NavLink
-                  to={item.to}
+                  to={ item.to }
                   className="rounded-full px-4 py-2.5 uppercase hover:bg-primary-500 hover:text-white"
                 >
-                  {item.name}
+                  { item.name }
                 </NavLink>
               </li>
-            ))}
+            )) }
             <li className="px-5">|</li>
             <li className="h-auto">
-              {userProfile ? (
+              { userProfile ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <div className="flex w-full items-center justify-center">
                       <div className="mr-3 flex flex-col items-start justify-center">
                         <p className="">Xin chào</p>
-                        <p className="">{userProfile.fullName} </p>
+                        <p className="">{ userProfile?.fullName.split(' ').at(-1) } </p>
                       </div>
 
                       <Avatar>
-                        <AvatarImage src={userProfile.avatar} />
+                        <AvatarImage src={ userProfile?.avatar || 'https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png' } />
                       </Avatar>
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="mt-1">
                     <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      {" "}
-                      <Link to={"/user-profile"}>Thông tin</Link>
-                    </DropdownMenuItem>
+                    <Link to={ "/user-profile" }>
+                      <DropdownMenuItem>
+                        { " " }
+                        Thông tin
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem onClick={ handleLogout }>
                       Đăng xuất
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
                 <Link
-                  to={"/login"}
+                  to={ "/login" }
                   className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white"
                 >
                   Đăng nhập
                 </Link>
-              )}
+              ) }
             </li>
           </ul>
         </nav>

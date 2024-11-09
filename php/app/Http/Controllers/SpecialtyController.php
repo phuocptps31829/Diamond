@@ -141,11 +141,7 @@ class SpecialtyController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -165,11 +161,7 @@ class SpecialtyController extends Controller
                 'data' => $specialty,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -186,11 +178,7 @@ class SpecialtyController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function updateSpecialty(Request $request)
@@ -213,11 +201,7 @@ class SpecialtyController extends Controller
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteSpecialty($id)
@@ -244,11 +228,7 @@ class SpecialtyController extends Controller
                 'data' => $specialty,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

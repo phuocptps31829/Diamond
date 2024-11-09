@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DoctorRequest;
 use App\Http\Requests\UserRequest;
 use Hamcrest\Type\IsString;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -66,7 +67,7 @@ use Hamcrest\Type\IsString;
  *             @OA\Schema(
  *                 required={},
  *                 @OA\Property(property="fullName", type="string", example="BS moi"),
- *                 @OA\Property(property="role", type="string", example="1"),
+ *                 @OA\Property(property="roleID", type="string", example="1"),
  *                 @OA\Property(property="phoneNumber", type="string", example="0300099989"),
  *                 @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
  *                 @OA\Property(property="dateOfBirth", type="string", format="date", example="2000-01-01"),
@@ -98,7 +99,7 @@ use Hamcrest\Type\IsString;
  *         description="Successful response",
  *     ),
  * )
- *  @OA\put(
+ * @OA\put(
  *     path="/api/v1/doctors/update/{id}",
  *     tags={"Doctor Routes"},
  *     summary="Update Doctor",
@@ -114,7 +115,7 @@ use Hamcrest\Type\IsString;
  *         @OA\JsonContent(
  *             required={""},
  *             @OA\Property(property="fullName", type="string", example="BS moi"),
- *             @OA\Property(property="role", type="string", example="1"),
+ *             @OA\Property(property="roleID", type="string", example="1"),
  *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
  *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
  *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
@@ -148,7 +149,7 @@ use Hamcrest\Type\IsString;
  *         description="Successful response",
  *     )
  * )
- *  @OA\delete(
+ * @OA\delete(
  *     path="/api/v1/doctors/delete/{id}",
  *     tags={"Doctor Routes"},
  *     summary="Update Doctor",
@@ -165,7 +166,6 @@ use Hamcrest\Type\IsString;
  *     )
  * )
  */
-
 class DoctorController extends Controller
 {
     public function getAllDoctors(Request $request)
@@ -191,11 +191,7 @@ class DoctorController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -203,37 +199,25 @@ class DoctorController extends Controller
     {
         try {
             $id = $request->route('id');
+
             $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
             }
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Doctor retrieved successfully.',
                 'data' => $Doctor,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
     public function createDoctor(Request $request)
     {
         try {
-            $otherInfo = $request->input('otherInfo');
-            if (isset($otherInfo['isInternal'])) {
-                $otherInfo['isInternal'] = filter_var($otherInfo['isInternal'], FILTER_VALIDATE_BOOLEAN);
-                $request->merge(['otherInfo' => $otherInfo]);
-            }
-            $isActivated = filter_var($request->input('isActivated'), FILTER_VALIDATE_BOOLEAN);
-            $request->merge(['isActivated' => $isActivated]);
-
             $doctorRequest = new DoctorRequest();
             $phoneNumber = $request->phoneNumber;
             $email = $request->email;
@@ -241,14 +225,18 @@ class DoctorController extends Controller
             if ($check) {
                 return createError(500, $check);
             }
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
-                return createError(400, 'No image uploaded!');
+            $roleID = "66fcc9e1682b8e25c2dc43a3";
+            $request->merge(['roleID' => $roleID]);
+
+            $dataDoctor = $request->validate($doctorRequest->rules());
+            if (isset($dataDoctor['otherInfo'])) {
+                $otherInfo =$dataDoctor['otherInfo'];
+                $otherInfo['specialtyID'] = new ObjectId($otherInfo['specialtyID']);
+                $otherInfo['branchID'] = new ObjectId($otherInfo['branchID']);
+                $dataDoctor['otherInfo'] = $otherInfo;
             }
+            $doctor = User::create($dataDoctor);
 
-            $avatar = uploadImage($request->file);
-            $request->merge(['avatar' => $avatar]);
-
-            $doctor = User::create($request->validate($doctorRequest->rules(), $doctorRequest->messages()));
 
             return response()->json([
                 'status' => 'success',
@@ -257,18 +245,14 @@ class DoctorController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
+
     public function updateDoctor(Request $request)
     {
         try {
             $id = $request->route('id');
-
             $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
 
             if (!$Doctor) {
@@ -280,23 +264,33 @@ class DoctorController extends Controller
             if ($check) {
                 return createError(500, $check);
             }
-            $DoctorRequest = new DoctorRequest();
 
-            $Doctor->update($request->validate($DoctorRequest->rules(), $DoctorRequest->messages()));
-
+            $doctorRequest = new DoctorRequest();
+            $dataDoctor = $request->validate($doctorRequest->update());
+            if (isset($dataDoctor['otherInfo'])) {
+                $otherInfo =$dataDoctor['otherInfo'];
+                $otherInfo['specialtyID'] = new ObjectId($otherInfo['specialtyID']);
+                $otherInfo['branchID'] = new ObjectId($otherInfo['branchID']);
+                $dataDoctor['otherInfo'] = $otherInfo;
+            }
+            $Doctor->update($dataDoctor);
+            $Doctor->refresh();
+            $otherInfo = $Doctor->otherInfo;
+            if (isset($Doctor->otherInfo)) {
+                $otherInfo['specialtyID'] = (string)$Doctor->otherInfo['specialtyID'];
+                $otherInfo['branchID'] = (string)$Doctor->otherInfo['branchID'];
+            }
+            $Doctor->otherInfo = $otherInfo;
             return response()->json([
                 'status' => 'success',
                 'message' => 'Doctor update successfully.',
                 'data' => $Doctor,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
+
     public function deleteDoctor($id)
     {
         try {
@@ -321,11 +315,7 @@ class DoctorController extends Controller
                 'data' => $Doctor,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

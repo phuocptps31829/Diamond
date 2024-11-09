@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\NewsRequest;
 use MongoDB\BSON\ObjectId;
@@ -158,11 +159,7 @@ class NewsController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -182,11 +179,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -194,19 +187,11 @@ class NewsController extends Controller
     {
         try {
             $NewsRequest = new NewsRequest();
-            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
-            $request->merge(['isHidden' => $isHidden]);
 
             $checkSlug = checkSlug($request->title, 'News');
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
-            if (!$request->hasFile('file') || checkValidImage($request->file)) {
-                return createError(400, 'No image uploaded!');
-            }
-
-            $image = uploadImage($request->file);
-            $request->merge(['image' => $image]);
 
             $News = News::create($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
 
@@ -217,11 +202,29 @@ class NewsController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
+               return handleException($e);
+        }
+    }
+    public function viewCount(Request $request)
+    {
+        try {
+            $id = $request->route('id');
+
+            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+
+            if (!$News) {
+                return createError(404, 'News not found');
+            }
+            $News->update([
+                "viewCount" => $News->viewCount + 1
+            ]);
             return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+                'status' => 'success',
+                'message' => 'News update view count successfully.',
+                'data' => $News,
+            ], 201);
+        } catch (\Exception $e) {
+               return handleException($e);
         }
     }
     public function updateNews(Request $request)
@@ -235,16 +238,6 @@ class NewsController extends Controller
                 return createError(404, 'News not found');
             }
 
-            $isHidden = filter_var($request->input('isHidden'), FILTER_VALIDATE_BOOLEAN);
-            $request->merge(['isHidden' => $isHidden]);
-            if ($request->hasFile('file') && checkValidImage($request->file)) {
-                return createError(400, 'No image uploaded!');
-            }
-
-            if ($request->hasFile('file')) {
-                $image = uploadImage($request->file);
-                $request->merge(['image' => $image]);
-            }
             $checkSlug = checkSlug($request->title, 'News', $id);
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
@@ -259,11 +252,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteNews($id)
@@ -290,11 +279,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

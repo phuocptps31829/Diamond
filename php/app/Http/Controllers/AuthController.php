@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Hash;
 use MongoDB\BSON\ObjectId;
 use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
-
+use Laravel\Socialite\Facades\Socialite;
+use Exception;
+use Illuminate\Support\Facades\Auth;
 /**
  * @OA\Post(
  *     path="/api/v1/auth",
@@ -31,13 +33,114 @@ use Firebase\JWT\JWT;
  *     ),
  * )
  */
-
 class AuthController extends Controller
 {
+    public function loginFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+    public function facebookCallback()
+    {
+        try {
+            $user = Socialite::driver('facebook')->stateless()->user();
+
+            $findUser = User::where('email', '=', $user->email)->first();
+
+            if ($findUser) {
+                $token = generateAccessRefreshToken($findUser);
+            } else {
+                $userNew = User::create([
+                    "fullName" => $user->name,
+                    "email" => $user->email,
+                    "password" => generateRandomString(),
+                    "avatar" => $user->avatar,
+                    "roleID"=>new ObjectId(env('ROLE_PATIENT'))
+                ]);
+                $token = generateAccessRefreshToken($userNew);
+            }
+            return response()->json([
+                'message' => 'User logged in successfully.',
+                'data' => [
+                    'accessToken' => $token['accessToken'],
+                    'refreshToken' => $token['refreshToken']
+                ]
+            ], 200);
+        } catch (Exception $e) {
+              return handleException($e);
+        }
+
+    }
+
+    public function loginGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleCallback()
+    {
+        try {
+            $user = Socialite::driver('google')->stateless()->user();
+            $findUser = User::where('email', '=', $user->email)->first();
+            if ($findUser) {
+                $token = generateAccessRefreshToken($findUser);
+            } else {
+                $userNew = User::create([
+                    "fullName" => $user->name,
+                    "email" => $user->email,
+                    "password" => generateRandomString(),
+                    "avatar" => $user->avatar,
+                    "roleID"=>new ObjectId(env('ROLE_PATIENT')),
+                    "gender"=> $user->gender
+                ]);
+                $token = generateAccessRefreshToken($userNew);
+            }
+            return response()->json([
+                'message' => 'User logged in successfully.',
+                'data' => [
+                    'accessToken' => $token['accessToken'],
+                    'refreshToken' => $token['refreshToken']
+                ]
+            ], 200);
+        } catch (Exception $e) {
+              return handleException($e);
+        }
+
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $request->validate([
+                "password" => "required|string",
+                "newPassword" => "required|string",
+            ]);
+
+            $userFound = User::where('id', $request->id)
+                ->where('isActivated', true)
+                ->first();
+
+            if (!$userFound) {
+                return createError(404, "Không tiềm thấy tài khoản");
+            }
+
+            if (Hash::check($request->password, $userFound->password)) {
+                $userFound->password = $request->newPassword;
+                $userFound->save();
+            } else {
+                return createError(401, "Mật khẩu không đúng");
+            }
+            return response()->json([
+                'message' => 'Updated password successfully',
+                'data' => $userFound
+            ], 201);
+        } catch (\Exception $e) {
+              return handleException($e);
+        }
+    }
+
     public function logout(Request $request)
     {
         try {
-
             return response()->json([
                 'message' => 'logout successfully',
             ], 200);
@@ -50,17 +153,24 @@ class AuthController extends Controller
     public function refreshToken(Request $request)
     {
         try {
-            $newTokens = generateAccessRefreshToken($request);
+            $user = User::where("isDeleted", false)->where('id', $request->id)->first();
+            if (!$user) {
+                createError(404, "User not fund.");
+            }
+            $newTokens = generateAccessRefreshToken($user);
 
             return response()->json([
-                'accessToken' => $newTokens['accessToken'],
-                'refreshToken' => $newTokens['refreshToken'],
+                "data" => [
+                    'accessToken' => $newTokens['accessToken'],
+                    'refreshToken' => $newTokens['refreshToken'],
+                ]
             ], 200);
         } catch (\Exception $e) {
             // Xử lý lỗi
             return response()->json(['error' => 'Something went wrong', 'message' => $e->getMessage()], 500);
         }
     }
+
     public function forgotPassword(Request $request)
     {
         try {
@@ -82,13 +192,10 @@ class AuthController extends Controller
                 'data' => $userFound
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
+
     public function checkOTPForgotPassword(Request $request)
     {
         try {
@@ -99,11 +206,11 @@ class AuthController extends Controller
             $password = $newUser['password'];
             $fullName = $newUser['fullName'];
 
-            $otpToken = $this->generateOTPToken([
-                'fullName' => $fullName,
-                'phoneNumber' => $phoneNumber,
-                'password' => $password,
-            ]);
+            $otpToken = generateOTPToken(
+                $fullName,
+                $phoneNumber,
+                $password,
+            );
 
             return response()->json([
                 'message' => 'OTP is correct',
@@ -113,11 +220,7 @@ class AuthController extends Controller
                 ]
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 
@@ -130,7 +233,7 @@ class AuthController extends Controller
                 return createError(404, 'Phone number not found');
             }
 
-            $OTP = $this->sendOTP($phone);
+            $OTP = sendOTP($phone);
 
             $hashedOTP = Hash::make($OTP);
 
@@ -139,27 +242,24 @@ class AuthController extends Controller
                 'phoneNumber' => $phone
             ]);
 
-            $otpToken = $this->generateOTPToken([
-                'fullName' => $userFound->FullName,
-                'phoneNumber' => $userFound->phoneNumber,
-                'password' => $userFound->password,
-            ]);
+            $otpToken = generateOTPToken(
+                $userFound->FullName,
+                $userFound->phoneNumber,
+                $userFound->password,
+            );
 
             return response()->json([
                 'message' => 'New OTP is created successfully.',
                 'data' => [
-                    'otpToken' =>  $otpToken,
+                    'otpToken' => $otpToken,
                 ]
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
+
     public function register(Request $request)
     {
         try {
@@ -195,18 +295,15 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'New OTP is created successfully.',
                 'data' => [
-                    'otpToken' =>  $token,
+                    'otpToken' => $token,
                 ]
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
+
     public function login(Request $request)
     {
         try {
@@ -220,34 +317,34 @@ class AuthController extends Controller
                 'password.required' => 'Password is required',
                 'password.string' => 'Password should be a string'
             ]);
+
             $user = User::where('phoneNumber', '=', $request->phoneNumber)->first();
+
             if (!$user) {
-                return  createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
+                return createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
             }
             $validPassword = Hash::check($request->password, $user->password);
 
             if (!$validPassword) {
-                return  createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
+                return createError(400, 'Số điện thoại hoặc mật khẩu không đúng.');
             }
+
             if (!$user->isActivated) {
-                return   createError(400, 'Tài khoản chưa được kích hoạt.');
+                return createError(400, 'Không tiềm thấy tài khoản của bạn!');
             }
+
             $token = generateAccessRefreshToken($user);
 
             return response()->json([
                 'message' => 'User logged in successfully.',
                 'data' => [
-                    'accessToken' =>  $token['accessToken'],
+                    'accessToken' => $token['accessToken'],
                     'refreshToken' => $token['refreshToken']
                 ]
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 }

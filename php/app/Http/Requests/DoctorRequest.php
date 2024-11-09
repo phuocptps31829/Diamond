@@ -24,7 +24,7 @@ class DoctorRequest extends FormRequest
     {
         return [
             'fullName' => 'required|string',
-            'role' => 'required|exists:Role,_id',
+            "roleID" => "nullable|string",
             'phoneNumber' => [
                 'required',
                 'regex:/^[0-9]{10}$/',
@@ -34,30 +34,57 @@ class DoctorRequest extends FormRequest
                 'email',
             ],
             'dateOfBirth' => 'nullable|date_format:Y-m-d',
-            'address' => ['nullable', 'array', 'min:1'],
-            'address.province' => 'required_with:address|string',
-            'address.district' => 'required_with:address|string',
-            'address.ward' => 'required_with:address|string',
-            'address.street' => 'required_with:address|string',
+            'address' => 'nullable|string',
             'gender' => 'nullable|string',
             'password' => 'required|string|min:6',
             'avatar' => 'nullable|string',
             'isActivated' => 'required|boolean',
             'citizenIdentificationNumber' => 'nullable|numeric',
-            'otherInfo.specialtyID' => 'required|exists:Specialty,_id',
+            'otherInfo.specialtyID' => 'required|string',
+            'otherInfo.branchID' => 'required|string',
             'otherInfo.title' => 'nullable|string',
-            'otherInfo.practicingCertificate' => 'nullable|string',
-            'otherInfo.yearsExperience' => 'nullable|numeric',
+            'otherInfo.yearsExperience' => 'nullable|string',
             'otherInfo.detail' => 'nullable|string',
             'otherInfo.isInternal' => 'nullable|boolean',
-
+            'otherInfo.verification.practicingCertificate' => 'required|string',
+            'otherInfo.verification.images' => 'required|array',
+        ];
+    }
+    public function update(): array
+    {
+        return [
+            'fullName' => 'nullable|string',
+            "roleID" => "nullable|string",
+            'phoneNumber' => [
+                'nullable',
+                'regex:/^[0-9]{10}$/',
+            ],
+            'email' => [
+                'nullable',
+                'email',
+            ],
+            'dateOfBirth' => 'nullable|date_format:Y-m-d',
+            'address' => 'nullable|string',
+            'gender' => 'nullable|string',
+            'password' => 'nullable|string|min:6',
+            'avatar' => 'nullable|string',
+            'isActivated' => 'nullable|boolean',
+            'citizenIdentificationNumber' => 'nullable|numeric',
+            'otherInfo.specialtyID' => 'nullable|string',
+            'otherInfo.branchID' => 'nullable|string',
+            'otherInfo.title' => 'nullable|string',
+            'otherInfo.yearsExperience' => 'nullable|string',
+            'otherInfo.detail' => 'nullable|string',
+            'otherInfo.isInternal' => 'nullable|boolean',
+            'otherInfo.verification.practicingCertificate' => 'nullable|string',
+            'otherInfo.verification.images' => 'nullable|array',
         ];
     }
     public function messages()
     {
         return [
-            'role.required' => 'Role ID is required',
-            'role.exists' => 'The Role ID is invalid.',
+            'roleID.required' => 'Role ID is required',
+            'roleID.exists' => 'The Role ID is invalid.',
             'fullName.required' => 'Full name is required',
             'fullName.string' => 'Full name should be a string',
             'phoneNumber.string' => 'Phone number should be a string',

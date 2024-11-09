@@ -81,45 +81,45 @@ export default function RegisterComponent() {
   };
 
   return (
-    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-20 md:px-3">
-      <div className="w-full max-w-screen-xl px-10 py-5">
+    <div className="flex h-auto items-center justify-center bg-gray-100 px-2 py-3 md:px-3">
+      <div className="max-w-screen-xl py-5 px-3 md:px-5">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          {/* ADS BANNER */}
-          <div className="hidden bg-white shadow-lg md:block">
+          {/* ADS BANNER */ }
+          <div className="hidden bg-white shadow-lg md:block h-96">
             <Carousel
-              opts={{
+              opts={ {
                 align: "start",
                 loop: true,
-              }}
+              } }
               className="w-full"
-              plugins={[
+              plugins={ [
                 Autoplay({
                   delay: 3500,
                   stopOnInteraction: false,
                   stopOnMouseEnter: false,
                 }),
-              ]}
+              ] }
             >
               <CarouselContent>
-                {Array.from({ length: 12 }).map((_, index) => (
-                  <CarouselItem key={index} className="pl-4">
+                { Array.from({ length: 12 }).map((_, index) => (
+                  <CarouselItem key={ index } className="pl-4">
                     <AdsProduct />
                   </CarouselItem>
-                ))}
+                )) }
               </CarouselContent>
             </Carousel>
           </div>
 
-          {/* FORM */}
+          {/* FORM */ }
           <div className="md:pt-18 bg-white px-5 py-16 shadow-lg md:px-11 md:py-10 border-l">
-            <h1 className="mb-2 text-center text-4xl font-bold md:text-5xl">
+            <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl">
               Đăng kí tài khoản
             </h1>
             <p className="mb-6 text-center text-sm text-gray-400">
               Đăng kí ngay để sử dụng dịch vụ
             </p>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={ handleSubmit(onSubmit) }>
               <div className="mb-2">
                 <label
                   htmlFor="phone"
@@ -127,16 +127,16 @@ export default function RegisterComponent() {
                 >
                   Họ và tên:
                 </label>
-                <div className="relative">  
+                <div className="relative">
                   <InputCustom
                     className="col-span-1 sm:col-span-1"
                     placeholder="Nhập tên của bạn"
                     name="fullName"
                     type="text"
                     id="fullName"
-                    icon={<FaUser></FaUser>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaUser></FaUser> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -154,9 +154,9 @@ export default function RegisterComponent() {
                     name="phoneNumber"
                     type="text"
                     id="phoneNumber"
-                    icon={<FaPhoneAlt></FaPhoneAlt>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaPhoneAlt></FaPhoneAlt> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -174,9 +174,9 @@ export default function RegisterComponent() {
                     name="password"
                     type="password"
                     id="password"
-                    icon={<FaLock></FaLock>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -194,21 +194,21 @@ export default function RegisterComponent() {
                     name="confirmPassword"
                     type="password"
                     id="confirmPassword"
-                    icon={<FaLock></FaLock>}
-                    control={control}
-                    errors={errors}
+                    icon={ <FaLock></FaLock> }
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
 
               <button
                 className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-xl font-semibold text-white hover:bg-primary-500"
-                disabled={mutation.isPending}
+                disabled={ mutation.isPending }
               >
-                {mutation.isPending ? "Đang xử lí" : "Đăng ký"}
-                {mutation.isPending && (
+                { mutation.isPending ? "Đang xử lí" : "Đăng ký" }
+                { mutation.isPending && (
                   <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
-                )}
+                ) }
               </button>
 
               <div className="my-2 flex items-center">
@@ -219,7 +219,7 @@ export default function RegisterComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */}
+              {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
                   type="button"
@@ -246,7 +246,7 @@ export default function RegisterComponent() {
                 <p className="text-center">
                   Bạn đã có tài khoản?
                   <Link
-                    to={"/login"}
+                    to={ "/login" }
                     className="ml-1 block font-medium text-primary-500 hover:font-semibold hover:text-primary-800 md:inline"
                   >
                     Đăng nhập ngay!

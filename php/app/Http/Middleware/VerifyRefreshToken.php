@@ -8,10 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Models\RevokedToken;
 use App\Models\Otp;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Exception;
-use Firebase\JWT\Key;
 use stdClass;
 
 class VerifyRefreshToken
@@ -24,7 +25,7 @@ class VerifyRefreshToken
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $refreshToken = $request->refreshToken;
+            $refreshToken = $request->query('refreshToken');
 
             if (!$refreshToken) {
                 return createError(403, 'No refresh token found.');
@@ -42,9 +43,9 @@ class VerifyRefreshToken
                 return response()->json(['error' => 'Invalid refresh token.'], 403);
             }
 
-            // $removeToken = RevokedToken::create([
-            //     'token' => $refreshToken
-            // ]);
+            $removeToken = RevokedToken::create([
+                'token' => $refreshToken
+            ]);
 
             $request->merge(['id' => $verifiedUser->id]);
 

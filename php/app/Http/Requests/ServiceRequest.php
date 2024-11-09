@@ -32,6 +32,10 @@ class ServiceRequest extends FormRequest
             'discountPrice' => 'nullable|numeric',
             'duration' => 'required|numeric',
             'isHidden' => 'required|boolean',
+            'applicableObject.gender' => 'required|string',
+            'applicableObject.age.min' => 'required|numeric',
+            'applicableObject.age.max' => 'required|numeric',
+            'applicableObject.isFamily' => 'required|boolean',
         ];
     }
     public function messages()

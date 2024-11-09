@@ -21,6 +21,8 @@ class Service extends Model
         'discountPrice',
         'duration',
         'slug',
+        'orderCount',
+        'applicableObject',
         'isHidden',
         'isDeleted',
     ];
@@ -29,9 +31,10 @@ class Service extends Model
     protected $casts = [
         'name' => 'string',
         'price' => 'string',
-        'shortDescription' => 'integer',
+        'shortDescription' => 'string',
         'image' => 'string',
         'details' => 'string',
+        'orderCount' => 'integer',
         'discountPrice' => 'string',
         'duration' => 'string',
         'isHidden' => 'boolean',
@@ -45,9 +48,12 @@ class Service extends Model
     {
         $this->attributes['specialtyID'] = new ObjectId($value);
     }
+
     protected $attributes = [
         'isDeleted' => false,
+        'orderCount' => 0,
     ];
+
     public function getTable()
     {
         return 'Service';

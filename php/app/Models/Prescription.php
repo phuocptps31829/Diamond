@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Mongodb\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\Casts\ObjectId;
+use MongoDB\BSON\ObjectId;
 
 class Prescription extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'resultID',
         'advice',
         'medicines',
         'isDeleted',
@@ -28,6 +29,11 @@ class Prescription extends Model
     {
         $this->attributes['medicines'] = $value;
     }
+    public function setResultIDAttribute($value)
+    {
+        $this->attributes['resultID'] = new ObjectId($value);
+    }
+
     public function getTable()
     {
         return 'Prescription';

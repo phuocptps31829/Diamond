@@ -19,10 +19,8 @@ module.exports = {
     extend: {
       boxShadow: {
         custom:
-
-          "-2px -2px 5px 5px rgba(109, 142, 195, .5), 3px 3px 10px rgba(109, 142, 196, .2)",
-        gray: 
-          "0px 0px 10px rgba(186, 186, 186, 0.7)",
+          "0px 0px 10px 3px rgba(109, 142, 195, 0.3), 3px 3px 10px rgba(109, 142, 196, 0.1)",
+        gray: "0px 0px 10px rgba(186, 186, 186, 0.7)",
       },
       colors: {
         border: "hsl(var(--border))",
@@ -95,9 +93,8 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "no-transition" : "none",
+        "no-transition": "none",
       },
-    
     },
   },
   plugins: [require("tailwindcss-animate")],

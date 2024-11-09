@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Mongodb\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\Casts\ObjectId;
+use MongoDB\BSON\ObjectId;
 
 class Result extends Model
 {
@@ -19,8 +19,6 @@ class Result extends Model
     ];
 
     protected $casts = [
-        'serviceID' => 'object_id',
-        'specialtyID' => 'object_id',
         'name' => 'string',
         'isDeleted' => 'boolean',
     ];

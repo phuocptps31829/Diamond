@@ -18,6 +18,7 @@ class Doctor extends Model
         'practicingCertificate',
         'yearsExperience',
         'detail',
+        'verification',
         'isInternal',
         'isActivated'
     ];

@@ -29,7 +29,7 @@ export default function NewsDetail() {
     <div className="bg-[#E8F2F7] py-5">
       <ContentNews
         news={data}
-        allNews={allNews}
+        allNews={allNews?.data}
         isLoading={isLoading}
         isLoadingAllNews={isLoadingNews}
       />

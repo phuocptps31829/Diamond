@@ -15,7 +15,6 @@ import {
     CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 // Value
 const genders = [
     {
@@ -30,15 +29,16 @@ const genders = [
         name: "Khác",
         value: "other"
     },
-];
 
-export default function SelectGender({ control, name, errors, disabled }) {
-    const [open, setOpen] = React.useState(false);
+];
+export default function SelectGender({ control, name, errors }) {
+  const [open, setOpen] = React.useState(false);
+
 
     return (
         <div>
             <Controller
-                control={control}
+              control={control}
                 name={name}
                 rules={{ required: "Chọn giới tính" }}
                 render={({ field }) => (
@@ -48,13 +48,12 @@ export default function SelectGender({ control, name, errors, disabled }) {
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className={cn("w-full justify-between py-[21px]",
-                                    errors[name] && "")}
-                                disabled={disabled}
+                                className={cn("w-full justify-between py-[21px]", 
+                                errors[name] && "")}
                             >
                                 {field.value
                                     ? genders.find((gender) => gender.value === field.value)?.name
-                                    : <span className='text-gray-600'>Chọn giới tính</span>}
+                                    : <span className='text-[#838A94]'>Chọn giới tính</span>}
                                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50 " />
                             </Button>
                         </PopoverTrigger>
@@ -67,12 +66,9 @@ export default function SelectGender({ control, name, errors, disabled }) {
                                                 key={gender.value}
                                                 value={gender.value}
                                                 onSelect={(currentValue) => {
-                                                    if (!disabled) {
-                                                        field.onChange(currentValue);
-                                                        setOpen(false);
-                                                    }
+                                                    field.onChange(currentValue);
+                                                    setOpen(false);
                                                 }}
-                                                disabled={disabled}
                                             >
                                                 <Check
                                                     className={cn(

@@ -55,6 +55,19 @@ export default function Form() {
   const dispatch = useDispatch();
   const { toast } = useToast();
 
+  const isFullInfoToCheckout = !bookingDetails.some(booking => {
+    const { bookingDetail } = booking;
+    return Object.values(bookingDetail).some(value => value === "" || value === null || value === undefined);
+  });
+
+  useEffect(() => {
+    setSelectedService({
+      ...services[0], serviceId: services[0]?.id, bookingDetail: {
+        specialtyID: services[0]?.specialtyID
+      }
+    });
+  }, [services]);
+
   const handleRemoveItem = (id) => {
     dispatch(removeFromCart(id));
     dispatch(removeItemInfo(id));
@@ -94,7 +107,6 @@ export default function Form() {
   };
 
   const handleChangeBranch = (branchId) => {
-    console.log('branchId', branchId);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService.serviceId,
@@ -114,7 +126,6 @@ export default function Form() {
   };
 
   const handleChangeDoctor = (doctorId) => {
-    console.log('doctorId', doctorId);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
@@ -132,7 +143,6 @@ export default function Form() {
   };
 
   const handleChangeDate = (date) => {
-    console.log('date', date);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
@@ -148,7 +158,6 @@ export default function Form() {
   };
 
   const handleChangeTime = (workScheduleID, clinic, time) => {
-    console.log('time', workScheduleID, clinic, time);
     dispatch(
       changeBookingDetails({
         serviceId: selectedService?.serviceId,
@@ -244,18 +253,18 @@ export default function Form() {
   const onSubmit = (data, event) => {
     event.preventDefault();
 
-    if (!profile) {
+    if (!isFullInfoToCheckout) {
       toast({
-        variant: "error",
-        title: "Thanh toán thất bại!",
-        description: "Vui lòng đăng nhập để tiếp tục.",
+        variant: "warning",
+        title: "Chưa đủ thông tin",
+        description: 'Vui lòng cung cấp đầy đủ thông tin',
         action: <ToastAction altText="Đóng">Đóng</ToastAction>,
       });
       return;
     }
 
     const bookingInfo = {
-      patientID: profile.id,
+      patientID: profile._id,
       appointmentHelpUser: isBookingForOthers
         ? {
           fullName: data.fullName,
@@ -284,9 +293,12 @@ export default function Form() {
         price: detail.bookingDetail.price,
       })),
     };
-    // setIsBlocking(false);
+    setIsBlocking(false);
+
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);
+
+    navigate('/services-booking-checkout');
   };
 
   useEffect(() => {
@@ -334,7 +346,7 @@ export default function Form() {
             <p className="font-light">Đã chọn { services.length } dịch vụ</p>
           </div>
 
-          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4 sm:h-[215px] md:h-[680px]">
+          <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[185px] overflow-y-auto px-2 pt-4">
             { services.length > 0 ? (
               services.map((svc) => {
                 const bookingDetail = bookingDetails.find(
@@ -354,18 +366,23 @@ export default function Form() {
                       id={ `radio_${svc.id}` }
                       type="radio"
                       name="radio"
+                      checked={ svc.id === selectedService?.serviceId }
                       onChange={ (e) =>
                         handleServiceSelect(svc.id, e.target.checked)
                       }
                     />
-                    <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white peer-checked:border-gray-700"></span>
+                    <span className={ `absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-4 border-gray-300 bg-white ${hasEmptyFields ? 'peer-checked:border-red-500' : 'peer-checked:border-[#0067e2]'}` }>
+                      <span className={ `absolute right-1/2 translate-x-1/2 top-1/2 box-content block h-[0.5px] w-[0.5px] -translate-y-1/2 rounded-full border-[3px] border-gray-300 bg-white border-inherit` }>
+
+                      </span>
+                    </span>
                     <label
-                      className="flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline peer-checked:outline-gray-700"
+                      className={ `flex cursor-pointer select-none rounded-lg p-3 outline outline-gray-300 peer-checked:bg-gray-50 peer-checked:outline ${hasEmptyFields ? "peer-checked:outline-red-500" : "peer-checked:outline-primary-500"} ${hasEmptyFields ? "outline-red-500" : "outline-primary-500"}` }
                       htmlFor={ `radio_${svc.id}` }
                     >
                       <div className="flex items-center gap-4">
                         <img
-                          src="https://img.ykhoadiamond.com/uploads/package/12042023/57f12ac8-2eaf-4bbc-a9ed-2038d671f63a.jpg"
+                          src={ svc.image }
                           className="w-[60px] sm:w-[75px] md:w-[100px]"
                           alt={ `Image of ${svc.name}` }
                         />
@@ -375,10 +392,10 @@ export default function Form() {
                           </p>
                           { isServiceSelected && (
                             <span
-                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-green-500"} font-semibold` }
+                              className={ `text-sm ${hasEmptyFields ? "text-red-500" : "text-primary-500"} font-semibold` }
                             >
                               { hasEmptyFields
-                                ? "Xem lại thông tin (còn trống)"
+                                ? "Chưa chọn đủ thông tin"
                                 : "Xem lại thông tin" }
                             </span>
                           ) }
@@ -490,9 +507,6 @@ export default function Form() {
                   />
                 </div>
               </div>
-
-              {/* Thông tin người khám */ }
-              <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
               <div className="flex items-center">
                 <label htmlFor="bookingForOthers" className="mr-2">
                   Đặt hộ người khác:
@@ -503,190 +517,190 @@ export default function Form() {
                   onCheckedChange={ handleSwitchChange }
                 />
               </div>
-
-              <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
-                {/* Hàng 1 */ }
-                <div className="mb-4">
-                  <label htmlFor="hoten" className="mb-1 block">
-                    Họ và tên:
-                  </label>
-                  <InputCustom
-                    className="col-span-1 sm:col-span-1"
-                    placeholder="Nhập tên của bạn"
-                    name="fullName"
-                    type="text"
-                    id="fullName"
-                    control={ control }
-                    errors={ errors }
-                  />
-                </div>
-
-                {/* Hàng 2 */ }
-                <div className="mb-4 flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <label htmlFor="email" className="mb-1 block">
-                      Email:
-                    </label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập email của bạn"
-                      name="email"
-                      type="email"
-                      id="email"
-                      control={ control }
-                      errors={ errors }
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label htmlFor="phone" className="mb-1 block">
-                      Số điện thoại:
-                    </label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập số điện thoại của bạn"
-                      name="phoneNumber"
-                      type="text"
-                      id="phoneNumber"
-                      control={ control }
-                      errors={ errors }
-                    />
-                  </div>
-                </div>
-
-                <div className="mb-4 flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <label htmlFor="gioitinh" className="mb-1 block">
-                      Giới tính
-                    </label>
-                    <SelectGender
-                      control={ control }
-                      name="gender"
-                      errors={ errors }
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label htmlFor="ngaysinh" className="mb-1 block">
-                      Ngày sinh
-                    </label>
-                    <SelectBirthDate
-                      control={ control }
-                      name="birthDate"
-                      errors={ errors }
-                    />
-                  </div>
-                </div>
-                {/* Hàng 3 */ }
-                <div className="mb-4 flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <label htmlFor="job" className="mb-1 block">
-                      Nghề nghiệp:
-                    </label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập nghề nghiệp của bạn"
-                      name="job"
-                      type="text"
-                      id="job"
-                      control={ control }
-                      errors={ errors }
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label htmlFor="ethnicity" className="mb-2 block">
-                      Dân tộc:
-                    </label>
-                    <SelectEthnic
-                      control={ control }
-                      name="ethnicity"
-                      errors={ errors }
-                    />
-                  </div>
-                </div>
-
-                {/* Hàng 4 */ }
-                <div className="mb-4 flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <label htmlFor="cccd" className="mb-1 block">
-                      CCCD/CMND:
-                    </label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập CCCD/CMND của bạn"
-                      name="cccd"
-                      type="text"
-                      id="cccd"
-                      control={ control }
-                      errors={ errors }
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <label htmlFor="bhyt" className="mb-1 block">
-                      Bảo hiểm y tế:
-                    </label>
-                    <InputCustom
-                      className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập BHYT của bạn"
-                      name="bhyt"
-                      type="text"
-                      id="bhyt"
-                      control={ control }
-                      errors={ errors }
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="address" className="mb-1 block">
-                    Địa chỉ:
-                  </label>
-
-                  <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
-                    <div className="w-full flex-1 md:w-[200px]">
-                      <SelectProvince
-                        control={ control }
-                        name="province"
-                        errors={ errors }
-                        onProvinceChange={ (provinceId) => {
-                          setSelectedProvinceId(provinceId);
-                          setSelectedDistrictId(null);
-                        } }
-                      />
-                    </div>
-                    <div className="w-full flex-1 md:w-[200px]">
-                      <SelectDistrict
-                        control={ control }
-                        name="district"
-                        errors={ errors }
-                        provinceId={ selectedProvinceId }
-                        onDistrictChange={ setSelectedDistrictId }
-                        setValue={ setValue }
-                      />
-                    </div>
-                    <div className="w-full flex-1 md:w-[200px]">
-                      <SelectWard
-                        control={ control }
-                        name="ward"
-                        errors={ errors }
-                        setValue={ setValue }
-                        districtId={ selectedDistrictId }
-                      />
-                    </div>
-                  </div>
-                  {/* Hàng 5 */ }
+              { isBookingForOthers && <>
+                <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
+                <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
+                  {/* Hàng 1 */ }
                   <div className="mb-4">
+                    <label htmlFor="hoten" className="mb-1 block">
+                      Họ và tên:
+                    </label>
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
-                      placeholder="Nhập địa chỉ cụ thể của bạn"
-                      name="address"
+                      placeholder="Nhập tên của bạn"
+                      name="fullName"
                       type="text"
-                      id="address"
+                      id="fullName"
                       control={ control }
                       errors={ errors }
                     />
                   </div>
-                </div>
 
-                {/* Button */ }
-              </div>
+                  {/* Hàng 2 */ }
+                  <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <label htmlFor="email" className="mb-1 block">
+                        Email:
+                      </label>
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập email của bạn"
+                        name="email"
+                        type="email"
+                        id="email"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="phone" className="mb-1 block">
+                        Số điện thoại:
+                      </label>
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập số điện thoại của bạn"
+                        name="phoneNumber"
+                        type="text"
+                        id="phoneNumber"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <label htmlFor="gioitinh" className="mb-1 block">
+                        Giới tính
+                      </label>
+                      <SelectGender
+                        control={ control }
+                        name="gender"
+                        errors={ errors }
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="ngaysinh" className="mb-1 block">
+                        Ngày sinh
+                      </label>
+                      <SelectBirthDate
+                        control={ control }
+                        name="birthDate"
+                        errors={ errors }
+                      />
+                    </div>
+                  </div>
+                  {/* Hàng 3 */ }
+                  <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <label htmlFor="job" className="mb-1 block">
+                        Nghề nghiệp:
+                      </label>
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập nghề nghiệp của bạn"
+                        name="job"
+                        type="text"
+                        id="job"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="ethnicity" className="mb-2 block">
+                        Dân tộc:
+                      </label>
+                      <SelectEthnic
+                        control={ control }
+                        name="ethnicity"
+                        errors={ errors }
+                      />
+                    </div>
+                  </div>
+
+                  {/* Hàng 4 */ }
+                  <div className="mb-4 flex flex-col gap-4 md:flex-row">
+                    <div className="flex-1">
+                      <label htmlFor="cccd" className="mb-1 block">
+                        CCCD/CMND:
+                      </label>
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập CCCD/CMND của bạn"
+                        name="cccd"
+                        type="text"
+                        id="cccd"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label htmlFor="bhyt" className="mb-1 block">
+                        Bảo hiểm y tế:
+                      </label>
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập BHYT của bạn"
+                        name="bhyt"
+                        type="text"
+                        id="bhyt"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label htmlFor="address" className="mb-1 block">
+                      Địa chỉ:
+                    </label>
+
+                    <div className="mb-2 flex flex-col items-start justify-between gap-1 md:flex-row">
+                      <div className="w-full flex-1">
+                        <SelectProvince
+                          control={ control }
+                          name="province"
+                          errors={ errors }
+                          onProvinceChange={ (provinceId) => {
+                            setSelectedProvinceId(provinceId);
+                            setSelectedDistrictId(null);
+                          } }
+                        />
+                      </div>
+                      <div className="w-full flex-1">
+                        <SelectDistrict
+                          control={ control }
+                          name="district"
+                          errors={ errors }
+                          provinceId={ selectedProvinceId }
+                          onDistrictChange={ setSelectedDistrictId }
+                          setValue={ setValue }
+                        />
+                      </div>
+                      <div className="w-full flex-1">
+                        <SelectWard
+                          control={ control }
+                          name="ward"
+                          errors={ errors }
+                          setValue={ setValue }
+                          districtId={ selectedDistrictId }
+                        />
+                      </div>
+                    </div>
+                    {/* Hàng 5 */ }
+                    <div className="mb-4">
+                      <InputCustom
+                        className="col-span-1 sm:col-span-1"
+                        placeholder="Nhập địa chỉ cụ thể của bạn"
+                        name="address"
+                        type="text"
+                        id="address"
+                        control={ control }
+                        errors={ errors }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </> }
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
                   Trở lại

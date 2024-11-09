@@ -4,7 +4,6 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const appointmentController = require('../controllers/appointment.controller');
-const appointmentValidator = require('../validations/appointment.validation');
 
 /**
  * @openapi
@@ -13,23 +12,6 @@ const appointmentValidator = require('../validations/appointment.validation');
  *    tags:
  *    - Appointment Routes
  *    summary: Get all Appointments for specialty
- *    parameters:
- *      - in: query
- *        name: page
- *        schema:
- *          type: integer
- *      - in: query
- *        name: limit
- *        schema:
- *          type: integer
- *      - in: query
- *        name: sort
- *        schema:
- *          type: string 
- *      - in: query
- *        name: time
- *        schema:
- *          type: string
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -47,28 +29,11 @@ router.get(
 
 /**
  * @openapi
- * '/api/v1/appointments/years':
+ * '/api/v1/appointments/gender-years':
  *  get:
  *    tags:
  *    - Appointment Routes
- *    summary: Get all Appointments for years
- *    parameters:
- *      - in: query
- *        name: page
- *        schema:
- *          type: integer
- *      - in: query
- *        name: limit
- *        schema:
- *          type: integer
- *      - in: query
- *        name: sort
- *        schema:
- *          type: string
- *      - in: query
- *        name: time
- *        schema:
- *          type: string
+ *    summary: Get all Appointments for gender years
  *    responses:
  *      '200':
  *        $ref: '#/components/responses/200'
@@ -78,10 +43,10 @@ router.get(
  *        $ref: '#/components/responses/500'
 */
 router.get(
-    '/years',
+    '/gender-years',
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
-    appointmentController.getAllAppointmentsForYears
+    appointmentController.getAllAppointmentsForGenderYears
 );
 
 /**

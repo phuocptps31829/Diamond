@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const workScheduleSchema = new mongoose.Schema({
     doctorID: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Doctor',
+        ref: 'User',
         required: true
     },
     clinicID: {

@@ -2,7 +2,6 @@ const UserModel = require('../models/user.model');
 const PatientModel = require('../models/patient.model');
 const OtpModel = require('../models/otp.model');
 const { createError,
-    saveRefreshToken,
     generateAccessRefreshToken,
     errorValidator,
     sendOTP,
@@ -60,12 +59,17 @@ const login = async (req, res, next) => {
         });
         const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
 
-        saveRefreshToken(refreshToken, res);
-
         return res.status(200).json({
             message: 'User logged in successfully.',
             data: {
-                accessToken
+                accessToken: {
+                    token: accessToken,
+                    exp: Date.now() + 60 * 1000
+                },
+                refreshToken: {
+                    token: refreshToken,
+                    exp: Date.now() + 7 * 24 * 60 * 60 * 1000
+                },
             }
         });
     } catch (error) {
@@ -97,10 +101,17 @@ const refreshToken = async (req, res, next) => {
     try {
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } = generateAccessRefreshToken({ ...req.user, _id: req.user.id });
 
-        saveRefreshToken(newRefreshToken, res);
-
         return res.status(200).json({
-            newAccessToken
+            data: {
+                accessToken: {
+                    token: newAccessToken,
+                    exp: Date.now() + 60 * 1000
+                },
+                refreshToken: {
+                    token: newRefreshToken,
+                    exp: Date.now() + 7 * 24 * 60 * 60 * 1000
+                },
+            }
         });
     } catch (err) {
         next(err);
@@ -191,14 +202,13 @@ const forgotPassword = async (req, res, next) => {
 
 const googleCallback = async (req, res, next) => {
     try {
+        console.log(999);
         const patient = await PatientModel.findOne({
             userID: req.user._id
         });
         const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
 
-        saveRefreshToken(refreshToken, res);
-
-        return res.redirect(`${process.env.CLIENT_LOCAL_URL}?accessToken=${accessToken}`);
+        return res.redirect(`${process.env.CLIENT_LOCAL_AUTH_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     } catch (error) {
         next(error);
     }
@@ -211,9 +221,7 @@ const facebookCallback = async (req, res, next) => {
         });
         const { accessToken, refreshToken } = generateAccessRefreshToken(patient);
 
-        saveRefreshToken(refreshToken, res);
-
-        return res.redirect(`${process.env.CLIENT_LOCAL_URL}?accessToken=${accessToken}`);
+        return res.redirect(`${process.env.CLIENT_LOCAL_AUTH_REDIRECT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`);
     } catch (error) {
         next(error);
     }

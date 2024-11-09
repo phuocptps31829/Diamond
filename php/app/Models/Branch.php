@@ -12,7 +12,7 @@ class Branch extends Model
     protected $fillable = [
         'workingTime',
         'name',
-        'imageURL',
+        'imagesURL',
         'address',
         'hotline',
         'coordinates',
@@ -35,7 +35,7 @@ class Branch extends Model
     ];
     public function setImageURLAttribute($value)
     {
-        $this->attributes['imageURL'] = $value;
+        $this->attributes['imagesURL'] = $value;
     }
     public function setCoordinatesAttribute($value)
     {

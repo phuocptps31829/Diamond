@@ -7,7 +7,6 @@ const swaggerDocs = require('./swagger');
 
 const { createError } = require('./src/utils/helper.util');
 const newsRoutes = require('./src/routes/news.route');
-const doctorRoutes = require('./src/routes/doctor.route');
 const workScheduleRoutes = require('./src/routes/work-schedule.route');
 
 const authRoutes = require('./src/routes/auth.route');
@@ -23,17 +22,22 @@ const contractRoutes = require('./src/routes/contract.route');
 const branchRoutes = require('./src/routes/branch.route');
 const resultRoutes = require('./src/routes/result.route');
 const invoiceRoutes = require('./src/routes/invoice.route');
-const patientsRoutes = require('./src/routes/patient.route');
 const contactRoutes = require('./src/routes/contact.route');
 const provinceRoutes = require('./src/routes/province.route');
 const appointmentRoutes = require('./src/routes/appointment.route');
+const rolesRoutes = require('./src/routes/role.route');
+const usersRoutes = require('./src/routes/user.route');
 const passportMiddleWare = require('./src/middlewares/passport.middleware');
 const app = express();
 
 // app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", ['http://localhost:5173']);
+//     res.header("Access-Control-Allow-Origin", ['http://localhost:5173', 'http://127.0.0.1:5173']);
 //     next();
 // });
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+});
 passportMiddleWare(app);
 app.use(logger('dev'));
 app.use(express.json());
@@ -52,7 +56,6 @@ swaggerDocs(app, process.env.PORT);
 //     res.send('Hello from E-BookingHealthcare');
 // });
 app.use('/api/v1/news', newsRoutes);
-app.use('/api/v1/doctors', doctorRoutes);
 app.use('/api/v1/medical-packages', medicalPackageRoutes);
 app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/specialties', specialtyRoutes);
@@ -66,12 +69,14 @@ app.use('/api/v1/contracts', contractRoutes);
 app.use('/api/v1/results', resultRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
-app.use('/api/v1/patients', patientsRoutes);
 app.use('/api/v1/provinces', provinceRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/work-schedules', workScheduleRoutes);
 app.use('/api/v1/appointments', appointmentRoutes);
+app.use('/api/v1/roles', rolesRoutes);
+app.use('/api/v1/users', usersRoutes);
+
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));
 });

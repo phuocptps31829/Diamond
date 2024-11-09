@@ -23,11 +23,22 @@ class WorkScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'doctorID' => ['required', 'exists:Doctor,_id'],
-            'day' => ['nullable', 'date_format:Y-m-d'],
-            'clinicID' => ['required', 'string', 'regex:/^[0-9a-fA-F]{24}$/'],
-            'hour.startTime' => ['nullable', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
-            'hour.endTime' => ['nullable', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
+            'doctorID' => "required|string",
+            'day' => "required|string",
+            'clinicID' => "required|string",
+            'hour.startTime' => "required|string",
+            'hour.endTime' => "required|string",
+        ];
+    }
+    public function update(): array
+    {
+        return [
+            'doctorID' => "nullable|string",
+            'day' => "nullable|string",
+            'clinicID' => "nullable|string",
+            'hour' => "nullable",
+            'hour.startTime' => "required_with:hour|string",
+            'hour.endTime' => "nullable|string",
         ];
     }
     public function messages()

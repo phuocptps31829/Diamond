@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getAllDoctors = async () => {
   try {
-    const res = await axios.get(API_URL_GET_ALL_DOCTORS);
+    const res = await axios.get(API_URL_GET_ALL_DOCTORS + "/get-by-role/DOCTOR");
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {
@@ -14,7 +14,7 @@ export const getAllDoctors = async () => {
 
 export const getDoctorById = async (id) => {
   try {
-    const res = await axios.get(`${API_URL_GET_ALL_DOCTORS}/${id}`);
+    const res = await axios.get(`${API_URL_GET_ALL_DOCTORS}/get-by-id/${id}`);
     console.log(res.data.data);
     return res.data.data;
   } catch (error) {

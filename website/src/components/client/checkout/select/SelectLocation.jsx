@@ -19,10 +19,17 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getProvinces, getDistricts, getWards } from "@/services/provincesApi";
 
-
-export function SelectProvince({ control, name, errors, onProvinceChange, disabled }) {
+export function SelectProvince({
+  control,
+  name,
+  errors,
+  onProvinceChange,
+  disabled,
+  defaultValue,
+}) {
   const [open, setOpen] = React.useState(false);
   const [provinces, setProvinces] = useState([]);
+  const [selectedValue, setSelectedValue] = useState(defaultValue); // Tạo state cho giá trị đã chọn
 
   useEffect(() => {
     fetchProvinces();
@@ -31,13 +38,23 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
   const fetchProvinces = async () => {
     try {
       const response = await getProvinces();
-
       setProvinces(response);
+      console.log("aaa", response);
+
     } catch (error) {
       console.error("Error fetching provinces:", error);
     }
   };
-
+  useEffect(() => {
+    if (defaultValue) {
+      console.log("df:" + defaultValue);
+      const selectedProvince = provinces.find((province) => province._id === defaultValue);
+      if (selectedProvince) {
+        setSelectedValue(selectedProvince._id);
+        // control.setValue(name, selectedProvince._id); 
+      }
+    }
+  }, [defaultValue, provinces, control, name]);
   return (
     <div className="">
       <Controller
@@ -53,17 +70,13 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                 disabled={ disabled }
                 aria-expanded={ open }
                 className={ cn(
-                  "w-full justify-between py-[21px]",
+                  "w-full justify-between py-[21px] border",
                   errors[name] && "border-red-500",
                 ) }
               >
                 { field.value ? (
                   <>
-                    {
-                      provinces.find(
-                        (province) => province._id === field.value,
-                      )?.name
-                    }
+                    { provinces.find((province) => province._id === selectedValue)?.name }
                   </>
                 ) : (
                   "Chọn tỉnh/thành phố"
@@ -73,7 +86,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên tỉnh/thành phố" />
+                <CommandInput placeholder="Tên tỉnh/thành phố" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -83,8 +96,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         value={ province.name }
                         onSelect={ (currentValue) => {
                           const selectedProvince = provinces.find(
-                            (province) =>
-                              province.name === currentValue,
+                            (province) => province.name === currentValue,
                           );
                           if (selectedProvince) {
                             field.onChange(selectedProvince._id);
@@ -96,7 +108,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === province._id
+                            selectedValue === province._id
                               ? "opacity-100"
                               : "opacity-0",
                           ) }
@@ -118,6 +130,7 @@ export function SelectProvince({ control, name, errors, onProvinceChange, disabl
   );
 }
 
+
 export function SelectDistrict({
   control,
   name,
@@ -125,7 +138,7 @@ export function SelectDistrict({
   provinceId,
   onDistrictChange,
   setValue,
-  disabled
+  disabled,
 }) {
   const [open, setOpen] = React.useState(false);
   const [districts, setDistricts] = useState([]);
@@ -165,7 +178,6 @@ export function SelectDistrict({
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -173,9 +185,8 @@ export function SelectDistrict({
                 ) }
               >
                 { field.value && districts.length > 0 ? (
-                  districts.find(
-                    (district) => district._id === field.value,
-                  )?.name
+                  districts.find((district) => district._id === field.value)
+                    ?.name
                 ) : (
                   <span className="text-gray-600">Chọn quận/huyện</span>
                 ) }
@@ -184,7 +195,7 @@ export function SelectDistrict({
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên quận/huyện" />
+                <CommandInput placeholder="Tên quận/huyện" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -194,8 +205,7 @@ export function SelectDistrict({
                         value={ district.name }
                         onSelect={ (currentValue) => {
                           const selectedDistrict = districts.find(
-                            (district) =>
-                              district.name === currentValue,
+                            (district) => district.name === currentValue,
                           );
                           if (selectedDistrict) {
                             field.onChange(selectedDistrict._id);
@@ -229,7 +239,14 @@ export function SelectDistrict({
   );
 }
 
-export function SelectWard({ control, name, errors, districtId, setValue,disabled }) {
+export function SelectWard({
+  control,
+  name,
+  errors,
+  districtId,
+  setValue,
+  disabled,
+}) {
   const [open, setOpen] = React.useState(false);
   const [wards, setWards] = useState([]);
 
@@ -265,7 +282,6 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
                 variant="outline"
                 role="combobox"
                 disabled={ disabled }
-
                 aria-expanded={ open }
                 className={ cn(
                   "w-full justify-between py-[21px]",
@@ -282,7 +298,7 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên phường/xã" />
+                <CommandInput placeholder="Tên phường/xã" />
                 <CommandList>
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
@@ -303,7 +319,7 @@ export function SelectWard({ control, name, errors, districtId, setValue,disable
                         <Check
                           className={ cn(
                             "mr-2 h-4 w-4",
-                            field.value === ward._id
+                            field.value === ward.name
                               ? "opacity-100"
                               : "opacity-0",
                           ) }

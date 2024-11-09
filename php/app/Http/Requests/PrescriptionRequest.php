@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-namespace App\Models\Medicine;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class PrescriptionRequest extends FormRequest
@@ -13,7 +11,7 @@ class PrescriptionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,10 +22,26 @@ class PrescriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'advice' => 'required|string',
-            'medicines.*.medicinID' => 'required',
-            'medicines.*.quantity' => 'required|integer|min:1',
-            'dosage' => 'required|string',
+            'resultID' => 'required|string',
+            "advice" => 'required|string',
+            'medicines' => 'nullable|array',
+            'medicines.*.medicineID' => 'required_without:medicineID|string',
+            'medicines.*.quantity' => 'required_without:medicineID|integer',
+            'medicines.*.dosage' => 'required_without:medicineID|string',
+            "price" => "nullable|integer"
+        ];
+    }
+
+    public function update(): array
+    {
+        return [
+            'invoiceID' => 'nullable|string',
+            "advice" => 'nullable|string',
+            'medicines' => 'nullable|array',
+            'medicines.*.medicineID' => 'required_without:medicineID|string',
+            'medicines.*.quantity' => 'required_without:medicineID|integer',
+            'medicines.*.dosage' => 'required_without:medicineID|string',
+            "price" => "nullable|integer"
         ];
     }
     public function messages()

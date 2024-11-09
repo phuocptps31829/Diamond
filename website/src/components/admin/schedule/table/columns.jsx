@@ -11,6 +11,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiEdit } from "react-icons/fi";
 import { BsCalendarDate } from "react-icons/bs";
 import { Link } from "react-router-dom";
+import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 
 export const columnsSchedule = [
     {
@@ -40,23 +41,31 @@ export const columnsSchedule = [
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
+
                     Họ và tên
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{ row.getValue("name") }</div>,
+        cell: ({ row }) => <div className="flex items-center gap-3">
+            <Avatar className="size-8">
+                <img src={ row.original.avatar } alt={ row.getValue("name") } />
+            </Avatar>
+            <span className="w-full whitespace-nowrap">
+                { row.getValue("name") }
+            </span>
+        </div>,
     },
     {
         accessorKey: "branch",
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -65,14 +74,14 @@ export const columnsSchedule = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{ row.getValue("branch") }</div>,
+        cell: ({ row }) => <div className="">{ row.getValue("branch") }</div>,
     },
     {
         accessorKey: "date",
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -81,14 +90,14 @@ export const columnsSchedule = [
                 </Button>
             );
         },
-        cell: ({ row }) => <div className="lowercase">{ row.getValue("date") }</div>,
+        cell: ({ row }) => <div className="font-medium flex items-center py-4 gap-3">{ row.getValue("date") }</div>,
     },
     {
         accessorKey: "time",
         header: ({ column }) => {
             return (
                 <Button
-                    className="px-0"
+                    className="px-0 text-base"
                     variant="ghost"
                     onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
                 >
@@ -115,12 +124,12 @@ export const columnsSchedule = [
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
-                        <DropdownMenuItem className="w-fit flex items-center gap-2">
-                            <BsCalendarDate className="text-[15px]" />
-                            <Link to="/admin/schedules/details">
+                        <Link to="/admin/schedules/details">
+                            <DropdownMenuItem className="w-fit flex items-center gap-2">
+                                <BsCalendarDate className="text-[15px]" />
                                 Chi tiết
-                            </Link>
-                        </DropdownMenuItem>
+                            </DropdownMenuItem>
+                        </Link>
                         <DropdownMenuItem className="w-fit flex items-center gap-2">
                             <FiEdit className="text-[15px]" />
                             <span>
@@ -143,83 +152,83 @@ export const columnsSchedule = [
 export const mockData = [
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Nguyễn Văn A",
-        branch: "Chi nhánh Hà Nội",
-        date: "Monday",
-        time: "8 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Nguyễn Văn Phước",
+        branch: "Chi nhánh Gò Vấp",
+        date: "Thứ 2 - Thứ 7",
+        time: "8 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Trần Thị B",
-        branch: "Chi nhánh TP. Hồ Chí Minh",
-        date: "Tuesday",
-        time: "7 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Trần Thị Tín",
+        branch: "Chi nhánh Tân Bình",
+        date: "Thứ 2 - Thứ 5",
+        time: "7 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Lê Văn C",
-        branch: "Chi nhánh Đà Nẵng",
-        date: "Wednesday",
-        time: "6 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Lê Văn Tám",
+        branch: "Chi nhánh Thủ Đức",
+        date: "Thứ 2 - Thứ 5",
+        time: "6 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Phạm Thị D",
-        branch: "Chi nhánh Cần Thơ",
-        date: "Thursday",
-        time: "8 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Phạm Thị Lệ",
+        branch: "Chi nhánh Thủ Đức",
+        date: "Thứ 2, Thứ 4",
+        time: "8 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
+        avatar: 'https://github.com/shadcn.png',
         name: "Hoàng Văn E",
-        branch: "Chi nhánh Hải Phòng",
-        date: "Friday",
-        time: "5 hours",
+        branch: "Chi nhánh Gò Vấp",
+        date: "Thứ 2, Thứ 4, Thứ 7",
+        time: "5 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Vũ Thị F",
-        branch: "Chi nhánh Nha Trang",
-        date: "Monday",
-        time: "4 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Vũ Thị Định",
+        branch: "Chi nhánh Gò Vấp",
+        date: "Thứ 2",
+        time: "4 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Đỗ Văn G",
-        branch: "Chi nhánh Huế",
-        date: "Tuesday",
-        time: "7 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Nguyễn Văn Đạt",
+        branch: "Chi nhánh Gò Vấp",
+        date: "Thứ 2 - Thứ 7",
+        time: "8 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Ngô Thị H",
-        branch: "Chi nhánh Vũng Tàu",
-        date: "Wednesday",
-        time: "6 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Vũ Thị Tín",
+        branch: "Chi nhánh Tân Bình",
+        date: "Thứ 2 - Thứ 5",
+        time: "7 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Bùi Văn I",
-        branch: "Chi nhánh Bình Dương",
-        date: "Thursday",
-        time: "5 hours",
+        avatar: 'https://github.com/shadcn.png',
+        name: "Lê Quang Bảy",
+        branch: "Chi nhánh Thủ Đức",
+        date: "Thứ 2 - Thứ 5",
+        time: "6 tiếng",
     },
     {
         id: Date.now(),
-        // avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXJA32WU4rBpx7maglqeEtt3ot1tPIRWptxA&s',
-        name: "Lý Thị K",
-        branch: "Chi nhánh Đồng Nai",
-        date: "Friday",
-        time: "4 hours",
-    }
+        avatar: 'https://github.com/shadcn.png',
+        name: "Phạm Út Chi",
+        branch: "Chi nhánh Thủ Đức",
+        date: "Thứ 2, Thứ 4",
+        time: "8 tiếng",
+    },
 ];
 

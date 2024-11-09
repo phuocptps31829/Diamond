@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { getAllBranchesBySpecialty } from "@/services/branchesApi";
+import { useToast } from "@/hooks/useToast";
+import { ToastAction } from "@/components/ui/Toast";
 
 export default function SelectDepartment({
   control,
@@ -25,11 +27,12 @@ export default function SelectDepartment({
   errors,
   specialtyID,
   onChange,
-  setValue,
   selectedServiceID
 }) {
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
+  console.log(selectedServiceID);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -45,16 +48,28 @@ export default function SelectDepartment({
     fetchDepartments();
   }, [specialtyID]);
 
-  // useEffect(() => {
-  //   setValue(name, "");
-  // }, [setValue, name, selectedServiceID]);
+  useEffect(() => {
+    errors[name] = undefined;
+  }, [specialtyID, selectedServiceID, errors, name]);
+
+  const handleClick = () => {
+    if (!selectedServiceID) {
+      toast({
+        variant: "warning",
+        title: "Vui lòng chọn dịch vụ",
+        status: "warning",
+        action: <ToastAction altText="Đóng">Đóng</ToastAction>,
+      });
+      return;
+    }
+  };
 
   return (
-    <div className="">
+    <div onClick={ handleClick }>
       <Controller
         control={ control }
         name={ name }
-        rules={ { required: "Vui lòng chọn một chi nhánh." } }
+        rules={ { required: "Vui lòng chọn một khoa." } }
         render={ ({ field }) => (
           <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
@@ -65,6 +80,7 @@ export default function SelectDepartment({
                 className={ cn(
                   "w-full justify-between py-[21px]",
                   errors[name] && "border-red-500",
+                  selectedServiceID ? 'pointer-events-auto' : 'pointer-events-none'
                 ) }
               >
                 { field.value ? (
@@ -72,14 +88,14 @@ export default function SelectDepartment({
                     (department) => department._id === field.value,
                   )?.name
                 ) : (
-                  <span className="text-gray-600">Chọn chi nhánh</span>
+                  <span className="text-gray-600">Chọn khoa làm việc</span>
                 ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
               <Command>
-                <CommandInput placeholder="Nhập tên chi nhánh" />
+                <CommandInput placeholder="Nhập tên khoa" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>

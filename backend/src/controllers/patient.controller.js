@@ -3,6 +3,7 @@ const { createError, errorValidator } = require("../utils/helper.util");
 
 const getAllPatients = async (req, res, next) => {
     try {
+        
         let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
         const totalRecords = await Patient.countDocuments().populate({
@@ -21,6 +22,7 @@ const getAllPatients = async (req, res, next) => {
         if (!patients.length) {
             createError(404, 'No patient found.');
         }
+
         return res.status(200).json({
             page: page || 1,
             message: 'Patient retrieved successfully.',

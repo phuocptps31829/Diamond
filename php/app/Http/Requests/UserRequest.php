@@ -36,11 +36,7 @@ class UserRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($userId), // Bỏ qua user hiện tại
             ],
             'dateOfBirth' => 'nullable|date_format:Y-m-d',
-            'address' => ['nullable', 'array', 'min:1'],
-            'address.province' => 'required_with:address|string',
-            'address.district' => 'required_with:address|string',
-            'address.ward' => 'required_with:address|string',
-            'address.street' => 'required_with:address|string',
+            'address' => 'nullable|string',
             'gender' => 'nullable|string',
             'password' => 'required|string|min:6',
             'avatar' => 'nullable|string',

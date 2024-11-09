@@ -139,7 +139,7 @@ function CalendarSchedule({ onSetInfoForm }) {
     );
 
     return (
-        <div className='overflow-x-scroll w-full'>
+        <div className='w-full'>
             <ScheduleXCalendar calendarApp={ calendar } />
         </div>
     );

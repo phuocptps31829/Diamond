@@ -137,11 +137,7 @@ class RoleController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -161,11 +157,7 @@ class RoleController extends Controller
                 'data' => $Role,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -182,11 +174,7 @@ class RoleController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function updateRole(Request $request)
@@ -209,11 +197,7 @@ class RoleController extends Controller
                 'data' => $Role,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteRole($id)
@@ -240,11 +224,7 @@ class RoleController extends Controller
                 'data' => $Role,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

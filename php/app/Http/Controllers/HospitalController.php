@@ -143,11 +143,7 @@ class HospitalController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function getOneHospital(Request $request)
@@ -166,11 +162,7 @@ class HospitalController extends Controller
                 'data' => $Hospital,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function createHospital(Request $request)
@@ -185,11 +177,7 @@ class HospitalController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function updateHospital(Request $request)
@@ -212,11 +200,7 @@ class HospitalController extends Controller
                 'data' => $Hospital,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function deleteHospital($id)
@@ -243,11 +227,7 @@ class HospitalController extends Controller
                 'data' => $Hospital,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 }

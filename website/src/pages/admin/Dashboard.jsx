@@ -1,9 +1,175 @@
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { takeItAllNews } from "@/services/newsApi";
+import { getAllPatients } from "@/services/patientsApi";
+import {
+  getAllAppointments,
+  get5UpcomingAppointments,
+} from "@/services/appointmentsApi";
+import { getAllInvoices } from "@/services/invoicesApi";
+import TopStats from "../../components/admin/dashboard/TopStats";
+import MiddleCharts from "../../components/admin/dashboard/MiddleCharts";
+import BottomLists from "../../components/admin/dashboard/BottomLists";
+import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import NotFound from "@/components/client/notFound";
+import Loading from "@/components/ui/Loading";
+import {
+  getTotalPatientsBySpecialty,
+  getPatientsByGender,
+} from "@/services/appointmentsApi";
+import { takeItAllSpecialties } from "@/services/specialtiesApi";
+
+const breadcrumbData = [
+  {
+    title: "Thống kê",
+  },
+  {
+    href: "/admin/dashboard",
+    title: "Thống kê quản trị",
+  },
+];
+
 export default function Dashboard() {
-    return (
-        <div >
-            Dashboard Page
-        </div>
-    );
+  const {
+    data: upcomingAppointments,
+    error: errorUpcomingAppointments,
+    isLoadingNews: isLoadingUpcomingAppointments,
+  } = useQuery({
+    queryKey: ["upcomingAppointments"],
+    queryFn: get5UpcomingAppointments,
+  });
+
+  const {
+    data: allNews,
+    error: errorAllNews,
+    isLoadingNews: isLoadingNews,
+  } = useQuery({
+    queryKey: ["news"],
+    queryFn: takeItAllNews,
+  });
+
+  const {
+    data: allSpecialties,
+    error: errorSpecialties,
+    isLoading: isLoadingSpecialties,
+  } = useQuery({
+    queryKey: ["specialties"],
+    queryFn: takeItAllSpecialties,
+  });
+
+  const {
+    data: allPatients,
+    error: errorPatients,
+    isLoading: isLoadingPatients,
+  } = useQuery({
+    queryKey: ["patients"],
+    queryFn: getAllPatients,
+  });
+
+  const {
+    data: allAppointments,
+    error: errorAppointments,
+    isLoading: isLoadingAppointments,
+  } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: getAllAppointments,
+  });
+
+  const {
+    data: allInvoices,
+    error: errorInvoices,
+    isLoading: isLoadingInvoices,
+  } = useQuery({
+    queryKey: ["invoices"],
+    queryFn: getAllInvoices,
+  });
+
+  const {
+    data: totalPatientsBySpecialty,
+    error: errorTotalPatientsBySpecialty,
+    isLoading: isLoadingTotalPatientsBySpecialty,
+  } = useQuery({
+    queryKey: ["totalAppointmentsBySpecialty"],
+    queryFn: getTotalPatientsBySpecialty,
+  });
+
+  const {
+    data: patientsByGender,
+    error: errorPatientsByGender,
+    isLoading: isLoadingPatientsByGender,
+  } = useQuery({
+    queryKey: ["patientsByGender"],
+    queryFn: getPatientsByGender,
+  });
+
+  useEffect(() => {
+    if (
+      isLoadingNews ||
+      isLoadingPatients ||
+      isLoadingAppointments ||
+      isLoadingInvoices ||
+      isLoadingTotalPatientsBySpecialty ||
+      isLoadingSpecialties ||
+      isLoadingPatientsByGender ||
+      isLoadingUpcomingAppointments
+    ) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [
+    isLoadingNews,
+    isLoadingPatients,
+    isLoadingAppointments,
+    isLoadingInvoices,
+    isLoadingTotalPatientsBySpecialty,
+    isLoadingSpecialties,
+    isLoadingPatientsByGender,
+    isLoadingUpcomingAppointments,
+  ]);
+
+  if (
+    errorAllNews ||
+    errorPatients ||
+    errorAppointments ||
+    errorInvoices ||
+    errorTotalPatientsBySpecialty ||
+    errorSpecialties ||
+    errorPatientsByGender ||
+    errorUpcomingAppointments
+  ) {
+    return <NotFound />;
+  }
+
+  return (
+    <>
+      {isLoadingNews ||
+      isLoadingPatients ||
+      isLoadingAppointments ||
+      isLoadingInvoices ||
+      isLoadingTotalPatientsBySpecialty ||
+      isLoadingSpecialties ||
+      isLoadingPatientsByGender ||
+      isLoadingUpcomingAppointments ? (
+        <Loading />
+      ) : (
+        <>
+          <BreadcrumbCustom data={breadcrumbData} />
+          <TopStats
+            allNews={allNews}
+            allPatients={allPatients?.data}
+            allAppointments={allAppointments?.data}
+            allInvoices={allInvoices?.data}
+          />
+          {console.log("patientsByGender", patientsByGender)}
+          <MiddleCharts
+            dataTotalPatients={totalPatientsBySpecialty}
+            dataAllSpecialties={allSpecialties}
+            dataPatientsByGender={patientsByGender}
+          />
+          <BottomLists dataUpcomingAppointments={upcomingAppointments} />
+        </>
+      )}
+    </>
+  );
 }
-
-

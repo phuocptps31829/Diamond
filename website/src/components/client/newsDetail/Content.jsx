@@ -83,7 +83,6 @@ export default function ContentNews({
                 <div>{news.viewCount}</div>
               </div>
             </div>
-
             <div
               className="content-news w-full"
               dangerouslySetInnerHTML={{ __html: news.content }}
@@ -91,7 +90,7 @@ export default function ContentNews({
           </div>
         )}
 
-        <div className="mt-10 hidden h-fit flex-col items-center gap-3 lg:flex sticky top-28">
+        <div className="sticky top-28 mt-10 hidden h-fit flex-col items-center gap-3 lg:flex">
           <h2 className="w-fit border-b border-b-black p-2 text-center text-xl font-bold">
             Tin tức mới
           </h2>
@@ -129,45 +128,50 @@ export default function ContentNews({
                   </div>
                 </div>
               ))
-            : latestNews.slice(0, 3).map((news, index) => (
-                <div className="flex" key={index}>
-                  <Link
-                    to={`/news-detail/${news._id}`}
-                    className="flex flex-col overflow-hidden rounded-md bg-white shadow-lg sm:h-[150px] sm:flex-row"
-                  >
-                    <div className="h-full min-w-[145px] max-w-[145px]">
-                      <img
-                        className="h-full w-full object-cover"
-                        src={news.image}
-                      />
-                    </div>
-                    <div className="p-3">
-                      <div className="mb-[6px] flex gap-2 text-[12px]">
-                        <div className="font-bold text-primary-700">
-                          Tin Tức
+            : latestNews
+                .slice(
+                  latestNews.length - 3 < 0 ? 0 : latestNews.length - 3,
+                  latestNews.length,
+                )
+                .map((news, index) => (
+                  <div className="flex" key={index}>
+                    <Link
+                      to={`/news-detail/${news._id}`}
+                      className="flex flex-col overflow-hidden rounded-md bg-white shadow-lg sm:h-[150px] sm:flex-row"
+                    >
+                      <div className="h-full min-w-[145px] max-w-[145px]">
+                        <img
+                          className="h-full w-full object-cover"
+                          src={news.image}
+                        />
+                      </div>
+                      <div className="p-3">
+                        <div className="mb-[6px] flex gap-2 text-[12px]">
+                          <div className="font-bold text-primary-700">
+                            Tin Tức
+                          </div>
+                          <div className="font-semibold">
+                            {new Date(news.createdAt).toLocaleDateString()}
+                          </div>
+                          <div>|</div>
+                          <div className="font-semibold">
+                            {news.author || "Admin"}
+                          </div>
                         </div>
-                        <div className="font-semibold">
-                          {new Date(news.createdAt).toLocaleDateString()}
+                        <h2 className="my-1 line-clamp-2 overflow-hidden text-ellipsis text-[13px] font-bold">
+                          {news.title}
+                        </h2>
+                        <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
+                          {news.shortDescription}
                         </div>
-                        <div>|</div>
-                        <div className="font-semibold">
-                          {news.author || "Admin"}
+                        <div className="mt-1 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                          <FaRegEye />
+                          <div>{news.viewCount}</div>
                         </div>
                       </div>
-                      <h2 className="my-1 text-[14px] font-bold">
-                        {news.title}
-                      </h2>
-                      <div className="line-clamp-2 overflow-hidden text-ellipsis text-[12px] text-[#6D7280] md:max-w-[340px]">
-                        {news.shortDescription}
-                      </div>
-                      <div className="mt-1 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                        <FaRegEye />
-                        <div>{news.viewCount}</div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </div>
+                ))}
         </div>
       </div>
       <div className="my-10">

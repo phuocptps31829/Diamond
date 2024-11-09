@@ -65,7 +65,7 @@ const infoBookingSlice = createSlice({
     },
     removeItemInfo: (state, action) => {
       state.bookingDetails = state.bookingDetails.filter(
-        (detail) => detail.serviceId !== action.payload
+        (detail) => detail.serviceId !== action.payload,
       );
     },
     clearBookingDetails: (state) => {

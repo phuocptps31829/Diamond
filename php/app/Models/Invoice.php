@@ -9,8 +9,8 @@ use MongoDB\BSON\ObjectId;
 class Invoice extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'patientID',
         'appointmentID',
         'prescriptionID',
         'price',
@@ -19,19 +19,13 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'patientID' => 'object_id',
-        'appointmentID' => 'object_id',
-        'prescriptionID' => 'object_id',
         'price' => 'integer',
         'arisePrice' => 'integer',
         'isDeleted' => 'boolean',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-    public function setPatientIDAttribute($value)
-    {
-        $this->attributes['patientID'] = new ObjectId($value);
-    }
+
     public function setAppointmentIDAttribute($value)
     {
         $this->attributes['appointmentID'] = new ObjectId($value);
@@ -48,4 +42,5 @@ class Invoice extends Model
     {
         return 'Invoice';
     }
+
 }

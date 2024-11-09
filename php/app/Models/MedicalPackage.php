@@ -17,7 +17,9 @@ class MedicalPackage extends Model
         'shortDescription',
         'details',
         'slug',
-        'service',
+        'services',
+        'applicableObject',
+        'orderCount',
         'isHidden',
         'isDeleted',
     ];
@@ -27,9 +29,9 @@ class MedicalPackage extends Model
         'image' => 'string',
         'shortDescription' => 'string',
         'details' => 'string',
-        'services' => 'array',
         'isHidden' => 'boolean',
         'isDeleted' => 'boolean',
+        'orderCount' => 'integer'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -42,10 +44,26 @@ class MedicalPackage extends Model
     {
         $this->attributes['specialtyID'] = new ObjectId($value);
     }
+
     protected $attributes = [
         'isDeleted' => false,
+        'orderCount' => 0,
     ];
+    public function setServicesAttribute($value)
+    {
+        $services = [];
 
+        foreach ($value as $service) {
+            if (isset($service['servicesID'])) {
+                foreach ($service['servicesID'] as &$id) {
+                    $id = new ObjectId($id);
+                }
+            }
+            $services[] = $service;
+        }
+
+        $this->attributes['services'] = $services;
+    }
     public function getTable()
     {
         return 'MedicalPackage';

@@ -3,7 +3,7 @@ import banner from "../../../assets/images/young-asia-female-doctor-white-medica
 const specialtiesBanner = () => {
   return (
     <>
-      <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[12vw]">
+      <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[8vw]">
         <img
           src={ banner }
           alt="Doctor delivering great news"
@@ -11,7 +11,7 @@ const specialtiesBanner = () => {
         />
         <div className="absolute inset-0 flex h-full w-full items-center justify-center">
           <div className="mx-auto flex max-w-screen-xl flex-col items-center justify-center py-9 text-center">
-            <h1 className="mb-3 text-[30px] font-bold text-primary-500 sm:text-[39px]">
+            <h1 className="text-[30px] font-bold text-primary-500">
               Chuyên khoa Diamond
             </h1>
             <h4 className="px-5 text-[14px] font-medium sm:px-20 sm:text-[18px]">

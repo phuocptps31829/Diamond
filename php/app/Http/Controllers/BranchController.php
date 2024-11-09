@@ -167,11 +167,7 @@ class BranchController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -191,11 +187,7 @@ class BranchController extends Controller
                 'data' => $Branch,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -213,11 +205,7 @@ class BranchController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function updateBranch(Request $request)
@@ -240,11 +228,7 @@ class BranchController extends Controller
                 'data' => $Branch,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteBranch($id)
@@ -271,11 +255,7 @@ class BranchController extends Controller
                 'data' => $Branch,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

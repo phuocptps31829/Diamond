@@ -13,6 +13,7 @@ export default function News() {
     queryFn: getAllNews,
   });
 
+
   if (error) {
     return <NotFound />;
   }
@@ -20,8 +21,8 @@ export default function News() {
   return (
     <div className="bg-[#E8F2F7]">
       <NewsBanner />
-      <NewsAbove news={data} isLoading={isLoading} />
-      <NewsBelow news={data} isLoading={isLoading} />
+      <NewsAbove news={ data?.data } isLoading={ isLoading } />
+      <NewsBelow news={ data?.data } isLoading={ isLoading } />
     </div>
   );
 }

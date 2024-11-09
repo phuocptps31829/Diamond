@@ -12,9 +12,9 @@ class Appointment extends Model
     protected $fillable = [
         'patientID',
         'serviceID',
-        'medicinePackageID',
-        'WorkScheduleID',
-        'appointmentHelpID',
+        'medicalPackageID',
+        'workScheduleID',
+        'patientHelpID',
         'type',
         'time',
         'status',
@@ -23,9 +23,6 @@ class Appointment extends Model
     ];
 
     protected $casts = [
-        'medicinePackageID' => 'string',
-        'WorkScheduleID' => 'string',
-        'appointmentHelpID' => 'string',
         'type' => 'string',
         'time' => 'string',
         'status' => 'string',
@@ -41,19 +38,18 @@ class Appointment extends Model
     {
         $this->attributes['serviceID'] = new ObjectId($value);
     }
-    public function setMedicinePackageIDAttribute($value)
+    public function setMedicalPackageIDAttribute($value)
     {
-        $this->attributes['medicinePackageID'] = new ObjectId($value);
+        $this->attributes['medicalPackageID'] = new ObjectId($value);
     }
     public function setWorkScheduleIDAttribute($value)
     {
-        $this->attributes['WorkScheduleID'] = new ObjectId($value);
+        $this->attributes['workScheduleID'] = new ObjectId($value);
     }
     public function setAppointmentHelpIDAttribute($value)
     {
-        $this->attributes['appointmentHelpID'] = new ObjectId($value);
+        $this->attributes['patientHelpID'] = new ObjectId($value);
     }
-
     public function setPaymentAttribute($value)
     {
         $this->attributes['payment'] = $value;
@@ -64,6 +60,6 @@ class Appointment extends Model
 
     public function getTable()
     {
-        return 'Clinic';
+        return 'Appointment';
     }
 }

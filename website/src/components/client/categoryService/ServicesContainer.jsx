@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useMatch, useLocation, useNavigate } from "react-router-dom";
+import { useMatch, useLocation } from "react-router-dom";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getAllServices } from "@/services/servicesApi";
 import { getAllMedicalPackages } from "@/services/medicalPackagesApi";
 import { useQuery } from "@tanstack/react-query";
-import notFoundImg from "@/assets/images/undraw_Empty_re_opql.png";
+import notFoundImg from "@/assets/images/no-product.png";
 import {
   Pagination,
   PaginationContent,
@@ -20,8 +20,10 @@ import SidebarFilter from "../categoryService/SidebarFilter";
 
 const ServicesContainer = () => {
   const location = useLocation();
-  const navigate = useNavigate();
 
+  const isServiceRoute = useMatch("/services/:specialtyId?");
+  const isPackageRoute = useMatch("/packages/:specialtyId?");
+  const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
   const queryParams = new URLSearchParams(location.search);
   const currentPage = parseInt(queryParams.get("page")) || 1;
   const currentLimit = parseInt(queryParams.get("limit")) || 3;
@@ -34,15 +36,24 @@ const ServicesContainer = () => {
     branch: [],
     gender: [],
   });
+  console.log('re', filters);
 
-
+  useEffect(() => {
+    setFilters({
+      page: 1,
+      limit: 3,
+      sort: "",
+      specialtyID: [],
+      branch: [],
+      gender: [],
+    });
+  }, [location, currentPage, currentLimit]);
 
   const handleFilterApply = (newFilters) => {
-    const updatedFilters = { ...filters, ...newFilters, page: +filters.page, limit: +filters.limit };
-    console.log(8);
+    const updatedFilters = { ...filters, ...newFilters };
     console.log(updatedFilters);
     window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
-      .filter(([key, value]) => {
+      .filter(([, value]) => {
         if (Array.isArray(value)) {
           return value.length > 0;
         }
@@ -61,7 +72,7 @@ const ServicesContainer = () => {
   const handlePageChange = (newPage) => {
     const updatedFilters = { ...filters, page: +newPage, limit: +filters.limit };
     window.history.replaceState(null, '', location.pathname + '?' + Object.entries(updatedFilters)
-      .filter(([key, value]) => {
+      .filter(([, value]) => {
         if (Array.isArray(value)) {
           return value.length > 0;
         }
@@ -75,12 +86,7 @@ const ServicesContainer = () => {
       })
       .join('&'));
     setFilters(updatedFilters);
-
   };
-
-  const isServiceRoute = useMatch("/services/:specialtyId?");
-  const isPackageRoute = useMatch("/packages/:specialtyId?");
-  const type = isServiceRoute ? "service" : isPackageRoute ? "package" : null;
 
   const { data, error, isLoading } = useQuery({
     queryKey: [type, filters],
@@ -99,14 +105,14 @@ const ServicesContainer = () => {
   const totalPages = Math.ceil(totalItems / limit);
 
   return (
-    <section className="relative mx-auto max-w-screen-xl md:px-5 py-3">
+    <section className="relative mx-auto max-w-screen-xl md:px-5 py-3 pb-10">
       <div className="mx-auto w-full px-4 md:px-0">
         <div className="grid grid-cols-12 md:gap-7">
-          <div className="col-span-12 mt-7 md:col-span-3">
-            <SidebarFilter onFilterApply={ handleFilterApply } parentFilters={ filters } />
+          <div className="col-span-12 md:col-span-3">
+            <SidebarFilter filters={ filters } onFilterApply={ handleFilterApply } />
           </div>
 
-          <div className="col-span-12 mt-7 md:col-span-9">
+          <div className="col-span-12 md:col-span-9 flex flex-col justify-between">
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
@@ -141,52 +147,51 @@ const ServicesContainer = () => {
                 </>
               ) }
             </div>
+            <Pagination className="pt-5">
+              { totalPages ?
+                <PaginationContent className="hover:cursor-pointer">
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={ () =>
+                        handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
+                      }
+                      className={
+                        filters.page === 1 ? "opacity-50 hover:cursor-default" : ""
+                      }
+                    />
+                  </PaginationItem>
+                  { Array.from({ length: totalPages }).map((_, index) => {
+                    return (
+                      <PaginationItem key={ index }>
+                        <PaginationLink
+                          onClick={ () => handlePageChange(index + 1) }
+                          isActive={ filters.page === index + 1 }
+                        >
+                          { index + 1 }
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }) }
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={ () =>
+                        handlePageChange(
+                          currentPage + 1 > totalPages ? totalPages : currentPage + 1,
+                        )
+                      }
+                      className={
+                        filters.page === totalPages
+                          ? "opacity-50 hover:cursor-default"
+                          : ""
+                      }
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+                : ''
+              }
+            </Pagination>
           </div>
         </div>
-        <Pagination className="py-5">
-          <PaginationContent className="hover:cursor-pointer">
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={ () =>
-                  handlePageChange(currentPage > 1 ? currentPage - 1 : 1)
-                }
-                className={
-                  filters.page === 1 ? "opacity-50 hover:cursor-default" : ""
-                }
-              />
-            </PaginationItem>
-            { Array.from({ length: totalPages }).map((_, index) => {
-
-              return (
-                <PaginationItem key={ index }>
-                  <PaginationLink
-                    onClick={ () => handlePageChange(index + 1) }
-                    isActive={ filters.page === index + 1 }
-                  >
-                    { index + 1 }
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            }) }
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                onClick={ () =>
-                  handlePageChange(
-                    currentPage + 1 > totalPages ? totalPages : currentPage + 1,
-                  )
-                }
-                className={
-                  filters.page === totalPages
-                    ? "opacity-50 hover:cursor-default"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
       </div>
     </section>
   );

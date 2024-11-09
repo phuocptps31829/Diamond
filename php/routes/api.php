@@ -20,9 +20,15 @@ use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\ImageController;
-use App\Models\Patient;
-
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\WorkScheduleController;
+use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\PusherController;
+use App\Http\Controllers\ContractController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -38,14 +44,73 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/v1/pusher/auth', [PusherController::class, 'auth']);
+
+Route::post('/v1/contracts/add', [ContractController::class, 'create']);
+Route::post('/v1/contracts/export/{id}', [ContractController::class, 'export']);
+
+// Route::group(['middleware' => 'CheckSecret'], function () {
+Route::get('/v1/work-schedules', [WorkScheduleController::class, 'getAllWorkSchedule'])->middleware('checkQueryParams');
+Route::get('/v1/work-schedules/{id}', [WorkScheduleController::class, 'getOneWorkSchedule'])->middleware('CheckValidId');
+Route::post('/v1/work-schedules/add', [WorkScheduleController::class, 'createWorkSchedule']);
+Route::put('/v1/work-schedules/update/{id}', [WorkScheduleController::class, 'updateWorkSchedule'])->middleware('CheckValidId');
+Route::delete('/v1/work-schedules/delete/{id}', [WorkScheduleController::class, 'deleteWorkSchedule']);
+
+Route::post('/v1/results/result-prescription/add', [ResultController::class, 'createResultAndPrescription']);
+
+Route::get('/v1/results', [ResultController::class, 'getAllResult'])->middleware('checkQueryParams');
+Route::get('/v1/results/{id}', [ResultController::class, 'getOneResult'])->middleware('CheckValidId');
+Route::post('/v1/results/add', [ResultController::class, 'createResult']);
+Route::put('/v1/results/update/{id}', [ResultController::class, 'updateResult'])->middleware('CheckValidId');
+Route::delete('/v1/results/delete/{id}', [ResultController::class, 'deleteResult']);
+
+Route::get('/v1/prescriptions', [PrescriptionController::class, 'getAllPrescription'])->middleware('checkQueryParams');
+Route::get('/v1/prescriptions/{id}', [PrescriptionController::class, 'getOnePrescription'])->middleware('CheckValidId');
+Route::post('/v1/prescriptions/add', [PrescriptionController::class, 'createPrescription']);
+Route::put('/v1/prescriptions/update/{id}', [PrescriptionController::class, 'updatePrescription'])->middleware('CheckValidId');
+Route::delete('/v1/prescriptions/delete/{id}', [PrescriptionController::class, 'deletePrescription']);
+
+Route::post('/v1/invoices/delete-in-id', [InvoiceController::class, 'deleteAppointmentInArrayID']);
+Route::delete('/v1/invoices/delete/{id}', [InvoiceController::class, 'deleteAppointment']);
+Route::patch('/v1/invoices/update-order-number/{id}', [InvoiceController::class, 'updateOrderNumber']);
+Route::patch('/v1/invoices/update-status/{id}', [InvoiceController::class, 'updateStatus']);
+Route::patch('/v1/invoices/payment/update-status/{id}', [InvoiceController::class, 'updatePaymentStatus']);
+
+Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
+Route::get('/v1/invoices/payment/vnpay/vnpay_return', [InvoiceController::class, 'vnpayPaymentCallback']);
+Route::post('/v1/invoices/payment/momo/callback', [InvoiceController::class, 'momoPaymentCallback']);
+Route::post('/v1/invoices/payment/momo', [InvoiceController::class, 'momoPayment']);
+Route::post('/v1/invoices/payment/cod', [InvoiceController::class, 'codPayment']);
+Route::put('/v1/auth/change-password', [AuthController::class, 'resetPassword'])->middleware('CheckToken');
+
+Route::middleware(['web'])->group(function () {
+    Route::get('/v1/auth/google', [AuthController::class, 'loginGoogle']);
+    Route::get('/v1/auth/google/callback', [AuthController::class, 'googleCallback']);
+    Route::get('/v1/auth/facebook', [AuthController::class, 'loginFacebook']);
+    Route::get('/v1/auth/facebook/callback', [AuthController::class, 'facebookCallback']);
+});
 Route::post('/v1/auth/login', [AuthController::class, 'login']);
 Route::post('/v1/auth/register', [AuthController::class, 'register']);
-Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
-Route::post('/v1/auth/forgot-password/send-otp/:phone', [AuthController::class, 'sendOTPForgotPassword']);
-Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword']);
-Route::post('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword']);
+Route::post('/v1/auth/forgot-password/send-otp/{phone}', [AuthController::class, 'sendOTPForgotPassword']);
+Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword'])->middleware('VerifyOTP');
+Route::put('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword'])->middleware('VerifyOTP');
+
 Route::post('/v1/auth/refresh-token', [AuthController::class, 'refreshToken'])->middleware('VerifyRefreshToken');
-Route::post('/v1/auth/logout', [AuthController::class, 'logout'])->middleware('VerifyRefreshToken');
+
+Route::post('c', [AuthController::class, 'logout'])->middleware('VerifyRefreshToken');
+
+Route::post('/v1/images/upload', [ImageController::class, 'uploadImage']);
+Route::post('/v1/images/upload-images', [ImageController::class, 'uploadImages']);
+
+Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
+Route::post('/v1/patients/admin-add', [PatientController::class, 'createPatientFromAdmin']);
+Route::put('/v1/patients/update/{id}', [PatientController::class, 'updatePatient'])->middleware('CheckValidId');
+Route::delete('/v1/patients/delete/{id}', [PatientController::class, 'deletePatient']);
+
+Route::post('/v1/staffs/add', [StaffController::class, 'createStaffFromAdmin']);
+//Route::post('/v1/staffs/admin-add', [StaffController::class, 'createStaffFromAdmin']);
+Route::put('/v1/staffs/update/{id}', [StaffController::class, 'updateStaff'])->middleware('CheckValidId');
+Route::delete('/v1/staffs/delete/{id}', [StaffController::class, 'deleteStaff']);
 
 Route::get('/v1/roles', [RoleController::class, 'getAllRoles'])->middleware('checkQueryParams');
 Route::get('/v1/roles/{id}', [RoleController::class, 'getOneRole'])->middleware('CheckValidId');
@@ -70,6 +135,7 @@ Route::get('/v1/news/{id}', [NewsController::class, 'getOneNews'])->middleware('
 Route::post('/v1/news/add', [NewsController::class, 'createNews']);
 Route::put('/v1/news/update/{id}', [NewsController::class, 'updateNews'])->middleware('CheckValidId');
 Route::delete('/v1/news/delete/{id}', [NewsController::class, 'deleteNews']);
+Route::patch('/v1/news/plus-view-count/{id}', [NewsController::class, 'viewCount'])->middleware('CheckValidId');
 
 Route::get('/v1/branches', [BranchController::class, 'getAllBranches'])->middleware('checkQueryParams');
 Route::get('/v1/branches/{id}', [BranchController::class, 'getOneBranch'])->middleware('CheckValidId');
@@ -117,6 +183,5 @@ Route::get('/v1/doctors', [DoctorController::class, 'getAllDoctors'])->middlewar
 Route::get('/v1/doctors/{id}', [DoctorController::class, 'getOneDoctor'])->middleware('CheckValidId');
 Route::post('/v1/doctors/add', [DoctorController::class, 'createDoctor']);
 Route::put('/v1/doctors/update/{id}', [DoctorController::class, 'updateDoctor'])->middleware('CheckValidId');
-Route::delete('/v1/doctors/delete/{id}', [DoctorController::class, 'deleteClinic']);
-
-Route::post('/v1/images/upload', [ImageController::class, 'uploadImage']);
+Route::delete('/v1/doctors/delete/{id}', [DoctorController::class, 'deleteDoctor']);
+// });

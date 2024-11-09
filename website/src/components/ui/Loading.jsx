@@ -1,6 +1,6 @@
 const Loading = () => {
   return (
-    <div className="flex w-full flex-col items-center justify-center py-10">
+    <div className="flex w-full flex-col items-center justify-center py-10 absolute top-0 z-50 left-0 bg-[#000000a2] h-full">
       <div className="pyramid-loader">
         <div className="wrapper">
           <span className="side side1"></span>

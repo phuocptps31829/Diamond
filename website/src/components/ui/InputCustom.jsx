@@ -14,6 +14,7 @@ function InputCustom({
   min,
   max,
   disabled = false,
+  required = false,
   value,
   className,
 }) {
@@ -31,13 +32,23 @@ function InputCustom({
     setShowPassword(!showPassword);
   };
 
+  const handleChange = (e) => {
+    const inputValue = e.target.value;
+    if (type === "number") {
+      const numericValue = inputValue === "" ? "" : Number(inputValue);
+      onChange(numericValue);
+    } else {
+      onChange(inputValue);
+    }
+  };
+
   return (
     <div className={ `w-full ${className}` }>
       <label
         className="mb-2 block text-sm font-medium leading-none text-black"
         htmlFor={ `${name}Input` }
       >
-        { label }
+        { label } { required && <span className="text-red-500">*</span> }
       </label>
       <div>
         <div className="relative">
@@ -60,12 +71,12 @@ function InputCustom({
             placeholder={ placeholder }
             min={ min }
             max={ max }
-            className={ `placeholder-gray-600 h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${icon ? "pl-10" : "pl-5"
+            className={ `h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto ${icon ? "pl-10" : "pl-5"
               }` }
           />
           { type === "password" && (
             <div
-              className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+              className="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
               onClick={ togglePasswordVisibility }
             >
               { showPassword ? <FaEyeSlash /> : <FaEye /> }
@@ -74,15 +85,15 @@ function InputCustom({
           { name === "authCode" && (
             <button
               type="button"
-              className="text-base absolute inset-y-0 right-0 flex items-center font-bold md:text-lg pr-3 text-primary-500 hover:text-blue-700"
-              style={ { paddingRight: '20px' } }
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-base font-bold text-primary-500 hover:text-blue-700 md:text-lg"
+              style={ { paddingRight: "20px" } }
             >
               Nhận mã
             </button>
           ) }
         </div>
         { error && (
-          <small className="mt-1 text-sm text-red-500 block">
+          <small className="mt-1 block text-sm text-red-500">
             { error.message }
           </small>
         ) }

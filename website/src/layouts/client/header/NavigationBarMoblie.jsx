@@ -75,12 +75,14 @@ export default function NavigationBarMobile() {
           </div>
         </div>
         <div id="mobile-menu">
-          <div className="bg-white py-5">
+          <div className="h-[calc(100vh-100px)] overflow-y-auto bg-white py-5">
             {userProfile ? (
               <div className="m-4 mt-0 flex flex-col items-center justify-between space-x-3">
-                <span className="text-sm mb-4">Xin chào, <strong>{userProfile.fullName}</strong> </span>
+                <span className="mb-4 text-sm">
+                  Xin chào, <strong>{userProfile.fullName}</strong>{" "}
+                </span>
                 <div className="flex w-full items-center justify-center space-x-3">
-                <Link
+                  <Link
                     onClick={() => setIsNavbarVisible(false)}
                     to="/user-profile"
                     className="w-full rounded bg-blue-500 px-4 py-2 text-center text-white"
@@ -92,9 +94,8 @@ export default function NavigationBarMobile() {
                     to="/logout"
                     className="w-full rounded px-4 py-2 text-center text-blue-500 shadow-sm shadow-zinc-400"
                   >
-                   Đăng xuất
+                    Đăng xuất
                   </Link>
-                 
                 </div>
               </div>
             ) : (

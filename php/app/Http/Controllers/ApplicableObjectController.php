@@ -65,7 +65,6 @@ use App\Http\Requests\ApplicableObjectRequest;
  *             @OA\Property(property="gender", type="string", example="Nữ"),
  *             @OA\Property(property="isFamily", type="boolean", example=false),
  *             @OA\Property(property="isMarried", type="boolean", example=false),
- *             @OA\Property(property="hotline", type="string", example="hotline of the new ApplicableObject"),
  *              @OA\Property(
  *                  property="age",
  *                  type="object",
@@ -98,7 +97,6 @@ use App\Http\Requests\ApplicableObjectRequest;
  *             @OA\Property(property="gender", type="string", example="Nữ"),
  *             @OA\Property(property="isFamily", type="boolean", example=false),
  *             @OA\Property(property="isMarried", type="boolean", example=false),
- *             @OA\Property(property="hotline", type="string", example="hotline of the new ApplicableObject"),
  *              @OA\Property(
  *                  property="age",
  *                  type="object",
@@ -156,12 +154,7 @@ class ApplicableObjectController extends Controller
                 'totalRecords' => $totalRecords,
             ], 200);
         } catch (\Exception $e) {
-
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+            return handleException($e);
         }
     }
 
@@ -181,11 +174,7 @@ class ApplicableObjectController extends Controller
                 'data' => $ApplicableObject,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+            return handleException($e);
         }
     }
 
@@ -201,12 +190,7 @@ class ApplicableObjectController extends Controller
                 'data' => $ApplicableObject,
             ], 201);
         } catch (\Exception $e) {
-
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+            return handleException($e);
         }
     }
     public function updateApplicableObject(Request $request)
@@ -229,11 +213,7 @@ class ApplicableObjectController extends Controller
                 'data' => $ApplicableObject,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+            return handleException($e);
         }
     }
     public function deleteApplicableObject($id)
@@ -260,11 +240,7 @@ class ApplicableObjectController extends Controller
                 'data' => $ApplicableObject,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+            return handleException($e);
         }
     }
 }

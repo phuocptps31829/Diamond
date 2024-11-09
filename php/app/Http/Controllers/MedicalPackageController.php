@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MedicalPackage;
 use Illuminate\Http\Request;
 use App\Http\Requests\MedicalPackageRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -162,20 +163,16 @@ class MedicalPackageController extends Controller
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
-
+            $medicineCategoriesArray = $MedicineCategories->toArray();
             return response()->json([
                 'page' => $page,
                 'message' => 'Medicine categories retrieved successfully.',
-                'data' => $MedicineCategories,
+                'data' => $medicineCategoriesArray,
                 'totalRecords' => $totalRecords
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -195,11 +192,7 @@ class MedicalPackageController extends Controller
                 'data' => $MedicalPackage,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -213,8 +206,14 @@ class MedicalPackageController extends Controller
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
+            $validatedData=$request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
 
-            $MedicalPackage = MedicalPackage::create($request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages()));
+            foreach ($validatedData['services'] as &$service) {
+                    $service['_id'] = new ObjectId();
+            }
+
+            $MedicalPackage = MedicalPackage::create($validatedData);
+//            $MedicalPackage = MedicalPackage::create($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
 
             return response()->json([
                 'status' => 'success',
@@ -223,21 +222,23 @@ class MedicalPackageController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function updateMedicalPackage(Request $request)
     {
         try {
+            $MedicalPackageRequest = new MedicalPackageRequest();
             $id = $request->route('id');
-            $checkSlug = checkSlug($request->title, 'MedicalPackage', $id);
+            $checkSlug = checkSlug($request->name, 'MedicalPackage', $id);
 
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
+            }
+            $validatedData=$request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
+
+            foreach ($validatedData['services'] as &$service) {
+                $service['_id'] = new ObjectId($service['_id']);
             }
 
             $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
@@ -245,9 +246,8 @@ class MedicalPackageController extends Controller
             if (!$MedicalPackage) {
                 return createError(404, 'Medicine category not found');
             }
-            $MedicalPackageRequest = new MedicalPackageRequest();
 
-            $MedicalPackage->update($request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages()));
+            $MedicalPackage->update($validatedData);
 
             return response()->json([
                 'status' => 'success',
@@ -255,11 +255,7 @@ class MedicalPackageController extends Controller
                 'data' => $MedicalPackage,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteMedicalPackage($id)
@@ -286,11 +282,7 @@ class MedicalPackageController extends Controller
                 'data' => $MedicalPackage,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

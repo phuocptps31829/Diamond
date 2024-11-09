@@ -5,32 +5,31 @@ import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { userInfoSchema } from "@/zods/user";
-import { getProfilePatients } from "@/services/authApi";
+import { authApi } from "@/services/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
-import { setUserProfile } from "@/redux/authSlice";
+import { logoutAction, setUserProfile } from "@/redux/authSlice";
 import { useEffect } from "react";
 import { Input } from "@/components/ui/Input";
+import { useNavigate } from "react-router-dom";
 
 const UserInfoForm = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const profile = useSelector((state) => state.auth.userProfile);
-  const token = localStorage.getItem("accessToken");
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: "userProfile",
-    queryFn: () => getProfilePatients(token),
-    enabled: token && !profile,
-    onSuccess: (data) => {
-      dispatch(setUserProfile(data));
-    },
+  const { data: profileFetched, error, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: authApi.getProfileInfo,
+    enabled: !!profile
   });
-// console.log(data);
+  console.log(profileFetched);
 
   const {
     handleSubmit,
     formState: { errors },
     control,
+    setValue,
     reset,
   } = useForm({
     resolver: zodResolver(userInfoSchema),
@@ -38,34 +37,48 @@ const UserInfoForm = () => {
       fullName: profile?.fullName || "",
       phoneNumber: profile?.phoneNumber || "",
       email: profile?.email || "",
+      dateOfBirth: profile?.dateOfBirth || "",
+      citizenIdentificationNumber: profile?.citizenIdentificationNumber || "",
       occupation: profile?.occupation || "",
-      birthDate: profile?.birthDate || "",
-      ethnicity: profile?.ethnicity || "",
-      idNumber: profile?.idNumber || "",
-      insuranceNumber: profile?.insuranceNumber || "",
+      ethnic: profile?.ethnic || "",
+      insuranceCode: profile?.insuranceCode || "",
       address: profile?.address || "",
     },
   });
 
-
   useEffect(() => {
-    if (profile) {
-      reset(profile);
+    if (profileFetched?.role) {
+      if (profileFetched?.role && profileFetched.role?.name !== "PATIENT") {
+        dispatch(logoutAction());
+        navigate('/login');
+      }
     }
-  }, [profile, reset]);
+
+    dispatch(setUserProfile(profileFetched?.data));
+
+    setValue('fullName', profileFetched?.data?.fullName);
+    setValue('phoneNumber', profileFetched?.data?.phoneNumber);
+    setValue('email', profileFetched?.data?.email);
+    setValue('dateOfBirth', profileFetched?.data?.dateOfBirth);
+    setValue('gender', profileFetched?.data?.gender);
+    setValue('citizenIdentificationNumber', profileFetched?.data?.citizenIdentificationNumber);
+    setValue('occupation', profileFetched?.data?.otherInfo?.occupation);
+    setValue('ethnic', profileFetched?.data?.otherInfo?.ethnic);
+    setValue('insuranceCode', profileFetched?.data?.otherInfo?.insuranceCode);
+  }, [profileFetched, dispatch, setValue]);
 
   const onSubmit = (data) => {
     console.log("Form submitted");
     console.log(data);
   };
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching profile data.</p>;
+  // if (isLoading) return <p>Loading...</p>;
+  // if (error) return <p>Error fetching profile data.</p>;
 
   return (
     <div className="w-full p-6">
       <h2 className="col-span-2 mb-6 text-xl font-bold">Thông tin tài khoản</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
           <div className="flex-2 grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2">
             <InputCustom
@@ -73,8 +86,8 @@ const UserInfoForm = () => {
               name="fullName"
               label="Họ và tên"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập họ và tên"
             />
             <InputCustom
@@ -82,8 +95,8 @@ const UserInfoForm = () => {
               name="phoneNumber"
               label="Số điện thoại"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập số điện thoại"
             />
             <InputCustom
@@ -91,8 +104,8 @@ const UserInfoForm = () => {
               name="email"
               label="Email"
               type="email"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập email"
             />
             <InputCustom
@@ -100,51 +113,51 @@ const UserInfoForm = () => {
               name="occupation"
               label="Nghề nghiệp"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập nghề nghiệp"
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="birthDate"
+              name="dateOfBirth"
               label="Ngày sinh"
               type="date"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="ethnicity"
+              name="ethnic"
               label="Dân tộc"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập dân tộc"
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="idNumber"
+              name="citizenIdentificationNumber"
               label="Số CMND/CCCD"
               type="password"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="**************"
             />
             <InputCustom
               className="col-span-1 sm:col-span-1"
-              name="insuranceNumber"
+              name="insuranceCode"
               label="Số thẻ BH"
               type="password"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="**************"
             />
             <InputCustom
               name="address"
               label="Địa chỉ"
               type="text"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
               placeholder="Nhập địa chỉ"
               className="col-span-1 sm:col-span-2"
             />
@@ -152,7 +165,7 @@ const UserInfoForm = () => {
 
           <div className="mt-6 flex h-full w-auto flex-col items-center gap-5 p-4 md:mt-0 md:border-l">
             <Avatar className="size-36">
-            <AvatarImage src={profile?.avatar || ""} className="object-cover" />
+              <AvatarImage src={ profile?.avatar || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png" } className="object-cover" />
             </Avatar>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">
@@ -166,7 +179,8 @@ const UserInfoForm = () => {
                 <input
                   type="radio"
                   name="gender"
-                  value="male"
+                  value="Nam"
+                  checked={ profileFetched?.data.gender === "Nam" }
                   className="mr-3 size-5"
                   required
                 />
@@ -176,7 +190,8 @@ const UserInfoForm = () => {
                 <input
                   type="radio"
                   name="gender"
-                  value="female"
+                  value="Nữ"
+                  checked={ profileFetched?.data.gender === "Nữ" }
                   className="mr-3 size-5"
                   required
                 />

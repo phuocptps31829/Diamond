@@ -12,7 +12,7 @@ class Specialty extends Model
     protected $fillable = [
         'image',
         'name',
-        'description',
+        'isHidden',
         'isDeleted'
     ];
     const CREATED_AT = 'createdAt';
@@ -20,12 +20,13 @@ class Specialty extends Model
     protected $casts = [
         'image' => 'string',
         'name' => 'string',
-        'description' => 'string',
+        'isHidden'=>"boolean",
         'isDeleted' => 'boolean',
     ];
 
     protected $attributes = [
         'isDeleted' => false,
+        'isHidden'=>false,
     ];
 
     public function getTable()

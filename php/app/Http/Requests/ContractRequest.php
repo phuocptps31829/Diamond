@@ -11,7 +11,7 @@ class ContractRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,26 +22,16 @@ class ContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'doctorID' => ['required', 'exists:Doctor,_id'],
-            'hospitalID' => 'nullable|exists:HospitalID,_id',
-            'startDate' => 'required|date_format:Y-m-d',
-            'endDate' => 'required|date_format:Y-m-d',
-            'detail' => 'required|string',
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'doctorID.required' => 'Doctor ID is required',
-            'doctorID.exists' => 'Doctor ID must exist in the doctor table',
-            'hospitalID.required' => 'Hospital ID is required',
-            'hospitalID.exists' => 'Hospital ID must exist in the hospital table',
-            'startDate.required' => 'Start date is required',
-            'startDate.date_format' => 'Start date should be a date type',
-            'endDate.required' => 'End date is required',
-            'endDate.date_format' => 'End date should be a date type',
-            'detail.required' => 'Detail is required',
-            'detail.string' => 'Detail should be a string',
+            'doctorID' => 'required|string',
+            'hospitalID' => 'nullable|string',
+            'startDate' => 'required|date',
+            'endDate' => 'required|date',
+            'time' => 'required|date',
+            "title"=>"required|string",
+            "address"=>"required|string",
+            "price"=>"required|numeric",
+            "isInternal"=>"required|boolean",
+            "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
         ];
     }
 }

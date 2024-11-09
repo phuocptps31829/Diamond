@@ -28,7 +28,7 @@ class User extends Authenticatable
         'gender',
         'avatar',
         'citizenIdentificationNumber',
-        'role',
+        'roleID',
         'otherInfo',
         'isActivated',
         'isDeleted',
@@ -64,9 +64,9 @@ class User extends Authenticatable
         'citizenIdentificationNumber' => 'string',
         'isDeleted' => 'boolean',
     ];
-    public function setRoleAttribute($value)
+    public function setRoleIDAttribute($value)
     {
-        $this->attributes['role'] = new ObjectId($value);
+        $this->attributes['roleID'] = new ObjectId($value);
     }
     public function setAddressAttribute($value)
     {
