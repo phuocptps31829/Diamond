@@ -1,4 +1,3 @@
-import { Avatar, AvatarImage } from "@/components/ui/Avatar";
 import { Label } from "@/components/ui/Label";
 import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
@@ -155,14 +154,14 @@ const UserInfoForm = () => {
   }, [imagePreview]);
 
   return (
-    <div className="w-full p-6">
+    <div className="w-full p2 md:p-6">
       { isLoading && <Loading /> }
       <h2 className="col-span-2 text-xl font-bold">Thông tin tài khoản</h2>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">
-          <div className="grid w-full grid-cols-1 gap-4 p-4 sm:grid-cols-2">
+          <div className="sm:grid w-full flex flex-col gap-4 p-4 sm:grid-cols-2">
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="fullName"
               label="Họ và tên"
               type="text"
@@ -172,7 +171,7 @@ const UserInfoForm = () => {
               required
             />
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="phoneNumber"
               label="Số điện thoại"
               disabled
@@ -183,7 +182,7 @@ const UserInfoForm = () => {
               placeholder="Nhập số điện thoại"
             />
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="email"
               label="Email"
               type="text"
@@ -192,7 +191,7 @@ const UserInfoForm = () => {
               placeholder="Nhập email"
             />
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="occupation"
               label="Nghề nghiệp"
               type="text"
@@ -224,7 +223,7 @@ const UserInfoForm = () => {
               <SelectEthnic control={ control } name="ethnic" errors={ errors } />
             </div>
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="citizenIdentificationNumber"
               label="Số CMND/CCCD"
               type="password"
@@ -234,7 +233,7 @@ const UserInfoForm = () => {
               placeholder="Nhap số CMND/CCCD"
             />
             <InputCustom
-              className="col-span-1 sm:col-span-1"
+              className=""
               name="insuranceCode"
               label="Số thẻ BH"
               control={ control }
@@ -244,7 +243,7 @@ const UserInfoForm = () => {
             <div className="flex flex-col gap-1 col-span-2">
               <InputCustom
                 label="Địa chỉ"
-                className="col-span-1 sm:col-span-1"
+                className=""
                 placeholder="Nhập địa chỉ cụ thể của bạn"
                 name="address"
                 type="text"

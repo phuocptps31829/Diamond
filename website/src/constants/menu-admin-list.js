@@ -40,7 +40,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR", "STAFF_RECEPTIONIST"],
     menus: [
       {
         href: "/admin/support",
@@ -224,7 +224,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "STAFF", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -326,7 +326,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "EDITOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF_EDITOR"],
     menus: [
       {
         href: "",

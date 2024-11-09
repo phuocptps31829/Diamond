@@ -721,7 +721,7 @@ module.exports = {
                         });
                 }
 
-                console.log(item, 'ok');
+                console.log(item, 'medicalPackage');
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
                     ? item.serviceID.specialtyID.toString()

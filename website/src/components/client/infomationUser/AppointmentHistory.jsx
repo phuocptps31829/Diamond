@@ -77,7 +77,7 @@ const AppointmentHistory = () => {
 
   return (
     <div className="p-3 md:p-6 !pb-0">
-      <div className="flex items-start justify-between mb-6 ">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-start justify-between mb-6 ">
         <h2 className="text-xl font-bold">Dịch vụ đã đặt</h2>
         <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:justify-end">
           <div className="flex items-center gap-3 md:flex-row">

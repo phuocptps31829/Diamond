@@ -69,13 +69,13 @@ export function MedicalRecordAccordion() {
                                 { results?.length ? results.map((result) => (
                                     <div
                                         key={ result._id }
-                                        className="flex gap-4 py-1 border-t border-dashed border-primary-300 pt-2"
+                                        className="flex flex-col md:flex-row mb-4 md:mb-0 gap-4 py-1 border-t border-dashed border-primary-300 pt-2"
                                     >
                                         <div className="flex-1">
                                             <div
                                                 className="rounded-md"
                                             >
-                                                <div className="py-2 flex w-fit items-center gap-1">
+                                                <div className="py-2 flex w-fit md:items-center gap-1">
                                                     <FaKitMedical className="text-xl mr-1 text-primary-500" />
                                                     <p className="font-medium text-nowrap text-primary-900">
                                                         Dịch vụ:
@@ -84,7 +84,7 @@ export function MedicalRecordAccordion() {
                                                         { result.service.name || "Không có dịch vụ" }
                                                     </span>
                                                 </div>
-                                                <div className="py-2 flex w-fit items-center gap-1">
+                                                <div className="py-2 flex w-fit md:items-center gap-1">
                                                     <RiMenuSearchLine className="text-xl mr-1 text-rose-500" />
                                                     <p className="font-medium text-nowrap text-primary-900">
                                                         Chẩn đoán:
@@ -93,7 +93,7 @@ export function MedicalRecordAccordion() {
                                                         { result.diagnose || "Chưa có kết quả" }
                                                     </span>
                                                 </div>
-                                                <div className="py-2 flex w-fit items-center gap-1">
+                                                <div className="py-2 flex w-fit md:items-center gap-1">
                                                     <PiFileTextBold className="text-xl mr-1 text-yellow-700" />
                                                     <p className="font-medium text-nowrap text-primary-900">
                                                         Mô tả:

@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import { useSocket } from '@/hooks/useSocket';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+const userName = "ADMIN";
+const phoneNumber = "0999999998";
 
 const AdminChat = () => {
     const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
@@ -10,16 +12,15 @@ const AdminChat = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [currentRoom, setCurrentRoom] = useState('');
     const [rooms, setRooms] = useState([]);
-    const [latestMessages, setLatestMessages] = useState({});
 
     console.log('currentRoom:', currentRoom);
-    console.log('latestMessages:', latestMessages);
     console.log('messages:', messages);
 
     useEffect(() => {
         if (!socket) return;
 
         const handleActiveRooms = (activeRooms) => {
+            console.log('Active rooms:', activeRooms);
             setRooms(activeRooms);
         };
         sendEvent('getActiveRooms', null, handleActiveRooms);
@@ -31,23 +32,19 @@ const AdminChat = () => {
 
     const handleNewMessage = useCallback((data, type) => {
         console.log('New message received:', data.message);
-        setLatestMessages((prevLatestMessages) => ({
-            ...prevLatestMessages,
-            [data.room]: data.message,
-        }));
         setMessages((prevMessages) => {
             if (prevMessages[data.room]) {
                 return {
                     ...prevMessages,
                     [data.room]: [
                         ...prevMessages[data.room],
-                        { type, message: data.message, name: 'Admin' }
+                        { type, message: data.message, name: 'Admin', phoneNumber: data.phoneNumber },
                     ],
                 };
             }
             return {
                 ...prevMessages,
-                [data.room]: [{ type, message: data.message, name: 'Admin' }],
+                [data.room]: [{ type, message: data.message, name: 'Admin', phoneNumber: data.phoneNumber }],
             };
         });
     }, []);
@@ -75,13 +72,6 @@ const AdminChat = () => {
 
         const handlePreviousMessages = (previousMessages) => {
             setMessages(previousMessages);
-
-            const latestMessage = previousMessages[currentRoom]?.[previousMessages[currentRoom].length - 1]?.message;
-
-            setLatestMessages((prevLatestMessages) => ({
-                ...prevLatestMessages,
-                [currentRoom]: latestMessage,
-            }));
         };
 
         const unsubscribePreviousMessages = subscribe(
@@ -102,7 +92,7 @@ const AdminChat = () => {
         setIsLoading(true);
         sendEvent(
             'newMessageAdmin',
-            { message: value, room: currentRoom, name: 'Admin' },
+            { message: value, room: currentRoom, name: 'Admin', phoneNumber },
             () => {
                 setIsLoading(false);
                 setValue('');
@@ -110,14 +100,17 @@ const AdminChat = () => {
         );
     };
 
+    const roomsConverted = Array.from(Object.entries(rooms));
+    console.log('roomsConverted:', roomsConverted.filter(room => room[0] !== socket?.id));
+
     return (
         <div>
             <div>
                 <h3>Chon Phong Chat</h3>
                 <ul>
-                    { rooms.filter(room => room !== socket?.id).map((room, index) => (
-                        <li key={ index } onClick={ () => joinRoom(room) }>
-                            { room }  - { latestMessages[room] || 'Chua co' }
+                    { roomsConverted.filter(room => room[0] !== socket?.id).map((room, index) => (
+                        <li key={ index } onClick={ () => joinRoom(room[0]) }>
+                            { room[1][0].name + " - " + (room[1][0].phoneNumber) }  - { room[1][room[1].length - 1].message || 'Chua co' }
                         </li>
                     )) }
                 </ul>
@@ -128,7 +121,7 @@ const AdminChat = () => {
                         key={ index }
                         className={ message.type === 'user' ? 'text-red-500' : 'text-blue-500' }
                     >
-                        { (message.type === 'user' ? message.name : "Admin") + ": " + message.message }
+                        { (message.type === 'user' ? message.name + ' - ' + message.phoneNumber : "Admin") + ": " + message.message }
                     </li>
                 )) : '' }
             </ul>

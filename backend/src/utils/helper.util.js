@@ -244,7 +244,6 @@ function timeDivision(startTime, endTime) {
     return result;
 }
 
-
 function getActiveRoomsSocket(io) {
     console.log(io.sockets.adapter.rooms);
     // Convert map into 2D list:

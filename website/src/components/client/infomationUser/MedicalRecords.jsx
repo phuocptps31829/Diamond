@@ -13,8 +13,8 @@ const MedicalRecords = () => {
     <div className="p-6">
       <h2 className="mb-4 text-xl font-bold">Hồ sơ bệnh án cá nhân</h2>
       <div className="rounded-md">
-        <div className="flex gap-8">
-          <div className="w-[30%] rounded-sm overflow-hidden h-64 bg-slate-100">
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="md:w-[30%] w-full rounded-sm overflow-hidden h-64 bg-slate-100">
             <img
               src={ getImageUrl(userProfile?.avatar) }
               alt={ userProfile?.fullName }

@@ -52,11 +52,11 @@ const AuthComponent = () => {
                 navigate('/admin/doctordashboard');
             }
 
-            if (role === "STAFF") {
+            if (role === "STAFF_RECEPTIONIST") {
                 navigate('/admin/appointments/list');
             }
 
-            if (role === "EDITOR") {
+            if (role === "STAFF_EDITOR") {
                 navigate('/admin/news/list');
             }
 

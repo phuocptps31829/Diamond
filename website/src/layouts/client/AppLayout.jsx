@@ -39,7 +39,9 @@ export default function AppLayout() {
     <>
       <Header />
       <Toaster />
-      <Outlet />
+      <div className="min-h-[300px]">
+        <Outlet />
+      </div>
       <Balloon />
       <BalloonMessage />
       <Footer />

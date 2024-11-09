@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/Button";
-
 import InputCustom from "@/components/ui/InputCustom";
 import { otherBookingSchema, selfBookingSchema } from "@/zods/booking";
 import { useForm } from "react-hook-form";
@@ -361,7 +360,7 @@ export default function Form() {
     <div className="mx-auto pt-5 max-w-screen-xl px-0 md:pt-10 md:px-5">
       <div className="container mx-auto flex flex-col gap-3 rounded-md px-5 py-5 md:flex-row bg-white">
         {/* Select */ }
-        <div className="flex w-[44%] flex-col gap-[20px] px-2">
+        <div className="flex md:w-[44%] w-full flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
             <p className="font-light">Đã chọn { cartItems.length } dịch vụ</p>
@@ -394,7 +393,7 @@ export default function Form() {
         </div>
 
         {/* Form */ }
-        <div className="w-[60%] p-4 pt-0 md:ml-auto">
+        <div className="w-full md:w-[60%] p-4 pt-0 md:ml-auto">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-xl font-bold">Thông tin đặt lịch khám</p>
             { !isValidInfo && <p className="text-sm text-red-500">{ '(*)' } Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!</p> }
