@@ -1,52 +1,62 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import { contractApi } from "@/services/contractApi";
 import { toastUI } from "@/components/ui/Toastify";
-import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import SpinLoader from "@/components/ui/SpinLoader";
+import SignatureCanvas from "react-signature-canvas";
+
+import { Label } from "@/components/ui/Label";
+import SelectDoctor from "../select/SelectDoctor";
+import SelectDate from "../select/SelectDate";
+import SelectBranch from "../select/SelectBranch";
+import { contractSchema } from "@/zods/admin/contractAdmin";
+import { contractApi } from "@/services/contractApi";
 
 const ContractsDoctorInternistAdd = () => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [fileImage, setFileImage] = useState(null);
   const [isPending, setIsPending] = useState(false);
-
+  const sigCanvas = useRef({});
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const combineDateTime = (date, time) => {
+    return `${date}T${time}:00.000`;
+  };
 
-  console.log(address);
-
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toTimeString().split(" ")[0].slice(0, 5); 
+    return combineDateTime(date, time);
+  };
   const {
     handleSubmit,
     formState: { errors },
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(),
+    resolver: zodResolver(contractSchema),
     defaultValues: {
-      doctor_name: "",
-      contract_date: "",
-      contract_duration: "",
-      specialization: "",
-      contact_phone: "",
+      doctorID: "",
+      hospitalID: "",
+      startDate: "",
+      endDate: "",
       address: "",
+      price: "",
+      isInternal: true,
     },
   });
 
   const mutation = useMutation({
-    // mutationFn: (contractData) => contractApi.addContract(contractData),
+    mutationFn: (contractData) => contractApi.createContract(contractData),
     onSuccess: () => {
       queryClient.invalidateQueries("contracts");
       toastUI("Thêm hợp đồng bác sĩ nội khoa thành công.", "success");
       reset();
-      setImagePreview(null);
-      setAddress(null);
+      sigCanvas.current.clear();
       navigate("/admin/contracts/list");
     },
     onError: (error) => {
@@ -55,45 +65,33 @@ const ContractsDoctorInternistAdd = () => {
     },
   });
 
+  const clearSignature = () => {
+    sigCanvas.current.clear();
+  };
   const onSubmit = async (data) => {
-    if (!fileImage && !imagePreview) {
-      toastUI("Vui lòng chọn ảnh!", "error");
+    const canvas = sigCanvas.current.getTrimmedCanvas();
+    const isCanvas = sigCanvas.current.isEmpty();
+    if (isCanvas) {
+      toastUI("Vui lòng ký tên trước khi gửi.", "error");
       return;
     }
+    canvas.toBlob(async (blob) => {
+      console.log("%cSignature Blob:", "font-weight: bold;", blob);
 
-    const formData = new FormData();
-    formData.append("file", fileImage);
-    setIsPending(true);
-
-    try {
-      const response = await axiosInstanceCUD.post("/images/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log(response.data.data);
-      const imageName = response.data.data;
-
-      const contractData = {
-        doctorName: data.doctor_name,
-        imagesURL: [imageName],
-        address: address?.name || null,
-        contractDate: data.contract_date,
-        contractDuration: data.contract_duration,
-        specialization: data.specialization,
-        contactPhone: data.contact_phone,
-      };
-
-      console.log(contractData);
-
-      mutation.mutate(contractData);
-    } catch (error) {
-      toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
-      console.error("Error uploading image:", error);
-    } finally {
-      setIsPending(false);
-    }
+      const formData = new FormData();
+      formData.append("file", blob, "signature.png");
+      formData.append("doctorID", data.doctorID);
+      formData.append("hospitalID", data.hospitalID);
+      formData.append("startDate", data.startDate);
+      formData.append("endDate", data.endDate);
+      formData.append("time", getCurrentDateTime());
+      formData.append("title", 'Hợp đồng bác sĩ nội khoa');
+      formData.append("address", data.address);
+      formData.append("price", data.price);
+      formData.append("isInternal", data.isInternal);
+      setIsPending(true);
+      mutation.mutate(formData);
+    });
   };
 
   return (
@@ -103,70 +101,92 @@ const ContractsDoctorInternistAdd = () => {
           Thêm hợp đồng bác sĩ nội khoa
         </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-2 grid-cols-1 gap-[10px] sm:grid md:flex">
-            <div className="mr-2">
-              <ImagePreview
-                imagePreview={imagePreview}
-                setFileImage={setFileImage}
-                setImagePreview={setImagePreview}
+          <div className="mb-2 grid grid-cols-1 gap-5 md:grid-cols-2">
+            <div className="w-full">
+              <SelectDoctor
+                control={control}
+                name="doctorID"
+                errors={errors}
+                onChange={(value) => console.log("Selected doctor:", value)}
               />
-              {!fileImage && (
-                <p className="mt-3 text-center text-sm text-red-500">
-                  Vui lòng chọn ảnh
-                </p>
-              )}
             </div>
             <div className="w-full">
-              <div className="grid grid-cols-1 items-center justify-center gap-5">
-                <InputCustom
-                  id="doctor_name"
-                  type="text"
-                  name="doctor_name"
-                  label="Tên bác sĩ:"
-                  placeholder="Nhập tên bác sĩ"
-                  control={control}
-                  errors={errors}
-                />
-                <InputCustom
-                  id="contract_date"
-                  type="date"
-                  name="contract_date"
-                  label="Ngày ký hợp đồng:"
-                  placeholder="Chọn ngày ký hợp đồng"
-                  control={control}
-                  errors={errors}
-                />
-                <InputCustom
-                  id="contract_duration"
-                  type="text"
-                  name="contract_duration"
-                  label="Thời hạn hợp đồng:"
-                  placeholder="Nhập thời hạn hợp đồng"
-                  control={control}
-                  errors={errors}
-                />
-                <InputCustom
-                  id="specialization"
-                  type="text"
-                  name="specialization"
-                  label="Chuyên khoa:"
-                  placeholder="Nhập chuyên khoa"
-                  control={control}
-                  errors={errors}
-                />
-                <InputCustom
-                  id="contact_phone"
-                  type="text"
-                  name="contact_phone"
-                  label="Số điện thoại liên hệ:"
-                  placeholder="Nhập số điện thoại liên hệ"
-                  control={control}
-                  errors={errors}
-                />
-              </div>
+              <SelectBranch
+                control={control}
+                name="hospitalID"
+                errors={errors}
+                onChange={(value) => console.log("Selected hospital:", value)}
+              />
+            </div>
+            <div className="w-full">
+              <SelectDate
+                control={control}
+                name="startDate"
+                errors={errors}
+                onChange={(value) => console.log("Selected start date:", value)}
+              />
+            </div>
+            <div className="w-full">
+              <SelectDate
+                control={control}
+                isEnd
+                name="endDate"
+                errors={errors}
+                onChange={(value) => console.log("Selected end date:", value)}
+              />
+            </div>
+            <div className="w-full">
+              <InputCustom
+                id="title"
+                type="text"
+                name="title"
+                disabled={true}
+                label="Tiêu đề:"
+                placeholder="Hợp đồng bác sĩ nội khoa"
+                value="Hợp đồng bác sĩ nội khoa"
+                control={control}
+                errors={errors}
+              />
+            </div>
+
+            <div className="w-full">
+              <InputCustom
+                id="price"
+                type="text"
+                name="price"
+                label="Nhập lương:"
+                placeholder="Nhập lương bác sĩ"
+                control={control}
+                errors={errors}
+              />
             </div>
           </div>
-
+          <div className="mt-1 w-full">
+            <InputCustom
+              id="address"
+              type="text"
+              name="address"
+              label="Địa chỉ:"
+              placeholder="Nhập địa chỉ"
+              control={control}
+              errors={errors}
+            />
+          </div>
+          <div className="my-4">
+            <Label className="mb-1">Chữ kí:</Label>
+            <SignatureCanvas
+              penColor="black"
+              canvasProps={{
+                className: "sigCanvas border rounded-lg h-[300px] w-full",
+              }}
+              ref={sigCanvas}
+            />
+            <div className="mt-2 flex justify-end gap-2">
+              <Button variant="outline" type="button" onClick={clearSignature}>
+                Xóa
+              </Button>
+            </div>
+          </div>
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
