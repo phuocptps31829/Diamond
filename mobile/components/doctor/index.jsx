@@ -1,3 +1,4 @@
+import { Text, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListDoctors from "./ListDoctors";

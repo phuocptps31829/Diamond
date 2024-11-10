@@ -27,6 +27,7 @@ function InputCustom({
     defaultValue: value,
   });
 
+
   const error = errors[name];
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

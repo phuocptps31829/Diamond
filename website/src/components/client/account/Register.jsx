@@ -33,6 +33,8 @@ export default function RegisterComponent() {
     },
   });
 
+  console.log("control:", control);
+
   const mutation = useMutation({
     mutationFn: authApi.registerSendOtp,
     onSuccess: (data) => {

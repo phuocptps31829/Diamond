@@ -68,7 +68,8 @@ const Home = () => {
           {errorNews?.message ||
             errorService?.message ||
             errorPackage?.message ||
-            errorSpecialty?.message}
+            errorSpecialty?.message
+          }
         </Text>
       </View>
     );

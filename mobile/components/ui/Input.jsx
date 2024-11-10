@@ -1,18 +1,27 @@
 import React, { useState } from "react";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View, Text } from "react-native";
+import { Controller } from "react-hook-form";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const Input = ({ placeholder, disable = true, isInputPw = true }) => {
+const Input = ({ placeholder, control, name, isInputPw = true, error }) => {
+  if (!control) return null;
   const [isShowPassword, setIsShowPassword] = useState(false);
 
   return (
-    <View className="relative">
-      <TextInput
-        placeholder={placeholder}
-        placeholderTextColor="#5D5E60"
-        secureTextEntry={isInputPw && !isShowPassword}
-        className="bg-[#F8F9FD] rounded-md px-3 py-4 mb-4 text-[14px]"
-        editable={disable}
+    <View className="relative mb-4">
+      <Controller
+        control={control}
+        name={name}
+        render={({ field: { value, onChange } }) => (
+          <TextInput
+            value={value}
+            onChangeText={onChange}
+            placeholder={placeholder}
+            placeholderTextColor="#5D5E60"
+            secureTextEntry={isInputPw && !isShowPassword}
+            className="bg-[#F8F9FD] rounded-md px-3 py-4 text-[14px]"
+          />
+        )}
       />
       {isInputPw && (
         <TouchableOpacity
@@ -26,6 +35,7 @@ const Input = ({ placeholder, disable = true, isInputPw = true }) => {
           )}
         </TouchableOpacity>
       )}
+      {error && <Text className="text-red-500 text-[12px] mt-1">{error}</Text>}
     </View>
   );
 };

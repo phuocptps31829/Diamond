@@ -31,7 +31,7 @@ export default function OutstandingServices() {
   }, [loadingMedicalService, medicalServices]);
 
   return (
-    <div className="mx-auto my-1 max-w-screen-xl">
+    <div className="mx-auto my-5 max-w-screen-xl">
       <div className="w-full text-center text-[23px] font-bold md:text-[35px]">
         Dịch vụ khám nổi bật
       </div>

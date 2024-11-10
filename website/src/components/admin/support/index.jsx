@@ -5,14 +5,24 @@ import { Input } from "@/components/ui/Input";
 import { motion } from "framer-motion";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/Tooltip";
 import { MdInsertEmoticon } from "react-icons/md";
 import { IoIosSend } from "react-icons/io";
+import { MdContentCopy } from "react-icons/md";
 import { IoSearchSharp } from "react-icons/io5";
 import emptyUser from "@/assets/images/emptyUser.png";
 import bg_chat from "@/assets/images/bg_chat.png";
+import { TbCopyCheckFilled } from "react-icons/tb";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const SupportComponent = () => {
+  const [copiedRoom, setCopiedRoom] = useState(null);
   const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
   const [messages, setMessages] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +40,14 @@ const SupportComponent = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleCopy = (roomId) => {
+    setCopiedRoom(roomId);
+
+    setTimeout(() => {
+      setCopiedRoom(null);
+    }, 3000);
   };
 
   useEffect(() => {
@@ -59,10 +77,12 @@ const SupportComponent = () => {
 
           const name = userMessage?.name || "N/A";
           const phoneNumber = userMessage?.phoneNumber || "N/A";
+          const latestMessage = messages[messages.length - 1].message;
+          const type = messages[messages.length - 1].type;
 
-          return { roomId, name, phoneNumber };
+          return { roomId, name, phoneNumber, latestMessage, type };
         });
-      setRooms(roomData);
+      setRooms(roomData.reverse());
       setTotalRooms(roomData);
     };
     sendEvent("getActiveRooms", null, handleActiveRooms);
@@ -192,7 +212,7 @@ const SupportComponent = () => {
       }}
       initial="hidden"
       animate="visible"
-      className="flex h-screen max-h-[550px] max-w-[1500px] overflow-hidden rounded-2xl border-2 border-primary-200 text-gray-800 antialiased shadow-md"
+      className="flex h-[80vh] max-w-[1500px] overflow-hidden rounded-2xl border-2 border-primary-200 text-gray-800 antialiased shadow-md"
     >
       <div className="flex w-[300px] flex-shrink-0 flex-col bg-gradient-to-t from-[#d6eff9] to-[#bdecff] text-[#F1F7FF]">
         <div className="relative flex h-20 items-center justify-center border-b-2 border-primary-200">
@@ -209,36 +229,57 @@ const SupportComponent = () => {
         <div className="h-full">
           <div className="scrollable-services min-h-full">
             {filteredRooms.length > 0 ? (
-              filteredRooms.map(
-                (room, index) => (
-                  (
-                    <div
-                      className={`${
-                        currentRoom === room.roomId ? "bg-primary-200" : ""
-                      } flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200`}
-                      key={index}
-                      onClick={() => joinRoom(room.roomId)}
-                    >
-                      <div className="relative">
-                        <img
-                          src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
-                          alt="Chat avatar"
-                          className="h-9 w-9 rounded-full border border-primary-800"
-                        />
-                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
+              filteredRooms.map((room, index) => (
+                <div key={index} className="relative">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 transform">
+                          <CopyToClipboard
+                            text={room.phoneNumber}
+                            onCopy={() => handleCopy(room.roomId)}
+                          >
+                            <div className="cursor-pointer rounded-full bg-green-600 p-2">
+                              {copiedRoom === room.roomId ? (
+                                <TbCopyCheckFilled color="white" size={11} />
+                              ) : (
+                                <MdContentCopy color="white" size={11} />
+                              )}
+                            </div>
+                          </CopyToClipboard>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>Sao chép số điện thoại</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <div
+                    className={`${
+                      currentRoom === room.roomId ? "bg-primary-200" : ""
+                    } flex cursor-pointer items-center px-4 py-3 hover:bg-primary-200`}
+                    onClick={() => joinRoom(room.roomId)}
+                  >
+                    <div className="relative">
+                      <img
+                        src="https://png.pngtree.com/png-vector/20190710/ourlarge/pngtree-user-vector-avatar-png-image_1541962.jpg"
+                        alt="Chat avatar"
+                        className="h-9 w-9 rounded-full border border-primary-800"
+                      />
+                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 bg-green-400"></div>
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-[14px] font-semibold text-black">
+                        {room.name}
                       </div>
-                      <div className="ml-3">
-                        <div className="text-[14px] font-semibold text-black">
-                          {room.name}
-                        </div>
-                        <div className="text-[12px] text-green-500">
-                          {room.phoneNumber}
-                        </div>
+                      <div
+                        className={`${room.type === "admin" ? "text-gray-600" : "text-red-600"} mt-1 line-clamp-1 max-w-[180px] text-[12px] font-semibold`}
+                      >
+                        {room.type === "admin" ? "Bạn: " : ""}{" "}
+                        {room.latestMessage}
                       </div>
                     </div>
-                  )
-                )
-              )
+                  </div>
+                </div>
+              ))
             ) : (
               <img
                 src={emptyUser}

@@ -1,4 +1,5 @@
 import { Text, FlatList, View, Image, TouchableOpacity } from "react-native";
+import { URL_IMAGE } from "../../configs/variables";
 
 const Specialty = ({ listSpecialty }) => {
   return (
@@ -27,7 +28,7 @@ const Specialty = ({ listSpecialty }) => {
           >
             <Image
               source={{
-                uri: item?.image,
+                uri: URL_IMAGE + "/" + item?.image,
               }}
               className="h-[110px] rounded-md"
             />
