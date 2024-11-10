@@ -18,7 +18,9 @@ class Doctor extends Model
         'practicingCertificate',
         'yearsExperience',
         'detail',
-        'isInternal'
+        'verification',
+        'isInternal',
+        'isActivated'
     ];
 
     protected $casts = [
@@ -27,8 +29,10 @@ class Doctor extends Model
         'yearsExperience' => 'integer',
         'detail' => 'string',
         'isInternal' => 'boolean',
+        'isActivated' => 'boolean',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setUserIDAttribute($value)
     {
         $this->attributes['userID'] = new ObjectId($value);

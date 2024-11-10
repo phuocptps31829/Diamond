@@ -22,15 +22,20 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required|exists:Specialty,_id',
+            'specialtyID' => 'required',
             'name' => 'required|string',
+            'slug' => 'required|string',
             'image' => 'required|string',
             'price' => 'required|numeric',
             'shortDescription' => 'required|string',
-            'detail' => 'required|string',
+            'details' => 'required|string',
             'discountPrice' => 'nullable|numeric',
             'duration' => 'required|numeric',
             'isHidden' => 'required|boolean',
+            'applicableObject.gender' => 'required|string',
+            'applicableObject.age.min' => 'required|numeric',
+            'applicableObject.age.max' => 'required|numeric',
+            'applicableObject.isFamily' => 'required|boolean',
         ];
     }
     public function messages()
@@ -39,6 +44,8 @@ class ServiceRequest extends FormRequest
             'specialtyID.required' => 'Specialty ID is required',
             'specialtyID.exists' => 'The Specialty ID is invalid.',
             'name.required' => 'Name is required',
+            'slug.string' => 'Slug should be a string',
+            'slug.required' => 'Slug is required',
             'name.string' => 'Name should be a string',
             'image.required' => 'Image is required',
             'image.string' => 'Image should be a string',
@@ -46,8 +53,8 @@ class ServiceRequest extends FormRequest
             'price.numeric' => 'Price should be a number',
             'shortDescription.required' => 'Short description is required',
             'shortDescription.string' => 'Short description should be a string',
-            'detail.required' => 'Details are required',
-            'detail.string' => 'Details should be a string',
+            'details.required' => 'Details are required',
+            'details.string' => 'Details should be a string',
             'discountPrice.numeric' => 'Discount Price should be a number',
             'isHidden.required' => 'isHidden is required',
             'isHidden.boolean' => 'isHidden should be a boolean',

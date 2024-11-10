@@ -5,13 +5,20 @@ module.exports = {
     getAllInvoices: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await InvoiceModel.countDocuments({ isDeleted: false });
 
             const invoices = await InvoiceModel
                 .find({ isDeleted: false })
+                .populate({
+                    path: 'appointmentID',
+                    populate: {
+                        path: 'patientID',
+                    }
+                })
                 .skip(skip)
-                .limit(limitDocuments)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -21,10 +28,22 @@ module.exports = {
                 createError(404, "No invoices found.");
             }
 
+            const formattedInvoices = invoices.map(invoice => {
+                const formattedInvoice = {
+                    ...invoice.toObject(),
+                    patient: {
+                        _id: invoice.appointmentID?.patientID._id,
+                        fullName: invoice.appointmentID?.patientID.fullName,
+                    }
+                };
+                delete formattedInvoice.appointmentID;
+                return formattedInvoice;
+            });
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Invoices retrieved successfully.',
-                data: invoices,
+                data: formattedInvoices,
                 totalRecords
             });
         } catch (error) {

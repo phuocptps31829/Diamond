@@ -17,7 +17,8 @@ class MedicineCategory extends Model
         'name' => 'string',
         'isDeleted' => 'boolean',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     // Đặt giá trị mặc định
     protected $attributes = [
         'isDeleted' => false,

@@ -1,0 +1,48 @@
+# Ignore node_modules
+node_modules
+
+# Ignore log files and temporary files
+*.log
+*.tmp
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore compiled assets
+public/hot
+public/storage
+public/vendor
+storage/*.key
+storage/debugbar
+
+# Ignore vendor directory
+/vendor
+
+# Ignore build and cache directories
+npm-debug.log
+yarn-error.log
+.yarn-integrity
+.pnpm-debug.log
+dist/
+build/
+cache/
+vendor/
+
+# Ignore IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Ignore Docker specific files
+Dockerfile
+docker-compose.yml
+
+# Ignore tests and documentation
+/tests
+/docs
+
+# Ignore hidden files and directories
+.*
+!.gitignore

@@ -8,12 +8,11 @@ use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
+use MongoDB\BSON\ObjectId;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
-
-
     /**
      * The attributes that are mass assignable.
      *
@@ -29,10 +28,13 @@ class User extends Authenticatable
         'gender',
         'avatar',
         'citizenIdentificationNumber',
-        'isActive',
+        'roleID',
+        'otherInfo',
+        'isActivated',
         'isDeleted',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -60,17 +62,26 @@ class User extends Authenticatable
         'gender' => 'string',
         'avatar' => 'string',
         'citizenIdentificationNumber' => 'string',
-        'isActive' => 'boolean',
         'isDeleted' => 'boolean',
     ];
+    public function setRoleIDAttribute($value)
+    {
+        $this->attributes['roleID'] = new ObjectId($value);
+    }
     public function setAddressAttribute($value)
     {
-        // Nếu $value là mảng hoặc stdClass, giữ nguyên
         $this->attributes['address'] = $value;
+    }
+    public function setIsActivatedAttribute($value)
+    {
+        $this->attributes['isActivated'] = $value;
+    }
+    public function setOtherInfoAttribute($value)
+    {
+        $this->attributes['otherInfo'] = $value;
     }
     public function setPasswordAttribute($value)
     {
-        // Nếu $value là mảng hoặc stdClass, giữ nguyên
         $this->attributes['password'] = Hash::make($value);
     }
     public function getTable()

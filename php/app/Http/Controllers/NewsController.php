@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\NewsRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -59,47 +61,57 @@ use App\Http\Requests\NewsRequest;
  *     summary="Add a News",
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(
- *             required={""},
- *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="Title of the new News"),
- *             @OA\Property(property="image", type="string", example="Image of the new News"),
- *             @OA\Property(property="content", type="string", example="content of the new News"),
- *             @OA\Property(property="author", type="string", example="author of the new News"),
- *             @OA\Property(property="isHidden", type="boolean", example=false),
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 required={},
+ *                 @OA\Property(property="specialtyID", type="string", example="1"),
+ *                 @OA\Property(property="title", type="string", example="Title of the new News"),
+ *                 @OA\Property(property="file", type="string", format="binary", description="Image file"),
+ *                 @OA\Property(property="content", type="string", example="Content of the new News"),
+ *                 @OA\Property(property="author", type="string", example="Author of the new News"),
+ *                 @OA\Property(property="isHidden", type="boolean", example=false)
+ *             )
  *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successful response",
- *     ),
+ *         description="Successful response"
+ *     )
  * )
- *  @OA\put(
- *     path="/api/v1/news/update/{id}",
+ * @OA\Post(
+ *     path="/api/v1/news/update/{id}?_method=PUT",
  *     tags={"News Routes"},
- *     summary="Update News",
+ *     summary="Update a News by ID",
  *     @OA\Parameter(
  *         name="id",
  *         in="path",
- *         description="object id",
  *         required=true,
- *         @OA\Schema(type="string")
+ *         @OA\Schema(
+ *             type="string"
+ *         ),
+ *         description="ID of the news item to update"
  *     ),
  *     @OA\RequestBody(
  *         required=true,
- *         @OA\JsonContent(
- *             required={""},
- *             @OA\Property(property="specialtyID", type="string", example=""),
- *             @OA\Property(property="title", type="string", example="Title of the new News"),
- *             @OA\Property(property="image", type="string", example="Image of the new News"),
- *             @OA\Property(property="content", type="string", example="content of the new News"),
- *             @OA\Property(property="author", type="string", example="author of the new News"),
- *             @OA\Property(property="isHidden", type="boolean", example=false),
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 type="object",
+ *                 required={},
+ *                 @OA\Property(property="specialtyID", type="string", example="1"),
+ *                 @OA\Property(property="title", type="string", example="Title of the new News"),
+ *                @OA\Property(property="file", type="string", format="binary", description="Image file"),
+ *                 @OA\Property(property="content", type="string", example="Content of the new News"),
+ *                 @OA\Property(property="author", type="string", example="Author of the new News"),
+ *                 @OA\Property(property="isHidden", type="boolean", example=false)
+ *             )
  *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successful response",
+ *         description="Successful response"
  *     )
  * )
  *  @OA\delete(
@@ -147,11 +159,7 @@ class NewsController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -171,11 +179,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -183,6 +187,12 @@ class NewsController extends Controller
     {
         try {
             $NewsRequest = new NewsRequest();
+
+            $checkSlug = checkSlug($request->title, 'News');
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
             $News = News::create($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
 
             return response()->json([
@@ -192,11 +202,29 @@ class NewsController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
+               return handleException($e);
+        }
+    }
+    public function viewCount(Request $request)
+    {
+        try {
+            $id = $request->route('id');
+
+            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+
+            if (!$News) {
+                return createError(404, 'News not found');
+            }
+            $News->update([
+                "viewCount" => $News->viewCount + 1
+            ]);
             return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+                'status' => 'success',
+                'message' => 'News update view count successfully.',
+                'data' => $News,
+            ], 201);
+        } catch (\Exception $e) {
+               return handleException($e);
         }
     }
     public function updateNews(Request $request)
@@ -209,6 +237,11 @@ class NewsController extends Controller
             if (!$News) {
                 return createError(404, 'News not found');
             }
+
+            $checkSlug = checkSlug($request->title, 'News', $id);
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
             $NewsRequest = new NewsRequest();
 
             $News->update($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
@@ -219,11 +252,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteNews($id)
@@ -250,11 +279,7 @@ class NewsController extends Controller
                 'data' => $News,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

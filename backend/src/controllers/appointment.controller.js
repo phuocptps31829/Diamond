@@ -16,7 +16,7 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptionsS
             } = req.customQueries;
 
             let { doctorID, startDay, endDay } = req.checkValueQuery;

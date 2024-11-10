@@ -20,7 +20,8 @@ class Clinic extends Model
         'name' => 'string',
         'isDeleted' => 'boolean',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setBranchIDAttribute($value)
     {
         $this->attributes['branchID'] = new ObjectId($value);

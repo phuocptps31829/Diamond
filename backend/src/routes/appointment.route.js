@@ -203,7 +203,6 @@ router.get(
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsOfDoctor
 );
-
 /**
  * @openapi
  * '/api/v1/appointments/{id}':

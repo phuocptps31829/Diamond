@@ -141,11 +141,7 @@ class ClinicController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 
@@ -165,11 +161,7 @@ class ClinicController extends Controller
                 'data' => $Clinic,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 
@@ -187,11 +179,7 @@ class ClinicController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function updateClinic(Request $request)
@@ -214,11 +202,7 @@ class ClinicController extends Controller
                 'data' => $Clinic,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
     public function deleteClinic($id)
@@ -245,11 +229,7 @@ class ClinicController extends Controller
                 'data' => $Clinic,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+              return handleException($e);
         }
     }
 }

@@ -12,7 +12,7 @@ class Branch extends Model
     protected $fillable = [
         'workingTime',
         'name',
-        'imageURL',
+        'imagesURL',
         'address',
         'hotline',
         'coordinates',
@@ -27,13 +27,15 @@ class Branch extends Model
         'isDeleted' => 'boolean',
     ];
 
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     // Đặt giá trị mặc định
     protected $attributes = [
         'isDeleted' => false,
     ];
     public function setImageURLAttribute($value)
     {
-        $this->attributes['imageURL'] = $value;
+        $this->attributes['imagesURL'] = $value;
     }
     public function setCoordinatesAttribute($value)
     {

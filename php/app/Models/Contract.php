@@ -15,18 +15,22 @@ class Contract extends Model
         'hospitalID',
         'startDate',
         'endDate',
-        'detail',
+        'time',
+        "address",
+        "title",
+        "file",
+        "price",
         'isDeleted',
     ];
 
     protected $casts = [
-        'doctorID' => 'object_id',
-        'hospitalID' => 'object_id',
         'startDate' => 'string',
         'endDate' => 'integer',
-        'detail' => 'string',
         'isDeleted' => 'boolean',
     ];
+
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setDoctorIDAttribute($value)
     {
         $this->attributes['doctorID'] = new ObjectId($value);

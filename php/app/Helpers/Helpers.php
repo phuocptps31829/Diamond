@@ -3,25 +3,234 @@
 use Illuminate\Support\Facades\DB;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cookie;
+use App\Models\User;
+use Illuminate\Support\Str;
+use Illuminate\Support\Storage;
+
+
+if (!function_exists('generateDate')) {
+    function generateDate($date)
+    {
+        $date = Carbon\Carbon::parse($date);
+        $dayOfWeekNumber = $date->dayOfWeek;
+        $daysInVietnamese = [
+            0 => 'Chủ Nhật',
+            1 => 'Thứ Hai',
+            2 => 'Thứ Ba',
+            3 => 'Thứ Tư',
+            4 => 'Thứ Năm',
+            5 => 'Thứ Sáu',
+            6 => 'Thứ Bảy',
+        ];
+        return [
+            'date' => $date->day,
+            'month' => $date->month,
+            "year" => $date->year,
+            "day" => $daysInVietnamese[$dayOfWeekNumber]
+        ];
+    }
+}
+
+if (!function_exists('successResponse')) {
+    function successResponse($data, $message = 'Success', $code = 200)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+            'data' => $data,
+            'errors' => null,
+        ], $code);
+    }
+}
+if (!function_exists('handleException')) {
+    function handleException($e)
+    {
+        if ($e instanceof \Illuminate\Validation\ValidationException) {
+            return createError(422, 'Validation failed', $e->errors());
+        }
+        return createError($e->getCode() ?: 500, $e->getMessage());
+    }
+}
 
 if (!function_exists('searchInTable')) {
+    function generateRandomString($length = 6)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-={}[]|:;<>,.?';
+        return substr(str_shuffle($characters), 0, $length);
+    }
 
-function saveRefreshToken($refreshToken)
-{
-    return response()->json([
-        'message' => 'Token saved successfully.'
-    ])->cookie('refreshToken', $refreshToken, 48 * 60 * 60, null, null, false, true);
-}
+    function getAccessToken()
+    {
+        $apiKeySid = env('API_KEY_SID');
+        $apiKeySecret = env('API_KEY_SECRET');
+
+        $now = time();
+        $exp = $now + 3600;
+
+        $header = ['cty' => "stringee-api;v=1"];
+
+        $payload = [
+            'jti' => $apiKeySid . '-' . $now,
+            'iss' => $apiKeySid,
+            'exp' => $exp,
+            'rest_api' => 1
+        ];
+        return JWT::encode($payload, $apiKeySecret, 'HS256', null, $header);
+
+    }
+
+    function sendOTP($phoneNumber)
+    {
+        $OTP = (string)rand(100000, 999999);
+
+        $talkOTP = implode('... ', str_split($OTP));
+
+        $newPhoneNumber = substr($phoneNumber, 1);
+
+        $options = [
+            'from' => [
+                'type' => 'external',
+                'number' => env('PHONE_NUMBER'),
+                'alias' => 'STRINGEE_NUMBER'
+            ],
+            'to' => [
+                [
+                    'type' => 'external',
+                    'number' => '84' . $newPhoneNumber,
+                    'alias' => 'TO_NUMBER'
+                ]
+            ],
+            'answer_url' => env('ANSWER_URL'),
+            'actions' => [
+                [
+                    'action' => 'talk',
+                    'text' => "Mã OTP của bạn là:..." . $talkOTP . "... Xin nhắc lại... Mã OTP của bạn là:..." . $talkOTP
+                ]
+            ]
+        ];
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'X-STRINGEE-AUTH' => getAccessToken()
+        ])->post(env('URL_CALL'), $options);
+
+        if ($response->successful()) {
+            return $OTP;
+        } else {
+            return false;
+        }
+    }
+
+    function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        $jsonResult = json_decode($result, true);
+        return $jsonResult;
+    }
+
+    function generateOTPToken($fullName, $phoneNumber, $password)
+    {
+        $payload = [
+            'fullName' => $fullName,
+            'phoneNumber' => $phoneNumber,
+            'password' => $password,
+            'expiresIn' => time() + 300
+        ];
+
+        $otpToken = JWT::encode($payload, getenv('OTP_TOKEN_SECRET'), 'HS256');
+
+        return $otpToken;
+    }
+
+    function checkValidImage($file)
+    {
+        if (!$file || !$file->isValid()) {
+            return 'File does not exist.';
+        }
+
+        $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
+        $mimeType = $file->getMimeType();
+        $extension = $file->getClientOriginalExtension();
+
+        if (!in_array($mimeType, $allowedMimeTypes) || !in_array(strtolower($extension), $allowedExtensions)) {
+            return 'The file must be jpg, jpeg, png or gif.';
+        }
+
+        return null;
+    }
+
+    function uploadImage($image, $nameFolder = null)
+    {
+        $newName = time() . '_' . $image->getClientOriginalName();
+        if ($nameFolder) {
+            $image->move(public_path('images/' . $nameFolder . '/'), $newName);
+        } else {
+            $image->move('images/', $newName);
+        }
+        return $newName;
+    }
+
+    function checkSlug($title, $table, $id = null)
+    {
+
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (DB::table($table)->where('slug', $slug)->exists()) {
+
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
+
+    function saveRefreshToken($refreshToken)
+    {
+        return response()->json([
+            'message' => 'Token saved successfully.'
+        ])->cookie('refreshToken', $refreshToken, 48 * 60 * 60, null, null, false, true);
+    }
+
     function generateAccessRefreshToken($user)
     {
-        $accessToken = JWT::encode(['id' => $user->id, 'ext' => time() + 300], env('ACCESS_TOKEN_SECRET'), 'HS256');
-        $refreshToken = JWT::encode(['id' => $user->id, 'isAdmin' => $user->isAdmin, 'ext' => time() + 7 * 24 * 60 * 60], env('REFRESH_TOKEN_SECRET'), 'HS256');
+        $accessToken = JWT::encode(['id' => $user->id, 'role' => (string)$user->roleID->__toString(), 'exp' => time() + 300], env('ACCESS_TOKEN_SECRET'), 'HS256');
+        $refreshToken = JWT::encode(['id' => $user->id, 'role' => (string)$user->roleID->__toString(), 'isAdmin' => $user->isAdmin, 'exp' => time() + 7 * 24 * 60 * 60], env('REFRESH_TOKEN_SECRET'), 'HS256');
 
         return [
-            'accessToken' =>  $accessToken,
-            'refreshToken' => $refreshToken
+            'accessToken' =>
+                [
+                    'token' => $accessToken,
+                    'expires' => time() + 60
+                ],
+            'refreshToken' =>
+                [
+                    'token' => $refreshToken,
+                    'expires' => time() + (7 * 24 * 60 * 60)
+                ]
         ];
-    };
+    }
+
+    ;
 
     function searchInTable($table, $keyword)
     {
@@ -31,17 +240,60 @@ function saveRefreshToken($refreshToken)
             $query->orWhere($column, 'LIKE', '%' . $keyword . '%');
         }
         return $query->get();
-    };
+    }
+
+    ;
     function isValidMongoId($id)
     {
         return preg_match('/^[0-9a-fA-F]{24}$/', $id);
     }
-    function createError($code, $message)
+
+    function createError($code = 500, $message = "Error", $errors = [])
     {
         return response()->json([
-            'status' => 'fail',
+            'status' => 'error',
             'message' => $message,
             'data' => null,
+            'errors' => $errors,
         ], $code);
+    }
+
+    function checkPhoneAndEmail($phoneNumber = null, $email = null, $userId = null)
+    {
+        if (!$phoneNumber && !$email) {
+            createError(500, 'Required phone number or email');
+        }
+        if ($userId) {
+            $user = User::where('_id', $userId)->first();
+            if (!$user) {
+                return 'User not found';
+            }
+            if ($phoneNumber && $user->phoneNumber != $phoneNumber) {
+                $user = User::where('phoneNumber', $phoneNumber)->first();
+                if ($user) {
+                    return 'Phone number already exists';
+                }
+            }
+            if ($email && $user && $user->email != $email) {
+                $user = User::where('email', $email)->first();
+                if ($user) {
+                    return 'Email already exists';
+                }
+            }
+            return null;
+        } else {
+            if ($phoneNumber) {
+                $user = User::where('phoneNumber', $phoneNumber)->first();
+                if ($user) {
+                    return 'Phone number already exists';
+                }
+            }
+            if ($email) {
+                $user = User::where('email', $email)->first();
+                if ($user) {
+                    return 'Email already exists';
+                }
+            }
+        }
     }
 }

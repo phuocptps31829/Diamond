@@ -128,6 +128,8 @@ use App\Http\Requests\ServiceRequest;
 
 class ServiceController extends Controller
 {
+
+
     public function getAllServices(Request $request)
     {
         try {
@@ -153,11 +155,7 @@ class ServiceController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -177,11 +175,7 @@ class ServiceController extends Controller
                 'data' => $Service,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 
@@ -189,6 +183,13 @@ class ServiceController extends Controller
     {
         try {
             $ServiceRequest = new ServiceRequest();
+
+            $checkSlug = checkSlug($request->name, 'Service');
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
+
             $Service = Service::create($request->validate($ServiceRequest->rules(), $ServiceRequest->messages()));
 
             return response()->json([
@@ -198,17 +199,18 @@ class ServiceController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function updateService(Request $request)
     {
         try {
             $id = $request->route('id');
+            $checkSlug = checkSlug($request->name, 'Service', $id);
+
+            if ($checkSlug) {
+                $request->merge(['slug' => $checkSlug]);
+            }
 
             $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
 
@@ -225,11 +227,7 @@ class ServiceController extends Controller
                 'data' => $Service,
             ], 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
     public function deleteService($id)
@@ -244,6 +242,7 @@ class ServiceController extends Controller
             }
 
             $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
+
             if (!$Service) {
                 return createError(404, 'Service not found');
             }
@@ -256,11 +255,7 @@ class ServiceController extends Controller
                 'data' => $Service,
             ], 200);
         } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 500);
+               return handleException($e);
         }
     }
 }

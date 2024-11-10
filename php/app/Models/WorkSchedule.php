@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Mongodb\Laravel\Eloquent\Model;
-use MongoDB\Laravel\Eloquent\Casts\ObjectId;
+use MongoDB\BSON\ObjectId;
 
 class WorkSchedule extends Model
 {
@@ -13,17 +13,23 @@ class WorkSchedule extends Model
     protected $fillable = [
         'doctorID',
         'clinicID',
+        'day',
         'hour',
         'isDeleted',
     ];
 
     protected $casts = [
-        'doctorID' => 'object_id',
-        'clinic' => 'string'
+        "isDeleted" => "boolean",
     ];
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function setDoctorIDAttribute($value)
     {
         $this->attributes['doctorID'] = new ObjectId($value);
+    }
+    public function setClinicIDAttribute($value)
+    {
+        $this->attributes['clinicID'] = new ObjectId($value);
     }
     public function setHourAttribute($value)
     {

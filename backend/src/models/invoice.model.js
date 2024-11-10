@@ -5,12 +5,19 @@ const invoiceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',
     },
+    invoiceCode: {
+        type: String,
+        required: true
+    },
     price: {
         type: Number,
         required: true
     },
     arisePrice: {
         type: Number,
+    },
+    file: {
+        type: String,
     },
     isDeleted: {
         type: Boolean,

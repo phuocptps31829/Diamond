@@ -11,7 +11,7 @@ class NewsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,9 +22,10 @@ class NewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required|exists:Specialty,_id',
+            'specialtyID' => 'required',
             'title' => 'required|string',
-            'image' => 'required|string',
+            'image' => 'string',
+            'slug' => 'required|string',
             'content' => 'required|string',
             'author' => 'required|string',
             'isHidden' => 'required|boolean',

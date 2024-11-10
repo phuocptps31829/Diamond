@@ -22,9 +22,9 @@ class SpecialtyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required',
-            'description' => 'required',
-            'name' => 'required'
+            'image' => 'required|string',
+            'name' => 'required|string',
+            "isHidden" => "nullable|boolean",
         ];
     }
 

@@ -11,7 +11,7 @@ class InvoiceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,10 +22,26 @@ class InvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'prescriptionID' => 'nullable|exists:Prescription,_id',
-            'appointmentID' => 'nullable|exists:Appointment,_id',
-            'serviceID' => 'nullable|exists:services,_id',
-            'price' => 'required|numeric',
+            'patientID' => 'required|string',
+            'data' => 'required|array',
+            'data.*.medicalPackageID' => 'nullable',
+            'data.*.serviceID' => 'nullable',
+            'data.*.workScheduleID' => 'required',
+            'data.*.type' => 'required|string',
+            'data.*.time' => 'required|date',
+            'data.*.status' => 'required|string',
+            'data.*.price' => 'required|numeric|min:0',
+            'appointmentHelpUser' => 'nullable|array',
+            'appointmentHelpUser.fullName' => 'required_with:appointmentHelpUser|string|max:255',
+            'appointmentHelpUser.phoneNumber' => 'required_with:appointmentHelpUser|string|max:12',
+            'appointmentHelpUser.email' => 'nullable|email',
+            'appointmentHelpUser.gender' => 'required_with:appointmentHelpUser|string|in:Nam,Nữ,0',
+            'appointmentHelpUser.dateOfBirth' => 'required_with:appointmentHelpUser|date',
+            'appointmentHelpUser.address' => 'required_with:appointmentHelpUser|string|max:255',
+            'appointmentHelpUser.citizenIdentificationNumber' => 'required_with|string',
+            'appointmentHelpUser.occupation' => 'nullable|string|max:255',
+            'appointmentHelpUser.ethnic' => 'nullable|string|max:255',
+            'appointmentHelpUser.password' => 'nullable|string|min:6',
         ];
     }
     public function messages()

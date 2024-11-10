@@ -216,7 +216,13 @@ module.exports = {
                 sortOptions
             } = req.customQueries;
 
+            const { time } = req.query;
             let { doctorID, startDay, endDay } = req.checkValueQuery;
+
+            let day = null, hour = null;
+            if (time) {
+
+            }
 
             const workSchedules = await WorkScheduleModel
                 .find({
