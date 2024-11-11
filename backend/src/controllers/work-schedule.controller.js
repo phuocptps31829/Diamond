@@ -216,19 +216,16 @@ module.exports = {
                 sortOptions
             } = req.customQueries;
 
-            const { time } = req.query;
+            const { day, hour } = req.query;
             let { doctorID, startDay, endDay } = req.checkValueQuery;
-
-            let day = null, hour = null;
-            if (time) {
-
-            }
 
             const workSchedules = await WorkScheduleModel
                 .find({
                     doctorID: doctorID,
                     isDeleted: false,
-                    day: { $gte: new Date().toISOString().slice(0, 10) }
+                    day: {
+                        $gte: new Date().toISOString().slice(0, 10)
+                    }
                 })
                 .populate("doctorID")
                 .populate("clinicID")
@@ -263,10 +260,24 @@ module.exports = {
                 element.time = arrTime;
             });
 
+            let filteredWorkSchedules = formattedWorkSchedules;
+            if (day && hour) {
+                filteredWorkSchedules = formattedWorkSchedules.filter(schedule => {
+                    const tempTimeStart = new Date()
+                        .setTime(schedule.hour.startTime.split(":")[0], schedule.hour.startTime.split(":")[1], 0, 0);
+                    const tempTimeEnd = new Date()
+                        .setTime(schedule.hour.endTime.split(":")[0], schedule.hour.endTime.split(":")[1], 0, 0);
+                    const tempTimeInput = new Date()
+                        .setTime(hour.split(":")[0], hour.split(":")[1], 0, 0);
+
+                    return schedule.day === day && tempTimeInput >= tempTimeStart && tempTimeInput <= tempTimeEnd;
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'WorkSchedules retrieved successfully.',
-                data: formattedWorkSchedules,
+                data: filteredWorkSchedules,
                 // totalRecords
             });
         } catch (error) {

@@ -14,13 +14,13 @@ services:
       - "6379:6379"
     stdin_open: true
     tty: true
-  php:
-    build: ./php
-    container_name: php
-    ports:
-      - "8000:8000"
-    stdin_open: true
-    tty: true
+  # php:
+  #   build: ./php
+  #   container_name: php
+  #   ports:
+  #     - "8000:8000"
+  #   stdin_open: true
+  #   tty: true
   backend:
     build: ./backend
     container_name: backend
