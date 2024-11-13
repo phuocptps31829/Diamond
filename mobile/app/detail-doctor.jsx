@@ -1,7 +1,7 @@
-// import DetailDoctor from "../components/DetailDoctor/index";
+import DetailDoctor from "../components/detailDoctor/index";
 
 const DetailDoctorTab = () => {
-  return <Text>HELLO</Text>;
+  return <DetailDoctor />;
 };
 
 export default DetailDoctorTab;

@@ -2,7 +2,8 @@ import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
-const HistoryBox = () => {
+const HistoryBox = ({ item }) => {
+    console.log('iii', item);
     return (
         <View className="bg-white p-4 rounded-lg">
             <View className="flex-row justify-between">
