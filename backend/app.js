@@ -13,7 +13,6 @@ const serviceRoutes = require('./src/routes/service.route');
 const specialtyRoutes = require('./src/routes/specialty.route');
 const medicineCategoryRoutes = require('./src/routes/medicine-category.route');
 const medicineRoutes = require('./src/routes/medicine.route');
-const applicableObjectRoutes = require('./src/routes/applicable-object.route');
 const clinicRoutes = require('./src/routes/clinic.route');
 const hospitalRoutes = require('./src/routes/hospital.route');
 const contractRoutes = require('./src/routes/contract.route');
@@ -29,6 +28,7 @@ const doctorRoutes = require('./src/routes/doctor.route');
 const patientRoutes = require('./src/routes/patient.route');
 const staffRoutes = require('./src/routes/staff.route');
 const authRoutes = require('./src/routes/auth.route');
+const revenueRoutes = require('./src/routes/revenue.route');
 const app = express();
 
 // app.use((req, res, next) => {
@@ -61,7 +61,6 @@ app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/specialties', specialtyRoutes);
 app.use('/api/v1/medicine-categories', medicineCategoryRoutes);
 app.use('/api/v1/medicines', medicineRoutes);
-app.use('/api/v1/applicable-objects', applicableObjectRoutes);
 app.use('/api/v1/clinics', clinicRoutes);
 app.use('/api/v1/hospitals', hospitalRoutes);
 app.use('/api/v1/branches', branchRoutes);
@@ -79,6 +78,7 @@ app.use('/api/v1/doctors', doctorRoutes);
 app.use('/api/v1/patients', patientRoutes);
 app.use('/api/v1/staffs', staffRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/revenue', revenueRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

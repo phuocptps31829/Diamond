@@ -804,6 +804,12 @@ module.exports = {
                     isDeleted: false
                 })
                 .populate('serviceID')
+                .populate({
+                    path: 'serviceID',
+                    populate: {
+                        path: 'specialtyID'
+                    }
+                })
                 .populate('patientHelpID')
                 .populate('patientID')
                 .populate({
@@ -842,7 +848,8 @@ module.exports = {
                     .findOne({
                         isDeleted: false,
                         'services._id': appointment.medicalPackageID
-                    });
+                    })
+                    .populate("specialtyID");
 
                 level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
 
@@ -874,8 +881,6 @@ module.exports = {
                 const prescription = await PrescriptionModel
                     .findOne({ isDeleted: false, resultID: result._id })
                     .lean();
-
-                console.log('pr', prescription);
 
                 const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
                     const medicine = await MedicineModel
@@ -915,8 +920,6 @@ module.exports = {
                 return formatted;
             }));
 
-            console.log('prescriptions', resultPrescriptions);
-
             const formattedAppointment = {
                 ...appointment,
                 patient: {
@@ -942,6 +945,10 @@ module.exports = {
                         name: appointment.serviceID.name,
                         image: appointment.serviceID.image,
                         price: appointment.serviceID.price,
+                        specialty: {
+                            _id: appointment.serviceID.specialtyID._id,
+                            name: appointment.serviceID.specialtyID.name
+                        }
                     }
                 } : {}),
                 ...(medicalPackage ? {
@@ -955,6 +962,10 @@ module.exports = {
                             name: level.levelName,
                             price: level.price
                         },
+                        specialty: {
+                            _id: medicalPackage.specialtyID._id,
+                            name: medicalPackage.specialtyID.name
+                        }
                     }
                 } : {}),
                 orderNumber: {

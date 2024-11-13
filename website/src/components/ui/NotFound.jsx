@@ -9,7 +9,7 @@ const NotFound = ({ message }) => {
         className="w-full max-w-xs rounded-md md:max-w-md lg:max-w-md"
       />
       <h1 className="mt-4 text-center text-lg font-semibold text-gray-700">
-        {message || "Không tìm thấy trang"}
+        {message || "Không tìm thấy trang bạn yêu cầu."}
       </h1>
     </div>
   );

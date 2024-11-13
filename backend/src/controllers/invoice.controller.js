@@ -6,11 +6,14 @@ module.exports = {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
+            let { status } = req.query;
 
             const totalRecords = await InvoiceModel.countDocuments({ isDeleted: false });
 
             const invoices = await InvoiceModel
-                .find({ isDeleted: false })
+                .find({
+                    isDeleted: false,
+                })
                 .populate({
                     path: 'appointmentID',
                     populate: {
@@ -34,7 +37,8 @@ module.exports = {
                     patient: {
                         _id: invoice.appointmentID?.patientID._id,
                         fullName: invoice.appointmentID?.patientID.fullName,
-                    }
+                    },
+                    status: invoice.appointmentID?.payment?.status,
                 };
                 delete formattedInvoice.appointmentID;
                 return formattedInvoice;

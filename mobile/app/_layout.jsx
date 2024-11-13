@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { store } from "../store";
 import { Provider } from "react-redux";
 import HeaderScreen from "../components/ui/HeaderScreen";
+import Toast from "react-native-toast-message";
 
 const queryClient = new QueryClient();
 
@@ -109,6 +110,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
+        <Toast />
       </QueryClientProvider>
     </Provider>
   );

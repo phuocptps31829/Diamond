@@ -72,6 +72,43 @@ router.get(
 
 /**
  * @openapi
+ * '/api/v1/doctors/by-available-time':
+ *  get:
+ *    tags:
+ *    - User Routes
+ *    summary: Get user by token
+ *    parameters:
+ *      - in: query
+ *        name: specialtyID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: branchID
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: day
+ *        schema:
+ *          type: string
+ *      - in: hour
+ *        name: day
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/by-available-time',
+    doctorController.getAvailableDoctorsByDayHour
+);
+
+/**
+ * @openapi
  * '/api/v1/doctors/{id}':
  *  get:
  *    tags:
@@ -97,28 +134,6 @@ router.get(
     helperMiddleware.checkValidId,
     doctorController.getDoctorByID
 );
-
-// /**
-//  * @openapi
-//  * '/api/v1/users/get-by-token':
-//  *  get:
-//  *    tags:
-//  *    - User Routes
-//  *    summary: Get user by token
-//  *    responses:
-//  *      '200':
-//  *        $ref: '#/components/responses/200'
-//  *      '404':
-//  *        $ref: '#/components/responses/404'
-//  *      '500':
-//  *        $ref: '#/components/responses/500'
-// */
-// router.get(
-//     '/get-by-token',
-//     authMiddleware.verifyAccessToken,
-//     doctorController.getUserByID
-// );
-
 
 
 module.exports = router;

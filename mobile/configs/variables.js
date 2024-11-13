@@ -1,6 +1,3 @@
-// const API_URL = "https://nodejs.diamond.id.vn/api/v1";
-// const URL_IMAGE = "https://laravel.diamond.id.vn/images/";
-
 const API_URL = "http://160.30.44.27:3000/api/v1";
 const URL_IMAGE = "http://160.30.44.27:8000/images/";
 

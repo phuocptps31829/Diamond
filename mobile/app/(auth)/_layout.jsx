@@ -1,3 +1,4 @@
+import Toast from "react-native-toast-message";
 import { Stack } from "expo-router";
 
 const AuthLayout = () => {

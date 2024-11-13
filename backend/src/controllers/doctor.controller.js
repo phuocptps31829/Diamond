@@ -1,5 +1,6 @@
 const UserModel = require('../models/user.model');
 const SpecialtyModel = require('../models/specialty.model');
+const WorkScheduleModel = require('../models/work-schedule.model');
 const BranchModel = require('../models/branch.model');
 const { createError } = require("../utils/helper.util");
 const { default: mongoose } = require('mongoose');
@@ -137,6 +138,73 @@ module.exports = {
             return res.status(200).json({
                 message: 'Doctors retrieved successfully.',
                 data: doctors,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getAvailableDoctorsByDayHour: async (req, res, next) => {
+        try {
+            const { branchID, specialtyID, day, hour } = req.query;
+
+            if (!branchID || !specialtyID) {
+                createError(400, "Branch ID and Specialty ID required");
+            }
+
+            const doctors = await UserModel.find({
+                roleID: process.env.ROLE_DOCTOR,
+                'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
+                'otherInfo.branchID': new mongoose.Types.ObjectId(branchID),
+                isDeleted: false,
+                isActivated: true
+            });
+
+            const workSchedulesAvailable = await Promise.all(
+                doctors.map(async doctor => {
+                    const workSchedule = await WorkScheduleModel
+                        .findOne({
+                            isDeleted: false,
+                            doctorID: doctor._id,
+                            isDeleted: false,
+                            day: {
+                                $gte: new Date().toISOString().slice(0, 10)
+                            }
+                        })
+                        .populate('doctorID');
+
+                    return workSchedule;
+                })
+            );
+
+            let filteredWorkSchedules = workSchedulesAvailable;
+            if (day && hour) {
+                filteredWorkSchedules = workSchedulesAvailable.filter(schedule => {
+                    if (!schedule) return false;
+
+                    const tempTimeStart = new Date()
+                        .setTime(schedule.hour.startTime.split(":")[0], schedule.hour.startTime.split(":")[1], 0, 0);
+                    const tempTimeEnd = new Date()
+                        .setTime(schedule.hour.endTime.split(":")[0], schedule.hour.endTime.split(":")[1], 0, 0);
+                    const tempTimeInput = new Date()
+                        .setTime(hour.split(":")[0], hour.split(":")[1], 0, 0);
+
+                    return schedule.day === day && tempTimeInput >= tempTimeStart && tempTimeInput <= tempTimeEnd;
+                });
+            }
+
+            const availableDoctors = filteredWorkSchedules.map(schedule => {
+                if (!schedule) return null;
+                return {
+                    _id: schedule.doctorID._id,
+                    fullName: schedule.doctorID.fullName,
+                };
+            });
+
+            // console.log('workSchedulesAvailable', filteredWorkSchedules);
+
+            return res.status(200).json({
+                message: 'Doctors retrieved successfully.',
+                data: availableDoctors,
             });
         } catch (error) {
             next(error);
