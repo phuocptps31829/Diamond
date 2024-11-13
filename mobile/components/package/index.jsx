@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListSpecialty from "./ListSpecialty";
 import ListPackage from "./ListPackage";
-import { getAllSpecialties } from "../../services/specialtiesApi";
-import { getAllPackages } from "../../services/packagesApi";
+import { specialtiesApi } from "../../services/specialtiesApi";
+import { packagesApi } from "../../services/packagesApi";
 import Loading from "../ui/Loading";
 
 const Package = () => {
@@ -13,7 +13,7 @@ const Package = () => {
     isLoading: isLoadingSpecialty,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtiesApi.getAllSpecialties,
   });
 
   const {
@@ -22,7 +22,7 @@ const Package = () => {
     isLoading: isLoadingPackage,
   } = useQuery({
     queryKey: ["packages"],
-    queryFn: getAllPackages,
+    queryFn: packagesApi.getAllPackages,
   });
 
   if (errorSpecialty || errorPackage) {

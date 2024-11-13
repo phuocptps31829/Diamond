@@ -2,8 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListSpecialty from "./ListSpecialty";
 import ListService from "./ListService";
-import { getAllSpecialties } from "../../services/specialtiesApi";
-import { getAllServices } from "../../services/servicesApi";
+import { specialtiesApi } from "../../services/specialtiesApi";
+import { servicesApi } from "../../services/servicesApi";
 import Loading from "../ui/Loading";
 
 const Service = () => {
@@ -13,7 +13,7 @@ const Service = () => {
     isLoading: isLoadingSpecialty,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtiesApi.getAllSpecialties,
   });
 
   const {
@@ -22,7 +22,7 @@ const Service = () => {
     isLoading: isLoadingService,
   } = useQuery({
     queryKey: ["services"],
-    queryFn: getAllServices,
+    queryFn: servicesApi.getAllServices,
   });
 
   if (errorSpecialty || errorService) {

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
-import { Skeleton } from '@/components/ui/Skeleton';
+import { Skeleton } from "@/components/ui/Skeleton";
 import {
   Dialog,
   DialogTrigger,
@@ -12,6 +12,19 @@ import {
 } from "@/components/ui/Dialog";
 import ActionMenu from "./actionMenu";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
+
+function translateRole(role) {
+  switch (role) {
+    case "STAFF_RECEPTIONIST":
+      return "Nhân viên Tiếp nhận";
+    case "STAFF_ACCOUNTANT":
+      return "Nhân viên Kế toán";
+    case "STAFF_EDITOR":
+      return "Nhân viên Editor";
+    default:
+      return "Không xác định";
+  }
+}
 
 export const columns = [
   {
@@ -121,7 +134,7 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{row.original.role.name}</div>,
+    cell: ({ row }) => <div className="">{translateRole(row.original.role.name)}</div>,
   },
   {
     accessorKey: "phoneNumber",

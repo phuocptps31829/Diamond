@@ -3,7 +3,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 
 import HeaderScreen from '../../components/ui/HeaderScreen';
-import { getPackageByID } from '../../services/packagesApi';
+import { packagesApi } from '../../services/packagesApi';
 import Loading from '../../components/ui/Loading';
 import NotFound from '../../components/ui/NotFound';
 import DetailProduct from '../../components/detailProduct';
@@ -14,7 +14,7 @@ const DetailPackageScreen = () => {
 
     const { data: packageData, isError, isLoading } = useQuery({
         queryKey: ["package", id],
-        queryFn: () => getPackageByID(id)
+        queryFn: () => packagesApi.getPackageByID(id)
     });
 
     return (

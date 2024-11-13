@@ -1,7 +1,7 @@
 import DoctorInformation from "./DoctorInformation";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { getDoctorById } from "../../services/doctorsApi";
+import { doctorApi } from "../../services/doctorsApi";
 import Loading from "../ui/Loading";
 
 const DetailDoctor = () => {
@@ -12,7 +12,7 @@ const DetailDoctor = () => {
     isLoading: isLoadingDoctor,
   } = useQuery({
     queryKey: ["doctor", id],
-    queryFn: () => getDoctorById(id),
+    queryFn: () => doctorApi.getDoctorById(id),
   });
 
   if (errorDoctor) {

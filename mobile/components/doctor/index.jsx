@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListDoctors from "./ListDoctors";
-import { getAllDoctors } from "../../services/doctorsApi";
+import { doctorApi } from "../../services/doctorsApi";
 import Loading from "../ui/Loading";
 
 const Doctor = () => {
@@ -12,7 +12,7 @@ const Doctor = () => {
     isLoading: isLoadingDoctors,
   } = useQuery({
     queryKey: ["Doctors"],
-    queryFn: getAllDoctors,
+    queryFn: doctorApi.getAllDoctors,
   });
 
   if (errorDoctors) {

@@ -34,6 +34,11 @@ export const getMenuList = (pathname) => [
             label: "Bảng điều khiển bác sĩ",
             active: pathname.includes("/admin/doctordashboard"),
           },
+          {
+            href: "/admin/accountantdashboard",
+            label: "Bảng điều khiển kế toán",
+            active: pathname.includes("/admin/accountantdashboard"),
+          },
         ],
       },
     ],

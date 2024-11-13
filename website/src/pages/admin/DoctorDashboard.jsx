@@ -9,7 +9,7 @@ const breadcrumbData = [
   },
   {
     href: '/admin/doctordashboard',
-    title: 'Thống kê bác sĩ'
+    title: 'Bảng điều khiển bác sĩ'
   },
 ];
 

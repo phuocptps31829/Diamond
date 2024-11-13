@@ -17,7 +17,7 @@ const breadcrumbData = [
     },
     {
         href: '/admin/dashboard',
-        title: 'Thống kê quản trị',
+        title: 'Bảng điều khiển quản trị',
     },
 ];
 
