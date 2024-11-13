@@ -1,8 +1,12 @@
-import { ScrollView, Text, View, Image, TouchableOpacity } from "react-native";
+import { useEffect } from "react";
+import { ScrollView, Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "../../zods/signInSchema";
 import { router } from "expo-router";
+import { authApi } from "../../services/authApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useMutation } from "@tanstack/react-query";
 import Input from "../../components/ui/Input";
 import ToastUI from "../../components/ui/Toast";
 
@@ -14,28 +18,39 @@ const SignIn = () => {
   } = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      phone: "",
+      phoneNumber: "",
       password: "",
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
-
-    if (data.phone === "1234567890" && data.password === "123456") {
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: authApi.login,
+    onSuccess: async (data) => {
+      console.log(data);
+      await AsyncStorage.setItem("accessToken", data.accessToken.token);
+      await AsyncStorage.setItem("refreshToken", data.refreshToken.token);
       ToastUI({
         type: "success",
         text1: "Đăng nhập thành công",
         text2: "Chào mừng bạn trở lại!",
       });
       router.replace("home");
-    } else {
+    },
+    onError: (error) => {
+      const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Đã xảy ra lỗi, vui lòng thử lại.";
       ToastUI({
         type: "error",
         text1: "Đăng nhập thất bại",
-        text2: "Số điện thoại hoặc mật khẩu không đúng.",
+        text2: errorMessage,
       });
     }
+  })
+
+  const onSubmit = (data) => {
+    login(data);
   };
   
   return (
@@ -57,8 +72,8 @@ const SignIn = () => {
         <View className="flex-1 px-6 pt-12 bg-white">
           <Input
             control={control}
-            name="phone"
-            error={errors.phone?.message}
+            name="phoneNumber"
+            error={errors.phoneNumber?.message}
             placeholder="Nhập số điện thoại đăng nhập"
             isInputPw={false}
           />
@@ -77,11 +92,12 @@ const SignIn = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className="bg-[#209bdd] py-3 mt-7 rounded-md items-center"
+            className={`${isPending ? "opacity-50" : ""} bg-[#209bdd] py-3 mt-7 rounded-md items-center`}
             onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
           >
             <Text className="text-white uppercase text-sm font-bold">
-              Đăng nhập
+              {isPending ? <ActivityIndicator size="small" color="#fff" /> : "Đăng nhập"}
             </Text>
           </TouchableOpacity>
           <View className="my-6 flex items-center flex-row">

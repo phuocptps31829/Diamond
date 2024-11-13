@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
 import Content from "./Content";
-import { getNewsById } from "../../services/newsApi";
+import { newsApi } from "../../services/newsApi";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/Loading";
@@ -19,7 +19,7 @@ const DetailNews = () => {
     isLoading: isLoadingNews,
   } = useQuery({
     queryKey: ["news", id],
-    queryFn: () => getNewsById(id),
+    queryFn: () => newsApi.getNewsById(id),
   });
 
   if (errorNews) {

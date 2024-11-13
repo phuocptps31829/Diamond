@@ -1,23 +1,15 @@
-import { API_URL_GET_ALL_SERVICES, API_URL_GET_SERVICE_BY_ID } from "../configs/variables";
-import axios from "axios";
+import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
-export const getAllServices = async () => {
-  try {
-    const res = await axios.get(API_URL_GET_ALL_SERVICES);
-
+export const servicesApi = {
+  getAllServices: async () => {
+    const res = await axiosInstanceGET.get("/services");
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+  },
 
-export const getServiceByID = async (id) => {
-  try {
-    const res = await axios.get(API_URL_GET_SERVICE_BY_ID + '/' + id);
-
+  getServiceByID: async (id) => {
+    const res = await axiosInstanceGET.get(`/services/${id}`);
     return res.data.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  },
+}
+
+

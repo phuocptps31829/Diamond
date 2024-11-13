@@ -44,6 +44,16 @@ const Index = () => {
     })();
   }, []);
 
+  // useEffect(() => {
+  //   async function checkAuth() {
+  //    const accessToken = await AsyncStorage.getItem("accessToken")
+  //    const refreshToken = await AsyncStorage.getItem("refreshToken")
+  //    console.log("accessToken", accessToken)
+  //   console.log("refreshToken", refreshToken)
+  //   }
+  //   checkAuth();
+  // }, []);
+
   return (
     <View className="w-full h-full bg-[#41bdff] flex justify-center items-center">
       <Image

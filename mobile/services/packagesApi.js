@@ -1,23 +1,15 @@
-import { API_URL_GET_ALL_MEDICAL_PACKAGES, API_URL_GET_MEDICAL_PACKAGE_BY_ID } from "../configs/variables";
-import axios from "axios";
+import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
-export const getAllPackages = async () => {
-  try {
-    const res = await axios.get(API_URL_GET_ALL_MEDICAL_PACKAGES);
 
+export const packagesApi = {
+  getAllPackages: async () => {
+    const res = await axiosInstanceGET.get("/medical-packages");
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+  },
 
-export const getPackageByID = async (id) => {
-  try {
-    const res = await axios.get(API_URL_GET_MEDICAL_PACKAGE_BY_ID + '/' + id);
-
+  getPackageByID: async (id) => {
+    const res = await axiosInstanceGET.get(`/medical-packages/${id}`);
     return res.data.data;
-  } catch (error) {
-    throw error;
-  }
-};
+  },
+}
+

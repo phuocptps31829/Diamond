@@ -1,22 +1,13 @@
-import { API_URL_GET_ALL_DOCTORS } from "../configs/variables";
-import axios from "axios";
+import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
-export const getAllDoctors = async () => {
-  try {
-    const res = await axios.get(API_URL_GET_ALL_DOCTORS);
+export const doctorApi = {
+  getAllDoctors: async () => {
+    const res = await axiosInstanceGET.get("/doctors");
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+  },
 
-export const getDoctorById = async (id) => {
-  try {
-    const res = await axios.get(`${API_URL_GET_ALL_DOCTORS}/${id}`);
+  getDoctorById: async (id) => {
+    const res = await axiosInstanceGET.get(`/doctors/${id}`);
     return res.data.data;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
+  },
+}

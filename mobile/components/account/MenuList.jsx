@@ -1,15 +1,23 @@
 import { Text, View, TouchableOpacity, Linking } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { useRouter } from "expo-router";
 import { menuItems } from "../../constants/menu-items";
-import { router } from "expo-router";
+import ToastUI from "../../components/ui/Toast";
 
 const MenuList = () => {
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("accessToken");
+    await AsyncStorage.removeItem("refreshToken");
+    ToastUI({
+      type: "success",
+      text1: "Đăng xuất thành công",
+      text2: "Hẹn gặp lại bạn!",
+    });
     router.replace("sign-in");
   };
 

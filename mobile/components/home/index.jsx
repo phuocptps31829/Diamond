@@ -1,5 +1,5 @@
 import { ScrollView, Text, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import News from "./News";
 import OutstandingServices from "./OutstandingServices";
@@ -7,10 +7,10 @@ import OutstandingPackages from "./OutstandingPackages";
 import HeaderScroll from "./HeaderScroll";
 import Specialty from "./Specialty";
 import { useQuery } from "@tanstack/react-query";
-import { getAllNews } from "../../services/newsApi";
-import { getAllServices } from "../../services/servicesApi";
-import { getAllPackages } from "../../services/packagesApi";
-import { getAllSpecialties } from "../../services/specialtiesApi";
+import { newsApi } from "../../services/newsApi";
+import { servicesApi } from "../../services/servicesApi";
+import { packagesApi } from "../../services/packagesApi";
+import { specialtiesApi } from "../../services/specialtiesApi";
 import Loading from "../ui/Loading";
 
 const Home = () => {
@@ -31,7 +31,7 @@ const Home = () => {
     isLoading: isLoadingNews,
   } = useQuery({
     queryKey: ["news"],
-    queryFn: getAllNews,
+    queryFn: newsApi.getAllNews,
   });
 
   const {
@@ -40,7 +40,7 @@ const Home = () => {
     isLoading: isLoadingService,
   } = useQuery({
     queryKey: ["services"],
-    queryFn: getAllServices,
+    queryFn: servicesApi.getAllServices,
   });
 
   const {
@@ -49,7 +49,7 @@ const Home = () => {
     isLoading: isLoadingPackage,
   } = useQuery({
     queryKey: ["packages"],
-    queryFn: getAllPackages,
+    queryFn: packagesApi.getAllPackages,
   });
 
   const {
@@ -58,7 +58,7 @@ const Home = () => {
     isLoading: isLoadingSpecialty,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: getAllSpecialties,
+    queryFn: specialtiesApi.getAllSpecialties,
   });
 
   if (errorNews || errorService || errorPackage || errorSpecialty) {

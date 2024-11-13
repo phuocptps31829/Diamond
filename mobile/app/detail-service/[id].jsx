@@ -6,18 +6,15 @@ import HeaderScreen from '../../components/ui/HeaderScreen';
 import Loading from '../../components/ui/Loading';
 import NotFound from '../../components/ui/NotFound';
 import DetailProduct from '../../components/detailProduct';
-import { getServiceByID } from '../../services/servicesApi';
+import { servicesApi } from '../../services/servicesApi';
 import Error from '../../components/ui/Error';
 
 const DetailServiceScreen = () => {
     const { id } = useLocalSearchParams();
-    console.log(id);
     const { data: serviceData, isError, isLoading } = useQuery({
         queryKey: ["service", id],
-        queryFn: () => getServiceByID(id)
+        queryFn: () => servicesApi.getServiceByID(id)
     });
-
-    console.log('s', serviceData);
 
     return (
         <>
