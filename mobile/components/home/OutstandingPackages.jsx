@@ -27,46 +27,44 @@ const OutstandingPackages = ({ listPackages }) => {
         <Text className="font-semibold text-white">Gói khám nổi bật</Text>
         <TouchableOpacity
           className="flex-columns items-center justify-center gap-2"
-          onPress={() => {
+          onPress={ () => {
             router.push("/package");
-          }}
+          } }
         >
           <Text className="text-white font-semibold underline">Tất cả</Text>
         </TouchableOpacity>
       </View>
       <View>
         <FlatList
-          data={pairData(
+          data={ pairData(
             listPackages
               .sort((a, b) => b.orderCount - a.orderCount)
               .slice(0, 15)
-          )}
+          ) }
           className="mt-6"
-          contentContainerStyle={{ paddingHorizontal: 16 }}
-          renderItem={({ item }) => (
+          contentContainerStyle={ { paddingHorizontal: 16 } }
+          renderItem={ ({ item }) => (
             <View className="flex gap-4">
-              {item.map((service, index) => (
+              { item.map((pkg, index) => (
                 <TouchableOpacity
-                  key={index}
-                  style={[{ width: width - 130 }]}
+                  key={ index }
+                  style={ [{ width: width - 130 }] }
                   className="rounded-[15px] overflow-hidden"
-                  onPress={() => {
-                    console.log("Button pressed!");
-                  }}
+                  onPress={ () => router.push(`/detail-package/${pkg._id}`) }
                 >
                   <Image
-                    source={{
-                      uri: URL_IMAGE + service.image,
-                    }}
-                    style={[{ height: 150, borderRadius: 15 }]}
+                    source={ {
+                      uri: URL_IMAGE + pkg.image,
+                    } }
+                    style={ [{ height: 150, borderRadius: 15 }] }
                   />
                 </TouchableOpacity>
-              ))}
+              )) }
             </View>
-          )}
+          ) }
           horizontal
-          showsHorizontalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
+          showsHorizontalScrollIndicator={ false }
+          ItemSeparatorComponent={ () => <View style={ { width: 15 } } /> }
         />
       </View>
     </View>

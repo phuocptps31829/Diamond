@@ -3,26 +3,23 @@ import { Text, View } from "react-native";
 const TabsScreen = ({ icon, color, name }) => {
   return (
     <View
-      className={`${
-        name === "Trang chủ" ? "absulute -top-5 gap-2" : "gap-1"
-      } flex justify-center items-center pt-5 `}
+      className={ `${name === "Trang chủ" ? "-top-2 gap-2 " : "gap-1 top-3"
+        } flex justify-center items-center flex-col z-50 absulute` }
     >
       <View
-        className={`${
-          name === "Trang chủ"
-            ? "w-[50px] h-[50px] rounded-full bg-[#007BBB] flex justify-center items-center"
-            : ""
-        } `}
+        className={ `${name === "Trang chủ"
+          ? "rounded-full w-[50px] h-[50px]  bg-[#007BBB] flex justify-center items-center"
+          : ""
+          } ` }
       >
-        {icon}
+        { icon }
       </View>
       <Text
-        className={`${
-          name === "Trang chủ" ? "font-bold text-[12px]" : "text-[11px]"
-        } `}
-        style={{ color: color }}
+        className={ `${name === "Trang chủ" ? "font-bold text-[12px]" : "text-[10px] text-center"
+          } w-16` }
+        style={ { color: color } }
       >
-        {name}
+        { name }
       </Text>
     </View>
   );

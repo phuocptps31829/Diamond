@@ -10,7 +10,7 @@ export const appointmentApi = {
     getAppointmentById: async (id) => {
         try {
             const res = await axiosInstanceGET.get(`/appointments/${id}`);
-            return res.data.data;
+            return res.data;
         } catch (error) {
             console.error(error);
             throw error;

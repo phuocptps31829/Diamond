@@ -22,9 +22,9 @@ const OutstandingServices = ({ listServices }) => {
           </Text>
           <TouchableOpacity
             className="flex-columns items-center justify-center gap-2"
-            onPress={() => {
+            onPress={ () => {
               router.push("/service");
-            }}
+            } }
           >
             <Text className="text-blue-500 font-semibold underline">
               Tất cả
@@ -33,34 +33,32 @@ const OutstandingServices = ({ listServices }) => {
         </View>
         <View>
           <FlatList
-            data={listServices
+            data={ listServices
               .sort((a, b) => b.orderCount - a.orderCount)
-              .slice(0, 15)}
+              .slice(0, 15) }
             className="mt-6"
-            contentContainerStyle={{ paddingHorizontal: 16 }}
-            renderItem={({ item, index }) => (
+            contentContainerStyle={ { paddingHorizontal: 16 } }
+            renderItem={ ({ item, index }) => (
               <TouchableOpacity
-                key={index}
-                style={[{ width: width - 110 }]}
+                key={ index }
+                style={ [{ width: width - 110 }] }
                 className="relative rounded-[15px] overflow-hidden"
-                onPress={() => {
-                  console.log("Button pressed!");
-                }}
+                onPress={ () => router.push(`/detail-service/${item._id}`) }
               >
                 <Image
-                  source={{
+                  source={ {
                     uri: URL_IMAGE + item?.image,
-                  }}
-                  style={[{ height: 170, borderRadius: 15 }]}
+                  } }
+                  style={ [{ height: 170, borderRadius: 15 }] }
                 />
                 <Text className="absolute bottom-0 left-0 right-0 bg-[#00000085] py-3 text-center text-white font-semibold">
-                  {item?.name}
+                  { item?.name }
                 </Text>
               </TouchableOpacity>
-            )}
+            ) }
             horizontal
-            showsHorizontalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ width: 20 }} />}
+            showsHorizontalScrollIndicator={ false }
+            ItemSeparatorComponent={ () => <View style={ { width: 20 } } /> }
           />
         </View>
       </View>
