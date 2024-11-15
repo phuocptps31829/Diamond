@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ContentNews from "../../components/client/newsDetail/Content";
 import { newsApi } from "@/services/newsApi";
 import useScrollToTop from "@/hooks/useScrollToTop";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 
 export default function NewsDetail() {
   useScrollToTop();

@@ -19,7 +19,6 @@ import {
 
 import { MoreHorizontal } from "lucide-react";
 import { BiDetail } from "react-icons/bi";
-import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 
@@ -39,16 +38,6 @@ const Action = ({ row, onDelete }) => {
             <span> Chi tiết</span>
           </DropdownMenuItem>
         </Link>
-
-        {row.original.status === "PENDING" && (
-          <Link to={`/admin/appointments/edit/${row.original._id}`}>
-            <DropdownMenuItem className="flex w-full items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <span>Chỉnh sửa</span>
-            </DropdownMenuItem>
-          </Link>
-        )}
-
         <DropdownMenuItem className="flex w-full items-center gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>

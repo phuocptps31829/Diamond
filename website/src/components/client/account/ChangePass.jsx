@@ -7,7 +7,7 @@ import { passwordSchema } from "@/zods/password";
 import InputCustom from "@/components/ui/InputCustom";
 import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import NotFound from "@/components/ui/NotFound";
 import { toastUI } from "@/components/ui/Toastify";
 
 export default function ChangePassComponent() {

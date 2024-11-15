@@ -244,6 +244,21 @@ function timeDivision(startTime, endTime) {
     return result;
 }
 
+function getActiveRoomsSocket(io) {
+    console.log(io.sockets.adapter.rooms);
+    // Convert map into 2D list:
+    // ==> [['4ziBKG9XFS06NdtVAAAH', Set(1)], ['room1', Set(2)], ...]
+    const arr = Array.from(io.sockets.adapter.rooms);
+    // Filter rooms whose name exist in set:
+    // ==> [['room1', Set(2)], ['room2', Set(2)]]
+    console.log(arr);
+    // Return only the room name: 
+    // ==> ['room1', 'room2']
+    const res = arr.map(i => i[0]);
+    console.log(`List des rooms actives : ${res}`);
+    return res;
+}
+
 module.exports = {
     createError,
     sendEmail,
@@ -256,5 +271,6 @@ module.exports = {
     sendOTP,
     generateOTPToken,
     checkPhoneNumberAndEmail,
-    timeDivision
+    timeDivision,
+    getActiveRoomsSocket
 };

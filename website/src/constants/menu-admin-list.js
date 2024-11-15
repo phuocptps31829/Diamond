@@ -1,7 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { FaKitMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
-import { FaUsers } from "react-icons/fa";
+import { FaFileInvoiceDollar, FaUsers } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
@@ -40,7 +40,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR", "STAFF_RECEPTIONIST"],
     menus: [
       {
         href: "/admin/support",
@@ -224,7 +224,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "STAFF", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"],
     menus: [
       {
         href: "",
@@ -326,7 +326,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "EDITOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF_EDITOR"],
     menus: [
       {
         href: "",
@@ -406,6 +406,31 @@ export const getMenuList = (pathname) => [
             href: "/admin/contracts/list",
             label: "Danh sách hợp đồng",
             active: pathname === "/admin/contracts/list",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Hóa đơn",
+        active:
+          pathname === "/admin/invoices/list" ,
+        icon: FaFileInvoiceDollar,
+        submenus: [
+          {
+            href: "/admin/invoices/list",
+            label: "Danh sách hóa đơn",
+            active: pathname === "/admin/invoices/list",
+          },
+          {
+            href: "/admin/invoices/create",
+            label: "Thêm hóa đơn",
+            active: pathname === "/admin/invoices/create",
           },
         ],
       },

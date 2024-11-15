@@ -17,7 +17,7 @@ export const roles = [
     },
     {
         value: "STAFF_RECEPTIONIST",
-        label: "Nhân viên Lễ tân",
+        label: "Nhân viên Tiếp nhận",
     },
     {
         value: "STAFF_EDITOR",

@@ -56,6 +56,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
     control,
     name: "medicines",
   });
+  console.log(medicines, "medicines");
 
   const addMedicine = () => {
     const currentMedicines = getValues("medicines");
@@ -156,7 +157,9 @@ const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
         setLoadingImage(false);
       }
     }
-
+    const price = medicines.reduce((total, medicine) => {
+      return total + medicine.price * medicine.quantity;
+    }, 0);
     const dataAll = {
       payload: [
         {
@@ -170,6 +173,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
             description: data.detail,
           },
           prescription: {
+            price,
             advice: data.advice,
             medicines: data.medicines.map((medicine) => ({
               medicineID: medicine.medicineID,

@@ -7,29 +7,29 @@ import Autoplay from "embla-carousel-autoplay";
 
 export default function Collaborate() {
   return (
-    <div className="mx-auto mt-5 max-w-screen-xl px-5 py-5 md:mt-10">
+    <div className="mx-auto mt-2 pb-8 max-w-screen-xl px-5 py-2 md:mt-3">
       <div className="mb-4 w-full text-center text-[23px] font-bold md:text-[35px]">
         Đối tác y khoa Diamond
       </div>
 
       <Carousel
-        opts={{
+        opts={ {
           align: "start",
           loop: true,
-        }}
+        } }
         className="w-full"
-        plugins={[
+        plugins={ [
           Autoplay({
             delay: 1500,
             stopOnInteraction: false,
             stopOnMouseEnter: false,
           }),
-        ]}
+        ] }
       >
         <CarouselContent>
-          {Array.from({ length: 12 }).map((_, index) => (
+          { Array.from({ length: 12 }).map((_, index) => (
             <CarouselItem
-              key={index}
+              key={ index }
               className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
             >
               <img
@@ -37,7 +37,7 @@ export default function Collaborate() {
                 className="rounded-sm border border-gray-300"
               />
             </CarouselItem>
-          ))}
+          )) }
         </CarouselContent>
       </Carousel>
     </div>

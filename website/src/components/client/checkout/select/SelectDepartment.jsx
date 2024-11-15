@@ -99,7 +99,7 @@ export default function SelectDepartment({
                           field.onChange(
                             currentValue,
                           );
-                          onChange(currentValue);
+                          onChange(currentValue,department.coordinates);
                           setOpen(false);
                         } }
                       >

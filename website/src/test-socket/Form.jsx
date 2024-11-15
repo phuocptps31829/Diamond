@@ -1,88 +1,124 @@
 import { useEffect, useState } from 'react';
-import { socket } from '../socket';
+import { useSocket } from '@/hooks/useSocket';
 
-const Form = () => {
-    const [isConnected, setIsConnected] = useState(socket.connected);
-    const [fooEvents, setFooEvents] = useState([]);
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
+const userName = "Chinh";
+const phoneNumber = "0999999999";
+
+const UserChat = () => {
+    const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
+    const [userName, setUserName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [messages, setMessages] = useState([]);
     const [value, setValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log(isConnected, 'socket connected (initial)');
+    useEffect(() => {
+        if (!socket) return;
 
-    const connect = () => {
-        console.log('Connecting...');
-        socket.connect();
-    };
+        const handleNewMessage = (message, type, name) => {
+            console.log('New message received:', message);
+            setMessages((prevMessages) => [...prevMessages, {
+                type,
+                name,
+                message
+            }]);
+        };
 
-    const disconnect = () => {
-        console.log('Disconnecting...');
-        socket.disconnect();
-    };
+        const handleOldMessages = (messages) => {
+            console.log('Old messages received:', messages);
+            setMessages(messages);
+        };
+
+        const unsubscribeOldMessages = subscribe(
+            'oldRoomMessages',
+            (data) => handleOldMessages(data)
+        );
+        const unsubscribeUser = subscribe(
+            'newMessageUser',
+            (data) => handleNewMessage(data.message, 'user', data.name)
+        );
+        const unsubscribeAdmin = subscribe(
+            'newMessageAdmin',
+            (data) => handleNewMessage(data.message, 'admin', data.name)
+        );
+
+        return () => {
+            unsubscribeUser();
+            unsubscribeAdmin();
+            unsubscribeOldMessages();
+        };
+    }, [subscribe, socket]);
 
     const onSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
 
-        socket.timeout(3000).emit('newMessageClient', value, (err) => {
-            if (err) {
-                console.error('Timeout or error:', err);
-            } else {
-                console.log('Success');
+        if (socket) {
+            const userSocketID = localStorage.getItem('userSocketID');
+            if (!userSocketID) {
+                localStorage.setItem('userSocketID', socket.id);
             }
-            setIsLoading(false);
-        });
+            sendEvent(
+                'newMessageUser',
+                { message: value, room: socket.id, name: userName, phoneNumber },
+                () => {
+                    setIsLoading(false);
+                    setValue('');
+                }
+            );
+        }
     };
 
-    useEffect(() => {
-        const onConnect = () => {
-            console.log('Connected to socket');
-            setIsConnected(true);
-        };
-
-        const onDisconnect = () => {
-            console.log('Disconnected from socket');
-            setIsConnected(false);
-        };
-
-        const onFooEvent = (value) => {
-            console.log('Received foo event:', value);
-            setFooEvents(previous => [...previous, value]);
-        };
-
-        socket.on('connect', onConnect);
-        socket.on('disconnect', onDisconnect);
-        socket.on('foo', onFooEvent);
-
-        return () => {
-            socket.off('connect', onConnect);
-            socket.off('disconnect', onDisconnect);
-            socket.off('foo', onFooEvent);
-        };
-    }, []);
-
-    console.log(isConnected, 'socket connected (after effect)');
+    // Mỗi lần click vào nút chat sẽ tìm message cũ dựa trên socketID của user lưu trong localStorage
+    const clickMeToGetOldMessages = () => {
+        if (socket) {
+            const userSocketID = localStorage.getItem('userSocketID');
+            if (userSocketID) {
+                console.log('Sending getOldRoomMessages event', userSocketID);
+                sendEvent('getOldRoomMessages', userSocketID);
+            }
+        }
+    };
 
     return (
         <div>
-            <ul>
-                { fooEvents.map((event, index) => (
-                    <li key={ index }>{ event }</li>
-                )) }
-            </ul>
-            <form onSubmit={ onSubmit }>
-                <input
-                    className='border border-red-400'
-                    value={ value }
-                    onChange={ e => setValue(e.target.value) }
-                />
-                <button type="submit" disabled={ isLoading }>Submit</button>
-            </form>
-            <>
-                <button onClick={ connect } disabled={ isConnected }>Connect</button>
-                <button onClick={ disconnect } disabled={ !isConnected }>Disconnect</button>
-            </>
+            <button onClick={ clickMeToGetOldMessages } className='bg-red-400'>
+                GET OLD messages
+            </button>
+            { !messages.length && <div>
+                <h1>Điền thông tin:</h1>
+                <div>
+                    <label>Tên:</label>
+                    <input type="text" value={ userName } onChange={ (e) => setUserName(e.target.value) } />
+                </div>
+                <div>
+                    <label>SDT:</label>
+                    <input type="text" value={ phoneNumber } onChange={ (e) => setPhoneNumber(e.target.value) } />
+                </div>
+            </div> }
+            <div>
+                <ul>
+                    { messages.map((message, index) => (
+                        <li
+                            key={ index }
+                            className={ message.type === 'user' ? 'text-red-500' : 'text-blue-500' }
+                        >
+                            { (message.type === 'user' ? message.name : "Admin") + ": " + message.message }
+                        </li>
+                    )) }
+                </ul>
+                <form onSubmit={ onSubmit }>
+                    <input
+                        className='border border-red-400'
+                        value={ value }
+                        onChange={ e => setValue(e.target.value) }
+                    />
+                    <button type="submit" disabled={ isLoading }>Gui</button>
+                </form>
+            </div>
         </div>
     );
 };
 
-export default Form;
+export default UserChat;

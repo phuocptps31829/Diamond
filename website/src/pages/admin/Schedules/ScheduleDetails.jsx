@@ -19,24 +19,6 @@ const getBreadcrumbData = (id, name) => [
 
 const ScheduleDetailsPage = () => {
     const { id } = useParams();
-    const userProfile = useSelector((state) => state.auth.userProfile);
-
-    useEffect(() => {
-        const element = document.querySelector('.sx__view-container');
-        if (userProfile?.role?._id !== import.meta.env.VITE_ROLE_ADMIN) {
-            console.log('Disable pointer events', element);
-            if (element) {
-                element.style.pointerEvents = 'none';
-            }
-        }
-
-        return () => {
-            const cleanupElement = document.querySelector('.sx__view-container');
-            if (cleanupElement) {
-                cleanupElement.style.pointerEvents = 'auto';
-            }
-        };
-    }, [userProfile]);
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['schedule', id],

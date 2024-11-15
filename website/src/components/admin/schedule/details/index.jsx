@@ -66,20 +66,14 @@ const getConfigCalendarSchedule = (
             onEventUpdate(updatedEvent) {
                 console.log('onEventUpdate', updatedEvent);
                 console.log('allSchedules', allSchedules);
-
-                const foundSchedule = allSchedules.find(schedule => schedule.id === updatedEvent.id);
-                console.log('foundSchedule', foundSchedule);
-
-                // if (foundSchedule.start.slice(0, 10) !== updatedEvent.start.slice(0, 10)) {
-                //     return;
-                // }
-
-                navigate(`/admin/schedules/form/${doctorID}/edit/${updatedEvent.id}`);
-                setSearchParams({
-                    date: updatedEvent.start.slice(0, 10),
-                    startTime: updatedEvent.start.slice(11, 16),
-                    endTime: updatedEvent.end.slice(11, 16),
-                });
+                if (canDragDrop) {
+                    navigate(`/admin/schedules/form/${doctorID}/edit/${updatedEvent.id}`);
+                    setSearchParams({
+                        date: updatedEvent.start.slice(0, 10),
+                        startTime: updatedEvent.start.slice(11, 16),
+                        endTime: updatedEvent.end.slice(11, 16),
+                    });
+                }
             },
 
             /**
@@ -134,11 +128,14 @@ const getConfigCalendarSchedule = (
             * */
             onDoubleClickDateTime(dateTime) {
                 console.log('onDoubleClickDateTime', dateTime);
-                navigate(`/admin/schedules/form/${doctorID}/create/`);
-                setSearchParams({
-                    date: dateTime.slice(0, 10),
-                    startTime: dateTime.slice(11, 16),
-                });
+
+                if (canDragDrop) {
+                    navigate(`/admin/schedules/form/${doctorID}/create/`);
+                    setSearchParams({
+                        date: dateTime.slice(0, 10),
+                        startTime: dateTime.slice(11, 16),
+                    });
+                }
                 // document.querySelector('.sx-react-calendar-wrapper').style.display = 'none';
                 // onSetInfoForm(prev => ({
                 //     ...prev,
@@ -169,7 +166,9 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const userProfile = useSelector(state => state.auth.userProfile);
-    const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_ADMIN;
+    const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_SUPER_ADMIN;
+
+    console.log(canDragDrop);
 
     const allSchedules = defaultEvents?.map(event => ({
         id: event._id,

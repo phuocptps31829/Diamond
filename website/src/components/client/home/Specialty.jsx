@@ -22,9 +22,9 @@ export default function Specialty() {
   });
 
   return (
-    <div className="my-10 w-full bg-primary-500 py-4">
-      <div className="mx-auto my-5 max-w-screen-xl px-5">
-        <div className="mb-2 w-full text-center text-[23px] font-bold text-white md:text-[35px]">
+    <div className="my-5 w-full bg-primary-500 py-4">
+      <div className="mx-auto my-1 max-w-screen-xl px-5">
+        <div className="w-full text-center text-[23px] font-bold text-white md:text-[35px]">
           Chuyên khoa
         </div>
         <span className="block w-full text-center text-[14px] text-white md:text-[16px]">

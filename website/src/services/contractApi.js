@@ -1,6 +1,19 @@
-import { axiosInstanceCUD } from "./axiosInstance";
+import { axiosInstanceGET, axiosInstanceCUD } from './axiosInstance';
+
 
 export const contractApi = {
+  getAllContracts: async () => {
+    try {
+      const res = await axiosInstanceGET.get("/contracts?limit=9999");
+      console.log("res.data.data: ", res.data.data);
+      return res.data.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+
+
+  },
   createContract: async (data) => {
     try {
       const res = await axiosInstanceCUD.post("/contracts/add", data, {

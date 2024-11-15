@@ -3,7 +3,7 @@ import SpecialtiesList from "../../components/client/specialties/SpecialtiesList
 import Safe from "../../components/client/specialties/TrustedSafety";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { useQuery } from "@tanstack/react-query";
-import NotFound from "@/components/client/notFound";
+import NotFound from '@/components/ui/NotFound';
 import { specialtyApi } from "@/services/specialtiesApi";
 
 const Specialties = () => {
@@ -18,7 +18,7 @@ const Specialties = () => {
     queryFn: specialtyApi.getAllSpecialties,
   });
 
-  if (error) return <NotFound />;
+  if (error) return <NotFound message={error.message} />;
 
   return (
     <div className="bg-[#E8F2F7]">

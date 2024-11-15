@@ -55,6 +55,8 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     },
   });
 
+
+
   const handleSelectService = async (serviceID) => {
     const currentValues = getValues();
 
@@ -70,6 +72,7 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     setSelectedService(serviceID);
     populateFormFields(serviceID);
     setValidationError(null);
+    
   };
   const updateServiceResults = (serviceID, values) => {
     console.log("call updateServiceResults");
@@ -146,6 +149,7 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     control,
     name: "medicines",
   });
+console.log(medicines, "medicines");
 
   const addMedicine = () => {
     const currentMedicines = getValues("medicines");
@@ -262,27 +266,32 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
       );
 
       setServiceResults(updatedServiceResults);
-
       const dataAll = {
-        payload: updatedServiceResults.map((serviceResult) => ({
-          result: {
-            appointmentID: bookingData._id,
-            serviceID: serviceResult.serviceID,
-            diagnose: serviceResult.result.diagnosis,
-            images: serviceResult.result.images,
-            description: serviceResult.result.detail,
-          },
-          prescription: {
-            advice: serviceResult.result.advice,
-            medicines: serviceResult.prescription.map((medicine) => ({
-              medicineID: medicine.medicineID,
-              quantity: medicine.quantity,
-              dosage: medicine.usage,
-            })),
-          },
-        })),
+        payload: updatedServiceResults.map((serviceResult) => {
+          const totalMedicinePrice = serviceResult.prescription.reduce((total, medicine) => {
+            return total + medicine.price * medicine.quantity;
+          }, 0);
+      
+          return {
+            result: {
+              appointmentID: bookingData._id,
+              serviceID: serviceResult.serviceID,
+              diagnose: serviceResult.result.diagnosis,
+              images: serviceResult.result.images,
+              description: serviceResult.result.detail,
+            },
+            prescription: {
+              price: totalMedicinePrice,
+              advice: serviceResult.result.advice,
+              medicines: serviceResult.prescription.map((medicine) => ({
+                medicineID: medicine.medicineID,
+                quantity: medicine.quantity,
+                dosage: medicine.usage,
+              })),
+            },
+          };
+        })
       };
-      console.log("dataAll", dataAll);
 
       mutation.mutate(dataAll);
     } catch (error) {

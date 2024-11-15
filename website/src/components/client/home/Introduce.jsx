@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { HiCursorClick } from "react-icons/hi";
 export default function Introduce() {
   return (
-    <div className="mx-auto my-5 max-w-screen-xl md:my-10">
+    <div className="mx-auto max-w-screen-xl md:my-4">
       <div className="mb-4 w-full text-center text-[23px] font-bold md:mb-2 md:text-[35px]">
         Giới thiệu y khoa Diamond
       </div>
-      <span className="mx-auto block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
+      <span className="mx-auto block -mt-2 w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
         Hệ Thống Y Khoa Diamond tự hào mang đến cho khách hàng những dịch vụ tốt
         nhất, chất lượng cao, tận tâm nhằm gánh vác một phần trách nhiệm trong
         việc chăm sóc sức khỏe cho cộng đồng và xã hội.
