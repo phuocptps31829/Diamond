@@ -1,5 +1,14 @@
 import { useEffect } from "react";
-import { ScrollView, Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import * as Google from "expo-auth-session/providers/google";
+import { makeRedirectUri } from 'expo-auth-session';
+import {
+  ScrollView,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema } from "../../zods/signInSchema";
@@ -11,6 +20,19 @@ import Input from "../../components/ui/Input";
 import ToastUI from "../../components/ui/Toast";
 
 const SignIn = () => {
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId:
+      "484498778636-r16pdgcmr7m2eg8jbp7100dmdtu00mn2.apps.googleusercontent.com",
+    redirectUri: makeRedirectUri({ useProxy: true }), // Dùng redirect URI với proxy của Expo
+  });
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const { id_token } = response.params;
+      console.log(id_token);
+    }
+  }, [response]);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -38,21 +60,21 @@ const SignIn = () => {
     },
     onError: (error) => {
       const errorMessage =
-      error.response?.data?.message ||
-      error.message ||
-      "Đã xảy ra lỗi, vui lòng thử lại.";
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
       ToastUI({
         type: "error",
         text1: "Đăng nhập thất bại",
         text2: errorMessage,
       });
-    }
-  })
+    },
+  });
 
   const onSubmit = (data) => {
     login(data);
   };
-  
+
   return (
     <>
       <ScrollView
@@ -92,12 +114,18 @@ const SignIn = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className={`${isPending ? "opacity-50" : ""} bg-[#209bdd] py-3 mt-7 rounded-md items-center`}
+            className={`${
+              isPending ? "opacity-50" : ""
+            } bg-[#209bdd] py-3 mt-7 rounded-md items-center`}
             onPress={handleSubmit(onSubmit)}
             disabled={isPending}
           >
             <Text className="text-white uppercase text-sm font-bold">
-              {isPending ? <ActivityIndicator size="small" color="#fff" /> : "Đăng nhập"}
+              {isPending ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                "Đăng nhập"
+              )}
             </Text>
           </TouchableOpacity>
           <View className="my-6 flex items-center flex-row">
@@ -108,7 +136,10 @@ const SignIn = () => {
             <Text className="flex-grow bg-gray-300 h-[1px]"></Text>
           </View>
           <View className="flex flex-row gap-3 max-h-[60px]">
-            <TouchableOpacity className="bg-gray-500 flex-1 overflow-hidden rounded-md items-center flex-row justify-center">
+            <TouchableOpacity
+              className="bg-gray-500 flex-1 overflow-hidden rounded-md items-center flex-row justify-center"
+              onPress={() => promptAsync()}
+            >
               <Image
                 source={require("../../assets/images/gg.png")}
                 className="w-[25px]"

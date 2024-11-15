@@ -1,40 +1,69 @@
+import { useEffect, useState } from "react";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
 import { HiMiniArrowUpRight, HiMiniArrowDownRight } from "react-icons/hi2";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { GiMoneyStack } from "react-icons/gi";
 import { GrMoney } from "react-icons/gr";
 
-const data = [
-  {
-    id: 1,
-    title: `Doanh thu theo ngày`,
-    icon: <FaMoneyBillWave color="#007BBB" size={22} />,
-    value: 5983344,
-    percentage: "40%",
-    percentageTitle: "với hôm qua",
-    isIncrease: true,
-  },
-  {
-    id: 2,
-    title: `Doanh thu theo tháng`,
-    icon: <GiMoneyStack color="#007BBB" size={22} />,
-    value: 5983344,
-    percentage: "36%",
-    percentageTitle: "với tháng trước",
-    isIncrease: true,
-  },
-  {
-    id: 3,
-    title: `Doanh thu theo quý`,
-    icon: <GrMoney color="#007BBB" size={22} />,
-    value: 5983344,
-    percentage: "10%",
-    percentageTitle: "với quý trước",
-    isIncrease: false,
-  },
-];
 
-export default function TopStats() {
+export default function TopStats({ revenueData }) {
+  const [data, setData] = useState([
+    {
+      key: "byDay",
+      title: `Doanh thu theo ngày`,
+      icon: <FaMoneyBillWave color="#007BBB" size={22} />,
+      value: 0,
+      percentage: "0",
+      percentageTitle: "với hôm qua",
+      isIncrease: true,
+    },
+    {
+      key: "byMonth",
+      title: `Doanh thu theo tháng`,
+      icon: <GiMoneyStack color="#007BBB" size={22} />,
+      value: 0,
+      percentage: "0",
+      percentageTitle: "với tháng trước",
+      isIncrease: true,
+    },
+    {
+      key: "byQuarter",
+      title: `Doanh thu theo quý`,
+      icon: <GrMoney color="#007BBB" size={22} />,
+      value: 0,
+      percentage: "0",
+      percentageTitle: "với quý trước",
+      isIncrease: true,
+    },
+  ]);
+
+  const calculateStats = (present, previous) => {
+    const percentage = ((present - previous) / (previous || 1) * 100).toFixed(2);
+    return {
+      value: present,
+      percentage: `${Math.abs(Math.round(percentage))} %`,
+      isIncrease: present >= previous,
+    };
+  };
+
+  useEffect(() => {
+    if (revenueData) {
+      setData((prevData) =>
+        prevData.map((item) => {
+          const { presentRevenue, previousRevenue } = revenueData[item.key];
+          const { value, percentage, isIncrease } = calculateStats(presentRevenue, previousRevenue);
+          console.log("type", typeof percentage);
+          return {
+            ...item,
+            value,
+            percentage,
+            isIncrease,
+          };
+        })
+      );
+    }
+  }, [revenueData]);
+  
   return (
     <div className="w-full">
       <div className="grid grid-cols-3 gap-6">

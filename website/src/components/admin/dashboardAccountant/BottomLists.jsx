@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -13,9 +14,26 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
+import formatDate from "../../../utils/formatDate";
+import { formatPrice } from "../../../utils/format";
+import Empty from "../../ui/Empty";
 import { CiMenuKebab } from "react-icons/ci";
 
-export default function BottomLists() {
+export default function BottomLists({ allInvoices }) {
+  const [latestInvoices, setLatestInvoices] = useState([]);
+  const [unpaidInvoices, setUnpaidInvoices] = useState([]);
+
+  useEffect(() => {
+    if (allInvoices) {
+      const latestInvoices = allInvoices.slice(0, 4);
+      const unpaidInvoices = allInvoices
+        .filter((invoice) => invoice.status === "PENDING")
+        .slice(0, 4);
+      setLatestInvoices(latestInvoices);
+      setUnpaidInvoices(unpaidInvoices);
+    }
+  }, [allInvoices]);
+
   return (
     <div className="mt-6 grid w-full grid-cols-[55.8%_42%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
@@ -28,7 +46,7 @@ export default function BottomLists() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
+              <TableHead className="text-center">STT</TableHead>
               <TableHead>Mã hóa đơn</TableHead>
               <TableHead>Họ và tên</TableHead>
               <TableHead>Thời gian</TableHead>
@@ -37,15 +55,14 @@ export default function BottomLists() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array(4)
-              .fill()
-              .map((_, idx) => (
+            {latestInvoices.length > 0 ? (
+              latestInvoices.map((invoice, idx) => (
                 <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell>{idx + 1}</TableCell>
-                  <TableCell>HD19NK03</TableCell>
-                  <TableCell>Triệu Tiến Đạt</TableCell>
-                  <TableCell>12.05.2022 lúc 7:00</TableCell>
-                  <TableCell>1.000.000</TableCell>
+                  <TableCell className="text-center">{idx + 1}</TableCell>
+                  <TableCell>{invoice.invoiceCode || "-"}</TableCell>
+                  <TableCell>{invoice.patient.fullName || "-"}</TableCell>
+                  <TableCell>{formatDate(invoice.updatedAt)}</TableCell>
+                  <TableCell>{formatPrice(invoice.price)}</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
@@ -61,7 +78,16 @@ export default function BottomLists() {
                     </Menubar>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} className="">
+                  <div className="flex justify-center items-center h-24">
+                    <Empty />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
@@ -75,7 +101,7 @@ export default function BottomLists() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
+              <TableHead className="text-center">STT</TableHead>
               <TableHead>Mã hóa đơn</TableHead>
               <TableHead>Họ và tên</TableHead>
               <TableHead>Tổng tiền</TableHead>
@@ -83,14 +109,13 @@ export default function BottomLists() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array(4)
-              .fill()
-              .map((_, idx) => (
+            {unpaidInvoices.length > 0 ? (
+              unpaidInvoices.map((invoice, idx) => (
                 <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell>{idx + 1}</TableCell>
-                  <TableCell>HD19NK03</TableCell>
-                  <TableCell>Triệu Tiến Đạt</TableCell>
-                  <TableCell>1.000.000</TableCell>
+                  <TableCell className="text-center">{idx + 1}</TableCell>
+                  <TableCell>{invoice.invoiceCode || "-"}</TableCell>
+                  <TableCell>{invoice.patient.fullName || "-"}</TableCell>
+                  <TableCell>{formatPrice(invoice.price)}</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
@@ -106,7 +131,16 @@ export default function BottomLists() {
                     </Menubar>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="">
+                  <div className="flex justify-center items-center h-24">
+                    <Empty />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

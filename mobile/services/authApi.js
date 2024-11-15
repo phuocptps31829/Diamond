@@ -1,6 +1,10 @@
 import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
 export const authApi = {
+  getProfileInfo: async () => {
+    const res = await axiosInstanceGET.get(`/auth/get-user-by-token`);
+    return res.data;
+  },
   refreshToken: async (refreshToken) => {
     const res = await axiosInstanceCUD.post(
       `/auth/refresh-token?refreshToken=${refreshToken}`

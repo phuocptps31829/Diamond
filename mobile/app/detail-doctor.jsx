@@ -1,4 +1,4 @@
-import DetailDoctor from "../components/DetailDoctor/index";
+import DetailDoctor from "../components/detailDoctor/index";
 
 const DetailDoctorTab = () => {
   return <DetailDoctor />;

@@ -4,13 +4,13 @@ const TabsScreen = ({ icon, color, name }) => {
   return (
     <View
       className={`${
-        name === "Trang chủ" ? "absulute -top-5 gap-2" : "gap-1"
-      } flex justify-center items-center pt-5 `}
+        name === "Trang chủ" ? "-top-2 gap-2 " : "gap-1 top-3"
+      } flex justify-center items-center flex-col z-50 absulute`}
     >
       <View
         className={`${
           name === "Trang chủ"
-            ? "w-[50px] h-[50px] rounded-full bg-[#007BBB] flex justify-center items-center"
+            ? "rounded-full w-[50px] h-[50px]  bg-[#007BBB] flex justify-center items-center"
             : ""
         } `}
       >
@@ -18,8 +18,8 @@ const TabsScreen = ({ icon, color, name }) => {
       </View>
       <Text
         className={`${
-          name === "Trang chủ" ? "font-bold text-[12px]" : "text-[11px]"
-        } `}
+          name === "Trang chủ" ? "font-bold text-[12px]" : "text-[10px] text-center"
+        } w-16`}
         style={{ color: color }}
       >
         {name}

@@ -1,10 +1,21 @@
-import { View, Image } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { authApi } from "../services/authApi";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 
 const Index = () => {
+  const [loading, setLoading] = useState(false);
+  const [locationReady, setLocationReady] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const { data, isLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: authApi.getProfileInfo,
+    enabled: authReady,
+  });
+
   const storeLocation = async (currentLocation) => {
     try {
       await AsyncStorage.setItem(
@@ -17,7 +28,8 @@ const Index = () => {
   };
 
   useEffect(() => {
-    (async () => {
+    setLoading(true);
+    const handleLocation = async () => {
       const storedLocation = await AsyncStorage.getItem("userLocation");
 
       if (!storedLocation) {
@@ -35,32 +47,53 @@ const Index = () => {
           longitudeDelta: 0.01,
         };
 
-        storeLocation(locationData);
+        await storeLocation(locationData);
       }
+      setLocationReady(true);
+    };
 
-      setTimeout(() => {
-        router.replace("/sign-in");
-      }, 200);
-    })();
+    handleLocation();
   }, []);
 
-  // useEffect(() => {
-  //   async function checkAuth() {
-  //    const accessToken = await AsyncStorage.getItem("accessToken")
-  //    const refreshToken = await AsyncStorage.getItem("refreshToken")
-  //    console.log("accessToken", accessToken)
-  //   console.log("refreshToken", refreshToken)
-  //   }
-  //   checkAuth();
-  // }, []);
+  useEffect(() => {
+    if (locationReady) {
+      const checkAuth = async () => {
+        const accessToken = await AsyncStorage.getItem("accessToken");
+        const refreshToken = await AsyncStorage.getItem("refreshToken");
+
+        if (accessToken && refreshToken) {
+          setAuthReady(true);
+        } else {
+          router.replace("/sign-in");
+        }
+
+        setLoading(false);
+      };
+
+      checkAuth();
+    }
+  }, [locationReady]);
+
+  useEffect(() => {
+    if (authReady && !isLoading) {
+      if (data) {
+        router.replace("/home");
+      } else {
+        router.replace("/sign-in");
+      }
+    }
+  }, [authReady, data]);
 
   return (
-    <View className="w-full h-full bg-[#41bdff] flex justify-center items-center">
+    <View className="w-full h-full bg-[#41bdff] flex flex-col justify-center items-center">
       <Image
         source={require("../assets/images/brandLogo.png")}
         className="w-[335px]"
         resizeMode="contain"
-      ></Image>
+      />
+      {(loading || isLoading) && (
+        <ActivityIndicator size="large" color="#fff" />
+      )}
     </View>
   );
 };
