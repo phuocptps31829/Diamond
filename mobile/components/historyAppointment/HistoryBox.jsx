@@ -10,7 +10,9 @@ const IMAGE_URL = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 const HistoryBox = ({ item }) => {
     const router = useRouter();
 
-    const itemImage = item?.service?.image || item?.package?.image;
+    const itemImage = item?.service?.image || item?.medicalPackage?.image;
+
+    console.log('item', item);
 
     return (
         <View className="bg-white p-4 rounded-lg">
@@ -31,7 +33,7 @@ const HistoryBox = ({ item }) => {
                 </View>
                 <View className="flex-shrink">
                     <Text className="uppercase font-semibold text-lg" style={ { lineHeight: 24 } }>
-                        { item?.service?.name || item?.package?.name }
+                        { item?.service?.name || item?.medicalPackage?.name }
                     </Text>
                     <View className="flex-row items-center gap-2 -mt-1">
                         <FontAwesome6 name="clock-rotate-left" size={ 13 } color="gray" />

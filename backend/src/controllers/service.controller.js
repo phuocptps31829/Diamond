@@ -7,6 +7,7 @@ module.exports = {
             const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const queryOptions = {
                 ...(branchID ? { branchID } : {}),
@@ -20,7 +21,7 @@ module.exports = {
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
-            console.log("totalRecords: ", totalRecords);
+
             const services = await ServiceModel
                 .find({
                     isDeleted: false,
@@ -28,8 +29,8 @@ module.exports = {
                     ...queryOptions
                 })
                 .populate('specialtyID')
-                .limit(limitDocuments)
-                .skip(skip)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

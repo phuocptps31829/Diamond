@@ -5,6 +5,7 @@ module.exports = {
     getAllMedicines: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await MedicineModel.countDocuments({
                 isDeleted: false,
@@ -13,8 +14,8 @@ module.exports = {
             const medicines = await MedicineModel
                 .find({ isDeleted: false })
                 .populate('medicineCategoryID')
-                .skip(skip)
-                .limit(limitDocuments)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

@@ -7,6 +7,7 @@ module.exports = {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
             const totalRecords = await ContractModel.countDocuments({ isDeleted: false });
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const contracts = await ContractModel
                 .find({
@@ -14,8 +15,8 @@ module.exports = {
                 })
                 .populate('doctorID', '_id fullName')
                 .populate('hospitalID', '_id name')
-                .skip(skip)
-                .limit(limitDocuments)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

@@ -6,7 +6,15 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import HeaderScreen from "../components/ui/HeaderScreen";
 import Toast from "react-native-toast-message";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  keepPreviousData: true,
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+    },
+  },
+});
 
 export default function RootLayout() {
   return (

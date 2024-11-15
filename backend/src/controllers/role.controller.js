@@ -10,14 +10,15 @@ module.exports = {
                 skip,
                 sortOptions
             } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await RoleModel.countDocuments({
                 isDeleted: false,
             });
             const roles = await RoleModel
                 .find({ isDeleted: false })
-                .limit(limitDocuments)
-                .skip(skip)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

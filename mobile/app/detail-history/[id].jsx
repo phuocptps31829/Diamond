@@ -17,15 +17,13 @@ const DetailHistoryScreen = () => {
     });
 
     const historyData = data?.data;
-    const name = historyData?.service?.name || historyData?.package?.name;
-
-    console.log('historyData', historyData);
+    const name = historyData?.service?.name || historyData?.medicalPackage?.name;
 
     return (
         <>
             <Stack.Screen
                 options={ {
-                    header: () => <HeaderScreen title={ (name ? "Lịch sử " + name : '') || "Không tìm thấy" } />,
+                    header: () => <HeaderScreen title={ (name ? "Lịch sử " + name : '') || ((!isLoading && "Không tìm thấy")) } />,
                 } }
             />
             { isError ?

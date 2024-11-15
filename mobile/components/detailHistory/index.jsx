@@ -4,6 +4,7 @@ import { formatCurrency, formatDateTimeLocale } from '../../utils/format';
 import { paymentStatus } from '../../constants/status';
 import DialogCustom from '../ui/Dialog';
 import { useState } from 'react';
+import Result from './Result';
 
 const DetailHistory = ({ data }) => {
     const [showResultDialog, setShowResultDialog] = useState(false);
@@ -13,7 +14,7 @@ const DetailHistory = ({ data }) => {
             <View className="pt-4 pb-10 px-3">
                 <View className="bg-white h-[95%] rounded-md">
                     <Text className="text-base font-bold text-[#5a5a5a] px-4 pt-4 pb-1">
-                        { data?.service?.name || data?.package?.name }
+                        { data?.service?.name || data?.medicalPackage?.name }
                     </Text>
                     <View>
                         <DataTable>
@@ -73,6 +74,7 @@ const DetailHistory = ({ data }) => {
             <DialogCustom
                 visible={ showResultDialog }
                 setVisible={ setShowResultDialog }
+                content={ <Result appointment={ data } /> }
             />
         </>
     );

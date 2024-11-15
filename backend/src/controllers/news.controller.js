@@ -6,6 +6,7 @@ module.exports = {
         try {
             const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await NewsModel.countDocuments({
                 isDeleted: false,
@@ -17,13 +18,13 @@ module.exports = {
                     isDeleted: false,
                     ...(notHidden ? { isHidden: false } : {}),
                 })
-                .skip(skip)
-                .limit(limitDocuments)
+                .populate("specialtyID")
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
                 })
-                .populate("specialtyID")
                 .lean();
 
             if (!news.length) {

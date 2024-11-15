@@ -6,13 +6,14 @@ module.exports = {
     getAllBranches: async (req, res, next) => {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await BranchModel.countDocuments({ isDeleted: false });
 
             const branches = await BranchModel
                 .find({ isDeleted: false })
-                .skip(skip)
-                .limit(limitDocuments)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

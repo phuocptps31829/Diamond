@@ -14,6 +14,7 @@ module.exports = {
                 skip,
                 sortOptions
             } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await UserModel.countDocuments({
                 isDeleted: false,
@@ -22,8 +23,8 @@ module.exports = {
             const doctors = await UserModel
                 .find({ isDeleted: false, roleID: process.env.ROLE_DOCTOR })
                 .populate('roleID')
-                .limit(limitDocuments)
-                .skip(skip)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -196,6 +197,7 @@ module.exports = {
                 if (!schedule) return null;
                 return {
                     _id: schedule.doctorID._id,
+                    workScheduleID: schedule._id,
                     fullName: schedule.doctorID.fullName,
                 };
             });

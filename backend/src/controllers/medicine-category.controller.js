@@ -8,11 +8,12 @@ module.exports = {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
             const totalRecords = await MedicineCategoryModel.countDocuments({ isDeleted: false });
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const medicineCategories = await MedicineCategoryModel
                 .find({ isDeleted: false })
-                .skip(skip)
-                .limit(limitDocuments)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1

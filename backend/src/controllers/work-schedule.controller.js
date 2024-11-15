@@ -11,6 +11,7 @@ module.exports = {
                 skip,
                 sortOptions
             } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await WorkScheduleModel.countDocuments({ isDeleted: false });
 
@@ -80,7 +81,7 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'WorkSchedule retrieved successfully.',
-                data: paginatedGroupedArray,
+                data: noPaginated ? formattedGroupedArray : paginatedGroupedArray,
                 totalRecords
             });
         } catch (error) {

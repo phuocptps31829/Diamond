@@ -11,6 +11,7 @@ module.exports = {
                 skip,
                 sortOptions
             } = req.customQueries;
+            let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await SpecialtyModel.countDocuments({
                 isDeleted: false,
@@ -22,8 +23,8 @@ module.exports = {
                     isDeleted: false,
                     ...(notHidden ? { isHidden: false } : {}),
                 })
-                .limit(limitDocuments)
-                .skip(skip)
+                .skip(noPaginated ? undefined : skip)
+                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
