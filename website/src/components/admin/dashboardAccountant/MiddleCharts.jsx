@@ -1,6 +1,21 @@
+import { useState } from "react";
 import LineChart from "./chart/LineChart";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
 
-export default function MiddleCharts() {
+export default function MiddleCharts({ revenueData }) {
+  const [yearNow, setYearNow] = useState(new Date().getFullYear());
+
+  const handleYearChange = (value) => {
+    setYearNow(Number(value));
+  };
+
   return (
     <div className="mt-6 grid w-full grid-cols-1 justify-between">
       <div className="flex-1 rounded-md bg-white px-6 py-4 shadow-sm">
@@ -12,14 +27,30 @@ export default function MiddleCharts() {
               <span className="text-[#00D3C7]">5%</span> so với tháng trước
             </div>
           </div>
-          <select className="mt-2 rounded-md border border-gray-300 p-2 px-3 text-sm">
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-          </select>
+          <Select
+            onValueChange={handleYearChange}
+            defaultValue={new Date().getFullYear()}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Chọn năm" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value={new Date().getFullYear()}>
+                  {new Date().getFullYear()}
+                </SelectItem>
+                <SelectItem value={new Date().getFullYear() - 1}>
+                  {new Date().getFullYear() - 1}
+                </SelectItem>
+                <SelectItem value={new Date().getFullYear() - 2}>
+                  {new Date().getFullYear() - 2}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
         <div className="h-[260px] w-full">
-          <LineChart />
+          <LineChart revenueData={revenueData[yearNow]} />
         </div>
       </div>
     </div>

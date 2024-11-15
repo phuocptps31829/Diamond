@@ -20,7 +20,7 @@ ChartJS.register(
   Legend,
 );
 
-const LineChart = () => {
+const LineChart = ({ revenueData }) => {
   const labels = [
     "Tháng 1",
     "Tháng 2",
@@ -31,14 +31,19 @@ const LineChart = () => {
     "Tháng 7",
     "Tháng 8",
     "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
   ];
+
+  const revenueByMonth = Array.from({ length: 12 }, (_, i) => revenueData?.[i + 1] || 0);
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Triệu đồng",
-        data: [11.5, 15.5, 14, 12, 13, 16, 13, 17, 15.5],
+        label: "VNĐ",
+        data: revenueByMonth,
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
         tension: 0.4,
@@ -73,9 +78,9 @@ const LineChart = () => {
       y: {
         beginAtZero: true,
         ticks: {
-          stepSize: 5,
+          stepSize: 2000000,
           callback: function (value) {
-            return value + " triệu";
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
           },
           color: "black",
           font: {

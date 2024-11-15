@@ -69,7 +69,7 @@ const DoctorAI = () => {
         <KeyboardAvoidingView
             behavior={ Platform.OS === "ios" ? "padding" : "height" }
             className="flex flex-col h-full bg-white flex-1"
-            keyboardVerticalOffset={ Platform.OS === 'ios' ? 76 : 0 }
+            keyboardVerticalOffset={ Platform.OS === 'ios' ? -14 : 0 }
         >
             <FlatList
                 data={ messages }
@@ -104,7 +104,7 @@ const DoctorAI = () => {
                     <LoadingDots size={ 8 } colors={ ["#a1a1aa", "#a1a1aa", "#a1a1aa"] } bounceHeight={ 2 } dots={ 3 } />
                 </View>
             </View> }
-            <View className="pt-1 pb-5 border-t-[1px] flex flex-row gap-4 items-center border-primary-600 px-6 mb-8 bg-white">
+            <View className="pt-1 pb-5 border-t-[1px] flex flex-row gap-4 items-center border-primary-600 px-6 mb-4 bg-white">
                 <TextInput
                     placeholderTextColor="gray"
                     placeholder="Nhập nội dung cần tư vấn"

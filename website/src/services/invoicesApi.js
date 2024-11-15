@@ -1,6 +1,10 @@
 import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
 export const invoicesApi = {
+  getRevenueStatistics: async () => {
+    const res = await axiosInstanceGET.get("/revenue");
+    return res.data.data;
+  },
   getAllInvoices: async () => {
     const res = await axiosInstanceGET.get("/invoices?limit=9999");
     return res.data;

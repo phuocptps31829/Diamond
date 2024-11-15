@@ -3,9 +3,11 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { memberPromotions } from '../../constants/member-promotions';
+import { useSelector } from 'react-redux';
 
 const Member = () => {
     const [curTab, setCurTab] = useState(0);
+    const profile = useSelector((state) => state.profile.profile);
 
     return (
         <>
@@ -14,13 +16,16 @@ const Member = () => {
                     <View className="flex p-4">
                         <View className="flex-row gap-2 mb-20">
                             <Image
-                                className="w-10 h-10"
-                                source={ {
-                                    uri: "https://play-lh.googleusercontent.com/Fro4e_osoDhhrjgiZ_Y2C5FNXBMWvrb4rGpmkM1PDAcUPXeiAlPCq7NeaT4Q6NRUxRqo"
-                                } } />
+                                source={ require("../../assets/fav.png") }
+                                className="w-10 h-10 bg-white rounded-full"
+                            />
                             <View>
-                                <Text className="text-white font-semibold text-[17px]">Nguyen Nam</Text>
-                                <Text className="text-white text-sm">0345 353 474</Text>
+                                <Text className="text-white font-semibold text-[17px]">
+                                    { profile?.fullName }
+                                </Text>
+                                <Text className="text-white text-sm">
+                                    { profile?.phoneNumber }
+                                </Text>
                             </View>
                         </View>
                         <Text className="text-base text-white font-medium">

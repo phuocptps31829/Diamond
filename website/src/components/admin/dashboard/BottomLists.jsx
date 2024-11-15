@@ -14,6 +14,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
+import formatDate from "../../../utils/formatDate";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 
@@ -130,14 +131,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {new Date(appointment.time).toLocaleString("vi-VN", {
-                      weekday: "long",
-                      day: "numeric",
-                      month: "numeric",
-                      year: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                    })}
+                    {formatDate(appointment.time)}
                   </TableCell>
                   <TableCell>
                     {appointment.service?.name ||

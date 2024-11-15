@@ -1,8 +1,23 @@
+import { useState } from "react";
 import { FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 import { TbCalendarRepeat } from "react-icons/tb";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
 import LineChart from "./chart/LineChart";
+
 export default function LeftColumnStats() {
+  const [yearNow, setYearNow] = useState(new Date().getFullYear());
+
+  const handleYearChange = (e) => {
+    setYearNow(Number(e.target.value));
+  };
   const stats = [
     {
       id: 1,
@@ -67,11 +82,27 @@ export default function LeftColumnStats() {
               <span className="text-[#00D3C7]">5%</span> so với tháng trước
             </div>
           </div>
-          <select className="mt-2 rounded-md border border-gray-300 p-2 px-3 text-sm">
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-          </select>
+          <Select
+            onValueChange={(value) => handleYearChange({ target: { value } })}
+            defaultValue={new Date().getFullYear()}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Chọn năm" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value={new Date().getFullYear()}>
+                  {new Date().getFullYear()}
+                </SelectItem>
+                <SelectItem value={new Date().getFullYear() - 1}>
+                  {new Date().getFullYear() - 1}
+                </SelectItem>
+                <SelectItem value={new Date().getFullYear() - 2}>
+                  {new Date().getFullYear() - 2}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
         <div className="h-[230px] w-full">
           <LineChart />
