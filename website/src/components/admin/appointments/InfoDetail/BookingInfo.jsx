@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
@@ -34,11 +34,11 @@ import { FaUserInjured } from "react-icons/fa6";
 import { formatCurrency } from "@/utils/format";
 import { FaRegEdit } from "react-icons/fa";
 import { Input } from "@/components/ui/Input";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-
+import { doctorApi } from "@/services/doctorsApi";
 import MedicalPackageBooking from "./MedicalPackageBooking";
 import {
   Select,
@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/Select";
 import { Card } from "@/components/ui/Card";
 import ServiceBooking from "./ServiceBooking";
+import { appointmentApi } from "@/services/appointmentsApi";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -76,6 +77,8 @@ const BookingInfo = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [newPriority, setNewPriority] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [isAlertDialogOpen, setIsAlertDialogOpen] = useState(false);
   const handleOpen = (image) => {
     setSelectedImage(image);
     setOpen(true);
@@ -125,9 +128,91 @@ const BookingInfo = ({ data }) => {
     },
   });
 
-  const handleChangeStatus = (status) => {
-    updateStatus({ id: bookingData._id, status });
+  const extractDate = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toISOString().split("T")[0];
   };
+
+  const extractTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+  };
+  const { data: availableDoctors } = useQuery({
+    queryKey: [
+      "availableDoctors",
+      bookingData.service?.specialty?._id ||
+        bookingData.medicalPackage?.specialty?._id,
+      bookingData.branch?._id,
+      bookingData.day,
+      bookingData.hour,
+    ],
+    queryFn: () =>
+      doctorApi.getDoctorByAvailable({
+        specialtyID:
+          bookingData.service?.specialty?._id ||
+          bookingData.medicalPackage?.specialty?._id,
+        branchID: bookingData.branch?._id,
+        day: extractDate(bookingData.time),
+        hour: extractTime(bookingData.time),
+      }),
+  });
+
+  useEffect(() => {
+    if (bookingData.results.length > 0 && bookingData.status !== "EXAMINED") {
+      updateStatus({ id: bookingData._id, status: "EXAMINED" });
+    }
+  }, [
+    bookingData.results.length,
+    bookingData.status,
+    bookingData._id,
+    updateStatus,
+  ]);
+
+  // const handleChangeStatus = (status) => {
+  //   if (status === "EXAMINED" && bookingData.results.length === 0) {
+  //     toastUI("Vui lòng xác nhận lịch đặt và thêm kết quả trước", "error");
+  //     return;
+  //   }
+  //   updateStatus({ id: bookingData._id, status });
+  // };
+  const handleChangeDoctor = (doctorId) => {
+    const selectedDoctor = availableDoctors.find(
+      (doctor) => doctor._id === doctorId
+    );
+    setSelectedDoctor(selectedDoctor);
+    setIsAlertDialogOpen(true);
+  };
+
+  const confirmChangeDoctor = () => {
+    if (!selectedDoctor?.workScheduleID) {
+      toastUI("Không tìm thấy lịch làm việc của bác sĩ", "error");
+      return;
+    }
+
+    updateAppointmentWorkShedule({
+      id: bookingData._id,
+      wordScheduleId: selectedDoctor.workScheduleID,
+    });
+    setIsAlertDialogOpen(false);
+  };
+
+  const statusLabel =
+    statusOptions.find((option) => option.value === bookingData.status)
+      ?.label || bookingData.status;
+  const isBookingTimePassed = new Date(bookingData.time) < new Date();
+
+  const { mutate: updateAppointmentWorkShedule } = useMutation({
+    mutationFn: ({ id, wordScheduleId }) =>
+      appointmentApi.updateAppointmentWorkShedule(id, wordScheduleId),
+    onSuccess: () => {
+      toastUI("Cập nhật lịch khám bác sĩ", "success");
+      queryClient.invalidateQueries("appointments");
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Cập nhật lịch khám bác sĩ không thành công", "error");
+    },
+  });
 
   return (
     <div className="mt-8 w-full">
@@ -264,7 +349,7 @@ const BookingInfo = ({ data }) => {
           <div className="col-span-6 grid w-full grid-cols-1 gap-2 sm:grid-cols-2 md:mt-5">
             <p className="text-gray-600">
               <strong className="font-medium text-black">Bác sĩ:</strong>{" "}
-              {bookingData.doctor.fullName}
+              {bookingData.doctor?.fullName || "Chưa chọn bác sĩ"}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
@@ -275,6 +360,7 @@ const BookingInfo = ({ data }) => {
               <strong className="font-medium text-black">Loại khám:</strong>{" "}
               {bookingData.type}
             </p>
+
             <p className="text-gray-600">
               <strong className="font-medium text-black">Thời gian:</strong>{" "}
               {new Date(bookingData.time).toLocaleString()}
@@ -310,8 +396,12 @@ const BookingInfo = ({ data }) => {
               </div>
             </div>
             <div className="flex w-max items-center justify-center gap-2">
-              <strong className="font-medium text-black">Trạng thái :</strong>
-              <div className=" ">
+              <p>
+                <strong className="font-medium text-black">Trạng thái :</strong>
+                <span className="px-1 text-gray-600">{statusLabel}</span>
+              </p>
+
+              {/* <div className=" ">
                 <Select
                   disabled={
                     bookingData.status === "CANCELLED" ||
@@ -332,12 +422,45 @@ const BookingInfo = ({ data }) => {
                     ))}
                   </SelectContent>
                 </Select>
+              </div> */}
+            </div>
+            <p className="text-gray-600">
+              <strong className="font-medium text-black">Phòng khám:</strong>{" "}
+              {bookingData.clinic?.name}
+            </p>
+            <div className="flex w-max items-center justify-center gap-2">
+              <strong className="font-medium text-black">
+                Thay đổi bác sĩ :
+              </strong>
+              <div className=" ">
+                <Select
+                  disabled={
+                    bookingData.status === "CANCELLED" || isBookingTimePassed || bookingData.results.length > 0
+                  }
+                  className="w-full"
+                  onValueChange={handleChangeDoctor}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Chọn bác sĩ" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableDoctors?.map((option) => (
+                      <SelectItem
+                        key={option._id}
+                        value={option._id}
+                        className="cursor-pointer"
+                      >
+                        {option.fullName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
         </div>
-        <div className="w-full text-end">
-          {bookingData.status === "CONFIRMED" && !isOpenForm && (
+        <div className="mt-2 w-full text-end">
+          {bookingData.status === "CONFIRMED" && !isOpenForm &&  (
             <Button
               className=""
               variant="custom"
@@ -495,9 +618,20 @@ const BookingInfo = ({ data }) => {
             </div>
             <div className="mt-5 w-full text-end">
               {bookingData.results.length > 0 && (
-                <Button variant="outline" className="ml-2">
-                  Thêm lịch tái khám
-                </Button>
+                <Link
+                  to={`/admin/appointments/create/${bookingData.patient._id}`}
+                >
+                  <Button
+                    variant={
+                      bookingData.payment.status === "PAID"
+                        ? "custom"
+                        : "outline"
+                    }
+                    className="ml-2"
+                  >
+                    Thêm lịch tái khám
+                  </Button>
+                </Link>
               )}
               {bookingData.results.length > 0 &&
                 bookingData.payment.status !== "PAID" && (
@@ -539,16 +673,39 @@ const BookingInfo = ({ data }) => {
         <ServiceBooking
           bookingData={bookingData}
           setIsOpenForm={setIsOpenForm}
-          handleChangeStatus={handleChangeStatus}
+          // handleChangeStatus={handleChangeStatus}
         />
       )}
       {isOpenForm === "MedicalPackage" && (
         <MedicalPackageBooking
           bookingData={bookingData}
           setIsOpenForm={setIsOpenForm}
-          handleChangeStatus={handleChangeStatus}
+          // handleChangeStatus={handleChangeStatus}
         />
       )}
+      <AlertDialog open={isAlertDialogOpen} onOpenChange={setIsAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Xác nhận thay đổi bác sĩ</AlertDialogTitle>
+            <AlertDialogDescription>
+              Bạn có chắc chắn muốn chọn bác sĩ{" "}
+              <span className="uppercase text-red-500">
+                {" "}
+                {selectedDoctor?.name}
+              </span>{" "}
+              không?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsAlertDialogOpen(false)}>
+              Hủy
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmChangeDoctor}>
+              Xác nhận
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

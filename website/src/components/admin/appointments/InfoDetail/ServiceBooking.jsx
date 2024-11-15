@@ -28,7 +28,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 import { Textarea } from "@/components/ui/Textarea";
 import { resultsApi } from "@/services/resultsApi";
 
-const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
+const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [loadingImage, setLoadingImage] = useState(false);
@@ -56,6 +56,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
     control,
     name: "medicines",
   });
+  console.log(medicines, "medicines");
 
   const addMedicine = () => {
     const currentMedicines = getValues("medicines");
@@ -112,8 +113,8 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
       return response;
     },
     onSuccess: () => {
-      handleChangeStatus("EXAMINED");
       queryClient.invalidateQueries("appointments");
+      // handleChangeStatus("EXAMINED");
       setIsOpenForm(false);
       reset();
       toastUI("Đã thêm thành công kết quả khám!", "success");
@@ -135,7 +136,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
 
   const onSubmit = async (data) => {
     let imageUrl = [];
-
+    setOpen(false);
     if (data.images.length > 0) {
       setOpen(false);
       const formData = new FormData();
@@ -156,7 +157,9 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
         setLoadingImage(false);
       }
     }
-
+    const price = medicines.reduce((total, medicine) => {
+      return total + medicine.price * medicine.quantity;
+    }, 0);
     const dataAll = {
       payload: [
         {
@@ -170,6 +173,7 @@ const ServiceBooking = ({ bookingData, setIsOpenForm, handleChangeStatus }) => {
             description: data.detail,
           },
           prescription: {
+            price,
             advice: data.advice,
             medicines: data.medicines.map((medicine) => ({
               medicineID: medicine.medicineID,

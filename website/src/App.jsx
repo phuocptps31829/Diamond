@@ -96,6 +96,8 @@ import FormAdmin from "./test-socket/FormAdmin";
 import ContractsAddPage from "./pages/admin/Contracts/add";
 import ContractListPage from "./pages/admin/Contracts";
 import ContractsEditPage from "./pages/admin/Contracts/edit";
+import InvoicesListPage from "./pages/admin/Invoices";
+import ProfileAdminPage from "./pages/admin/Profile";
 
 const router = createBrowserRouter([
   {
@@ -331,11 +333,15 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "accountantdashboard",
+        path: "accountant-dashboard",
         element: <AccountantDashboard />,
       },
       {
-        path: "doctordashboard",
+        path: "profile-admin",
+        element: <ProfileAdminPage />,
+      },
+      {
+        path: "doctor-dashboard",
         element: <DoctorDashboard />,
       },
       {
@@ -502,14 +508,20 @@ const router = createBrowserRouter([
         path: "contracts/create/:type",
         element: <ContractsAddPage />,
       },
+
+      {
+        path: "contracts/edit/:type/:id",
+        element: <ContractsEditPage />,
+      },
       {
         path: "contracts/list",
         element: <ContractListPage />,
       },
       {
-        path: "contracts/edit/:type/:id",
-        element: <ContractsEditPage />,
+        path: "invoices/list",
+        element: <InvoicesListPage />,
       },
+
     ],
   },
   {
@@ -524,8 +536,8 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Provider store={store}>
-      <RouterProvider router={router}></RouterProvider>
+    <Provider store={ store }>
+      <RouterProvider router={ router }></RouterProvider>
     </Provider>
   );
 }

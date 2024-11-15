@@ -1,41 +1,48 @@
 import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/Dialog";
 import { ArrowUpDown } from "lucide-react";
 import Action from "./action";
 
 export const columns = [
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+    accessorKey: "title",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tên hợp đồng
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <div className="w-full">
+        <span className="w-full whitespace-nowrap">{row.original.title}</span>
+      </div>
     ),
-    enableSorting: false,
-    enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "doctor",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Bác sĩ
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full">
+        <span className="w-full whitespace-nowrap">
+          {row.original.doctor?.fullName}
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "hospital",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -48,45 +55,30 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-full max-w-[270px]">
-        <span className="w-full whitespace-nowrap">{row.original.name}</span>
+        <span className="w-full whitespace-nowrap">
+          {row.original.hospital?.name}
+        </span>
       </div>
     ),
   },
   {
-    accessorKey: "workingTime",
+    accessorKey: "contractPeriod",
     header: ({ column }) => (
       <Button
         variant="ghost"
         className="px-0 text-base"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Giờ làm việc
+        Thời gian hợp đồng
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.workingTime}
+          {new Date(row.original.startDate).toLocaleDateString()} -{" "}
+          {new Date(row.original.endDate).toLocaleDateString()}
         </span>
-      </div>
-    ),
-  },
-  {
-    accessorKey: "hotline",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        className="px-0 text-base"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Hotline
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => (
-      <div className="w-full max-w-[270px] text-primary-500">
-        {row.original.hotline}
       </div>
     ),
   },
@@ -108,76 +100,35 @@ export const columns = [
       </div>
     ),
   },
+
   {
-    accessorKey: "image",
+    accessorKey: "file",
     header: ({ column }) => (
       <Button
         variant="ghost"
         className="px-0 text-base"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Hình ảnh
+        Tệp hợp đồng
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const [open, setOpen] = useState(false);
-
-      return (
-        <>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <img
-                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.imagesURL[0]}`}
-                alt="thumbnail"
-                width={60}
-                height={60}
-                className="cursor-pointer"
-              />
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Hình ảnh lớn</DialogTitle>
-              </DialogHeader>
-              <img
-                src={`${import.meta.env.VITE_IMAGE_API_URL}/${row.original.imagesURL[0]}`}
-                alt="large-thumbnail w-full h-auto"
-              />
-            </DialogContent>
-          </Dialog>
-        </>
-      );
-    },
-  },
-  {
-    accessorKey: "status",
-    header: ({ column }) => (
-      <div className="w-full text-left">
-        <Button
-          className="px-0 text-base"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Trạng thái
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    ),
     cell: ({ row }) => (
-      <div className="w-full max-w-[270px] rounded-md p-2">
-        <span
-          className={`w-full whitespace-nowrap ${row.original.isHidden ? "text-red-500" : "text-green-500"}`}
+      <div className="w-full">
+        <a
+          href={`${import.meta.env.VITE_CUD_API_URL}/contracts/export/${row.original._id}`}
+          download
+          className="whitespace w-full text-blue-500 underline"
         >
-          {row.original.isHidden ? "Đang ẩn" : "Đang hiện"}
-        </span>
+          {row.original.file}
+        </a>
       </div>
     ),
   },
+
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      return <Action row={row} />;
-    },
+    cell: ({ row }) => <Action row={row} />,
   },
 ];

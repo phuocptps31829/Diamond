@@ -16,6 +16,7 @@ import {
   DialogClose,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
+import { toastUI } from "@/components/ui/Toastify"; 
 
 const StatusCell = ({ row, onChangeStatus }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -32,6 +33,14 @@ const StatusCell = ({ row, onChangeStatus }) => {
   ];
 
   const handleChangeStatus = (value) => {
+    if (value === "EXAMINED" && row.original.result.diagnose === "") {
+      toastUI(
+        "Vui lòng xác nhận lịch khám và điền kết quả.",
+        "error"
+      );
+      return;
+    }
+
     if (value === "EXAMINED" || value === "CANCELLED") {
       setPendingStatus(value);
       setIsDialogOpen(true);

@@ -34,7 +34,7 @@ const DescriptionService = ({ medicalPackage, isLoading, service }) => {
           <Accordion type="single" collapsible>
             <AccordionItem value="details" className="border-none">
               <AccordionTrigger className="p-0" toggleLabel>
-                <h2 className="text-2xl font-bold">Chi tiết về {name}</h2>
+                <h2 className=" text-sm md:text-2xl font-bold">Chi tiết về {name}</h2>
               </AccordionTrigger>
 
               <AccordionContent>

@@ -226,11 +226,11 @@ export default function DataTable({ data }) {
         <div className="flex gap-4">
           <div className="flex items-center">
             <div className="mr-2 h-4 w-4 bg-blue-500/40"></div>
-            <span className="text-blue-900">Dịch vụ</span>
+            <span className="text-blue-900">Gói khám</span>
           </div>
           <div className="flex items-center">
             <div className="mr-2 h-4 w-4 bg-[#13D6CB]/40"></div>
-            <span className="text-cyan-950">Gói khám</span>
+            <span className="text-cyan-950">Dịch vụ</span>
           </div>
         </div>
       </div>

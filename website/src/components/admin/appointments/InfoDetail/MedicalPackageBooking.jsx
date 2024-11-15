@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InputCustom from "@/components/ui/InputCustom";
 import { Label } from "@/components/ui/Label";
 import SelectMedicineCategories from "../select/SelectMedicineCategories";
@@ -6,7 +6,9 @@ import SelectMedicine from "../select/SelectMedicine";
 import { Button } from "@/components/ui/Button";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import medicineResultSchema from "@/zods/admin/medicineResultSchema";
+import medicineResultSchema, {
+  validateData,
+} from "@/zods/admin/medicineResultSchema";
 import RadioServices from "../select/CheckboxServices";
 import Uploader from "../utils/Uploader";
 import { imageApi } from "@/services/imageApi";
@@ -26,18 +28,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { resultsApi } from "@/services/resultsApi";
 import { Textarea } from "@/components/ui/Textarea";
 
-const MedicalPackageBooking = ({
-  bookingData,
-  handleChangeStatus,
-  setIsOpenForm,
-}) => {
+const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
   const [serviceResults, setServiceResults] = useState([]);
   const [loadingImage, setLoadingImage] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
   const [validationError, setValidationError] = useState(null);
   const queryClient = useQueryClient();
-  const defaultServiceID = bookingData.medicalPackage?.services?.[0]?._id || "";
 
   const {
     handleSubmit,
@@ -58,32 +55,28 @@ const MedicalPackageBooking = ({
     },
   });
 
-  useEffect(() => {
-    if (defaultServiceID) {
-      handleSelectService(defaultServiceID);
-    }
-  }, [defaultServiceID]);
 
-  useEffect(() => {
-    handleSaveAllServices();
-  }, [selectedService, getValues()]);
 
-  useEffect(() => {
-    validateServiceResults();
-  }, [serviceResults, bookingData.medicalPackage?.services]);
-
-  const handleSelectService = (serviceID) => {
+  const handleSelectService = async (serviceID) => {
     const currentValues = getValues();
 
     if (selectedService) {
+      const errors = validateData(currentValues);
+      if (errors.length > 0) {
+        setValidationError(errors[0]);
+        return;
+      }
       updateServiceResults(selectedService, currentValues);
     }
 
     setSelectedService(serviceID);
     populateFormFields(serviceID);
+    setValidationError(null);
+    
   };
-
   const updateServiceResults = (serviceID, values) => {
+    console.log("call updateServiceResults");
+
     setServiceResults((prevResults) => {
       const existingResultIndex = prevResults.findIndex(
         (result) => result.serviceID === serviceID
@@ -156,6 +149,7 @@ const MedicalPackageBooking = ({
     control,
     name: "medicines",
   });
+console.log(medicines, "medicines");
 
   const addMedicine = () => {
     const currentMedicines = getValues("medicines");
@@ -201,69 +195,12 @@ const MedicalPackageBooking = ({
     trigger("medicines");
   };
 
-  const handleSaveAllServices = () => {
-    const currentValues = getValues();
-    if (selectedService) {
-      updateServiceResults(selectedService, currentValues);
-    }
-  };
-
-  const validateServiceResults = () => {
-    const requiredServices = bookingData.medicalPackage?.services || [];
-
-    for (const service of requiredServices) {
-      const serviceResult = serviceResults.find(
-        (result) => result.serviceID === service._id
-      );
-
-      if (
-        !serviceResult ||
-        !serviceResult.result.diagnosis ||
-        serviceResult.result.diagnosis.trim() === "" ||
-        !serviceResult.result.detail ||
-        serviceResult.result.detail.trim() === "" ||
-        !serviceResult.result.advice ||
-        serviceResult.result.advice.trim() === "" ||
-        serviceResult.prescription.length === 0
-      ) {
-        setValidationError(
-          "Tất cả kết quả và đơn thuốc của dịch vụ phải được điền."
-        );
-        return false;
-      }
-
-      for (const prescription of serviceResult.prescription) {
-        if (
-          !prescription.medicineCategoryID ||
-          prescription.medicineCategoryID.trim() === "" ||
-          !prescription.medicineID ||
-          prescription.medicineID.trim() === "" ||
-          !prescription.price ||
-          prescription.price === 0 ||
-          !prescription.quantity ||
-          prescription.quantity === 0 ||
-          !prescription.usage ||
-          prescription.usage.trim() === ""
-        ) {
-          setValidationError(
-            "Tất cả các trường trong đơn thuốc phải được điền."
-          );
-          return false;
-        }
-      }
-    }
-
-    setValidationError(null);
-    return true;
-  };
-
   const mutation = useMutation({
     mutationFn: async (data) => {
       const response = await resultsApi.addResultAndPrescription(data);
       return response;
     },
     onSuccess: () => {
-      handleChangeStatus("EXAMINED");
       queryClient.invalidateQueries("appointments");
       toastUI("Đã thêm thành công kết quả khám!", "success");
       closeForm();
@@ -275,11 +212,15 @@ const MedicalPackageBooking = ({
   });
 
   const handleConfirmSave = async () => {
+    const currentValues = getValues();
+    if (selectedService) {
+      updateServiceResults(selectedService, currentValues);
+    }
+
     const isValid = await trigger();
     console.log("isValid", isValid);
-    console.log("validateServiceResults()", validateServiceResults());
 
-    if (isValid && validateServiceResults()) {
+    if (isValid) {
       setOpen(true);
     } else {
       setOpen(false);
@@ -325,27 +266,32 @@ const MedicalPackageBooking = ({
       );
 
       setServiceResults(updatedServiceResults);
-
       const dataAll = {
-        payload: updatedServiceResults.map((serviceResult) => ({
-          result: {
-            appointmentID: bookingData._id,
-            serviceID: serviceResult.serviceID,
-            diagnose: serviceResult.result.diagnosis,
-            images: serviceResult.result.images,
-            description: serviceResult.result.detail,
-          },
-          prescription: {
-            advice: serviceResult.result.advice,
-            medicines: serviceResult.prescription.map((medicine) => ({
-              medicineID: medicine.medicineID,
-              quantity: medicine.quantity,
-              dosage: medicine.usage,
-            })),
-          },
-        })),
+        payload: updatedServiceResults.map((serviceResult) => {
+          const totalMedicinePrice = serviceResult.prescription.reduce((total, medicine) => {
+            return total + medicine.price * medicine.quantity;
+          }, 0);
+      
+          return {
+            result: {
+              appointmentID: bookingData._id,
+              serviceID: serviceResult.serviceID,
+              diagnose: serviceResult.result.diagnosis,
+              images: serviceResult.result.images,
+              description: serviceResult.result.detail,
+            },
+            prescription: {
+              price: totalMedicinePrice,
+              advice: serviceResult.result.advice,
+              medicines: serviceResult.prescription.map((medicine) => ({
+                medicineID: medicine.medicineID,
+                quantity: medicine.quantity,
+                dosage: medicine.usage,
+              })),
+            },
+          };
+        })
       };
-      console.log("dataAll", dataAll);
 
       mutation.mutate(dataAll);
     } catch (error) {
@@ -353,6 +299,16 @@ const MedicalPackageBooking = ({
     } finally {
       setLoadingImage(false);
     }
+  };
+  const canChangeService = () => {
+    if (!selectedService) return true;
+    const currentValues = getValues();
+    const errors = validateData(currentValues);
+    if (errors.length > 0) {
+      setValidationError(errors[0]);
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -369,7 +325,8 @@ const MedicalPackageBooking = ({
                 name="serviceID"
                 onChange={handleSelectService}
                 control={control}
-                defaultValue={defaultServiceID}
+                onBeforeChange={canChangeService}
+                selectedService={selectedService}
               />
               <div className="">
                 {validationError && (

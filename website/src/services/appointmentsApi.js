@@ -43,7 +43,7 @@ export const appointmentApi = {
   getAppointmentByPatient: async (params) => {
     try {
       const res = await axiosInstanceGET.get(`/appointments/get-by-patient`, {
-        params
+        params,
       });
       return res.data;
     } catch (error) {
@@ -81,6 +81,23 @@ export const appointmentApi = {
   deleteAppointment: async (id) => {
     try {
       const res = await axiosInstanceCUD.delete(`/appointments/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+  updateAppointmentWorkShedule: async (id, data) => {
+    try {
+      const res = await axiosInstanceCUD.put(
+        `/invoices/update/appointment-work-/${id}`,
+        { workScheduleID: data },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return res.data;
     } catch (error) {
       console.error(error);

@@ -1,7 +1,7 @@
 import { RxDashboard } from "react-icons/rx";
 import { FaKitMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
-import { FaUsers } from "react-icons/fa";
+import { FaFileInvoiceDollar, FaUsers } from "react-icons/fa";
 import { FaCalendarAlt } from "react-icons/fa";
 import { FaCalendarPlus } from "react-icons/fa";
 import { FaClinicMedical } from "react-icons/fa";
@@ -30,14 +30,14 @@ export const getMenuList = (pathname) => [
             active: pathname.includes("/admin/dashboard"),
           },
           {
-            href: "/admin/doctordashboard",
+            href: "/admin/doctor-dashboard",
             label: "Bảng điều khiển bác sĩ",
-            active: pathname.includes("/admin/doctordashboard"),
+            active: pathname.includes("/admin/doctor-dashboard"),
           },
           {
-            href: "/admin/accountantdashboard",
+            href: "/admin/accountant-dashboard",
             label: "Bảng điều khiển kế toán",
-            active: pathname.includes("/admin/accountantdashboard"),
+            active: pathname.includes("/admin/accountant-dashboard"),
           },
         ],
       },
@@ -411,6 +411,26 @@ export const getMenuList = (pathname) => [
             href: "/admin/contracts/list",
             label: "Danh sách hợp đồng",
             active: pathname === "/admin/contracts/list",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    groupLabel: "",
+    roles: ["SUPER_ADMIN"],
+    menus: [
+      {
+        href: "",
+        label: "Hóa đơn",
+        active:
+          pathname === "/admin/invoices/list",
+        icon: FaFileInvoiceDollar,
+        submenus: [
+          {
+            href: "/admin/invoices/list",
+            label: "Danh sách hóa đơn",
+            active: pathname === "/admin/invoices/list",
           },
         ],
       },

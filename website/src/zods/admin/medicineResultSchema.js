@@ -29,3 +29,10 @@ const medicineResultSchema = z.object({
 });
 
 export default medicineResultSchema;
+export const validateData = (data) => {
+  const validationResult = medicineResultSchema.safeParse(data);
+  if (!validationResult.success) {
+    return validationResult.error.errors.map((error) => error.message);
+  }
+  return [];
+};

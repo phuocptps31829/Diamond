@@ -8,7 +8,7 @@ const breadcrumbData = [
     title: 'Thống kê'
   },
   {
-    href: '/admin/doctordashboard',
+    href: '/admin/doctor-dashboard',
     title: 'Bảng điều khiển bác sĩ'
   },
 ];

@@ -62,12 +62,6 @@ import { branchApi } from "@/services/branchesApi";
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-fit min-w-0">
-          <Link to={`/admin/branches/edit/${row.original._id}`}>
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
-              <FiEdit className="text-[15px]" />
-              <span>Sửa</span>
-            </DropdownMenuItem>
-          </Link>
           <DropdownMenuItem className="flex w-fit items-center gap-2">
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -76,7 +70,7 @@ import { branchApi } from "@/services/branchesApi";
                   onClick={(e) => e.stopPropagation()}
                 >
                   <RiDeleteBin6Line className="text-[15px]" />
-                  <span>Xóa</span>
+                  <span>Xóa hợp đồng</span>
                 </div>
               </AlertDialogTrigger>
               <AlertDialogContent>

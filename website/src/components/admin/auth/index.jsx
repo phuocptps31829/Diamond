@@ -49,7 +49,7 @@ const AuthComponent = () => {
             }
 
             if (role === "DOCTOR") {
-                navigate('/admin/doctordashboard');
+                navigate('/admin/doctor-dashboard');
             }
 
             if (role === "STAFF_RECEPTIONIST") {

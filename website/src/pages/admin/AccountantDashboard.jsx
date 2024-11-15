@@ -12,7 +12,7 @@ const breadcrumbData = [
     title: "Thống kê",
   },
   {
-    href: "/admin/doctordashboard",
+    href: "/admin/doctor-dashboard",
     title: "Bảng điều khiển kế toán",
   },
 ];
@@ -38,21 +38,21 @@ export default function AccountantDashboard() {
 
   if (errorRevenueStatistics || errorallInvoices) {
     const error = errorRevenueStatistics || errorallInvoices;
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <>
-      {isLoadingRevenueStatistics || isLoadingallInvoices ? (
+      { isLoadingRevenueStatistics || isLoadingallInvoices ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
-          <TopStats revenueData={revenueStatistics} />
-          <MiddleCharts revenueData={revenueStatistics.byYear} />
-          <BottomLists allInvoices={allInvoices.data} />
+          <BreadcrumbCustom data={ breadcrumbData } />
+          <TopStats revenueData={ revenueStatistics } />
+          <MiddleCharts revenueData={ revenueStatistics.byYear } />
+          <BottomLists allInvoices={ allInvoices.data } />
         </>
-      )}
+      ) }
     </>
   );
 }

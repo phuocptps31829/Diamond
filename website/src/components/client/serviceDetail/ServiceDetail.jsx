@@ -115,7 +115,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                     <img
                         src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
                         alt={ product?.name }
-                        className="rounded-md object-fill w-full h-full"
+                        className="rounded-md object-cover md:object-fill w-full h-full"
                     />
                 </div>
                 <div className="flex pt-4 flex-col items-start justify-between w-full text-start">

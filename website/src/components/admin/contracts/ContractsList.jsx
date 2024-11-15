@@ -3,12 +3,12 @@ import Loading from "@/components/ui/Loading";
 import NotFound from "@/components/ui/NotFound";
 import { columns } from "./table/columns";
 import DataTable from "./table";
-import { branchApi } from "@/services/branchesApi";
+import { contractApi } from "@/services/contractApi";
 
 const ContractsList = () => {
   const { data, error, isLoading } = useQuery({
-    queryKey: ["branches"],
-    queryFn: () => branchApi.getAllBranches({ limit: 999 }),
+    queryKey: ["contracts"],
+    queryFn: () => contractApi.getAllContracts(),
     keepPreviousData: true,
   });
 
@@ -20,7 +20,9 @@ const ContractsList = () => {
     return <NotFound />;
   }
 
-  return <DataTable columns={columns} data={data.data} />;
+  console.log("data: ", data);
+  
+  return <DataTable columns={columns} data={data} />;
 };
 
 export default ContractsList;
