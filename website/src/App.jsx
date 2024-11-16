@@ -508,7 +508,6 @@ const router = createBrowserRouter([
         path: "contracts/create/:type",
         element: <ContractsAddPage />,
       },
-
       {
         path: "contracts/edit/:type/:id",
         element: <ContractsEditPage />,

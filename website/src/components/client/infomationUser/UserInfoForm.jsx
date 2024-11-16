@@ -256,10 +256,10 @@ const UserInfoForm = () => {
           </div>
 
           <div className="mt-6 flex h-full w-auto flex-col items-center lg:gap-5 p-4 md:mt-0 md:border-l">
-            <div className="size-36">
+            <div className="w-40 h-40 rounded-full overflow-hidden">
               <img
                 alt={ profileFetched?.data?.fullName }
-                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-cover" />
+                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-contain w-full h-full" />
             </div>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">

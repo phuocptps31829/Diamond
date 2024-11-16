@@ -74,15 +74,15 @@ const GomapDistance = ({ hospitalCoordinates, className }) => {
     );
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${hospitalCoordinates?.lat},${hospitalCoordinates?.lng}`;
   return (
-    <div className={className}>
-      {error && <p className="text-sm text-red-500">{error}</p>}
-      {distance !== null  ? (
+    <div className={ className }>
+      { distance !== null ? (
         <div className="flex items-center gap-4">
-          <p className="text-sm">{distance.toFixed(2)} km</p>
+          { error && <p className="text-sm text-red-500">{ error }</p> }
+          <p className="text-sm">{ distance.toFixed(2) } km</p>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Link to={googleMapsUrl} target="_blank">
+                <Link to={ googleMapsUrl } target="_blank">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
@@ -131,7 +131,7 @@ const GomapDistance = ({ hospitalCoordinates, className }) => {
                 </Link>
               </TooltipTrigger>
               <TooltipContent>
-                <Link to={googleMapsUrl} target="_blank">
+                <Link to={ googleMapsUrl } target="_blank">
                   <p>Vị trí của bạn tới bệnh viện</p>
                 </Link>
               </TooltipContent>
@@ -140,7 +140,7 @@ const GomapDistance = ({ hospitalCoordinates, className }) => {
         </div>
       ) : (
         <AiOutlineLoading3Quarters className="animate-spin text-primary-500" />
-      )}
+      ) }
     </div>
   );
 };

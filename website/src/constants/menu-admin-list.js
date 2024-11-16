@@ -15,7 +15,7 @@ import { FaFileContract } from "react-icons/fa";
 export const getMenuList = (pathname) => [
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR"],
+    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR", "STAFF_ACCOUNTANT"],
     menus: [
       {
         href: "/admin/dashboard",
@@ -26,17 +26,19 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/dashboard",
             label: "Bảng điều khiển quản trị",
-            exceptRoles: ["DOCTOR"],
+            exceptRoles: ["DOCTOR", "STAFF_ACCOUNTANT"],
             active: pathname.includes("/admin/dashboard"),
           },
           {
             href: "/admin/doctor-dashboard",
             label: "Bảng điều khiển bác sĩ",
+            exceptRoles: ["STAFF_ACCOUNTANT"],
             active: pathname.includes("/admin/doctor-dashboard"),
           },
           {
             href: "/admin/accountant-dashboard",
             label: "Bảng điều khiển kế toán",
+            exceptRoles: ["DOCTOR"],
             active: pathname.includes("/admin/accountant-dashboard"),
           },
         ],
@@ -418,7 +420,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["SUPER_ADMIN"],
+    roles: ["SUPER_ADMIN", "STAFF_ACCOUNTANT"],
     menus: [
       {
         href: "",

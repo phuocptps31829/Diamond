@@ -37,6 +37,7 @@ const AuthComponent = () => {
         mutationFn: authApi.getProfileInfo,
         onSuccess: (data) => {
             const role = data.data.role.name;
+            console.log(role, selectedRole, selectedRole !== role);
             if (selectedRole !== role) {
                 toastUI("Bạn không có quyền truy cập mục này.", "warning");
                 return;
@@ -58,6 +59,10 @@ const AuthComponent = () => {
 
             if (role === "STAFF_EDITOR") {
                 navigate('/admin/news/list');
+            }
+
+            if (role === "STAFF_ACCOUNTANT") {
+                navigate('/admin/accountant-dashboard');
             }
 
         },
