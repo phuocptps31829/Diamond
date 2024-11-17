@@ -66,7 +66,7 @@ const ProfileContainer = () => {
           <img
             src={ userProfile?.avatar ? import.meta.env.VITE_IMAGE_API_URL + '/' + userProfile?.avatar : defaultAvatar }
             alt="avatar"
-            className="h-full w-full rounded-full bg-white"
+            className="h-full w-full rounded-full bg-white object-cover"
           />
         </div>
       </div>

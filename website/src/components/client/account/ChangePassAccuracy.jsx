@@ -74,7 +74,6 @@ export default function ChangePassAccuracyComponent() {
     onSuccess: (data) => {
       toastUI("Xác thực thành công!", "success");
       setOtp(new Array(6).fill(""));
-      console.log(data);
       sessionStorage.removeItem("phoneNumberForgot");
       sessionStorage.setItem("otpForgot", data.data.OTP);
       sessionStorage.setItem("otpTokenForgot", data.data.otpToken);

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { toastUI } from "@/components/ui/Toastify";
 import { useReadNumber } from "@/hooks/useReadNumber";
-import VNPAYICON from "../../../assets/images/vnpay.webp";
+import VNPAY_ICON from "../../../assets/images/vnpay.png";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -217,7 +217,7 @@ export default function Form() {
                 className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "vnpay" ? "border-primary-500" : ""
                   }` }
               >
-                <img src={ VNPAYICON } alt="VNPAYICON" className="mr-4 w-[10%]" />
+                <img src={ VNPAY_ICON } alt="VNPAY_ICON" className="mr-4 w-[10%]" />
                 <span>Thanh toán qua VNPay</span>
                 <input
                   type="radio"

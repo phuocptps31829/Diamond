@@ -1,4 +1,4 @@
-import banner from "@/assets/images/homeBannerTin.webp";
+import banner from "@/assets/images/homeBannerTin.png";
 import chPlay from "@/assets/images/ch-play.png";
 import appStore from "@/assets/images/app-store.png";
 import { Link } from "react-router-dom";
