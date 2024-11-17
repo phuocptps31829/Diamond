@@ -6,6 +6,9 @@ import { useLocation, useSearchParams } from "react-router-dom";
 
 import { branchApi } from "@/services/branchesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Input } from "@/components/ui/Input";
+import { IoSearchOutline } from "react-icons/io5";
+import { GrPowerReset } from "react-icons/gr";
 
 const SidebarFilter = ({ filters, onFilterApply }) => {
   const location = useLocation();
@@ -164,14 +167,20 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   return (
     <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
       <div className="box w-full rounded-xl border-gray-300 bg-white p-6">
-        <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
-          <p className="text-base font-medium leading-7 text-black">Lọc</p>
-          <p
+        <div className="mb-7 flex w-full items-center gap-2 justify-between border-b border-gray-200 pb-3">
+        <div className="relative w-full mx-auto">
+      <Input
+        type="search"
+        placeholder="Tìm kiếm..."
+        className="pl-10 pr-4 py-2 rounded-full"
+      />
+      <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+    </div>
+          <GrPowerReset
             onClick={ handleResetFilters }
-            className="cursor-pointer text-sm font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
-          >
-            Làm mới
-          </p>
+            className="cursor-pointer text-3xl font-medium text-gray-500 transition-all duration-500 hover:text-primary-600"
+          />
+           
         </div>
         <div className="mb-3 gap-2 border-b pb-1">
           <p className="mb-3 text-base font-medium leading-6 text-black">
