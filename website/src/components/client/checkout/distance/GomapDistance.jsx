@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const libraries = ["places"];
 const keyGoogleMaps = import.meta.env.VITE_GOOGLE_MAP_KEY;
-const GomapDistance = ({ hospitalCoordinates, className }) => {
+const GomapDistance = ({ hospitalCoordinates, className,room }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: keyGoogleMaps,
     libraries,
@@ -20,7 +20,7 @@ const GomapDistance = ({ hospitalCoordinates, className }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isLoaded || !hospitalCoordinates) return;
+    if (!isLoaded || !hospitalCoordinates ) return;
 
     const calculateDistance = (patientCoordinates) => {
       const service = new window.google.maps.DistanceMatrixService();
@@ -63,10 +63,9 @@ const GomapDistance = ({ hospitalCoordinates, className }) => {
     };
 
     getPatientLocation();
-  }, [isLoaded, hospitalCoordinates]);
+  }, [isLoaded, hospitalCoordinates, room]);
 
-
-  if (!isLoaded || !hospitalCoordinates)
+  if (!room || !isLoaded || !hospitalCoordinates || distance === null)
     return (
       <div>
         <AiOutlineLoading3Quarters className="animate-spin text-primary-500" />

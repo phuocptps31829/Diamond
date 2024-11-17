@@ -44,7 +44,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 font-medium">
-        <span className="block ">{row.original.invoiceCode}</span>
+        <span className="block">{row.original.invoiceCode}</span>
       </div>
     ),
   },
@@ -64,7 +64,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 font-medium">
-        <span className="block ">{row.original.patient.fullName}</span>
+        <span className="block">{row.original.patient.fullName}</span>
       </div>
     ),
   },
@@ -84,12 +84,11 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 font-medium">
-        <span className="block ">
-          {formatCurrency(row.original.price)}
-        </span>
+        <span className="block">{formatCurrency(row.original.price)}</span>
       </div>
     ),
   },
+
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
@@ -106,12 +105,38 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 font-medium">
-        <span className="block ">
+        <span className="block">
           {new Date(row.original.createdAt).toLocaleDateString()}
         </span>
       </div>
     ),
   },
+  {
+    accessorKey: "file",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        className="px-0 text-base"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Tệp hóa đơn
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full">
+        <a
+          href={`${import.meta.env.VITE_CUD_API_URL}/invoices/export?id=${row.original._id}`}
+          download
+          target="_blank"
+          className="whitespace w-full text-blue-500 underline"
+        >
+          {row.original.invoiceCode}
+        </a>
+      </div>
+    ),
+  },
+
   {
     id: "actions",
     enableHiding: false,

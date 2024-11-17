@@ -9,56 +9,60 @@ import { useNavigate } from "react-router-dom";
 import SpinLoader from "@/components/ui/SpinLoader";
 import SignatureCanvas from "react-signature-canvas";
 import { Label } from "@/components/ui/Label";
-import SelectDoctor from "../select/SelectDoctor";
-import SelectDate from "../select/SelectDate";
-import SelectBranch from "../select/SelectBranch";
-import { contractDoctorSchema } from "@/zods/admin/contractAdmin";
+import { contractServiceRentalSchema } from "@/zods/admin/contractAdmin";
 import { contractApi } from "@/services/contractApi";
+import SelectDate from "../select/SelectDate";
+import SelectBank from "../select/SelectBank";
 
-const ContractsDoctorSurgeonAdd = () => {
+const ContractsServiceRentalAdd = () => {
   const [isPending, setIsPending] = useState(false);
   const sigCanvas = useRef({});
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const combineDateTime = (date, time) => {
-    return `${date}T${time}:00.000`;
-  };
 
   const getCurrentDateTime = () => {
     const now = new Date();
     const date = now.toISOString().split("T")[0];
     const time = now.toTimeString().split(" ")[0].slice(0, 5);
-    return combineDateTime(date, time);
+    return `${date}T${time}:00.000`;
   };
+
   const {
     handleSubmit,
     formState: { errors },
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(contractDoctorSchema),
+    resolver: zodResolver(contractServiceRentalSchema),
     defaultValues: {
-      doctorID: "",
-      hospitalID: "",
+      accountNumber: "",
+      bankName: "",
+      accountName: "",
+      tin: "",
       startDate: "",
       endDate: "",
-      address: "",
+      phone: "",
+      position: "",
+      agent: "",
       price: "",
-      isInternal: true,
+      address: "",
+      title: "Hợp Đồng Y tế",
+      time: "",
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (contractData) => contractApi.createContractDoctor(contractData),
+    mutationFn: (contractData) =>
+      contractApi.createContractHealthCare(contractData),
     onSuccess: () => {
       queryClient.invalidateQueries("contracts");
-      toastUI("Thêm Hợp đồng bác sĩ ngoại khoa thành công.", "success");
+      toastUI("Thêm hợp đồng thuê dịch vụ thành công.", "success");
       reset();
       sigCanvas.current.clear();
       navigate("/admin/contracts/list");
     },
     onError: (error) => {
-      toastUI("Thêm Hợp đồng bác sĩ ngoại khoa thất bại.", "error");
+      toastUI("Thêm hợp đồng thuê dịch vụ thất bại.", "error");
       console.error("Error creating contract:", error);
     },
   });
@@ -66,6 +70,7 @@ const ContractsDoctorSurgeonAdd = () => {
   const clearSignature = () => {
     sigCanvas.current.clear();
   };
+
   const onSubmit = async (data) => {
     const canvas = sigCanvas.current.getTrimmedCanvas();
     const isCanvas = sigCanvas.current.isEmpty();
@@ -74,19 +79,12 @@ const ContractsDoctorSurgeonAdd = () => {
       return;
     }
     canvas.toBlob(async (blob) => {
-      console.log("%cSignature Blob:", "font-weight: bold;", blob);
-
       const formData = new FormData();
       formData.append("file", blob, "signature.png");
-      formData.append("doctorID", data.doctorID);
-      formData.append("hospitalID", data.hospitalID);
-      formData.append("startDate", data.startDate);
-      formData.append("endDate", data.endDate);
+      Object.keys(data).forEach((key) => formData.append(key, data[key]));
       formData.append("time", getCurrentDateTime());
-      formData.append("title", "Hợp đồng bác sĩ cơ hữu");
-      formData.append("address", data.address);
-      formData.append("price", data.price);
-      formData.append("isInternal", data.isInternal);
+      formData.append("title", "Hợp đồng thuê dịch vụ");
+
       setIsPending(true);
       mutation.mutate(formData);
     });
@@ -95,27 +93,9 @@ const ContractsDoctorSurgeonAdd = () => {
   return (
     <div className="w-full">
       <div className="rounded-xl bg-white px-6 py-6">
-        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
-          Hợp đồng bác sĩ ngoại khoa
-        </h1>
+        <h1 className="mb-5 text-2xl font-bold">Hợp đồng thuê dịch vụ</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2 grid grid-cols-1 gap-5 md:grid-cols-2">
-            <div className="w-full">
-              <SelectDoctor
-                control={control}
-                name="doctorID"
-                errors={errors}
-                onChange={(value) => console.log("Selected doctor:", value)}
-              />
-            </div>
-            <div className="w-full">
-              <SelectBranch
-                control={control}
-                name="hospitalID"
-                errors={errors}
-                onChange={(value) => console.log("Selected hospital:", value)}
-              />
-            </div>
             <div className="w-full">
               <SelectDate
                 control={control}
@@ -133,45 +113,92 @@ const ContractsDoctorSurgeonAdd = () => {
                 onChange={(value) => console.log("Selected end date:", value)}
               />
             </div>
-            <div className="w-full">
-              <InputCustom
-                id="title"
-                type="text"
-                name="title"
-                disabled={true}
-                label="Tiêu đề:"
-                placeholder="Hợp đồng bác sĩ ngoại khoa"
-                value="Hợp đồng bác sĩ cơ hữu"
-                control={control}
-                errors={errors}
-              />
-            </div>
+
+            <InputCustom
+              id="accountNumber"
+              type="text"
+              name="accountNumber"
+              label="Số tài khoản:"
+              placeholder="Nhập số tài khoản"
+              control={control}
+              errors={errors}
+            />
 
             <div className="w-full">
-              <InputCustom
-                id="price"
-                type="text"
-                name="price"
-                label="Nhập lương:"
-                placeholder="Nhập lương bác sĩ"
+              <Label className="mb-3 block">Ngân hàng:</Label>
+              <SelectBank
                 control={control}
+                name="bankName"
                 errors={errors}
+                onChange={(value) => console.log("Selected bank name:", value)}
               />
             </div>
-          </div>
-          <div className="mt-1 w-full">
             <InputCustom
-              id="address"
+              id="accountName"
               type="text"
-              name="address"
-              label="Địa điểm ký hợp đồng:"
-              placeholder="Nhập địa điểm ký hợp đồng"
+              name="accountName"
+              label="Tên chủ tài khoản:"
+              placeholder="Nhập tên chủ tài khoản"
+              control={control}
+              errors={errors}
+            />
+            <InputCustom
+              id="tin"
+              type="text"
+              name="tin"
+              label="Mã số thuế:"
+              placeholder="Nhập mã số thuế"
+              control={control}
+              errors={errors}
+            />
+            <InputCustom
+              id="phone"
+              type="text"
+              name="phone"
+              label="Số điện thoại:"
+              placeholder="Nhập số điện thoại"
+              control={control}
+              errors={errors}
+            />
+            <InputCustom
+              id="position"
+              type="text"
+              name="position"
+              label="Vị trí:"
+              placeholder="Nhập vị trí công việc"
+              control={control}
+              errors={errors}
+            />
+            <InputCustom
+              id="agent"
+              type="text"
+              name="agent"
+              label="Người đại diện:"
+              placeholder="Nhập tên người đại diện"
+              control={control}
+              errors={errors}
+            />
+            <InputCustom
+              id="price"
+              type="text"
+              name="price"
+              label="Giá trị hợp đồng:"
+              placeholder="Nhập giá trị hợp đồng"
               control={control}
               errors={errors}
             />
           </div>
+          <InputCustom
+            id="address"
+            type="text"
+            name="address"
+            label="Địa chỉ:"
+            placeholder="Nhập địa chỉ"
+            control={control}
+            errors={errors}
+          />
           <div className="my-4">
-            <Label className="mb-1">Chữ kí:</Label>
+            <Label className="mb-1">Chữ ký:</Label>
             <SignatureCanvas
               penColor="black"
               canvasProps={{
@@ -185,18 +212,16 @@ const ContractsDoctorSurgeonAdd = () => {
               </Button>
             </div>
           </div>
-          <div className="mt-10 w-full text-end">
+          <div className="mt-10 text-end">
             <Button
               type="submit"
               disabled={isPending || mutation.isPending}
               variant="custom"
             >
               {isPending || mutation.isPending ? (
-                <>
-                  <SpinLoader />
-                </>
+                <SpinLoader />
               ) : (
-                "Thêm Hợp đồng bác sĩ ngoại khoa"
+                "Thêm Hợp đồng thuê dịch vụ"
               )}
             </Button>
           </div>
@@ -206,4 +231,4 @@ const ContractsDoctorSurgeonAdd = () => {
   );
 };
 
-export default ContractsDoctorSurgeonAdd;
+export default ContractsServiceRentalAdd;

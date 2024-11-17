@@ -520,6 +520,7 @@ export default function Form() {
                     <div className="absolute right-0 top-0 flex h-full items-center pr-3">
                       <GomapDistance
                         className="w-full"
+                        room={getCurSelectedProduct()?.bookingDetail?.clinic}
                         hospitalCoordinates={
                           getCurSelectedProduct()?.bookingDetail?.coordinates
                         }

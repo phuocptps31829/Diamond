@@ -118,6 +118,7 @@ export const columns = [
         <a
           href={`${import.meta.env.VITE_CUD_API_URL}/contracts/export/${row.original._id}`}
           download
+          target="_blank"
           className="whitespace w-full text-blue-500 underline"
         >
           {row.original.file}
