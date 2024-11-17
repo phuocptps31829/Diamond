@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/Label";
 import SelectDoctor from "../select/SelectDoctor";
 import SelectDate from "../select/SelectDate";
 import SelectBranch from "../select/SelectBranch";
-import { contractSchema } from "@/zods/admin/contractAdmin";
+import { contractDoctorSchema } from "@/zods/admin/contractAdmin";
 import { contractApi } from "@/services/contractApi";
 
 const ContractsDoctorInternistAdd = () => {
@@ -36,7 +36,7 @@ const ContractsDoctorInternistAdd = () => {
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(contractSchema),
+    resolver: zodResolver(contractDoctorSchema),
     defaultValues: {
       doctorID: "",
       hospitalID: "",
@@ -49,7 +49,7 @@ const ContractsDoctorInternistAdd = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: (contractData) => contractApi.createContract(contractData),
+    mutationFn: (contractData) => contractApi.createContractDoctor(contractData),
     onSuccess: () => {
       queryClient.invalidateQueries("contracts");
       toastUI("Thêm Hợp đồng bác sĩ cơ hữu thành công.", "success");

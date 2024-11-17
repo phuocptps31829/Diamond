@@ -6,7 +6,7 @@ export const invoicesApi = {
     return res.data.data;
   },
   getAllInvoices: async () => {
-    const res = await axiosInstanceGET.get("/invoices??noPaginated=true");
+    const res = await axiosInstanceGET.get("/invoices?noPaginated=true");
     return res.data;
   },
   updateStatus: async (id, status) => {

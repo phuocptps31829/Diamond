@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import ContractsClinicAdd from "@/components/admin/contracts/create/ContractsClinicAdd";
+import ContractsClinicAdd from "@/components/admin/contracts/create/ContractsServiceRentalAdd";
 import ContractsDoctorInternistAdd from "@/components/admin/contracts/create/ContractsDoctorInternistAdd";
 import ContractsDoctorSurgeonAdd from "@/components/admin/contracts/create/ContractsDoctorSurgeonAdd";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
