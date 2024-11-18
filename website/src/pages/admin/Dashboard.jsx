@@ -8,8 +8,8 @@ import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
 import NotFound from '@/components/ui/NotFound';
 import Loading from '@/components/ui/Loading';
 import { appointmentApi } from '@/services/appointmentsApi';
-import { getAllSpecialties } from '@/services/specialtiesApi';
 import { newsApi } from '@/services/newsApi';
+import { specialtyApi } from '@/services/specialtiesApi';
 
 const breadcrumbData = [
     {
@@ -55,7 +55,7 @@ export default function Dashboard() {
         isLoading: isLoadingSpecialties,
     } = useQuery({
         queryKey: ['specialties'],
-        queryFn: getAllSpecialties,
+        queryFn: specialtyApi.getAllSpecialties,
     });
 
     const {
@@ -105,37 +105,37 @@ export default function Dashboard() {
         errorAppointmentsByAges
     ) {
         const error = errorAllNews || errorPatients || errorAppointments || errorInvoices || errorTotalPatientsBySpecialty || errorSpecialties || errorUpcomingAppointments || errorAppointmentsByAges;
-        return <NotFound message={error.message}  />;
+        return <NotFound message={ error.message } />;
     }
 
     return (
         <>
-            {isLoadingNews ||
-            isLoadingPatients ||
-            isLoadingAppointments ||
-            isLoadingInvoices ||
-            isLoadingTotalPatientsBySpecialty ||
-            isLoadingSpecialties ||
-            isLoadingUpcomingAppointments ||
-            isLoadingAppointmentsByAges ? (
+            { isLoadingNews ||
+                isLoadingPatients ||
+                isLoadingAppointments ||
+                isLoadingInvoices ||
+                isLoadingTotalPatientsBySpecialty ||
+                isLoadingSpecialties ||
+                isLoadingUpcomingAppointments ||
+                isLoadingAppointmentsByAges ? (
                 <Loading />
             ) : (
                 <>
-                    <BreadcrumbCustom data={breadcrumbData} />
+                    <BreadcrumbCustom data={ breadcrumbData } />
                     <TopStats
-                        allNews={allNews}
-                        allPatients={allPatients?.data}
-                        allAppointments={allAppointments?.data}
-                        allInvoices={allInvoices?.data}
+                        allNews={ allNews }
+                        allPatients={ allPatients?.data }
+                        allAppointments={ allAppointments?.data }
+                        allInvoices={ allInvoices?.data }
                     />
                     <MiddleCharts
-                        dataTotalPatients={totalPatientsBySpecialty}
-                        dataAllSpecialties={allSpecialties}
-                        dataPatientsByAges={appointmentsByAges}
+                        dataTotalPatients={ totalPatientsBySpecialty }
+                        dataAllSpecialties={ allSpecialties }
+                        dataPatientsByAges={ appointmentsByAges }
                     />
-                    <BottomLists dataUpcomingAppointments={upcomingAppointments} />
+                    <BottomLists dataUpcomingAppointments={ upcomingAppointments } />
                 </>
-            )}
+            ) }
         </>
     );
 }

@@ -5,9 +5,7 @@ export const prescriptionApi = {
         const res = await axiosInstanceGET.get("/prescriptions");
         return res.data;
     },
- 
-   
-  
+
     addPrescription: async (data) => {
         try {
             const res = await axiosInstanceCUD.post("/prescriptions/add", data, {
@@ -32,7 +30,7 @@ export const prescriptionApi = {
     },
     deletePrescriptionMultiple: async (ids) => {
         try {
-            const res = await axiosInstanceCUD.post(`/v1/prescriptions/delete-in-id`, 
+            const res = await axiosInstanceCUD.post(`/v1/prescriptions/delete-in-id`,
                 {
                     ids: [...ids],
                 }

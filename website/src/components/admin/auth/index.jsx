@@ -167,6 +167,9 @@ const AuthComponent = () => {
                             className="mt-5 mb-3 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-base font-semibold text-white hover:bg-primary-500"
                         >
                             Đăng nhập
+                            { isPendingLogin && (
+                                <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+                            ) }
                         </button>
                         <div className="flex items-center justify-center">
                             <Link
