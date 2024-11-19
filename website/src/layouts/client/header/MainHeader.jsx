@@ -72,6 +72,7 @@ export default function MainHeader() {
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
   const tooltipTimeoutRef = useRef(null);
   const handleLogout = () => {
     dispatch(logoutAction());
@@ -116,125 +117,106 @@ export default function MainHeader() {
             <li className="px-5">|</li>
             <li className="h-auto">
               {userProfile ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <div className="flex w-full items-center justify-center">
+                <div className="relative">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="flex w-full items-center justify-center">
                       <div className="mr-3 flex flex-col items-start justify-center">
-                        <p className="">Xin chào</p>
-                        <p className="">
-                          {userProfile?.fullName.split(" ").at(-1)}{" "}
-                        </p>
+                        <p>Xin chào</p>
+                        <p>{userProfile?.fullName.split(" ").at(-1)} </p>
                       </div>
-                      <TooltipProvider>
-                        <Tooltip open={isTooltipOpen}>
-                          <TooltipTrigger asChild>
-                            <div
-                              className="relative inline-block"
-                              onMouseEnter={handleMouseEnter}
-                              onMouseLeave={handleMouseLeave}
-                            >
-                              <Avatar>
-                                <AvatarImage
-                                  className="cursor-pointer"
-                                  src={
-                                    userProfile?.avatar
-                                      ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
-                                      : "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
-                                  }
-                                />
-                              </Avatar>
-                              <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
+                      <div className="relative">
+                        <Avatar>
+                          <AvatarImage
+                            className="cursor-pointer"
+                            src={
+                              userProfile?.avatar
+                                ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
+                                : "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
+                            }
+                          />
+                        </Avatar>
+                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="mt-1">
+                      <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <Link to={"/profile/information"}>
+                        <DropdownMenuItem>
+                          <FaRegUser className="mr-2" />
+                          Thông tin
+                        </DropdownMenuItem>
+                      </Link>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleLogout}>
+                        <FaPowerOff className="mr-2" />
+                        Đăng xuất
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                              {hasAppointments && (
-                                <>
-                                  <Badge
-                                    variant="destructive"
-                                    className="absolute -right-2 -top-2 z-20 flex h-5 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
-                                  >
-                                    {appointments.length}
-                                  </Badge>
-                                </>
-                              )}
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent
-                            side="bottom"
-                            className="bottom mt-2 rounded-xl border border-gray-200 p-0 shadow-2xl"
+                  {hasAppointments && (
+                    <TooltipProvider>
+                      <Tooltip open={isTooltipOpen}>
+                        <TooltipTrigger asChild>
+                          <div
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
-                            <div className="max-w-xs bg-white p-4">
-                              <div className="mb-2 flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                  <IoCalendarOutline className="h-5 w-5 text-primary-500" />
-                                  <h3 className="text-sm font-semibold text-black">
-                                    Lịch hẹn khám bệnh
-                                  </h3>
-                                </div>
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Link
-                                        href="/appointments"
-                                        className="ml-1 rounded-full p-1 text-primary-500 transition-colors hover:bg-gray-100 hover:text-primary-700"
-                                        aria-label="Xem chi tiết lịch hẹn"
-                                      >
-                                        <FaExternalLinkAlt className="h-4 w-4" />
-                                      </Link>
-                                    </TooltipTrigger>
-                                    <TooltipContent
-                                      side="top"
-                                      className="bg-gray-800 px-2 py-1 text-xs text-white"
-                                    >
-                                      Xem chi tiết lịch hẹn
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
+                            <Badge
+                              variant="destructive"
+                              className="absolute -right-2 -top-2 z-20 flex h-5 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
+                            >
+                              {appointments.length}
+                            </Badge>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="bottom"
+                          className="bottom mt-[9px] rounded-xl border border-gray-200 p-0 shadow-2xl"
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                        >
+                          <div className="max-w-xs bg-white p-4">
+                            <div className="mb-2 flex items-center justify-between">
+                              <div className="flex items-center space-x-2">
+                                <IoCalendarOutline className="h-5 w-5 text-primary-500" />
+                                <h3 className="text-sm font-semibold text-black">
+                                  Lịch hẹn khám bệnh
+                                </h3>
                               </div>
-                              {hasAppointments ? (
-                                <ul className="space-y-2">
-                                  {appointments.map((appointment) => (
-                                    <li
-                                      key={appointment.id}
-                                      className="text-sm"
-                                    >
-                                      <p className="text-start font-medium text-black">
-                                        {appointment.date} - {appointment.time}
-                                      </p>
-                                      <p className="text-start text-gray-600">
-                                        Bác sĩ: {appointment.doctor}
-                                      </p>
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <p className="text-sm text-gray-600">
-                                  Bạn không có lịch hẹn nào.
-                                </p>
-                              )}
+                              <Link
+                                to="/appointments"
+                                className="ml-1 rounded-full p-1 text-primary-500 transition-colors hover:bg-gray-100 hover:text-primary-700"
+                                aria-label="Xem chi tiết lịch hẹn"
+                              >
+                                <FaExternalLinkAlt className="h-4 w-4" />
+                              </Link>
                             </div>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="mt-1">
-                    <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <Link to={"/profile/information"}>
-                      <DropdownMenuItem>
-                        {" "}
-                        <FaRegUser className="mr-2" />
-                        Thông tin
-                      </DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <FaPowerOff className="mr-2" />
-                      Đăng xuất
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                            {hasAppointments ? (
+                              <ul className="space-y-2">
+                                {appointments.map((appointment) => (
+                                  <li key={appointment.id} className="text-sm">
+                                    <p className="text-start font-medium text-black">
+                                      {appointment.date} - {appointment.time}
+                                    </p>
+                                    <p className="text-start text-gray-600">
+                                      Bác sĩ: {appointment.doctor}
+                                    </p>
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-sm text-gray-600">
+                                Bạn không có lịch hẹn nào.
+                              </p>
+                            )}
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
               ) : (
                 <Link
                   to={"/login"}
