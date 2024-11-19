@@ -21,6 +21,11 @@ export const specialtyApi = {
     console.log("specialties data by id: ", res.data.data);
     return res.data.data;
   },
+  getAllSpecialtiesWithServices: async () => {
+    const res = await axiosInstanceGET.get('/specialties/specialties-with-services');
+    console.log(res.data.data);
+    return res.data.data;
+  },
   createSpecialty: async (newSpecialty) => {
     const res = await axiosInstanceCUD.post(
       '/specialties/add',

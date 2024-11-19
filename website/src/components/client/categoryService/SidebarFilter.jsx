@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { getAllSpecialties, specialtyApi } from "@/services/specialtiesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -9,6 +8,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Input } from "@/components/ui/Input";
 import { IoSearchOutline } from "react-icons/io5";
 import { GrPowerReset } from "react-icons/gr";
+import { specialtyApi } from "@/services/specialtiesApi";
 
 const SidebarFilter = ({ filters, onFilterApply }) => {
   const location = useLocation();

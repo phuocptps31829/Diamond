@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllSpecialties } from "@/services/specialtiesApi";
+import { specialtyApi } from "@/services/specialtiesApi";
 
 export default function SelectSpecialty({ control, name, errors, disabled, onChange }) {
   const [open, setOpen] = React.useState(false);
@@ -26,7 +26,7 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
     isLoading,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: () => getAllSpecialties(),
+    queryFn: () => () => specialtyApi.getAllSpecialties(),
   });
 
   if (isLoading) {

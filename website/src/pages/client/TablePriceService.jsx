@@ -3,8 +3,7 @@ import ListServiceBanner from "../../components/client/priceListService/ListServ
 import PriceServiceContainer from "../../components/client/priceListService/PriceServiceContainer";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import NotFound from "@/components/ui/NotFound";
-
-import { getAllSpecialtiesWithServices } from "@/services/specialtiesApi";
+import { specialtyApi } from "@/services/specialtiesApi";
 
 const TablePriceService = () => {
   useScrollToTop();
@@ -15,17 +14,17 @@ const TablePriceService = () => {
     isLoading: specialtyLoading,
   } = useQuery({
     queryKey: ["specialtyWithService"],
-    queryFn: getAllSpecialtiesWithServices,
+    queryFn: specialtyApi.getAllSpecialtiesWithServices,
   });
 
-  if (specialtyError) return <NotFound message={specialtyError.message} />;
+  if (specialtyError) return <NotFound message={ specialtyError.message } />;
 
   return (
     <div>
       <ListServiceBanner />
       <PriceServiceContainer
-        specialtyWithService={specialtyWithService}
-        isLoading={specialtyLoading}
+        specialtyWithService={ specialtyWithService }
+        isLoading={ specialtyLoading }
       />
     </div>
   );
