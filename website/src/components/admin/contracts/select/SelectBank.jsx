@@ -37,6 +37,8 @@ export default function SelectBank({ control, name, errors, onChange }) {
         name={name}
         rules={{ required: "Vui lòng chọn ngân hàng" }}
         render={({ field }) => {
+          console.log("Selected bank name:", field.value);
+
           return (
             <Popover open={open} onOpenChange={setOpen}>
               <PopoverTrigger asChild>
@@ -50,13 +52,37 @@ export default function SelectBank({ control, name, errors, onChange }) {
                   )}
                 >
                   {field.value ? (
-                    optionsBank.find((bank) => bank.id === field.value)?.name
+                    <div className="flex items-center">
+                      <img
+                        src={
+                          optionsBank.find(
+                            (bank) => bank.shortName === field.value
+                          )?.logo
+                        }
+                        alt="logo"
+                        className="mr-2 h-6 w-fit object-cover"
+                      />
+                      <span>
+                        {
+                          optionsBank.find(
+                            (bank) => bank.shortName === field.value
+                          )?.shortName
+                        }{" "}
+                        -{" "}
+                        {
+                          optionsBank.find(
+                            (bank) => bank.shortName === field.value
+                          )?.name
+                        }
+                      </span>
+                    </div>
                   ) : (
                     <span className="text-gray-600">Chọn ngân hàng</span>
                   )}
                   <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
+
               <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
                 <Command>
                   <CommandInput placeholder="Nhập tên ngân hàng" />
@@ -81,7 +107,12 @@ export default function SelectBank({ control, name, errors, onChange }) {
                                 : "opacity-0"
                             )}
                           />
-                          {bank.name}
+                          <img
+                            src={bank.logo}
+                            alt={bank.shortName}
+                            className="mr-2 h-6 w-fit object-cover"
+                          />
+                          {bank.shortName}
                         </CommandItem>
                       ))}
                     </CommandGroup>
