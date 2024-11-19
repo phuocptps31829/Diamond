@@ -164,6 +164,7 @@ const SupportComponent = () => {
   };
 
   const onSubmit = (event) => {
+    if(!message.trim()) return;
     event.preventDefault();
     sendEvent(
       "newMessageAdmin",

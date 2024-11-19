@@ -7,7 +7,7 @@ const UserProfileHeader = () => {
   return (
     <>
       <View className="bg-white relative pt-14 px-5 pb-5">
-        <View className="w-[450px] h-[90%] bg-[#007BBB] rounded-b-full absolute -left-9 -top-12"></View>
+        <View className="w-[450px] h-[90%] bg-[#007BBB] rounded-b-full absolute -left-9 -top-8"></View>
         <TouchableOpacity
           className="flex-columns items-center justify-center gap-2"
           onPress={ () => {
@@ -26,7 +26,7 @@ const UserProfileHeader = () => {
           </Text>
           <Text>{ profile.phoneNumber }</Text>
           <Text className="underline">
-            ID: { profile.otherInfo.patientCode }
+            ID: { profile.otherInfo.patientCode || "Trống" }
           </Text>
         </View>
       </View>

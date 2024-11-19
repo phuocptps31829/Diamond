@@ -77,7 +77,7 @@ export default function News() {
           <div className="mt-3 flex flex-col gap-5 md:flex-row">
             <div className="w-full lg:max-w-[60%]">
               <NewsCard
-                newsItem={ newsData[newsData.length - 1] }
+                newsItem={ newsData[0] }
                 className="flex-col overflow-hidden rounded-md md:row-span-3 md:grid-rows-subgrid"
                 firstNews={ true }
                 colorWhite={ true }
@@ -85,8 +85,7 @@ export default function News() {
             </div>
             <div className="flex flex-col gap-5">
               { newsData
-                .slice(newsData.length - 6, newsData.length - 1)
-                .reverse()
+                .slice(1, 6)
                 .map((newsItem, index) => (
                   <NewsCard
                     key={ index }

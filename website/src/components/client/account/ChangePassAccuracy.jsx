@@ -77,6 +77,8 @@ export default function ChangePassAccuracyComponent() {
       sessionStorage.removeItem("phoneNumberForgot");
       sessionStorage.setItem("otpForgot", data.data.OTP);
       sessionStorage.setItem("otpTokenForgot", data.data.otpToken);
+      setOtp(new Array(6).fill(""));
+      sessionStorage.removeItem("phoneNumberForgot");
       navigate("/change-password");
     },
     onError: (error) => {
@@ -147,7 +149,7 @@ export default function ChangePassAccuracyComponent() {
       <div className="w-full max-w-2xl">
         <div className="grid grid-cols-1">
           {/* FORM */ }
-          <div className="bg-white px-5 py-6 md:px-11 md:py-10 rounded-md">
+          <div className="rounded-md bg-white px-5 py-6 md:px-11 md:py-10">
             <h1 className="mb-4 text-center text-3xl font-bold md:text-4xl">
               Xác thực tài khoản
             </h1>

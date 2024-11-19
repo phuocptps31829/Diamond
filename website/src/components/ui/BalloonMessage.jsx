@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatComponent from "@/components/client/chat";
 import { IoChatbubbles } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,6 +16,23 @@ import {
 const BalloonMessage = () => {
   const [showChat, setShowChat] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (showChat && window.innerWidth < 640) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      document.body.style.overflow = "auto";
+    };
+  }, [showChat]);
 
   return (
     <TooltipProvider>

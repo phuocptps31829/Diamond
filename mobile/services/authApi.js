@@ -22,8 +22,23 @@ export const authApi = {
     return res.data;
   },
 
+  sendOtpForgotPassword: async (phone) => {
+    const res = await axiosInstanceCUD.post(`${'/auth/forgot-password/send-otp'}/${phone}`);
+    return res.data;
+  },
+
   otpUserVerification: async (data) => {
     const res = await axiosInstanceCUD.post('/patients/add', data);
     return res.data;
   },
+
+  checkOtpForgotPassword: async (data) => {
+    const res = await axiosInstanceCUD.post('/auth/forgot-password/check-otp', data);
+    return res.data;
+  },
+
+  changePasswordForgot: async (data) => {
+    const res = await axiosInstanceCUD.put('/auth/forgot-password/reset-password', data);
+    return res.data;
+  }
 };

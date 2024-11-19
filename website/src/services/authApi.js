@@ -34,7 +34,6 @@ export const authApi = {
   },
   sendOtpForgotPassword: async (phone) => {
     const res = await axiosInstanceCUD.post(`${'/auth/forgot-password/send-otp'}/${phone}`);
-    console.log(res.data);
     return res.data;
   },
   checkOtpForgotPassword: async (data) => {

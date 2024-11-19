@@ -86,7 +86,7 @@ const SignUp = () => {
       ToastUI({
         type: "success",
         text1: "Đăng ký thành công",
-        text2: "Vui lòng kiểm tra tin nhắn để xác thực tài khoản.",
+        text2: "Mã OTP sẽ được gửi đến số điện thoại của bạn qua cuộc gọi.",
       });
       setVerifyOtp(true);
       setSendOtpAgain(true);
@@ -114,7 +114,7 @@ const SignUp = () => {
       ToastUI({
         type: "success",
         text1: "Gửi lại mã OTP thành công",
-        text2: "Vui lòng chờ trong giây lát để nhận mã OTP mới.",
+        text2: "Mã OTP sẽ được gửi đến số điện thoại của bạn qua cuộc gọi.",
       });
       setSendOtpAgain(true);
     },

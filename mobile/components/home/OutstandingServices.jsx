@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { URL_IMAGE } from "../../configs/variables";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const OutstandingServices = ({ listServices }) => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const OutstandingServices = ({ listServices }) => {
 
   return (
     <>
-      <View className="bg-white py-4 pb-8">
+      <View className="py-4 pb-8">
         <View className="flex items-center justify-between flex-row px-4">
           <Text className="font-semibold text-[#929292]">
             Gói dịch vụ nổi bật
@@ -33,9 +33,7 @@ const OutstandingServices = ({ listServices }) => {
         </View>
         <View>
           <FlatList
-            data={ listServices
-              .sort((a, b) => b.orderCount - a.orderCount)
-              .slice(0, 15) }
+            data={ listServices }
             className="mt-6"
             contentContainerStyle={ { paddingHorizontal: 16 } }
             renderItem={ ({ item, index }) => (
@@ -47,11 +45,11 @@ const OutstandingServices = ({ listServices }) => {
               >
                 <Image
                   source={ {
-                    uri: URL_IMAGE + item?.image,
+                    uri: URL_IMAGE + "/" + item?.image,
                   } }
                   style={ [{ height: 170, borderRadius: 15 }] }
                 />
-                <Text className="absolute bottom-0 left-0 right-0 bg-[#00000085] py-3 text-center text-white font-semibold">
+                <Text numberOfLines={1} className="absolute bottom-0 left-0 right-0 bg-[#006ca69f] py-3 text-center px-4 text-white font-semibold">
                   { item?.name }
                 </Text>
               </TouchableOpacity>
