@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { URL_IMAGE } from "../../configs/variables";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const pairData = (data) => {
   const paired = [];
@@ -36,11 +36,7 @@ const OutstandingPackages = ({ listPackages }) => {
       </View>
       <View>
         <FlatList
-          data={ pairData(
-            listPackages
-              .sort((a, b) => b.orderCount - a.orderCount)
-              .slice(0, 15)
-          ) }
+          data={ pairData(listPackages.sort((a, b) => b.orderCount - a.orderCount).slice(0, 10)) }
           className="mt-6"
           contentContainerStyle={ { paddingHorizontal: 16 } }
           renderItem={ ({ item }) => (
@@ -54,10 +50,13 @@ const OutstandingPackages = ({ listPackages }) => {
                 >
                   <Image
                     source={ {
-                      uri: URL_IMAGE + pkg.image,
+                      uri: URL_IMAGE + "/" + pkg.image,
                     } }
                     style={ [{ height: 150, borderRadius: 15 }] }
                   />
+                  <Text numberOfLines={1} className="absolute bottom-0 left-0 right-0 bg-[#006ca69f] py-3 text-center px-4 text-white font-semibold">
+                  { pkg?.name }
+                </Text>
                 </TouchableOpacity>
               )) }
             </View>

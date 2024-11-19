@@ -2,7 +2,7 @@ import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
 export const newsApi = {
   getAllNews: async () => {
-    const res = await axiosInstanceGET.get("/news");
+    const res = await axiosInstanceGET.get("/news?noPaginated=true");
     return res.data.data;
   },
 

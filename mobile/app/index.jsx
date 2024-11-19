@@ -33,25 +33,20 @@ const Index = () => {
   useEffect(() => {
     setLoading(true);
     const handleLocation = async () => {
-      const storedLocation = await AsyncStorage.getItem("userLocation");
-
-      if (!storedLocation) {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          console.log("Permission to access location was denied");
-          return;
-        }
-
-        let currentLocation = await Location.getCurrentPositionAsync({});
-        const locationData = {
-          latitude: currentLocation.coords.latitude,
-          longitude: currentLocation.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-
-        await storeLocation(locationData);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
       }
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      const locationData = {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
+
+      await storeLocation(locationData);
       setLocationReady(true);
     };
 
@@ -78,26 +73,32 @@ const Index = () => {
   }, [locationReady]);
 
   useEffect(() => {
-    if (authReady && !isLoading) {
-      if (data) {
-        dispatch(setProfile(data?.data));
-        router.replace("/home");
-      } else {
-        router.replace("/sign-in");
+    const handleAuth = async () => {
+      if (authReady && !isLoading) {
+        if (data) {
+          dispatch(setProfile(data?.data));
+          router.replace("/home");
+        } else {
+          await AsyncStorage.removeItem("accessToken");
+          await AsyncStorage.removeItem("refreshToken");
+          router.replace("/sign-in");
+        }
       }
-    }
+    };
+
+    handleAuth();
   }, [authReady, data]);
 
   return (
     <View className="w-full h-full bg-[#41bdff] flex flex-col justify-center items-center">
       <Image
-        source={ require("../assets/images/brandLogo.png") }
+        source={require("../assets/images/brandLogo.png")}
         className="w-[335px]"
         resizeMode="contain"
       />
-      { (loading || isLoading) && (
+      {(loading || isLoading) && (
         <ActivityIndicator size="large" color="#fff" />
-      ) }
+      )}
     </View>
   );
 };

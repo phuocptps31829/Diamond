@@ -61,15 +61,14 @@ export default function NewsAbove({ news, isLoading }) {
         <div className="mt-6 flex flex-col gap-5 md:flex-row">
           <div className="lg:max-w-[60%] w-full" >
             <NewsCard
-              newsItem={news[news.length - 1]}
+              newsItem={news[0]}
               className="flex-col overflow-hidden rounded-md border md:row-span-3 md:grid-rows-subgrid"
               firstNews={true}
             />
           </div>
           <div className="flex flex-col gap-5">
             {news
-              .slice(news.length - 6, news.length - 1)
-              .reverse()
+              .slice(1, 6)
               .map((newsItem, index) => (
                 <NewsCard
                   key={index}

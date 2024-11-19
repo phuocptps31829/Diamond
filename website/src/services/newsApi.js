@@ -5,7 +5,6 @@ export const newsApi = {
   takeItAllNews: async () => {
     try {
       const res = await axiosInstanceGET.get("/news?limit=9999");
-      console.log("res.data.data: ", res.data.data);
       return res.data.data;
     } catch (error) {
       console.error(error);
@@ -16,7 +15,6 @@ export const newsApi = {
   getNewsById: async (id) => {
     try {
       const res = await axiosInstanceGET.get("/news/" + id);
-      console.log("res.data.data: ", res.data.data);
       return res.data.data;
     } catch (error) {
       console.error(error);

@@ -4,7 +4,7 @@ import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
 import { Input } from "@/components/ui/Input";
 import { MdInsertEmoticon } from "react-icons/md";
-import { IoCloseCircleOutline } from "react-icons/io5";
+import { IoCloseCircleOutline, IoSend } from "react-icons/io5";
 import LogoNoLetters from "@/assets/images/LogoNoLetters.png";
 import { GrFormNextLink } from "react-icons/gr";
 
@@ -262,16 +262,16 @@ const ChatComponent = ({ setShowChat }) => {
                   </div>
                 </div>
               </div>
-              <div className="mb-4 flex h-16 w-full flex-row items-center p-4 sm:rounded-b-[20px]">
-                <div className="flex-grow">
+              <div className="mb-2 flex h-16 w-full flex-row items-center p-4 sm:rounded-b-[20px]">
+                <div className="flex-grow flex gap-4">
                   <div className="relative w-full rounded-xl border-white">
-                    <form onSubmit={onSubmit}>
+                    <form onSubmit={onSubmit} id="formChat">
                       <input
                         placeholder="Gõ tin nhắn..."
                         type="text"
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        className="chat-message-shadow-input flex h-12 w-full rounded-xl border border-none bg-white pl-4 pr-12 text-black focus:outline-none"
+                        className="chat-message-shadow-input flex h-10 w-full rounded-xl border border-none bg-white pl-4 pr-12 text-black focus:outline-none"
                       />
                     </form>
                     <button
@@ -288,6 +288,11 @@ const ChatComponent = ({ setShowChat }) => {
                     >
                       <Picker data={data} onEmojiSelect={handleEmojiSelect} />
                     </div>
+                  )}
+                  {message.trim() !== "" && (
+                    <button type="submit" form="formChat">
+                      <IoSend color="#007BBB" size={27} />
+                    </button>
                   )}
                 </div>
               </div>

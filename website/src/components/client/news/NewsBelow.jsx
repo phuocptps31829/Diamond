@@ -18,7 +18,7 @@ export default function NewsBelow({ news, isLoading }) {
 
   useEffect(() => {
     if (!isLoading && news) {
-      const trimmedNews = news;
+      const trimmedNews = news.slice(6);
       const total = Math.ceil(trimmedNews.length / itemsPerPage);
       setTotalPages(total);
 
