@@ -80,7 +80,7 @@ export default function DataTable({ data, columns }) {
     queryClient.invalidateQueries("branches");
   };
   return (
-    <div className="w-[100%] rounded-lg bg-white px-5 py-2">
+    <div className="w-[100%] rounded-lg bg-white px-5 py-2 ">
       <div className="flex h-[80px]">
         <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
@@ -114,7 +114,7 @@ export default function DataTable({ data, columns }) {
           </Button>
         </form>
       </div>
-      <Table>
+      <Table className=''>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

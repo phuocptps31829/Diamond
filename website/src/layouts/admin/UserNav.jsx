@@ -101,7 +101,7 @@ const UserNav = () => {
               <FaBell size={25} color="#007BBB" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
+          <DropdownMenuContent className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800 mt-4">
             <DropdownMenuLabel className="text-base font-semibold dark:text-white">
               Thông báo
             </DropdownMenuLabel>
