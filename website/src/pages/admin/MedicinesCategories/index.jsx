@@ -7,11 +7,10 @@ import Loading from "@/components/ui/Loading";
 
 const breadcrumbData = [
   {
-    title: "Thuốc",
+    title: "Danh mục thuốc",
   },
   {
-    href: "/admin/medicines/list",
-    title: "Danh sách thuốc",
+    title: "Danh sách danh mục thuốc",
   },
 ];
 

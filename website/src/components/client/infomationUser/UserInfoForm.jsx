@@ -230,7 +230,7 @@ const UserInfoForm = () => {
               required
               control={ control }
               errors={ errors }
-              placeholder="Nhap số CMND/CCCD"
+              placeholder="Nhập số CMND/CCCD"
             />
             <InputCustom
               className=""

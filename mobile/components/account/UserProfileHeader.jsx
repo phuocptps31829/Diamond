@@ -1,5 +1,6 @@
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
+import { router } from "expo-router";
 
 const UserProfileHeader = () => {
   const profile = useSelector((state) => state.profile.profile);
@@ -11,7 +12,7 @@ const UserProfileHeader = () => {
         <TouchableOpacity
           className="flex-columns items-center justify-center gap-2"
           onPress={ () => {
-            console.log("Button pressed!");
+            router.push("account-info");
           } }
         >
           <Text className="w-full text-right text-white">Chỉnh sửa</Text>
@@ -26,7 +27,7 @@ const UserProfileHeader = () => {
           </Text>
           <Text>{ profile.phoneNumber }</Text>
           <Text className="underline">
-            ID: { profile.otherInfo.patientCode || "Trống" }
+            ID: { profile.otherInfo?.patientCode || "Trống" }
           </Text>
         </View>
       </View>
