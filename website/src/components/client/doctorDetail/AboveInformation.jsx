@@ -84,7 +84,7 @@ export default function AboveInformation({ doctor, isLoading }) {
             <div className="absolute right-5 top-5 z-10 w-9">
               <img
                 src={
-                  doctor.otherInfo.isInternal ? badgeInternal : badgeExternal
+                  doctor.otherInfo?.isInternal ? badgeInternal : badgeExternal
                 }
                 alt=""
               />
@@ -112,7 +112,7 @@ export default function AboveInformation({ doctor, isLoading }) {
                 Kinh nghiệm:
               </strong>
               {new Date().getFullYear() -
-                new Date(doctor.otherInfo.yearsExperience).getFullYear()}{" "}
+                new Date(doctor.otherInfo?.yearsExperience).getFullYear()}{" "}
               năm
             </div>
             <div className="flex text-sm">

@@ -241,7 +241,7 @@ export default function DataTable({ data }) {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -262,7 +262,7 @@ export default function DataTable({ data }) {
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell className="h-16" key={cell.id}>
+                    <TableCell className="h-16 " key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

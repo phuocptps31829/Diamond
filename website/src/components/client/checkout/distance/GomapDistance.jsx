@@ -21,6 +21,7 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
 
   useEffect(() => {
     if (!isLoaded || !hospitalCoordinates ) return;
+console.log(hospitalCoordinates);
 
     const calculateDistance = (patientCoordinates) => {
       const service = new window.google.maps.DistanceMatrixService();
@@ -63,6 +64,7 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
     };
 
     getPatientLocation();
+    
   }, [isLoaded, hospitalCoordinates, room]);
 
   if (!room || !isLoaded || !hospitalCoordinates || distance === null)
@@ -80,14 +82,13 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
           <p className="text-sm">{ distance.toFixed(2) } km</p>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
-                <Link to={ googleMapsUrl } target="_blank">
+              <TooltipTrigger type="button">
+              <Link to={ googleMapsUrl } target="_blank">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
                     height="32"
                     viewBox="0 0 32 32"
-                    id="google-maps"
                   >
                     <path
                       fill="#4285f4"

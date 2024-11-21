@@ -1,18 +1,71 @@
+"use client";
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
+import { Badge } from "@/components/ui/Badge";
+import { Clock, Building2, Stethoscope, MapPin } from "lucide-react";
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = {
+    weekday: "long",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("vi-VN", options);
+};
 
-const sampleSchedule = [
-  { day: "Thứ Hai", time: "08:00 - 12:00, 13:00 - 17:00" },
-  { day: "Thứ Ba", time: "08:00 - 12:00, 13:00 - 17:00" },
-  { day: "Thứ Tư", time: "Nghỉ" },
-  { day: "Thứ Năm", time: "08:00 - 12:00, 13:00 - 17:00" },
-  { day: "Thứ Sáu", time: "08:00 - 12:00, 13:00 - 17:00" },
-  { day: "Thứ Bảy", time: "08:00 - 12:00" },
-  { day: "Chủ Nhật", time: "Nghỉ" },
+const weekDays = [
+  { dayName: "Thứ Hai" },
+  { dayName: "Thứ Ba" },
+  { dayName: "Thứ Tư" },
+  { dayName: "Thứ Năm" },
+  { dayName: "Thứ Sáu" },
+  { dayName: "Thứ Bảy" },
+  { dayName: "Chủ Nhật" },
 ];
 
-export default function BelowInformation({ doctor, isLoading }) {
+const getDayOfWeek = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDay();
+  const days = [
+    "Chủ Nhật",
+    "Thứ Hai",
+    "Thứ Ba",
+    "Thứ Tư",
+    "Thứ Năm",
+    "Thứ Sáu",
+    "Thứ Bảy",
+  ];
+  return days[day];
+};
+
+export default function BelowInformation({ doctor, isLoading, schedule }) {
   const [activeTab, setActiveTab] = useState("certification");
+
+  const sortedSchedules =
+    schedule?.[0]?.schedules?.sort(
+      (a, b) => new Date(a.day) - new Date(b.day)
+    ) || [];
+
+  const workingDays = new Map();
+  sortedSchedules.forEach((schedule) => {
+    const dayOfWeek = getDayOfWeek(schedule.day);
+    if (!workingDays.has(dayOfWeek)) {
+      workingDays.set(dayOfWeek, {
+        schedules: [],
+      });
+    }
+    workingDays.get(dayOfWeek).schedules.push(schedule);
+  });
 
   return (
     <div className="mx-auto my-10 max-w-screen-xl px-5">
@@ -21,24 +74,18 @@ export default function BelowInformation({ doctor, isLoading }) {
         onValueChange={setActiveTab}
         className="my-5 w-full"
       >
-        <TabsList className="w-full gap-1 bg-gray-200 py-7">
-          <TabsTrigger
-            value="certification"
-            className={`w-full p-3 ${activeTab === "certification" ? "shadcn-tabs-active" : ""}`}
-          >
+        <TabsList className="w-full gap-1 bg-muted ">
+          <TabsTrigger value="certification" className="w-full p-2">
             Giới thiệu
           </TabsTrigger>
-          <TabsTrigger
-            value="experience"
-            className={`w-full p-3 ${activeTab === "experience" ? "shadcn-tabs-active" : ""}`}
-          >
+          <TabsTrigger value="experience" className="w-full p-2">
             Lịch làm việc
           </TabsTrigger>
         </TabsList>
 
         <TabsContent
           value="certification"
-          className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
+          className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm"
         >
           <div className="space-y-5">
             {isLoading ? (
@@ -49,44 +96,77 @@ export default function BelowInformation({ doctor, isLoading }) {
                 dangerouslySetInnerHTML={{
                   __html: doctor.otherInfo?.detail || "",
                 }}
-              ></div>
+              />
             )}
           </div>
         </TabsContent>
         <TabsContent
           value="experience"
-          className="rounded-lg border bg-card bg-white p-6 text-card-foreground shadow-sm"
+          className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm"
         >
           <div>
-            {isLoading ? (
-              <div>Đang tải...</div>
-            ) : (
-              <table className="min-w-full divide-y divide-gray-200 border text-gray-700 shadow-md">
-                <thead>
-                  <tr className="bg-gray-100 text-left text-black">
-                    <th className="border-b px-4 py-3 font-semibold">Ngày</th>
-                    <th className="border-b px-4 py-3 font-semibold">
-                      Thời gian
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="text-[14px]">
-                  {sampleSchedule.map((entry, index) => (
-                    <tr
-                      key={index}
-                      className={`${
-                        entry.time === "Nghỉ" ? "bg-red-200" : "bg-green-200"
-                      } ${index % 2 === 0 ? "bg-opacity-75" : "bg-opacity-50"}`}
-                    >
-                      <td className="border-b px-4 py-3 font-semibold">
-                        {entry.day}
-                      </td>
-                      <td className="border-b px-4 py-3">{entry.time}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[150px] whitespace-nowrap">
+                    Thứ trong tuần
+                  </TableHead>
+                  <TableHead className="w-[200px] whitespace-nowrap">
+                    Ngày làm việc
+                  </TableHead>
+                  <TableHead className="w-[200px] whitespace-nowrap">
+                    Thời gian
+                  </TableHead>
+                  <TableHead className="w-[200px] whitespace-nowrap">
+                    Phòng khám
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {weekDays.map((day) => {
+                  const daySchedules = workingDays.get(day.dayName);
+
+                  if (!daySchedules) {
+                    return (
+                      <TableRow key={day.dayName}>
+                        <TableCell className="whitespace-nowrap font-medium">
+                          {day.dayName}
+                        </TableCell>
+                        <TableCell colSpan={4}>
+                          <Badge variant="destructive">Nghỉ</Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  return daySchedules.schedules.map((scheduleItem) => (
+                    <TableRow key={scheduleItem._id}>
+                      <TableCell className="whitespace-nowrap font-medium">
+                        {day.dayName}
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap font-medium">
+                        ({formatDate(scheduleItem.day)})
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-primary-500" />
+                          <span className="whitespace-nowrap">
+                            {scheduleItem.hour.startTime} -{" "}
+                            {scheduleItem.hour.endTime}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <div className="flex items-center space-x-2">
+                          <Building2 className="h-4 w-4 text-primary-500" />
+                          <span>{scheduleItem.clinic.name}</span>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ));
+                })}
+              </TableBody>
+            </Table>
           </div>
         </TabsContent>
       </Tabs>

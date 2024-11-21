@@ -7,7 +7,6 @@ import avatarDefault from "@/assets/images/avatar_default.png";
 import Action from "./action";
 import StatusCell from "./StatusCell";
 
-
 export const getColumnsAppointments = (onChangeStatus, onDelete) => [
   {
     id: "select",
@@ -110,19 +109,16 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     ),
     cell: ({ row }) => {
       const isMedicalPackage = !!row.original.medicalPackage;
-
       return (
-        <div className="w-fit p-2">
+        <div className="w-full p-2">
           <span
-            className={`flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${
+            className={`flex items-center justify-start  whitespace-nowrap w-[200px] line-clamp-1 rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${
               isMedicalPackage
                 ? "bg-primary-500/20 text-primary-900"
                 : "bg-[#13D6CB]/20 text-cyan-950"
             }`}
           >
-            {row.original.service?.name ||
-              row.original.medicalPackage?.name ||
-              "Không có tên"}
+            {row.original.service?.name || row.original.medicalPackage?.name}
           </span>
         </div>
       );

@@ -23,7 +23,6 @@ const BranchesEdit = () => {
   const [fileImage, setFileImage] = useState(null);
   const { id } = useParams();
   const [isPending, setIsPending] = useState(false);
-  const [initialData, setInitialData] = useState(null);
   const queryClient = useQueryClient();
 
   const {
@@ -50,13 +49,6 @@ const BranchesEdit = () => {
 
   useEffect(() => {
     if (data) {
-      const initialFormData = {
-        branch_name: data.name,
-        working_hours: data.workingTime,
-        hotline: data.hotline,
-        address: data.address,
-      };
-      setInitialData(initialFormData);
       setValue("branch_name", data.name);
       setValue("working_hours", data.workingTime);
       setValue("hotline", data.hotline);
@@ -89,13 +81,7 @@ const BranchesEdit = () => {
       return;
     }
     let imageName = null;
-    console.log(JSON.stringify(data));
-    console.log(JSON.stringify(initialData));
 
-    if (JSON.stringify(data) === JSON.stringify(initialData)) {
-      toastUI("Không có thay đổi nào được thực hiện.", "warning");
-      return;
-    }
     if (fileImage) {
       const formData = new FormData();
       formData.append("file", fileImage);
