@@ -1,9 +1,46 @@
-import { Text, TextInput, View, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import {
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { informationSchema } from "../../zods/informationSchema";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import SelectDropdown from "react-native-select-dropdown";
+import { ethnicGroups } from "../../constants/ethnics";
+import RadioGroup from "react-native-radio-buttons-group";
+import Entypo from "@expo/vector-icons/Entypo";
+import moment from "moment";
+import "moment/locale/vi";
+
+const radioButtons = [
+  {
+    id: "Nam",
+    label: "Nam",
+  },
+  {
+    id: "Nu",
+    label: "Nữ",
+  },
+];
 
 const OtherInfo = () => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  moment.locale("vi");
+
   const {
     control,
     handleSubmit,
@@ -125,37 +162,96 @@ const OtherInfo = () => {
         {/* Ngày sinh */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Ngày sinh:</Text>
-          <Controller
-            control={control}
-            name="birthDate"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
-                placeholder="Nhập ngày sinh (YYYY-MM-DD)"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-          />
+          <View className="relative">
+            <Controller
+              control={control}
+              name="birthDate"
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <TextInput
+                    className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
+                    placeholder="Chọn ngày sinh"
+                    value={value ? new Date(value) : ""}
+                    editable={false}
+                  />
+                  {/* Modal chọn ngày */}
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={(date) => {
+                      const formattedDate = date.toLocaleDateString("en-CA");
+                      hideDatePicker();
+                      onChange(formattedDate);
+                    }}
+                    onCancel={hideDatePicker}
+                    locale="vi"
+                  />
+                </>
+              )}
+            />
+            <TouchableOpacity
+              onPress={showDatePicker}
+              className="absolute right-0 top-1/4 w-full flex items-end"
+            >
+              <Text>
+                <AntDesign name="calendar" size={24} color="black" />
+              </Text>
+            </TouchableOpacity>
+          </View>
           {errors.birthDate && (
             <Text className="text-red-500">{errors.birthDate.message}</Text>
           )}
         </View>
-
         {/* Dân tộc */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Dân tộc:</Text>
           <Controller
             control={control}
             name="ethnicity"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
-                placeholder="Nhập dân tộc"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
+            render={({ field: { onChange, value } }) => (
+              <SelectDropdown
+                data={ethnicGroups}
+                defaultValue={ethnicGroups.find((item) => item.value === value)}
+                onSelect={(selectedItem) => {
+                  console.log(selectedItem.value);
+                  onChange(selectedItem.value);
+                }}
+                search={true}
+                searchPlaceHolder="Tìm dân tộc..."
+                renderButton={(selectedItem, isOpened) => {
+                  return (
+                    <View style={styles.buttonContainer}>
+                      <Text style={styles.buttonText}>
+                        {(selectedItem && selectedItem.name) || "Chọn dân tộc"}
+                      </Text>
+                      {isOpened ? (
+                        <Entypo
+                          name="chevron-small-up"
+                          size={24}
+                          color="black"
+                        />
+                      ) : (
+                        <Entypo
+                          name="chevron-small-down"
+                          size={24}
+                          color="black"
+                        />
+                      )}
+                    </View>
+                  );
+                }}
+                renderItem={(item, index) => {
+                  return (
+                    <View
+                      style={[
+                        styles.itemContainer,
+                        index % 2 !== 0 && { backgroundColor: "#EDEDED" },
+                      ]}
+                    >
+                      <Text style={styles.itemText}>{item.name}</Text>
+                    </View>
+                  );
+                }}
               />
             )}
           />
@@ -236,11 +332,11 @@ const OtherInfo = () => {
             control={control}
             name="gender"
             render={({ field: { onChange, value } }) => (
-              <TextInput
-                className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
-                placeholder="Nhập giới tính (Nam/Nữ/Khác)"
-                onChangeText={onChange}
-                value={value}
+              <RadioGroup
+                radioButtons={radioButtons}
+                onPress={onChange}
+                selectedId={value}
+                layout='row'
               />
             )}
           />
@@ -262,5 +358,31 @@ const OtherInfo = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    marginTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    backgroundColor: "#F2F2F2",
+    borderRadius: 8,
+    paddingLeft: 15,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  itemContainer: {
+    padding: 12,
+    backgroundColor: "#FFFFFF",
+  },
+  itemText: {
+    fontSize: 16,
+    color: "#4B5563",
+    fontWeight: "600",
+  },
+});
 
 export default OtherInfo;

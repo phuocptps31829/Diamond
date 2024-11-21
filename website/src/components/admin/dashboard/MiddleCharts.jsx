@@ -33,7 +33,7 @@ export default function MiddleCharts({
                 };
             })
         );
-    }, [dataTotalPatients, dataPatientsByAges, yearNow]);
+    }, [dataTotalPatients, dataPatientsByAges, yearNow, dataAllSpecialties]);
 
     const handleYearChange = (e) => {
         setYearNow(Number(e.target.value));

@@ -22,8 +22,8 @@ export default function NewsProduct({
             className="block h-full w-full rounded-t-lg object-cover"
           />
         </div>
-        <div className="flex h-full flex-col p-5">
-          <h2 className="mb-2 text-[14px] font-bold sm:text-[18px]">{title}</h2>
+        <div className="flex h-full flex-col p-4">
+          <h2 className="mb-2 text-[16px] font-bold sm:text-[18px]">{title}</h2>
           <div className="mb-[6px] flex items-center gap-2 text-[12px]">
             <FaRegCalendarAlt />
             <div className="font-semibold">

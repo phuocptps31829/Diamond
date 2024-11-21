@@ -21,7 +21,6 @@ ChartJS.register(
 );
 
 const LineChart = ({ dataTotalPatientsByAges }) => {
-  console.log("dataTotalPatientsByAges", dataTotalPatientsByAges);
   const labels = [
     "Tháng 1",
     "Tháng 2",

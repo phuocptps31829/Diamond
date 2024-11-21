@@ -8,6 +8,12 @@ import {
   TableCell,
 } from "../../ui/Table";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "../../ui/Tooltip";
+import {
   Menubar,
   MenubarContent,
   MenubarItem,
@@ -107,7 +113,6 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {console.log("filteredAppointments", filteredAppointments)}
             {filteredAppointments.length === 0 ? (
               <TableRow className="h-14 text-center text-[13px]">
                 <TableCell colSpan={6}>Không có lịch hẹn nào !</TableCell>
@@ -115,7 +120,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             ) : (
               filteredAppointments.map((appointment, index) => (
                 <TableRow key={index} className="h-12 text-[13px]">
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell className="text-center">{index + 1}</TableCell>
                   <TableCell>{appointment.patient.fullName}</TableCell>
                   <TableCell>
                     <div className="flex items-center space-x-2">
@@ -130,12 +135,24 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       <span>{appointment.doctor.fullName}</span>
                     </div>
                   </TableCell>
+                  <TableCell>{formatDate(appointment.time)}</TableCell>
                   <TableCell>
-                    {formatDate(appointment.time)}
-                  </TableCell>
-                  <TableCell>
-                    {appointment.service?.name ||
-                      appointment.medicalPackage?.name}
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <span className="block w-[150px] truncate">
+                            {appointment.service?.name ||
+                              appointment.medicalPackage?.name}
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <span>
+                            {appointment.service?.name ||
+                              appointment.medicalPackage?.name}
+                          </span>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">

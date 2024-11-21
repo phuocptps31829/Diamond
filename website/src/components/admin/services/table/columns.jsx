@@ -114,7 +114,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 uppercase">
-        <span className="w-full whitespace-nowrap">{row.getValue("name")}</span>
+        <span title={row.getValue("name")} className="w-full max-w-[300px] truncate">{row.getValue("name")}</span>
       </div>
     ),
   },

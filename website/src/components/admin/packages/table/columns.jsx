@@ -110,7 +110,7 @@ export const columnsSchedule = [
         ),
         cell: ({ row }) => (
             <div className="flex items-center gap-3 py-4">
-                <span className="w-full whitespace-nowrap font-medium">{row.original.name}</span>
+                <span title={row.original.name} className="w-full font-medium max-w-[300px] truncate">{row.original.name}</span>
             </div>
         ),
     },
