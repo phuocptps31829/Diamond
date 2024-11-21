@@ -125,6 +125,12 @@ export default function RootLayout() {
                 header: () => <HeaderScreen title="Thông tin Lịch khám" />,
               } }
             />
+            <Stack.Screen
+              name="account-info"
+              options={ {
+                header: () => <HeaderScreen title="Thông tin tài khoản" />,
+              } }
+            />
           </Stack>
         </PaperProvider>
         <Toast />

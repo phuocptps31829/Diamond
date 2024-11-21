@@ -1,6 +1,6 @@
 export default function SpinLoader() {
   return (
-    <div className="flex">
+    <div className="flex items-center">
       <svg
         viewBox="0 0 24 24"
         fill="none"

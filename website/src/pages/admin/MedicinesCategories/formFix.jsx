@@ -9,10 +9,10 @@ import Loading from "@/components/ui/Loading";
 
 const initialBreadcrumbData = [
   {
-    title: "Thuốc",
+    href: "/admin/medicinesCategories/list",
+    title: "Danh mục thuốc",
   },
   {
-    href: "/admin/packages/create",
     title: "Chỉnh sửa danh mục thuốc",
   },
   {

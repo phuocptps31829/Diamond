@@ -16,6 +16,7 @@ import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import { toastUI } from "@/components/ui/Toastify";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 export default function LoginComponent() {
   const navigate = useNavigate();
@@ -162,10 +163,10 @@ export default function LoginComponent() {
                 </Link>
               </div>
               <button
-                className="my-5 flex w-full items-center justify-center gap-3 rounded-md bg-primary-400 py-2 text-lg font-semibold text-white hover:bg-primary-500"
-              // disabled={mutation.isPending}
+                className={`${mutation.isPending ? "bg-gray-500 cursor-default" : "bg-primary-400 hover:bg-primary-500"} my-5 flex w-full items-center justify-center gap-3 rounded-md py-2 text-lg font-semibold text-white`}
+                disabled={mutation.isPending}
               >
-                Đăng nhập
+                {mutation.isPending ? <SpinLoader /> : "Đăng nhập"}
               </button>
               <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-300"></div>
