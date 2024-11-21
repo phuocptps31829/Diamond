@@ -11,13 +11,15 @@ const DoctorsList = () => {
         isError: errorLoadingDoctors,
     } = useQuery({
         queryKey: ['doctors'],
-        queryFn: doctorApi.getAllDoctors,
+        queryFn: () => doctorApi.getAllDoctors({
+            noPaginated: true,
+        }),
     });
     if (loadingDoctors) return <Loading />;
 
     if (errorLoadingDoctors) return <div>Error loading data</div>;
 
-    return <DataTable columns={columnsSchedule} data={doctorsData || []} />;
+    return <DataTable columns={ columnsSchedule } data={ doctorsData || [] } />;
 };
 
 export default DoctorsList;

@@ -29,5 +29,4 @@ WORKDIR /opt/react_native_app/app
 # for development, we bind mount volumes; comment out for production
 COPY ./react_native_app .
 
-ENTRYPOINT ["npm", "run"]
-CMD ["web"]
+CMD ["npm", "start"]
