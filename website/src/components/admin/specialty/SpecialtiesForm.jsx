@@ -20,14 +20,12 @@ export default function Form() {
     handleSubmit,
     formState: { errors },
     control,
-    setValue,
-    register,
   } = useForm({
     resolver: zodResolver(specialtySchema),
     defaultValues: {
       name: "",
       image: null,
-      status: true,
+      isHidden: '',
     },
   });
   const [fileImage, setFileImage] = useState(null);
@@ -56,8 +54,7 @@ export default function Form() {
 
       const newSpecialty = {
         name: data.name,
-        isHidden: data.status,
-        description: "Đâu có cần mô tả???",
+        isHidden: data.isHidden,
       };
 
       const formData = new FormData();
@@ -117,11 +114,11 @@ export default function Form() {
                   errors={ errors }
                 />
               </div>
-              {/* Status */ }
+              {/* isHidden */ }
               <div className="mt-2">
                 <Label>Trạng thái</Label>
                 <Controller
-                  name="status"
+                  name="isHidden"
                   control={ control }
                   render={ ({ field }) => (
                     <RadioGroup
