@@ -77,55 +77,55 @@ export default function AboveInformation({ doctor, isLoading }) {
         <div className="flex flex-col items-center justify-center space-y-5 px-5 md:flex-row md:space-x-20 md:px-10">
           <div className="relative block aspect-[4/3] max-w-[500px] w-full overflow-hidden rounded-lg">
             <img
-              src={`${URL_IMAGE}/${avatar}`}
+              src={ `${URL_IMAGE}/${avatar}` }
               className="h-full w-full object-cover object-top"
             />
 
             <div className="absolute right-5 top-5 z-10 w-9">
               <img
                 src={
-                  doctor.otherInfo.isInternal ? badgeInternal : badgeExternal
+                  doctor.otherInfo?.isInternal ? badgeInternal : badgeExternal
                 }
                 alt=""
               />
             </div>
           </div>
           <div className="flex w-full flex-col space-y-4 md:w-auto">
-            <div className="text-3xl font-semibold uppercase">{fullName}</div>
+            <div className="text-3xl font-semibold uppercase">{ fullName }</div>
             <div className="flex text-sm">
-              <FaRegHospital size={17} className="mr-2" />
+              <FaRegHospital size={ 17 } className="mr-2" />
               <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Chi nhánh:
               </strong>
-              {doctor.otherInfo?.branch?.name}
+              { doctor.otherInfo?.branch?.name }
             </div>
             <div className="flex text-sm">
-              <LuGitBranchPlus size={17} className="mr-2" />
+              <LuGitBranchPlus size={ 17 } className="mr-2" />
               <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Chuyên khoa:
               </strong>
-              {doctor.otherInfo?.specialty?.name}
+              { doctor.otherInfo?.specialty?.name }
             </div>
             <div className="flex text-sm">
-              <ImProfile size={17} className="mr-2" />
+              <ImProfile size={ 17 } className="mr-2" />
               <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Kinh nghiệm:
               </strong>
-              {new Date().getFullYear() -
-                new Date(doctor.otherInfo.yearsExperience).getFullYear()}{" "}
+              { new Date().getFullYear() -
+                new Date(doctor.otherInfo?.yearsExperience).getFullYear() }{ " " }
               năm
             </div>
             <div className="flex text-sm">
-              <FaTransgender size={17} className="mr-2" />
+              <FaTransgender size={ 17 } className="mr-2" />
               <strong className="block w-[110px] items-center gap-2 whitespace-nowrap pr-2 md:pr-0">
                 Giới tính:
               </strong>
-              {gender}
+              { gender }
             </div>
-            <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialog open={ open } onOpenChange={ setOpen }>
               <AlertDialogTrigger asChild>
                 <button
-                  onClick={() => setOpen(true)}
+                  onClick={ () => setOpen(true) }
                   className="w-full rounded-md bg-primary-500 p-3 text-white duration-500 hover:bg-primary-600"
                 >
                   Đặt lịch hẹn
@@ -140,55 +140,55 @@ export default function AboveInformation({ doctor, isLoading }) {
                     <div className="mx-2 grid grid-cols-2 gap-5">
                       <div className="relative h-[150px] rounded-md sm:h-[200px]">
                         <img
-                          src={`${URL_IMAGE}/1729875972_top-3-phong-kham-san-phu-khoa-binh-duong-uy-tin-va-chat-luong.webp`}
+                          src={ `${URL_IMAGE}/1729875972_top-3-phong-kham-san-phu-khoa-binh-duong-uy-tin-va-chat-luong.webp` }
                           alt=""
                           className="h-full w-full rounded-md object-cover"
                         />
                         <div
                           className="absolute top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-[#00000080] text-white"
-                          onClick={() => setNameChoose("packages")}
+                          onClick={ () => setNameChoose("packages") }
                         >
                           Gói khám
-                          {nameChoose === "packages" && (
+                          { nameChoose === "packages" && (
                             <LuBadgeCheck
                               className="absolute right-0 top-0 ml-2"
                               color="#00FF22"
-                              size={35}
+                              size={ 35 }
                             />
-                          )}
+                          ) }
                         </div>
                       </div>
                       <div className="relative h-[150px] rounded-md sm:h-[200px]">
                         <img
-                          src={`${URL_IMAGE}/1729876088_c631e2b7-9d26-4c40-8145-ac0b3a8b1d8c.jpg`}
+                          src={ `${URL_IMAGE}/1729876088_c631e2b7-9d26-4c40-8145-ac0b3a8b1d8c.jpg` }
                           alt=""
                           className="h-full w-full rounded-md object-cover"
                         />
                         <div
                           className="absolute top-0 flex h-full w-full cursor-pointer items-center justify-center rounded-md bg-[#00000080] text-white"
-                          onClick={() => setNameChoose("services")}
+                          onClick={ () => setNameChoose("services") }
                         >
                           Dịch vụ
-                          {nameChoose === "services" && (
+                          { nameChoose === "services" && (
                             <LuBadgeCheck
                               className="absolute right-0 top-0 ml-2"
                               color="#00FF22"
-                              size={35}
+                              size={ 35 }
                             />
-                          )}
+                          ) }
                         </div>
                       </div>
                     </div>
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setOpen(false)}>
+                  <AlertDialogCancel onClick={ () => setOpen(false) }>
                     Hủy
                   </AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => {
+                    onClick={ () => {
                       handleSearch();
-                    }}
+                    } }
                   >
                     Tìm kiếm
                   </AlertDialogAction>
@@ -200,13 +200,13 @@ export default function AboveInformation({ doctor, isLoading }) {
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Liên hệ:
                 </strong>
-                {phoneNumber}
+                { phoneNumber }
               </div>
               <div className="flex text-[14px] md:text-[15px]">
                 <strong className="block min-w-[80px] whitespace-nowrap pr-2 md:pr-0">
                   Địa chỉ:
                 </strong>
-                {address}
+                { address }
               </div>
               <Link
                 to="/none"

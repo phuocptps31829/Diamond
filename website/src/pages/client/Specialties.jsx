@@ -14,11 +14,11 @@ const Specialties = () => {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: specialtyApi.getAllSpecialties,
+    queryKey: ["specialtiesNoPaginated"],
+    queryFn: specialtyApi.getNoPaginate,
   });
 
-  if (error) return <NotFound message={error.message} />;
+  if (error) return <NotFound message={ error.message } />;
 
   return (
     <div className="bg-[#E8F2F7]">

@@ -15,8 +15,8 @@ import { accountSchema } from "@/zods/account";
 import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
-import { toastUI } from "@/components/ui/Toastify";
 import SpinLoader from "@/components/ui/SpinLoader";
+import toast from "react-hot-toast";
 
 export default function LoginComponent() {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function LoginComponent() {
         error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage, "error");
+      toast.error(errorMessage);
     },
   });
 
@@ -163,10 +163,10 @@ export default function LoginComponent() {
                 </Link>
               </div>
               <button
-                className={`${mutation.isPending ? "bg-gray-500 cursor-default" : "bg-primary-400 hover:bg-primary-500"} my-5 flex w-full items-center justify-center gap-3 rounded-md py-2 text-lg font-semibold text-white`}
-                disabled={mutation.isPending}
+                className={ `${mutation.isPending ? "bg-gray-500 cursor-default" : "bg-primary-400 hover:bg-primary-500"} my-5 flex w-full items-center justify-center gap-3 rounded-md py-2 text-lg font-semibold text-white` }
+                disabled={ mutation.isPending }
               >
-                {mutation.isPending ? <SpinLoader /> : "Đăng nhập"}
+                { mutation.isPending ? <SpinLoader /> : "Đăng nhập" }
               </button>
               <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-300"></div>

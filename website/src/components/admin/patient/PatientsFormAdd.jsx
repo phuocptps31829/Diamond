@@ -107,77 +107,77 @@ export default function PatientFormAdd() {
   };
 
   return (
-    <div className="w-[100%] rounded-lg bg-white px-7 py-6">
+    <div className="w-[100%] rounded-lg bg-white px-7 py-6 min-h-[calc(100vh-140px)]">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
         Thông tin người dùng
       </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {/* Image */}
+      <form onSubmit={ handleSubmit(onSubmit) }>
+        {/* Image */ }
         <div className="grid-cols-1 gap-[10px] sm:grid md:flex">
           <div className="mr-5">
             <label htmlFor="fileImage" className="mb-4 block bg-white px-2">
               Ảnh đại diện <span className="text-red-500">*</span>
             </label>
             <ImagePreview
-              imagePreview={imagePreview}
-              setFileImage={setFileImage}
-              setImagePreview={setImagePreview}
+              imagePreview={ imagePreview }
+              setFileImage={ setFileImage }
+              setImagePreview={ setImagePreview }
             />
-            {!fileImage && (
+            { !fileImage && (
               <p className="mt-3 text-center text-sm text-red-500">
                 Vui lòng chọn ảnh
               </p>
-            )}
+            ) }
           </div>
           <div className="w-full">
-            {/* Line 1 */}
+            {/* Line 1 */ }
             <div className="block">
               <div className="flex w-full grid-cols-1 gap-[20px]">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Họ và tên người dùng"}
+                    label={ "Họ và tên người dùng" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="fullName"
                     type="text"
                     id="fullName"
                     placeholder="Nhập họ và tên bệnh nhân"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Số điện thoại"}
+                    label={ "Số điện thoại" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="phone"
                     type="text"
                     id="phone"
                     placeholder="Nhập số điện thoại"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
 
-            {/* Line 2 */}
+            {/* Line 2 */ }
             <div className="flex w-full">
               <div className="flex w-full gap-[20px]">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Email"}
+                    label={ "Email" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="email"
                     type="text"
                     id="email"
                     placeholder="Nhập email"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -189,73 +189,73 @@ export default function PatientFormAdd() {
                     Ngày sinh <span className="text-red-500">*</span>
                   </label>
                   <SelectBirthDate
-                    control={control}
+                    control={ control }
                     name="dateOfBirth"
-                    errors={errors}
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
-            {/* Line 3 */}
+            {/* Line 3 */ }
             <div className="block">
               <div className="w-full gap-[20px] md:flex">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Mật khẩu"}
+                    label={ "Mật khẩu" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="password"
                     type="password"
                     id="Password"
                     placeholder="Nhập mật khẩu"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Nhập lại mật khẩu"}
+                    label={ "Nhập lại mật khẩu" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="confirmPassword"
                     type="password"
                     id="confirmPassword"
                     placeholder="Nhập lại mật khẩu"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
 
-            {/* Line 4 */}
+            {/* Line 4 */ }
             <div className="block">
               <div className="w-full gap-[20px] md:flex">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Mã bảo hiểm y tế"}
+                    label={ "Mã bảo hiểm y tế" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="insuranceCode"
                     type="text"
                     id="insuranceCode"
                     placeholder="Nhập mã bảo hiểm y tế"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={"Nghề nghiệp"}
+                    label={ "Nghề nghiệp" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="occupation"
                     type="text"
                     id="occupation"
                     placeholder="Nhập nghề nghiệp"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
               </div>
@@ -268,25 +268,25 @@ export default function PatientFormAdd() {
             <RadioGroupField
               name="gender"
               label="Giới tính:"
-              options={[
+              options={ [
                 { value: "Nam", label: "Nam" },
                 { value: "Nữ", label: "Nữ" },
-              ]}
-              control={control}
+              ] }
+              control={ control }
             />
           </div>
           <div className="flex-1 flex gap-[20px] mb-2">
             <div className="relative md:mb-1 w-1/2">
               <InputCustom
-                label={"Mã căn cước công dân"}
+                label={ "Mã căn cước công dân" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="citizenIdentificationNumber"
                 type="text"
                 id="citizenIdentificationNumber"
                 placeholder="Nhập mã căn cước công dân"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="relative w-1/2">
@@ -296,7 +296,7 @@ export default function PatientFormAdd() {
               >
                 Dân tộc <span className="text-red-500">*</span>
               </label>
-              <SelectEthnic control={control} name="ethnic" errors={errors} />
+              <SelectEthnic control={ control } name="ethnic" errors={ errors } />
             </div>
           </div>
         </div>
@@ -305,24 +305,24 @@ export default function PatientFormAdd() {
             <RadioGroupField
               name="isActivated"
               label="Trạng thái tài khoản:"
-              options={[
+              options={ [
                 { value: true, label: "Hoạt động" },
                 { value: false, label: "Khóa tài khoản" },
-              ]}
-              control={control}
+              ] }
+              control={ control }
             />
           </div>
           <div className="flex-1">
             <InputCustom
-              label={"Tên địa chỉ"}
+              label={ "Tên địa chỉ" }
               required
               className="col-span-1 sm:col-span-1"
               name="address"
               type="text"
               id="address"
               placeholder="Nhập địa chỉ"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
           </div>
         </div>
@@ -331,9 +331,9 @@ export default function PatientFormAdd() {
           <Button
             variant="custom"
             type="submit"
-            disabled={isPending || loadingImage}
+            disabled={ isPending || loadingImage }
           >
-            {isPending || loadingImage ? <SpinLoader /> : "Thêm mới"}
+            { isPending || loadingImage ? <SpinLoader /> : "Thêm mới" }
           </Button>
         </div>
       </form>

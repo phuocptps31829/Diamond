@@ -94,7 +94,7 @@ const ContractsDoctorInternistAdd = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Hợp đồng bác sĩ cơ hữu
         </h1>

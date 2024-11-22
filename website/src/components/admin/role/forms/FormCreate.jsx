@@ -53,7 +53,7 @@ const CreateRoleForm = () => {
 
     return (
         <div className="w-full">
-            <div className="rounded-xl bg-white px-6 py-6">
+            <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
                 <form onSubmit={ handleSubmit(onSubmit) }>
                     <div className="mb-6 grid grid-cols-1 items-start justify-center gap-8 sm:grid-cols-1">
                         <InputCustom

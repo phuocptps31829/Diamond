@@ -6,7 +6,7 @@ import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import Action from "./action";
 import StatusCell from "./StatusCell";
-
+import { formatDateTimeLocale } from "@/utils/format";
 
 export const getColumnsAppointments = (onChangeStatus, onDelete) => [
   {
@@ -17,14 +17,14 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -38,7 +38,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bệnh nhân
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -57,7 +57,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
               <AvatarImage
                 src={
                   row.original.patient.avatar &&
-                  isValidAvatar(row.original.patient.avatar)
+                    isValidAvatar(row.original.patient.avatar)
                     ? `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.patient.avatar}`
                     : avatarDefault
                 }
@@ -65,7 +65,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
               />
             </Avatar>
             <span className="ml-2 w-full whitespace-nowrap">
-              {row.original.patient.fullName || "Không có tên"}
+              { row.original.patient.fullName || "Không có tên" }
             </span>
           </div>
         </div>
@@ -79,7 +79,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Bác sĩ
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -89,7 +89,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {row.original.doctor.fullName || "Lỗi tên bác sĩ"}
+          { row.original.doctor.fullName || "Lỗi tên bác sĩ" }
         </span>
       </div>
     ),
@@ -101,7 +101,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Dịch vụ/Gói khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -110,19 +110,15 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     ),
     cell: ({ row }) => {
       const isMedicalPackage = !!row.original.medicalPackage;
-
       return (
-        <div className="w-fit p-2">
+        <div className={ `py-1 px-2 rounded-md ${isMedicalPackage
+          ? "bg-primary-500/20 text-primary-900"
+          : "bg-[#13D6CB]/20 text-cyan-950"
+          }` }>
           <span
-            className={`flex items-center justify-center whitespace-nowrap rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${
-              isMedicalPackage
-                ? "bg-primary-500/20 text-primary-900"
-                : "bg-[#13D6CB]/20 text-cyan-950"
-            }`}
+            className={ `line-clamp-1 text-xs font-bold uppercase` }
           >
-            {row.original.service?.name ||
-              row.original.medicalPackage?.name ||
-              "Không có tên"}
+            { row.original.service?.name || row.original.medicalPackage?.name }
           </span>
         </div>
       );
@@ -135,7 +131,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Loại khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -144,7 +140,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{row.original.type}</span>
+        <span className="w-full whitespace-nowrap">{ row.original.type }</span>
       </div>
     ),
   },
@@ -155,7 +151,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thời gian khám
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -165,7 +161,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          {new Date(row.original.time).toLocaleString() || "Không có thời gian"}
+          { formatDateTimeLocale(row.original.time) || "Không có thời gian" }
         </span>
       </div>
     ),
@@ -177,14 +173,14 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Trạng thái
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
     ),
-    cell: ({ row }) => <StatusCell row={row} onChangeStatus={onChangeStatus} />,
+    cell: ({ row }) => <StatusCell row={ row } onChangeStatus={ onChangeStatus } />,
   },
   {
     accessorKey: "invoice",
@@ -193,7 +189,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Thanh toán
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -206,9 +202,9 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       );
       return (
         <div
-          className={`flex items-center justify-center rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${stylePayment}`}
+          className={ `flex items-center justify-center rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${stylePayment}` }
         >
-          <span className="whitespace-nowrap">{textPayment}</span>
+          <span className="whitespace-nowrap">{ textPayment }</span>
         </div>
       );
     },
@@ -217,7 +213,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <Action row={row} onDelete={onDelete} />;
+      return <Action row={ row } onDelete={ onDelete } />;
     },
   },
 ];

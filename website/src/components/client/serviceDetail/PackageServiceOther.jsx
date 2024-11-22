@@ -16,6 +16,7 @@ const PackageServiceOther = ({
 }) => {
   const isService = serviceSpecialty?.length > 0;
   const isPackage = medicalPackageSpecialty?.length > 0;
+  console.log(serviceSpecialty, medicalPackageSpecialty);
 
   if (isLoading) {
     return (

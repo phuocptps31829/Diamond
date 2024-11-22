@@ -47,11 +47,11 @@ const MedicinesCategoriesFormFix = ({ medicineCategoriesDetail }) => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Thông tin danh mục thuốc
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <InputCustom
             className="col-span-1 sm:col-span-1"
             name="name"
@@ -59,13 +59,13 @@ const MedicinesCategoriesFormFix = ({ medicineCategoriesDetail }) => {
             label="Tên danh mục thuốc:"
             required
             type="text"
-            control={control}
-            errors={errors}
+            control={ control }
+            errors={ errors }
             placeholder="Tên danh mục thuốc"
           />
           <div className="mt-10 w-full text-end">
-            <Button variant="custom" type="submit" disabled={isPending}>
-              {isPending ? <SpinLoader /> : "Cập nhật"}
+            <Button variant="custom" type="submit" disabled={ isPending }>
+              { isPending ? <SpinLoader /> : "Cập nhật" }
             </Button>
           </div>
         </form>

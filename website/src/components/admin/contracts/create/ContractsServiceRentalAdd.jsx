@@ -92,25 +92,25 @@ const ContractsServiceRentalAdd = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 text-2xl font-bold">Hợp đồng thuê dịch vụ</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 name="startDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected start date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected start date:", value) }
               />
             </div>
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 isEnd
                 name="endDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected end date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected end date:", value) }
               />
             </div>
 
@@ -120,17 +120,17 @@ const ContractsServiceRentalAdd = () => {
               name="accountNumber"
               label="Số tài khoản:"
               placeholder="Nhập số tài khoản"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
 
             <div className="w-full">
               <Label className="mb-3 block">Ngân hàng:</Label>
               <SelectBank
-                control={control}
+                control={ control }
                 name="bankName"
-                errors={errors}
-                onChange={(value) => console.log("Selected bank name:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected bank name:", value) }
               />
             </div>
             <InputCustom
@@ -139,8 +139,8 @@ const ContractsServiceRentalAdd = () => {
               name="accountName"
               label="Tên chủ tài khoản:"
               placeholder="Nhập tên chủ tài khoản"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               id="tin"
@@ -148,8 +148,8 @@ const ContractsServiceRentalAdd = () => {
               name="tin"
               label="Mã số thuế:"
               placeholder="Nhập mã số thuế"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               id="phone"
@@ -157,8 +157,8 @@ const ContractsServiceRentalAdd = () => {
               name="phone"
               label="Số điện thoại:"
               placeholder="Nhập số điện thoại"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               id="position"
@@ -166,8 +166,8 @@ const ContractsServiceRentalAdd = () => {
               name="position"
               label="Vị trí:"
               placeholder="Nhập vị trí công việc"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               id="agent"
@@ -175,8 +175,8 @@ const ContractsServiceRentalAdd = () => {
               name="agent"
               label="Người đại diện:"
               placeholder="Nhập tên người đại diện"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
             <InputCustom
               id="price"
@@ -184,8 +184,8 @@ const ContractsServiceRentalAdd = () => {
               name="price"
               label="Giá trị hợp đồng:"
               placeholder="Nhập giá trị hợp đồng"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
           </div>
           <InputCustom
@@ -194,20 +194,20 @@ const ContractsServiceRentalAdd = () => {
             name="address"
             label="Địa chỉ:"
             placeholder="Nhập địa chỉ"
-            control={control}
-            errors={errors}
+            control={ control }
+            errors={ errors }
           />
           <div className="my-4">
             <Label className="mb-1">Chữ ký:</Label>
             <SignatureCanvas
               penColor="black"
-              canvasProps={{
+              canvasProps={ {
                 className: "sigCanvas border rounded-lg h-[300px] w-full",
-              }}
-              ref={sigCanvas}
+              } }
+              ref={ sigCanvas }
             />
             <div className="mt-2 flex justify-end gap-2">
-              <Button variant="outline" type="button" onClick={clearSignature}>
+              <Button variant="outline" type="button" onClick={ clearSignature }>
                 Xóa
               </Button>
             </div>
@@ -215,14 +215,14 @@ const ContractsServiceRentalAdd = () => {
           <div className="mt-10 text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={ isPending || mutation.isPending }
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              { isPending || mutation.isPending ? (
                 <SpinLoader />
               ) : (
                 "Thêm Hợp đồng thuê dịch vụ"
-              )}
+              ) }
             </Button>
           </div>
         </form>

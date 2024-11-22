@@ -12,11 +12,11 @@ import { Input } from "@/components/ui/Input";
 import { useNavigate } from "react-router-dom";
 import Loading from "@/components/ui/Loading";
 import { imageApi } from "@/services/imageApi";
-import { toastUI } from "@/components/ui/Toastify";
 import { patientApi } from "@/services/patientsApi";
 import SelectEthnic from "../checkout/select/SelectEthnicity";
 import SelectDateOfBirth from "./SelectDateOfBirth";
 import SpinLoader from "@/components/ui/SpinLoader";
+import toast from "react-hot-toast";
 
 const UserInfoForm = () => {
   const queryClient = useQueryClient();
@@ -37,7 +37,7 @@ const UserInfoForm = () => {
       return patientApi.updatePatient(id, requestBody);
     },
     onSuccess: () => {
-      toastUI("Cập nhật thành công", "success");
+      toast.success("Cập nhật thành công");
       setFileImage(null);
       queryClient.invalidateQueries(["userProfile"]);
     },
@@ -47,7 +47,7 @@ const UserInfoForm = () => {
         error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Cập nhật thất bại", "error");
+      toast.error(errorMessage || "Cập nhật thất bại");
     },
   });
 
@@ -294,7 +294,7 @@ const UserInfoForm = () => {
             </div>
             <button
               type="submit"
-              className="mt-5 hidden h-fit w-full rounded-md bg-primary-500 p-2 text-white md:block"
+              className="mt-5 hidden h-fit w-full rounded-md bg-primary-500 p-2 text-white md:flex md:justify-center"
             >
               { isPendingUpdate ? <SpinLoader /> : "Cập nhật" }
             </button>

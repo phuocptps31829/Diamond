@@ -231,7 +231,7 @@ export default function PatientResult() {
   };
 
   return (
-    <div className="w-[100%] rounded-lg bg-white px-7 py-6">
+    <div className="w-[100%] rounded-lg bg-white px-7 py-6 min-h-[calc(100vh-140px)]">
       <form onSubmit={ handleSubmit(onSubmit) }>
         <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
           Thông tin đặt lịch hẹn

@@ -17,7 +17,7 @@ const BranchesAdd = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [address, setAddress] = useState(null);
   const [fileImage, setFileImage] = useState(null);
-  const [isPending, setIsPending] = useState(false); 
+  const [isPending, setIsPending] = useState(false);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ const BranchesAdd = () => {
 
     const formData = new FormData();
     formData.append("file", fileImage);
-    setIsPending(true); 
+    setIsPending(true);
 
     try {
       const response = await axiosInstanceCUD.post("/images/upload", formData, {
@@ -95,29 +95,29 @@ const BranchesAdd = () => {
       toastUI("Lỗi hình ảnh vui lòng thử lại.", "error");
       console.error("Error uploading image:", error);
     }
-    finally{
-      setIsPending(false)
+    finally {
+      setIsPending(false);
     }
   };
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
-      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
+        <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Thêm chi nhánh
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-2">
-              <ImagePreview 
-                imagePreview={imagePreview}
-                setFileImage={setFileImage}
-                setImagePreview={setImagePreview}
+              <ImagePreview
+                imagePreview={ imagePreview }
+                setFileImage={ setFileImage }
+                setImagePreview={ setImagePreview }
               />
-              {!fileImage && (
+              { !fileImage && (
                 <p className="mt-3 text-center text-sm text-red-500">
                   Vui lòng chọn ảnh
                 </p>
-              )}
+              ) }
             </div>
             <div className="w-full">
               <div className="grid grid-cols-1 items-center justify-center gap-5">
@@ -127,8 +127,8 @@ const BranchesAdd = () => {
                   name="branch_name"
                   label="Tên chi nhánh:"
                   placeholder="Nhập tên chi nhánh"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
                 <InputCustom
                   id="hotline"
@@ -136,17 +136,17 @@ const BranchesAdd = () => {
                   name="hotline"
                   label="Hotline"
                   placeholder="Nhập hotline"
-                  control={control}
-                  errors={errors}
-                />{" "}
+                  control={ control }
+                  errors={ errors }
+                />{ " " }
                 <InputCustom
                   id="working_hours"
                   name="working_hours"
                   label="Giờ làm việc (VD: Sáng: 8:00 - 12:00, Chiều: 13:00 - 17:00):"
                   type="text"
                   placeholder="Nhập thời gian làm việc"
-                  control={control}
-                  errors={errors}
+                  control={ control }
+                  errors={ errors }
                 />
               </div>
             </div>
@@ -159,23 +159,23 @@ const BranchesAdd = () => {
               Địa chỉ
             </Label>
             <GoogleMapComponent
-              setAddress={setAddress}
-              register={register}
-              errors={errors}
-              coordinates={address}
+              setAddress={ setAddress }
+              register={ register }
+              errors={ errors }
+              coordinates={ address }
             />
           </div>
 
           <div className="mt-10 w-full text-end">
-            <Button type="submit"      disabled={isPending || mutation.isPending} variant="custom">
-              {isPending || mutation.isPending ? (
+            <Button type="submit" disabled={ isPending || mutation.isPending } variant="custom">
+              { isPending || mutation.isPending ? (
                 <>
-                                   <SpinLoader />
+                  <SpinLoader />
 
                 </>
               ) : (
                 "Thêm chi nhánh"
-              )}
+              ) }
             </Button>
           </div>
         </form>

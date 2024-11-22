@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import {
   flexRender,
@@ -42,6 +40,7 @@ import { getColumnsAppointments } from "./columns";
 import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
 import Loading from "@/components/ui/Loading";
+import { RECORD_PER_PAGE } from "@/constants/config";
 
 export default function DataTable({ data }) {
   const queryClient = useQueryClient();
@@ -61,7 +60,7 @@ export default function DataTable({ data }) {
     resolver: zodResolver(),
     defaultValues: {},
   });
-  const onSubmit = () => {};
+  const onSubmit = () => { };
   const { mutate: updateStatus, isPending } = useMutation({
     mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
     onSuccess: () => {
@@ -97,7 +96,7 @@ export default function DataTable({ data }) {
       handleChangeStatus,
       handleDeleteAppointment
     ),
-    pageCount: Math.ceil(data.length / 7),
+    pageCount: Math.ceil(data.length / RECORD_PER_PAGE),
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -115,7 +114,7 @@ export default function DataTable({ data }) {
     },
     initialState: {
       pagination: {
-        pageSize: 7,
+        pageSize: RECORD_PER_PAGE,
       },
     },
   });
@@ -140,7 +139,6 @@ export default function DataTable({ data }) {
 
   const handleDeleteAppointmentMultiple = (ids) => {
     deleteAppointmentMultiple(ids);
-    console.log(ids);
   };
   const selectedRowIds = table
     .getSelectedRowModel()
@@ -150,26 +148,26 @@ export default function DataTable({ data }) {
     return <Loading />;
   }
   return (
-    <div className="w-[100%] rounded-lg bg-white px-6 py-3">
-      {/* Search */}
-      <div className="mb-10 flex w-full justify-between">
+    <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
+      {/* Search */ }
+      <div className="mb-2 flex w-full justify-between">
         <form
           className="mr-1 flex items-center"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={ handleSubmit(onSubmit) }
         >
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
-                value={table.getColumn("patient")?.getFilterValue() ?? ""}
-                onChange={(event) => setSearchValue(event.target.value)}
+                value={ table.getColumn("patient")?.getFilterValue() ?? "" }
+                onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm lịch khám"
                 name="newsName"
                 type="text"
                 id="newsName"
-                icon={<FaSearch />}
-                control={control}
-                errors={errors}
+                icon={ <FaSearch /> }
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
@@ -180,21 +178,21 @@ export default function DataTable({ data }) {
             </Button>
           </Link>
           <Button
-            onClick={handleRefresh}
+            onClick={ handleRefresh }
             size="icon"
             variant="outline"
             className="mr-1 h-11 w-11"
           >
             <FaArrowsRotate className="text-primary-500" />
           </Button>
-          {selectedRowIds.length > 0 && (
+          { selectedRowIds.length > 0 && (
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
                   className="h-11"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={ (e) => e.stopPropagation() }
                 >
                   Xóa tất cả
                 </Button>
@@ -212,7 +210,7 @@ export default function DataTable({ data }) {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Hủy</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() =>
+                    onClick={ () =>
                       handleDeleteAppointmentMultiple(selectedRowIds)
                     }
                   >
@@ -221,7 +219,7 @@ export default function DataTable({ data }) {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          )}
+          ) }
         </form>
         <div className="flex gap-4">
           <div className="flex items-center">
@@ -234,72 +232,72 @@ export default function DataTable({ data }) {
           </div>
         </div>
       </div>
-      <div>
+      <div className="overflow-y-auto custom-scrollbar">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+            { table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={ headerGroup.id }>
+                { headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
+                    <TableHead key={ header.id } >
+                      { header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        ) }
                     </TableHead>
                   );
-                })}
+                }) }
               </TableRow>
-            ))}
+            )) }
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            { table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  key={ row.id }
+                  data-state={ row.getIsSelected() && "selected" }
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell className="h-16" key={cell.id}>
-                      {flexRender(
+                  { row.getVisibleCells().map((cell) => (
+                    <TableCell className="h-16 " key={ cell.id }>
+                      { flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
-                      )}
+                      ) }
                     </TableCell>
-                  ))}
+                  )) }
                 </TableRow>
               ))
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={table.getAllColumns().length}
+                  colSpan={ table.getAllColumns().length }
                   className="h-24 text-center"
                 >
                   Không có kết quả.
                 </TableCell>
               </TableRow>
-            )}
+            ) }
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex-1 flex items-end justify-end space-x-2 pt-4 pb-2">
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
-          {table.getFilteredSelectedRowModel().rows.length} trên{" "}
-          {table.getFilteredRowModel().rows.length} trong danh sách.
+          { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
+          { table.getFilteredRowModel().rows.length } trong danh sách.
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={ () => table.previousPage() }
+            disabled={ !table.getCanPreviousPage() }
           >
             Trước
           </Button>
-          {Array.from({ length: table.getPageCount() }, (_, index) => {
+          { Array.from({ length: table.getPageCount() }, (_, index) => {
             const currentPage = table.getState().pagination.pageIndex;
             const pageCount = table.getPageCount();
             if (
@@ -311,12 +309,12 @@ export default function DataTable({ data }) {
             ) {
               return (
                 <Button
-                  key={index}
-                  variant={currentPage === index ? "solid" : "outline"}
+                  key={ index }
+                  variant={ currentPage === index ? "solid" : "outline" }
                   size="sm"
-                  onClick={() => table.setPageIndex(index)}
+                  onClick={ () => table.setPageIndex(index) }
                 >
-                  {index + 1}
+                  { index + 1 }
                 </Button>
               );
             }
@@ -324,15 +322,15 @@ export default function DataTable({ data }) {
               (index === currentPage - 2 && currentPage > 2) ||
               (index === currentPage + 2 && currentPage < pageCount - 3)
             ) {
-              return <span key={index}>...</span>;
+              return <span key={ index }>...</span>;
             }
             return null;
-          })}
+          }) }
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={ () => table.nextPage() }
+            disabled={ !table.getCanNextPage() }
           >
             Sau
           </Button>

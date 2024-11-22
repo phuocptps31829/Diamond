@@ -12,7 +12,7 @@ export default function ContactForm() {
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 sm:px-10 lg:flex-row lg:justify-between lg:gap-0">
           <div className="hidden lg:block"></div>
           <div className="flex flex-col items-center gap-5 lg:flex-row">
-            <div className="flex h-[80px] w-[80px] items-center justify-center rounded-full bg-white">
+            <div className="flex mb-2 w-[80px] items-center justify-center rounded-full bg-white">
               <img src="https://medpro.vn/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fmobile.650ea615.svg&w=1920&q=75" />
             </div>
             <div className="flex flex-col items-center text-white">

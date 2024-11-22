@@ -94,43 +94,43 @@ const ContractsDoctorSurgeonAdd = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Hợp đồng bác sĩ ngoại khoa
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="w-full">
               <SelectDoctor
-                control={control}
+                control={ control }
                 name="doctorID"
-                errors={errors}
-                onChange={(value) => console.log("Selected doctor:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected doctor:", value) }
               />
             </div>
             <div className="w-full">
               <SelectBranch
-                control={control}
+                control={ control }
                 name="hospitalID"
-                errors={errors}
-                onChange={(value) => console.log("Selected hospital:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected hospital:", value) }
               />
             </div>
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 name="startDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected start date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected start date:", value) }
               />
             </div>
             <div className="w-full">
               <SelectDate
-                control={control}
+                control={ control }
                 isEnd
                 name="endDate"
-                errors={errors}
-                onChange={(value) => console.log("Selected end date:", value)}
+                errors={ errors }
+                onChange={ (value) => console.log("Selected end date:", value) }
               />
             </div>
             <div className="w-full">
@@ -138,12 +138,12 @@ const ContractsDoctorSurgeonAdd = () => {
                 id="title"
                 type="text"
                 name="title"
-                disabled={true}
+                disabled={ true }
                 label="Tiêu đề:"
                 placeholder="Hợp đồng bác sĩ ngoại khoa"
                 value="Hợp đồng bác sĩ cơ hữu"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
 
@@ -154,8 +154,8 @@ const ContractsDoctorSurgeonAdd = () => {
                 name="price"
                 label="Nhập lương:"
                 placeholder="Nhập lương bác sĩ"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
@@ -166,21 +166,21 @@ const ContractsDoctorSurgeonAdd = () => {
               name="address"
               label="Địa điểm ký hợp đồng:"
               placeholder="Nhập địa điểm ký hợp đồng"
-              control={control}
-              errors={errors}
+              control={ control }
+              errors={ errors }
             />
           </div>
           <div className="my-4">
             <Label className="mb-1">Chữ kí:</Label>
             <SignatureCanvas
               penColor="black"
-              canvasProps={{
+              canvasProps={ {
                 className: "sigCanvas border rounded-lg h-[300px] w-full",
-              }}
-              ref={sigCanvas}
+              } }
+              ref={ sigCanvas }
             />
             <div className="mt-2 flex justify-end gap-2">
-              <Button variant="outline" type="button" onClick={clearSignature}>
+              <Button variant="outline" type="button" onClick={ clearSignature }>
                 Xóa
               </Button>
             </div>
@@ -188,16 +188,16 @@ const ContractsDoctorSurgeonAdd = () => {
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={ isPending || mutation.isPending }
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              { isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
                 "Thêm Hợp đồng bác sĩ ngoại khoa"
-              )}
+              ) }
             </Button>
           </div>
         </form>

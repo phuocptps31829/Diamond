@@ -53,10 +53,11 @@ const DetailService = () => {
     error: errorServiceSpecialty,
     isLoading: isLoadingServiceSpecialty,
   } = useQuery({
-    queryKey: ['service-specialty', service?.specialtyID],
-    queryFn: () => serviceApi.getServiceBySpecialty(service?.specialtyID),
-    enabled: !!service?.specialtyID,
+    queryKey: ['service-specialty', service?.specialty._id],
+    queryFn: () => serviceApi.getServiceBySpecialty(service?.specialty._id),
+    enabled: !!service?.specialty._id,
   });
+  console.log(serviceSpecialty, medicalPackageSpecialty);
 
   if (
     errorMedicalPackage ||
@@ -80,13 +81,13 @@ const DetailService = () => {
         service={ service }
         isLoading={ isLoading }
       />
-        { !service && (
-          <MedicalPackageService
-            medicalPackage={ medicalPackage }
-            service={ service }
-            isLoading={ isLoading }
-          />
-        ) }
+      { !service && (
+        <MedicalPackageService
+          medicalPackage={ medicalPackage }
+          service={ service }
+          isLoading={ isLoading }
+        />
+      ) }
       <DescriptionService
         medicalPackage={ medicalPackage }
         service={ service }

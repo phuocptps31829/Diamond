@@ -29,6 +29,7 @@ import Loading from "@/components/ui/Loading";
 import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
+import { RECORD_PER_PAGE } from "@/constants/config";
 
 export default function DataTableRole({ data }) {
     const [sorting, setSorting] = useState([]);
@@ -40,7 +41,7 @@ export default function DataTableRole({ data }) {
     const [rowSelection, setRowSelection] = useState({});
     const [pagination, setPagination] = useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: RECORD_PER_PAGE,
     });
     const [searchValue, setSearchValue] = useState("");
     const [debouncedSearchValue] = useDebounce(searchValue, 500);
@@ -104,8 +105,8 @@ export default function DataTableRole({ data }) {
     }
 
     return (
-        <div className="w-full p-4 bg-white rounded-sm">
-            <div className="flex h-[80px]">
+        <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
+            <div className="flex mb-2">
                 <form className="mr-1 flex">
                     <div className="mb-2">
                         <div className="relative mr-1 w-[300px]">
@@ -138,57 +139,55 @@ export default function DataTableRole({ data }) {
                     </Button>
                 </form>
             </div>
-            <div>
-                <Table>
-                    <TableHeader>
-                        { table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={ headerGroup.id }>
-                                { headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead key={ header.id }>
-                                            { header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                ) }
-                                        </TableHead>
-                                    );
-                                }) }
-                            </TableRow>
-                        )) }
-                    </TableHeader>
-                    <TableBody>
-                        { table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={ row.id }
-                                    data-state={ row.getIsSelected() && "selected" }
-                                >
-                                    { row.getVisibleCells().map((cell) => (
-                                        <TableCell className="h-16" key={ cell.id }>
-                                            { flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
+            <Table>
+                <TableHeader>
+                    { table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={ headerGroup.id }>
+                            { headerGroup.headers.map((header) => {
+                                return (
+                                    <TableHead key={ header.id }>
+                                        { header.isPlaceholder
+                                            ? null
+                                            : flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext()
                                             ) }
-                                        </TableCell>
-                                    )) }
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={ data.length }
-                                    className="h-24 text-center"
-                                >
-                                    Không có kết quả.
-                                </TableCell>
+                                    </TableHead>
+                                );
+                            }) }
+                        </TableRow>
+                    )) }
+                </TableHeader>
+                <TableBody>
+                    { table.getRowModel().rows?.length ? (
+                        table.getRowModel().rows.map((row) => (
+                            <TableRow
+                                key={ row.id }
+                                data-state={ row.getIsSelected() && "selected" }
+                            >
+                                { row.getVisibleCells().map((cell) => (
+                                    <TableCell className="h-16" key={ cell.id }>
+                                        { flexRender(
+                                            cell.column.columnDef.cell,
+                                            cell.getContext()
+                                        ) }
+                                    </TableCell>
+                                )) }
                             </TableRow>
-                        ) }
-                    </TableBody>
-                </Table>
-            </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell
+                                colSpan={ data.length }
+                                className="h-24 text-center"
+                            >
+                                Không có kết quả.
+                            </TableCell>
+                        </TableRow>
+                    ) }
+                </TableBody>
+            </Table>
+            <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
                 <div className="flex-1 text-sm text-muted-foreground">
                     <span className="pr-1">Đã chọn</span>
                     { table.getFilteredSelectedRowModel().rows.length } trên{ " " }

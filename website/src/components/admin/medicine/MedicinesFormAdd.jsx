@@ -53,36 +53,36 @@ const MedicinesFormAdd = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Thông tin thuốc
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-4 flex w-full gap-[20px]">
             <div className="relative md:mb-1 min-w-[370px]">
               <InputCustom
-                label={"Tên thuốc"}
+                label={ "Tên thuốc" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="name"
                 type="text"
                 id="name"
                 placeholder="Nhập tên thuốc"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="relative md:mb-1 md:w-1/3">
               <InputCustom
-                label={"Mã thuốc"}
+                label={ "Mã thuốc" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="medicineCode"
                 type="text"
                 id="medicineCode"
                 placeholder="Nhập mã thuốc"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="md:w-1/3">
@@ -91,8 +91,8 @@ const MedicinesFormAdd = () => {
               </Label>
               <SelectMedicineCategories
                 name="medicineCategoryID"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
@@ -104,22 +104,22 @@ const MedicinesFormAdd = () => {
                 name="price"
                 label="Giá thuốc:"
                 type="number"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
                 placeholder="Nhập giá thuốc"
               />
             </div>
             <div className="relative w-full">
               <InputCustom
-                label={"Thành phần thuốc:"}
+                label={ "Thành phần thuốc:" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="ingredients"
                 type="text"
                 id="ingredients"
                 placeholder="Nhập thành phần thuốc:"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
@@ -129,13 +129,13 @@ const MedicinesFormAdd = () => {
                 <Label className="mb-3 block text-sm font-medium leading-none text-black">
                   Đơn vị: <span className="text-red-500">*</span>
                 </Label>
-                <SelectUnit name="unit" control={control} errors={errors} />
+                <SelectUnit name="unit" control={ control } errors={ errors } />
               </div>
               <div className="w-[370px]">
                 <Label className="mb-3 block text-sm font-medium leading-none text-black">
                   Loại: <span className="text-red-500">*</span>
                 </Label>
-                <SelectType name="type" control={control} errors={errors} />
+                <SelectType name="type" control={ control } errors={ errors } />
               </div>
             </div>
             <div className="relative flex-1">
@@ -144,54 +144,54 @@ const MedicinesFormAdd = () => {
               </Label>
               <Controller
                 name="instruction"
-                control={control}
-                render={({ field }) => (
+                control={ control }
+                render={ ({ field }) => (
                   <Textarea
                     placeholder="Nhập hướng dẫn sử dụng"
                     id="instruction"
                     className="min-h-[135px] w-full"
-                    {...field}
+                    { ...field }
                   />
-                )}
+                ) }
               />
-              {errors.instruction && (
+              { errors.instruction && (
                 <p className="mt-1 text-sm text-red-500">
-                  {errors.instruction.message}
+                  { errors.instruction.message }
                 </p>
-              )}
+              ) }
             </div>
           </div>
           <div className="flex w-full gap-[20px]">
             <div className="relative md:mb-1 md:w-1/2">
               <InputCustom
-                label={"Tác dụng phụ"}
+                label={ "Tác dụng phụ" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="sideEffects"
                 type="text"
                 id="sideEffects"
                 placeholder="Nhập tác dụng phụ"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="relative md:mb-1 md:w-1/2">
               <InputCustom
-                label={"Lưu ý"}
+                label={ "Lưu ý" }
                 required
                 className="col-span-1 sm:col-span-1"
                 name="note"
                 type="text"
                 id="note"
                 placeholder="Nhập lưu ý"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>
           <div className="mt-10 w-full text-end">
-            <Button variant="custom" type="submit" disabled={isPending}>
-              {isPending ? <SpinLoader /> : "Thêm mới"}
+            <Button variant="custom" type="submit" disabled={ isPending }>
+              { isPending ? <SpinLoader /> : "Thêm mới" }
             </Button>
           </div>
         </form>

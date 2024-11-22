@@ -98,6 +98,8 @@ import ContractListPage from "./pages/admin/Contracts";
 import ContractsEditPage from "./pages/admin/Contracts/edit";
 import InvoicesListPage from "./pages/admin/Invoices";
 import ProfileAdminPage from "./pages/admin/Profile";
+import PrivacyPolicy from "./pages/client/Docs/PrivacyPolicy";
+import PaymentPolicy from "./pages/client/Docs/PaymentPolicy";
 
 const router = createBrowserRouter([
   {
@@ -160,6 +162,15 @@ const router = createBrowserRouter([
         path: "doctor/:id",
         element: <DoctorDetail />,
       },
+      {
+        path: "docs/privacy-policy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "docs/payment-policy",
+        element: <PaymentPolicy />,
+      },
+
       {
         path: "profile",
         element: (

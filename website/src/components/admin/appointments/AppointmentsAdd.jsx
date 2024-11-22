@@ -233,11 +233,11 @@ const AppointmentsAdd = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Thêm lịch hẹn
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <Button
@@ -246,7 +246,7 @@ const AppointmentsAdd = () => {
                     ? "bg-white text-primary-600 outline outline-2 outline-primary-600 hover:bg-white"
                     : "bg-white text-black hover:bg-white"
                 }
-                onClick={handleServiceButtonClick}
+                onClick={ handleServiceButtonClick }
               >
                 Dịch vụ
               </Button>
@@ -256,76 +256,76 @@ const AppointmentsAdd = () => {
                     ? "bg-white text-primary-600 outline outline-2 outline-primary-600 hover:bg-white"
                     : "bg-white text-black hover:bg-white"
                 }
-                onClick={handlePackageButtonClick}
+                onClick={ handlePackageButtonClick }
               >
                 Gói khám
               </Button>
             </div>
 
-            {isServiceSelected ? (
+            { isServiceSelected ? (
               <div className="flex-1">
                 <SelectService
-                  control={control}
+                  control={ control }
                   name="service"
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeService}
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeService }
                 />
               </div>
             ) : (
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
                   <SelectMedicalPackage
-                    control={control}
+                    control={ control }
                     name="medicalPackage"
-                    errors={errors}
-                    setValue={setValue}
-                    onChange={handleChangeMedicalPackage}
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ handleChangeMedicalPackage }
                   />
                 </div>
 
-                {selectedPackage && (
+                { selectedPackage && (
                   <div className="flex-1">
                     <SelectLevelMedicalPackage
-                      control={control}
+                      control={ control }
                       name="level"
-                      setValue={setValue}
-                      errors={errors}
-                      levels={selectedPackage.services}
-                      onChange={handleChangeLevel}
+                      setValue={ setValue }
+                      errors={ errors }
+                      levels={ selectedPackage.services }
+                      onChange={ handleChangeLevel }
                     />
                   </div>
-                )}
+                ) }
               </div>
-            )}
+            ) }
 
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex-1">
-                {/* Chi nhánh khám */}
+                {/* Chi nhánh khám */ }
                 <SelectDepartment
-                  control={control}
+                  control={ control }
                   name="department"
-                  selectedServiceID={selectedService.serviceId}
-                  selectedMedicalPackageID={selectedPackage.medicalPackageId}
-                  errors={errors}
+                  selectedServiceID={ selectedService.serviceId }
+                  selectedMedicalPackageID={ selectedPackage.medicalPackageId }
+                  errors={ errors }
                   specialtyID={
                     selectedService.specialtyID || selectedPackage.specialtyID
                   }
-                  setValue={setValue}
-                  onChange={handleChangeBranch}
+                  setValue={ setValue }
+                  onChange={ handleChangeBranch }
                 />
               </div>
               <div className="flex-1">
                 <SelectDoctor
-                  control={control}
+                  control={ control }
                   name="doctor"
-                  errors={errors}
-                  branchId={selectedBranchId}
-                  setValue={setValue}
+                  errors={ errors }
+                  branchId={ selectedBranchId }
+                  setValue={ setValue }
                   specialtyID={
                     selectedService.specialtyID || selectedPackage.specialtyID
                   }
-                  onChange={handleChangeDoctor}
+                  onChange={ handleChangeDoctor }
                   selectedServiceID={
                     selectedService.serviceId ||
                     selectedPackage.medicalPackageId
@@ -334,30 +334,30 @@ const AppointmentsAdd = () => {
               </div>
             </div>
 
-            {/* Selet time */}
+            {/* Selet time */ }
             <div className="flex flex-col gap-4 md:flex-row">
-              {/* Date */}
+              {/* Date */ }
               <div className="flex-1">
                 <SelectDate
-                  control={control}
+                  control={ control }
                   name="date"
-                  doctorId={selectedDoctorId}
-                  branchId={selectedBranchId}
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeDate}
+                  doctorId={ selectedDoctorId }
+                  branchId={ selectedBranchId }
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeDate }
                 />
               </div>
               <div className="flex-1">
                 <SelectTime
-                  control={control}
+                  control={ control }
                   name="time"
-                  doctorId={selectedDoctorId}
-                  branchId={selectedBranchId}
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeTime}
-                  date={selectedDate}
+                  doctorId={ selectedDoctorId }
+                  branchId={ selectedBranchId }
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeTime }
+                  date={ selectedDate }
                 />
               </div>
             </div>
@@ -368,8 +368,8 @@ const AppointmentsAdd = () => {
                 label="Loại hình khám"
                 type="text"
                 placeholder="Nhập loại hình khám"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="">
@@ -379,8 +379,8 @@ const AppointmentsAdd = () => {
 
               <div className="flex items-center justify-center gap-2">
                 <input
-                  value={clinic ?? ""}
-                  disabled={true}
+                  value={ clinic ?? "" }
+                  disabled={ true }
                   className="h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 pl-5 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto"
                 />
               </div>
@@ -389,16 +389,16 @@ const AppointmentsAdd = () => {
             <div className="w-full text-end">
               <Button
                 type="submit"
-                disabled={mutation.isPending}
+                disabled={ mutation.isPending }
                 variant="custom"
               >
-                {mutation.isPending ? (
+                { mutation.isPending ? (
                   <>
                     <SpinLoader />
                   </>
                 ) : (
                   "Thêm lịch hẹn"
-                )}
+                ) }
               </Button>
             </div>
           </div>

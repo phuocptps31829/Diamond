@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDebounce } from "use-debounce";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useNavigate } from "react-router-dom";
+import { RECORD_PER_PAGE } from "@/constants/config";
 
 export default function DataTable({ data, columns }) {
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ export default function DataTable({ data, columns }) {
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.ceil(data.length / 8),
+    pageCount: Math.ceil(data.length / RECORD_PER_PAGE),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -72,7 +73,7 @@ export default function DataTable({ data, columns }) {
     },
     initialState: {
       pagination: {
-        pageSize: 8,
+        pageSize: RECORD_PER_PAGE,
       },
     },
   });
@@ -82,9 +83,9 @@ export default function DataTable({ data, columns }) {
   }, [debouncedSearchValue, table]);
 
   return (
-    <div className="w-[100%] rounded-lg bg-white px-6 py-3">
+    <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
       {/* Search */ }
-      <div className="flex h-[80px]">
+      <div className="flex mb-2">
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
@@ -92,7 +93,7 @@ export default function DataTable({ data, columns }) {
                 value={ table.getColumn("fullName")?.getFilterValue() ?? "" }
                 onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm người dùng"
+                placeholder="Tìm kiếm bác sĩ"
                 name="name"
                 type="text"
                 id="name"
@@ -120,58 +121,56 @@ export default function DataTable({ data, columns }) {
           </Button>
         </form>
       </div>
-      <div>
-        <Table>
-          <TableHeader>
-            { table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={ headerGroup.id }>
-                { headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={ header.id }>
-                      { header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        ) }
-                    </TableHead>
-                  );
-                }) }
-              </TableRow>
-            )) }
-          </TableHeader>
-          <TableBody>
-            { table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  className=""
-                  key={ row.id }
-                  data-state={ row.getIsSelected() && "selected" }
-                >
-                  { row.getVisibleCells().map((cell) => (
-                    <TableCell key={ cell.id }>
-                      { flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
+      <Table>
+        <TableHeader>
+          { table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={ headerGroup.id }>
+              { headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={ header.id }>
+                    { header.isPlaceholder
+                      ? null
+                      : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
                       ) }
-                    </TableCell>
-                  )) }
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={ columns.length }
-                  className="h-24 text-center"
-                >
-                  Không có kết quả.
-                </TableCell>
+                  </TableHead>
+                );
+              }) }
+            </TableRow>
+          )) }
+        </TableHeader>
+        <TableBody>
+          { table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                className=""
+                key={ row.id }
+                data-state={ row.getIsSelected() && "selected" }
+              >
+                { row.getVisibleCells().map((cell) => (
+                  <TableCell key={ cell.id }>
+                    { flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    ) }
+                  </TableCell>
+                )) }
               </TableRow>
-            ) }
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+            ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={ columns.length }
+                className="h-24 text-center"
+              >
+                Không có kết quả.
+              </TableCell>
+            </TableRow>
+          ) }
+        </TableBody>
+      </Table>
+      <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
           { table.getFilteredSelectedRowModel().rows.length } trên{ " " }

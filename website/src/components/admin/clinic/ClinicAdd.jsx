@@ -64,12 +64,12 @@ export default function ClinicsAdd() {
   };
 
   return (
-    <div className="rounded-xl bg-white px-6 py-6 ">
-       <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
-          Thêm phòng khám
-        </h1>
+    <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
+      <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
+        Thêm phòng khám
+      </h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="w-full">
           <div className="block">
             <div className="w-full gap-[10px] md:flex">
@@ -77,11 +77,11 @@ export default function ClinicsAdd() {
                 className="col-span-1 sm:col-span-1"
                 name="clinicName"
                 type="text"
-                placeholder={"Tên phòng khám"}
+                placeholder={ "Tên phòng khám" }
                 id="clinicName"
-                label={"Tên phòng khám"}
-                control={control}
-                errors={errors}
+                label={ "Tên phòng khám" }
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="mt-3 grid w-full grid-cols-2 gap-4">
@@ -94,9 +94,9 @@ export default function ClinicsAdd() {
                 </Label>
                 <SelectSpecialty
                   name="specialty"
-                  control={control}
-                  errors={errors}
-                  onChange={handleSpecialtyChange}
+                  control={ control }
+                  errors={ errors }
+                  onChange={ handleSpecialtyChange }
                 />
               </div>
               <div className="">
@@ -108,29 +108,29 @@ export default function ClinicsAdd() {
                 </Label>
                 <SelectDepartment
                   name="branch"
-                  control={control}
-                  errors={errors}
-                  onChange={handleBranchChange}
+                  control={ control }
+                  errors={ errors }
+                  onChange={ handleBranchChange }
                 />
               </div>
             </div>
-         
+
           </div>
         </div>
 
         <div className="mt-10 w-full text-end">
           <Button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={ mutation.isPending }
             variant="custom"
           >
-            {mutation.isPending ? (
+            { mutation.isPending ? (
               <>
                 <SpinLoader />
               </>
             ) : (
               "Thêm phòng khám"
-            )}
+            ) }
           </Button>
         </div>
       </form>

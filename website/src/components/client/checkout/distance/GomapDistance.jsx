@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const libraries = ["places"];
 const keyGoogleMaps = import.meta.env.VITE_GOOGLE_MAP_KEY;
-const GomapDistance = ({ hospitalCoordinates, className,room }) => {
+const GomapDistance = ({ hospitalCoordinates, className, room }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: keyGoogleMaps,
     libraries,
@@ -20,7 +20,8 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isLoaded || !hospitalCoordinates ) return;
+    if (!isLoaded || !hospitalCoordinates) return;
+    console.log(hospitalCoordinates);
 
     const calculateDistance = (patientCoordinates) => {
       const service = new window.google.maps.DistanceMatrixService();
@@ -63,6 +64,7 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
     };
 
     getPatientLocation();
+
   }, [isLoaded, hospitalCoordinates, room]);
 
   if (!room || !isLoaded || !hospitalCoordinates || distance === null)
@@ -80,14 +82,13 @@ const GomapDistance = ({ hospitalCoordinates, className,room }) => {
           <p className="text-sm">{ distance.toFixed(2) } km</p>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger type="button">
                 <Link to={ googleMapsUrl } target="_blank">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="32"
                     height="32"
                     viewBox="0 0 32 32"
-                    id="google-maps"
                   >
                     <path
                       fill="#4285f4"

@@ -178,65 +178,65 @@ const AppointmentsEdit = () => {
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6">
+      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Chỉnh sửa lịch hẹn
         </h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <span>Dịch vụ</span>
               <Switch
-                checked={!isServiceSelected}
-                onCheckedChange={handleSwitchChange}
+                checked={ !isServiceSelected }
+                onCheckedChange={ handleSwitchChange }
               />
               <span>Gói khám</span>
             </div>
 
-            {isServiceSelected ? (
+            { isServiceSelected ? (
               <div className="flex-1">
                 <SelectService
-                  control={control}
+                  control={ control }
                   name="service"
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeService}
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeService }
                 />
               </div>
             ) : (
               <div className="flex-1">
                 <SelectMedicalPackage
-                  control={control}
+                  control={ control }
                   name="medicalPackage"
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeMedicalPackage}
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeMedicalPackage }
                 />
               </div>
-            )}
+            ) }
 
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex-1">
                 <SelectDepartment
-                  control={control}
+                  control={ control }
                   name="department"
-                  selectedServiceID={selectedService.serviceId}
-                  errors={errors}
-                  specialtyID={selectedService.specialtyID || ""}
-                  setValue={setValue}
-                  onChange={handleChangeBranch}
+                  selectedServiceID={ selectedService.serviceId }
+                  errors={ errors }
+                  specialtyID={ selectedService.specialtyID || "" }
+                  setValue={ setValue }
+                  onChange={ handleChangeBranch }
                 />
               </div>
               <div className="flex-1">
                 <SelectDoctor
-                  control={control}
+                  control={ control }
                   name="doctor"
-                  errors={errors}
-                  branchId={selectedBranchId}
-                  setValue={setValue}
-                  specialtyID={selectedService.specialtyID || ""}
-                  onChange={handleChangeDoctor}
-                  selectedServiceID={selectedService.serviceId}
+                  errors={ errors }
+                  branchId={ selectedBranchId }
+                  setValue={ setValue }
+                  specialtyID={ selectedService.specialtyID || "" }
+                  onChange={ handleChangeDoctor }
+                  selectedServiceID={ selectedService.serviceId }
                 />
               </div>
             </div>
@@ -244,25 +244,25 @@ const AppointmentsEdit = () => {
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex-1">
                 <SelectDate
-                  control={control}
+                  control={ control }
                   name="date"
-                  doctorId={selectedDoctorId}
-                  branchId={selectedBranchId}
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeDate}
+                  doctorId={ selectedDoctorId }
+                  branchId={ selectedBranchId }
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeDate }
                 />
               </div>
               <div className="flex-1">
                 <SelectTime
-                  control={control}
+                  control={ control }
                   name="time"
-                  doctorId={selectedDoctorId}
-                  branchId={selectedBranchId}
-                  errors={errors}
-                  setValue={setValue}
-                  onChange={handleChangeTime}
-                  date={selectedDate}
+                  doctorId={ selectedDoctorId }
+                  branchId={ selectedBranchId }
+                  errors={ errors }
+                  setValue={ setValue }
+                  onChange={ handleChangeTime }
+                  date={ selectedDate }
                 />
               </div>
             </div>
@@ -273,8 +273,8 @@ const AppointmentsEdit = () => {
                 label="Loại hình khám"
                 type="text"
                 placeholder="Nhập loại hình khám"
-                control={control}
-                errors={errors}
+                control={ control }
+                errors={ errors }
               />
             </div>
             <div className="">
@@ -284,8 +284,8 @@ const AppointmentsEdit = () => {
 
               <div className="flex items-center justify-center gap-2">
                 <input
-                  value={clinic ?? ""}
-                  disabled={true}
+                  value={ clinic ?? "" }
+                  disabled={ true }
                   className="h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 pl-5 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto"
                 />
               </div>
