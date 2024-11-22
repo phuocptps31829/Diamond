@@ -21,7 +21,6 @@ ChartJS.register(
 );
 
 const LineChart = ({ dataTotalPatientsByAges }) => {
-  console.log("dataTotalPatientsByAges", dataTotalPatientsByAges);
   const labels = [
     "Tháng 1",
     "Tháng 2",
@@ -128,7 +127,7 @@ const LineChart = ({ dataTotalPatientsByAges }) => {
     },
   };
 
-  return <Line data={data} options={options} />;
+  return <Line data={ data } options={ options } />;
 };
 
 export default LineChart;

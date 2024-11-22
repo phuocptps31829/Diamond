@@ -24,14 +24,14 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        checked={ row.getIsSelected() }
+        onCheckedChange={ (value) => row.toggleSelected(!!value) }
         aria-label="Select row"
       />
     ),
@@ -48,7 +48,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 lowercase">
         <span className="w-full whitespace-nowrap text-center">
-          {row.index + 1}
+          { row.index + 1 }
         </span>
       </div>
     ),
@@ -70,18 +70,18 @@ export const columns = [
 
       return (
         <>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={ open } onOpenChange={ setOpen }>
             <DialogTrigger asChild>
               <div className="flex items-center justify-center gap-3 py-2 lowercase">
-                {loading && (
+                { loading && (
                   <Skeleton className="h-14 w-20 animate-pulse rounded-sm bg-gray-300" />
-                )}
-                <div className={`${loading ? "hidden" : "block"} h-14 w-20`}>
+                ) }
+                <div className={ `${loading ? "hidden" : "block"} h-14 w-20` }>
                   <img
-                    src={URL_IMAGE + "/" + row.original.image}
-                    alt={row.original.image}
-                    className={`${loading ? "hidden" : "block"} h-full w-full cursor-pointer rounded-sm border border-primary-200 object-cover`}
-                    onLoad={handleImageLoad}
+                    src={ URL_IMAGE + "/" + row.original.image }
+                    alt={ row.original.image }
+                    className={ `${loading ? "hidden" : "block"} h-full w-full cursor-pointer rounded-sm border border-primary-200 object-cover` }
+                    onLoad={ handleImageLoad }
                   />
                 </div>
               </div>
@@ -91,7 +91,7 @@ export const columns = [
                 <DialogTitle>Hình ảnh lớn</DialogTitle>
               </DialogHeader>
               <img
-                src={URL_IMAGE + "/" + row.original.image}
+                src={ URL_IMAGE + "/" + row.original.image }
                 alt="large-thumbnail w-full h-auto"
               />
             </DialogContent>
@@ -106,7 +106,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Tên dịch vụ
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -114,7 +114,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 uppercase">
-        <span className="w-full whitespace-nowrap">{row.getValue("name")}</span>
+        <span title={ row.getValue("name") } className="w-full max-w-[300px] truncate">{ row.getValue("name") }</span>
       </div>
     ),
   },
@@ -126,7 +126,7 @@ export const columns = [
         <Button
           className="px-0 text-base"
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
         >
           Chuyên khoa
           <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -137,7 +137,7 @@ export const columns = [
       return (
         <div className="w-full max-w-[270px]">
           <span className="block w-[150px] overflow-hidden text-ellipsis whitespace-nowrap">
-            {row.original.specialty?.name}
+            { row.original.specialty?.name }
           </span>
         </div>
       );
@@ -149,7 +149,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Ngày tạo
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -166,7 +166,7 @@ export const columns = [
         second: "2-digit",
       });
 
-      return <div className="whitespace-nowrap">{formattedDate}</div>;
+      return <div className="whitespace-nowrap">{ formattedDate }</div>;
     },
   },
   {
@@ -175,7 +175,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
       >
         Trạng thái
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -184,8 +184,8 @@ export const columns = [
     cell: ({ row }) => {
       const status = row.original.isHidden;
       return (
-        <div className={!status ? "text-green-500" : "text-red-500"}>
-          {!status ? "Hiển thị" : "Ẩn"}
+        <div className={ !status ? "text-green-500" : "text-red-500" }>
+          { !status ? "Hiển thị" : "Ẩn" }
         </div>
       );
     },
@@ -195,7 +195,7 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <Action row={row} />;
+      return <Action row={ row } />;
     },
   },
 ];

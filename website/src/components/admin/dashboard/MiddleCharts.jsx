@@ -33,7 +33,7 @@ export default function MiddleCharts({
                 };
             })
         );
-    }, [dataTotalPatients, dataPatientsByAges, yearNow]);
+    }, [dataTotalPatients, dataPatientsByAges, yearNow, dataAllSpecialties]);
 
     const handleYearChange = (e) => {
         setYearNow(Number(e.target.value));
@@ -45,29 +45,29 @@ export default function MiddleCharts({
                 <div className="mb-2 flex items-center justify-between">
                     <h3 className="text-[18px] font-semibold">Bệnh nhân theo độ tuổi</h3>
                     <Select
-                        onValueChange={(value) => handleYearChange({ target: { value } })}
-                        defaultValue={new Date().getFullYear()}
+                        onValueChange={ (value) => handleYearChange({ target: { value } }) }
+                        defaultValue={ new Date().getFullYear() }
                     >
                         <SelectTrigger className="w-[140px]">
                             <SelectValue placeholder="Chọn năm" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectItem value={new Date().getFullYear()}>
-                                    {new Date().getFullYear()}
+                                <SelectItem value={ new Date().getFullYear() }>
+                                    { new Date().getFullYear() }
                                 </SelectItem>
-                                <SelectItem value={new Date().getFullYear() - 1}>
-                                    {new Date().getFullYear() - 1}
+                                <SelectItem value={ new Date().getFullYear() - 1 }>
+                                    { new Date().getFullYear() - 1 }
                                 </SelectItem>
-                                <SelectItem value={new Date().getFullYear() - 2}>
-                                    {new Date().getFullYear() - 2}
+                                <SelectItem value={ new Date().getFullYear() - 2 }>
+                                    { new Date().getFullYear() - 2 }
                                 </SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
                 </div>
                 <div className="h-[300px] w-full">
-                    <LineChart dataTotalPatientsByAges={dataTotalPatientsByAges} />
+                    <LineChart dataTotalPatientsByAges={ dataTotalPatientsByAges } />
                 </div>
             </div>
             <div className="h-full flex-1 gap-6 rounded-md bg-white p-4 pt-2 shadow-sm">
@@ -75,12 +75,12 @@ export default function MiddleCharts({
                 <div className="relative flex h-full items-center justify-center">
                     <div className="z-10">
                         <DoughnutChart
-                            dataTotalPatientsByYear={dataTotalPatientsByYear}
-                            dataAllSpecialties={dataAllSpecialties}
+                            dataTotalPatientsByYear={ dataTotalPatientsByYear }
+                            dataAllSpecialties={ dataAllSpecialties }
                         />
                     </div>
                     <div className="pointer-events-none absolute bottom-[10%] z-0 flex h-full w-full items-center justify-center">
-                        <FaHandHoldingMedical size={60} color="#ABAFDB" />
+                        <FaHandHoldingMedical size={ 60 } color="#ABAFDB" />
                     </div>
                 </div>
             </div>
