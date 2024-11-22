@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt');
 const otpGenerator = require('otp-generator');
 const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
-const { redisClient, TTL_CACHE } = require('../config');
 
 const createError = (statusCode, message) => {
     throw new createHttpError(statusCode, message);
@@ -260,12 +259,6 @@ function getActiveRoomsSocket(io) {
     return res;
 }
 
-function setCache(key, value) {
-    if (!TTL_CACHE || !redisClient) return;
-    console.log(TTL_CACHE);
-    redisClient.SETEX(key, TTL_CACHE, JSON.stringify(value));
-}
-
 module.exports = {
     createError,
     sendEmail,
@@ -280,5 +273,4 @@ module.exports = {
     checkPhoneNumberAndEmail,
     timeDivision,
     getActiveRoomsSocket,
-    setCache
 };

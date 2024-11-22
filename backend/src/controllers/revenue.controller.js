@@ -19,7 +19,6 @@ module.exports = {
             presentRevenueDay = invoices.reduce((acc, invoice) => {
                 const invoiceDate = new Date(invoice.createdAt).toISOString().slice(0, 10);
                 if (invoiceDate === currentDate) {
-                    console.log(invoice);
                     return acc + invoice.price;
                 }
                 return acc;

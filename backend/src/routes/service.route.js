@@ -4,6 +4,7 @@ const router = express.Router();
 
 const serviceController = require('../controllers/service.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -58,6 +59,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("services:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     serviceController.getAllServices

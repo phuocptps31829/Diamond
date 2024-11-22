@@ -1,24 +1,42 @@
-const config = require("../config");
+const getRedisClient = require('../config/redisClient');
 
 const cache = (key) => {
-    console.log('Cache middleware for key:', key);
-    console.log('Redis client:', config.redisClient);
-    return (req, res, next) => {
-        config.redisClient.GET(key, (err, data) => {
-            if (err) {
-                console.error(err);
+    return async (req, res, next) => {
+        try {
+            const redisClient = await getRedisClient();
+
+            const customKey = Object.keys(req.query).reduce((acc, curr) => {
+                return acc + curr + req.query[curr];
+            }, key);
+
+            redisClient.GET(customKey, (err, data) => {
+                if (err) {
+                    console.error('Redis error:', err);
+                    return next();
+                }
+
+                if (data) {
+                    console.log('Cache hit for:', customKey);
+                    return res.send(JSON.parse(data));
+                }
+
+                const originalSend = res.send;
+                res.send = (body) => {
+                    redisClient.SETEX(customKey, 3600, JSON.stringify(body), (err) => {
+                        if (err) {
+                            console.error("Error setting cache:", err);
+                        }
+                    });
+                    res.send = originalSend;
+                    return res.send(body);
+                };
+
                 next();
-                return;
-            }
-
-            if (data) {
-                console.log('Cache hit for key:', key);
-                return res.status(200).json(JSON.parse(data)); // Return cached data
-            }
-
-            // If cache miss, pass to next middleware
+            });
+        } catch (error) {
+            console.error('Error in cache middleware:', error);
             next();
-        });
+        }
     };
 };
 

@@ -7,7 +7,7 @@ const OrderNumberModel = require('../models/order-number.model');
 const ResultModel = require('../models/result.model');
 const PrescriptionModel = require('../models/prescription.model');
 const MedicineModel = require('../models/medicine.model');
-const { createError, setCache } = require("../utils/helper.util");
+const { createError } = require("../utils/helper.util");
 
 module.exports = {
     getAllAppointments: async (req, res, next) => {
@@ -170,8 +170,6 @@ module.exports = {
                 totalRecords: formattedAppointments.length
             };
 
-            setCache("appointments:all", response);
-
             return res.status(200).json(response);
         } catch (error) {
             next(error);
@@ -234,8 +232,6 @@ module.exports = {
                             .findOne({ appointmentID: appointment._id, isDeleted: false })
                             .lean(),
                     ]);
-
-                    console.log(invoice, results, orderNumber);
 
                     const prescription = invoice
                         ? await PrescriptionModel
@@ -335,7 +331,7 @@ module.exports = {
                     delete formattedAppointment.medicalPackageID;
                     delete formattedAppointment.patientID;
                     delete formattedAppointment.workScheduleID;
-                    console.log(formattedAppointment);
+
                     return formattedAppointment;
                 });
 
@@ -545,7 +541,6 @@ module.exports = {
             const result = {};
 
             for (const appointment of appointments) {
-                console.log(appointment);
                 const { gender } = appointment.patientID;
                 const year = new Date(appointment.time).getFullYear();
                 const month = new Date(appointment.time).getMonth() + 1;
@@ -589,12 +584,9 @@ module.exports = {
                 .find({ isDeleted: false })
                 .populate('serviceID');
 
-            console.log('all', appointments);
-
             const result = [];
 
             for (let i = 0; i < appointments.length; i++) {
-                console.log(i);
                 const item = appointments[i];
 
                 let medicalPackage = null;
@@ -606,7 +598,6 @@ module.exports = {
                         });
                 }
 
-                console.log(item, 'medicalPackage');
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
                     ? item.serviceID.specialtyID.toString()
@@ -655,7 +646,6 @@ module.exports = {
             for (const appointment of appointments) {
                 const { dateOfBirth } = appointment.patientID;
 
-                console.log(new Date(dateOfBirth).getFullYear());
                 const age = new Date().getFullYear() - new Date(dateOfBirth).getFullYear();
                 const year = new Date(appointment.time).getFullYear();
                 const month = new Date(appointment.time).getMonth() + 1;

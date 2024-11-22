@@ -4,6 +4,7 @@ const router = express.Router();
 
 const medicalPackageController = require('../controllers/medical-package.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -57,6 +58,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("medicalPackages:"),
     helperMiddleware.checkQueryParams,
     helperMiddleware.checkValueQuery,
     medicalPackageController.getAllMedicalPackages

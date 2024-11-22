@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { branchApi } from "@/services/branchesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -11,7 +11,6 @@ import { GrPowerReset } from "react-icons/gr";
 import { specialtyApi } from "@/services/specialtiesApi";
 
 const SidebarFilter = ({ filters, onFilterApply }) => {
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [searchValue, setSearchValue] = useState(
@@ -35,6 +34,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   useEffect(() => {
     handleChangeFilter({
       ...filters,
+      page: 1,
       search: debouncedSearch
     });
   }, [debouncedSearch]);
@@ -58,8 +58,6 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
       gender: gender ? gender.split(',') : []
     };
 
-    console.log("new", newFilters);
-
     if (specialties) {
       const updatedFilters = {
         ...newFilters,
@@ -68,10 +66,9 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
 
       onFilterApply(updatedFilters);
     } else {
-      console.log(newFilters);
       onFilterApply(newFilters);
     }
-  }, [location.search, searchParams]);
+  }, [searchParams]);
 
   const toggleAccordion = () => {
     setIsOpen(!isOpen);
@@ -86,8 +83,8 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
     error: specialtiesError,
     isLoading: specialtiesLoading,
   } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: specialtyApi.getAllSpecialties,
+    queryKey: ["specialtiesNoPaginated"],
+    queryFn: specialtyApi.getNoPaginate,
   });
 
   const {

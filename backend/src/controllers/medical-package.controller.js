@@ -7,12 +7,20 @@ module.exports = {
         try {
             const notHidden = req.query.notHidden === 'true';
             let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
-            let { branchID, specialtyID, gender } = req.checkValueQuery;
+            let { branch, specialtyID, gender } = req.checkValueQuery;
             let noPaginated = req.query?.noPaginated === 'true';
 
             const queryOptions = {
-                ...(branchID ? { branchID } : {}),
-                ...(specialtyID ? { specialtyID } : {}),
+                ...(branch ? {
+                    branchID: {
+                        $in: branch
+                    }
+                } : {}),
+                ...(specialtyID ? {
+                    specialtyID: {
+                        $in: specialtyID
+                    }
+                } : {}),
                 ...(gender ? { "applicableObject.gender": gender } : {}),
                 ...(search ? { name: { $regex: search, $options: 'i' } } : {})
             };

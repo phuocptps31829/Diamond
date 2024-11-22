@@ -4,6 +4,7 @@ const router = express.Router();
 
 const specialtyController = require('../controllers/specialty.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("specialties:"),
     helperMiddleware.checkQueryParams,
     specialtyController.getAllSpecialties
 );

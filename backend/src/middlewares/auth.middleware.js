@@ -25,7 +25,6 @@ const verifyAccessToken = (req, res, next) => {
             process.env.ACCESS_TOKEN_SECRET,
             { algorithms: ['HS256'] }
         );
-        console.log('re', verifiedUser);
 
         req.user = { id: verifiedUser.id, role: verifiedUser.role };
 
@@ -40,7 +39,6 @@ const verifyRefreshToken = async (req, res, next) => {
         const authHeader = req.headers['authorization'];
 
         const refreshToken = authHeader && authHeader.split(' ')[1];
-        console.log('re', refreshToken);
         if (!refreshToken) {
             createError(403, 'No refresh token found.');
         }
@@ -76,7 +74,6 @@ const verifyRefreshToken = async (req, res, next) => {
 
 const verifySuperAdmin = (req, res, next) => {
     verifyAccessToken(req, res, () => {
-        console.log(req.user);
         if (req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
             next();
         } else {
@@ -103,7 +100,6 @@ const resendOTP = async (req, res, next) => {
             phoneNumber = phone;
         }
         const checkPhoneNumber = await OtpModel.findOne({ phoneNumber });
-        console.log(checkPhoneNumber);
         if (!checkPhoneNumber) {
             return next();
         }

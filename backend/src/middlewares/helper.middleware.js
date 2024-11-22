@@ -148,7 +148,6 @@ const checkQueryParams = (req, res, next) => {
         }
 
         if (isNaN(limit) || limit <= 0) {
-            console.log(true);
             limit = 10;
         }
 

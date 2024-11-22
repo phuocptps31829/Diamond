@@ -176,7 +176,6 @@ module.exports = {
 
             const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
 
-            console.log(totalRecords);
             if (sortOptions && Object.keys(sortOptions).length > 0) {
                 pipeline.push({
                     $sort: sortOptions
@@ -357,7 +356,6 @@ module.exports = {
             });
             const totalRecords = await WorkScheduleModel.aggregate(countPipeline);
 
-            console.log(totalRecords);
             if (sortOptions && Object.keys(sortOptions).length > 0) {
                 pipeline.push({
                     $sort: sortOptions
