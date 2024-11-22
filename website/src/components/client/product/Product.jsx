@@ -13,9 +13,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useEffect, useState } from "react";
 import { removeItemInfo, initBookingDetails } from "@/redux/bookingSlice";
-import { toastUI } from "@/components/ui/Toastify";
 import { RiDeleteBackFill } from "react-icons/ri";
 import { formatPrice } from "@/utils/format";
+import toast from "react-hot-toast";
 
 export default function Product({ product }) {
   const dispatch = useDispatch();
@@ -47,7 +47,8 @@ export default function Product({ product }) {
   const handleAddClick = (isNavigate) => {
     console.log("prd", product);
     if (!profileCustomer) {
-      toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
+      toast.error("Vui lòng đăng nhập để đặt lịch.");
+
       return;
     }
 

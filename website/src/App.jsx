@@ -100,6 +100,7 @@ import InvoicesListPage from "./pages/admin/Invoices";
 import ProfileAdminPage from "./pages/admin/Profile";
 import PrivacyPolicy from "./pages/client/Docs/PrivacyPolicy";
 import PaymentPolicy from "./pages/client/Docs/PaymentPolicy";
+import FacilityPage from "./pages/client/FacilityPage";
 
 const router = createBrowserRouter([
   {
@@ -138,6 +139,11 @@ const router = createBrowserRouter([
         path: "news",
         element: <News />,
       },
+      {
+        path: "facility",
+        element: <FacilityPage />,
+      },
+
       {
         path: "new/:slug",
         element: <NewsDetail />,

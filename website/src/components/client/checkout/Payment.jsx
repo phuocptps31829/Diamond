@@ -3,9 +3,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { appointmentApi } from "@/services/appointmentsApi";
-import { toastUI } from "@/components/ui/Toastify";
 import { useReadNumber } from "@/hooks/useReadNumber";
 import VNPAY_ICON from "../../../assets/images/vnpay.png";
+import { toast } from "react-toastify";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -43,7 +43,7 @@ export default function Form() {
   const handleSubmitCheckout = () => {
     console.log(bookingInfo.bookingInfoCheckout);
     if (!paymentMethod) {
-      toastUI("Vui lòng chọn phương thức thanh toán", "warning");
+      toast.error("Vui lòng chọn phương thức thanh toán");
       return;
     }
     mutate();

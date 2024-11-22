@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "@/redux/cartSlice";
 import { useEffect, useState } from "react";
 import { removeItemInfo, initBookingDetails } from "@/redux/bookingSlice";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
 
 export default function ServiceItem({
   image,
@@ -38,7 +38,7 @@ export default function ServiceItem({
 
   const handleAddClick = () => {
     if (!profileCustomer) {
-      toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
+      toast.error("Vui lòng đăng nhập để đặt lịch.");
       return;
     }
 

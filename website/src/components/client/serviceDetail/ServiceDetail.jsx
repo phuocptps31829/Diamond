@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/cartSlice";
 import { useNavigate } from "react-router-dom";
-import { toastUI } from "@/components/ui/Toastify";
+
 import { initBookingDetails } from "@/redux/bookingSlice";
+import toast from "react-hot-toast";
 
 const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   const [selectedService, setSelectedService] = useState(null);
@@ -30,7 +31,8 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   );
   const handleAddToCart = () => {
     if (!userProfile) {
-      toastUI("Vui lòng đăng nhập để đặt lịch", "warning");
+      toast.error("Vui lòng đăng nhập để đặt lịch.");
+      
       return;
     }
 

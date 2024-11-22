@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { doctorApi } from "@/services/doctorsApi";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
+
 
 export default function SelectDoctor({
   control,
@@ -53,7 +54,7 @@ export default function SelectDoctor({
 
   const handleClick = () => {
     if (!branchID) {
-      toastUI("Vui lòng chọn chi nhánh", "warning");
+      toast.error("Vui lòng chọn chi nhánh");
       return;
     }
   };

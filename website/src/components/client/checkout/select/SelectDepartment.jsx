@@ -17,8 +17,8 @@ import {
   CommandList,
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { toastUI } from "@/components/ui/Toastify";
 import { branchApi } from "@/services/branchesApi";
+import toast from "react-hot-toast";
 
 export default function SelectDepartment({
   control,
@@ -51,7 +51,7 @@ export default function SelectDepartment({
 
   const handleClick = () => {
     if (!selectedProductID) {
-      toastUI("Vui lòng chọn dịch vụ", "warning");
+      toast.error("Vui lòng chọn dịch vụ");
       return;
     }
   };

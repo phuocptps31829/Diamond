@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import NotFound from "@/components/ui/NotFound";
 import { authApi } from "@/services/authApi";
 import { formatTime } from "@/utils/formatTime";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
 
 export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();
@@ -71,7 +71,7 @@ export default function ChangePassAccuracyComponent() {
   const mutation = useMutation({
     mutationFn: authApi.checkOtpForgotPassword,
     onSuccess: (data) => {
-      toastUI("Xác thực thành công!", "success");
+      toast.success("Xác thực thành công!");
       setOtp(new Array(6).fill(""));
       sessionStorage.removeItem("phoneNumberForgot");
       sessionStorage.setItem("otpForgot", data.data.OTP);
@@ -85,14 +85,14 @@ export default function ChangePassAccuracyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage, "error");
+      toast.error(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
     },
   });
 
   const mutationSendOtpAgain = useMutation({
     mutationFn: authApi.sendOtpForgotPassword,
     onSuccess: (data) => {
-      toastUI("Gửi lại mã OTP thành công!", "success");
+      toast.success("Đã gửi mã OTP mới.");
       sessionStorage.setItem("otpTokenForgot", data.data.otpToken);
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTimeForgot", currentTime);
@@ -103,7 +103,7 @@ export default function ChangePassAccuracyComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage, "error");
+      toast.error(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
     },
   });
 
@@ -111,7 +111,7 @@ export default function ChangePassAccuracyComponent() {
     const otpValue = otp.join("");
 
     if (otpValue.length < 6) {
-      toastUI("Vui lòng nhập đủ 6 số.", "warning");
+      toast.error("Vui lòng nhập đủ 6 số OTP.");
       return;
     }
 
@@ -132,7 +132,7 @@ export default function ChangePassAccuracyComponent() {
 
   const handleSendAgainOtp = () => {
     if (timeLeft > 0) {
-      toastUI("Sau 1 phút 30 giây mới có thể gửi lại mã OTP.", "warning");
+      toast.error("Vui lòng đợi thêm một chút để gửi lại mã OTP.");
       return;
     }
 

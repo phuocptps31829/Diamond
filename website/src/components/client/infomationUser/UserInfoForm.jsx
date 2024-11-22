@@ -294,6 +294,7 @@ const UserInfoForm = () => {
             </div>
             <button
               type="submit"
+              disabled={ isPendingUpdate }
               className="mt-5 hidden h-fit w-full rounded-md bg-primary-500 p-2 text-white md:flex md:justify-center"
             >
               { isPendingUpdate ? <SpinLoader /> : "Cập nhật" }

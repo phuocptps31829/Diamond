@@ -1,9 +1,10 @@
+import { Card } from "@/components/ui/Card";
 import { Link } from "react-router-dom";
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto  container overflow-hidden rounded-lg bg-white ">
+    <Card className="mx-auto my-6 min-h-screen max-w-[1243px] rounded-2xl border px-3 py-6 sm:px-2 lg:px-4">
+      <div className="container mx-auto overflow-hidden rounded-lg bg-white">
         <div className="px-4 py-7 sm:px-6">
           <h1 className="text-3xl font-bold leading-tight text-gray-900">
             Chính sách bảo mật
@@ -90,7 +91,7 @@ const PrivacyPolicy = () => {
             </p>
           </div>
         </div>
-        <div className=" py-4 ">
+        <div className="py-4">
           <Link
             href="/"
             className="text-sm font-medium text-primary-600 hover:text-primary-500"
@@ -99,7 +100,7 @@ const PrivacyPolicy = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
