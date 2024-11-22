@@ -5,14 +5,15 @@ module.exports = {
     getAllServices: async (req, res, next) => {
         try {
             const notHidden = req.query.notHidden === 'true';
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let { branchID, specialtyID, gender } = req.checkValueQuery;
             let noPaginated = req.query?.noPaginated === 'true';
 
             const queryOptions = {
                 ...(branchID ? { branchID } : {}),
                 ...(specialtyID ? { specialtyID } : {}),
-                ...(gender ? { "applicableObject.gender": gender } : {})
+                ...(gender ? { "applicableObject.gender": gender } : {}),
+                ...(search ? { name: { $regex: search, $options: 'i' } } : {})
             };
 
             const totalRecords = await ServiceModel

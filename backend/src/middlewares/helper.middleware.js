@@ -130,7 +130,7 @@ const checkValueQuery = (req, res, next) => {
 
 const checkQueryParams = (req, res, next) => {
     try {
-        let { page, limit, sort } = req.query;
+        let { page, limit, sort, search } = req.query;
 
         const sortOptions = {};
         let limitDocuments;
@@ -167,7 +167,8 @@ const checkQueryParams = (req, res, next) => {
             limitDocuments,
             page,
             skip,
-            sortOptions
+            sortOptions,
+            search
         };
 
         next();

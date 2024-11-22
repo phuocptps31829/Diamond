@@ -7,7 +7,7 @@ const OrderNumberModel = require('../models/order-number.model');
 const ResultModel = require('../models/result.model');
 const PrescriptionModel = require('../models/prescription.model');
 const MedicineModel = require('../models/medicine.model');
-const { createError } = require("../utils/helper.util");
+const { createError, setCache } = require("../utils/helper.util");
 
 module.exports = {
     getAllAppointments: async (req, res, next) => {
@@ -161,14 +161,18 @@ module.exports = {
 
             const formattedAppointments = await Promise.all(formattedAppointmentsPromises);
 
-            return res.status(200).json({
+            const response = {
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
                 data: noPaginated ?
                     formattedAppointments :
                     formattedAppointments.slice(skip, skip + limitDocuments),
                 totalRecords: formattedAppointments.length
-            });
+            };
+
+            setCache("appointments:all", response);
+
+            return res.status(200).json(response);
         } catch (error) {
             next(error);
         }

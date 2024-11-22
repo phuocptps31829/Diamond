@@ -1,23 +1,7 @@
 require('dotenv/config');
-const http = require('http');
 const mongoose = require('mongoose');
-const { Server } = require("socket.io");
-const app = require('./app');
 const PORT = process.env.PORT || 3000;
-const server = http.createServer(app);
-const redis = require('redis');
-
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-
-const redisClient = redis.createClient({
-    // url: 'redis://redis:6379',
-    legacyMode: true
-});
+const { redisClient, io, server } = require('./src/config');
 
 let activeRooms = [];
 let roomMessages = {};

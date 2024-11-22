@@ -4,7 +4,52 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const authMiddleware = require('../middlewares/auth.middleware');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 const appointmentController = require('../controllers/appointment.controller');
+
+/**
+ * @openapi
+ * '/api/v1/appointments':
+ *  get:
+ *    tags:
+ *    - Appointment Routes
+ *    summary: Get all Appointments
+ *    parameters:
+ *      - in: query
+ *        name: page
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: limit
+ *        schema:
+ *          type: integer
+ *      - in: query
+ *        name: sort
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: startDay
+ *        schema:
+ *          type: string
+ *      - in: query
+ *        name: endDay
+ *        schema:
+ *          type: string
+ *    responses:
+ *      '200':
+ *        $ref: '#/components/responses/200'
+ *      '404':
+ *        $ref: '#/components/responses/404'
+ *      '500':
+ *        $ref: '#/components/responses/500'
+*/
+router.get(
+    '/',
+    helperMiddleware.checkValueQuery,
+    helperMiddleware.checkQueryParams,
+    cacheMiddleware.cache("appointments:all"),
+    appointmentController.getAllAppointments
+);
 
 /**
  * @openapi
@@ -71,49 +116,6 @@ router.get(
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForAges
-);
-
-/**
- * @openapi
- * '/api/v1/appointments':
- *  get:
- *    tags:
- *    - Appointment Routes
- *    summary: Get all Appointments
- *    parameters:
- *      - in: query
- *        name: page
- *        schema:
- *          type: integer
- *      - in: query
- *        name: limit
- *        schema:
- *          type: integer
- *      - in: query
- *        name: sort
- *        schema:
- *          type: string
- *      - in: query
- *        name: startDay
- *        schema:
- *          type: string
- *      - in: query
- *        name: endDay
- *        schema:
- *          type: string
- *    responses:
- *      '200':
- *        $ref: '#/components/responses/200'
- *      '404':
- *        $ref: '#/components/responses/404'
- *      '500':
- *        $ref: '#/components/responses/500'
-*/
-router.get(
-    '/',
-    helperMiddleware.checkValueQuery,
-    helperMiddleware.checkQueryParams,
-    appointmentController.getAllAppointments
 );
 
 /**
