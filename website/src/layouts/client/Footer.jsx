@@ -1,6 +1,6 @@
 import { FaFacebookSquare, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import brandLogo from "@/assets/images/brandLogo.png";
+import brandLogo from "@/assets/images/logoWhite.png";
 
 export default function Footer() {
   return (

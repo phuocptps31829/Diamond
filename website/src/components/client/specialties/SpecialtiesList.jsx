@@ -1,17 +1,16 @@
 import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 const SpecialtiesList = ({ specialties, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl py-5">
+      <div className="container mx-auto max-w-screen-xl py-2">
         <div className="mx-auto w-full">
           <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
             Tìm kiếm theo chuyên khoa:
           </h1>
           <div className="grid grid-cols-2 gap-4 rounded-lg bg-white p-6 md:grid-cols-3 lg:grid-cols-5 lg:p-6">
-            { Array.from({ length: 8 }).map((_, index) => (
+            { Array.from({ length: 20 }).map((_, index) => (
               <Skeleton key={ index } className="h-48 w-full" />
             )) }
           </div>
@@ -21,7 +20,7 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl py-5 md:px-4">
+    <div className="container mx-auto max-w-screen-xl py-2 md:px-4">
       <div className="mx-auto w-full">
         <h1 className="py-4 text-center text-2xl font-semibold sm:text-left">
           Tìm kiếm theo chuyên khoa:
@@ -62,10 +61,6 @@ const SpecialtiesList = ({ specialties, isLoading }) => {
       </div>
     </div>
   );
-};
-SpecialtiesList.propTypes = {
-  specialties: PropTypes.array,
-  isLoading: PropTypes.bool,
 };
 
 export default SpecialtiesList;

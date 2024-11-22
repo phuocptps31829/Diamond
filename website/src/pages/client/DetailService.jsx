@@ -75,7 +75,7 @@ const DetailService = () => {
     isLoadingServiceSpecialty;
 
   return (
-    <div className="bg-[#E8F2F7] p-8">
+    <div className="bg-[#E8F2F7] py-8">
       <ServiceDetail
         medicalPackage={ medicalPackage }
         service={ service }

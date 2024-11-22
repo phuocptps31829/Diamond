@@ -15,7 +15,6 @@ import AdsProduct from "../product/Ads";
 import { useMutation } from "@tanstack/react-query";
 import { toastUI } from "@/components/ui/Toastify";
 import { authApi } from "@/services/authApi";
-import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 
 export default function RegisterComponent() {
   const navigate = useNavigate();
@@ -72,8 +71,8 @@ export default function RegisterComponent() {
     mutation.mutate(dataSend);
   };
 
-  const handleLoginGoogle = async () => {
-    window.location.href = API_LOGIN_GOOGLE;
+  const handleLoginGoogle = () => {
+    window.location.href = `${import.meta.env.VITE_CUD_API_URL}/auth/google`;
   };
 
   return (

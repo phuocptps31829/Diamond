@@ -35,7 +35,7 @@ const PackageServiceOther = ({
 
   return (
     <div className="mx-auto max-w-7xl p-4">
-      <h1 className="my-6 text-center text-2xl font-bold">
+      <h1 className="mb-3 text-center text-2xl font-bold">
         { isPackage ? "Các gói khám khác" : "Các dịch vụ khác" }
       </h1>
       {

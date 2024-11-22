@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import {
@@ -11,7 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { Badge } from "@/components/ui/Badge";
-import { Clock, Building2, Stethoscope, MapPin } from "lucide-react";
+import { Clock, Building2 } from "lucide-react";
+
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   const options = {
@@ -49,7 +48,7 @@ const getDayOfWeek = (dateString) => {
 };
 
 export default function BelowInformation({ doctor, isLoading, schedule }) {
-  const [activeTab, setActiveTab] = useState("certification");
+  const [, setActiveTab] = useState("certification");
 
   const sortedSchedules =
     schedule?.[0]?.schedules?.sort(

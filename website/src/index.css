@@ -78,6 +78,7 @@
 @layer utilities {
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   .scrollbar-thumb-primary-500::-webkit-scrollbar-thumb {
@@ -92,6 +93,7 @@
 
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

@@ -19,7 +19,7 @@ const ServicesContainer = () => {
   const [currentPage, setCurrentPage] = useState(
     () => parseInt(queryParams.get("page")) || 1
   );
-  const currentLimit = parseInt(queryParams.get("limit")) | 6;
+  const currentLimit = parseInt(queryParams.get("limit")) | 9;
 
   const [filters, setFilters] = useState({
     page: currentPage,
@@ -34,7 +34,7 @@ const ServicesContainer = () => {
     if (!currentLimit && !currentPage) {
       setFilters({
         page: 1,
-        limit: 6,
+        limit: 9,
         sort: "",
         specialtyID: [],
         branch: [],
@@ -121,7 +121,7 @@ const ServicesContainer = () => {
             <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
-                  { Array(6)
+                  { Array(9)
                     .fill(null)
                     .map((_, index) => (
                       <Skeleton key={ index } className="h-80 w-full" />
@@ -134,11 +134,13 @@ const ServicesContainer = () => {
               ) : data?.data?.map((item) =>
                 <Product key={ item._id } product={ item } />) }
             </div>
-            <CustomPagination
-              currentPage={ currentPage }
-              totalPages={ totalPages }
-              onPageChange={ handlePageChange }
-            />
+            <div className="mt-4 -mb-4">
+              <CustomPagination
+                currentPage={ currentPage }
+                totalPages={ totalPages }
+                onPageChange={ handlePageChange }
+              />
+            </div>
           </div>
         </div>
       </div>

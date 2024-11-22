@@ -17,8 +17,8 @@ export default function Specialty() {
     error,
     isLoading: loadingSpecialties,
   } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: specialtyApi.getAllSpecialties,
+    queryKey: ["specialtiesNoPaginated"],
+    queryFn: specialtyApi.getNoPaginate,
   });
 
   return (

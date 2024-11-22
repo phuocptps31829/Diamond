@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 const MedicalPackageService = ({ medicalPackage, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-screen-2xl pb-10">
+      <div className="mx-auto max-w-screen-xl px-4 pb-2">
         <div className="mx-auto max-w-7xl">
           <Skeleton className="mb-4 h-8 w-3/4" />
           { Array(7)
@@ -33,7 +33,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
   }, {});
 
   return (
-    <div className="mx-auto max-w-screen-2xl pb-10">
+    <div className="mx-auto max-w-screen-xl px-4 pb-2">
       <div className="mx-auto max-w-7xl">
         <h1 className="my-4 font-semibold">
           Hiện tại, Phòng Khám Đa Khoa Diamond cung cấp dịch vụ{ " " }
@@ -93,7 +93,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                   </TableRow>
                 )) }
               <TableRow className="bg-white">
-                <TableCell colSpan={ 2 } className="text-right font-semibold">
+                <TableCell colSpan={ 2 } className="text-right font-semibold p-3">
                   Giá:
                 </TableCell>
                 { levelNames.map((levelName, index) => {

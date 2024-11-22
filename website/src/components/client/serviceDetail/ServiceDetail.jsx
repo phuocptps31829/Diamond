@@ -86,7 +86,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-screen-2xl pb-4">
+      <div className="mx-auto max-w-screen-xl pb-4">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md bg-white p-8 md:grid-cols-2 md:py-10">
           <div className="container flex items-center justify-center">
             <Skeleton className="h-[400px] w-[400px] overflow-hidden rounded-md" />
@@ -110,13 +110,13 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     );
   }
   return (
-    <div className="mx-auto max-w-screen-2xl pb-4">
+    <div className="mx-auto max-w-screen-xl p-4">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 rounded-md bg-white p-4 md:grid-cols-2">
         <div className="flex h-[400px] items-center">
           <img
             src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
             alt={ product?.name }
-            className="h-full w-full rounded-md object-cover md:object-fill"
+            className="h-full w-full rounded-md object-cover md:object-contain"
           />
         </div>
         <div className="flex w-full flex-col items-start justify-start pt-4 text-start">

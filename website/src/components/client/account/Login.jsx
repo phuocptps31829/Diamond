@@ -12,7 +12,6 @@ import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/account";
-import { API_LOGIN_GOOGLE } from "@/configs/varibles";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import SpinLoader from "@/components/ui/SpinLoader";
@@ -59,8 +58,8 @@ export default function LoginComponent() {
     mutation.mutate(data);
   };
 
-  const handleLoginGoogle = async () => {
-    window.location.href = API_LOGIN_GOOGLE;
+  const handleLoginGoogle = () => {
+    window.location.href = `${import.meta.env.VITE_CUD_API_URL}/auth/google`;
   };
 
   return (

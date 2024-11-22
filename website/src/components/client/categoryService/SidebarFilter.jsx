@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
-
+import { useDebounce } from "use-debounce";
 import { branchApi } from "@/services/branchesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Input } from "@/components/ui/Input";
@@ -14,30 +14,45 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState(
+    () => searchParams.get("search") || ""
+  );
+  const [debouncedSearch] = useDebounce(searchValue || "", 500);
 
   const handleResetFilters = () => {
     const resetFilters = {
       sort: "",
+      search: "",
       specialtyID: [],
       branch: [],
       gender: [],
     };
     onFilterApply(resetFilters);
     setSearchParams({});
+    setSearchValue("");
   };
 
   useEffect(() => {
+    handleChangeFilter({
+      ...filters,
+      search: debouncedSearch
+    });
+  }, [debouncedSearch]);
+
+  useEffect(() => {
     const page = searchParams.get("page") || 1;
-    const limit = searchParams.get("limit") || 6;
+    const limit = searchParams.get("limit") || 9;
     const specialties = searchParams.get("specialtyID");
     const branches = searchParams.get("branch");
     const gender = searchParams.get("gender")?.map(decodeURIComponent);
     const sort = searchParams.get("sort") || "";
+    const search = searchParams.get("search") || "";
 
     const newFilters = {
       page,
       limit,
       sort,
+      search,
       specialtyID: specialties ? specialties.split(',') : [],
       branch: branches ? branches.split(',') : [],
       gender: gender ? gender.split(',') : []
@@ -165,13 +180,15 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
 
   if (specialtiesError || branchesError) return <div>Error loading data</div>;
   return (
-    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3">
+    <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-3 sticky top-32">
       <div className="box w-full rounded-xl border-gray-300 bg-white p-6">
         <div className="mb-3 flex w-full items-center gap-2 justify-between border-b border-gray-200 pb-3">
           <div className="relative w-full mx-auto">
             <Input
               type="search"
+              value={ searchValue }
               placeholder="Tìm kiếm..."
+              onChange={ (e) => setSearchValue(e.target.value) }
               className="pl-10 pr-4 py-2 rounded-full"
             />
             <IoSearchOutline className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />

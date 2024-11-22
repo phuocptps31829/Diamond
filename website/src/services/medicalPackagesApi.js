@@ -2,11 +2,12 @@ import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
 
 export const medicalPackageApi = {
   getAllMedicalPackages: async (filter) => {
-    const { page, limit, sort, gender, branch, specialtyID } = filter;
+    const { page, limit, sort, gender, branch, specialtyID, search } = filter;
     const params = {
       ...(page !== undefined && page !== null && { page }),
       ...(limit !== undefined && limit !== null && { limit }),
       ...(sort !== undefined && sort !== null && sort !== "" && { sort }),
+      ...(search !== undefined && search !== null && search !== '' && { search }),
       ...(gender !== undefined &&
         gender !== null &&
         gender !== "" && { gender }),

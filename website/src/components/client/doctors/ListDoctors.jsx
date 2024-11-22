@@ -41,8 +41,8 @@ export default function ListDoctors() {
     error: errorSpecialties,
     isLoading: loadingSpecialties,
   } = useQuery({
-    queryKey: ["specialties"],
-    queryFn: specialtyApi.getAllSpecialties,
+    queryKey: ["specialtiesNoPaginated"],
+    queryFn: specialtyApi.getNoPaginate,
   });
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function ListDoctors() {
 
   useEffect(() => {
     if (filteredDoctors) {
-      const recordsPerPage = 8;
+      const recordsPerPage = 12;
       const indexOfLastRecord = currentPage * recordsPerPage;
       const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
       const current = filteredDoctors.slice(
@@ -150,7 +150,7 @@ export default function ListDoctors() {
       ref={ containerRef }
       className="mx-auto w-full max-w-screen-xl p-4 md:p-5"
     >
-      <div className="mb-7 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
+      <div className="mb-5 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp:</h2>
         <div className="flex flex-row items-center justify-center gap-3">
           <Select

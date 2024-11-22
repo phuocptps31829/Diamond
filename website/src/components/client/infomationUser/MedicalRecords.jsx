@@ -13,8 +13,8 @@ const MedicalRecords = () => {
 
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-3xl font-bold tracking-tight">Hồ sơ bệnh án cá nhân</h1>
-      <Tabs defaultValue="info" className="w-full">
+      <h1 className="text-2xl font-bold tracking-tight">Hồ sơ bệnh án cá nhân</h1>
+      <Tabs defaultValue="info" className="w-full !mt-3">
         <TabsList className='w-full'>
           <TabsTrigger value="info" className='w-full'>Thông tin cơ bản</TabsTrigger>
           <TabsTrigger value="records" className='w-full'>Chi tiết bệnh án</TabsTrigger>
@@ -22,7 +22,7 @@ const MedicalRecords = () => {
         <TabsContent value="info">
           <Card>
             <CardHeader>
-              <CardTitle>Thông tin cá nhân</CardTitle>
+              <CardTitle className="text-base">Thông tin cá nhân</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
@@ -82,8 +82,8 @@ const MedicalRecords = () => {
         </TabsContent>
         <TabsContent value="records">
           <Card>
-            <CardHeader>
-              <CardTitle>Chi tiết bệnh án</CardTitle>
+            <CardHeader className="!pb-1">
+              <CardTitle className="text-base">Chi tiết bệnh án</CardTitle>
             </CardHeader>
             <CardContent>
               <MedicalRecordAccordion />

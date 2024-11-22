@@ -50,9 +50,9 @@ export default function ForgetComponent() {
 
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
-      <div className="py-5 px-3 md:px-5 w-[40%]">
+      <div className="py-5 px-3 md:px-5 w-[38%]">
         {/* FORM */ }
-        <div className="bg-white px-5 py-4 md:px-11 md:py-8 rounded-md">
+        <div className="bg-white px-5 py-4 md:px-11 md:py-8 rounded-lg">
           <h1 className="mb-2 text-center text-2xl font-bold md:text-3xl">
             Quên mật khẩu
           </h1>

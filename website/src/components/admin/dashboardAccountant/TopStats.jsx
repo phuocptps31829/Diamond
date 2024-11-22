@@ -11,28 +11,28 @@ export default function TopStats({ revenueData }) {
     {
       key: "byDay",
       title: `Doanh thu theo ngày`,
-      icon: <FaMoneyBillWave color="#007BBB" size={22} />,
+      icon: <FaMoneyBillWave color="#007BBB" size={ 22 } />,
       value: 0,
       percentage: "0",
-      percentageTitle: "với hôm qua",
+      percentageTitle: "so với hôm qua",
       isIncrease: true,
     },
     {
       key: "byMonth",
       title: `Doanh thu theo tháng`,
-      icon: <GiMoneyStack color="#007BBB" size={22} />,
+      icon: <GiMoneyStack color="#007BBB" size={ 22 } />,
       value: 0,
       percentage: "0",
-      percentageTitle: "với tháng trước",
+      percentageTitle: "so với tháng trước",
       isIncrease: true,
     },
     {
       key: "byQuarter",
       title: `Doanh thu theo quý`,
-      icon: <GrMoney color="#007BBB" size={22} />,
+      icon: <GrMoney color="#007BBB" size={ 22 } />,
       value: 0,
       percentage: "0",
-      percentageTitle: "với quý trước",
+      percentageTitle: "so với quý trước",
       isIncrease: true,
     },
   ]);
@@ -63,36 +63,36 @@ export default function TopStats({ revenueData }) {
       );
     }
   }, [revenueData]);
-  
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-3 gap-6">
-        {data.map((item, index) => (
-          <div className="rounded-md bg-white p-4 shadow-sm" key={index}>
+        { data.map((item, index) => (
+          <div className="rounded-md bg-white p-4 shadow-sm" key={ index }>
             <div className="flex flex-col">
               <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#CAEDFF]">
-                {item.icon}
+                { item.icon }
               </div>
-              <div className="mt-2 font-semibold">{item.title}</div>
+              <div className="mt-2 font-semibold">{ item.title }</div>
               <div className="my-2 text-[30px] text-primary-500">
-                <AnimatedValue value={item.value} isCurrency />
+                <AnimatedValue value={ item.value } isCurrency />
               </div>
               <div className="flex gap-1 text-[14px]">
                 <span
-                  className={`${item.isIncrease ? "text-[#13D6CB]" : "text-red-500"} flex items-center gap-1`}
+                  className={ `${item.isIncrease ? "text-[#13D6CB]" : "text-red-500"} flex items-center gap-1` }
                 >
-                  {item.isIncrease ? (
-                    <HiMiniArrowUpRight color="#13D6CB" size={18} />
+                  { item.isIncrease ? (
+                    <HiMiniArrowUpRight color="#13D6CB" size={ 18 } />
                   ) : (
-                    <HiMiniArrowDownRight color="red" size={18} />
-                  )}
-                  {item.percentage}
+                    <HiMiniArrowDownRight color="red" size={ 18 } />
+                  ) }
+                  { item.percentage }
                 </span>
-                <span className="text-[#808080]">{item.percentageTitle}</span>
+                <span className="text-[#808080]">{ item.percentageTitle }</span>
               </div>
             </div>
           </div>
-        ))}
+        )) }
       </div>
     </div>
   );

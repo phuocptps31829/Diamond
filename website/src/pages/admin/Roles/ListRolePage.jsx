@@ -20,10 +20,12 @@ const ListRolePage = () => {
         queryFn: roleApi.getAllRoles
     });
 
-    console.log(data);
-
     if (isLoading) {
         return <Loading />;
+    }
+
+    if (!data) {
+        return null;
     }
 
     return (
