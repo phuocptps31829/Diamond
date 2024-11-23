@@ -6,12 +6,12 @@ const ResultItem = ({ results }) => {
         <View className="overflow-y-scroll">
             { results.map((result, index) => (
                 <View key={ index } className="border-b border-gray-200 px-5">
+                    <Text className="text-primary-600 font-semibold">
+                        Kết quả khám:
+                    </Text>
                     <View className="flex-row justify-between">
-                        <Text className="text-primary-600 font-semibold">
-                            Kết quả khám:
-                        </Text>
                         <Text className="text-zinc-500">
-                            { result.date }
+                            { result?.service?.name || result?.medicalPackage?.name }
                         </Text>
                     </View>
                     <View className="mt-2">

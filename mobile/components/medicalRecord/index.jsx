@@ -2,7 +2,6 @@ import React from 'react';
 import { Image, ScrollView, View, Text } from 'react-native';
 import { useSelector } from 'react-redux';
 import { formatDateTimeLocale } from '../../utils/format';
-import Accordion from '../ui/Accordion';
 import DetailList from './DetailList';
 
 const IMAGE_URL = process.env.EXPO_PUBLIC_IMAGE_API_URL;
@@ -12,7 +11,7 @@ const MedicalRecord = () => {
 
     return (
         <ScrollView className="p-3">
-            <View className="bg-white rounded-lg">
+            <View className="bg-white rounded-lg border border-[#9dd8ff] border-1">
                 <View
                     className="flex-row justify-center items-center mt-6"
                 >

@@ -2,6 +2,8 @@ require('dotenv/config');
 const http = require('http');
 const mongoose = require('mongoose');
 const { Server } = require("socket.io");
+const getRedisClient = require('./src/config/redisClient');
+
 const app = require('./app');
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
@@ -17,13 +19,12 @@ const io = new Server(server, {
 let activeRooms = [];
 let roomMessages = {};
 
-const getRedisClient = require('./src/config/redisClient');
-
 (async () => {
     const redisClient = await getRedisClient();
 
-    io.on('connection', (socket) => {
-        console.log('Connected to socket:', socket.id);
+    // Socket connection
+    io.on('connection', async (socket) => {
+        console.log('Connected to socket');
 
         socket.on('laravel_database_Notifications', (data) => {
             console.log('data:', data);
@@ -52,11 +53,10 @@ const getRedisClient = require('./src/config/redisClient');
         });
 
         socket.on('newMessageUser', (data, callback) => {
-            // console.log('Received newMessageUser:', data.message, 'in room:', data.room);
-            // console.log('callback', callback);
             if (callback && typeof callback === 'function') {
                 callback();
             }
+            console.log('data:', data.room, roomMessages);
             if (!roomMessages[data.room]) {
                 roomMessages[data.room] = [];
             }
@@ -74,7 +74,6 @@ const getRedisClient = require('./src/config/redisClient');
                     console.log('???', JSON.parse(data));
                 }
             });
-            // console.log("roomMessages:", roomMessages);
 
             io.emit('activeRooms', roomMessages);
             io.to(data.room).emit('newMessageUser', {
@@ -105,11 +104,27 @@ const getRedisClient = require('./src/config/redisClient');
             io.emit('activeRooms', roomMessages);
         });
 
+        // Listen for new notifications
+        const subscriber = await redisClient.duplicate();
+        await subscriber.connect();
+        subscriber.v4.subscribe('laravel_database_Notifications', (channel, message) => {
+            console.log(JSON.parse(JSON.parse(channel).data.appointments));
+            const messageNotification = {
+                data: {
+                    title: 'Bạn có thông báo mới!',
+                }
+            };
+
+            io.emit('notification', messageNotification);
+        });
+
         socket.on('disconnect', () => {
             console.log('Disconnected from socket:', socket.id);
         });
     });
 
+
+    // MongoDB connection
     mongoose.connect(process.env.MONGO_CONNECTION_STRING)
         .then(() => {
             console.log('Connected to database');

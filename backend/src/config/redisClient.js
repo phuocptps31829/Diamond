@@ -9,6 +9,10 @@ const getRedisClient = async () => {
 
     redisClient = createClient({
         // url: 'redis://redis:6379',
+        socket: {
+            host: '160.30.44.27',
+            port: 6379
+        },
         legacyMode: true
     });
 

@@ -34,6 +34,10 @@ const UserChat = () => {
             'oldRoomMessages',
             (data) => handleOldMessages(data)
         );
+        const testUpcoming = subscribe(
+            'notification',
+            (data) => console.log('this is new notification', data)
+        );
         const unsubscribeUser = subscribe(
             'newMessageUser',
             (data) => handleNewMessage(data.message, 'user', data.name)
@@ -47,6 +51,7 @@ const UserChat = () => {
             unsubscribeUser();
             unsubscribeAdmin();
             unsubscribeOldMessages();
+            testUpcoming();
         };
     }, [subscribe, socket]);
 

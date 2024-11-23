@@ -35,26 +35,24 @@ const HistoryAppointment = () => {
     }
 
     return (
-        <View>
+        <View className="flex-1">
             <FilterBar
                 filter={ selectedFilter }
                 onSetFilter={ setSelectedFilter }
             />
-            <View className="overflow-hidden">
-                { !filteredData?.length ? (
-                    _notFoundText()
-                ) : (
-                    <View className="px-5 mt-3">
-                        <FlatList
-                            data={ filteredData }
-                            renderItem={ ({ item }) => <HistoryBox item={ item } /> }
-                            contentContainerStyle={ { gap: 16 } }
-                            className=""
-                            showsVerticalScrollIndicator={ false }
-                        />
-                    </View>
-                ) }
-            </View>
+            { !filteredData?.length ? (
+                _notFoundText()
+            ) : (
+                <View className="px-5 mt-3 h-full flex-1 pb-6">
+                    <FlatList
+                        data={ filteredData }
+                        renderItem={ ({ item }) => <HistoryBox item={ item } /> }
+                        contentContainerStyle={ { gap: 16 } }
+                        className=""
+                        showsVerticalScrollIndicator={ false }
+                    />
+                </View>
+            ) }
         </View>
     );
 };
@@ -71,9 +69,7 @@ const _notFoundText = () => {
 
 const _loading = () => {
     return (
-        <View className="w-full h-full flex justify-center items-center -mt-16">
-            <Loading />
-        </View>
+        <Loading />
     );
 };
 

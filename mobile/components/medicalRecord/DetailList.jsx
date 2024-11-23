@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { appointmentApi } from "../../services/appointmentsApi";
 import { formatDateTimeLocale } from "../../utils/format";
-import { Text } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import Accordion from "../ui/Accordion";
 import ResultItem from "./ResultItem";
 
@@ -11,16 +11,23 @@ const DetailList = () => {
         queryFn: () => appointmentApi.getAppointmentByPatient({ status: 'EXAMINED' })
     });
 
-    return !isLoading ?
-        medicalRecords?.data?.length ?
-            medicalRecords.data.map((record, index) => <Accordion
-                key={ index }
-                value={ {
-                    title: record.type + ' - ' + formatDateTimeLocale(record?.time),
-                    content: <ResultItem results={ record?.results } />
-                } }
-            />) :
-            <Text>Không có lịch sử khám bệnh</Text> : <Text>Loading...</Text>;
+    if (isLoading) {
+        return <View className="flex items-center justify-center h-80 rounded-md bg-white">
+            <ActivityIndicator size="large" color="#007BBB" />
+        </View>;
+    }
+
+    console.log(medicalRecords);
+
+    return medicalRecords?.data?.length ?
+        medicalRecords.data.map((record, index) => <Accordion
+            key={ index }
+            value={ {
+                title: record.type + ' - ' + formatDateTimeLocale(record?.time),
+                content: <ResultItem results={ record?.results } />
+            } }
+        />) :
+        <Text>Không có lịch sử khám bệnh</Text>;
 };
 
 export default DetailList;

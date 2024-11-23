@@ -111,11 +111,12 @@ const ChatComponent = ({ setShowChat }) => {
     setIsFirstMessage(false);
     event.preventDefault();
     if (!message.trim()) return;
-    console.log("sendFirstMessage", sendFirstMessage)
+    console.log("sendFirstMessage", sendFirstMessage);
+    const userSocketID = localStorage.getItem("userSocketID");
     if (socket) {
       sendEvent(
         "newMessageUser",
-        { message, room: socket.id, name: userName, phoneNumber },
+        { message, room: userSocketID ? userSocketID : socket.id, name: userName, phoneNumber },
         () => {
           setMessage("");
 
@@ -149,6 +150,7 @@ const ChatComponent = ({ setShowChat }) => {
     if (socket) {
       const userSocketID = localStorage.getItem("userSocketID");
       if (userSocketID) {
+        sendEvent("joinRoom", userSocketID);
         sendEvent("getOldRoomMessages", userSocketID);
         setChatted(true);
         setIsFirstMessage(false);
@@ -159,8 +161,8 @@ const ChatComponent = ({ setShowChat }) => {
 
   return (
     <div className="container-chat-shadow relative flex h-screen w-full flex-col bg-white antialiased sm:h-[500px] sm:w-[400px] sm:rounded-[20px]">
-      {chatted ? (
-        <>
+      { chatted ? (
+        <div>
           <div className="rounded-t-[20px] bg-white">
             <div className="mx-auto flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-4">
@@ -176,8 +178,8 @@ const ChatComponent = ({ setShowChat }) => {
                   <p className="text-[13px] text-green-400">Đang hoạt động</p>
                 </div>
               </div>
-              <button onClick={() => setShowChat(false)}>
-                <IoCloseCircleOutline color="black" size={30} />
+              <button onClick={ () => setShowChat(false) }>
+                <IoCloseCircleOutline color="black" size={ 30 } />
               </button>
             </div>
           </div>
@@ -187,7 +189,7 @@ const ChatComponent = ({ setShowChat }) => {
                 <div className="scrollable-services min-h-full">
                   <div className="flex h-full flex-col">
                     <div className="flex-grow"></div>
-                    {messages.map((msg, index) => {
+                    { messages.map((msg, index) => {
                       const isFirstInSequence =
                         index === 0 || messages[index - 1].type !== msg.type;
                       const isDifferentUser =
@@ -195,15 +197,15 @@ const ChatComponent = ({ setShowChat }) => {
 
                       return (
                         <div
-                          className={`grid grid-cols-12 gap-y-5 ${isDifferentUser ? "mt-4" : ""}`}
-                          key={index}
+                          className={ `grid grid-cols-12 gap-y-5 ${isDifferentUser ? "mt-4" : ""}` }
+                          key={ index }
                         >
-                          {msg.type === "user" ? (
+                          { msg.type === "user" ? (
                             <div className="col-start-1 col-end-13 w-full rounded-lg py-[2px]">
                               <div className="flex flex-row-reverse items-center justify-start">
                                 <div className="relative mr-3 max-w-[75%] break-words rounded-[20px] rounded-br-none bg-[#2D87F3] px-4 py-3 text-sm shadow">
                                   <div className="text-white">
-                                    {msg.message}
+                                    { msg.message }
                                   </div>
                                 </div>
                               </div>
@@ -211,7 +213,7 @@ const ChatComponent = ({ setShowChat }) => {
                           ) : (
                             <div className="col-start-1 col-end-13 w-full rounded-lg px-2 py-[2px]">
                               <div className="flex items-center">
-                                {isFirstInSequence && (
+                                { isFirstInSequence && (
                                   <div className="flex h-9 w-9 flex-shrink-0 items-center self-end rounded-full">
                                     <img
                                       src="https://img.lovepik.com/free-png/20211116/lovepik-customer-service-personnel-icons-png-image_400960942_wh1200.png"
@@ -219,43 +221,43 @@ const ChatComponent = ({ setShowChat }) => {
                                       className="h-full w-full rounded-full object-cover"
                                     />
                                   </div>
-                                )}
+                                ) }
                                 <div
-                                  className={`relative ${isFirstInSequence ? "ml-3" : "ml-12"} chat-bubble-shadow max-w-[75%] break-words rounded-[20px] rounded-bl-none bg-white px-4 py-3 text-sm`}
+                                  className={ `relative ${isFirstInSequence ? "ml-3" : "ml-12"} chat-bubble-shadow max-w-[75%] break-words rounded-[20px] rounded-bl-none bg-white px-4 py-3 text-sm` }
                                 >
                                   <div className="text-black">
-                                    {msg.message}
+                                    { msg.message }
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          )}
+                          ) }
                         </div>
                       );
-                    })}
+                    }) }
 
-                    {isFirstMessage && (
+                    { isFirstMessage && (
                       <div className="grid grid-cols-12 gap-y-3">
-                        {options.map((option, index) => (
+                        { options.map((option, index) => (
                           <div
-                            key={index}
+                            key={ index }
                             className="col-start-1 col-end-13 w-full rounded-lg"
                           >
                             <div className="flex flex-row-reverse items-center justify-start">
                               <div className="relative mr-3 max-w-[75%] break-words rounded-[20px] rounded-br-none bg-[#2D87F3] text-sm shadow">
                                 <button
-                                  onClick={() => handleOptionClick(option)}
+                                  onClick={ () => handleOptionClick(option) }
                                   className="rounded px-4 py-3 text-white"
                                 >
-                                  {option}
+                                  { option }
                                 </button>
                               </div>
                             </div>
                           </div>
-                        ))}
+                        )) }
                       </div>
-                    )}
-                    <div ref={messagesEndRef}></div>
+                    ) }
+                    <div ref={ messagesEndRef }></div>
                     <div className="grid grid-cols-12">
                       <div className="h-4"></div>
                     </div>
@@ -265,48 +267,48 @@ const ChatComponent = ({ setShowChat }) => {
               <div className="mb-2 flex h-16 w-full flex-row items-center p-4 sm:rounded-b-[20px]">
                 <div className="flex-grow flex gap-4">
                   <div className="relative w-full rounded-xl border-white">
-                    <form onSubmit={onSubmit} id="formChat">
+                    <form onSubmit={ onSubmit } id="formChat">
                       <input
                         placeholder="Gõ tin nhắn..."
                         type="text"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        value={ message }
+                        onChange={ (e) => setMessage(e.target.value) }
                         className="chat-message-shadow-input flex h-10 w-full rounded-xl border border-none bg-white pl-4 pr-12 text-black focus:outline-none"
                       />
                     </form>
                     <button
-                      onClick={() => setShowPicker(!showPicker)}
+                      onClick={ () => setShowPicker(!showPicker) }
                       className="absolute right-0 top-0 flex h-full w-12 items-center justify-center rounded-r-xl bg-white text-gray-900"
                     >
-                      <MdInsertEmoticon size={22} />
+                      <MdInsertEmoticon size={ 22 } />
                     </button>
                   </div>
-                  {showPicker && (
+                  { showPicker && (
                     <div
-                      ref={pickerRef}
+                      ref={ pickerRef }
                       className="absolute bottom-[5rem] left-1/2 -translate-x-1/2 transform"
                     >
-                      <Picker data={data} onEmojiSelect={handleEmojiSelect} />
+                      <Picker data={ data } onEmojiSelect={ handleEmojiSelect } />
                     </div>
-                  )}
-                  {message.trim() !== "" && (
+                  ) }
+                  { message.trim() !== "" && (
                     <button type="submit" form="formChat">
-                      <IoSend color="#007BBB" size={27} />
+                      <IoSend color="#007BBB" size={ 27 } />
                     </button>
-                  )}
+                  ) }
                 </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <div className="h-full rounded-[20px] bg-[#F9F9FB] p-5">
           <div className="flex w-full justify-end">
-            <button onClick={() => setShowChat(false)}>
-              <IoCloseCircleOutline color="black" size={30} />
+            <button onClick={ () => setShowChat(false) }>
+              <IoCloseCircleOutline color="black" size={ 30 } />
             </button>
           </div>
-          <img src={LogoNoLetters} alt="" className="w-16" />
+          <img src={ LogoNoLetters } alt="" className="w-16" />
           <h2 className="mb-1 mt-2 text-2xl">Chào bạn 👋</h2>
           <p className="text-[15px] font-normal tracking-wide text-gray-600">
             Bạn đang tìm kiếm bác sĩ và dịch vụ y tế phù hợp? Chat với chúng tôi
@@ -319,31 +321,30 @@ const ChatComponent = ({ setShowChat }) => {
             <Input
               placeholder="Họ và tên"
               className="border border-gray-400 p-3 py-5"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
+              value={ userName }
+              onChange={ (e) => setUserName(e.target.value) }
             />
             <Input
               placeholder="Số điện thoại"
               className="border border-gray-400 p-3 py-5"
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              value={ phoneNumber }
+              onChange={ (e) => setPhoneNumber(e.target.value) }
             />
             <button
-              className={`${
-                userName.trim() === "" || phoneNumber.trim() === ""
-                  ? "text-gray-400 opacity-90"
-                  : "text-primary-600 hover:text-primary-900"
-              } mt-4 flex w-fit items-center gap-2 self-end bg-transparent`}
-              disabled={userName.trim() === "" || phoneNumber.trim() === ""}
-              onClick={() => {
+              className={ `${userName.trim() === "" || phoneNumber.trim() === ""
+                ? "text-gray-400 opacity-90"
+                : "text-primary-600 hover:text-primary-900"
+                } mt-4 flex w-fit items-center gap-2 self-end bg-transparent` }
+              disabled={ userName.trim() === "" || phoneNumber.trim() === "" }
+              onClick={ () => {
                 clickMeToGetOldMessages();
-              }}
+              } }
             >
-              Bắt đầu chat <GrFormNextLink size={25} />
+              Bắt đầu chat <GrFormNextLink size={ 25 } />
             </button>
           </div>
         </div>
-      )}
+      ) }
     </div>
   );
 };

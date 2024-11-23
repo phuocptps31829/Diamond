@@ -54,12 +54,12 @@ export default Accordion;
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#E3EDFB',
+        backgroundColor: '#f2f7fc',
         marginHorizontal: 10,
         marginVertical: 8,
-        borderRadius: 14,
+        borderRadius: 8,
         borderWidth: 1,
-        borderColor: '#80C7F6',
+        borderColor: '#9dd8ff',
         overflow: 'hidden',
     },
     textTitle: {
@@ -67,7 +67,10 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     titleContainer: {
-        padding: 20,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingTop: 12,
+        paddingBlock: 12,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
         top: 0,
     },
     content: {
-        padding: 20,
+        padding: 10,
         backgroundColor: '#D6E1F0',
     },
     textContent: {

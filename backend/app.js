@@ -29,6 +29,7 @@ const patientRoutes = require('./src/routes/patient.route');
 const staffRoutes = require('./src/routes/staff.route');
 const authRoutes = require('./src/routes/auth.route');
 const revenueRoutes = require('./src/routes/revenue.route');
+const notificationRoutes = require('./src/routes/notification.route');
 const app = express();
 
 // app.use((req, res, next) => {
@@ -79,6 +80,7 @@ app.use('/api/v1/patients', patientRoutes);
 app.use('/api/v1/staffs', staffRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/revenue', revenueRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
 
 app.use(function (req, res, next) {
     next(createError(404, 'Endpoint not found.'));

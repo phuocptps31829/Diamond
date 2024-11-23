@@ -259,6 +259,26 @@ function getActiveRoomsSocket(io) {
     return res;
 }
 
+const formatDateTimeLocale = (time, hasHourMinute = true) => {
+    if (!time) return '';
+
+    if (hasHourMinute) {
+        return new Intl.DateTimeFormat('vi-VN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        }).format(new Date(time));
+    }
+
+    return new Intl.DateTimeFormat('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(new Date(time));
+};
+
 module.exports = {
     createError,
     sendEmail,
@@ -273,4 +293,5 @@ module.exports = {
     checkPhoneNumberAndEmail,
     timeDivision,
     getActiveRoomsSocket,
+    formatDateTimeLocale,
 };

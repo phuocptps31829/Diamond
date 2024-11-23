@@ -25,7 +25,6 @@ const verifyAccessToken = (req, res, next) => {
             process.env.ACCESS_TOKEN_SECRET,
             { algorithms: ['HS256'] }
         );
-
         req.user = { id: verifiedUser.id, role: verifiedUser.role };
 
         next();

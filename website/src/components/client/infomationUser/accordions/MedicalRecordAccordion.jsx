@@ -40,7 +40,7 @@ export function MedicalRecordAccordion() {
         queryFn: () => appointmentApi.getAppointmentByPatient({ status: 'EXAMINED' })
     });
 
-    console.log(hash?.slice(1));
+    console.log('medicalRecords', medicalRecords);
 
     return (
         !isLoading ?
@@ -52,8 +52,6 @@ export function MedicalRecordAccordion() {
             >
                 { medicalRecords?.data?.map((record) => {
                     const { results } = record;
-                    console.log(results);
-
                     return <AccordionItem key={ record._id } value={ record._id }>
                         <AccordionTrigger className="text-base">
                             { record.type + ' - ' + formatDateTimeLocale(record?.time) }
