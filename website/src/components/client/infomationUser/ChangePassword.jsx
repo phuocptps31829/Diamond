@@ -1,11 +1,12 @@
 import InputCustom from "@/components/ui/InputCustom";
 import SpinLoader from "@/components/ui/SpinLoader";
-import { toastUI } from "@/components/ui/Toastify";
+
 import { authApi } from "@/services/authApi";
 import { changePasswordSchema } from "@/zods/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const ChangePassword = () => {
   const {
@@ -26,7 +27,7 @@ const ChangePassword = () => {
     mutationFn: authApi.changePassword,
     onSuccess: (data) => {
       console.log(data);
-      toastUI("Cập nhật thành công", "success");
+      toast.success("Đổi mật khẩu thành công");
       reset({
         password: "",
         newPassword: "",
@@ -40,7 +41,7 @@ const ChangePassword = () => {
         error.response?.data?.message ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Có lỗi xảy ra khi đổi mật khẩu", "error");
+      toast.error(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
     }
   });
 

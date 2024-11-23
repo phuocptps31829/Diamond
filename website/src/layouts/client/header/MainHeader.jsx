@@ -16,7 +16,6 @@ import {
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import brandLogo from "@/assets/images/brandLogo.png";
-import { toastUI } from "@/components/ui/Toastify";
 import { FaExternalLinkAlt, FaRegUser } from "react-icons/fa";
 import { FaPowerOff } from "react-icons/fa6";
 import { clearCart } from "@/redux/cartSlice";
@@ -28,6 +27,7 @@ import {
 } from "@/components/ui/Tooltip";
 import { Badge } from "@/components/ui/Badge";
 import { IoCalendarOutline } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const dataNav = [
   {
@@ -77,7 +77,7 @@ export default function MainHeader() {
   const handleLogout = () => {
     dispatch(logoutAction());
     dispatch(clearCart());
-    toastUI("Đăng xuất thành công!", "success");
+    toast.success("Đăng xuất thành công");
     navigate("/");
   };
   const hasAppointments = appointments.length > 0;

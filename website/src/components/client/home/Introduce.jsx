@@ -26,7 +26,7 @@ export default function Introduce() {
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
-            to="/none"
+            to="/facility"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
             <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Cơ sở vật chất</h2>
@@ -38,7 +38,7 @@ export default function Introduce() {
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
-            to="/none"
+            to="/profile/medical-records"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
             <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Bệnh án điện tử</h2>

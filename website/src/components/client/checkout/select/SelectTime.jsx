@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { workScheduleApi } from "@/services/workSchedulesApi";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
 
 export default function SelectTime({
   control,
@@ -65,7 +65,7 @@ export default function SelectTime({
 
   const handleClick = () => {
     if (!date) {
-      toastUI("Vui lòng chọn ngày", "warning");
+      toast.error("Vui lòng chọn ngày khám");
       return;
     }
   };

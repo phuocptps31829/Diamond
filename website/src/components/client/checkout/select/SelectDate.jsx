@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/Button";
 import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
-import { toastUI } from "@/components/ui/Toastify";
 import { workScheduleApi } from "@/services/workSchedulesApi";
+import { toast } from "react-toastify";
 
 export default function SelectDate({
   control,
@@ -60,7 +60,7 @@ export default function SelectDate({
 
   const handleClick = () => {
     if (!doctorID) {
-      toastUI("Vui lòng chọn bác sĩ", "warning");
+      toast.error("Vui lòng chọn bác sĩ !");
       return;
     }
   };

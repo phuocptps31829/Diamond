@@ -21,7 +21,6 @@ import {
 } from "@/redux/bookingSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
-import { toastUI } from "@/components/ui/Toastify";
 import SelectRelatedPatient from "./select/SelectRelatedPatient";
 import { useQuery } from "@tanstack/react-query";
 import { patientApi } from "@/services/patientsApi";
@@ -30,6 +29,7 @@ import { checkRequiredBookingFields } from "@/utils/validate";
 import Service from "./items/Service";
 import Package from "./items/Package";
 import GomapDistance from "./distance/GomapDistance";
+import toast from "react-hot-toast";
 
 const combineDateTime = (date, time) => {
   return `${date}T${time}:00.000`;
@@ -329,7 +329,7 @@ export default function Form() {
     event.preventDefault();
 
     if (!isFullInfoToCheckout) {
-      toastUI("Vui lòng cung cấp đầy đủ thông tin", "warning");
+      toast.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
       return;
     }
     console.log(data, "d");

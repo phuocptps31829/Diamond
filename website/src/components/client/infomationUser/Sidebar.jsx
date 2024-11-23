@@ -8,10 +8,10 @@ import {
 } from "react-icons/fa";
 import { logoutAction } from "@/redux/authSlice";
 import { clearCart } from "@/redux/cartSlice";
-import { toastUI } from "@/components/ui/Toastify";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import toast from "react-hot-toast";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -23,7 +23,7 @@ const Sidebar = () => {
   const handleLogout = () => {
     dispatch(logoutAction());
     dispatch(clearCart());
-    toastUI("Đăng xuất thành công!", "success");
+    toast.success("Đăng xuất thành công");
     navigate("/");
   };
 

@@ -8,7 +8,7 @@ import InputCustom from "@/components/ui/InputCustom";
 import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
 import NotFound from "@/components/ui/NotFound";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
 
 export default function ChangePassComponent() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function ChangePassComponent() {
   const mutation = useMutation({
     mutationFn: authApi.changePasswordForgot,
     onSuccess: () => {
-      toastUI("Đổi mật khẩu thành công.", "success");
+      toast.success("Đổi mật khẩu thành công");
       sessionStorage.removeItem("otpForgot");
       sessionStorage.removeItem("otpTokenForgot");
       sessionStorage.removeItem("otpSentTimeForgot");
@@ -48,7 +48,7 @@ export default function ChangePassComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.", "error");
+      toast.error(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
     },
   });
 

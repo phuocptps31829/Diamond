@@ -7,7 +7,8 @@ import InputCustom from "@/components/ui/InputCustom";
 import { forgotSchema } from "@/zods/forgot";
 import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
-import { toastUI } from "@/components/ui/Toastify";
+import toast from "react-hot-toast";
+
 
 export default function ForgetComponent() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function ForgetComponent() {
     mutationFn: authApi.sendOtpForgotPassword,
     onSuccess: (data) => {
       console.log(data);
-      toastUI("Mã OTP đã được gửi đến số điện thoại của bạn.", "success");
+      toast.success("Mã OTP đã được gửi đến số điện thoại của bạn.");
       sessionStorage.setItem("otpTokenForgot", data.data.otpToken);
       const currentTime = new Date().getTime();
       sessionStorage.setItem("otpSentTimeForgot", currentTime);
@@ -38,7 +39,7 @@ export default function ForgetComponent() {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-      toastUI(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.", "error");
+      toast.error(errorMessage || "Đã xảy ra lỗi, vui lòng thử lại.");
       sessionStorage.removeItem("phoneNumberForgot");
     },
   });
