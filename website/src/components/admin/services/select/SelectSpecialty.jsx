@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { specialtyApi } from "@/services/specialtiesApi";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { specialtyApi } from "@/services/specialtiesApi";
 
 export default function SelectSpecialty({ control, name, errors, disabled, onChange }) {
   const [open, setOpen] = React.useState(false);
@@ -30,13 +30,12 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
     queryFn: () => specialtyApi.getAllSpecialties(),
   });
 
-
   if (isLoading) {
     return <Skeleton className="w-full h-10" />;
   }
 
   if (error) {
-    return <div>Lỗi khi tải chuyên khoa</div>;
+    return <div> Lỗi khi tải chuyên khoa</div>;
   }
   return (
     <div>
@@ -52,7 +51,7 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
                 role="combobox"
                 aria-expanded={ open }
                 className={ cn(
-                  "w-full justify-between py-[21px]",
+                  "w-full justify-between py-[21px] shadow-none",
                   errors[name] && "",
                 ) }
                 disabled={ disabled }

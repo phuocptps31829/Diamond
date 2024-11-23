@@ -128,28 +128,28 @@ const BranchesEdit = () => {
   if (isLoading) {
     return <Skeleton />;
   }
-  if (error) return <NotFound message={ error.message } />;
+  if (error) return <NotFound message={error.message} />;
 
   return (
     <div className="w-full">
-      <div className="rounded-xl bg-white px-6 py-6 min-h-[calc(100vh-140px)]">
+      <div className="min-h-[calc(100vh-140px)] rounded-xl bg-white px-6 py-6">
         <h1 className="mb-5 mr-2 h-fit bg-white text-2xl font-bold">
           Chỉnh sửa chi nhánh
         </h1>
-        <form onSubmit={ handleSubmit(onSubmit) }>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3 grid-cols-1 gap-[10px] sm:grid md:flex">
             <div className="mr-2">
               <ImagePreview
-                imagePreview={ imagePreview }
-                setFileImage={ setFileImage }
-                setImagePreview={ setImagePreview }
+                imagePreview={imagePreview}
+                setFileImage={setFileImage}
+                setImagePreview={setImagePreview}
               />
-              { !fileImage ||
+              {!fileImage ||
                 (!imagePreview && (
                   <p className="mt-3 text-center text-sm text-red-500">
                     Vui lòng chọn ảnh
                   </p>
-                )) }
+                ))}
             </div>
             <div className="w-full">
               <div className="grid grid-cols-1 items-center justify-center gap-5">
@@ -159,8 +159,8 @@ const BranchesEdit = () => {
                   name="branch_name"
                   label="Tên chi nhánh"
                   placeholder="Nhập tên chi nhánh"
-                  control={ control }
-                  errors={ errors }
+                  control={control}
+                  errors={errors}
                 />
 
                 <InputCustom
@@ -169,8 +169,8 @@ const BranchesEdit = () => {
                   name="hotline"
                   label="Hotline"
                   placeholder="Nhập hotline"
-                  control={ control }
-                  errors={ errors }
+                  control={control}
+                  errors={errors}
                 />
 
                 <InputCustom
@@ -179,8 +179,8 @@ const BranchesEdit = () => {
                   label="Giờ làm việc"
                   type="text"
                   placeholder="Nhập thời gian làm việc"
-                  control={ control }
-                  errors={ errors }
+                  control={control}
+                  errors={errors}
                 />
               </div>
             </div>
@@ -193,26 +193,26 @@ const BranchesEdit = () => {
               Địa chỉ
             </Label>
             <GoogleMapComponent
-              setAddress={ setAddress }
-              register={ register }
-              errors={ errors }
-              coordinates={ address }
+              setAddress={setAddress}
+              register={register}
+              errors={errors}
+              coordinates={address}
             />
           </div>
 
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={ isPending || mutation.isPending }
+              disabled={isPending || mutation.isPending}
               variant="custom"
             >
-              { isPending || mutation.isPending ? (
+              {isPending || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
-                "Cập nhật chi nhánh"
-              ) }
+                "Cập nhật"
+              )}
             </Button>
           </div>
         </form>

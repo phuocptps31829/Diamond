@@ -51,7 +51,7 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
                 role="combobox"
                 aria-expanded={ open }
                 className={ cn(
-                  "w-full justify-between py-[21px]",
+                  "w-full justify-between py-[21px] shadow-none",
                   errors[name] && "",
                 ) }
                 disabled={ disabled }

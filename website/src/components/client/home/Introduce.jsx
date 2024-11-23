@@ -6,18 +6,20 @@ export default function Introduce() {
       <div className="mb-4 w-full text-center text-[23px] font-bold md:mb-2 md:text-[35px]">
         Giới thiệu y khoa Diamond
       </div>
-      <span className="mx-auto block -mt-2 w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
+      <span className="mx-auto -mt-2 block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">
         Hệ Thống Y Khoa Diamond tự hào mang đến cho khách hàng những dịch vụ tốt
         nhất, chất lượng cao, tận tâm nhằm gánh vác một phần trách nhiệm trong
         việc chăm sóc sức khỏe cho cộng đồng và xã hội.
       </span>
-      <div className="my-5 grid gap-4 px-5 md:grid-cols-2 ">
+      <div className="my-5 grid gap-4 px-5 md:grid-cols-2">
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/doctors"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
-            <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Đội ngũ Y - Bác sĩ</h2>
+            <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
+              Đội ngũ Y - Bác sĩ
+            </h2>
             <span className="flex items-center gap-2 text-primary-600">
               Xem chi tiết <HiCursorClick />
             </span>
@@ -29,7 +31,9 @@ export default function Introduce() {
             to="/facility"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
-            <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Cơ sở vật chất</h2>
+            <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
+              Cơ sở vật chất
+            </h2>
             <span className="flex items-center gap-2 text-primary-600">
               Xem chi tiết <HiCursorClick />
             </span>
@@ -41,7 +45,9 @@ export default function Introduce() {
             to="/profile/medical-records"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
-            <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Bệnh án điện tử</h2>
+            <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
+              Bệnh án điện tử
+            </h2>
             <span className="flex items-center gap-2 text-primary-600">
               Xem chi tiết <HiCursorClick />
             </span>
@@ -50,10 +56,12 @@ export default function Introduce() {
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
-            to="/none"
+            to="/branch"
             className="flex flex-col items-center px-[45px] py-[40px]"
           >
-            <h2 className="mb-2 text-[20px] sm:text-[27px] font-bold">Hệ thống phòng khám</h2>
+            <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
+              Hệ thống phòng khám
+            </h2>
             <span className="flex items-center gap-2 text-primary-600">
               Xem chi tiết <HiCursorClick />
             </span>

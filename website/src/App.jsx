@@ -101,6 +101,7 @@ import ProfileAdminPage from "./pages/admin/Profile";
 import PrivacyPolicy from "./pages/client/Docs/PrivacyPolicy";
 import PaymentPolicy from "./pages/client/Docs/PaymentPolicy";
 import FacilityPage from "./pages/client/FacilityPage";
+import Branch from "./pages/client/Branch";
 
 const router = createBrowserRouter([
   {
@@ -142,6 +143,10 @@ const router = createBrowserRouter([
       {
         path: "facility",
         element: <FacilityPage />,
+      },
+      {
+        path: "branch",
+        element: <Branch />,
       },
 
       {
