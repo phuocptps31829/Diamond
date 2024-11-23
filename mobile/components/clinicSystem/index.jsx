@@ -6,42 +6,13 @@ import MyLocationButton from "./MyLocationButton";
 import { Platform, Linking } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getDistance } from "geolib";
-
-const dataClinic = [
-  {
-    image:
-      "https://img.ykhoadiamond.com/Uploads/Content/06032023/bd990b33-3f52-4848-9a4b-56b68abf79cf.jpg",
-    title: "Phòng khám",
-    name: "Đa khoa Diamond",
-    address: "179-181 Võ Thị Sáu, P.Võ Thị Sáu, Q.3, HCM",
-    phone: "091.8686.067",
-    location: {
-      latitude: 10.7822,
-      longitude: 106.6862,
-      latitudeDelta: 0.0014,
-      longitudeDelta: 0.0008,
-    },
-  },
-  {
-    image:
-      "https://img.ykhoadiamond.com/Uploads/Content/06032023/67fd9a5a-9a79-4943-9a67-9c4677932cbe.jpg",
-    title: "Phòng khám",
-    name: "Đa khoa 179",
-    address: "27 Nguyễn Thị Minh Khai, P.Bến Thành, Q.1, HCM",
-    phone: "091.8686.067",
-    location: {
-      latitude: 10.7821,
-      longitude: 106.6995,
-      latitudeDelta: 0.0014,
-      longitudeDelta: 0.0008,
-    },
-  },
-];
+import { useSelector } from "react-redux";
 
 const ClinicMapSystem = () => {
+  const dataClinic = useSelector((state) => state.branches.branches);
   const mapRef = useRef(null);
   const [location, setLocation] = useState(null);
-  const [region, setRegion] = useState(dataClinic[0].location);
+  const [region, setRegion] = useState(dataClinic[0].coordinates);
   const [activeIndex, setActiveIndex] = useState(0);
   const [km, setKm] = useState(null);
 
@@ -78,8 +49,8 @@ const ClinicMapSystem = () => {
           longitude: location.longitude,
         },
         {
-          latitude: dataClinic[0].location.latitude,
-          longitude: dataClinic[0].location.longitude,
+          latitude: dataClinic[0].coordinates.latitude,
+          longitude: dataClinic[0].coordinates.longitude,
         }
       );
 
@@ -97,8 +68,8 @@ const ClinicMapSystem = () => {
   };
 
   const handleZoomToClinic = (index) => {
-    mapRef.current.animateToRegion(dataClinic[index].location, 2000);
-    setRegion(dataClinic[index].location);
+    mapRef.current.animateToRegion(dataClinic[index].coordinates, 2000);
+    setRegion(dataClinic[index].coordinates);
     setActiveIndex(index);
 
     if (location) {
@@ -108,8 +79,8 @@ const ClinicMapSystem = () => {
           longitude: location.longitude,
         },
         {
-          latitude: dataClinic[index].location.latitude,
-          longitude: dataClinic[index].location.longitude,
+          latitude: dataClinic[index].coordinates.latitude,
+          longitude: dataClinic[index].coordinates.longitude,
         }
       );
 

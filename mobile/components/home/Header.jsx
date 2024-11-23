@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
   StatusBar,
+  ActivityIndicator,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useRef, useEffect } from "react";
@@ -15,9 +16,11 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { buttons } from "../../constants/nav-home-buttons";
 import { itemsBanner } from "../../constants/items-banner";
 import { useSelector } from "react-redux";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const Header = () => {
   const router = useRouter();
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { width } = useWindowDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef(null);
@@ -54,13 +57,25 @@ const Header = () => {
       <View className="bg-[#007BBB] w-screen pb-14 rounded-b-[30px] relative mb-12">
         <View className="mt-14 flex-row justify-between items-center w-full px-4">
           <View className="flex-row items-center gap-3">
-            <Image
-              source={ require("../../assets/fav.png") }
-              className="w-[45px] h-[45px] rounded-full  bg-white"
-            />
+            <View className="relative w-[47px] h-[47px] bg-gray-300 rounded-full">
+              <Image
+                source={
+                  profile.avatar
+                    ? { uri: `${URL_IMAGE}/${profile.avatar}` }
+                    : require("../../assets/fav.png")
+                }
+                className="rounded-full w-full h-full border border-[#FBCC50] bg-white"
+                onLoad={() => setIsImageLoading(false)}
+              />
+              {isImageLoading && (
+                <View className="bg-[#0000006c] rounded-full absolute w-full h-full top-0 flex justify-center items-center">
+                  <ActivityIndicator size="large" color="white" />
+                </View>
+              )}
+            </View>
             <View className="space-y-1">
-              <Text className="text-white">Chào bạn</Text>
-              <Text className="text-white font-semibold">
+              <Text className="text-white text-[15px]">Chào bạn</Text>
+              <Text className="text-white font-semibold text-[15px]">
                 { profile?.fullName }
               </Text>
             </View>

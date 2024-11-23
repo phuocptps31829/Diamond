@@ -2,7 +2,7 @@ import banner from "../../../assets/images/NewsBanner.jpg";
 
 export default function NewsBanner() {
   return (
-    <div className="relative h-[50vw] w-full sm:h-[30vw] lg:h-[8vw]">
+    <div className="relative w-full h-[30vw] lg:h-[8vw]">
       <img
         src={ banner }
         alt="Doctor delivering great news"

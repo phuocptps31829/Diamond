@@ -113,12 +113,12 @@ export default function Product({ product }) {
     <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
       <Link
         to={ isService ? `/service/${slug}` : `/package/${slug}` }
-        className="group block max-h-[125px] min-h-[125px] w-full overflow-hidden sm:h-[210px] sm:max-h-full"
+        className="group block w-full overflow-hidden"
       >
         <img
           src={ `${import.meta.env.VITE_IMAGE_API_URL}/${image}` }
           alt={ name }
-          className="ease h-full w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15]"
+          className="ease w-full transform object-cover transition-transform duration-500 group-hover:scale-[1.15] aspect-[2/1]"
         />
       </Link>
       <div className="mt-1 flex flex-1 flex-col justify-between p-3 md:p-5 md:pt-2">

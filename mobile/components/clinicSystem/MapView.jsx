@@ -12,20 +12,20 @@ const WorldMap = ({
       <MapView
         ref={mapRef}
         className="w-full h-full"
-        initialRegion={dataClinic[0].location}
+        initialRegion={dataClinic[0].coordinates}
         showsUserLocation
         showsScale
         showsMyLocationButton={Platform.OS === "android"} // Chỉ hiển thị nút hệ thống trên Android
       >
         {dataClinic.map((item, index) => (
-          <Marker coordinate={item.location} key={index}>
+          <Marker coordinate={item.coordinates} key={index}>
             <Callout>
               <View className="p-1 space-y-2">
                 <Text className="font-semibold">
-                  {item.title} {item.name}
+                  Phòng khám {item.name}
                 </Text>
                 <Text>{item.address}</Text>
-                <Text>Số điện thoại: {item.phone}</Text>
+                <Text>Số điện thoại: {item.hotline}</Text>
               </View>
             </Callout>
           </Marker>

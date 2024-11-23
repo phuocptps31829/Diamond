@@ -41,14 +41,14 @@ export default function OutstandingPackages() {
 
       { loadingMedicalPackages ? (
         <>
-          <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-4 px-3 sm:px-5 md:grid-cols-3 lg:grid-cols-4">
             { Array.from({ length: 8 }).map((_, index) => (
               <div
                 className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom"
                 key={ index }
               >
                 <div className="group block h-full w-full overflow-hidden">
-                  <div className="h-[210px] w-full">
+                  <div className="sm:h-[150px] h-[120px] w-full">
                     <Skeleton className="block h-full w-full object-cover" />
                   </div>
                 </div>
@@ -86,7 +86,7 @@ export default function OutstandingPackages() {
         <NotFound message={ "Không tìm thấy gói khám nào" } />
       ) : (
         <>
-          <div className="mt-4 grid grid-cols-2 gap-4 px-5 md:grid-cols-3 lg:grid-cols-4">
+          <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-4 sm:px-5 px-3 md:grid-cols-3 lg:grid-cols-4">
             { OutstandingMedicalPackages?.map((medicalPackage) => {
               return (
                 <Product key={ medicalPackage._id } product={ medicalPackage } />

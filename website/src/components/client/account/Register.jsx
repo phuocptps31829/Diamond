@@ -77,7 +77,7 @@ export default function RegisterComponent() {
 
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
-      <div className="max-w-screen-lg py-5 px-3 md:px-5">
+      <div className="md:max-w-screen-lg py-5 px-3 md:px-5 md:w-auto w-full max-w-[500px]">
         <div className="grid grid-cols-1 md:grid-cols-2 rounded-lg overflow-hidden bg-white">
           {/* ADS BANNER */ }
           <div className="hidden bg-white md:block">
@@ -106,7 +106,7 @@ export default function RegisterComponent() {
           </div>
 
           {/* FORM */ }
-          <div className="bg-white px-5 py-16 md:px-11 md:py-4 border-l rounded-lg md:rounded-none">
+          <div className="bg-white px-5 md:px-11 py-4 border-l rounded-lg md:rounded-none">
             <h1 className="mb-2 text-center text-2xl font-bold md:text-4xl pt-4">
               Đăng kí tài khoản
             </h1>

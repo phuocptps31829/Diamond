@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, Pressable, Image } from "react-native";
 import { useRouter } from "expo-router";
-import { URL_IMAGE } from "../../configs/variables";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const ListDoctors = ({ listDoctors }) => {
   const router = useRouter();
@@ -27,7 +27,7 @@ const ListDoctors = ({ listDoctors }) => {
                 }}
               >
                 <Image
-                  source={{ uri: URL_IMAGE + item.avatar }}
+                  source={{ uri: URL_IMAGE + "/" + item.avatar }}
                   className="w-[70px] h-[70px] rounded-full"
                 />
               </Pressable>

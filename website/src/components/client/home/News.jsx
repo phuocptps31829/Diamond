@@ -18,7 +18,7 @@ export default function News() {
 
   return (
     <div className="my-4 w-full bg-primary-500 py-4">
-      <div className="mx-auto my-2 max-w-screen-xl px-5">
+      <div className="mx-auto my-2 max-w-screen-xl px-3 sm:px-5">
         <div className="w-full text-center text-[23px] font-bold text-white md:text-[35px]">
           Tin tức mới nhất
         </div>

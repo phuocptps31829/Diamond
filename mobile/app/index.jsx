@@ -2,13 +2,16 @@ import { View, Image, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { authApi } from "../services/authApi";
+import { branchApi } from "../services/branchesApi";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
 import { useDispatch } from "react-redux";
 import { setProfile } from "../store/profile/profileSlice";
+import { setBranches } from "../store/branches/branchesSlice";
 
 const Index = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [locationReady, setLocationReady] = useState(false);
   const [authReady, setAuthReady] = useState(false);
@@ -17,7 +20,28 @@ const Index = () => {
     queryFn: authApi.getProfileInfo,
     enabled: authReady,
   });
-  const dispatch = useDispatch();
+
+  const { data: dataBranches, isLoading: loadingBranches } = useQuery({
+    queryKey: ["Branches"],
+    queryFn: branchApi.getAllBranches,
+  });
+
+  useEffect(() => {
+      if (!loadingBranches) {
+        const normalizedData = dataBranches.map((branch) => ({
+          ...branch,
+          coordinates: {
+            latitude: branch.coordinates.lat, 
+            longitude: branch.coordinates.lng, 
+            latitudeDelta: 0.0014, 
+            longitudeDelta: 0.0008,
+          },
+        }));
+        console.log("normalizedData", normalizedData);
+        dispatch(setBranches(normalizedData));
+      }
+  }, [loadingBranches]);
+
 
   const storeLocation = async (currentLocation) => {
     try {
@@ -71,7 +95,6 @@ const Index = () => {
       checkAuth();
     }
   }, [locationReady]);
-
   useEffect(() => {
     const handleAuth = async () => {
       if (authReady && !isLoading) {

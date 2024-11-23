@@ -71,10 +71,10 @@ export default function DoctorProduct({ doctor }) {
           className="ease h-full max-h-[120px] w-full transform overflow-hidden object-cover object-top transition-transform duration-500 group-hover:scale-[1.05] sm:max-h-[200px]"
         />
       </Link>
-      <div className="flex h-full flex-col bg-white px-3 pb-3 pt-2">
+      <div className="flex h-full flex-col bg-white px-3 pb-3 pt-2 rounded-b-lg">
         <Link
           to={ `/doctor/${doctor._id}` }
-          className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px]"
+          className="text-[9px] font-semibold text-[#7a7a7a] md:text-[13px] truncate"
         >
           Chuyên khoa: { doctor.otherInfo.specialty.name }
         </Link>
