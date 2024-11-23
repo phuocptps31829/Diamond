@@ -131,7 +131,7 @@ const NewsAdd = () => {
                 <div className="">
                   <Label
                     htmlFor=""
-                    className="mb-2 block text-sm font-medium leading-none text-black"
+                    className="mb-[12px] block text-sm font-medium leading-none text-black"
                   >
                     Chuyên khoa:
                   </Label>

@@ -22,7 +22,6 @@ const NewsEdit = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [isPending, setIsPending] = useState(false);
-  const [initialData, setInitialData] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [fileImage, setFileImage] = useState(null);
   const {
@@ -49,16 +48,9 @@ const NewsEdit = () => {
 
   useEffect(() => {
     if (data) {
-      const initialFormData = {
-        title: data.title,
-        category: data.specialtyID,
-        author: data.author,
-        content: data.content,
-        status: data.isHidden ? "Ẩn" : "Hiện",
-      };
-      setInitialData(initialFormData);
+     
       setValue("title", data.title);
-      setValue("category", data.specialtyID);
+      setValue("category", data.specialty._id);
       setValue("author", data.author);
       setValue("status", data.isHidden ? "Ẩn" : "Hiện");
       setValue("content", data.content);
@@ -87,11 +79,6 @@ const NewsEdit = () => {
   const onSubmit = async (data) => {
     if (!fileImage && !imagePreview) {
       toastUI("Vui lòng chọn ảnh!", "error");
-      return;
-    }
-
-    if (JSON.stringify(data) === JSON.stringify(initialData)) {
-      toastUI("Không có thay đổi nào được thực hiện.", "warning");
       return;
     }
     let imageName = null;
@@ -178,7 +165,7 @@ const NewsEdit = () => {
                 <div className="">
                   <Label
                     htmlFor=""
-                    className="mb-2 block text-sm font-medium leading-none text-black"
+                    className="mb-[12px] block text-sm font-medium leading-none text-black"
                   >
                     Chuyên khoa:
                   </Label>
@@ -238,7 +225,7 @@ const NewsEdit = () => {
                   <SpinLoader />
                 </>
               ) : (
-                "Cập nhật tin tức"
+                "Cập nhật"
               ) }
             </Button>
           </div>

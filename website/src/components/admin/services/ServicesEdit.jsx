@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { Button } from "@/components/ui/Button";
 import { useState, useEffect } from "react";
-import SelectSpecialty from "./select/SelectSpecialty";
 import { useParams } from "react-router-dom";
 import { serviceApi } from "@/services/servicesApi";
 import { Textarea } from "@/components/ui/Textarea";
@@ -18,13 +17,13 @@ import { toastUI } from "@/components/ui/Toastify";
 import ImagePreview from "@/components/ui/ImagePreview";
 import { axiosInstanceCUD } from "@/services/axiosInstance";
 import SpinLoader from "@/components/ui/SpinLoader";
+import SelectSpecialty from "./select/SelectSpecialty";
 
 const ServicesEdit = () => {
   const { id } = useParams();
   const queryClient = useQueryClient();
   const [imagePreview, setImagePreview] = useState(null);
   const [fileImage, setFileImage] = useState(null);
-  const [initialData, setInitialData] = useState(null);
   const [isPending, setIsPending] = useState(false);
 
   const {
@@ -58,21 +57,7 @@ const ServicesEdit = () => {
 
   useEffect(() => {
     if (data) {
-      const initialFormData = {
-        name: data.name,
-        specialtyID: data.specialty._id,
-        content: data.details,
-        duration: Number(data.duration),
-        price: data.price,
-        discountPrice: data.discountPrice,
-        shortDescription: data.shortDescription,
-        gender: data.applicableObject.gender,
-        isFamily: data.applicableObject.isFamily,
-        isHidden: data.isHidden,
-        minAge: data.applicableObject.age.min,
-        maxAge: data.applicableObject.age.max,
-      };
-      setInitialData(initialFormData);
+      console.log(data.specialty._id);
       setValue("name", data.name);
       setValue("specialtyID", data.specialty._id);
       setValue("price", data.price);
@@ -106,14 +91,7 @@ const ServicesEdit = () => {
       toastUI("Vui lòng chọn ảnh!", "error");
       return;
     }
-    console.log(JSON.stringify(data));
-    console.log(JSON.stringify(initialData));
-
-    if (JSON.stringify(data) === JSON.stringify(initialData)) {
-      toastUI("Không có thay đổi nào được thực hiện.", "warning");
-      return;
-    }
-
+   
     let imageName = null;
 
     if (fileImage) {
@@ -162,7 +140,6 @@ const ServicesEdit = () => {
         isFamily: data.isFamily,
       },
     };
-    console.log(JSON.stringify(serviceData));
 
     mutation.mutate(serviceData);
   };
@@ -230,7 +207,7 @@ const ServicesEdit = () => {
                 <div className="w-full">
                   <Label
                     htmlFor="specialtyID"
-                    className="mb-3 block text-sm font-medium leading-none text-gray-700"
+                    className="mb-[12px] block text-sm font-medium leading-none text-gray-700"
                   >
                     Chuyên khoa:
                   </Label>

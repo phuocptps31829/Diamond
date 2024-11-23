@@ -246,7 +246,8 @@ const ServicesAdd = () => {
                     <Textarea
                       placeholder="Nhập mô tả."
                       id="shortDescription"
-                      className="w-full rounded-md border p-2"
+                      
+                      className="w-full rounded-md border p-2 h-24"
                       { ...field }
                     />
                   ) }
