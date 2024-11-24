@@ -37,7 +37,11 @@ const AppointmentHistory = () => {
     from: new Date(new Date()
       .setFullYear(new Date().getFullYear() - 1))
       .toISOString().slice(0, 10),
-    to: new Date().toISOString().slice(0, 10),
+    to: (() => {
+      let now = new Date();
+      now.setMonth(now.getMonth() + 1);
+      return now.toISOString().slice(0, 10);
+    })()
   });
 
   const { data: appointmentsData, isLoading } = useQuery({

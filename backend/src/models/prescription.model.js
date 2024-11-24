@@ -27,10 +27,6 @@ const prescriptionSchema = new mongoose.Schema({
             required: true
         }
     }],
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'Prescription',
     timestamps: true

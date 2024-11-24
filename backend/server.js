@@ -104,25 +104,27 @@ let roomMessages = {};
             io.emit('activeRooms', roomMessages);
         });
 
-        // Listen for new notifications
-        const subscriber = await redisClient.duplicate();
-        await subscriber.connect();
-        subscriber.v4.subscribe('laravel_database_Notifications', (channel, message) => {
-            console.log(JSON.parse(JSON.parse(channel).data.appointments));
-            const messageNotification = {
-                data: {
-                    title: 'Bạn có thông báo mới!',
-                }
-            };
-
-            io.emit('notification', messageNotification);
-        });
-
         socket.on('disconnect', () => {
-            console.log('Disconnected from socket:', socket.id);
+            console.log('Disconnected from socket');
         });
     });
 
+    // Listen for new notifications
+    const subscriber = await redisClient.duplicate();
+    await subscriber.connect();
+    subscriber.v4.subscribe('laravel_database_Notifications', (channel, message) => {
+        const appointmentIds = JSON.parse(JSON.parse(channel).data.ids);
+        console.log('appointmentIds:', appointmentIds);
+        const messageNotification = {
+            data: {
+                title: 'Thông báo mới!',
+                userIDs: appointmentIds,
+            }
+        };
+        // if (io?.sockets?.sockets) {
+        io.emit('notification', messageNotification);
+        // }
+    });
 
     // MongoDB connection
     mongoose.connect(process.env.MONGO_CONNECTION_STRING)

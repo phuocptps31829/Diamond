@@ -15,13 +15,27 @@ module.exports = {
                 sortOptions
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
+            const { specialtyID, gender } = req.query;
 
             const totalRecords = await UserModel.countDocuments({
-                isDeleted: false,
-                roleID: process.env.ROLE_DOCTOR
+                roleID: process.env.ROLE_DOCTOR,
+                ...specialtyID && {
+                    'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID)
+                },
+                ...gender && {
+                    gender
+                }
             });
             const doctors = await UserModel
-                .find({ isDeleted: false, roleID: process.env.ROLE_DOCTOR })
+                .find({
+                    roleID: process.env.ROLE_DOCTOR,
+                    ...specialtyID && {
+                        'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID)
+                    },
+                    ...gender && {
+                        gender
+                    }
+                })
                 .populate('roleID')
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
@@ -129,6 +143,29 @@ module.exports = {
                 roleID: process.env.ROLE_DOCTOR,
                 'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
                 'otherInfo.branchID': new mongoose.Types.ObjectId(branchID),
+                isDeleted: false,
+                isActivated: true
+            });
+
+            console.log(doctors);
+            return res.status(200).json({
+                message: 'Doctors retrieved successfully.',
+                data: doctors,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
+    getBySpecialty: async (req, res, next) => {
+        try {
+            const { specialtyID } = req.query;
+            if (!specialtyID) {
+                createError(400, "specialty ID required");
+            }
+
+            const doctors = await UserModel.find({
+                roleID: process.env.ROLE_DOCTOR,
+                'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
                 isDeleted: false,
                 isActivated: true
             });

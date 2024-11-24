@@ -6,10 +6,6 @@ const medicineCategorySchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'MedicineCategory',
     timestamps: true

@@ -41,10 +41,6 @@ const appointmentSchema = new mongoose.Schema({
             type: String,
         },
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
 }, {
     collection: 'Appointment',
     timestamps: true

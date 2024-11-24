@@ -37,49 +37,49 @@ export default function OtherDoctor({ doctor = {}, doctors = [], isLoading }) {
       </h2>
 
       <Carousel
-        opts={{
+        opts={ {
           align: "start",
           loop: true,
-        }}
+        } }
         className="my-4 w-full"
-        plugins={[
+        plugins={ [
           Autoplay({
             delay: 3500,
             stopOnInteraction: false,
             stopOnMouseEnter: false,
           }),
-        ]}
+        ] }
       >
         <CarouselContent>
-          {isLoading
+          { isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
-                <CarouselItem
-                  key={index}
-                  className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
-                >
-                  <div className="overflow-hidden rounded-lg border">
-                    <Skeleton className="h-40 w-full" />
-                    <div className="flex flex-col bg-white px-3 pb-3">
-                      <Skeleton className="mt-4 h-4 w-1/2" />
-                      <Skeleton className="mt-2 h-6 w-3/4" />
-                      <hr className="my-2" />
-                      <Skeleton className="mt-2 h-4 w-full" />
-                      <Skeleton className="mt-4 h-10 w-full" />
-                    </div>
+              <CarouselItem
+                key={ index }
+                className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+              >
+                <div className="overflow-hidden rounded-lg border">
+                  <Skeleton className="h-40 w-full" />
+                  <div className="flex flex-col bg-white px-3 pb-3">
+                    <Skeleton className="mt-4 h-4 w-1/2" />
+                    <Skeleton className="mt-2 h-6 w-3/4" />
+                    <hr className="my-2" />
+                    <Skeleton className="mt-2 h-4 w-full" />
+                    <Skeleton className="mt-4 h-10 w-full" />
                   </div>
-                </CarouselItem>
-              ))
+                </div>
+              </CarouselItem>
+            ))
             : doctorsBySpecialty.map((doctor, index) => (
-                <CarouselItem
-                  key={index}
-                  className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
-                >
-                  <DoctorItem key={doctor._id} doctor={doctor} />
-                </CarouselItem>
-              ))}
+              <CarouselItem
+                key={ index }
+                className="basis-1/2 pl-4 md:basis-1/3 lg:basis-1/4"
+              >
+                <DoctorItem key={ doctor._id } doctor={ doctor } />
+              </CarouselItem>
+            )) }
         </CarouselContent>
-        {shouldShowNavigation && <CarouselPrevious />}
-        {shouldShowNavigation && <CarouselNext />}
+        { shouldShowNavigation && <CarouselPrevious /> }
+        { shouldShowNavigation && <CarouselNext /> }
       </Carousel>
     </div>
   );

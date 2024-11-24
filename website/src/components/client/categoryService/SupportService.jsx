@@ -31,7 +31,7 @@ const services = [
 
 const SupportService = () => {
     return (
-        <div className="mx-auto w-full max-w-screen-xl md:px-5 sm:px-4 p-3 sm:pt-6 ">
+        <div className="mx-auto w-full max-w-screen-xl md:px-5 sm:px-4 p-3 sm:pt-5">
             <div className="h-auto w-full rounded-md bg-primary-500 py-3 px-6">
                 <div className="flex flex-col items-start justify-start gap-5 md:flex-row md:items-center md:justify-around md:gap-6">
                     { services.map((service, index) => (
@@ -53,16 +53,6 @@ const SupportService = () => {
                     )) }
                 </div>
             </div>
-            <svg
-                className="sm:my-4 my-0 w-full"
-                xmlns="http://www.w3.org/2000/svg"
-                width="1216"
-                height="2"
-                viewBox="0 0 1216 2"
-                fill="none"
-            >
-                <path d="M0 1H1216" stroke="#E5E7EB" />
-            </svg>
         </div>
     );
 };

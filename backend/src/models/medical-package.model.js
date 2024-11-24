@@ -70,10 +70,6 @@ const medicalPackageSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'MedicalPackage',
     timestamps: true

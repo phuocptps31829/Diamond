@@ -13,10 +13,6 @@ const roleSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
 }, {
     collection: 'Role',
     timestamps: true

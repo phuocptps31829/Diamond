@@ -25,10 +25,6 @@ const workScheduleSchema = new mongoose.Schema({
             required: true
         },
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'WorkSchedule',
     timestamps: true

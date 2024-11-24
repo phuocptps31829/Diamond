@@ -46,7 +46,7 @@ export default function DoctorDetail() {
       <BelowInformation doctor={ doctor } isLoading={ isLoadingDoctor } schedule={ data?.data } />
       <OtherDoctor
         doctor={ doctor }
-        doctors={ doctors }
+        doctors={ doctors?.data }
         isLoading={ isLoadingDoctors }
       />
     </div>

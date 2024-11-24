@@ -19,9 +19,8 @@ export default function ListDoctors() {
   const containerRef = useRef(null);
   const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
-  const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const [currentRecords, setCurrentRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalRecords, setTotalRecords] = useState(0);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,9 +32,17 @@ export default function ListDoctors() {
     error: errorDoctors,
     isLoading: loadingDoctors,
   } = useQuery({
-    queryKey: ["doctors"],
+    queryKey: [
+      "doctors",
+      selectedSpecialty,
+      currentPage,
+      selectedGender,
+    ],
     queryFn: () => doctorApi.getAllDoctors({
-      limit: 12
+      limit: 12,
+      page: currentPage,
+      gender: selectedGender,
+      specialtyID: selectedSpecialty,
     }),
   });
 
@@ -50,32 +57,10 @@ export default function ListDoctors() {
 
   useEffect(() => {
     if (doctors) {
-      const filtered = doctors.data.filter((doctor) => {
-        const matchesSpecialty =
-          selectedSpecialty === "" ||
-          doctor.otherInfo.specialty._id === selectedSpecialty;
-        const matchesGender =
-          selectedGender === "" || doctor.gender === selectedGender;
-        return matchesSpecialty && matchesGender;
-      });
-      setFilteredDoctors(filtered);
+      setTotalRecords(doctors?.totalRecords);
       setTotalPages(Math.ceil(doctors?.totalRecords / 12));
     }
   }, [doctors, selectedSpecialty, selectedGender]);
-
-  useEffect(() => {
-    if (filteredDoctors) {
-      const recordsPerPage = 12;
-      const indexOfLastRecord = currentPage * recordsPerPage;
-      const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-      const current = filteredDoctors.slice(
-        indexOfFirstRecord,
-        indexOfLastRecord
-      );
-      setCurrentRecords(current);
-      setTotalPages(Math.ceil(filteredDoctors.length / recordsPerPage));
-    }
-  }, [filteredDoctors, currentPage]);
 
   if (errorDoctors || errorSpecialties) {
     return <div>Error loading doctors</div>;
@@ -184,20 +169,20 @@ export default function ListDoctors() {
         </div>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-4 rounded-md sm:bg-white p-0 sm:p-6 md:grid-cols-3 lg:grid-cols-4">
-        { currentRecords.length === 0 ? (
+        { doctors?.data?.length === 0 ? (
           <div className="col-span-full p-6 text-center flex items-center flex-col justify-center">
             <img src={ empty } alt="Trống" className="sm:w-20 w-16 mb-5" />
             Không có bác sĩ nào.
           </div>
         ) : (
           <>
-            { currentRecords.map((doctor) => {
+            { doctors.data.map((doctor) => {
               return <DoctorItem key={ doctor?._id } doctor={ doctor } />;
             }) }
           </>
         ) }
       </div>
-      { totalPages > 1 && (
+      { totalRecords > 0 && (
         <CustomPagination
           currentPage={ currentPage }
           totalPages={ totalPages }

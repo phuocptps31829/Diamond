@@ -1,8 +1,10 @@
 import { axiosInstanceGET, axiosInstanceCUD } from "./axiosInstance";
 
 export const medicineApi = {
-  getAllMedicines: async () => {
-    const res = await axiosInstanceGET.get("/medicines");
+  getAllMedicines: async (params) => {
+    const res = await axiosInstanceGET.get("/medicines", {
+      params
+    });
     return res.data.data;
   },
 
@@ -11,8 +13,10 @@ export const medicineApi = {
     return res.data.data;
   },
 
-  getAllMedicinesCategories: async () => {
-    const res = await axiosInstanceGET.get("/medicine-categories");
+  getAllMedicinesCategories: async (params) => {
+    const res = await axiosInstanceGET.get("/medicine-categories", {
+      params,
+    });
     return res.data.data;
   },
 

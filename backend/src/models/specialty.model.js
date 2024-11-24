@@ -13,10 +13,6 @@ const specialtySchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
 }, {
     collection: 'Specialty',
     timestamps: true

@@ -52,7 +52,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
       page,
       limit,
       sort,
-      search,
+      search: search.normalize("NFD").replace(/[\u0300-\u036f]/g, ""),
       specialtyID: specialties ? specialties.split(',') : [],
       branch: branches ? branches.split(',') : [],
       gender: gender ? gender.split(',') : []
@@ -98,7 +98,7 @@ const SidebarFilter = ({ filters, onFilterApply }) => {
 
   if (specialtiesLoading || branchesLoading)
     return (
-      <div className="col-span-12 w-full max-md:mx-auto max-md:max-w-md md:col-span-6">
+      <div className="col-span-12 w-full md:col-span-6">
         <div className="box w-full rounded-xl border-gray-300 bg-white p-6">
           <div className="mb-7 flex w-full items-center justify-between border-b border-gray-200 pb-3">
             <Skeleton className="h-6 w-24" />

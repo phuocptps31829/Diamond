@@ -20,8 +20,10 @@ const MedicinesCategoriesListPage = () => {
     error: errorAllMedicinesCategories,
     isLoading: isLoadingAllMedicinesCategories,
   } = useQuery({
-    queryKey: ["allMedicinesCategories"],
-    queryFn: medicineApi.getAllMedicinesCategories,
+    queryKey: ["allMedicinesCategoriesNoPaginated"],
+    queryFn: () => medicineApi.getAllMedicinesCategories({
+      noPaginated: true,
+    }),
   });
 
   if (errorAllMedicinesCategories) {
@@ -30,16 +32,16 @@ const MedicinesCategoriesListPage = () => {
 
   return (
     <>
-      {isLoadingAllMedicinesCategories ? (
+      { isLoadingAllMedicinesCategories ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
+          <BreadcrumbCustom data={ breadcrumbData } />
           <MedicinesCategoriesList
-            allMedicineCategories={dataAllMedicinesCategories}
+            allMedicineCategories={ dataAllMedicinesCategories }
           />
         </>
-      )}
+      ) }
     </>
   );
 };

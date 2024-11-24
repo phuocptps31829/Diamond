@@ -16,41 +16,41 @@ const UserChat = () => {
     useEffect(() => {
         if (!socket) return;
 
-        const handleNewMessage = (message, type, name) => {
-            console.log('New message received:', message);
-            setMessages((prevMessages) => [...prevMessages, {
-                type,
-                name,
-                message
-            }]);
-        };
+        // const handleNewMessage = (message, type, name) => {
+        //     console.log('New message received:', message);
+        //     setMessages((prevMessages) => [...prevMessages, {
+        //         type,
+        //         name,
+        //         message
+        //     }]);
+        // };
 
-        const handleOldMessages = (messages) => {
-            console.log('Old messages received:', messages);
-            setMessages(messages);
-        };
+        // const handleOldMessages = (messages) => {
+        //     console.log('Old messages received:', messages);
+        //     setMessages(messages);
+        // };
 
-        const unsubscribeOldMessages = subscribe(
-            'oldRoomMessages',
-            (data) => handleOldMessages(data)
-        );
+        // const unsubscribeOldMessages = subscribe(
+        //     'oldRoomMessages',
+        //     (data) => handleOldMessages(data)
+        // );
         const testUpcoming = subscribe(
             'notification',
             (data) => console.log('this is new notification', data)
         );
-        const unsubscribeUser = subscribe(
-            'newMessageUser',
-            (data) => handleNewMessage(data.message, 'user', data.name)
-        );
-        const unsubscribeAdmin = subscribe(
-            'newMessageAdmin',
-            (data) => handleNewMessage(data.message, 'admin', data.name)
-        );
+        // const unsubscribeUser = subscribe(
+        //     'newMessageUser',
+        //     (data) => handleNewMessage(data.message, 'user', data.name)
+        // );
+        // const unsubscribeAdmin = subscribe(
+        //     'newMessageAdmin',
+        //     (data) => handleNewMessage(data.message, 'admin', data.name)
+        // );
 
         return () => {
-            unsubscribeUser();
-            unsubscribeAdmin();
-            unsubscribeOldMessages();
+            // unsubscribeUser();
+            // unsubscribeAdmin();
+            // unsubscribeOldMessages();
             testUpcoming();
         };
     }, [subscribe, socket]);

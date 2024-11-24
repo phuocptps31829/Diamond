@@ -11,8 +11,13 @@ const notificationSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    type: {
+    description: {
         type: String,
+        trim: true,
+        required: true
+    },
+    type: {
+        type: Number,
         trim: true,
         required: true
     },
@@ -20,19 +25,15 @@ const notificationSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    link: {
-        type: String,
-        trim: true,
-        required: true
+    redirect: {
+        endpoint: {
+            type: String,
+            trim: true
+        },
+        id: {
+            type: mongoose.Schema.Types.ObjectId
+        }
     },
-    time: {
-        type: Date,
-        required: true
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'Notification',
     timestamps: true

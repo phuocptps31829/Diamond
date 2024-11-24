@@ -117,7 +117,7 @@ const ServicesContainer = () => {
             <SidebarFilter filters={ filters } onFilterApply={ handleFilterApply } />
           </div>
 
-          <div className="col-span-12 md:col-span-9 flex flex-col justify-between mt-3">
+          <div className="col-span-12 md:col-span-9 flex flex-col justify-between mt-5 md:mt-0">
             <div className="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
               { isLoading ? (
                 <>
@@ -134,13 +134,17 @@ const ServicesContainer = () => {
               ) : data?.data?.map((item) =>
                 <Product key={ item._id } product={ item } />) }
             </div>
-            <div className="mt-4 -mb-4">
-              <CustomPagination
-                currentPage={ currentPage }
-                totalPages={ totalPages }
-                onPageChange={ handlePageChange }
-              />
-            </div>
+            {
+              totalPages > 0 && (
+                <div className="mt-4 -mb-4">
+                  <CustomPagination
+                    currentPage={ currentPage }
+                    totalPages={ totalPages }
+                    onPageChange={ handlePageChange }
+                  />
+                </div>
+              )
+            }
           </div>
         </div>
       </div>

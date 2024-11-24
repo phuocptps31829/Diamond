@@ -21,8 +21,10 @@ const MedicinesListPage = () => {
     error: errorAllMedicines,
     isLoading: isLoadingAllMedicines,
   } = useQuery({
-    queryKey: ["allMedicines"],
-    queryFn: medicineApi.getAllMedicines,
+    queryKey: ["allMedicinesNoPaginated"],
+    queryFn: () => medicineApi.getAllMedicines({
+      noPaginated: true,
+    }),
   });
 
   if (errorAllMedicines) {
@@ -31,14 +33,14 @@ const MedicinesListPage = () => {
 
   return (
     <>
-      {isLoadingAllMedicines ? (
+      { isLoadingAllMedicines ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
-          <MedicinesList allMedicine={dataAllMedicines} />
+          <BreadcrumbCustom data={ breadcrumbData } />
+          <MedicinesList allMedicine={ dataAllMedicines } />
         </>
-      )}
+      ) }
     </>
   );
 };

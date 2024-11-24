@@ -35,10 +35,6 @@ const branchSchema = new mongoose.Schema({
             required: true
         }
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'Branch',
     timestamps: true

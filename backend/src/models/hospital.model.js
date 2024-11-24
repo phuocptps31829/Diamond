@@ -17,10 +17,6 @@ const hospitalSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
 }, {
     collection: 'Hospital',
     timestamps: true

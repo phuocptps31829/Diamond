@@ -29,7 +29,6 @@ import { RECORD_PER_PAGE } from "@/constants/config";
 
 export default function DataTable({ data, columns }) {
   const navigate = useNavigate();
-
   const {
     handleSubmit,
     formState: { errors },

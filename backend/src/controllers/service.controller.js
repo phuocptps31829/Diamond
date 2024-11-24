@@ -21,7 +21,7 @@ module.exports = {
                     }
                 } : {}),
                 ...(gender ? { "applicableObject.gender": gender } : {}),
-                ...(search ? { name: { $regex: search, $options: 'i' } } : {})
+                ...(search ? { slug: { $regex: search, $options: 'i' } } : {})
             };
 
             const totalRecords = await ServiceModel

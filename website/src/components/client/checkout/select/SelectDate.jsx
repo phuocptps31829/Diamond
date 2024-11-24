@@ -13,7 +13,7 @@ import { format, parse } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
 import { workScheduleApi } from "@/services/workSchedulesApi";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export default function SelectDate({
   control,

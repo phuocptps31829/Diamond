@@ -19,7 +19,7 @@ const DoctorsList = () => {
 
     if (errorLoadingDoctors) return <div>Error loading data</div>;
 
-    return <DataTable columns={ columnsSchedule } data={ doctorsData || [] } />;
+    return <DataTable columns={ columnsSchedule } data={ doctorsData?.data || [] } />;
 };
 
 export default DoctorsList;

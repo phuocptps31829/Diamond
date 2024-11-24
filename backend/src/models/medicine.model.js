@@ -46,11 +46,6 @@ const medicineSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
-
 }, {
     collection: 'Medicine',
     timestamps: true

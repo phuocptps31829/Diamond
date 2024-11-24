@@ -16,10 +16,6 @@ const clinicSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'Clinic',
     timestamps: true

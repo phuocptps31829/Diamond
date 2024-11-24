@@ -38,10 +38,6 @@ const medicineImportSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    }
 }, {
     collection: 'MedicineImport',
     timestamps: true

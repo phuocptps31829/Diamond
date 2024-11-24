@@ -24,10 +24,6 @@ const invoiceSchema = new mongoose.Schema({
     file: {
         type: String,
     },
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
 }, {
     collection: 'Invoice',
     timestamps: true

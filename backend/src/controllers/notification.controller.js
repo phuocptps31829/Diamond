@@ -7,7 +7,7 @@ module.exports = {
             const id = req?.user?.id;
             console.log('id', req.user);
             const notifications = await NotificationModel
-                .find({ userID: id, isDeleted: false })
+                .find({ userID: id })
                 .sort({ time: -1 })
                 .lean();
 
