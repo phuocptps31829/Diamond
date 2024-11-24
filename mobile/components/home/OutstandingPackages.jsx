@@ -28,7 +28,7 @@ const OutstandingPackages = ({ listPackages }) => {
         <TouchableOpacity
           className="flex-columns items-center justify-center gap-2"
           onPress={ () => {
-            router.push("/package");
+            router.push("/package?id_specialty=0");
           } }
         >
           <Text className="text-white font-semibold underline">Tất cả</Text>
@@ -52,7 +52,8 @@ const OutstandingPackages = ({ listPackages }) => {
                     source={ {
                       uri: URL_IMAGE + "/" + pkg.image,
                     } }
-                    style={ [{ height: 150, borderRadius: 15 }] }
+                    style={ [{ borderRadius: 15 }] }
+                    className="w-full aspect-[2/1] min-h-[150px]"
                   />
                   <Text numberOfLines={1} className="absolute bottom-0 left-0 right-0 bg-[#006ca69f] py-3 text-center px-4 text-white font-semibold">
                   { pkg?.name }

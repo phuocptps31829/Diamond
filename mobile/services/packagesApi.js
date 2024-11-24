@@ -1,9 +1,8 @@
-import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
-
+import { axiosInstanceGET } from "./axiosInstance";
 
 export const packagesApi = {
   getAllPackages: async () => {
-    const res = await axiosInstanceGET.get("/medical-packages");
+    const res = await axiosInstanceGET.get("/medical-packages?noPaginated=true");
     return res.data.data;
   },
 
@@ -11,5 +10,4 @@ export const packagesApi = {
     const res = await axiosInstanceGET.get(`/medical-packages/${id}`);
     return res.data.data;
   },
-}
-
+};

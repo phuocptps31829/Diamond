@@ -33,7 +33,7 @@ const UserProfileHeader = () => {
             />
             {isImageLoading && (
               <View className="bg-[#0000006c] rounded-full absolute w-full h-full top-0 flex justify-center items-center">
-                <ActivityIndicator size="large" color="white" />
+                <ActivityIndicator size="small" color="white" />
               </View>
             )}
           </View>

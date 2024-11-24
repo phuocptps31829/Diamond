@@ -1,6 +1,6 @@
 import Toast from "react-native-toast-message";
 
-export default function ToastUI({ type, text1, text2, time }) {
+export default function ToastUI({ type, text1, text2, time, onPress }) {
   return Toast.show({
     type: type,
     text1: text1,
@@ -12,5 +12,6 @@ export default function ToastUI({ type, text1, text2, time }) {
     position: "top",
     onShow: () => {},
     onHide: () => {},
+    onPress: onPress,
   });
 }

@@ -1,9 +1,9 @@
-import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
+import { axiosInstanceGET } from "./axiosInstance";
 
 
 export const specialtiesApi = {
   getAllSpecialties: async () => {
-    const res = await axiosInstanceGET.get("/specialties");
+    const res = await axiosInstanceGET.get("/specialties?noPaginated=true");
     return res.data.data;
   },
 
