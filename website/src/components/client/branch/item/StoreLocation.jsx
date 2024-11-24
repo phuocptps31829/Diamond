@@ -1,23 +1,27 @@
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { ArrowUpRight, MapPin, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function StoreLocation(isChange = false) {
+export default function StoreLocation({ isChange, branch }) {
+  console.log(branch);
+
   const contentOrder = isChange ? "order-last" : "order-first";
   const imageOrder = isChange ? "order-first" : "order-last";
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <Card className="p-5">
       <div
         className={`grid gap-8 lg:grid-cols-2 ${isChange ? "lg:grid-flow-col" : ""}`}
       >
         {/* Content Column */}
-        <div className={`space-y-6 ${contentOrder}`}>
+        <div className={` ${contentOrder}`}>
           <div className="space-y-2">
             <h1 className="text-4xl font-bold text-primary-500">
-              Y Khoa Diamond
+              {branch.name}
             </h1>
             <h2 className="text-3xl font-light text-gray-400">
-              Chi nhánh Quận 1
+              {branch.address}
             </h2>
           </div>
 
@@ -28,49 +32,43 @@ export default function StoreLocation(isChange = false) {
             mang đến dịch vụ y tế chất lượng cao nhất cho mọi bệnh nhân.
           </p>
 
-          <div className="flex items-center justify-start gap-7">
-            <div className="">
+          <div className="flex flex-col items-start justify-start gap-7 md:flex-row">
+            <div className="  border-r p-3 pl-0">
               <h3 className="text-lg font-semibold text-primary-500">
                 Giờ làm việc:
               </h3>
-              <div className="grid grid-cols-2 gap-2 text-gray-600">
-                <div>Thứ Hai - Thứ Sáu:</div>
-                <div>08:00 - 20:00</div>
-                <div>Thứ Bảy:</div>
-                <div>08:00 - 17:00</div>
-                <div>Chủ Nhật:</div>
-                <div>08:00 - 12:00</div>
+              <div className=" text-gray-600 p-3 pl-0">
+                <div className="whitespace-pre-wrap text-wrap">{branch.workingTime}</div>
               </div>
             </div>
-            <div className="mt-0">
+            <div className="p-3">
               <h3 className="text-lg font-semibold text-primary-500">
                 Liên hệ:
               </h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-600">
-                  <span>Hotline</span>
-                  <span>1900 6789</span>
+                  <span>Hotline:</span>
+                  <span>{branch.hotline}</span>
                 </div>
-                <Link
-                  to="#"
-                  className="inline-flex items-center text-primary-500 hover:text-primary-700"
+                <Button
+                 variant="primary"
                 >
                   <Phone className="mr-1 h-4 w-4" />
                   Đặt lịch khám
                   <ArrowUpRight className="ml-1 h-4 w-4" />
-                </Link>
+                </Button>
               </div>
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="">
             <h3 className="text-lg font-semibold text-primary-500">Địa chỉ:</h3>
             <div className="space-y-2">
-              <p className="text-gray-600">
-                123 Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP. Hồ Chí Minh
-              </p>
+              <p className="text-gray-600">{branch.address}</p>
               <Link
-                to="#"
+                to={`https://www.google.com/maps/search/?api=1&query=${branch.coordinates.lat},${branch.coordinates.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center text-primary-500 hover:text-primary-700"
               >
                 <MapPin className="mr-1 h-4 w-4" />
@@ -83,15 +81,15 @@ export default function StoreLocation(isChange = false) {
 
         {/* Image Column */}
         <div
-          className={`relative h-[600px] overflow-hidden rounded-lg ${imageOrder}`}
+          className={`relative h-[400px] overflow-hidden rounded-lg ${imageOrder}`}
         >
           <img
             className="h-full w-full rounded-md object-cover"
-            src="https://placehold.co/800x600"
-            alt="Y Khoa Diamond - Chi nhánh Quận 1"
+            src={`${import.meta.env.VITE_IMAGE_API_URL}/${branch.imagesURL[0]}`}
+            alt={branch.name}
           />
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

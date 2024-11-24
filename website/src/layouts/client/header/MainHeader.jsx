@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
@@ -16,7 +16,7 @@ import {
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import brandLogo from "@/assets/images/brandLogo.png";
-import { FaExternalLinkAlt, FaRegUser } from "react-icons/fa";
+import { FaBell, FaExternalLinkAlt, FaRegUser } from "react-icons/fa";
 import { FaPowerOff } from "react-icons/fa6";
 import { clearCart } from "@/redux/cartSlice";
 import {
@@ -28,6 +28,11 @@ import {
 import { Badge } from "@/components/ui/Badge";
 import { IoCalendarOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
+import { AnimatedList } from "@/components/ui/AnimatedList";
+import Notification from "./notion/NotionMessage";
+import { useSocket } from "@/hooks/useSocket";
+import { notificationsApi } from "@/services/notificationsApi";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const dataNav = [
   {
@@ -65,6 +70,7 @@ const appointments = [
   { date: "15/06/2023", time: "09:00", doctor: "Dr. Nguyễn Văn A" },
   { date: "20/06/2023", time: "14:30", doctor: "Dr. Trần Thị B" },
 ];
+
 export default function MainHeader() {
   const navigate = useNavigate();
 
@@ -72,7 +78,12 @@ export default function MainHeader() {
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-
+  const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   const tooltipTimeoutRef = useRef(null);
   const handleLogout = () => {
     dispatch(logoutAction());
@@ -92,15 +103,126 @@ export default function MainHeader() {
       setIsTooltipOpen(false);
     }, 300);
   };
+  const fetchNotifications = async () => {
+    try {
+      const data = await notificationsApi.getNotificationsByUser();
+      setNotifications(data.data);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
 
+  useEffect(() => {
+    if (!socket) return;
+
+    const testUpcoming = subscribe("notification", (data) => {
+      const userID = userProfile?._id;
+      console.log("New notification:", data);
+      console.log("User ID:", userID);
+
+      if (data.data?.userIDs.includes(userID)) {
+        toast.custom((t) => (
+          <div
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } pointer-events-auto flex w-full max-w-[26rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out`}
+          >
+            <div className="w-0 flex-1 p-4 py-3">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 pt-0.5">
+                  <svg
+                    className="h-10 w-10 text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v3a1 1 0 102 0V6zm-1 7a1 1 0 100-2 1 1 0 000 2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    Bạn có một thông báo mới!
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Nhấn vào chuông để xem chi tiết.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        ));
+      }
+      fetchNotifications();
+    });
+    return () => {
+      testUpcoming();
+    };
+  }, [subscribe, socket, userProfile]);
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
         <Link to={"/"} className="relative w-56 items-center">
           <img src={brandLogo} className="w-full" alt="Logo" />
         </Link>
-        <div className="block lg:hidden" role="button" onClick={toggleNavbar}>
-          <AiOutlineMenu className="text-2xl" />
+        <div className="flex items-center space-x-3">
+          {userProfile && (
+            <DropdownMenu >
+              <DropdownMenuTrigger asChild className="">
+                <button
+                  className="relative block lg:hidden"
+                  onClick={toggleDropdown}
+                >
+                  {notifications.length > 0 && (
+                    <span className="absolute right-0 flex h-3 w-3">
+                      <span
+                        className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+                        style={{ animationDuration: "2s" }}
+                      ></span>
+                      <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+                    </span>
+                  )}
+                  <FaBell size={25} color="#007BBB" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="bottom"
+                className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
+              >
+                <DropdownMenuLabel className="text-base font-semibold dark:text-white">
+                  Thông báo
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="mb-4" />
+                <AnimatedList>
+                  {notifications.length === 0 ? (
+                    <div className="my-3 text-center text-gray-500 dark:text-gray-400">
+                      Bạn không có thông báo nào
+                    </div>
+                  ) : (
+                    notifications.map((item, idx) => (
+                      <DropdownMenuItem asChild key={idx} className="">
+                        <Notification {...item} />
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                </AnimatedList>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          <div className="block lg:hidden" role="button" onClick={toggleNavbar}>
+            <AiOutlineMenu className="text-2xl" />
+          </div>
         </div>
         <nav className="hidden lg:block">
           <ul className="nav__link flex items-center justify-center space-x-1 text-center text-sm font-semibold">
@@ -115,12 +237,55 @@ export default function MainHeader() {
               </li>
             ))}
             <li className="px-5">|</li>
+            {userProfile && (
+              <DropdownMenu >
+                <DropdownMenuTrigger asChild className="">
+                  <button
+                    className="relative hidden lg:block"
+                    onClick={toggleDropdown}
+                  >
+                    {notifications.length > 0 && (
+                      <span className="absolute right-0 flex h-3 w-3">
+                        <span
+                          className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+                          style={{ animationDuration: "2s" }}
+                        ></span>
+                        <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+                      </span>
+                    )}
+                    <FaBell size={25} color="#007BBB" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  side="bottom"
+                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
+                >
+                  <DropdownMenuLabel className="text-base font-semibold dark:text-white">
+                    Thông báo
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator className="mb-4" />
+                  <AnimatedList>
+                    {notifications.length === 0 ? (
+                      <div className="my-3 text-center text-gray-500 dark:text-gray-400">
+                        Bạn không có thông báo nào
+                      </div>
+                    ) : (
+                      notifications.map((item, idx) => (
+                        <DropdownMenuItem asChild key={idx} className="">
+                          <Notification {...item} />
+                        </DropdownMenuItem>
+                      ))
+                    )}
+                  </AnimatedList>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
             <li className="h-auto">
               {userProfile ? (
                 <div className="relative">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="flex w-full items-center justify-center">
-                      <div className="mr-3 flex flex-col items-start justify-center">
+                      <div className="mx-3 flex flex-col items-start justify-center">
                         <p>Xin chào</p>
                         <p>{userProfile?.fullName.split(" ").at(-1)} </p>
                       </div>
