@@ -6,7 +6,9 @@ const ImagePreview = ({ imagePreview, setFileImage, setImagePreview }) => {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
+    console.log(e.target.files[0]);
     const file = e.target.files[0];
+    
     if (file) {
       setFileImage(file);
       const imageUrl = URL.createObjectURL(file);

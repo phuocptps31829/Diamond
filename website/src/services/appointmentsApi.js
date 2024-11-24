@@ -33,7 +33,7 @@ export const appointmentApi = {
   getAllAppointments: async () => {
     try {
       const res = await axiosInstanceGET.get("/appointments?limit=9999");
-      console.log(res.data.data);
+
       return res.data;
     } catch (error) {
       console.error(error);

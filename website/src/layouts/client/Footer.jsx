@@ -32,7 +32,7 @@ export default function Footer() {
               <li className="pb-3">
                 <p>
                   <span className="text-sm font-normal">
-                    Copyright © 2017-2024 Rai and Rohl Technologies, Inc. All
+                    Copyright © 2024 Diamond Co.Ltd. All
                     rights reserved.
                   </span>
                 </p>

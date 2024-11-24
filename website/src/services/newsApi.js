@@ -3,90 +3,51 @@ import { axiosInstanceCUD } from "./axiosInstance";
 
 export const newsApi = {
   takeItAllNews: async () => {
-    try {
-      const res = await axiosInstanceGET.get("/news?limit=9999");
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get("/news?limit=9999");
+    return res.data.data;
   },
 
   getNewsById: async (id) => {
-    try {
-      const res = await axiosInstanceGET.get("/news/" + id);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get("/news/" + id);
+    return res.data.data;
   },
 
   getNewsBySlug: async (slug) => {
-    try {
-      const res = await axiosInstanceGET.get("/news/slug/" + slug);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get("/news/slug/" + slug);
+    return res.data.data;
   },
 
   createNews: async (data) => {
-    try {
-      const res = await axiosInstanceCUD.post("/news/add", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post("/news/add", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data;
   },
 
   updateNews: async (id, data) => {
-    try {
-      const res = await axiosInstanceCUD.post(
-        `/news/update/${id}?_method=PUT`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post(
+      `/news/update/${id}?_method=PUT`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.data.data;
   },
 
   plusOneViewCount: async (id) => {
-    try {
-      const res = await axiosInstanceCUD.patch(`/news/plus-view-count/${id}`);
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.patch(`/news/plus-view-count/${id}`);
+    return res.data.data;
   },
 
   deleteNews: async (id) => {
-    try {
-      const res = await axiosInstanceCUD.post(
-        `/news/delete/${id}?_method=DELETE`
-      );
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post(
+      `/news/delete/${id}?_method=DELETE`
+    );
+    return res.data.data;
   },
 };

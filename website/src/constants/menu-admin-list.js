@@ -110,9 +110,9 @@ export const getMenuList = (pathname) => [
         icon: GiMedicines,
         submenus: [
           {
-            href: "/admin/medicinesCategories/list",
+            href: "/admin/medicines-categories/list",
             label: "Danh mục thuốc",
-            active: pathname === "/admin/medicinesCategories/list",
+            active: pathname === "/admin/medicines-categories/list",
           },
           {
             href: "/admin/medicines/list",
@@ -120,9 +120,9 @@ export const getMenuList = (pathname) => [
             active: pathname === "/admin/medicines/list",
           },
           {
-            href: "/admin/medicinesCategories/create",
+            href: "/admin/medicines-categories/create",
             label: "Thêm danh mục thuốc",
-            active: pathname === "/admin/medicinesCategories/create",
+            active: pathname === "/admin/medicines-categories/create",
           },
           {
             href: "/admin/medicines/create",

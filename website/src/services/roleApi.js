@@ -4,12 +4,10 @@ import { axiosInstanceCUD } from "./axiosInstance";
 export const roleApi = {
     getAllRoles: async () => {
         const res = await axiosInstanceGET.get('/roles');
-        console.log("All roles data: ", res.data);
         return res.data;
     },
     getRoleById: async (id) => {
         const res = await axiosInstanceGET.get('/roles/' + id);
-        console.log("Role data: ", res.data);
         return res.data;
     },
     createRole: async (newRole) => {
@@ -36,14 +34,12 @@ export const roleApi = {
                 }
             }
         );
-        console.log("Role data: ", res.data);
         return res.data;
     },
     deleteRole: async (id) => {
         const res = await axiosInstanceCUD.post(
             '/roles/delete/' + id + '?_method=DELETE',
         );
-        console.log("Role data: ", res.data);
         return res.data;
     },
 };

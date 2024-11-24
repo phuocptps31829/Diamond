@@ -1,4 +1,6 @@
 import { FlatList, Image, Pressable, Text, View } from "react-native";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
+
 
 const Clinics = ({ dataClinic, activeIndex, handleZoomToClinic, km }) => {
   return (
@@ -23,16 +25,16 @@ const Clinics = ({ dataClinic, activeIndex, handleZoomToClinic, km }) => {
               onPress={() => handleZoomToClinic(index)}
               className={`${
                 activeIndex === index ? "border-blue-500" : "border-gray-400"
-              } flex-col items-center  bg-white w-[190px] rounded-lg border-2 shadow-sm`}
+              } flex-col items-center overflow-hidden  bg-white w-[190px] rounded-lg border-2 shadow-sm`}
               key={index}
             >
               <Image
-                source={{ uri: item.image }}
-                className="w-full h-[100px] rounded-lg"
-                resizeMode="contain"
+                source={{ uri: URL_IMAGE + "/" + item.imagesURL }}
+                className="w-full aspect-[2/1] min-h-[100px]"
+                resizeMode="cover"
               />
               <View className="space-y-1 w-full p-2">
-                <Text>{item.title}</Text>
+                <Text>Phòng khám</Text>
                 <Text className="font-semibold">{item.name}</Text>
               </View>
             </Pressable>

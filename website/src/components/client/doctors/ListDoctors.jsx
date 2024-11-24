@@ -13,6 +13,7 @@ import { specialtyApi } from "@/services/specialtiesApi";
 import DoctorItem from "@/components/client/product/Doctor";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { doctorApi } from "@/services/doctorsApi";
+import empty from "@/assets/images/empty.png";
 
 export default function ListDoctors() {
   const containerRef = useRef(null);
@@ -33,7 +34,9 @@ export default function ListDoctors() {
     isLoading: loadingDoctors,
   } = useQuery({
     queryKey: ["doctors"],
-    queryFn: doctorApi.getAllDoctors,
+    queryFn: () => doctorApi.getAllDoctors({
+      limit: 12
+    }),
   });
 
   const {
@@ -47,7 +50,7 @@ export default function ListDoctors() {
 
   useEffect(() => {
     if (doctors) {
-      const filtered = doctors.filter((doctor) => {
+      const filtered = doctors.data.filter((doctor) => {
         const matchesSpecialty =
           selectedSpecialty === "" ||
           doctor.otherInfo.specialty._id === selectedSpecialty;
@@ -56,6 +59,7 @@ export default function ListDoctors() {
         return matchesSpecialty && matchesGender;
       });
       setFilteredDoctors(filtered);
+      setTotalPages(Math.ceil(doctors?.totalRecords / 12));
     }
   }, [doctors, selectedSpecialty, selectedGender]);
 
@@ -79,16 +83,16 @@ export default function ListDoctors() {
 
   if (loadingDoctors || loadingSpecialties) {
     return (
-      <div className="mx-auto w-full max-w-screen-xl p-5 md:p-5">
+      <div className="mx-auto w-full max-w-screen-xl p-3 md:p-5">
         <div className="flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
           <h2 className="text-xl font-semibold">
             <Skeleton className="h-[24px] w-[250px]" />
           </h2>
-          <div className="flex flex-row items-center justify-center gap-3">
-            <div className="w-[170px] sm:w-[180px]">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="w-[250px] sm:w-[180px]">
               <Skeleton className="h-[36px]" />
             </div>
-            <div className="w-[170px] sm:w-[180px]">
+            <div className="w-[250px] sm:w-[180px]">
               <Skeleton className="h-[36px]" />
             </div>
           </div>
@@ -120,7 +124,7 @@ export default function ListDoctors() {
     );
   }
 
-  if (!doctors.length) {
+  if (!doctors?.data?.length) {
     return <div>Error loading doctors</div>;
   }
 
@@ -148,16 +152,16 @@ export default function ListDoctors() {
   return (
     <div
       ref={ containerRef }
-      className="mx-auto w-full max-w-screen-xl p-4 md:p-5"
+      className="mx-auto w-full max-w-screen-xl p-3 md:p-5"
     >
       <div className="mb-5 flex flex-col items-center justify-between space-y-3 md:flex-row lg:space-y-0">
         <h2 className="text-xl font-semibold">Tìm kiếm bác sĩ phù hợp:</h2>
-        <div className="flex flex-row items-center justify-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Select
             value={ selectedSpecialty }
             onValueChange={ handleSpecialtyChange }
           >
-            <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
+            <SelectTrigger className="w-[250px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn chuyên khoa" />
             </SelectTrigger>
             <SelectContent>
@@ -169,7 +173,7 @@ export default function ListDoctors() {
             </SelectContent>
           </Select>
           <Select value={ selectedGender } onValueChange={ handleDoctorChange }>
-            <SelectTrigger className="w-[170px] border border-black focus:ring-0 sm:w-[180px]">
+            <SelectTrigger className="w-[250px] border border-black focus:ring-0 sm:w-[180px]">
               <SelectValue placeholder="Chọn giới tính" />
             </SelectTrigger>
             <SelectContent>
@@ -179,9 +183,12 @@ export default function ListDoctors() {
           </Select>
         </div>
       </div>
-      <div className="mt-4 grid grid-cols-2 gap-4 rounded-md bg-white p-6 md:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:gap-4 rounded-md sm:bg-white p-0 sm:p-6 md:grid-cols-3 lg:grid-cols-4">
         { currentRecords.length === 0 ? (
-          <div className="col-span-full p-6 text-center">Không có dữ liệu.</div>
+          <div className="col-span-full p-6 text-center flex items-center flex-col justify-center">
+            <img src={ empty } alt="Trống" className="sm:w-20 w-16 mb-5" />
+            Không có bác sĩ nào.
+          </div>
         ) : (
           <>
             { currentRecords.map((doctor) => {

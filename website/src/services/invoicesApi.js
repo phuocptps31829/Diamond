@@ -10,63 +10,38 @@ export const invoicesApi = {
     return res.data;
   },
   updateStatus: async (id, status) => {
-    try {
-      const res = await axiosInstanceCUD.patch(
-        `/invoices/update-status/${id}`,
-        { status }
-      );
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.patch(
+      `/invoices/update-status/${id}`,
+      { status }
+    );
+    return res.data;
   },
   updatePaymentStatus: async (id, status) => {
-    try {
-      const res = await axiosInstanceCUD.patch(
-        `/invoices/payment/update-status/${id}`,
-        { status }
-      );
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.patch(
+      `/invoices/payment/update-status/${id}`,
+      { status }
+    );
+    return res.data;
   },
   updateOrderNumber: async (id, priority) => {
-    try {
-      const res = await axiosInstanceCUD.patch(
-        `/invoices/update-order-number/${id}`,
-        { priority }
-      );
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.patch(
+      `/invoices/update-order-number/${id}`,
+      { priority }
+    );
+    return res.data;
   },
   deleteInvoice: async (id) => {
-    try {
-      const res = await axiosInstanceCUD.delete(`/invoices/delete/${id}`);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.delete(`/invoices/delete/${id}`);
+    return res.data;
   },
   deleteInvoiceMultiple: async (ids) => {
-    try {
-      const res = await axiosInstanceCUD.post(
-        `/invoices/delete-in-id`,
+    const res = await axiosInstanceCUD.post(
+      `/invoices/delete-in-id`,
 
-        {
-          ids: [...ids],
-        }
-      );
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+      {
+        ids: [...ids],
+      }
+    );
+    return res.data;
   },
 };

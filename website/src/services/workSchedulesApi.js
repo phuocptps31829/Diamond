@@ -20,7 +20,6 @@ export const workScheduleApi = {
         return res.data;
     },
     updateWorkSchedule: async ({ data, id }) => {
-        console.log('data', data);
         const res = await axiosInstanceCUD.put('/work-schedules/update/' + id, data);
         return res.data;
     }

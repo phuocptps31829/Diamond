@@ -331,15 +331,15 @@ const router = createBrowserRouter([
         element: <MedicinesListPage />,
       },
       {
-        path: "medicinesCategories/list",
+        path: "medicines-categories/list",
         element: <MedicinesCategoriesListPage />,
       },
       {
-        path: "medicinesCategories/edit/:id",
+        path: "medicines-categories/edit/:id",
         element: <MedicinesCategoriesFormFixPage />,
       },
       {
-        path: "medicinesCategories/create",
+        path: "medicines-categories/create",
         element: <MedicinesCategoriesFormAddPage />,
       },
       {

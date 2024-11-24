@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Text,
   TextInput,
   View,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +17,12 @@ import { ethnicGroups } from "../../constants/ethnics";
 import RadioGroup from "react-native-radio-buttons-group";
 import Entypo from "@expo/vector-icons/Entypo";
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { patientApi } from "../../services/patientsApi";
+import { useMutation } from "@tanstack/react-query";
+import ToastUI from "../../components/ui/Toast";
+import { setProfile } from "../../store/profile/profileSlice";
+import { useDispatch } from "react-redux";
 import "moment/locale/vi";
 
 const radioButtons = [
@@ -30,6 +37,8 @@ const radioButtons = [
 ];
 
 const OtherInfo = () => {
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.profile);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -45,24 +54,83 @@ const OtherInfo = () => {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: zodResolver(informationSchema),
     defaultValues: {
-      fullName: "Võ Thanh Phương",
-      phoneNumber: "0123456789",
-      email: "vothanhhphuongg2k4@gmail.com",
-      job: "",
-      birthDate: "",
-      ethnicity: "",
-      idNumber: "",
-      insuranceNumber: "",
+      fullName: "",
+      phoneNumber: "",
+      email: "",
+      occupation: "",
+      dateOfBirth: "",
+      ethnic: "",
+      citizenIdentificationNumber: "",
+      insuranceCode: "",
       address: "",
       gender: "",
     },
   });
 
+  const { mutate: updatePatientMutation, isPending } = useMutation({
+    mutationFn: ({ id, requestBody }) => {
+      return patientApi.updatePatient(id, requestBody);
+    },
+    onSuccess: (newData) => {
+      newData._id = profile._id;
+      dispatch(setProfile(newData));
+      ToastUI({
+        type: "success",
+        text1: "Thành công",
+        text2: "Cập nhật thông tin thành công!",
+      });
+    },
+    onError: (error) => {
+      console.error("error", error);
+      ToastUI({
+        type: "error",
+        text1: "Thất bại",
+        text2: "Cập nhật thông tin thất bại!",
+      });
+    },
+  });
+
+  useEffect(() => {
+    setValue("fullName", profile.fullName);
+    setValue("phoneNumber", profile.phoneNumber);
+    setValue("email", profile.email || "");
+    setValue("occupation", profile.otherInfo.occupation || "");
+    setValue("dateOfBirth", profile.dateOfBirth || "");
+    setValue("ethnic", profile.otherInfo.ethnic || "");
+    setValue("citizenIdentificationNumber", profile.citizenIdentificationNumber || "");
+    setValue("insuranceCode", profile.otherInfo.insuranceCode || "");
+    setValue("address", profile.address || "");
+    setValue("gender", profile.gender || "");
+  }, [profile]);
+
   const onSubmit = (data) => {
-    console.log("Dữ liệu gửi đi:", data);
+    const requestBody = {
+      fullName: data.fullName,
+      phoneNumber: data.phoneNumber,
+      email: data.email,
+      dateOfBirth: data.dateOfBirth,
+      gender: data.gender,
+      password: data.password,
+      citizenIdentificationNumber: data.citizenIdentificationNumber,
+      isActivated: true,
+      address: data.address,
+      otherInfo: {
+        occupation: data.occupation,
+        insuranceCode: data.insuranceCode,
+        ethnic: data.ethnic,
+      },
+    };
+
+    console.log("requestBody", requestBody);
+
+    updatePatientMutation({
+      id: profile._id,
+      requestBody: requestBody,
+    });
   };
 
   return (
@@ -72,286 +140,291 @@ const OtherInfo = () => {
       </View>
 
       <View className="mb-5">
-        {/* Họ và tên */ }
+        {/* Họ và tên */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Họ và tên:</Text>
           <Controller
-            control={ control }
+            control={control}
             name="fullName"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập họ và tên"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
-            ) }
+            )}
           />
-          { errors.fullName && (
-            <Text className="text-red-500">{ errors.fullName.message }</Text>
-          ) }
+          {errors.fullName && (
+            <Text className="text-red-500">{errors.fullName.message}</Text>
+          )}
         </View>
 
-        {/* Số điện thoại */ }
+        {/* Số điện thoại */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Số điện thoại:</Text>
           <Controller
-            control={ control }
+            control={control}
             name="phoneNumber"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 bg-gray-100 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập số điện thoại"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
                 keyboardType="phone-pad"
-                editable={ false }
+                editable={false}
               />
-            ) }
+            )}
           />
-          { errors.phoneNumber && (
-            <Text className="text-red-500">{ errors.phoneNumber.message }</Text>
-          ) }
+          {errors.phoneNumber && (
+            <Text className="text-red-500">{errors.phoneNumber.message}</Text>
+          )}
         </View>
 
-        {/* Email */ }
+        {/* Email */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Email:</Text>
           <Controller
-            control={ control }
+            control={control}
             name="email"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập email"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
                 keyboardType="email-address"
               />
-            ) }
+            )}
           />
-          { errors.email && (
-            <Text className="text-red-500">{ errors.email.message }</Text>
-          ) }
+          {errors.email && (
+            <Text className="text-red-500">{errors.email.message}</Text>
+          )}
         </View>
 
-        {/* Nghề nghiệp */ }
+        {/* Nghề nghiệp */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Nghề nghiệp:</Text>
           <Controller
-            control={ control }
-            name="job"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            control={control}
+            name="occupation"
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập nghề nghiệp"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
-            ) }
+            )}
           />
-          { errors.job && (
-            <Text className="text-red-500">{ errors.job.message }</Text>
-          ) }
+          {errors.occupation && (
+            <Text className="text-red-500">{errors.occupation.message}</Text>
+          )}
         </View>
 
-        {/* Ngày sinh */ }
+        {/* Ngày sinh */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Ngày sinh:</Text>
           <View className="relative">
             <Controller
-              control={ control }
-              name="birthDate"
-              render={ ({ field: { onChange, value } }) => (
+              control={control}
+              name="dateOfBirth"
+              render={({ field: { onChange, value } }) => (
                 <>
                   <TextInput
                     className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                     placeholder="Chọn ngày sinh"
-                    value={ value ? new Date(value) : "" }
-                    editable={ false }
+                    value={value ? new Date(value).toLocaleDateString("vi-VN") : ""}
+                    editable={false}
                   />
-                  {/* Modal chọn ngày */ }
+                  {/* Modal chọn ngày */}
                   <DateTimePickerModal
-                    isVisible={ isDatePickerVisible }
+                    isVisible={isDatePickerVisible}
                     mode="date"
-                    onConfirm={ (date) => {
+                    onConfirm={(date) => {
                       const formattedDate = date.toLocaleDateString("en-CA");
                       hideDatePicker();
+                      console.log("Ngày sinh:", formattedDate);
                       onChange(formattedDate);
-                    } }
-                    onCancel={ hideDatePicker }
+                    }}
+                    onCancel={hideDatePicker}
                     locale="vi"
                   />
                 </>
-              ) }
+              )}
             />
             <TouchableOpacity
-              onPress={ showDatePicker }
+              onPress={showDatePicker}
               className="absolute right-0 top-1/4 w-full flex items-end"
             >
               <Text>
-                <AntDesign name="calendar" size={ 24 } color="black" />
+                <AntDesign name="calendar" size={24} color="black" />
               </Text>
             </TouchableOpacity>
           </View>
-          { errors.birthDate && (
-            <Text className="text-red-500">{ errors.birthDate.message }</Text>
-          ) }
+          {errors.dateOfBirth && (
+            <Text className="text-red-500">{errors.dateOfBirth.message}</Text>
+          )}
         </View>
-        {/* Dân tộc */ }
+        {/* Dân tộc */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Dân tộc:</Text>
           <Controller
-            control={ control }
-            name="ethnicity"
-            render={ ({ field: { onChange, value } }) => (
+            control={control}
+            name="ethnic"
+            render={({ field: { onChange, value } }) => (
               <SelectDropdown
-                data={ ethnicGroups }
-                defaultValue={ ethnicGroups.find((item) => item.value === value) }
-                onSelect={ (selectedItem) => {
-                  console.log(selectedItem.value);
+                data={ethnicGroups}
+                defaultValue={ethnicGroups.find((item) => item.value === value)}
+                onSelect={(selectedItem) => {
                   onChange(selectedItem.value);
-                } }
-                search={ true }
+                }}
+                search={true}
                 searchPlaceHolder="Tìm dân tộc..."
-                renderButton={ (selectedItem, isOpened) => {
+                renderButton={(selectedItem, isOpened) => {
                   return (
-                    <View style={ styles.buttonContainer }>
-                      <Text style={ styles.buttonText }>
-                        { (selectedItem && selectedItem.name) || "Chọn dân tộc" }
+                    <View style={styles.buttonContainer}>
+                      <Text style={styles.buttonText}>
+                        {(selectedItem && selectedItem.name) || "Chọn dân tộc"}
                       </Text>
-                      { isOpened ? (
+                      {isOpened ? (
                         <Entypo
                           name="chevron-small-up"
-                          size={ 24 }
+                          size={24}
                           color="black"
                         />
                       ) : (
                         <Entypo
                           name="chevron-small-down"
-                          size={ 24 }
+                          size={24}
                           color="black"
                         />
-                      ) }
+                      )}
                     </View>
                   );
-                } }
-                renderItem={ (item, index) => {
+                }}
+                renderItem={(item, index) => {
                   return (
                     <View
-                      style={ [
+                      style={[
                         styles.itemContainer,
                         index % 2 !== 0 && { backgroundColor: "#EDEDED" },
-                      ] }
+                      ]}
                     >
-                      <Text style={ styles.itemText }>{ item.name }</Text>
+                      <Text style={styles.itemText}>{item.name}</Text>
                     </View>
                   );
-                } }
+                }}
               />
-            ) }
+            )}
           />
-          { errors.ethnicity && (
-            <Text className="text-red-500">{ errors.ethnicity.message }</Text>
-          ) }
+          {errors.ethnic && (
+            <Text className="text-red-500">{errors.ethnic.message}</Text>
+          )}
         </View>
 
-        {/* Số CMND/CCCD */ }
+        {/* Số CMND/CCCD */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Số CMND/CCCD:</Text>
           <Controller
-            control={ control }
-            name="idNumber"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            control={control}
+            name="citizenIdentificationNumber"
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập số CMND/CCCD"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
-            ) }
+            )}
           />
-          { errors.idNumber && (
-            <Text className="text-red-500">{ errors.idNumber.message }</Text>
-          ) }
+          {errors.citizenIdentificationNumber && (
+            <Text className="text-red-500">{errors.citizenIdentificationNumber.message}</Text>
+          )}
         </View>
 
-        {/* Số thẻ BH */ }
+        {/* Số thẻ BH */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Số thẻ BH:</Text>
           <Controller
-            control={ control }
-            name="insuranceNumber"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            control={control}
+            name="insuranceCode"
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập số thẻ BHYT"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
-            ) }
+            )}
           />
-          { errors.insuranceNumber && (
+          {errors.insuranceCode && (
             <Text className="text-red-500">
-              { errors.insuranceNumber.message }
+              {errors.insuranceCode.message}
             </Text>
-          ) }
+          )}
         </View>
 
-        {/* Địa chỉ */ }
+        {/* Địa chỉ */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Địa chỉ:</Text>
           <Controller
-            control={ control }
+            control={control}
             name="address"
-            render={ ({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 className="border-b border-gray-500 p-2 rounded h-10 font-semibold"
                 placeholder="Nhập địa chỉ"
-                onBlur={ onBlur }
-                onChangeText={ onChange }
-                value={ value }
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
               />
-            ) }
+            )}
           />
-          { errors.address && (
-            <Text className="text-red-500">{ errors.address.message }</Text>
-          ) }
+          {errors.address && (
+            <Text className="text-red-500">{errors.address.message}</Text>
+          )}
         </View>
 
-        {/* Giới tính */ }
+        {/* Giới tính */}
         <View className="mb-5">
           <Text className="text-gray-700 mb-1">Giới tính:</Text>
           <Controller
-            control={ control }
+            control={control}
             name="gender"
-            render={ ({ field: { onChange, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <RadioGroup
-                radioButtons={ radioButtons }
-                onPress={ onChange }
-                selectedId={ value }
-                layout='row'
+                radioButtons={radioButtons}
+                onPress={onChange}
+                selectedId={value}
+                layout="row"
               />
-            ) }
+            )}
           />
-          { errors.gender && (
-            <Text className="text-red-500">{ errors.gender.message }</Text>
-          ) }
+          {errors.gender && (
+            <Text className="text-red-500">{errors.gender.message}</Text>
+          )}
         </View>
         <View className="flex justify-center items-center w-full mt-2">
           <TouchableOpacity
             className="bg-[#007BBB] p-3 rounded-lg w-full"
-            onPress={ handleSubmit(onSubmit) }
+            onPress={handleSubmit(onSubmit)}
+            disabled={isPending}
           >
-            <Text className="text-white text-center font-semibold text-[15px]">
-              Cập nhật
-            </Text>
+            {isPending ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text className="text-white text-center font-semibold text-[15px]">
+                Cập nhật
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

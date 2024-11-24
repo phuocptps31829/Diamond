@@ -121,7 +121,6 @@ export default function PatientFormFix({ patientDetail }) {
       setLoadingImage(true);
       const formData = new FormData();
       formData.append("file", fileImage);
-
       const imageResponse = await imageApi.createImage(formData);
       const imageUrl = imageResponse?.data;
 

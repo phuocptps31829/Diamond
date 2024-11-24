@@ -8,7 +8,7 @@ export const authApi = {
   login: async (data) => {
     console.log(data);
     const res = await axiosInstanceCUD.post(`/auth/login`, data);
-    console.log(res.data.data);
+
     return res.data.data;
   },
   refreshToken: async (refreshToken) => {

@@ -13,13 +13,8 @@ export const patientApi = {
     },
 
     getPatientsById: async (id) => {
-        try {
-            const res = await axiosInstanceGET.get(`/patients/${id}`);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceGET.get(`/patients/${id}`);
+        return res.data.data;
     },
 
     createPatient: async (data) => {

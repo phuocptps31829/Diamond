@@ -1,7 +1,10 @@
 import { Card } from "@/components/ui/Card";
+import useScrollToTop from "@/hooks/useScrollToTop";
 import { Link } from "react-router-dom";
 
 const PrivacyPolicy = () => {
+  useScrollToTop();
+
   return (
     <Card className="mx-auto my-6 min-h-screen max-w-[1243px] rounded-2xl border px-3 py-6 sm:px-2 lg:px-4">
       <div className="container mx-auto overflow-hidden rounded-lg bg-white">
@@ -9,7 +12,7 @@ const PrivacyPolicy = () => {
           <h1 className="text-3xl font-bold leading-tight text-gray-900">
             Chính sách bảo mật
           </h1>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Y Khoa Diamond</p>
+          <p className="mt-1 max-w-2xl text-lg text-gray-500">Y Khoa Diamond</p>
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <h2 className="mb-4 text-lg font-medium leading-6 text-gray-900">

@@ -51,7 +51,7 @@ export const medicalPackageApi = {
         params: Object.keys(params).length > 0 ? params : undefined,
       }
     );
-    console.log(res.data.data);
+
     return res.data.data;
   },
 };

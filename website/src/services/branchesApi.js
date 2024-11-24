@@ -2,80 +2,46 @@ import { axiosInstanceGET, axiosInstanceCUD } from './axiosInstance';
 
 export const branchApi = {
     getAllBranches: async ({ page, limit }) => {
-        try {
-            const res = await axiosInstanceGET.get('/branches', {
-                params: {
-                    page,
-                    limit,
-                },
-            });
-            return res.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceGET.get('/branches', {
+            params: {
+                page,
+                limit,
+            },
+        });
+        return res.data;
     },
 
     getBranchesById: async (id) => {
-        try {
-            const res = await axiosInstanceGET.get(`/branches/${id}`);
-            console.log('res.data.data: ', res.data.data);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceGET.get(`/branches/${id}`);
+        return res.data.data;
     },
 
     getAllBranchesBySpecialty: async (id) => {
-        try {
-            const res = await axiosInstanceGET.get(`/branches/specialty/${id}`);
-            console.log('res.data.data: ', res.data.data);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceGET.get(`/branches/specialty/${id}`);
+        return res.data.data;
     },
 
     addBranch: async (branchData) => {
-        try {
-            const res = await axiosInstanceCUD.post('/branches/add', branchData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            console.log('res.data.data: ', res.data.data);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.post('/branches/add', branchData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return res.data.data;
     },
 
     updateBranch: async (id, branchData) => {
-        try {
-            const res = await axiosInstanceCUD.put(`/branches/update/${id}`, branchData, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            console.log('res.data.data: ', res.data.data);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.put(`/branches/update/${id}`, branchData, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return res.data.data;
     },
 
     deleteBranch: async (id) => {
-        try {
-            const res = await axiosInstanceCUD.delete(`/branches/delete/${id}`);
-            console.log('res.data.data: ', res.data.data);
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.delete(`/branches/delete/${id}`);
+        console.log('res.data.data: ', res.data.data);
+        return res.data.data;
     },
 };

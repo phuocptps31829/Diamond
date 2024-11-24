@@ -6,11 +6,11 @@ export const doctorApi = {
     const res = await axiosInstanceGET.get("/doctors", {
       params
     });
-    return res.data.data;
+    return res.data;
   },
   getDoctorById: async (id) => {
     const res = await axiosInstanceGET.get(`/doctors/${id}`);
-    console.log(res.data.data);
+
     return res.data.data;
   },
   getDoctorByAvailable: async ({ specialtyID, branchID, day, hour }) => {
@@ -31,7 +31,7 @@ export const doctorApi = {
     const res = await axiosInstanceGET.get(
       `/doctors/get-by-branch-and-specialty?specialtyID=${specialtyId}&branchID=${branchId}`
     );
-    console.log(res.data.data);
+
     return res.data.data;
   },
   createDoctors: async (newDoctors) => {

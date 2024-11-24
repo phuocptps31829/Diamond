@@ -64,7 +64,7 @@ export default function LoginComponent() {
 
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
-      <div className="max-w-screen-lg py-5 px-3 md:px-5">
+      <div className="md:max-w-screen-lg py-5 px-3 md:px-5 max-w-[500px] w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 h-fit rounded-lg overflow-hidden">
           {/* ADS BANNER */ }
           <div className="hidden bg-gray-200 md:block overflow-hidden">

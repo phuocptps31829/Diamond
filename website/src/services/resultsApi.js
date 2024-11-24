@@ -7,38 +7,23 @@ export const resultsApi = {
   },
 
   addResult: async (data) => {
-    try {
-      const res = await axiosInstanceCUD.post("/results/add", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post("/results/add", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data;
   },
   addResultAndPrescription: async (data) => {
-    try {
-      const res = await axiosInstanceCUD.post("/results/result-prescription/add", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post("/results/result-prescription/add", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data;
   },
   deleteResult: async (id) => {
-    try {
-      const res = await axiosInstanceCUD.delete(`/results/delete/${id}`);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.delete(`/results/delete/${id}`);
+    return res.data;
   },
 };

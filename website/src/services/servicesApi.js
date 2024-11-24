@@ -3,7 +3,6 @@ import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 export const serviceApi = {
   getAllServices: async (filter) => {
     const { page, limit, sort, gender, branch, specialtyID, search } = filter;
-    console.log(filter);
     const params = {
       ...(page !== undefined && page !== null && { page }),
       ...(limit !== undefined && limit !== null && { limit }),
@@ -24,17 +23,14 @@ export const serviceApi = {
   },
   takeItAllServices: async () => {
     const res = await axiosInstanceGET.get('/services?limit=9999');
-    console.log(res.data.data);
     return res.data.data;
   },
   getServiceById: async (id) => {
     const res = await axiosInstanceGET.get(`/services/${id}`);
-    console.log(res.data.data);
     return res.data.data;
   },
   getServiceBySlug: async (slug) => {
     const res = await axiosInstanceGET.get(`/services/slug/${slug}`);
-    console.log(res.data.data);
     return res.data.data;
   },
   getServiceBySpecialty: async (id, page, limit, sort) => {
@@ -46,12 +42,10 @@ export const serviceApi = {
     const res = await axiosInstanceGET.get(`/services/specialty/${id}`, {
       params: Object.keys(params).length > 0 ? params : undefined,
     });
-    console.log(res.data.data);
     return res.data.data;
   },
   deleteService: async (id) => {
     const res = await axiosInstanceCUD.delete(`/services/delete/${id}`);
-    console.log(res.data.data);
     return res.data.data;
   },
   updateService: async (id, serviceData) => {
@@ -64,7 +58,6 @@ export const serviceApi = {
         },
       },
     );
-    console.log(res.data.data);
     return res.data.data;
   },
   createService: async (serviceData) => {
@@ -73,7 +66,7 @@ export const serviceApi = {
         "Content-Type": "application/json",
       },
     });
-    console.log(res.data.data);
+
     return res.data.data;
   },
 };

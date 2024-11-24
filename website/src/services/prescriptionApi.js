@@ -7,38 +7,23 @@ export const prescriptionApi = {
     },
 
     addPrescription: async (data) => {
-        try {
-            const res = await axiosInstanceCUD.post("/prescriptions/add", data, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            return res.data.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.post("/prescriptions/add", data, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return res.data.data;
     },
     deletePrescription: async (id) => {
-        try {
-            const res = await axiosInstanceCUD.delete(`/prescriptions/delete/${id}`);
-            return res.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.delete(`/prescriptions/delete/${id}`);
+        return res.data;
     },
     deletePrescriptionMultiple: async (ids) => {
-        try {
-            const res = await axiosInstanceCUD.post(`/v1/prescriptions/delete-in-id`,
-                {
-                    ids: [...ids],
-                }
-            );
-            return res.data;
-        } catch (error) {
-            console.error(error);
-            throw error;
-        }
+        const res = await axiosInstanceCUD.post(`/v1/prescriptions/delete-in-id`,
+            {
+                ids: [...ids],
+            }
+        );
+        return res.data;
     }
 };

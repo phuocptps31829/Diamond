@@ -3,18 +3,13 @@ import { axiosInstanceCUD } from "./axiosInstance";
 
 export const clinicsApi = {
   getAllClinics: async ({ page, limit }) => {
-    try {
-      const res = await axiosInstanceGET.get("/clinics", {
-        params: {
-          page,
-          limit,
-        },
-      });
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get("/clinics", {
+      params: {
+        page,
+        limit,
+      },
+    });
+    return res.data.data;
   },
 
   getClinicBySpecialtyAndBranch: async ({ branchID, specialtyID }) => {
@@ -31,60 +26,38 @@ export const clinicsApi = {
   },
 
   getClinicsById: async (id) => {
-    try {
-      const res = await axiosInstanceGET.get(`/clinics/${id}`);
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceGET.get(`/clinics/${id}`);
+    console.log("res.data.data: ", res.data.data);
+    return res.data.data;
   },
 
   createClinic: async (data) => {
-    try {
-      const res = await axiosInstanceCUD.post("/clinics/add", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post("/clinics/add", data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.data;
   },
 
   updateClinic: async (id, data) => {
-    try {
-      const res = await axiosInstanceCUD.post(
-        `/clinics/update/${id}?_method=PUT`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
+    const res = await axiosInstanceCUD.post(
+      `/clinics/update/${id}?_method=PUT`,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+      },
+    );
+    console.log("res.data.data: ", res.data.data);
+    return res.data.data;
   },
 
   deleteClinic: async (id) => {
-    try {
-      const res = await axiosInstanceCUD.post(
-        `/clinics/delete/${id}?_method=DELETE`,
-      );
-      console.log("res.data.data: ", res.data.data);
-      return res.data.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const res = await axiosInstanceCUD.post(
+      `/clinics/delete/${id}?_method=DELETE`,
+    );
+    return res.data.data;
   },
 };

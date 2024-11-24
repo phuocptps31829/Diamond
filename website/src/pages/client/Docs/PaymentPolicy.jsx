@@ -1,16 +1,18 @@
 import { Card } from "@/components/ui/Card";
+import useScrollToTop from "@/hooks/useScrollToTop";
 import { Link } from "react-router-dom";
 
 export default function PaymentPolicy() {
+  useScrollToTop();
+
   return (
-    
-     <Card className="min-h-screen max-w-[1243px] mx-auto  border my-6 px-3 rounded-2xl py-6 sm:px-2 lg:px-4">
+    <Card className="min-h-screen max-w-[1243px] mx-auto  border my-6 px-3 rounded-2xl py-6 sm:px-2 lg:px-4">
       <div className="container mx-auto overflow-hidden rounded-lg  ">
         <div className="px-4 py-5 sm:px-6">
           <h1 className="text-3xl font-bold leading-tight text-gray-900">
             Chính sách thanh toán
           </h1>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">Y Khoa Diamond</p>
+          <p className="mt-1 max-w-2xl text-lg text-gray-500">Y Khoa Diamond</p>
         </div>
         <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
           <h2 className="mb-4 text-lg font-medium leading-6 text-gray-900">
@@ -96,6 +98,6 @@ export default function PaymentPolicy() {
         </div>
       </div>
     </Card>
-   
+
   );
 }

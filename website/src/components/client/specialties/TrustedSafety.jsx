@@ -24,12 +24,12 @@ const items = [
 
 const TrustedSafety = () => {
     return (
-        <div className="px-4 mx-auto w-full max-w-screen-xl mt-4">
+        <div className="px-3 mx-auto w-full max-w-screen-xl mt-4">
             <div className="bg-white py-6 px-8 text-center rounded-lg">
                 <h2 className="mb-8 text-2xl font-semibold sm:text-3xl">
                     Tin Cậy Và An Toàn
                 </h2>
-                <div className="grid grid-cols-1 gap-24 sm:grid-cols-2 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-5 sm:gap-24 sm:grid-cols-2 md:grid-cols-3">
                     { items.map((item, index) => (
                         <div key={ index } className="flex flex-col items-center">
                             <img
