@@ -21,7 +21,7 @@ import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { patientSchema } from "@/zods/patient";
+import { patientSchema } from "@/zods/client/patient";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { roleApi } from "@/services/roleApi";
 import { toastUI } from "@/components/ui/Toastify";

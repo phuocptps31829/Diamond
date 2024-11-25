@@ -37,7 +37,6 @@ const Index = () => {
             longitudeDelta: 0.0008,
           },
         }));
-        console.log("normalizedData", normalizedData);
         dispatch(setBranches(normalizedData));
       }
   }, [loadingBranches]);
@@ -59,7 +58,6 @@ const Index = () => {
     const handleLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Permission to access location was denied");
         return;
       }
       let currentLocation = await Location.getCurrentPositionAsync({});

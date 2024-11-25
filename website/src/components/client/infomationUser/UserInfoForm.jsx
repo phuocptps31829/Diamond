@@ -2,7 +2,7 @@ import { Label } from "@/components/ui/Label";
 import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { userInfoSchema } from "@/zods/user";
+import { userInfoSchema } from "@/zods/client/user";
 import { authApi } from "@/services/authApi";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

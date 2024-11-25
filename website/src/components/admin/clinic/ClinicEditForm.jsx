@@ -1,5 +1,5 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { clinicSchema } from "@/zods/clinic";
+import { clinicSchema } from "@/zods/client/clinic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import 'react-quill/dist/quill.snow.css';
@@ -60,25 +60,25 @@ export default function ClinicsForm() {
 
   const onSubmit = (data) => {
     const newClinics = {
-        updateClinic: {
-            name: data.name,
-            specialtyID: data.specialtyID,
-            branchID: data.branchID,
-            address: data.address,
-        },
-        id: id, 
+      updateClinic: {
+        name: data.name,
+        specialtyID: data.specialtyID,
+        branchID: data.branchID,
+        address: data.address,
+      },
+      id: id,
     };
-    updateClinic(newClinics); 
+    updateClinic(newClinics);
     console.log("update Data:", newClinics);
-};
+  };
   return (
     <div className="bg-white w-full px-7 py-6 rounded-lg shadow-gray">
       <h1 className="mr-2 bg-white h-fit mb-4 text-2xl font-bold">Thông tin phòng khám</h1>
-      {error && <p className="text-red-500">Có lỗi xảy ra khi tải dữ liệu: {error.message}</p>}
-      <form onSubmit={handleSubmit(onSubmit)}>
+      { error && <p className="text-red-500">Có lỗi xảy ra khi tải dữ liệu: { error.message }</p> }
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex gap-2">
           <div className="w-full">
-            {/* Line 1 */}
+            {/* Line 1 */ }
             <div className="block">
               <div className="w-full md:flex gap-2">
                 <div className="mb-3 md:w-1/2 w-full relative">
@@ -90,8 +90,8 @@ export default function ClinicsForm() {
                     name="name"
                     type="text"
                     id="name"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -100,16 +100,16 @@ export default function ClinicsForm() {
                     Chuyên khoa <span className="text-red-500">*</span>
                   </label>
                   <SelectSpecialty
-                    control={control}
+                    control={ control }
                     name="specialtyID"
                     id="specialtyID"
-                    errors={errors}
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
 
-            {/* Line 2 */}
+            {/* Line 2 */ }
             <div className="w-full flex gap-2">
               <div className="w-full md:flex gap-2">
                 <div className="mb-3 md:w-1/2 relative">
@@ -117,10 +117,10 @@ export default function ClinicsForm() {
                     Chi nhánh làm việc <span className="text-red-500">*</span>
                   </label>
                   <SelectBranch
-                    control={control}
+                    control={ control }
                     name="branchID"
-                    errors={errors}
-                    setValue={setValue}
+                    errors={ errors }
+                    setValue={ setValue }
                   />
                 </div>
 
@@ -133,9 +133,9 @@ export default function ClinicsForm() {
                     name="address"
                     type="text"
                     id="address"
-                    control={control}
-                    errors={errors}
-                    readOnly={true}
+                    control={ control }
+                    errors={ errors }
+                    readOnly={ true }
                   />
                 </div>
               </div>
@@ -143,12 +143,12 @@ export default function ClinicsForm() {
           </div>
         </div>
 
-        {/* Button */}
+        {/* Button */ }
         <div className="flex gap-2 justify-end">
           <Button
             variant="primary"
             className="border-none bg-gray-200 hover:bg-gray-400 text-primary-500 px-6"
-            onClick={() => navigate('/admin/clinics/list')}
+            onClick={ () => navigate('/admin/clinics/list') }
           >
             Hủy
           </Button>
@@ -156,9 +156,9 @@ export default function ClinicsForm() {
             type="submit"
             variant="primary"
             className="border-none bg-primary-500 hover:bg-primary-600 px-6"
-            disabled={isSubmitting}
+            disabled={ isSubmitting }
           >
-            {isSubmitting ? "Đang xử lý..." : "Cập nhật"}
+            { isSubmitting ? "Đang xử lý..." : "Cập nhật" }
           </Button>
         </div>
       </form>

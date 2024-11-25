@@ -2,7 +2,7 @@ import InputCustom from "@/components/ui/InputCustom";
 import SpinLoader from "@/components/ui/SpinLoader";
 
 import { authApi } from "@/services/authApi";
-import { changePasswordSchema } from "@/zods/changePassword";
+import { changePasswordSchema } from "@/zods/client/changePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";

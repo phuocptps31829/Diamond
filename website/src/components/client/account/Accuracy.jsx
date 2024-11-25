@@ -1,14 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
 import NotFound from "@/components/ui/NotFound";
-import { formatTime } from "@/utils/formatTime";
 import { authApi } from "@/services/authApi";
 import SpinLoader from "@/components/ui/SpinLoader";
 import toast from "react-hot-toast";
+import { formatPhoneNumber, formatTime } from "@/utils/format";
 
 export default function AccurancyComponent() {
   const navigate = useNavigate();

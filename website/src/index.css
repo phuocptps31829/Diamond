@@ -72,6 +72,7 @@
 
   body {
     @apply bg-background text-foreground;
+    /* @apply scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200; */
   }
 }
 
@@ -631,4 +632,8 @@
 
 .animate-leave {
   animation: leave 0.3s ease-in forwards;
+}
+
+div[data-radix-popper-content-wrapper] {
+  left: -58px !important;
 }

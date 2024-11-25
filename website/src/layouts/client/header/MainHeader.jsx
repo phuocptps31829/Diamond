@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
@@ -123,9 +123,8 @@ export default function MainHeader() {
       if (data.data?.userIDs.includes(userID)) {
         toast.custom((t) => (
           <div
-            className={`${
-              t.visible ? "animate-enter" : "animate-leave"
-            } pointer-events-auto flex w-full max-w-[26rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out`}
+            className={ `${t.visible ? "animate-enter" : "animate-leave"
+              } pointer-events-auto flex w-full max-w-[26rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out` }
           >
             <div className="w-0 flex-1 p-4 py-3">
               <div className="flex items-start">
@@ -155,7 +154,7 @@ export default function MainHeader() {
             </div>
             <div className="flex border-l border-gray-200">
               <button
-                onClick={() => toast.dismiss(t.id)}
+                onClick={ () => toast.dismiss(t.id) }
                 className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 Đóng
@@ -173,27 +172,27 @@ export default function MainHeader() {
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
-        <Link to={"/"} className="relative w-56 items-center">
-          <img src={brandLogo} className="w-full" alt="Logo" />
+        <Link to={ "/" } className="relative w-56 items-center">
+          <img src={ brandLogo } className="w-full" alt="Logo" />
         </Link>
         <div className="flex items-center space-x-3">
-          {userProfile && (
+          { userProfile && (
             <DropdownMenu >
               <DropdownMenuTrigger asChild className="">
                 <button
                   className="relative block lg:hidden"
-                  onClick={toggleDropdown}
+                  onClick={ toggleDropdown }
                 >
-                  {notifications.length > 0 && (
+                  { notifications.length > 0 && (
                     <span className="absolute right-0 flex h-3 w-3">
                       <span
                         className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-                        style={{ animationDuration: "2s" }}
+                        style={ { animationDuration: "2s" } }
                       ></span>
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
                     </span>
-                  )}
-                  <FaBell size={25} color="#007BBB" />
+                  ) }
+                  <FaBell size={ 25 } color="#007BBB" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -205,55 +204,55 @@ export default function MainHeader() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="mb-4" />
                 <AnimatedList>
-                  {notifications.length === 0 ? (
+                  { notifications.length === 0 ? (
                     <div className="my-3 text-center text-gray-500 dark:text-gray-400">
                       Bạn không có thông báo nào
                     </div>
                   ) : (
                     notifications.map((item, idx) => (
-                      <DropdownMenuItem asChild key={idx} className="">
-                        <Notification {...item} />
+                      <DropdownMenuItem asChild key={ idx } className="">
+                        <Notification { ...item } />
                       </DropdownMenuItem>
                     ))
-                  )}
+                  ) }
                 </AnimatedList>
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
-          <div className="block lg:hidden" role="button" onClick={toggleNavbar}>
+          ) }
+          <div className="block lg:hidden" role="button" onClick={ toggleNavbar }>
             <AiOutlineMenu className="text-2xl" />
           </div>
         </div>
         <nav className="hidden lg:block">
           <ul className="nav__link flex items-center justify-center space-x-1 text-center text-sm font-semibold">
-            {dataNav.map((item) => (
-              <li key={item.id}>
+            { dataNav.map((item) => (
+              <li key={ item.id }>
                 <NavLink
-                  to={item.to}
+                  to={ item.to }
                   className="rounded-full px-4 py-2.5 uppercase hover:bg-primary-500 hover:text-white"
                 >
-                  {item.name}
+                  { item.name }
                 </NavLink>
               </li>
-            ))}
+            )) }
             <li className="px-5">|</li>
-            {userProfile && (
-              <DropdownMenu >
+            { userProfile && (
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild className="">
                   <button
-                    className="relative hidden lg:block"
-                    onClick={toggleDropdown}
+                    className="relative hidden lg:block !mr-1"
+                    onClick={ toggleDropdown }
                   >
-                    {notifications.length > 0 && (
+                    { notifications.length > 0 && (
                       <span className="absolute right-0 flex h-3 w-3">
                         <span
                           className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-                          style={{ animationDuration: "2s" }}
+                          style={ { animationDuration: "2s" } }
                         ></span>
                         <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
                       </span>
-                    )}
-                    <FaBell size={25} color="#007BBB" />
+                    ) }
+                    <FaBell size={ 25 } color="#007BBB" />
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -265,29 +264,29 @@ export default function MainHeader() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="mb-4" />
                   <AnimatedList>
-                    {notifications.length === 0 ? (
+                    { notifications.length === 0 ? (
                       <div className="my-3 text-center text-gray-500 dark:text-gray-400">
                         Bạn không có thông báo nào
                       </div>
                     ) : (
                       notifications.map((item, idx) => (
-                        <DropdownMenuItem asChild key={idx} className="">
-                          <Notification {...item} />
+                        <DropdownMenuItem asChild key={ idx } className="">
+                          <Notification { ...item } />
                         </DropdownMenuItem>
                       ))
-                    )}
+                    ) }
                   </AnimatedList>
                 </DropdownMenuContent>
               </DropdownMenu>
-            )}
+            ) }
             <li className="h-auto">
-              {userProfile ? (
+              { userProfile ? (
                 <div className="relative">
                   <DropdownMenu>
                     <DropdownMenuTrigger className="flex w-full items-center justify-center">
                       <div className="mx-3 flex flex-col items-start justify-center">
                         <p>Xin chào</p>
-                        <p>{userProfile?.fullName.split(" ").at(-1)} </p>
+                        <p>{ userProfile?.fullName.split(" ").at(-1) } </p>
                       </div>
                       <div className="relative">
                         <Avatar>
@@ -306,41 +305,41 @@ export default function MainHeader() {
                     <DropdownMenuContent className="mt-1">
                       <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <Link to={"/profile/information"}>
+                      <Link to={ "/profile/information" }>
                         <DropdownMenuItem>
                           <FaRegUser className="mr-2" />
                           Thông tin
                         </DropdownMenuItem>
                       </Link>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleLogout}>
+                      <DropdownMenuItem onClick={ handleLogout }>
                         <FaPowerOff className="mr-2" />
                         Đăng xuất
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  {hasAppointments && (
+                  { hasAppointments && (
                     <TooltipProvider>
-                      <Tooltip open={isTooltipOpen}>
+                      <Tooltip open={ isTooltipOpen }>
                         <TooltipTrigger asChild>
                           <div
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
+                            onMouseEnter={ handleMouseEnter }
+                            onMouseLeave={ handleMouseLeave }
                           >
                             <Badge
                               variant="destructive"
                               className="absolute -right-2 -top-2 z-20 flex h-5 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
                             >
-                              {appointments.length}
+                              { appointments.length }
                             </Badge>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent
                           side="bottom"
                           className="bottom mt-[9px] rounded-xl border border-gray-200 p-0 shadow-2xl"
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
+                          onMouseEnter={ handleMouseEnter }
+                          onMouseLeave={ handleMouseLeave }
                         >
                           <div className="max-w-xs bg-white p-4">
                             <div className="mb-2 flex items-center justify-between">
@@ -358,38 +357,38 @@ export default function MainHeader() {
                                 <FaExternalLinkAlt className="h-4 w-4" />
                               </Link>
                             </div>
-                            {hasAppointments ? (
+                            { hasAppointments ? (
                               <ul className="space-y-2">
-                                {appointments.map((appointment) => (
-                                  <li key={appointment.id} className="text-sm">
+                                { appointments.map((appointment) => (
+                                  <li key={ appointment.id } className="text-sm">
                                     <p className="text-start font-medium text-black">
-                                      {appointment.date} - {appointment.time}
+                                      { appointment.date } - { appointment.time }
                                     </p>
                                     <p className="text-start text-gray-600">
-                                      Bác sĩ: {appointment.doctor}
+                                      Bác sĩ: { appointment.doctor }
                                     </p>
                                   </li>
-                                ))}
+                                )) }
                               </ul>
                             ) : (
                               <p className="text-sm text-gray-600">
                                 Bạn không có lịch hẹn nào.
                               </p>
-                            )}
+                            ) }
                           </div>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  )}
+                  ) }
                 </div>
               ) : (
                 <Link
-                  to={"/login"}
+                  to={ "/login" }
                   className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white"
                 >
                   Đăng nhập
                 </Link>
-              )}
+              ) }
             </li>
           </ul>
         </nav>

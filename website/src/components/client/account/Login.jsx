@@ -11,7 +11,7 @@ import { FaPhoneAlt, FaLock } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "@/zods/account";
+import { accountSchema } from "@/zods/client/account";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import SpinLoader from "@/components/ui/SpinLoader";

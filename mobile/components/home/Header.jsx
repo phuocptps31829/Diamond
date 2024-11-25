@@ -69,13 +69,13 @@ const Header = () => {
               />
               {isImageLoading && (
                 <View className="bg-[#0000006c] rounded-full absolute w-full h-full top-0 flex justify-center items-center">
-                  <ActivityIndicator size="large" color="white" />
+                  <ActivityIndicator size="small" color="white" />
                 </View>
               )}
             </View>
             <View className="space-y-1">
-              <Text className="text-white text-[15px]">Chào bạn</Text>
-              <Text className="text-white font-semibold text-[15px]">
+              <Text className="text-white">Chào bạn</Text>
+              <Text className="text-white font-semibold">
                 { profile?.fullName }
               </Text>
             </View>

@@ -14,8 +14,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
-import formatDate from "../../../utils/formatDate";
-import { formatPrice } from "../../../utils/format";
+import formatDate, { formatPrice } from "../../../utils/format";
 import Empty from "../../ui/Empty";
 import { CiMenuKebab } from "react-icons/ci";
 
@@ -55,14 +54,14 @@ export default function BottomLists({ allInvoices }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {latestInvoices.length > 0 ? (
+            { latestInvoices.length > 0 ? (
               latestInvoices.map((invoice, idx) => (
-                <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell className="text-center">{idx + 1}</TableCell>
-                  <TableCell>{invoice.invoiceCode || "-"}</TableCell>
-                  <TableCell>{invoice.patient.fullName || "-"}</TableCell>
-                  <TableCell>{formatDate(invoice.updatedAt)}</TableCell>
-                  <TableCell>{formatPrice(invoice.price)}</TableCell>
+                <TableRow key={ idx } className="h-12 text-[13px]">
+                  <TableCell className="text-center">{ idx + 1 }</TableCell>
+                  <TableCell>{ invoice.invoiceCode || "-" }</TableCell>
+                  <TableCell>{ invoice.patient.fullName || "-" }</TableCell>
+                  <TableCell>{ formatDate(invoice.updatedAt) }</TableCell>
+                  <TableCell>{ formatPrice(invoice.price) }</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
@@ -81,13 +80,13 @@ export default function BottomLists({ allInvoices }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="">
+                <TableCell colSpan={ 6 } className="">
                   <div className="flex justify-center items-center h-24">
                     <Empty />
                   </div>
                 </TableCell>
               </TableRow>
-            )}
+            ) }
           </TableBody>
         </Table>
       </div>
@@ -109,13 +108,13 @@ export default function BottomLists({ allInvoices }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {unpaidInvoices.length > 0 ? (
+            { unpaidInvoices.length > 0 ? (
               unpaidInvoices.map((invoice, idx) => (
-                <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell className="text-center">{idx + 1}</TableCell>
-                  <TableCell>{invoice.invoiceCode || "-"}</TableCell>
-                  <TableCell>{invoice.patient.fullName || "-"}</TableCell>
-                  <TableCell>{formatPrice(invoice.price)}</TableCell>
+                <TableRow key={ idx } className="h-12 text-[13px]">
+                  <TableCell className="text-center">{ idx + 1 }</TableCell>
+                  <TableCell>{ invoice.invoiceCode || "-" }</TableCell>
+                  <TableCell>{ invoice.patient.fullName || "-" }</TableCell>
+                  <TableCell>{ formatPrice(invoice.price) }</TableCell>
                   <TableCell>
                     <Menubar className="border-none bg-transparent shadow-none">
                       <MenubarMenu>
@@ -134,13 +133,13 @@ export default function BottomLists({ allInvoices }) {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="">
+                <TableCell colSpan={ 5 } className="">
                   <div className="flex justify-center items-center h-24">
                     <Empty />
                   </div>
                 </TableCell>
               </TableRow>
-            )}
+            ) }
           </TableBody>
         </Table>
       </div>

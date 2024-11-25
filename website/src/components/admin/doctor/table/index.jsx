@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/Table";
 import { useForm } from "react-hook-form";
-import { doctorSchema } from "@/zods/doctor";
+import { doctorSchema } from "@/zods/client/doctor";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";

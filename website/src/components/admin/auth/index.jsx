@@ -4,7 +4,7 @@ import InputCustom from "@/components/ui/InputCustom";
 import { FaLock, FaPhoneAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "@/zods/account";
+import { accountSchema } from "@/zods/client/account";
 import { RoleSelect } from "./RoleSelect";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";

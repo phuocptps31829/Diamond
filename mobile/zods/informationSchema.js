@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const informationSchema = z.object({
-  fullName: z.string().min(1, "Họ và tên không được để trống"),
+  fullName: z
+    .string()
+    .min(1, "Họ và tên không được để trống")
+    .max(25, "Họ và tên không được vượt quá 25 ký tự"),
   phoneNumber: z
     .string()
     .min(10, "Số điện thoại không hợp lệ")

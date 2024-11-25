@@ -1,5 +1,5 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { specialtySchema } from "@/zods/specialty";
+import { specialtySchema } from "@/zods/client/specialty";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";

@@ -22,6 +22,7 @@ const TabsLayout = () => {
       >
         <Tabs.Screen
           name="package"
+          key="package"
           options={{
             title: "Package",
             headerShown: false,
@@ -43,6 +44,7 @@ const TabsLayout = () => {
         />
         <Tabs.Screen
           name="service"
+          key="service"
           options={{
             title: "Service",
             headerShown: false,
@@ -60,6 +62,7 @@ const TabsLayout = () => {
         />
         <Tabs.Screen
           name="home"
+          key="home"
           options={{
             title: "Home",
             headerShown: false,
@@ -75,6 +78,7 @@ const TabsLayout = () => {
         />
         <Tabs.Screen
           name="doctor"
+          key="doctor"
           options={{
             title: "Doctor",
             headerShown: false,
@@ -92,6 +96,7 @@ const TabsLayout = () => {
         />
         <Tabs.Screen
           name="account"
+          key="account"
           options={{
             title: "User",
             headerShown: false,

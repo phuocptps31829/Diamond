@@ -121,8 +121,16 @@ let roomMessages = {};
                 userIDs: appointmentIds,
             }
         };
-        // if (io?.sockets?.sockets) {
+
+        // if (
+        //     io &&
+        //     io.sockets &&
+        //     io.sockets.sockets &&
+        //     Object.keys(io.sockets.sockets).length > 0
+        // ) {
         io.emit('notification', messageNotification);
+        // } else {
+        //     console.log('No connected sockets to emit notification');
         // }
     });
 

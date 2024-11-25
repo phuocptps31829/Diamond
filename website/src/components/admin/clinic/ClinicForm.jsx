@@ -1,8 +1,8 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { clinicSchema } from "@/zods/clinic";   
+import { clinicSchema } from "@/zods/client/clinic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import 'react-quill/dist/quill.snow.css'; 
+import 'react-quill/dist/quill.snow.css';
 import { Button } from "@/components/ui/Button";
 import { clinicsApi } from "@/services/clinicApi";
 import { useNavigate } from "react-router-dom";
@@ -29,12 +29,12 @@ export default function ClinicsForm() {
   const { mutate: createClinics } = useMutation({
     mutationFn: (newClinics) => clinicsApi.createClinics(newClinics),
     onSuccess: () => {
-        toastUI("Thêm phòng khám thành công", "success");
-        navigate('/admin/clinics/list');
+      toastUI("Thêm phòng khám thành công", "success");
+      navigate('/admin/clinics/list');
     },
     onError: (err) => {
-        console.error(err);
-        toastUI("Có lỗi xảy ra: " + err.message, "error");
+      console.error(err);
+      toastUI("Có lỗi xảy ra: " + err.message, "error");
     },
   });
   const onSubmit = (data) => {
@@ -43,18 +43,18 @@ export default function ClinicsForm() {
       specialtyID: data.specialtyID,
       branchID: data.branchID,
       address: data.address,
-    }
+    };
     createClinics(data);
-    console.log("Form Data:", newClinics); 
+    console.log("Form Data:", newClinics);
   };
   return (
     <div className="bg-white w-full px-7 py-6 rounded-lg shadow-gray ">
       <h1 className="mr-2 bg-white h-fit mb-4 text-2xl font-bold">Thông tin phòng khám</h1>
-      
-      <form onSubmit={handleSubmit(onSubmit)}>
+
+      <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex gap-2">
           <div className="w-full">
-            {/* Line 1 */}
+            {/* Line 1 */ }
             <div className="block">
               <div className="w-full md:flex gap-2">
                 <div className="mb-3 md:w-1/2 w-full relative">
@@ -66,8 +66,8 @@ export default function ClinicsForm() {
                     name="name"
                     type="text"
                     id="name"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
@@ -76,15 +76,15 @@ export default function ClinicsForm() {
                     Chuyên khoa <span className="text-red-500">*</span>
                   </label>
                   <SelectSpecialty
-                    control={control}
+                    control={ control }
                     name="specialtyID"
-                    errors={errors}
+                    errors={ errors }
                   />
                 </div>
               </div>
             </div>
 
-            {/* Line 2 */}
+            {/* Line 2 */ }
             <div className="w-full flex gap-2">
               <div className="w-full md:flex gap-2">
                 <div className="mb-3 md:w-1/2 relative">
@@ -92,10 +92,10 @@ export default function ClinicsForm() {
                     Chi nhánh làm việc <span className="text-red-500">*</span>
                   </label>
                   <SelectBranch
-                    control={control}
+                    control={ control }
                     name="branchID"
-                    errors={errors}
-                    setValue={setValue}
+                    errors={ errors }
+                    setValue={ setValue }
                   />
                 </div>
 
@@ -108,21 +108,21 @@ export default function ClinicsForm() {
                     name="address"
                     type="text"
                     id="address"
-                    control={control}
-                    errors={errors}
-                    readOnly={true}
+                    control={ control }
+                    errors={ errors }
+                    readOnly={ true }
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        {/* Button */}
+        {/* Button */ }
         <div className="flex gap-2 justify-end">
           <Button
             variant="primary"
             className="border-none bg-gray-200 hover:bg-gray-400 text-primary-500 px-6"
-            onClick={() => navigate('/admin/clinics/list')}
+            onClick={ () => navigate('/admin/clinics/list') }
           >
             Hủy
           </Button>

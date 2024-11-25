@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import InputCustom from "@/components/ui/InputCustom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { contactSchema } from "@/zods/contact";
+import { contactSchema } from "@/zods/client/contact";
 import { useToast } from "@/hooks/useToast";
 import { ToastAction } from "@/components/ui/Toast";
 import { contactApi } from "@/services/contactApi";

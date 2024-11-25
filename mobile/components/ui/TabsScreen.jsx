@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 
+
 const TabsScreen = ({ icon, color, name }) => {
   return (
     <View

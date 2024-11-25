@@ -20,9 +20,9 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
-import formatDate from "../../../utils/formatDate";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
+import formatDate from "@/utils/format";
 
 export default function BottomLists({ dataUpcomingAppointments }) {
   const [filteredAppointments, setFilteredAppointments] = useState([]);

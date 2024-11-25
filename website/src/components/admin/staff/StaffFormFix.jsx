@@ -1,6 +1,6 @@
 import InputCustom from "@/components/ui/InputCustom";
 import ImagePreview from "@/components/ui/ImagePreview";
-import { staffSchema } from "@/zods/staff";
+import { staffSchema } from "@/zods/client/staff";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";

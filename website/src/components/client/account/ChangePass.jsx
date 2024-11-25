@@ -3,7 +3,7 @@ import { FaLock } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { passwordSchema } from "@/zods/password";
+import { passwordSchema } from "@/zods/client/password";
 import InputCustom from "@/components/ui/InputCustom";
 import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import InputCustom from "@/components/ui/InputCustom";
-import { clinicSchema } from "@/zods/clinic";
+import { clinicSchema } from "@/zods/client/clinic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/Button";

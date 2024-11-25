@@ -1,6 +1,6 @@
 import { FaSearch, FaPlus } from 'react-icons/fa';
 import { FaArrowsRotate } from 'react-icons/fa6';
-import { patientSchema } from '@/zods/patient';
+import { patientSchema } from '@/zods/client/patient';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/Button';

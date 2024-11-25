@@ -111,7 +111,6 @@ const ChatComponent = ({ setShowChat }) => {
     setIsFirstMessage(false);
     event.preventDefault();
     if (!message.trim()) return;
-    console.log("sendFirstMessage", sendFirstMessage);
     const userSocketID = localStorage.getItem("userSocketID");
     if (socket) {
       sendEvent(
@@ -162,7 +161,7 @@ const ChatComponent = ({ setShowChat }) => {
   return (
     <div className="container-chat-shadow relative flex h-screen w-full flex-col bg-white antialiased sm:h-[500px] sm:w-[400px] sm:rounded-[20px]">
       { chatted ? (
-        <div className="flex flex-col h-full">
+        <>
           <div className="rounded-t-[20px] bg-white">
             <div className="mx-auto flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-4">
@@ -300,7 +299,7 @@ const ChatComponent = ({ setShowChat }) => {
               </div>
             </div>
           </div>
-        </div>
+        </>
       ) : (
         <div className="h-full rounded-[20px] bg-[#F9F9FB] p-5">
           <div className="flex w-full justify-end">
@@ -325,10 +324,16 @@ const ChatComponent = ({ setShowChat }) => {
               onChange={ (e) => setUserName(e.target.value) }
             />
             <Input
+              type="tel"
               placeholder="Số điện thoại"
               className="border border-gray-400 p-3 py-5"
               value={ phoneNumber }
-              onChange={ (e) => setPhoneNumber(e.target.value) }
+              onChange={ (e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setPhoneNumber(value);
+                }
+              } }
             />
             <button
               className={ `${userName.trim() === "" || phoneNumber.trim() === ""

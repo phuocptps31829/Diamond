@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect } from "react";
-import { formatPhoneNumber } from "@/utils/formatPhoneNumber";
 import { useMutation } from "@tanstack/react-query";
 import OtpInput from "react-otp-input";
 import { useNavigate } from "react-router-dom";
 import NotFound from "@/components/ui/NotFound";
 import { authApi } from "@/services/authApi";
-import { formatTime } from "@/utils/formatTime";
 import toast from "react-hot-toast";
+import { formatPhoneNumber, formatTime } from "@/utils/format";
 
 export default function ChangePassAccuracyComponent() {
   const navigate = useNavigate();

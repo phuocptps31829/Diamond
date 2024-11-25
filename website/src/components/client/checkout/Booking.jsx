@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
-import { otherBookingSchema, selfBookingSchema } from "@/zods/booking";
+import { otherBookingSchema, selfBookingSchema } from "@/zods/client/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectTime from "./select/SelectTime";
@@ -337,25 +337,25 @@ export default function Form() {
       patientID: profile._id,
       appointmentHelpUser: isBookingForOthers
         ? {
-            fullName: data.fullName,
-            phoneNumber: data.phoneNumber,
-            email: data.email,
-            gender: data.gender,
-            dateOfBirth: data.dateOfBirth,
-            insuranceCode: data.insuranceCode,
-            address: data.address,
-            citizenIdentificationNumber: data.citizenIdentificationNumber,
-            occupation: data.occupation,
-            ethnic: data.ethnic,
-          }
+          fullName: data.fullName,
+          phoneNumber: data.phoneNumber,
+          email: data.email,
+          gender: data.gender,
+          dateOfBirth: data.dateOfBirth,
+          insuranceCode: data.insuranceCode,
+          address: data.address,
+          citizenIdentificationNumber: data.citizenIdentificationNumber,
+          occupation: data.occupation,
+          ethnic: data.ethnic,
+        }
         : undefined,
       data: bookingDetails.map((detail) => ({
         workScheduleID: detail.bookingDetail.selectedWorkScheduleID,
         ...(detail?.serviceID
           ? { serviceID: detail.serviceID }
           : {
-              medicalPackageID: detail.bookingDetail?.levelID,
-            }),
+            medicalPackageID: detail.bookingDetail?.levelID,
+          }),
         type: "Khám lần 1",
         time: combineDateTime(
           getCurSelectedProduct()?.bookingDetail.selectedDate,
@@ -378,33 +378,33 @@ export default function Form() {
   return (
     <div className="mx-auto max-w-screen-xl px-0 pt-5 md:px-5 md:pt-10">
       <div className="container mx-auto flex flex-col gap-3 rounded-md bg-white px-5 py-5 md:flex-row">
-        {/* Select */}
+        {/* Select */ }
         <div className="flex w-full flex-col gap-[20px] px-2 md:w-[44%]">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn dịch vụ</p>
-            <p className="font-light">Đã chọn {cartItems.length} dịch vụ</p>
+            <p className="font-light">Đã chọn { cartItems.length } dịch vụ</p>
           </div>
 
           <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 overflow-y-auto px-2">
-            {cartItems.length > 0 ? (
+            { cartItems.length > 0 ? (
               cartItems.map((item) =>
                 item?.serviceID ? (
                   <Service
-                    key={item.serviceID}
-                    svc={item}
-                    bookingDetails={bookingDetails}
-                    selectedID={selectedProduct?.serviceID}
-                    onRemove={handleRemoveItem}
-                    onSelect={handleSelectProduct}
+                    key={ item.serviceID }
+                    svc={ item }
+                    bookingDetails={ bookingDetails }
+                    selectedID={ selectedProduct?.serviceID }
+                    onRemove={ handleRemoveItem }
+                    onSelect={ handleSelectProduct }
                   />
                 ) : (
                   <Package
-                    key={item.medicalPackageID}
-                    pkg={item}
-                    bookingDetails={bookingDetails}
-                    selectedID={selectedProduct?.medicalPackageID}
-                    onRemove={handleRemoveItem}
-                    onSelect={handleSelectProduct}
+                    key={ item.medicalPackageID }
+                    pkg={ item }
+                    bookingDetails={ bookingDetails }
+                    selectedID={ selectedProduct?.medicalPackageID }
+                    onRemove={ handleRemoveItem }
+                    onSelect={ handleSelectProduct }
                   />
                 )
               )
@@ -414,58 +414,58 @@ export default function Form() {
                   Chưa có dịch vụ được chọn
                 </p>
               </div>
-            )}
+            ) }
           </div>
         </div>
 
-        {/* Form */}
+        {/* Form */ }
         <div className="w-full p-4 pt-0 md:ml-auto md:w-[60%]">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-xl font-bold">Thông tin đặt lịch khám</p>
-            {!isValidInfo && (
+            { !isValidInfo && (
               <p className="text-sm text-red-500">
-                {"(*)"} Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!
+                { "(*)" } Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!
               </p>
-            )}
+            ) }
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={ handleSubmit(onSubmit) }>
             <div className="flex flex-col gap-4">
-              {/* Hàng đầu tiên */}
+              {/* Hàng đầu tiên */ }
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
-                  {/* Chi nhánh khám */}
+                  {/* Chi nhánh khám */ }
                   <SelectDepartment
-                    control={control}
+                    control={ control }
                     name="department"
                     selectedProductID={
                       selectedProduct?.serviceID ||
                       selectedProduct?.medicalPackageID
                     }
-                    errors={errors}
+                    errors={ errors }
                     specialtyID={
                       selectedProduct?.bookingDetail?.specialtyID || ""
                     }
-                    setValue={setValue}
-                    onChange={(branchID, coordinates) => {
+                    setValue={ setValue }
+                    onChange={ (branchID, coordinates) => {
                       handleChangeBranch(branchID, coordinates);
-                    }}
+                    } }
                   />
                 </div>
                 <div className="flex-1">
                   <SelectDoctor
-                    control={control}
+                    control={ control }
                     name="doctor"
-                    errors={errors}
+                    errors={ errors }
                     branchID={
                       getCurSelectedProduct()?.bookingDetail?.selectedBranchID
                     }
-                    setValue={setValue}
+                    setValue={ setValue }
                     specialtyID={
                       selectedProduct?.bookingDetail?.specialtyID || ""
                     }
-                    onChange={(doctorID) => {
+                    onChange={ (doctorID) => {
                       handleChangeDoctor(doctorID);
-                    }}
+                    } }
                     selectedServiceID={
                       selectedProduct?.serviceID ||
                       selectedProduct?.medicalPackageID
@@ -476,29 +476,29 @@ export default function Form() {
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
                   <SelectDate
-                    control={control}
+                    control={ control }
                     name="date"
                     doctorID={
                       getCurSelectedProduct()?.bookingDetail?.selectedDoctorID
                     }
-                    errors={errors}
-                    setValue={setValue}
-                    onChange={(date) => {
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ (date) => {
                       handleChangeDate(date);
-                    }}
+                    } }
                   />
                 </div>
                 <div className="flex-1">
                   <SelectTime
-                    control={control}
+                    control={ control }
                     name="time"
                     doctorID={
                       getCurSelectedProduct()?.bookingDetail?.selectedDoctorID
                     }
-                    errors={errors}
-                    setValue={setValue}
-                    onChange={handleChangeTime}
-                    date={getCurSelectedProduct()?.bookingDetail?.selectedDate}
+                    errors={ errors }
+                    setValue={ setValue }
+                    onChange={ handleChangeTime }
+                    date={ getCurSelectedProduct()?.bookingDetail?.selectedDate }
                   />
                 </div>
               </div>
@@ -509,18 +509,18 @@ export default function Form() {
 
                 <div className="flex items-center justify-center gap-2">
                   <div className="relative w-full">
-                    {" "}
+                    { " " }
                     <input
                       value={
                         getCurSelectedProduct()?.bookingDetail?.clinic ?? ""
                       }
-                      disabled={true}
-                      className={`h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 pl-5 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto`}
+                      disabled={ true }
+                      className={ `h-10 min-h-11 w-full appearance-none rounded-md border border-gray-200 bg-white py-2 pl-5 text-sm placeholder-gray-600 opacity-75 transition duration-200 ease-in-out focus:border-primary-600 focus:outline-none focus:ring-0 md:h-auto` }
                     />
                     <div className="absolute right-0 top-0 flex h-full items-center pr-3">
                       <GomapDistance
                         className="w-full"
-                        room={getCurSelectedProduct()?.bookingDetail?.clinic}
+                        room={ getCurSelectedProduct()?.bookingDetail?.clinic }
                         hospitalCoordinates={
                           getCurSelectedProduct()?.bookingDetail?.coordinates
                         }
@@ -536,32 +536,32 @@ export default function Form() {
                 </label>
                 <Switch
                   id="bookingForOthers"
-                  checked={isBookingForOthers}
-                  onCheckedChange={handleSwitchChange}
+                  checked={ isBookingForOthers }
+                  onCheckedChange={ handleSwitchChange }
                 />
               </div>
-              {isBookingForOthers && (
+              { isBookingForOthers && (
                 <>
                   <div className="mt-1 flex items-center justify-between">
                     <p className="text-xl font-bold">Thông tin người khám</p>
                     <div>
-                      {profile?.otherInfo?.relatedPatients?.length ? (
+                      { profile?.otherInfo?.relatedPatients?.length ? (
                         <SelectRelatedPatient
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                           name="relatedPatient"
-                          patientList={profile.otherInfo.relatedPatients}
-                          onChange={setRelatedPatientID}
+                          patientList={ profile.otherInfo.relatedPatients }
+                          onChange={ setRelatedPatientID }
                         />
                       ) : (
                         ""
-                      )}
+                      ) }
                     </div>
                   </div>
                   <div
-                    className={`${relatedPatientID ? "pointer-events-none" : "pointer-events-auto"} rounded-md bg-gray-500/30 px-5 py-6 pt-2`}
+                    className={ `${relatedPatientID ? "pointer-events-none" : "pointer-events-auto"} rounded-md bg-gray-500/30 px-5 py-6 pt-2` }
                   >
-                    {/* Hàng 1 */}
+                    {/* Hàng 1 */ }
                     <div className="mb-4">
                       <InputCustom
                         label="Họ và tên"
@@ -571,12 +571,12 @@ export default function Form() {
                         type="text"
                         id="fullName"
                         required
-                        control={control}
-                        errors={errors}
+                        control={ control }
+                        errors={ errors }
                       />
                     </div>
 
-                    {/* Hàng 2 */}
+                    {/* Hàng 2 */ }
                     <div className="mb-4 flex flex-col gap-4 md:flex-row">
                       <div className="flex-1">
                         <InputCustom
@@ -587,8 +587,8 @@ export default function Form() {
                           type="text"
                           id="phoneNumber"
                           required
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                       <div className="flex-1">
@@ -599,8 +599,8 @@ export default function Form() {
                           name="email"
                           type="email"
                           id="email"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                     </div>
@@ -612,9 +612,9 @@ export default function Form() {
                           <span className="pl-1 text-sm text-red-500">*</span>
                         </label>
                         <SelectGender
-                          control={control}
+                          control={ control }
                           name="gender"
-                          errors={errors}
+                          errors={ errors }
                         />
                       </div>
                       <div className="flex-1">
@@ -623,13 +623,13 @@ export default function Form() {
                           <span className="pl-1 text-sm text-red-500">*</span>
                         </label>
                         <SelectBirthDate
-                          control={control}
+                          control={ control }
                           name="dateOfBirth"
-                          errors={errors}
+                          errors={ errors }
                         />
                       </div>
                     </div>
-                    {/* Hàng 3 */}
+                    {/* Hàng 3 */ }
                     <div className="mb-4 flex flex-col gap-4 md:flex-row">
                       <div className="flex-1">
                         <label htmlFor="occupation" className="mb-1 block">
@@ -641,8 +641,8 @@ export default function Form() {
                           name="occupation"
                           type="text"
                           id="occupation"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                       <div className="flex-1">
@@ -650,14 +650,14 @@ export default function Form() {
                           Dân tộc:
                         </label>
                         <SelectEthnic
-                          control={control}
+                          control={ control }
                           name="ethnic"
-                          errors={errors}
+                          errors={ errors }
                         />
                       </div>
                     </div>
 
-                    {/* Hàng 4 */}
+                    {/* Hàng 4 */ }
                     <div className="mb-4 flex flex-col gap-4 md:flex-row">
                       <div className="flex-1">
                         <InputCustom
@@ -668,8 +668,8 @@ export default function Form() {
                           name="citizenIdentificationNumber"
                           type="text"
                           id="citizenIdentificationNumber"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                       <div className="flex-1">
@@ -682,8 +682,8 @@ export default function Form() {
                           name="insuranceCode"
                           type="text"
                           id="insuranceCode"
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                     </div>
@@ -697,14 +697,14 @@ export default function Form() {
                           type="text"
                           id="address"
                           required
-                          control={control}
-                          errors={errors}
+                          control={ control }
+                          errors={ errors }
                         />
                       </div>
                     </div>
                   </div>
                 </>
-              )}
+              ) }
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
                   Trở lại

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import InputCustom from "@/components/ui/InputCustom";
-import { forgotSchema } from "@/zods/forgot";
+import { forgotSchema } from "@/zods/client/forgot";
 import { authApi } from "@/services/authApi";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";

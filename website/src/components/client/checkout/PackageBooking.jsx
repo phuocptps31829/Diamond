@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { FaSearch } from "react-icons/fa";
 import { Input } from "@/components/ui/Input";
 import InputCustom from "@/components/ui/InputCustom";
-import { otherBookingSchema } from "@/zods/booking";
+import { otherBookingSchema } from "@/zods/client/booking";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SelectDoctor from "./select/SelectDoctor";
@@ -93,7 +93,7 @@ export default function Form() {
   return (
     <div className="mx-auto mt-5 flex max-w-screen-xl flex-col px-0 py-3 md:mt-10 md:px-5 md:py-5">
       <div className="container mx-auto flex flex-col gap-5 rounded-md border px-5 py-5 shadow-gray md:flex-row">
-        {/* Select Services */}
+        {/* Select Services */ }
         <div className="flex w-full flex-col gap-[20px] px-2">
           <div className="flex justify-between">
             <p className="font-semibold">Chọn gói khám</p>
@@ -104,77 +104,77 @@ export default function Form() {
             <Input className="pl-10" placeholder="Tìm kiếm gói khám..." />
           </div>
 
-          {/* Package List with Scroll */}
+          {/* Package List with Scroll */ }
           <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 h-[340px] overflow-y-auto px-2 md:h-[750px]">
-            {packages.map((pkg, index) => (
-              <label key={index}>
+            { packages.map((pkg, index) => (
+              <label key={ index }>
                 <div className="relative mb-3 rounded-lg border border-primary-500 px-4 py-3">
                   <Checkbox
-                    id={`checkbox-gt-${index}`}
+                    id={ `checkbox-gt-${index}` }
                     className="absolute right-5 top-1/2"
                   />
                   <div className="mb-2 flex">
                     <img
-                      src={pkg.image}
+                      src={ pkg.image }
                       className="h-[51px] w-[98px]"
-                      alt={`Image of ${pkg.title}`}
+                      alt={ `Image of ${pkg.title}` }
                     />
                     <div className="ml-2">
                       <p className="text-[13px] font-bold md:text-[17px]">
-                        {pkg.title}
+                        { pkg.title }
                       </p>
                       <span className="text-[12px] md:text-sm">Tiêu chuẩn</span>
                     </div>
                   </div>
                   <div>
                     <p>
-                      Giá: <span>{pkg.price}</span>
+                      Giá: <span>{ pkg.price }</span>
                     </p>
                     <p className="w-full max-w-[330px] text-justify text-[12px] font-light md:text-[15px]">
-                      {pkg.description}
+                      { pkg.description }
                     </p>
                   </div>
                 </div>
               </label>
-            ))}
+            )) }
           </div>
         </div>
 
-        {/* Form */}
+        {/* Form */ }
         <div className="w-full p-4 pt-0 md:ml-auto">
           <p className="mb-4 text-xl font-bold">Thông tin đặt lịch khám</p>
-          <form onSubmit={handleSubmit()}>
+          <form onSubmit={ handleSubmit() }>
             <div className="flex flex-col gap-4">
-              {/* Hàng đầu tiên */}
+              {/* Hàng đầu tiên */ }
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
-                  {/* Khoa khám */}
+                  {/* Khoa khám */ }
                   <SelectDepartment
-                    control={control}
+                    control={ control }
                     name="department"
-                    errors={errors}
+                    errors={ errors }
                   />
                 </div>
                 <div className="flex-1">
                   <SelectDoctor
-                    control={control}
+                    control={ control }
                     name="doctor"
-                    errors={errors}
+                    errors={ errors }
                   />
                 </div>
               </div>
 
-              {/* Selet time */}
+              {/* Selet time */ }
               <div className="flex flex-col gap-4 md:flex-row">
-                {/* Date */}
+                {/* Date */ }
 
                 <div className="flex-1">
-                  <SelectDate control={control} name="date" errors={errors}    onChange={(date) => {
-                      setSelectedDate(date);
-                    }} />
+                  <SelectDate control={ control } name="date" errors={ errors } onChange={ (date) => {
+                    setSelectedDate(date);
+                  } } />
                 </div>
                 <div className="flex-1">
-                  <SelectTime control={control} name="time" errors={errors} />
+                  <SelectTime control={ control } name="time" errors={ errors } />
                 </div>
               </div>
               <div className="mb-2">
@@ -188,16 +188,16 @@ export default function Form() {
                   name="room"
                   type="text"
                   id="room"
-                  disabled={true}
-                  control={control}
-                  errors={errors}
+                  disabled={ true }
+                  control={ control }
+                  errors={ errors }
                 />
               </div>
 
-              {/* Thông tin người khám */}
+              {/* Thông tin người khám */ }
               <p className="mt-2 text-xl font-bold">Thông tin người khám</p>
               <div className="rounded-md bg-gray-500/30 px-5 py-6 pt-2">
-                {/* Hàng 1 */}
+                {/* Hàng 1 */ }
                 <div className="mb-4">
                   <label htmlFor="hoten" className="mb-1 block">
                     Họ và tên:
@@ -208,12 +208,12 @@ export default function Form() {
                     name="fullName"
                     type="text"
                     id="fullName"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                   />
                 </div>
 
-                {/* Hàng 2 */}
+                {/* Hàng 2 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="email" className="mb-1 block">
@@ -225,8 +225,8 @@ export default function Form() {
                       name="email"
                       type="email"
                       id="email"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -239,8 +239,8 @@ export default function Form() {
                       name="phoneNumber"
                       type="text"
                       id="phoneNumber"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
@@ -251,9 +251,9 @@ export default function Form() {
                       Giới tính
                     </label>
                     <SelectGender
-                      control={control}
+                      control={ control }
                       name="gender"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -261,13 +261,13 @@ export default function Form() {
                       Ngày sinh
                     </label>
                     <SelectBirthDate
-                      control={control}
+                      control={ control }
                       name="birthDate"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
-                {/* Hàng 3 */}
+                {/* Hàng 3 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="job" className="mb-1 block">
@@ -279,8 +279,8 @@ export default function Form() {
                       name="job"
                       type="text"
                       id="job"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -288,14 +288,14 @@ export default function Form() {
                       Dân tộc:
                     </label>
                     <SelectEthnic
-                      control={control}
+                      control={ control }
                       name="ethnicity"
-                      errors={errors}
+                      errors={ errors }
                     />
                   </div>
                 </div>
 
-                {/* Hàng 4 */}
+                {/* Hàng 4 */ }
                 <div className="mb-4 flex flex-col gap-4 md:flex-row">
                   <div className="flex-1">
                     <label htmlFor="cccd" className="mb-1 block">
@@ -307,8 +307,8 @@ export default function Form() {
                       name="cccd"
                       type="text"
                       id="cccd"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                   <div className="flex-1">
@@ -321,8 +321,8 @@ export default function Form() {
                       name="bhyt"
                       type="text"
                       id="bhyt"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
@@ -334,36 +334,36 @@ export default function Form() {
                   <div className="mb-2 flex flex-col items-center justify-between gap-1 md:flex-row">
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectProvince
-                        control={control}
+                        control={ control }
                         name="province"
-                        errors={errors}
-                        onProvinceChange={(provinceId) => {
+                        errors={ errors }
+                        onProvinceChange={ (provinceId) => {
                           setSelectedProvinceId(provinceId);
                           setSelectedDistrictId(null);
-                        }}
+                        } }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectDistrict
-                        control={control}
+                        control={ control }
                         name="district"
-                        errors={errors}
-                        provinceId={selectedProvinceId}
-                        onDistrictChange={setSelectedDistrictId}
-                        setValue={setValue}
+                        errors={ errors }
+                        provinceId={ selectedProvinceId }
+                        onDistrictChange={ setSelectedDistrictId }
+                        setValue={ setValue }
                       />
                     </div>
                     <div className="w-full flex-1 md:w-[200px]">
                       <SelectWard
-                        control={control}
+                        control={ control }
                         name="ward"
-                        errors={errors}
-                        setValue={setValue}
-                        districtId={selectedDistrictId}
+                        errors={ errors }
+                        setValue={ setValue }
+                        districtId={ selectedDistrictId }
                       />
                     </div>
                   </div>
-                  {/* Hàng 5 */}
+                  {/* Hàng 5 */ }
                   <div className="mb-4">
                     <InputCustom
                       className="col-span-1 sm:col-span-1"
@@ -371,13 +371,13 @@ export default function Form() {
                       name="address"
                       type="text"
                       id="address"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                     />
                   </div>
                 </div>
 
-                {/* Button */}
+                {/* Button */ }
               </div>
               <div className="mt-3 flex justify-end gap-3">
                 <Button size="lg" variant="outline">
