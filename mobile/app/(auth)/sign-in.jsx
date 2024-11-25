@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as Google from "expo-auth-session/providers/google";
 import { makeRedirectUri } from 'expo-auth-session';
 import {
@@ -18,8 +18,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useMutation } from "@tanstack/react-query";
 import Input from "../../components/ui/Input";
 import ToastUI from "../../components/ui/Toast";
+import { useDispatch } from "react-redux";
+import { setProfile } from "../../store/profile/profileSlice";
 
 const SignIn = () => {
+  const [loadingGetProfile, setLoadingGetProfile] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const dispatch = useDispatch();
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
     clientId:
       "484498778636-r16pdgcmr7m2eg8jbp7100dmdtu00mn2.apps.googleusercontent.com",
@@ -27,11 +32,26 @@ const SignIn = () => {
   });
 
   useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      console.log(id_token);
+    if (authReady) {
+      const fetchProfile = async () => {
+        try {
+          const profileData = await authApi.getProfileInfo();
+          dispatch(setProfile(profileData?.data));
+          ToastUI({
+            type: "success",
+            text1: "Đăng nhập thành công",
+            text2: "Chào mừng bạn trở lại!",
+          });
+          router.replace("home");
+        } catch (error) {
+          console.error("Error fetching profile", error);
+        } finally {
+          setLoadingGetProfile(false);
+        }
+      };
+      fetchProfile();
     }
-  }, [response]);
+  }, [authReady, dispatch]);
 
   const {
     handleSubmit,
@@ -48,15 +68,10 @@ const SignIn = () => {
   const { mutate: login, isPending } = useMutation({
     mutationFn: authApi.login,
     onSuccess: async (data) => {
-      console.log(data);
       await AsyncStorage.setItem("accessToken", data.accessToken.token);
       await AsyncStorage.setItem("refreshToken", data.refreshToken.token);
-      ToastUI({
-        type: "success",
-        text1: "Đăng nhập thành công",
-        text2: "Chào mừng bạn trở lại!",
-      });
-      router.replace("home");
+      setAuthReady(true);
+      setLoadingGetProfile(true);
     },
     onError: (error) => {
       const errorMessage =
@@ -115,13 +130,13 @@ const SignIn = () => {
           </View>
           <TouchableOpacity
             className={`${
-              isPending ? "opacity-50" : ""
+              (isPending || loadingGetProfile) ? "opacity-50" : ""
             } bg-[#209bdd] py-3 mt-7 rounded-md items-center`}
             onPress={handleSubmit(onSubmit)}
-            disabled={isPending}
+            disabled={isPending || loadingGetProfile}
           >
             <Text className="text-white uppercase text-sm font-bold">
-              {isPending ? (
+              {isPending || loadingGetProfile ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
                 "Đăng nhập"

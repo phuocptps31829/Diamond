@@ -1,16 +1,36 @@
-import { Text, View, Pressable } from "react-native";
+import { Text, View, Pressable, ActivityIndicator } from "react-native";
 import { useState } from "react";
 import { ScrollView } from "react-native";
 import PromotionNotification from "./PromotionNotification";
 import SystemNotification from "./SystemNotification";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useQuery } from "@tanstack/react-query";
+import { notificationsApi } from "../../services/notificationsApi";
 
 const HeaderNavigation = () => {
   const [activeTab, setActiveTab] = useState("system");
 
+  const {
+    data,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: notificationsApi.getNotifications,
+  });
+
   const handleChooseTab = (tab) => {
     setActiveTab(tab);
   };
+
+  if (error) {
+    return (
+      <View className="w-full h-full flex justify-center items-center">
+        <Text>{errorPackage?.message || errorSpecialty?.message}</Text>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -22,8 +42,8 @@ const HeaderNavigation = () => {
           }`}
         >
           <View className=" flex-row gap-2  font-semibold justify-center items-center">
-            <FontAwesome name="list-ul" size={16} color="white" />
-            <Text className="text-white text-[14px]">Hệ thống</Text>
+          <MaterialIcons name="notification-important" size={20} color="white" />
+            <Text className="text-white text-[13px] font-semibold">Thông báo chưa xem</Text>
           </View>
         </Pressable>
         <Pressable
@@ -33,14 +53,22 @@ const HeaderNavigation = () => {
           onPress={() => handleChooseTab("promotion")}
         >
           <View className="flex-row gap-2 font-semibold justify-center items-center">
-            <FontAwesome name="list-ul" size={16} color="white" />
-            <Text className="text-white text-[14px]">Chương trình ưu đãi</Text>
+          <Ionicons name="notifications-circle-outline" size={20} color="white" />
+            <Text className="text-white text-[13px] font-semibold">Thông báo đã xem</Text>
           </View>
         </Pressable>
       </View>
       <ScrollView className="bg-[#E8F2F7]" showsVerticalScrollIndicator={false}>
-        {activeTab === "system" && <SystemNotification />}
-        {activeTab === "promotion" && <PromotionNotification />}
+        {isLoading ? (
+          <View className="w-full flex justify-center items-center mt-5">
+            <ActivityIndicator size="large" color="#006ca6" />
+          </View>
+        ) : (
+          <>
+            {activeTab === "system" && <SystemNotification data={data} />}
+            {activeTab === "promotion" && <PromotionNotification data={data} />}
+          </>
+        )}
       </ScrollView>
     </>
   );
