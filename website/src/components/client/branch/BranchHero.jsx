@@ -4,7 +4,7 @@ import { FaStar, FaStarHalf } from "react-icons/fa";
 const BranchHero = () => {
   return (
     <>
-      <div className="container py-5 lg:py-10">
+      <div className="container py-5 lg:py-6">
         <div className="grid gap-4 md:grid-cols-2 md:items-center md:gap-8 xl:gap-20">
           <div>
             <h1 className="my-2 scroll-m-20 text-4xl font-extrabold tracking-tight text-primary-500 lg:text-5xl">
@@ -127,7 +127,6 @@ const BranchHero = () => {
               </div>
             </div>
           </div>
-          {/* Col */}
           <div className=" ms-2 ">
             <img
               className="w-full rounded-md"
