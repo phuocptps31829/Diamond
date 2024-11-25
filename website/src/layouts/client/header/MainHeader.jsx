@@ -169,6 +169,7 @@ export default function MainHeader() {
       testUpcoming();
     };
   }, [subscribe, socket, userProfile]);
+
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
@@ -257,7 +258,7 @@ export default function MainHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   side="bottom"
-                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
+                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800 positionFixed"
                 >
                   <DropdownMenuLabel className="text-base font-semibold dark:text-white">
                     Thông báo

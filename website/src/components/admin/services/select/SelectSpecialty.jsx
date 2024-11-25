@@ -27,7 +27,7 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
     isLoading,
   } = useQuery({
     queryKey: ["specialties"],
-    queryFn: () => specialtyApi.getAllSpecialties(),
+    queryFn: () => specialtyApi.getNoPaginate(),
   });
 
   if (isLoading) {
