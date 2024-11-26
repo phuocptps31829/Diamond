@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
@@ -26,43 +26,18 @@ import { logoutAction } from "@/redux/authSlice";
 import { toastUI } from "@/components/ui/Toastify";
 import { AnimatedList } from "@/components/ui/AnimatedList";
 import Notification from "./notion/NotionMessage";
-let notifications = [
-  {
-    name: "Payment received",
-    description: "Magic UI",
-    time: "15m ago",
-    icon: "💸",
-    color: "#00C9A7",
-  },
-  {
-    name: "User signed up",
-    description: "Magic UI",
-    time: "10m ago",
-    icon: "👤",
-    color: "#FFB800",
-  },
-  {
-    name: "New message",
-    description: "Magic UI",
-    time: "5m ago",
-    icon: "💬",
-    color: "#FF3D71",
-  },
-  {
-    name: "New event",
-    description: "Magic UI",
-    time: "2m ago",
-    icon: "🗞️",
-    color: "#1E86FF",
-  },
-];
+import { useSocket } from "@/hooks/useSocket";
+import { notificationsApi } from "@/services/notificationsApi";
+import toast from "react-hot-toast";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
-notifications = Array.from({ length: 10 }, () => notifications).flat();
 const UserNav = () => {
   const userProfile = useSelector((state) => state.auth.userProfile);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
 
   const handleLogout = () => {
     dispatch(logoutAction());
@@ -74,6 +49,82 @@ const UserNav = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const data = await notificationsApi.getNotificationsByUser();
+      setNotifications(data.data);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userProfile) {
+      fetchNotifications();
+    }
+  }, [fetchNotifications, userProfile]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNotification = (data) => {
+      const userID = userProfile?._id;
+      console.log("New notification:", data);
+      console.log("User ID:", userID);
+
+      if (data.data?.userIDs.includes(userID)) {
+        toast.custom((t) => (
+          <div
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } pointer-events-auto flex w-full max-w-[28rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out`}
+          >
+            <div className="w-0 flex-1 p-4 py-5">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 pt-0.5">
+                  <svg
+                    className="h-10 w-10 text-blue-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v3a1 1 0 102 0V6zm-1 7a1 1 0 100-2 1 1 0 000 2z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    Bạn có một thông báo mới!
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Nhấn vào chuông để xem chi tiết.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex border-l border-gray-200">
+              <button
+                onClick={() => toast.dismiss(t.id)}
+                className="flex w-full items-center justify-center rounded-none rounded-r-lg border border-transparent p-4 text-sm font-medium text-primary-600 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        ));
+        fetchNotifications();
+      }
+    };
+
+    const unsubscribe = subscribe("notification", handleNotification);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe, socket, userProfile, fetchNotifications]);
   return (
     <>
       <div className="mr-6 flex items-center gap-6">
@@ -87,31 +138,39 @@ const UserNav = () => {
           </span>
           <IoMdMailUnread size={25} color="#007BBB" />
         </button>
-        
-        <DropdownMenu >
+
+        <DropdownMenu>
           <DropdownMenuTrigger asChild className="">
             <button className="relative" onClick={toggleDropdown}>
-              <span className="absolute right-0 flex h-3 w-3">
-                <span
-                  className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-                  style={{ animationDuration: "2s" }}
-                ></span>
-                <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
-              </span>
+              {notifications.length > 0 && (
+                <span className="absolute right-0 flex h-3 w-3">
+                  <span
+                    className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+                    style={{ animationDuration: "2s" }}
+                  ></span>
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+                </span>
+              )}
               <FaBell size={25} color="#007BBB" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800 mt-4">
+          <DropdownMenuContent className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-4 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
             <DropdownMenuLabel className="text-base font-semibold dark:text-white">
               Thông báo
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <AnimatedList>
-              {notifications.map((item, idx) => (
-                <DropdownMenuItem asChild key={idx}>
-                  <Notification {...item} />
-                </DropdownMenuItem>
-              ))}
+            <DropdownMenuSeparator className="mb-4" />
+            <AnimatedList baseDelay={1000} minDelay={100}>
+              {notifications.length === 0 ? (
+                <div className="my-3 text-center text-gray-500 dark:text-gray-400">
+                  Bạn không có thông báo nào
+                </div>
+              ) : (
+                notifications.map((item, idx) => (
+                  <DropdownMenuItem asChild key={idx} className="">
+                    <Notification {...item} />
+                  </DropdownMenuItem>
+                ))
+              )}
             </AnimatedList>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -16,20 +16,22 @@ const breadcrumbData = [
 
 const PatientsListPage = () => {
     const { data: allPatients, isLoading: isLoadingPatients } = useQuery({
-        queryKey: ['patients'],
-        queryFn: patientApi.getAllPatients,
+        queryKey: ['patientsNoPaginated'],
+        queryFn: () => patientApi.getAllPatients({
+            noPaginated: true,
+        }),
     });
 
     return (
         <>
-            {isLoadingPatients ? (
+            { isLoadingPatients ? (
                 <Loading />
             ) : (
                 <>
-                    <BreadcrumbCustom data={breadcrumbData} />
-                    <PatientsList allPatients={allPatients?.data} />
+                    <BreadcrumbCustom data={ breadcrumbData } />
+                    <PatientsList allPatients={ allPatients?.data } />
                 </>
-            )}
+            ) }
         </>
     );
 };
