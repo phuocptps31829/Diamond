@@ -204,7 +204,7 @@ export default function MainHeader() {
                   Thông báo
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="mb-4" />
-                <AnimatedList>
+                <AnimatedList  baseDelay={1000} minDelay={100}>
                   { notifications.length === 0 ? (
                     <div className="my-3 text-center text-gray-500 dark:text-gray-400">
                       Bạn không có thông báo nào

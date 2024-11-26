@@ -127,7 +127,7 @@ const ServicesContainer = () => {
                       <Skeleton key={ index } className="h-80 w-full" />
                     )) }
                 </>
-              ) : error ? (
+              ) : error || (data?.data?.length === 0) ? (
                 type === "package"
                   ? <NotFound message={ "Không tìm thấy gói khám nào." } />
                   : <NotFound message={ "Không tìm thấy dịch vụ nào." } />

@@ -15,7 +15,7 @@ export default function Introduce() {
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/doctors"
-            className="flex flex-col items-center px-[45px] py-[40px]"
+            className="flex flex-col items-center p-6 pb-8"
           >
             <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
               Đội ngũ Y - Bác sĩ
@@ -29,7 +29,7 @@ export default function Introduce() {
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/facility"
-            className="flex flex-col items-center px-[45px] py-[40px]"
+            className="flex flex-col items-center p-6 pb-8"
           >
             <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
               Cơ sở vật chất
@@ -43,7 +43,7 @@ export default function Introduce() {
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/profile/medical-records"
-            className="flex flex-col items-center px-[45px] py-[40px]"
+            className="flex flex-col items-center p-6 pb-8"
           >
             <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
               Bệnh án điện tử
@@ -57,7 +57,7 @@ export default function Introduce() {
         <div className="flex items-center justify-center rounded-md bg-primary-100">
           <Link
             to="/branch"
-            className="flex flex-col items-center px-[45px] py-[40px]"
+            className="flex flex-col items-center p-6 pb-8"
           >
             <h2 className="mb-2 text-[20px] font-bold sm:text-[27px]">
               Hệ thống phòng khám

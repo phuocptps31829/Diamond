@@ -17,7 +17,7 @@ const Notification = ({
   isRead,
 }) => {
   const { color, icon } = typeStyles[type] || { color: "#ccc", icon: "🔔" };
-  const link = `/profile/${redirect?.endpint || "appointments"}/detail/${redirect?._id}`;
+  const link = `/profile/${redirect?.endpoint || "appointments"}/detail/${redirect?._id}`;
   return (
     <Link to={ link }>
       <figure
