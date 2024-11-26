@@ -6,11 +6,15 @@ import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { useRouter } from "expo-router";
 import { menuItems } from "../../constants/menu-items";
 import ToastUI from "../../components/ui/Toast";
+import { useDispatch } from "react-redux";
+import { clearProfile } from "../../store/profile/profileSlice";
 
 const MenuList = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const handleLogout = async () => {
+    dispatch(clearProfile());
     await AsyncStorage.removeItem("accessToken");
     await AsyncStorage.removeItem("refreshToken");
     ToastUI({

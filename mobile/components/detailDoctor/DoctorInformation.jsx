@@ -2,8 +2,10 @@ import { useState } from "react";
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
+const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const DoctorInformation = ({ doctor }) => {
+  console.log("doctor", doctor);
   const { width } = useWindowDimensions();
   const [showInfor, setShowInfor] = useState(0);
 
@@ -16,12 +18,12 @@ const DoctorInformation = ({ doctor }) => {
       <View className="flex-col justify-center items-center gap-2 mt-4">
         <Image
           source={{
-            uri: doctor?.userID?.avatar,
+            uri: URL_IMAGE + "/" + doctor.avatar,
           }}
           className="w-[100px] h-[100px] rounded-full"
         />
         <Text className="font-semibold text-[15px]">
-          BS. {doctor?.userID?.fullName}
+          BS. {doctor.fullName}
         </Text>
         <Text className="text-gray-400 font-semibold">Bác sĩ</Text>
       </View>
@@ -37,7 +39,7 @@ const DoctorInformation = ({ doctor }) => {
               showInfor === 0 ? "text-white" : "text-black"
             } text-center font-semibold `}
           >
-            Chứng nhận
+            Giới thiệu
           </Text>
         </Pressable>
         <Pressable
@@ -51,27 +53,32 @@ const DoctorInformation = ({ doctor }) => {
               showInfor === 1 ? "text-white" : "text-black"
             } text-center font-semibold `}
           >
-            Kinh nghiệm
+            Lịch làm việc
           </Text>
         </Pressable>
       </View>
-      <ScrollView className="border-t-2 border-gray-300">
+      <ScrollView className="border-t-2 border-gray-300 px-4">
         <View
           className={`${
             showInfor === 0 ? "flex" : "hidden"
-          } p-4 space-y-2 pb-20`}
+          } space-y-2 mt-3`}
         >
           <RenderHtml
             contentWidth={width}
-            source={{ html: doctor?.certification }}
+            source={{ html: doctor?.otherInfo?.detail }}
+            tagsStyles={tagsStyles}
           />
         </View>
         <View
           className={`${
             showInfor === 1 ? "flex" : "hidden"
-          } space-y-2 p-4 pb-20`}
+          } space-y-2 mt-3`}
         >
-          <RenderHtml contentWidth={width} source={{ html: doctor?.detail }} />
+          <RenderHtml 
+            contentWidth={width} 
+            source={{ html: doctor?.otherInfo?.detail }}
+            tagsStyles={tagsStyles}
+          />
         </View>
       </ScrollView>
       <View className="absolute bottom-7 flex justify-center items-center w-full">
@@ -83,6 +90,31 @@ const DoctorInformation = ({ doctor }) => {
       </View>
     </>
   );
+};
+
+const tagsStyles = {
+  ul: {
+    margin: 0,
+    paddingLeft: 0,
+    listStyleType: "none",
+  },
+  p: {
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 5,
+    lineHeight: 24,
+  },
+  li: {
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 5,
+    listStyleType: "none",
+    lineHeight: 24,
+  },
+  strong: {
+    fontWeight: "bold",
+    color: "#007BBB",
+  },
 };
 
 export default DoctorInformation;
