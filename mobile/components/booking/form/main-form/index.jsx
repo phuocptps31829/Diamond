@@ -2,6 +2,8 @@ import { View } from "react-native";
 import BranchSelect from "../../selects/BranchSelect";
 import DoctorSelect from "../../selects/DoctorSelect";
 import { useState } from "react";
+import { CalendarSelect } from "../../selects/DateSelect";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const MainBookingForm = ({ item }) => {
     const [branchID, setBranchID] = useState(null);
@@ -27,7 +29,7 @@ const MainBookingForm = ({ item }) => {
                 />
             </View>
             <View className="mt-2">
-                <DoctorSelect
+                <CalendarSelect
                     branchID={ branchID }
                     specialtyID={ specialtyID }
                     onSelect={ setDoctorID }
