@@ -39,15 +39,38 @@ use App\Http\Controllers\ContractController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+Route::post('/v1/patients/update/avatar/{id}', [PatientController::class, 'updateImage']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware(['web'])->group(function () {
+    Route::get('/v1/auth/google', [AuthController::class, 'loginGoogle']);
+    Route::get('/v1/auth/google/callback', [AuthController::class, 'googleCallback']);
+    Route::get('/v1/auth/facebook', [AuthController::class, 'loginFacebook']);
+    Route::get('/v1/auth/facebook/callback', [AuthController::class, 'facebookCallback']);
+});
+Route::get('/chat', function () {
+    return view('index');
+});
+Route::post('/v1/auth/login', [AuthController::class, 'login']);
+Route::post('/v1/auth/register', [AuthController::class, 'register']);
+Route::post('/v1/auth/forgot-password/send-otp/{phone}', [AuthController::class, 'sendOTPForgotPassword']);
+Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword'])->middleware('VerifyOTP');
+Route::put('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword'])->middleware('VerifyOTP');
+
+Route::post('/v1/auth/refresh-token', [AuthController::class, 'refreshToken'])->middleware('VerifyRefreshToken');
+
+Route::post('/v1/auth/logout', [AuthController::class, 'logout'])->middleware('VerifyRefreshToken');
+
+//export
+Route::get('/v1/invoices/export', [InvoiceController::class, 'exportInvoice']);
+Route::get('/v1/contracts/export/{id}', [ContractController::class, 'export']);
 
 Route::post('/v1/pusher/auth', [PusherController::class, 'auth']);
 
-Route::post('/v1/contracts/add', [ContractController::class, 'create']);
-Route::post('/v1/contracts/export/{id}', [ContractController::class, 'export']);
+Route::post('/v1/contracts/add/doctor', [ContractController::class, 'create']);
+Route::post('/v1/contracts/add/health', [ContractController::class, 'medicalContract']);
+//Route::post('/v1/contracts/add', [ContractController::class, 'create']);
 
 // Route::group(['middleware' => 'CheckSecret'], function () {
 Route::get('/v1/work-schedules', [WorkScheduleController::class, 'getAllWorkSchedule'])->middleware('checkQueryParams');
@@ -75,6 +98,7 @@ Route::delete('/v1/invoices/delete/{id}', [InvoiceController::class, 'deleteAppo
 Route::patch('/v1/invoices/update-order-number/{id}', [InvoiceController::class, 'updateOrderNumber']);
 Route::patch('/v1/invoices/update-status/{id}', [InvoiceController::class, 'updateStatus']);
 Route::patch('/v1/invoices/payment/update-status/{id}', [InvoiceController::class, 'updatePaymentStatus']);
+Route::put('/v1/invoices/update/appointment-work-/{id}', [InvoiceController::class, 'updateWorkScheduleFromInvoice']);
 
 Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
 Route::get('/v1/invoices/payment/vnpay/vnpay_return', [InvoiceController::class, 'vnpayPaymentCallback']);
@@ -83,21 +107,6 @@ Route::post('/v1/invoices/payment/momo', [InvoiceController::class, 'momoPayment
 Route::post('/v1/invoices/payment/cod', [InvoiceController::class, 'codPayment']);
 Route::put('/v1/auth/change-password', [AuthController::class, 'resetPassword'])->middleware('CheckToken');
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/v1/auth/google', [AuthController::class, 'loginGoogle']);
-    Route::get('/v1/auth/google/callback', [AuthController::class, 'googleCallback']);
-    Route::get('/v1/auth/facebook', [AuthController::class, 'loginFacebook']);
-    Route::get('/v1/auth/facebook/callback', [AuthController::class, 'facebookCallback']);
-});
-Route::post('/v1/auth/login', [AuthController::class, 'login']);
-Route::post('/v1/auth/register', [AuthController::class, 'register']);
-Route::post('/v1/auth/forgot-password/send-otp/{phone}', [AuthController::class, 'sendOTPForgotPassword']);
-Route::post('/v1/auth/forgot-password/check-otp', [AuthController::class, 'checkOTPForgotPassword'])->middleware('VerifyOTP');
-Route::put('/v1/auth/forgot-password/reset-password', [AuthController::class, 'forgotPassword'])->middleware('VerifyOTP');
-
-Route::post('/v1/auth/refresh-token', [AuthController::class, 'refreshToken'])->middleware('VerifyRefreshToken');
-
-Route::post('c', [AuthController::class, 'logout'])->middleware('VerifyRefreshToken');
 
 Route::post('/v1/images/upload', [ImageController::class, 'uploadImage']);
 Route::post('/v1/images/upload-images', [ImageController::class, 'uploadImages']);
@@ -105,6 +114,8 @@ Route::post('/v1/images/upload-images', [ImageController::class, 'uploadImages']
 Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
 Route::post('/v1/patients/admin-add', [PatientController::class, 'createPatientFromAdmin']);
 Route::put('/v1/patients/update/{id}', [PatientController::class, 'updatePatient'])->middleware('CheckValidId');
+Route::put('/v1/patients/update/avatar/{id}', [PatientController::class, 'updateImage'])->middleware('CheckValidId');
+
 Route::delete('/v1/patients/delete/{id}', [PatientController::class, 'deletePatient']);
 
 Route::post('/v1/staffs/add', [StaffController::class, 'createStaffFromAdmin']);

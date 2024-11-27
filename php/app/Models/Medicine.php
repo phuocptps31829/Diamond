@@ -20,7 +20,6 @@ class Medicine extends Model
         'instruction',
         'note',
         'price',
-        'isDeleted',
     ];
 
     protected $casts = [
@@ -33,7 +32,6 @@ class Medicine extends Model
         'instruction' => 'string',
         'note' => 'string',
         'price' => 'string',
-        'isDeleted' => 'boolean',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -42,12 +40,17 @@ class Medicine extends Model
         $this->attributes['medicineCategoryID'] = new ObjectId($value);
     }
 
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
-
     public function getTable()
     {
         return 'Medicine';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Prescription::where("medicines.medicineID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có đơn thuốc!');
+            }
+        });
     }
 }

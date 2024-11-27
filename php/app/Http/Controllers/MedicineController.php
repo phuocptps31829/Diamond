@@ -139,10 +139,9 @@ class MedicineController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Medicine::where('isDeleted', false)->count();
+            $totalRecords = Medicine::count();
 
-            $Medicines = Medicine::where('isDeleted', false)
-                ->skip($skip)
+            $Medicines = Medicine::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -163,7 +162,7 @@ class MedicineController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Medicine = Medicine::where('_id', $id)->where('isDeleted', false)->first();
+            $Medicine = Medicine::where('_id', $id)->first();
 
             if (!$Medicine) {
                 return createError(404, 'Medicine not found');
@@ -200,7 +199,7 @@ class MedicineController extends Controller
         try {
             $id = $request->route('id');
 
-            $Medicine = Medicine::where('_id', $id)->where('isDeleted', false)->first();
+            $Medicine = Medicine::where('_id', $id)->first();
 
             if (!$Medicine) {
                 return createError(404, 'Medicine not found');
@@ -229,12 +228,12 @@ class MedicineController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Medicine = Medicine::where('_id', $id)->where('isDeleted', false)->first();
+            $Medicine = Medicine::where('_id', $id)->first();
             if (!$Medicine) {
                 return createError(404, 'Medicine not found');
             }
 
-            $Medicine->update(['isDeleted' => true]);
+            $Medicine->delete();
 
             return response()->json([
                 'status' => 'success',

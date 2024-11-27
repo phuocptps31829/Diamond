@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Redis;
 use Mongodb\Laravel\Eloquent\Model;
 use MongoDB\BSON\ObjectId;
 
@@ -19,14 +20,12 @@ class Appointment extends Model
         'time',
         'status',
         'payment',
-        'isDeleted',
     ];
 
     protected $casts = [
         'type' => 'string',
         'time' => 'string',
         'status' => 'string',
-        'isDeleted' => 'boolean',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -54,12 +53,33 @@ class Appointment extends Model
     {
         $this->attributes['payment'] = $value;
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {
         return 'Appointment';
     }
+    public function Specialty()
+    {
+        $this->belongsTo(Specialty::class, 'specialtyID', '_id');
+    }
+    protected static function booted()
+    {
+        static::created(function ($model) {
+            \Log::info('Appointment created');
+
+            $existingAppointments = Redis::get('upcomingAppointments');
+            $appointments = $existingAppointments ? json_decode($existingAppointments, true) : [];
+            $appointments[] = $model;
+            Redis::set('upcomingAppointments', json_encode($appointments));
+            \Log::info(json_encode($appointments));
+
+        });
+
+        static::deleting(function ($model) {
+            throw new \App\Exceptions\DataExistsException('Không thể xóa!', 400);
+        });
+
+
+    }
+
 }

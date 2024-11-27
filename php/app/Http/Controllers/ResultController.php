@@ -19,10 +19,9 @@ class ResultController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Result::where('isDeleted', false)->count();
+            $totalRecords = Result::count();
 
-            $result = Result::where('isDeleted', false)
-                ->skip($skip)
+            $result = Result::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -35,7 +34,7 @@ class ResultController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -43,7 +42,7 @@ class ResultController extends Controller
     {
         try {
             $id = $request->route('id');
-            $result = Result::where('_id', $id)->where('isDeleted', false)->first();
+            $result = Result::where('_id', new  ObjectId($id))->first();
 
             if (!$result) {
                 return createError(404, 'Result not found');
@@ -55,7 +54,7 @@ class ResultController extends Controller
                 'data' => $result,
             ], 200);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -72,8 +71,8 @@ class ResultController extends Controller
                 $dataResult = $value['result'];
                 $dataResult['appointmentID'] = new ObjectId($dataResult['appointmentID']);
                 $dataResult['serviceID'] = new ObjectId($dataResult['serviceID']);
-                $newResult= Result::create($dataResult);
-                $result[] =$newResult;
+                $newResult = Result::create($dataResult);
+                $result[] = $newResult;
 
                 if (isset($value['prescription'])) {
                     $dataPrescription = $value['prescription'];
@@ -84,7 +83,19 @@ class ResultController extends Controller
                             $medicine['medicineID'] = new ObjectId($medicine['medicineID']);
                         }
                     }
-                    $prescription[] = Prescription::create($dataPrescription);
+
+                    $prescriptionNew = Prescription::create([
+                        "medicines" => $dataPrescription['medicines'],
+                        "advice" => $dataPrescription['advice'],
+                        "resultID" => $dataPrescription['resultID'],
+                    ]);
+
+                    $prescription[] = $prescriptionNew;
+                    $invoice = Invoice::create([
+                        "appointmentID" => $dataResult['appointmentID'],
+                        "price" => $dataPrescription['price'],
+                        "prescriptionID" => $prescriptionNew->id
+                    ]);
                 }
             }
             return response()->json([
@@ -97,7 +108,7 @@ class ResultController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -113,7 +124,7 @@ class ResultController extends Controller
             ], 201);
         } catch (\Exception $e) {
 
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -122,7 +133,7 @@ class ResultController extends Controller
         try {
             $id = $request->route('id');
 
-            $result = Result::where('_id', $id)->where('isDeleted', false)->first();
+            $result = Result::where('_id', $id)->first();
 
             if (!$result) {
                 return createError(404, 'Result not found');
@@ -138,7 +149,7 @@ class ResultController extends Controller
                 'data' => $result,
             ], 201);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -153,12 +164,12 @@ class ResultController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $result = Result::where('_id', $id)->where('isDeleted', false)->first();
+            $result = Result::where('_id', new ObjectId($id))->first();
             if (!$result) {
                 return createError(404, 'Result not found');
             }
 
-            $result->update(['isDeleted' => true]);
+            $result->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -166,7 +177,7 @@ class ResultController extends Controller
                 'data' => $result,
             ], 200);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 }

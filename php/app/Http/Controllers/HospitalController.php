@@ -127,10 +127,9 @@ class HospitalController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Hospital::where('isDeleted', false)->count();
+            $totalRecords = Hospital::count();
 
-            $hospitals = Hospital::where('isDeleted', false)
-                ->skip($skip)
+            $hospitals = Hospital::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -150,7 +149,7 @@ class HospitalController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Hospital = Hospital::where('_id', $id)->where('isDeleted', false)->first();
+            $Hospital = Hospital::where('_id', $id)->first();
 
             if (!$Hospital) {
                 return createError(404, 'Hospital not found');
@@ -185,7 +184,7 @@ class HospitalController extends Controller
         try {
             $id = $request->route('id');
 
-            $Hospital = Hospital::where('_id', $id)->where('isDeleted', false)->first();
+            $Hospital = Hospital::where('_id', $id)->first();
 
             if (!$Hospital) {
                 return createError(404, 'Hospital not found');
@@ -214,12 +213,12 @@ class HospitalController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Hospital = Hospital::where('_id', $id)->where('isDeleted', false)->first();
+            $Hospital = Hospital::where('_id', $id)->first();
             if (!$Hospital) {
                 return createError(404, 'Hospital not found');
             }
 
-            $Hospital->update(['isDeleted' => true]);
+            $Hospital->delete();
 
             return response()->json([
                 'status' => 'success',

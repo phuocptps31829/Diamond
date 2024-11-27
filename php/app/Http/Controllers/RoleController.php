@@ -121,10 +121,10 @@ class RoleController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Role::where('isDeleted', false)->count();
+            $totalRecords = Role::count();
 
-            $roles = Role::where('isDeleted', false)
-                ->skip($skip)
+            $roles = Role::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -145,7 +145,7 @@ class RoleController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Role = Role::where('_id', $id)->where('isDeleted', false)->first();
+            $Role = Role::where('_id', $id)->first();
 
             if (!$Role) {
                 return createError(404, 'Role not found');
@@ -182,7 +182,7 @@ class RoleController extends Controller
         try {
             $id = $request->route('id');
 
-            $Role = Role::where('_id', $id)->where('isDeleted', false)->first();
+            $Role = Role::where('_id', $id)->first();
 
             if (!$Role) {
                 return createError(404, 'Role not found');
@@ -211,12 +211,12 @@ class RoleController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Role = Role::where('_id', $id)->where('isDeleted', false)->first();
+            $Role = Role::where('_id', $id)->first();
             if (!$Role) {
                 return createError(404, 'Role not found');
             }
 
-            $Role->update(['isDeleted' => true]);
+            $Role->delete();
 
             return response()->json([
                 'status' => 'success',

@@ -43,6 +43,7 @@ class ResultRequest extends FormRequest
 
             'payload.*.prescription' => 'nullable|array',
             'payload.*.prescription.advice' => 'required_with:payload.*.prescription|string',
+            'payload.*.prescription.price' => 'required_with:payload.*.prescription|integer',
             'payload.*.prescription.medicines' => 'nullable|array',
             'payload.*.prescription.medicines.*.medicineID' => 'required_with:payload.*.prescription.medicines|string',
             'payload.*.prescription.medicines.*.quantity' => 'required_with:payload.*.prescription.medicines|integer',

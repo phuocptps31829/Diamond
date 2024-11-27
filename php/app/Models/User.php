@@ -30,8 +30,7 @@ class User extends Authenticatable
         'citizenIdentificationNumber',
         'roleID',
         'otherInfo',
-        'isActivated',
-        'isDeleted',
+        'isActivated'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -43,9 +42,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-    protected $attributes = [
-        'isDeleted' => false,
     ];
 
     /**
@@ -62,7 +58,6 @@ class User extends Authenticatable
         'gender' => 'string',
         'avatar' => 'string',
         'citizenIdentificationNumber' => 'string',
-        'isDeleted' => 'boolean',
     ];
     public function setRoleIDAttribute($value)
     {
@@ -87,5 +82,20 @@ class User extends Authenticatable
     public function getTable()
     {
         return 'User';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (WorkSchedule::where("doctorID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch làm việc!');
+            }
+            if (Appointment::where("patientID",new ObjectId($model->_id))->orWhere( "patientHelpID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch hẹn!');
+            }
+            if (Contract::where("doctorID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có hợp đồng!');
+            }
+        });
     }
 }

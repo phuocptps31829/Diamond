@@ -125,10 +125,9 @@ class ClinicController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Clinic::where('isDeleted', false)->count();
+            $totalRecords = Clinic::count();
 
-            $Clinics = Clinic::where('isDeleted', false)
-                ->skip($skip)
+            $Clinics = Clinic::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -149,7 +148,7 @@ class ClinicController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
 
             if (!$Clinic) {
                 return createError(404, 'Clinic not found');
@@ -187,7 +186,7 @@ class ClinicController extends Controller
         try {
             $id = $request->route('id');
 
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
 
             if (!$Clinic) {
                 return createError(404, 'Clinic not found');
@@ -216,12 +215,12 @@ class ClinicController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
             if (!$Clinic) {
                 return createError(404, 'Clinic not found');
             }
 
-            $Clinic->update(['isDeleted' => true]);
+            $Clinic->delete();
 
             return response()->json([
                 'status' => 'success',

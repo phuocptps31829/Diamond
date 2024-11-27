@@ -41,7 +41,7 @@ class StaffController extends Controller
         try {
             $id = $request->route('id');
 
-            $Staff = User::where('_id', $id)->where('isDeleted', false)->first();
+            $Staff = User::where('_id', $id)->first();
 
             if (!$Staff) {
                 return createError(404, 'Staff not found');
@@ -80,12 +80,12 @@ class StaffController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Staff = User::where('_id', $id)->where('isDeleted', false)->first();
+            $Staff = User::where('_id', $id)->first();
             if (!$Staff) {
                 return createError(404, 'Staff not found');
             }
 
-            $Staff->update(['isDeleted' => true]);
+            $Staff->delete();
 
             return response()->json([
                 'status' => 'success',

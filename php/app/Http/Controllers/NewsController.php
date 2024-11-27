@@ -137,13 +137,12 @@ class NewsController extends Controller
     public function getAllNews(Request $request)
     {
         try {
-
             $page = $request->get('page');
             $limit = $request->get('limitDocuments');
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = News::where('isDeleted', false)->count();
+            $totalRecords = News::count();
 
             $News = News::where('isDeleted', false)
                 ->skip($skip)
@@ -167,7 +166,7 @@ class NewsController extends Controller
     {
         try {
             $id = $request->route('id');
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
                 return createError(404, 'News not found');
@@ -210,7 +209,7 @@ class NewsController extends Controller
         try {
             $id = $request->route('id');
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
                 return createError(404, 'News not found');
@@ -232,7 +231,7 @@ class NewsController extends Controller
         try {
             $id = $request->route('id');
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
                 return createError(404, 'News not found');
@@ -266,12 +265,12 @@ class NewsController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
             if (!$News) {
                 return createError(404, 'News not found');
             }
 
-            $News->update(['isDeleted' => true]);
+            $News->delete();
 
             return response()->json([
                 'status' => 'success',

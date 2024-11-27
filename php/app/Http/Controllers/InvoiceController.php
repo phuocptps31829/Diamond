@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\MedicalPackage;
 use App\Models\News;
 use App\Models\Prescription;
+use App\Models\Result;
 use App\Models\Service;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
@@ -18,9 +19,176 @@ use App\Models\User;
 use Carbon\Carbon;
 use MongoDB\BSON\ObjectId;
 use Illuminate\Support\Facades\Redis;
-
+use PhpOffice\PhpWord\TemplateProcessor;
+use Illuminate\Support\Str;
+use PhpOffice\PhpWord\SimpleType\CellAlignment;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+use Mpdf\Mpdf;
 class InvoiceController extends Controller
 {
+    public function updateWorkScheduleFromInvoice(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $invoice = Appointment::find($id);
+            $request->validate([
+                'workScheduleID' => 'required|string',
+            ]);
+            if (!$invoice) {
+                return createError(404, 'Appointment not found');
+            }
+            $invoice->workScheduleID = $request->workScheduleID;
+            $invoice->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Cập nhật lịch khám thành công!',
+                'data' => $invoice,
+            ]);
+        } catch (\Exception $e) {
+            return handleException($e);
+        }
+    }
+
+    public function exportInvoice(Request $request)
+    {
+        $id = $request->input('id');
+        $invoice = Invoice::find($id);
+        if (!$invoice) {
+            return createError(400, 'Không tìm thấy hóa đơn!');
+        }
+
+        $templateProcessor = new TemplateProcessor(public_path('docx/template/invoice2.docx'));
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+
+        // Định nghĩa style cho bảng
+        $tableStyle = [
+            'borderSize' => 5, // Độ dày đường viền
+            'borderColor' => '#C0C0C0', // Màu đường viền
+            'cellMargin' => 100, // Căn lề bên trong ô
+        ];
+        $phpWord->addTableStyle('CustomTableStyle', $tableStyle);
+
+        // Thêm bảng với style đã định nghĩa
+        $table = $section->addTable('CustomTableStyle');
+
+        // Định nghĩa style cho ô
+        $cellStyle = [
+            'valign' => 'center',
+            'borderLeftSize' => 5,
+            'borderRightSize' => 5,
+            'borderTopSize' => 5,
+            'borderBottomSize' => 5,
+            'borderColor' => '#808080',
+        ];
+
+        // Định nghĩa font chữ
+        $fontHeaderStyle = [
+            'bold' => true,
+            'size' => 12,
+            'name' => 'Arial',
+            'color' => 'FFFFFF', // Màu chữ trắng
+        ];
+        $fontPrice = [
+            'bold' => true,
+            'size' => 11,
+            'name' => 'Arial',
+            'color' => '#333333',
+        ];
+        $fontContentStyle = [
+            'bold' => false,
+            'size' => 11,
+            'name' => 'Arial',
+        ];
+
+            // Thêm hàng đầu tiên (hàng tiêu đề)
+        $table->addRow(null, ['tblHeader' => true]); // Làm hàng tiêu đề
+        $table->addCell(1000, array_merge($cellStyle, ['bgColor' => '#0099FF']))->addText('TT', $fontHeaderStyle);
+        $table->addCell(6000, array_merge($cellStyle, ['bgColor' => '#0099FF']))->addText('TÊN DỊCH VỤ', $fontHeaderStyle);
+        $table->addCell(3000, array_merge($cellStyle, ['bgColor' => '#0099FF']))->addText('THÀNH TIỀN', $fontHeaderStyle);
+
+            // Thêm dữ liệu bảng
+        $index = 1;
+        $totalAmount = $invoice->price;
+
+        // Xử lý tên dịch vụ
+        if ($invoice->prescriptionID) {
+
+            $prescription = Prescription::with(['result', 'result.service'])->find($invoice->prescriptionID);
+            $name = "Đơn thuốc: " . $prescription->result->service->name;
+            $table->addRow();
+            $table->addCell(1000, $cellStyle)->addText($index++, $fontContentStyle);
+            $table->addCell(8000, $cellStyle)->addText($name, $fontContentStyle);
+            $table->addCell(3000, $cellStyle)->addText(number_format($invoice->price) . ' VND', $fontContentStyle);
+        } else {
+            $appointment = Appointment::find($invoice->appointmentID);
+
+            if ($appointment->serviceID) {
+                $service = Service::find($appointment->serviceID);
+                $table->addRow();
+                $table->addCell(1000, $cellStyle)->addText($index++, $fontContentStyle);
+                $table->addCell(8000, $cellStyle)->addText($service->name, $fontContentStyle);
+                $table->addCell(3000, $cellStyle)->addText(number_format($invoice->price) . ' VND', $fontContentStyle);
+            } else {
+
+                $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment->medicalPackageID))->first();
+                $serviceOther = null;
+                foreach ($medicalPackage->services as $service) {
+                    $serviceID = (object)$service;
+                    if ((string)($serviceID->id) == $appointment->medicalPackageID) {
+                        $serviceOther = $service;
+                        break;
+                    }
+                }
+                if ($serviceOther) {
+                    $serviceOther = (object)$serviceOther;
+
+                    foreach ($serviceOther->servicesID as $id) {
+                        $serviceOfMedical = Service::find($id);
+                        $table->addRow();
+                        $table->addCell(1000, $cellStyle)->addText($index++, $fontContentStyle);
+                        $table->addCell(8000, $cellStyle)->addText( $serviceOfMedical->name, $fontContentStyle);
+                        $table->addCell(3000, $cellStyle)->addText(number_format($serviceOfMedical->price) . ' VND', $fontContentStyle);
+                    }
+                }
+            }
+        }
+
+            // Thêm hàng tổng cộng
+        $table->addRow();
+        $table->addCell(1000, array_merge($cellStyle, ['bgColor' => '#FFFFFF']))->addText('');
+        $table->addCell(8000, array_merge($cellStyle, ['bgColor' => '#FFFFFF']))->addText('TỔNG CỘNG', $fontPrice);
+        $table->addCell(3000, array_merge($cellStyle, ['bgColor' => '#FFFFFF']))->addText(number_format($totalAmount) . ' VND', $fontPrice);
+
+            // Gắn bảng vào template
+        $templateProcessor->setComplexBlock('services_table', $table);
+        $dataDate = [
+            'date' => date('d'),
+            'year' => date('Y'),
+            'month' => date('m'),
+        ];
+        $appointment= Appointment::find($invoice->appointmentID);
+        $patient=User::find($appointment->patientID);
+
+        $templateProcessor->setValue('phone',$patient->phoneNumber);
+        $templateProcessor->setValue('name', $patient->fullName);
+        $templateProcessor->setValue('address', $patient->address);
+        $templateProcessor->setValue('payment', $appointment->payment['method']);
+        $templateProcessor->setValue('textPrice',"VND");
+        $templateProcessor->setValue('invoiceCode',$invoice->invoiceCode);
+        $templateProcessor->setValue('price', convertNumberToTextPrice($totalAmount). " VND");
+        $templateProcessor->setValue('date', $dataDate['date']);
+        $templateProcessor->setValue('year', $dataDate['year']);
+        $templateProcessor->setValue('month', $dataDate['month']);
+
+        $fileName = "HD-" . time() . '.docx';
+        $link = 'docx/cache/' . $fileName;
+        $templateProcessor->saveAs($link);
+        // Đọc file .docx
+        return response()->download($link)->deleteFileAfterSend(true);
+    }
+
     public function deleteAppointmentInArrayID(Request $request)
     {
         try {
@@ -36,10 +204,10 @@ class InvoiceController extends Controller
                 }
             }
 
-            Appointment::whereIn('_id', $ids)->where('isDeleted', false)->update(['isDeleted' => true]);
-            Invoice::whereIn('appointmentID', $ids)->where('isDeleted', false)->update(['isDeleted' => true]);
-            OrderNumber::whereIn('appointmentID', $ids)->where('isDeleted', false)->update(['isDeleted' => true]);
-            Prescription::whereIn('appointmentID', $ids)->where('isDeleted', false)->update(['isDeleted' => true]);
+            Appointment::whereIn('_id', $ids)->delete();
+            Invoice::whereIn('appointmentID', $ids)->delete();
+            OrderNumber::whereIn('appointmentID', $ids)->delete();
+            Prescription::whereIn('appointmentID', $ids)->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -62,29 +230,26 @@ class InvoiceController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $appointment = Appointment::where('_id', $id)->where('isDeleted', false)->first();
+            $appointment = Appointment::where('_id', $id)->first();
             if (!$appointment) {
                 return createError(404, 'Service not found');
             }
-            $invoice = Invoice::where('appointmentID', new ObjectId($id))->where('isDeleted', false)->first();
+            $invoice = Invoice::where('appointmentID', new ObjectId($id))->first();
             if ($invoice) {
-                $invoice->isDeleted = true;
-                $invoice->save();
+                $invoice->delete();
             }
 
-            $orderNumber = OrderNumber::where("appointmentID", new ObjectId($id))->where('isDeleted', false)->first();
+            $orderNumber = OrderNumber::where("appointmentID", new ObjectId($id))->first();
             if ($orderNumber) {
-                $orderNumber->isDeleted = true;
-                $orderNumber->save();
+                $orderNumber->delete();
             }
 
-            $prescription = Prescription::where('appointmentID', new ObjectId($id))->where('isDeleted', false)->first();
+            $prescription = Prescription::where('appointmentID', new ObjectId($id))->first();
             if ($prescription) {
-                $prescription->isDeleted = true;
-                $prescription->save();
+                $prescription->delete();
             }
 
-            $appointment->update(['isDeleted' => true]);
+            $appointment->delete();
 
             return response()->json([
                 'status' => 'success',
@@ -92,7 +257,7 @@ class InvoiceController extends Controller
                 'data' => $appointment,
             ], 200);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -105,7 +270,7 @@ class InvoiceController extends Controller
                 "priority" => "required|integer"
             ]);
 
-            $orderNumber = OrderNumber::where('appointmentID', new ObjectId($id))->where('isDeleted', false)->first();
+            $orderNumber = OrderNumber::where('appointmentID', new ObjectId($id))->first();
 
             if (!$orderNumber) {
                 return createError(404, 'Appointment not found');
@@ -119,7 +284,7 @@ class InvoiceController extends Controller
                 'data' => $orderNumber,
             ], 201);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -130,7 +295,7 @@ class InvoiceController extends Controller
             $status = $request->validate([
                 "status" => "required|string"
             ]);
-            $appointment = Appointment::where('_id', $id)->where('isDeleted', false)->first();
+            $appointment = Appointment::where('_id', $id)->first();
 
             if (!$appointment) {
                 return createError(404, 'Appointment not found');
@@ -145,7 +310,7 @@ class InvoiceController extends Controller
                 'data' => $appointment,
             ], 201);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -157,7 +322,7 @@ class InvoiceController extends Controller
             $status = $request->validate([
                 "status" => "required|string"
             ]);
-            $appointment = Appointment::where('_id', $id)->where('isDeleted', false)->first();
+            $appointment = Appointment::where('_id', $id)->first();
 
             if (!$appointment) {
                 return createError(404, 'Appointment not found');
@@ -171,7 +336,7 @@ class InvoiceController extends Controller
                 'data' => $appointment,
             ], 201);
         } catch (\Exception $e) {
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -190,7 +355,7 @@ class InvoiceController extends Controller
                 $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
 
                 if (!$newUser) {
-                    $roleID = '66fcca5b682b8e25c2dc43a4';
+                    $roleID = env('ROLE_PATIENT');
                     $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
 
                     $codePatient = "";
@@ -352,6 +517,7 @@ class InvoiceController extends Controller
                 $newInvoice = Invoice::create([
                     'appointmentID' => $newAppointment->id,
                     'price' => (int)$appointment['price'],
+
                 ]);
                 $orderNumber[0] = $newOrderNumber;
             }
@@ -429,7 +595,7 @@ class InvoiceController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-               return handleException($e);
+            return handleException($e);
         }
     }
 
@@ -708,7 +874,7 @@ class InvoiceController extends Controller
             ], 200);
         } catch (\Exception $e) {
 
-               return handleException($e);
+            return handleException($e);
         }
     }
 

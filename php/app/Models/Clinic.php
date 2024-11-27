@@ -12,13 +12,11 @@ class Clinic extends Model
     protected $fillable = [
         'branchID',
         'specialtyID',
-        'name',
-        'isDeleted',
+        'name'
     ];
 
     protected $casts = [
-        'name' => 'string',
-        'isDeleted' => 'boolean',
+        'name' => 'string'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -30,12 +28,27 @@ class Clinic extends Model
     {
         $this->attributes['specialtyID'] = new ObjectId($value);
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {
         return 'Clinic';
+    }
+
+    public function Branch()
+    {
+        return $this->belongsTo(Branch::class, 'branchID', '_id');
+    }
+    public function Specialty()
+    {
+        return $this->belongsTo(Specialty::class, 'specialtyID');
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (WorkSchedule::where("ClinicID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có dữ liệu lịch làm việc!');
+            }
+        });
     }
 }

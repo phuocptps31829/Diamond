@@ -15,7 +15,8 @@ use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Style\Font;
 use PhpOffice\PhpWord\TemplateProcessor;
 use Illuminate\Support\Str;
-
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\Writer\HTML;
 class ContractController extends Controller
 {
     public function create(Request $request)
@@ -81,7 +82,65 @@ class ContractController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Prescription created successfully.',
+                'message' => 'Contact created successfully.',
+                'data' => $contract,
+            ], 201);
+        } catch (\Exception $e) {
+            return handleException($e);
+        }
+    }
+
+    public function medicalContract(Request $request)
+    {
+        try {
+            $validate = new ContractRequest();
+            if (isset($request->isInternal)) {
+                $bl = $request->isInternal == "true" ? 1 : 0;
+                $request->merge(['isInternal' => $bl]);
+            }
+
+            $data = $request->validate($validate->rules2());
+            $file = $request->file('file');
+                $templateProcessor = new TemplateProcessor('docx/template/mau-hop-dong-dich-vu-y-te.docx');
+
+
+            $dataDate = generateDate($data['time']);
+
+            $templateProcessor->setValue('day', $dataDate['day']);
+            $templateProcessor->setValue('date', $dataDate['date']);
+            $templateProcessor->setValue('month', $dataDate['month']);
+            $templateProcessor->setValue('year', $dataDate['year']);
+            $templateProcessor->setValue('number', "HDYT-" . time());
+//            $templateProcessor->setValue('local-address', $doctor->address);
+            $templateProcessor->setValue('address', $data['address']);
+            $templateProcessor->setValue('phone', $data['phone']);
+            $templateProcessor->setValue('accountName', $data['accountName']);
+            $templateProcessor->setValue('accountNumber', $data['accountNumber']);
+            $templateProcessor->setValue('nameBank', $data['bankName']);
+            $templateProcessor->setValue('startDate', date_format(new \DateTime($data['startDate']), 'd-m-Y'));
+            $templateProcessor->setValue('endDate', date_format(new \DateTime($data['endDate']), 'd-m-Y'));
+            $templateProcessor->setValue('salary', $data['price']);
+            $templateProcessor->setValue('userName', $data['agent']);
+            $templateProcessor->setValue('agent', $data['agent']);
+            $templateProcessor->setValue('position', $data['position']);
+            $templateProcessor->setValue('TIN', $data['tin']);
+            $templateProcessor->setImageValue('file', array(
+                'data' => file_get_contents($request->file('file')->getRealPath()),
+                'type' => $file->getClientMimeType(),
+                'width' => 100,
+                'height' => 60,
+                'path' => $request->file('file')->getRealPath()
+            ));
+            $fileName =  "HDYT-" . time() . '.docx';
+            $link='docx/contract/'.$fileName;
+            $templateProcessor->saveAs($link);
+            $data['file'] = $fileName;
+            $contract = Contract::create($data);
+            // Trả về file cho người dùng tải về
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Contact created successfully.',
                 'data' => $contract,
             ], 201);
         } catch (\Exception $e) {
@@ -93,7 +152,7 @@ class ContractController extends Controller
     {
         try {
             $id = $request->route('id');
-            $contact = Contract::where('_id', $id)->where('isDeleted', false)->first();
+            $contact = Contract::where('_id', $id)->first();
             if (!$contact) {
                 return createError(404, 'contact not found');
             }
@@ -103,4 +162,5 @@ class ContractController extends Controller
             return handleException($e);
         }
     }
+
 }

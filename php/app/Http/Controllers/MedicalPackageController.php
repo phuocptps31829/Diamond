@@ -156,10 +156,9 @@ class MedicalPackageController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = MedicalPackage::where('isDeleted', false)->count();
+            $totalRecords = MedicalPackage::count();
 
-            $MedicineCategories = MedicalPackage::where('isDeleted', false)
-                ->skip($skip)
+            $MedicineCategories = MedicalPackage::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -180,7 +179,7 @@ class MedicalPackageController extends Controller
     {
         try {
             $id = $request->route('id');
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
 
             if (!$MedicalPackage) {
                 return createError(404, 'Medicine category not found');
@@ -241,7 +240,7 @@ class MedicalPackageController extends Controller
                 $service['_id'] = new ObjectId($service['_id']);
             }
 
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
 
             if (!$MedicalPackage) {
                 return createError(404, 'Medicine category not found');
@@ -269,12 +268,12 @@ class MedicalPackageController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
             if (!$MedicalPackage) {
                 return createError(404, 'Medicine category not found');
             }
 
-            $MedicalPackage->update(['isDeleted' => true]);
+            $MedicalPackage->delete();
 
             return response()->json([
                 'status' => 'success',

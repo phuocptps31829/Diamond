@@ -28,7 +28,7 @@ class PrescriptionRequest extends FormRequest
             'medicines.*.medicineID' => 'required_without:medicineID|string',
             'medicines.*.quantity' => 'required_without:medicineID|integer',
             'medicines.*.dosage' => 'required_without:medicineID|string',
-            "price" => "nullable|integer"
+            "price" => "required|integer"
         ];
     }
 

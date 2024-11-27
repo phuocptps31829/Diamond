@@ -15,12 +15,9 @@ class WorkSchedule extends Model
         'clinicID',
         'day',
         'hour',
-        'isDeleted',
     ];
 
-    protected $casts = [
-        "isDeleted" => "boolean",
-    ];
+
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
     public function setDoctorIDAttribute($value)
@@ -35,12 +32,18 @@ class WorkSchedule extends Model
     {
         $this->attributes['hour'] = $value;
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {
         return 'WorkSchedule';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Appointment::where("WorkScheduleID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có dữ liệu lịch làm việc!');
+            }
+        });
     }
 }

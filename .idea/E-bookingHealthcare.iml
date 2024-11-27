@@ -141,6 +141,10 @@
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/caouecs/laravel-lang" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/phpoffice/math" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/phpoffice/phpword" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/mpdf/mpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/mpdf/psr-http-message-shim" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/mpdf/psr-log-aware-trait" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/setasign/fpdi" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -153,7 +153,7 @@ class AuthController extends Controller
     public function refreshToken(Request $request)
     {
         try {
-            $user = User::where("isDeleted", false)->where('id', $request->id)->first();
+            $user = User::where('id', $request->id)->first();
             if (!$user) {
                 createError(404, "User not fund.");
             }

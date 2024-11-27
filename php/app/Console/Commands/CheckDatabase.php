@@ -6,6 +6,9 @@ use App\Models\Appointment;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Models\Notification;
+use App\Events\NotificationsEvent;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Redis;
 
 class CheckDatabase extends Command
 {
@@ -41,11 +44,10 @@ class CheckDatabase extends Command
     {
         $appointments = Appointment::where('time', '<', Carbon::now()->toDateTimeString())
             ->where('status', "CONFIRMED")
-            ->where("isDeleted", false)
             ->get();
-
+        $ids = [];
         foreach ($appointments as $appointment) {
-            // Tạo thôn báo cho người bị hủy lịch khám
+//             Tạo thôn báo cho người bị hủy lịch khám
             $notification = Notification::create([
                 "userID" => $appointment->patientID,
                 "title" => "Lịch khám của bạn đã bị hủy",
@@ -54,10 +56,11 @@ class CheckDatabase extends Command
                 "link" => env("CLIENT_HOST") . '/profile/appointments/detail/' . $appointment->id,
                 "time" => $appointment->time,
             ]);
-//            $appointment->status = 'CANCELLED';
+            $appointment->status = 'CANCELLED';
 //            $appointment->save();
-            // Tạo thông báo cho người bác sĩ
+//         Tạo thông báo cho người bác sĩ
+            $ids[]= $notification->id;
         }
-        \Log::info($appointments);
+        event(new NotificationsEvent($ids));
     }
 }

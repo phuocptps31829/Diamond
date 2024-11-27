@@ -18,8 +18,7 @@ class ContractRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+     */    public function rules(): array
     {
         return [
             'doctorID' => 'required|string',
@@ -32,6 +31,26 @@ class ContractRequest extends FormRequest
             "price"=>"required|numeric",
             "isInternal"=>"required|boolean",
             "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
+        ];
+    }
+
+    public function rules2(): array
+    {
+        return [
+            'startDate' => 'required|date',
+            'endDate' => 'required|date',
+            'time' => 'required|date',
+            "title"=>"required|string",
+            "address"=>"required|string",
+            "price"=>"required|numeric",
+            "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
+            "agent"=>"required|string",
+            "position"=>"required|string",
+            "tin"=>"required|string",
+            "accountName"=>"required|string",
+            "accountNumber"=>"required|string",
+            "bankName"=>"required|string",
+            "phone"=>"required|string"
         ];
     }
 }

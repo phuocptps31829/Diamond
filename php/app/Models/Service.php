@@ -24,7 +24,6 @@ class Service extends Model
         'orderCount',
         'applicableObject',
         'isHidden',
-        'isDeleted',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -38,7 +37,6 @@ class Service extends Model
         'discountPrice' => 'string',
         'duration' => 'string',
         'isHidden' => 'boolean',
-        'isDeleted' => 'boolean',
     ];
     public static function createSlug($name)
     {
@@ -50,12 +48,31 @@ class Service extends Model
     }
 
     protected $attributes = [
-        'isDeleted' => false,
         'orderCount' => 0,
     ];
 
     public function getTable()
     {
         return 'Service';
+    }  // Quan hệ với Prescription (nếu có Prescription)
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class, 'resultID');
     }
+
+    // Quan hệ với Service (nếu có kết quả cho dịch vụ)
+    public function specialty()
+    {
+        return $this->belongsTo(Specialty::class, 'serviceID');
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Appointment::where("serviceID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch hẹn khám!');
+            }
+        });
+    }
+
 }

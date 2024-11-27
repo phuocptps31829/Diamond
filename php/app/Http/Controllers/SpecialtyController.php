@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Specialty;
 use Illuminate\Http\Request;
 use App\Http\Requests\SpecialtyRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -125,10 +126,10 @@ class SpecialtyController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Specialty::where('isDeleted', false)->count();
+            $totalRecords = Specialty::count();
 
-            $specialties = Specialty::where('isDeleted', false)
-                ->skip($skip)
+            $specialties = Specialty::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -149,12 +150,11 @@ class SpecialtyController extends Controller
     {
         try {
             $id = $request->route('id');
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', new ObjectId($id))->first();
 
             if (!$specialty) {
                 return createError(404, 'Specialty not found');
             }
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Specialties retrieved successfully.',
@@ -177,7 +177,6 @@ class SpecialtyController extends Controller
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
-
                return handleException($e);
         }
     }
@@ -186,7 +185,7 @@ class SpecialtyController extends Controller
         try {
             $id = $request->route('id');
 
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', new ObjectId($id))->first();
 
             if (!$specialty) {
                 return createError(404, 'Specialty not found');
@@ -215,12 +214,12 @@ class SpecialtyController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', $id)->first();
             if (!$specialty) {
                 return createError(404, 'Specialty not found');
             }
 
-            $specialty->update(['isDeleted' => true]);
+            $specialty->delete();
 
             return response()->json([
                 'status' => 'success',

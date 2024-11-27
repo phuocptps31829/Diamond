@@ -177,8 +177,7 @@ class DoctorController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
             $totalRecords = User::where('isDeleted', false)->count();
-            $user = User::where('isDeleted', false)
-                ->skip($skip)
+            $user = User::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -200,7 +199,7 @@ class DoctorController extends Controller
         try {
             $id = $request->route('id');
 
-            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->first();
 
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
@@ -225,7 +224,7 @@ class DoctorController extends Controller
             if ($check) {
                 return createError(500, $check);
             }
-            $roleID = "66fcc9e1682b8e25c2dc43a3";
+            $roleID = env('ROLE_DOCTOR');
             $request->merge(['roleID' => $roleID]);
 
             $dataDoctor = $request->validate($doctorRequest->rules());
@@ -253,7 +252,7 @@ class DoctorController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->first();
 
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
@@ -302,12 +301,12 @@ class DoctorController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Doctor = User::where('_id', $id)->where('isDeleted', false)->first();
+            $Doctor = User::where('_id', $id)->first();
             if (!$Doctor) {
                 return createError(404, 'Doctor not found');
             }
 
-            $Doctor->update(['isDeleted' => true]);
+            $Doctor->delete();
 
             return response()->json([
                 'status' => 'success',

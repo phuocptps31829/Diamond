@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $database = \DB::connection('mongodb')->getMongoDB();
+        $collection = $database->selectCollection('OTP');
+        $collection->createIndex(
+            ['time' => 1],
+            ['expireAfterSeconds' => 300]
+        );
     }
 }

@@ -13,11 +13,9 @@ class Role extends Model
     protected $fillable = [
         'name',
         'description',
-        'isDeleted',
         'isSystem'
     ];
     protected $attributes = [
-        'isDeleted' => false,
         'isSystem'=>false
     ];
     const CREATED_AT = 'createdAt';
@@ -26,4 +24,5 @@ class Role extends Model
     {
         return 'Role';
     }
+
 }

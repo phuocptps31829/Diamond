@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Requests\ServiceRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -139,10 +140,10 @@ class ServiceController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Service::where('isDeleted', false)->count();
+            $totalRecords = Service::count();
 
-            $Services = Service::where('isDeleted', false)
-                ->skip($skip)
+            $Services = Service::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -163,7 +164,7 @@ class ServiceController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
+            $Service = Service::where('_id', new ObjectId($id))->first();
 
             if (!$Service) {
                 return createError(404, 'Service not found');
@@ -212,7 +213,7 @@ class ServiceController extends Controller
                 $request->merge(['slug' => $checkSlug]);
             }
 
-            $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
+            $Service = Service::where('_id',new ObjectId( $id))->first();
 
             if (!$Service) {
                 return createError(404, 'Service not found');
@@ -241,13 +242,13 @@ class ServiceController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $Service = Service::where('_id', $id)->where('isDeleted', false)->first();
+            $Service = Service::where('_id', $id)->first();
 
             if (!$Service) {
                 return createError(404, 'Service not found');
             }
 
-            $Service->update(['isDeleted' => true]);
+            $Service->delete();
 
             return response()->json([
                 'status' => 'success',

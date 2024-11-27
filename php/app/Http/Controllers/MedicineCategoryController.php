@@ -121,10 +121,9 @@ class MedicineCategoryController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = MedicineCategory::where('isDeleted', false)->count();
+            $totalRecords = MedicineCategory::count();
 
-            $MedicineCategories = MedicineCategory::where('isDeleted', false)
-                ->skip($skip)
+            $MedicineCategories = MedicineCategory::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -145,7 +144,7 @@ class MedicineCategoryController extends Controller
     {
         try {
             $id = $request->route('id');
-            $MedicineCategory = MedicineCategory::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicineCategory = MedicineCategory::where('_id', $id)->first();
 
             if (!$MedicineCategory) {
                 return createError(404, 'Medicine category not found');
@@ -182,7 +181,7 @@ class MedicineCategoryController extends Controller
         try {
             $id = $request->route('id');
 
-            $MedicineCategory = MedicineCategory::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicineCategory = MedicineCategory::where('_id', $id)->first();
 
             if (!$MedicineCategory) {
                 return createError(404, 'Medicine category not found');
@@ -211,12 +210,12 @@ class MedicineCategoryController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $MedicineCategory = MedicineCategory::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicineCategory = MedicineCategory::where('_id', $id)->first();
             if (!$MedicineCategory) {
                 return createError(404, 'Medicine category not found');
             }
 
-            $MedicineCategory->update(['isDeleted' => true]);
+            $MedicineCategory->delete();
 
             return response()->json([
                 'status' => 'success',

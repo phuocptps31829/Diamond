@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Clinic;
 use Illuminate\Http\Request;
 use App\Http\Requests\BranchRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -151,10 +153,9 @@ class BranchController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Branch::where('isDeleted', false)->count();
+            $totalRecords = Branch::count();
 
-            $branches = Branch::where('isDeleted', false)
-                ->skip($skip)
+            $branches = Branch::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -175,7 +176,7 @@ class BranchController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
+            $Branch = Branch::where('_id', $id)->first();
 
             if (!$Branch) {
                 return createError(404, 'Branch not found');
@@ -213,7 +214,7 @@ class BranchController extends Controller
         try {
             $id = $request->route('id');
 
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
+            $Branch = Branch::where('_id', $id)->first();
 
             if (!$Branch) {
                 return createError(404, 'Branch not found');
@@ -241,14 +242,12 @@ class BranchController extends Controller
             if (!isValidMongoId($id)) {
                 return createError(400, 'Invalid mongo ID');
             }
+            $Branch = Branch::find(new objectId($id));
 
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
             if (!$Branch) {
                 return createError(404, 'Branch not found');
             }
-
-            $Branch->update(['isDeleted' => true]);
-
+            $Branch->delete();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Branch deleted successfully.',

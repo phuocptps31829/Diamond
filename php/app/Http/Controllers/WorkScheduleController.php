@@ -15,10 +15,10 @@ class WorkScheduleController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = WorkSchedule::where('isDeleted', false)->count();
+            $totalRecords = WorkSchedule::count();
 
-            $workSchedule = WorkSchedule::where('isDeleted', false)
-                ->skip($skip)
+            $workSchedule = WorkSchedule::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -39,7 +39,7 @@ class WorkScheduleController extends Controller
     {
         try {
             $id = $request->route('id');
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
 
             if (!$workSchedule) {
                 return createError(404, 'WorkSchedule not found');
@@ -75,7 +75,7 @@ class WorkScheduleController extends Controller
         try {
             $id = $request->route('id');
 
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
 
             if (!$workSchedule) {
                 return createError(404, 'WorkSchedule not found');
@@ -105,13 +105,11 @@ class WorkScheduleController extends Controller
                 return createError(400, 'Invalid mongo ID');
             }
 
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
             if (!$workSchedule) {
                 return createError(404, 'WorkSchedule not found');
             }
-
-            $workSchedule->update(['isDeleted' => true]);
-
+            $workSchedule->delete();
             return response()->json([
                 'status' => 'success',
                 'message' => 'WorkSchedule deleted successfully.',
