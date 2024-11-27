@@ -32,7 +32,7 @@ export default function OutstandingPackages() {
 
   return (
     <div className="mx-auto max-w-screen-xl">
-      <div className="w-full text-center text-[23px] font-bold md:text-[35px]">
+      <div className="w-full text-center text-[22px] font-bold md:text-[30px]">
         Gói khám nổi bật
       </div>
       <span className="mx-auto -mt-1 block w-full max-w-[90%] text-center text-[14px] text-[#6D7280] md:max-w-[800px] md:text-[16px]">

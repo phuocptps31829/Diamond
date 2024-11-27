@@ -29,9 +29,7 @@ import ChangePassword from "./components/client/infomationUser/ChangePassword";
 import AppointmentDetail from "./components/client/infomationUser/AppointmentDetail";
 import MedicalRecordDetail from "./components/client/infomationUser/MedicalRecordDetail";
 import NotFound from "@/components/ui/NotFound";
-import PackageBooking from "./pages/client/PackageBooking";
 import Booking from "./pages/client/Booking";
-import PKCheckOut from "./pages/client/PKBookingPayment";
 import SVCheckOut from "./pages/client/Checkout";
 import { store } from "./redux/store";
 import { Provider } from "react-redux";
@@ -221,26 +219,10 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "package-booking",
-        element: (
-          <ProtectContainer>
-            <PackageBooking />
-          </ProtectContainer>
-        ),
-      },
-      {
         path: "booking",
         element: (
           <ProtectContainer>
             <Booking />
-          </ProtectContainer>
-        ),
-      },
-      {
-        path: "package-booking-checkout",
-        element: (
-          <ProtectContainer>
-            <PKCheckOut />
           </ProtectContainer>
         ),
       },

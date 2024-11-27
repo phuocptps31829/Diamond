@@ -7,7 +7,7 @@ const TabsLayout = () => {
   return (
     <>
       <Tabs
-        screenOptions={{
+        screenOptions={ {
           tabBarShowLabel: false,
           tabBarActiveTintColor: "#007BBB",
           tabBarInactiveTintColor: "#AEAEAE",
@@ -18,12 +18,12 @@ const TabsLayout = () => {
             shadowRadius: 4,
             elevation: 5, // Bóng đổ cho Android
           },
-        }}
+        } }
       >
         <Tabs.Screen
           name="package"
           key="package"
-          options={{
+          options={ {
             title: "Package",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
@@ -31,86 +31,86 @@ const TabsLayout = () => {
                 icon={
                   <FontAwesome6
                     name="briefcase-medical"
-                    size={28}
-                    color={color}
+                    size={ 28 }
+                    color={ color }
                   />
                 }
-                color={color}
-                name="Gói dịch vụ"
-                focused={focused}
+                color={ color }
+                name="Gói khám"
+                focused={ focused }
               />
             ),
-          }}
+          } }
         />
         <Tabs.Screen
           name="service"
           key="service"
-          options={{
+          options={ {
             title: "Service",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabsScreen
                 icon={
-                  <FontAwesome6 name="kit-medical" size={28} color={color} />
+                  <FontAwesome6 name="kit-medical" size={ 28 } color={ color } />
                 }
-                color={color}
+                color={ color }
                 name="Dịch vụ"
-                focused={focused}
+                focused={ focused }
               />
             ),
-          }}
+          } }
         />
         <Tabs.Screen
           name="home"
           key="home"
-          options={{
+          options={ {
             title: "Home",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabsScreen
-                icon={<FontAwesome name="home" size={30} color="white" />}
-                color={color}
+                icon={ <FontAwesome name="home" size={ 30 } color="white" /> }
+                color={ color }
                 name="Trang chủ"
-                focused={focused}
+                focused={ focused }
               />
             ),
-          }}
+          } }
         />
         <Tabs.Screen
           name="doctor"
           key="doctor"
-          options={{
+          options={ {
             title: "Doctor",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabsScreen
                 icon={
-                  <FontAwesome6 name="user-doctor" size={28} color={color} />
+                  <FontAwesome6 name="user-doctor" size={ 28 } color={ color } />
                 }
-                color={color}
+                color={ color }
                 name="Bác sĩ"
-                focused={focused}
+                focused={ focused }
               />
             ),
-          }}
+          } }
         />
         <Tabs.Screen
           name="account"
           key="account"
-          options={{
+          options={ {
             title: "User",
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
               <TabsScreen
                 icon={
-                  <FontAwesome name="user-circle-o" size={28} color={color} />
+                  <FontAwesome name="user-circle-o" size={ 28 } color={ color } />
                 }
-                color={color}
+                color={ color }
                 name="Tài khoản"
-                focused={focused}
+                focused={ focused }
               />
             ),
-          }}
+          } }
         />
       </Tabs>
     </>
