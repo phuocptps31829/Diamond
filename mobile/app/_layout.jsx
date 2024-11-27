@@ -20,15 +20,15 @@ const queryClient = new QueryClient({
 const toastConfig = {
   info: ({ text1, text2, onPress }) => (
     <Pressable
-      onPress={onPress}
+      onPress={ onPress }
       className="bg-white p-3 rounded-lg flex flex-row items-center py-4 shadow-md"
     >
-      <FontAwesome name="bell" size={25} color="#007BBB" />
+      <FontAwesome name="bell" size={ 25 } color="#007BBB" />
       <View className="ml-3">
         <Text className="text-black font-semibold text-[15px] mb-1">
-          {text1}
+          { text1 }
         </Text>
-        <Text className="text-gray-600 text-[13px]">{text2}</Text>
+        <Text className="text-gray-600 text-[13px]">{ text2 }</Text>
       </View>
     </Pressable>
   ),
@@ -36,15 +36,15 @@ const toastConfig = {
 
 
 export default function RootLayout() {
- 
+
 
   return (
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
+    <Provider store={ store }>
+      <QueryClientProvider client={ queryClient }>
         <PaperProvider>
           <RootContent />
         </PaperProvider>
-        <Toast config={toastConfig} />
+        <Toast config={ toastConfig } />
       </QueryClientProvider>
     </Provider>
   );

@@ -8,31 +8,31 @@ const AccountLayout = () => {
       <Stack.Screen
         name="change-password"
         options={ {
-          header: () => <HeaderScreen title="Thay đổi mật khẩu" />,
+          header: () => <HeaderScreen title="Thay Đổi Mật Khẩu" />,
         } }
       />
       <Stack.Screen
         name="invite-friend"
         options={ {
-          header: () => <HeaderScreen title="Giới thiệu bạn bè" />,
+          header: () => <HeaderScreen title="Giới Thiệu Bạn Bè" />,
         } }
       />
       <Stack.Screen
         name="history-appointment"
         options={ {
-          header: () => <HeaderScreen title="Lịch sử đặt khám" />,
+          header: () => <HeaderScreen title="Lịch Sử Đặt Khám" />,
         } }
       />
       <Stack.Screen
         name="medical-record"
         options={ {
-          header: () => <HeaderScreen title="Bệnh án điện tử" />,
+          header: () => <HeaderScreen title="Bệnh Án Điện Tử" />,
         } }
       />
       <Stack.Screen
         name="member"
         options={ {
-          header: () => <HeaderScreen title="Thành viên" />,
+          header: () => <HeaderScreen title="Thành Viên" />,
         } }
       />
     </Stack>

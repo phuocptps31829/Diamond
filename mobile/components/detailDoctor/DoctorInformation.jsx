@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
-const URL_IMAGE = process.env.EXPO_PUBLIC_IMAGE_API_URL;
+import { URL_IMAGE } from "../../configs/urls";
 
 const DoctorInformation = ({ doctor }) => {
   console.log("doctor", doctor);
@@ -17,41 +17,37 @@ const DoctorInformation = ({ doctor }) => {
     <>
       <View className="flex-col justify-center items-center gap-2 mt-4">
         <Image
-          source={{
+          source={ {
             uri: URL_IMAGE + "/" + doctor.avatar,
-          }}
+          } }
           className="w-[100px] h-[100px] rounded-full"
         />
         <Text className="font-semibold text-[15px]">
-          BS. {doctor.fullName}
+          BS. { doctor.fullName }
         </Text>
         <Text className="text-gray-400 font-semibold">Bác sĩ</Text>
       </View>
       <View className="flex-row bg-[#f1ce6fa0] p-[5px] m-4 rounded-md">
         <Pressable
-          className={`${
-            showInfor === 0 ? "bg-primary-500" : ""
-          } flex-1 p-3 rounded-md`}
-          onPress={() => handleShowInfor(0)}
+          className={ `${showInfor === 0 ? "bg-primary-500" : ""
+            } flex-1 p-3 rounded-md` }
+          onPress={ () => handleShowInfor(0) }
         >
           <Text
-            className={`${
-              showInfor === 0 ? "text-white" : "text-black"
-            } text-center font-semibold `}
+            className={ `${showInfor === 0 ? "text-white" : "text-black"
+              } text-center font-semibold ` }
           >
             Giới thiệu
           </Text>
         </Pressable>
         <Pressable
-          className={`${
-            showInfor === 1 ? "bg-primary-500" : ""
-          } flex-1 p-3 rounded-md`}
-          onPress={() => handleShowInfor(1)}
+          className={ `${showInfor === 1 ? "bg-primary-500" : ""
+            } flex-1 p-3 rounded-md` }
+          onPress={ () => handleShowInfor(1) }
         >
           <Text
-            className={`${
-              showInfor === 1 ? "text-white" : "text-black"
-            } text-center font-semibold `}
+            className={ `${showInfor === 1 ? "text-white" : "text-black"
+              } text-center font-semibold ` }
           >
             Lịch làm việc
           </Text>
@@ -59,25 +55,23 @@ const DoctorInformation = ({ doctor }) => {
       </View>
       <ScrollView className="border-t-2 border-gray-300 px-4">
         <View
-          className={`${
-            showInfor === 0 ? "flex" : "hidden"
-          } space-y-2 mt-3`}
+          className={ `${showInfor === 0 ? "flex" : "hidden"
+            } space-y-2 mt-3` }
         >
           <RenderHtml
-            contentWidth={width}
-            source={{ html: doctor?.otherInfo?.detail }}
-            tagsStyles={tagsStyles}
+            contentWidth={ width }
+            source={ { html: doctor?.otherInfo?.detail } }
+            tagsStyles={ tagsStyles }
           />
         </View>
         <View
-          className={`${
-            showInfor === 1 ? "flex" : "hidden"
-          } space-y-2 mt-3`}
+          className={ `${showInfor === 1 ? "flex" : "hidden"
+            } space-y-2 mt-3` }
         >
-          <RenderHtml 
-            contentWidth={width} 
-            source={{ html: doctor?.otherInfo?.detail }}
-            tagsStyles={tagsStyles}
+          <RenderHtml
+            contentWidth={ width }
+            source={ { html: doctor?.otherInfo?.detail } }
+            tagsStyles={ tagsStyles }
           />
         </View>
       </ScrollView>

@@ -31,7 +31,7 @@ const interceptors = (axiosInstance) => {
 
   axiosInstance.interceptors.request.use(
     async (config) => {
-        const accessToken = await AsyncStorage.getItem("accessToken");
+      const accessToken = await AsyncStorage.getItem("accessToken");
 
       if (accessToken && !config.headers.Authorization) {
         config.headers.Authorization = `Bearer ${accessToken}`;
@@ -51,7 +51,7 @@ const interceptors = (axiosInstance) => {
       const refreshToken = await AsyncStorage.getItem("refreshToken");
 
       if (refreshToken) {
-        if (    
+        if (
           err.response &&
           err.response.status === 401 &&
           !originalRequest._retry

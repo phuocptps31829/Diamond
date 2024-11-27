@@ -4,13 +4,19 @@ import RenderHtml from 'react-native-render-html';
 import { useWindowDimensions } from 'react-native';
 import CompareLevel from './CompareLevel';
 import Condition from './Condition';
+import { URL_IMAGE } from '../../configs/urls';
 
 const Detail = ({ data }) => {
     const { width } = useWindowDimensions();
 
     return (
         <ScrollView>
-            <Image className="w-full h-56 object-cover" source={ { uri: data.image } } />
+            <Image
+                source={ {
+                    uri: URL_IMAGE + "/" + data?.image,
+                } }
+                className="w-full h-56 object-cover"
+            />
             <Text className="text-center mt-4 font-medium">
                 { data?.services?.length ? "Gói khám" : "Dịch vụ" }
             </Text>

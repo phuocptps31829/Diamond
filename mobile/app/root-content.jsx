@@ -24,18 +24,18 @@ export default function RootContent() {
     };
 
     const testUpcoming = subscribe("notification", async (data) => {
-        const { userIDs, title } = data.data;
-        if(userIDs && userIDs.includes(profile._id)) {
-            await playSound();
-            ToastUI({
-                type: "info",
-                text1: title,
-                text2: "Bạn có một thông báo mới click để xem chi tiết",
-                onPress: () => {
-                router.push("/notification");
-                },
-            });
-        };
+      const { userIDs, title } = data.data;
+      if (userIDs && userIDs.includes(profile._id)) {
+        await playSound();
+        ToastUI({
+          type: "info",
+          text1: title,
+          text2: "Bạn có một thông báo mới click để xem chi tiết",
+          onPress: () => {
+            router.push("/notification");
+          },
+        });
+      };
     });
 
 
@@ -48,112 +48,95 @@ export default function RootContent() {
     <Stack>
       <Stack.Screen
         name="index"
-        options={{
+        options={ {
           title: "Home pageeees",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        }}
+        } }
       />
       <Stack.Screen
         name="(tabs)"
-        options={{
+        options={ {
           title: "Tab",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        }}
+        } }
       />
       <Stack.Screen
         name="(auth)"
-        options={{
+        options={ {
           title: "Auth",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        }}
+        } }
       />
       <Stack.Screen
         name="account"
-        options={{
+        options={ {
           title: "Account",
           headerShown: false,
           headerStyle: {
             backgroundColor: "blue",
           },
           headerTintColor: "white",
-        }}
-      />
-      <Stack.Screen
-        name="Doctor"
-        options={{
-          title: "Doctor",
-          headerShown: false,
-          headerStyle: {
-            backgroundColor: "blue",
-          },
-          headerTintColor: "white",
-        }}
+        } }
       />
       <Stack.Screen
         name="news"
-        options={{
-          header: () => <HeaderScreen title="Tin tức và sự kiện" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Tin Tức Và Sự Kiện" />,
+        } }
       />
       <Stack.Screen
         name="detail-news"
-        options={{
-          header: () => <HeaderScreen title="Y học - Sức khỏe" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Y Học - Sức Khỏe" />,
+        } }
       />
       <Stack.Screen
         name="notification"
-        options={{
-          header: () => <HeaderScreen title="Thông báo" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Thông Báo" />,
+        } }
       />
       <Stack.Screen
         name="doctor-ai"
-        options={{
-          header: () => <HeaderScreen title="Bác sĩ AI" />,
-        }}
-      />
-      <Stack.Screen
-        name="history"
-        options={{
-          header: () => <HeaderScreen title="Lịch sử đặt khám" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Bác Sĩ AI" />,
+        } }
       />
       <Stack.Screen
         name="clinic-system"
-        options={{
-          header: () => <HeaderScreen title="Hệ thống phòng khám" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Hệ Thống Phòng Khám" />,
+        } }
       />
       <Stack.Screen
         name="detail-doctor"
-        options={{
-          header: () => <HeaderScreen title="Thông tin Bác sĩ" />,
-        }}
-      />
-      <Stack.Screen
-        name="detail-history"
-        options={{
-          header: () => <HeaderScreen title="Thông tin Lịch khám" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Thông Tin Bác Sĩ" />,
+        } }
       />
       <Stack.Screen
         name="account-info"
-        options={{
-          header: () => <HeaderScreen title="Thông tin tài khoản" />,
-        }}
+        options={ {
+          header: () => <HeaderScreen title="Thông Tin Tài Khoản" />,
+        } }
+      />
+      <Stack.Screen
+        name="booking"
+        options={ {
+          header: () => <HeaderScreen title="Đặt Lịch Khám Bệnh" />,
+        } }
       />
     </Stack>
   );
