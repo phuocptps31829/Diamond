@@ -25,6 +25,8 @@ export default function RootContent() {
 
     const testUpcoming = subscribe("notification", async (data) => {
         const { userIDs, title } = data.data;
+        console.log("userIDs", userIDs);
+        console.log("profile._id", profile._id);
         if(userIDs && userIDs.includes(profile._id)) {
             await playSound();
             ToastUI({
