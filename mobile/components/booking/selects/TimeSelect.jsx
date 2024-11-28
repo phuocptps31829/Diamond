@@ -1,47 +1,27 @@
 import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { useQuery } from '@tanstack/react-query';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { styles } from './styles';
-import { doctorApi } from '../../../services/doctorsApi';
 import ToastUI from '../../ui/Toast';
 
-const DoctorSelect = ({
-    branchID,
-    specialtyID,
+const TimeSelect = ({
+    timesList,
     onSelect
 }) => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
-    console.log('specialtyID', specialtyID);
-    console.log('branchID', branchID);
-
-    const { data: doctorData, isLoading, isError } = useQuery(({
-        queryKey: ['doctors', specialtyID],
-        queryFn: () => doctorApi.getDoctorsByBranchSpecialty(branchID, specialtyID),
-        enabled: !!specialtyID && !!branchID,
-    }));
-
     const handleClick = () => {
-        if (!branchID) {
+        if (!timesList?.length) {
             ToastUI({
                 type: 'error',
-                text1: 'Vui lòng chọn chi nhánh',
-                text2: 'Chọn chi nhánh để chọn bác sĩ',
+                text1: 'Vui lòng chọn thời gian',
+                text2: 'Chọn ngày để chọn thời gian',
             });
             return;
         }
     };
-
-    if (isLoading) {
-        return <Text>Loading...</Text>;
-    }
-
-    if (isError) {
-        return <Text>Error...</Text>;
-    }
 
     return (
         <TouchableOpacity
@@ -49,7 +29,7 @@ const DoctorSelect = ({
             style={ styles.container }
         >
             <Dropdown
-                disable={ !branchID }
+                disable={ !timesList?.length }
                 style={ [styles.dropdown, isFocus && { borderColor: '#007bbb' }] }
                 placeholderStyle={ styles.placeholderStyle }
                 selectedTextStyle={ styles.selectedTextStyle }
@@ -57,16 +37,13 @@ const DoctorSelect = ({
                 containerStyle={ styles.containerStyle }
                 inputSearchStyle={ styles.inputSearchStyle }
                 iconStyle={ styles.iconStyle }
-                data={ doctorData?.data?.length
-                    ? doctorData?.data?.map(doctor => ({
-                        label: doctor.fullName,
-                        value: doctor._id,
-                    })) : [] }
+                data={ timesList?.length
+                    ? timesList : [] }
                 maxHeight={ 300 }
                 labelField="label"
                 valueField="value"
-                placeholder={ !isFocus ? 'Chọn bác sĩ' : '' }
-                searchPlaceholder="Nhập tên bác sĩ ..."
+                placeholder={ !isFocus ? 'Chọn thời gian' : '' }
+                searchPlaceholder="Nhập thời gian ..."
                 value={ value }
                 autoScroll={ true }
                 showsVerticalScrollIndicator={ true }
@@ -83,14 +60,14 @@ const DoctorSelect = ({
                         className="mb-2"
                         style={ styles.inputSearchStyle }
                         onChangeText={ onSearch }
-                        placeholder="Nhập tên bác sĩ ..."
+                        placeholder="Nhập thời gian ..."
                     />
                 ) }
                 renderLeftIcon={ () => (
-                    <FontAwesome6
+                    <FontAwesome5
                         style={ styles.icon }
                         color={ isFocus ? '#007bbb' : '#C3C3C3' }
-                        name="user-doctor"
+                        name="clock"
                         size={ 20 }
                     />
                 ) }
@@ -99,4 +76,4 @@ const DoctorSelect = ({
     );
 };
 
-export default DoctorSelect;
+export default TimeSelect;

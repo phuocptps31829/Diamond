@@ -40,7 +40,8 @@ const DetailHistory = ({ data }) => {
                             </DataTable.Row>
                             <DataTable.Row>
                                 { _renderHeader('💵', 'Tổng tiền') }
-                                { _renderRow(formatCurrency(data?.invoice?.price) + ' - ' + paymentStatus[data?.invoice?.status]) }
+                                {/* { _renderRow(formatCurrency(data?.invoice?.price) + ' - ' + paymentStatus[data?.invoice?.status]) } */ }
+                                { _renderRow(formatCurrency(data?.invoice?.price)) }
                             </DataTable.Row>
                             <DataTable.Row>
                                 { _renderHeader('🫰', 'Phương thức thanh toán') }

@@ -15,9 +15,6 @@ const DoctorSelect = ({
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
-    console.log('specialtyID', specialtyID);
-    console.log('branchID', branchID);
-
     const { data: doctorData, isLoading, isError } = useQuery(({
         queryKey: ['doctors', specialtyID],
         queryFn: () => doctorApi.getDoctorsByBranchSpecialty(branchID, specialtyID),

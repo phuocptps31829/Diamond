@@ -1,0 +1,31 @@
+# Stage 1: Build
+FROM node:20-alpine as build
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install --force
+
+COPY . .
+
+# Install Expo CLI and @expo/ngrok globally
+RUN npm install -g expo-cli @expo/ngrok
+
+# Stage 2: Production
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY --from=build /app .
+
+# Ensure global npm packages are available in the production stage
+RUN npm install -g expo-cli @expo/ngrok
+
+# Expose necessary ports
+EXPOSE 8081
+EXPOSE 19000
+EXPOSE 19001
+
+# Use npm to start the project, which will utilize the local Expo CLI
+CMD ["npm", "run", "start"]

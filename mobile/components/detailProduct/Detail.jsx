@@ -26,7 +26,7 @@ const Detail = ({ data }) => {
                     contentWidth={ width }
                     source={ { html: data.details } }
                 />
-                { data?.services?.length && <CompareLevel name={ data.name.toLowerCase() } services={ data.services } /> }
+                {/* { data?.services?.length && <CompareLevel name={ data.name.toLowerCase() } services={ data.services } /> } */ }
             </View>
             <Condition />
         </ScrollView>

@@ -10,8 +10,8 @@ export default function ToastUI({ type, text1, text2, time, onPress }) {
     topOffset: 50,
     bottomOffset: 40,
     position: "top",
-    onShow: () => {},
-    onHide: () => {},
+    onShow: () => { },
+    onHide: () => { },
     onPress: onPress,
   });
 }

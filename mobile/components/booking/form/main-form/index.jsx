@@ -4,14 +4,17 @@ import DoctorSelect from "../../selects/DoctorSelect";
 import { useState } from "react";
 import { CalendarSelect } from "../../selects/DateSelect";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import TimeSelect from "../../selects/TimeSelect";
 
 const MainBookingForm = ({ item }) => {
     const [branchID, setBranchID] = useState(null);
     const [doctorID, setDoctorID] = useState(null);
-    const [date, setDate] = useState(null);
+    const [schedule, setSchedule] = useState(null);
     const [time, setTime] = useState(null);
 
     const specialtyID = item?.specialty?._id;
+
+    console.log('schedule', schedule);
 
     return (
         <View>
@@ -31,15 +34,16 @@ const MainBookingForm = ({ item }) => {
             <View className="mt-2">
                 <CalendarSelect
                     branchID={ branchID }
-                    specialtyID={ specialtyID }
-                    onSelect={ setDoctorID }
+                    doctorID={ doctorID }
+                    onSelect={ setSchedule }
                 />
             </View>
             <View className="mt-2">
-                <DoctorSelect
-                    branchID={ branchID }
-                    specialtyID={ specialtyID }
+                <TimeSelect
                     onSelect={ setDoctorID }
+                    timesList={ schedule?.time?.map((time, index) =>
+                        ({ label: time, value: time })
+                    ) }
                 />
             </View>
         </View>
