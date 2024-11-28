@@ -32,7 +32,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   const handleAddToCart = () => {
     if (!userProfile) {
       toast.error("Vui lòng đăng nhập để đặt lịch.");
-      
+
       return;
     }
 
@@ -68,10 +68,10 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
             }),
           bookingDetail: {
             specialtyID: product.specialty._id,
-            ...(isService ? {} : { levelID: selectedService._id }),
-            image: product.image,
+            ...(isService ? {} : { levelID: product?.services[0]._id }),
             name: product.name,
-            price: selectedService.discountPrice || 0,
+            image: product.image,
+            price: product.discountPrice || 0,
             selectedBranchID: "",
             selectedDoctorID: "",
             selectedWorkScheduleID: "",
@@ -84,7 +84,6 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
     }
     navigate("/booking");
   };
-  console.log(isService, "dsaghghj");
 
   if (isLoading) {
     return (

@@ -1,4 +1,4 @@
-import ads1 from "../../../assets/images/loginBanners/01.png";
+import ads1 from "../../../assets/images/loginBanners/01.jpg";
 import ads2 from "../../../assets/images/loginBanners/02.png";
 import ads3 from "../../../assets/images/loginBanners/03.png";
 

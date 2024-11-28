@@ -11,7 +11,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { buttons } from "../../constants/nav-home-buttons";
 import { itemsBanner } from "../../constants/items-banner";
@@ -84,11 +84,11 @@ const Header = () => {
             <TouchableOpacity
               className="bg-[#00000096] black w-8 h-8 rounded-full flex justify-center items-center"
               onPress={ () => {
-                console.log("Button pressed!");
+                router.push("/chat-advice");
               } }
             >
               <Text className="text-white">
-                <Ionicons name="calendar" size={ 15 } color="white" />
+                <FontAwesome6 name="headset" size={ 15 } color="white" />
               </Text>
             </TouchableOpacity>
             <TouchableOpacity

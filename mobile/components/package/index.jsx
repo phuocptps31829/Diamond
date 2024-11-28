@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Text, View } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListSpecialty from "./ListSpecialty";
 import ListPackage from "./ListPackage";
@@ -24,7 +24,7 @@ const Package = () => {
 
   const handleSelectSpecialty = (id) => {
     setSelectedSpecialty(id);
-  }
+  };
 
   const {
     data: dataSpecialty = [],
@@ -59,17 +59,17 @@ const Package = () => {
     setDataPackage([]);
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <Text>{errorPackage?.message || errorSpecialty?.message}</Text>
+        <Text>{ errorPackage?.message || errorSpecialty?.message }</Text>
       </View>
     );
   }
 
   return (
     <>
-      {isLoadingSpecialty || (isLoadingPackage && <Loading />)}
-      <HeaderTab title="Gói dịch vụ" />
-      <ListSpecialty listSpecialty={dataSpecialty} selectedSpecialty={selectedSpecialty} handleSelectSpecialty={handleSelectSpecialty} />
-      <ListPackage listPackages={dataPackage} selectedSpecialty={selectedSpecialty} />
+      { isLoadingSpecialty || (isLoadingPackage && <Loading />) }
+      <HeaderTab title="Gói Khám" />
+      <ListSpecialty listSpecialty={ dataSpecialty } selectedSpecialty={ selectedSpecialty } handleSelectSpecialty={ handleSelectSpecialty } />
+      <ListPackage listPackages={ dataPackage } selectedSpecialty={ selectedSpecialty } />
     </>
   );
 };

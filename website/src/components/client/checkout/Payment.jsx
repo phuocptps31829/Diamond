@@ -29,7 +29,8 @@ export default function Form() {
         location.href = data.data.payUrl;
       }
       if (paymentMethod === "vnpay") {
-        location.href = data.data;
+        console.log(data.payUrl);
+        location.href = data.data.payUrl;
       }
       if (paymentMethod === "cod") {
         location.href = "/payment-success";
@@ -41,7 +42,6 @@ export default function Form() {
   });
 
   const handleSubmitCheckout = () => {
-    console.log(bookingInfo.bookingInfoCheckout);
     if (!paymentMethod) {
       toast.error("Vui lòng chọn phương thức thanh toán");
       return;
@@ -229,7 +229,7 @@ export default function Form() {
 
               <label
                 onClick={ () => setPaymentMethod("cod") }
-                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "ccc" ? "border-primary-500" : ""
+                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "cod" ? "border-primary-500" : ""
                   }` }
               >
                 <img

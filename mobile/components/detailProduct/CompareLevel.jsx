@@ -9,7 +9,7 @@ const CompareLevel = ({ name, services }) => {
     return (
         <View>
             <Text className="font-semibold text-lg" style={ { lineHeight: '24px' } }>
-                Thông tin chi tiết về { name } bao gồm:
+                Các dịch vụ trong { name } bao gồm:
             </Text>
             <View className="mt-3">
                 <DataTable>

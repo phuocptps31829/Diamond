@@ -47,10 +47,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!medicalPackages.length) {
-                createError(404, 'No medicalPackages found.');
-            }
-
             const formattedMedicalPackages = medicalPackages.map(package => {
                 const formattedPackage = {
                     ...package,
@@ -67,7 +63,9 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'MedicalPackages retrieved successfully.',
-                data: formattedMedicalPackages,
+                data: formattedMedicalPackages?.length
+                    ? formattedMedicalPackages
+                    : [],
                 totalRecords
             });
         } catch (error) {

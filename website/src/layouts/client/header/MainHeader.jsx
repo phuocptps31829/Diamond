@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
@@ -16,17 +16,9 @@ import {
 import { Avatar } from "@/components/ui/Avatar";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import brandLogo from "@/assets/images/brandLogo.png";
-import { FaBell, FaExternalLinkAlt, FaRegUser } from "react-icons/fa";
+import { FaBell, FaRegUser } from "react-icons/fa";
 import { FaPowerOff } from "react-icons/fa6";
 import { clearCart } from "@/redux/cartSlice";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/Tooltip";
-import { Badge } from "@/components/ui/Badge";
-import { IoCalendarOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { AnimatedList } from "@/components/ui/AnimatedList";
 import Notification from "./notion/NotionMessage";
@@ -66,56 +58,55 @@ const dataNav = [
     to: "/contact",
   },
 ];
-const appointments = [
-  { date: "15/06/2023", time: "09:00", doctor: "Dr. Nguyễn Văn A" },
-  { date: "20/06/2023", time: "14:30", doctor: "Dr. Trần Thị B" },
-];
+
 
 export default function MainHeader() {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const { toggleNavbar } = useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-  const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
+  const { subscribe, socket } = useSocket(SOCKET_URL);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-  const tooltipTimeoutRef = useRef(null);
   const handleLogout = () => {
     dispatch(logoutAction());
     dispatch(clearCart());
     toast.success("Đăng xuất thành công");
     navigate("/");
   };
-  const hasAppointments = appointments.length > 0;
-  const handleMouseEnter = () => {
-    if (tooltipTimeoutRef.current) {
-      clearTimeout(tooltipTimeoutRef.current);
-    }
-    setIsTooltipOpen(true);
-  };
-  const handleMouseLeave = () => {
-    tooltipTimeoutRef.current = setTimeout(() => {
-      setIsTooltipOpen(false);
-    }, 300);
-  };
-  const fetchNotifications = async () => {
+  // const handleMouseEnter = () => {
+  //   if (tooltipTimeoutRef.current) {
+  //     clearTimeout(tooltipTimeoutRef.current);
+  //   }
+  //   setIsTooltipOpen(true);
+  // };
+  // const handleMouseLeave = () => {
+  //   tooltipTimeoutRef.current = setTimeout(() => {
+  //     setIsTooltipOpen(false);
+  //   }, 300);
+  // };
+  const fetchNotifications = useCallback(async () => {
     try {
       const data = await notificationsApi.getNotificationsByUser();
       setNotifications(data.data);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (userProfile) {
+      fetchNotifications();
+    }
+  }, [fetchNotifications, userProfile]);
 
   useEffect(() => {
     if (!socket) return;
 
-    const testUpcoming = subscribe("notification", (data) => {
+    const handleNotification = (data) => {
       const userID = userProfile?._id;
       console.log("New notification:", data);
       console.log("User ID:", userID);
@@ -162,13 +153,16 @@ export default function MainHeader() {
             </div>
           </div>
         ));
+        fetchNotifications();
       }
-      fetchNotifications();
-    });
-    return () => {
-      testUpcoming();
     };
-  }, [subscribe, socket, userProfile]);
+
+    const unsubscribe = subscribe("notification", handleNotification);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [subscribe, socket, userProfile, fetchNotifications]);
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
@@ -177,7 +171,7 @@ export default function MainHeader() {
         </Link>
         <div className="flex items-center space-x-3">
           { userProfile && (
-            <DropdownMenu >
+            <DropdownMenu>
               <DropdownMenuTrigger asChild className="">
                 <button
                   className="relative block lg:hidden"
@@ -203,7 +197,7 @@ export default function MainHeader() {
                   Thông báo
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="mb-4" />
-                <AnimatedList>
+                <AnimatedList baseDelay={ 1000 } minDelay={ 100 }>
                   { notifications.length === 0 ? (
                     <div className="my-3 text-center text-gray-500 dark:text-gray-400">
                       Bạn không có thông báo nào
@@ -240,7 +234,7 @@ export default function MainHeader() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild className="">
                   <button
-                    className="relative hidden lg:block !mr-1"
+                    className="relative !mr-1 hidden lg:block"
                     onClick={ toggleDropdown }
                   >
                     { notifications.length > 0 && (
@@ -257,7 +251,7 @@ export default function MainHeader() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   side="bottom"
-                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
+                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800 positionFixed"
                 >
                   <DropdownMenuLabel className="text-base font-semibold dark:text-white">
                     Thông báo
@@ -319,27 +313,27 @@ export default function MainHeader() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  { hasAppointments && (
+                  {/* {hasAppointments && (
                     <TooltipProvider>
-                      <Tooltip open={ isTooltipOpen }>
+                      <Tooltip open={isTooltipOpen}>
                         <TooltipTrigger asChild>
                           <div
-                            onMouseEnter={ handleMouseEnter }
-                            onMouseLeave={ handleMouseLeave }
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
                           >
                             <Badge
                               variant="destructive"
                               className="absolute -right-2 -top-2 z-20 flex h-5 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
                             >
-                              { appointments.length }
+                              {appointments.length}
                             </Badge>
                           </div>
                         </TooltipTrigger>
                         <TooltipContent
                           side="bottom"
                           className="bottom mt-[9px] rounded-xl border border-gray-200 p-0 shadow-2xl"
-                          onMouseEnter={ handleMouseEnter }
-                          onMouseLeave={ handleMouseLeave }
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
                         >
                           <div className="max-w-xs bg-white p-4">
                             <div className="mb-2 flex items-center justify-between">
@@ -357,29 +351,29 @@ export default function MainHeader() {
                                 <FaExternalLinkAlt className="h-4 w-4" />
                               </Link>
                             </div>
-                            { hasAppointments ? (
+                            {hasAppointments ? (
                               <ul className="space-y-2">
-                                { appointments.map((appointment) => (
-                                  <li key={ appointment.id } className="text-sm">
+                                {appointments.map((appointment) => (
+                                  <li key={appointment.id} className="text-sm">
                                     <p className="text-start font-medium text-black">
-                                      { appointment.date } - { appointment.time }
+                                      {appointment.date} - {appointment.time}
                                     </p>
                                     <p className="text-start text-gray-600">
-                                      Bác sĩ: { appointment.doctor }
+                                      Bác sĩ: {appointment.doctor}
                                     </p>
                                   </li>
-                                )) }
+                                ))}
                               </ul>
                             ) : (
                               <p className="text-sm text-gray-600">
                                 Bạn không có lịch hẹn nào.
                               </p>
-                            ) }
+                            )}
                           </div>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  ) }
+                  )} */}
                 </div>
               ) : (
                 <Link

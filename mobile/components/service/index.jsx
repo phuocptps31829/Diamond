@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useLocalSearchParams } from "expo-router"
+import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import HeaderTab from "../ui/HeaderTabScreen";
 import ListSpecialty from "./ListSpecialty";
@@ -17,7 +17,7 @@ const Service = () => {
 
   const handleSelectSpecialty = (id) => {
     setSelectedSpecialty(id);
-  }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -57,17 +57,17 @@ const Service = () => {
   if (errorSpecialty || errorService) {
     return (
       <View className="w-full h-full flex justify-center items-center">
-        <Text>{errorSpecialty?.message}</Text>
+        <Text>{ errorSpecialty?.message }</Text>
       </View>
     );
   }
 
   return (
     <>
-      {(isLoadingSpecialty || isLoadingService) && <Loading />}
-      <HeaderTab title="Dịch vụ" />
-      <ListSpecialty listSpecialty={dataSpecialty} selectedSpecialty={selectedSpecialty} handleSelectSpecialty={handleSelectSpecialty} />
-      <ListService listServices={dataService} selectedSpecialty={selectedSpecialty} />
+      { (isLoadingSpecialty || isLoadingService) && <Loading /> }
+      <HeaderTab title="Dịch Vụ" />
+      <ListSpecialty listSpecialty={ dataSpecialty } selectedSpecialty={ selectedSpecialty } handleSelectSpecialty={ handleSelectSpecialty } />
+      <ListService listServices={ dataService } selectedSpecialty={ selectedSpecialty } />
     </>
   );
 };

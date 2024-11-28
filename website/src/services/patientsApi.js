@@ -1,8 +1,10 @@
 import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 
 export const patientApi = {
-    getAllPatients: async () => {
-        const res = await axiosInstanceGET.get('/patients');
+    getAllPatients: async (params) => {
+        const res = await axiosInstanceGET.get('/patients', {
+            params,
+        });
         return res.data;
     },
 

@@ -46,10 +46,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!services.length) {
-                createError(404, 'No services found.');
-            }
-
             const formattedServices = services.map(service => {
                 const formattedService = {
                     ...service,
@@ -66,7 +62,7 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'Services retrieved successfully.',
-                data: formattedServices,
+                data: formattedServices?.length ? formattedServices : [],
                 totalRecords
             });
         } catch (error) {

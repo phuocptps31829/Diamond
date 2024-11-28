@@ -634,6 +634,6 @@
   animation: leave 0.3s ease-in forwards;
 }
 
-div[data-radix-popper-content-wrapper] {
+div:has(.positionFixed)[data-radix-popper-content-wrapper] {
   left: -58px !important;
 }
