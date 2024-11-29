@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { styles } from './styles';
@@ -7,9 +7,9 @@ import ToastUI from '../../ui/Toast';
 
 const TimeSelect = ({
     timesList,
+    time,
     onSelect
 }) => {
-    const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
     const handleClick = () => {
@@ -44,7 +44,7 @@ const TimeSelect = ({
                 valueField="value"
                 placeholder={ !isFocus ? 'Chọn thời gian' : '' }
                 searchPlaceholder="Nhập thời gian ..."
-                value={ value }
+                value={ time }
                 autoScroll={ true }
                 showsVerticalScrollIndicator={ true }
                 search
@@ -52,7 +52,6 @@ const TimeSelect = ({
                 onBlur={ () => setIsFocus(false) }
                 onChange={ item => {
                     onSelect(item.value);
-                    setValue(item.value);
                     setIsFocus(false);
                 } }
                 renderInputSearch={ (onSearch) => (

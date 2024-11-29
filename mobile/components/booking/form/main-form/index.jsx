@@ -6,41 +6,64 @@ import { CalendarSelect } from "../../selects/DateSelect";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import TimeSelect from "../../selects/TimeSelect";
 
-const MainBookingForm = ({ item }) => {
-    const [branchID, setBranchID] = useState(null);
-    const [doctorID, setDoctorID] = useState(null);
-    const [schedule, setSchedule] = useState(null);
-    const [time, setTime] = useState(null);
-
+const MainBookingForm = ({
+    item,
+    branchID,
+    onSetBranchID,
+    doctorID,
+    onSetDoctorID,
+    schedule,
+    onSetSchedule,
+    time,
+    onSetTime
+}) => {
     const specialtyID = item?.specialty?._id;
 
     console.log('schedule', schedule);
+
+    const handleSelectBranch = (branchID) => {
+        onSetBranchID(branchID);
+        onSetDoctorID(null);
+        onSetSchedule(null);
+    };
+
+    const handleSelectDoctor = (doctorID) => {
+        onSetDoctorID(doctorID);
+        onSetSchedule(null);
+    };
+
+    const handleSelectSchedule = (schedule) => {
+        onSetSchedule(schedule);
+        onSetTime(null);
+    };
 
     return (
         <View>
             <View>
                 <BranchSelect
                     specialtyID={ specialtyID }
-                    onSelect={ setBranchID }
+                    onSelect={ handleSelectBranch }
                 />
             </View>
             <View className="mt-2">
                 <DoctorSelect
                     branchID={ branchID }
                     specialtyID={ specialtyID }
-                    onSelect={ setDoctorID }
+                    onSelect={ handleSelectDoctor }
                 />
             </View>
             <View className="mt-2">
                 <CalendarSelect
                     branchID={ branchID }
                     doctorID={ doctorID }
-                    onSelect={ setSchedule }
+                    onSelect={ handleSelectSchedule }
+                    date={ schedule?.day }
                 />
             </View>
             <View className="mt-2">
                 <TimeSelect
-                    onSelect={ setDoctorID }
+                    time={ time }
+                    onSelect={ onSetTime }
                     timesList={ schedule?.time?.map((time, index) =>
                         ({ label: time, value: time })
                     ) }

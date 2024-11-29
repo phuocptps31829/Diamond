@@ -1,12 +1,14 @@
 import { useState } from "react";
 import Fontisto from '@expo/vector-icons/Fontisto';
-import { Button, SafeAreaView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Button, Modal, SafeAreaView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ToastUI from "../../ui/Toast";
 import { workScheduleApi } from "../../../services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar, CalendarList, Agenda, LocaleConfig } from 'react-native-calendars';
-import Modal from "react-native-modal";
+import { Dimensions } from 'react-native';
+
+const ScreenWidth = Dimensions.get('window').width;
 
 LocaleConfig.locales['vi'] = {
     monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
@@ -21,9 +23,9 @@ LocaleConfig.defaultLocale = 'vi';
 export const CalendarSelect = ({
     doctorID,
     branchID,
+    date,
     onSelect,
 }) => {
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const [showCalender, setShowCalender] = useState(false);
 
     const { data: scheduleData, isLoading, isError } = useQuery(({
@@ -65,7 +67,6 @@ export const CalendarSelect = ({
             return;
         }
 
-        setSelectedDate(selectedDate);
         onSelect(scheduleData?.data?.find(
             (availableDate) =>
                 availableDate.day === new Date(selectedDate).toISOString().slice(0, 10)));
@@ -73,7 +74,9 @@ export const CalendarSelect = ({
 
     console.log('scheduleData: ', scheduleData);
 
-    const slicedDate = new Date(selectedDate).toISOString().slice(0, 10);
+    const slicedDate = date
+        ? new Date(date).toISOString().slice(0, 10)
+        : '';
 
     return (
         <SafeAreaView>
@@ -95,47 +98,60 @@ export const CalendarSelect = ({
                 <TextInput
                     className="p-2 text-base leading-5 flex-1 text-gray-700"
                     placeholder="Chọn ngày khám"
-                    value={ selectedDate
-                        ? new Date(selectedDate).toLocaleDateString("vi-VN")
+                    value={ date
+                        ? new Date(date).toLocaleDateString("vi-VN")
                         : "" }
                     editable={ false }
                     pointerEvents="none"
                 />
             </TouchableOpacity>
+
             <Modal
-                isVisible={ showCalender }
-                onBackdropPress={ () => setShowCalender(false) }
-                backdropOpacity={ 0.5 }
+                animationType="fade"
+                transparent={ true }
+                visible={ showCalender }
+                onRequestClose={ () => {
+                    setShowCalender(!showCalender);
+                } }
             >
-                <Calendar
-                    onDayPress={ day => {
-                        onChange(new Date(day.dateString));
-                    } }
-                    style={ {
-                        borderRadius: 10,
-                        overflow: 'hidden',
-                        padding: 4,
-                    } }
-                    dayComponent={ ({ date, state }) => {
-                        const currentDate = new Date().toISOString().slice(0, 10);
-                        return (
-                            <TouchableOpacity
-                                onPress={ () => onChange(new Date(date.dateString)) }
-                                className={ `flex justify-center ${slicedDate === date.dateString ? 'bg-[#007bbb]' : 'bg-white'} rounded-full h-9 w-9 relative` }
-                            >
-                                <Text
-                                    className={ `text-center ${currentDate === date.dateString
-                                        ? 'text-primary-600'
-                                        : slicedDate === date.dateString
-                                            ? 'text-white'
-                                            : isDateAvailable(date.dateString)
-                                                ? 'text-black'
-                                                : 'text-gray-300'} text-[15px]` }
-                                >{ date.day }</Text>
-                            </TouchableOpacity>
-                        );
-                    } }
-                />
+                <TouchableWithoutFeedback onPress={ () => setShowCalender(false) }>
+                    <View className="flex-1 justify-center items-center bg-[#00000090] bg-opacity-50 absolute top-0 left-0 right-0 bottom-0" />
+                </TouchableWithoutFeedback>
+                <View
+                    className="flex-1 justify-center items-center"
+                >
+                    <Calendar
+                        onDayPress={ day => {
+                            onChange(new Date(day.dateString));
+                        } }
+                        style={ {
+                            borderRadius: 10,
+                            overflow: 'hidden',
+                            padding: 4,
+                            width: ScreenWidth * 0.85,
+                            maxWidth: 340
+                        } }
+                        dayComponent={ ({ date, state }) => {
+                            const currentDate = new Date().toISOString().slice(0, 10);
+                            return (
+                                <TouchableOpacity
+                                    onPress={ () => onChange(new Date(date.dateString)) }
+                                    className={ `flex justify-center ${slicedDate === date.dateString ? 'bg-[#007bbb]' : 'bg-white'} rounded-full h-9 w-9 relative` }
+                                >
+                                    <Text
+                                        className={ `text-center ${currentDate === date.dateString
+                                            ? 'text-primary-600'
+                                            : slicedDate === date.dateString
+                                                ? 'text-white'
+                                                : isDateAvailable(date.dateString)
+                                                    ? 'text-black'
+                                                    : 'text-gray-300'} text-[15px]` }
+                                    >{ date.day }</Text>
+                                </TouchableOpacity>
+                            );
+                        } }
+                    />
+                </View>
             </Modal>
         </SafeAreaView>
     );

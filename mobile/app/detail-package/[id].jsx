@@ -21,7 +21,7 @@ const DetailPackageScreen = () => {
         <>
             <Stack.Screen
                 options={ {
-                    header: () => <HeaderScreen title={ packageData?.name || "Không tìm thấy" } />,
+                    header: () => <HeaderScreen title={ packageData?.name || (!isLoading && "Không tìm thấy") } />,
                 } }
             />
             { isError ? <Error /> : !isLoading && !packageData ? <NotFound /> : isLoading ? <Loading /> : <DetailProduct data={ packageData } /> }

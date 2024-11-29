@@ -24,18 +24,18 @@ export default function RootContent() {
     };
 
     const testUpcoming = subscribe("notification", async (data) => {
-      const { userIDs, title } = data.data;
-      if (userIDs && userIDs.includes(profile._id)) {
-        await playSound();
-        ToastUI({
-          type: "info",
-          text1: title,
-          text2: "Bạn có một thông báo mới click để xem chi tiết",
-          onPress: () => {
-            router.push("/notification");
-          },
-        });
-      };
+        const { userIDs, title } = data.data;
+        if(userIDs && userIDs.includes(profile._id)) {
+            await playSound();
+            ToastUI({
+                type: "info",
+                text1: title,
+                text2: "Bạn có một thông báo mới click để xem chi tiết",
+                onPress: () => {
+                router.push("/notification");
+                },
+            });
+        };
     });
 
 
@@ -106,6 +106,12 @@ export default function RootContent() {
         name="notification"
         options={ {
           header: () => <HeaderScreen title="Thông Báo" />,
+        } }
+      />
+      <Stack.Screen
+        name="chat-advice"
+        options={ {
+          header: () => <HeaderScreen title="Hỗ Trợ Trực Tuyến" />,
         } }
       />
       <Stack.Screen

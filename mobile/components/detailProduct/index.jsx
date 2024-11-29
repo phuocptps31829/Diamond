@@ -18,7 +18,7 @@ const DetailProduct = ({ data }) => {
     return (
         <>
             <Detail data={ data } />
-            <View className="pt-4 pb-10 px-6">
+            <View className="pt-4 pb-7 px-4">
                 <TouchableOpacity
                     className="bg-primary-500 py-4 rounded-lg"
                     onPress={ handleBooking }

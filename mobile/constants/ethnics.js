@@ -1,218 +1,218 @@
 export const ethnicGroups = [
     {
-        name: "Kinh",
+        label: "Kinh",
         value: "Kinh"
     },
     {
-        name: "Tày",
+        label: "Tày",
         value: "Tay"
     },
     {
-        name: "Thái",
+        label: "Thái",
         value: "Thai"
     },
     {
-        name: "Mường",
+        label: "Mường",
         value: "Muong"
     },
     {
-        name: "Hoa",
+        label: "Hoa",
         value: "Hoa"
     },
     {
-        name: "Khơ-me",
+        label: "Khơ-me",
         value: "Khmer"
     },
     {
-        name: "Nùng",
+        label: "Nùng",
         value: "Nung"
     },
     {
-        name: "H'Mông",
+        label: "H'Mông",
         value: "HMong"
     },
     {
-        name: "Dao",
+        label: "Dao",
         value: "Dao"
     },
     {
-        name: "Gia-rai",
+        label: "Gia-rai",
         value: "Giarai"
     },
     {
-        name: "Ê-đê",
+        label: "Ê-đê",
         value: "Ede"
     },
     {
-        name: "Ba-na",
+        label: "Ba-na",
         value: "Bana"
     },
     {
-        name: "Xơ-đăng",
+        label: "Xơ-đăng",
         value: "Xodang"
     },
     {
-        name: "Sán Chay",
+        label: "Sán Chay",
         value: "SanChay"
     },
     {
-        name: "Cơ-ho",
+        label: "Cơ-ho",
         value: "Coho"
     },
     {
-        name: "Chăm",
+        label: "Chăm",
         value: "Cham"
     },
     {
-        name: "Sán Dìu",
+        label: "Sán Dìu",
         value: "SanDiu"
     },
     {
-        name: "Hrê",
+        label: "Hrê",
         value: "Hre"
     },
     {
-        name: "Ra-glai",
+        label: "Ra-glai",
         value: "Raglai"
     },
     {
-        name: "Mnông",
+        label: "Mnông",
         value: "Mnong"
     },
     {
-        name: "X'tiêng",
+        label: "X'tiêng",
         value: "Xtieng"
     },
     {
-        name: "Bru-Vân Kiều",
+        label: "Bru-Vân Kiều",
         value: "BruVanKieu"
     },
     {
-        name: "Thổ",
+        label: "Thổ",
         value: "Tho"
     },
     {
-        name: "Giáy",
+        label: "Giáy",
         value: "Giay"
     },
     {
-        name: "Cơ-tu",
+        label: "Cơ-tu",
         value: "Cotu"
     },
     {
-        name: "Gié-Triêng",
+        label: "Gié-Triêng",
         value: "GieTrieng"
     },
     {
-        name: "Mạ",
+        label: "Mạ",
         value: "Ma"
     },
     {
-        name: "Khơ-mú",
+        label: "Khơ-mú",
         value: "Khomu"
     },
     {
-        name: "Co",
+        label: "Co",
         value: "Co"
     },
     {
-        name: "Ta-ôi",
+        label: "Ta-ôi",
         value: "Taoi"
     },
     {
-        name: "Chơ-ro",
+        label: "Chơ-ro",
         value: "Choro"
     },
     {
-        name: "Kháng",
+        label: "Kháng",
         value: "Khang"
     },
     {
-        name: "Xinh-mun",
+        label: "Xinh-mun",
         value: "XinhMun"
     },
     {
-        name: "Hà Nhì",
+        label: "Hà Nhì",
         value: "HaNhi"
     },
     {
-        name: "Chu-ru",
+        label: "Chu-ru",
         value: "Churu"
     },
     {
-        name: "Lào",
+        label: "Lào",
         value: "Lao"
     },
     {
-        name: "La Chí",
+        label: "La Chí",
         value: "LaChi"
     },
     {
-        name: "La Ha",
+        label: "La Ha",
         value: "LaHa"
     },
     {
-        name: "Phù Lá",
+        label: "Phù Lá",
         value: "PhuLa"
     },
     {
-        name: "La Hủ",
+        label: "La Hủ",
         value: "LaHu"
     },
     {
-        name: "Lự",
+        label: "Lự",
         value: "Lu"
     },
     {
-        name: "Lô Lô",
+        label: "Lô Lô",
         value: "LoLo"
     },
     {
-        name: "Chứt",
+        label: "Chứt",
         value: "Chut"
     },
     {
-        name: "Mảng",
+        label: "Mảng",
         value: "Mang"
     },
     {
-        name: "Pà Thẻn",
+        label: "Pà Thẻn",
         value: "PaThen"
     },
     {
-        name: "Cơ Lao",
+        label: "Cơ Lao",
         value: "CoLao"
     },
     {
-        name: "Cống",
+        label: "Cống",
         value: "Cong"
     },
     {
-        name: "Bố Y",
+        label: "Bố Y",
         value: "BoY"
     },
     {
-        name: "Si La",
+        label: "Si La",
         value: "SiLa"
     },
     {
-        name: "Pu Péo",
+        label: "Pu Péo",
         value: "PuPeo"
     },
     {
-        name: "Rơ-măm",
+        label: "Rơ-măm",
         value: "Romam"
     },
     {
-        name: "Brâu",
+        label: "Brâu",
         value: "Brau"
     },
     {
-        name: "Ơ Đu",
+        label: "Ơ Đu",
         value: "Odu"
     },
     {
-        name: "Ngái",
+        label: "Ngái",
         value: "Ngai"
     }
 ];

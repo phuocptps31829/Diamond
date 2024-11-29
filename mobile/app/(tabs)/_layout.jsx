@@ -1,3 +1,4 @@
+import { Platform } from "react-native";
 import { Tabs } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -17,6 +18,7 @@ const TabsLayout = () => {
             shadowOpacity: 0.2,
             shadowRadius: 4,
             elevation: 5, // Bóng đổ cho Android
+            height: Platform.OS === "ios" ? 83 : 65,
           },
         } }
       >

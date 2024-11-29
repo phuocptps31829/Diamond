@@ -23,29 +23,29 @@ const DetailServiceScreen = () => {
   return (
     <>
       <Stack.Screen
-        options={{
+        options={ {
           header: () => (
             <HeaderScreen
-              title={serviceData?.name || "Không tìm thấy"}
-              titleStyle={{
+              title={ serviceData?.name || (!isLoading && "Không tìm thấy") }
+              titleStyle={ {
                 maxWidth: 200,
                 overflow: "hidden",
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
-              }}
+              } }
             />
           ),
-        }}
+        } }
       />
-      {isError ? (
+      { isError ? (
         <Error />
       ) : !isLoading && !serviceData ? (
         <NotFound />
       ) : isLoading ? (
         <Loading />
       ) : (
-        <DetailProduct data={serviceData} />
-      )}
+        <DetailProduct data={ serviceData } />
+      ) }
     </>
   );
 };

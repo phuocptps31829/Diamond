@@ -26,14 +26,12 @@ module.exports = {
 
             const totalRecords = await ServiceModel
                 .countDocuments({
-                    isDeleted: false,
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
 
             const services = await ServiceModel
                 .find({
-                    isDeleted: false,
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 })
@@ -41,8 +39,8 @@ module.exports = {
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
+                    createdAt: -1,
                     ...sortOptions,
-                    createdAt: -1
                 })
                 .lean();
 
@@ -75,12 +73,10 @@ module.exports = {
             const { id } = req.params;
 
             const totalRecords = await ServiceModel.countDocuments({
-                isDeleted: false,
                 specialtyID: id,
             });
             const services = await ServiceModel
                 .find({
-                    isDeleted: false,
                     specialtyID: id,
                 })
                 .skip(skip)
@@ -108,7 +104,6 @@ module.exports = {
             const service = await ServiceModel
                 .findOne({
                     _id: id,
-                    isDeleted: false,
                 })
                 .populate("specialtyID")
                 .lean();
@@ -142,7 +137,6 @@ module.exports = {
             const service = await ServiceModel
                 .findOne({
                     slug: slug,
-                    isDeleted: false,
                 })
                 .populate("specialtyID")
                 .lean();

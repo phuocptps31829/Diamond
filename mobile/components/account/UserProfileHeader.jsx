@@ -10,10 +10,10 @@ const UserProfileHeader = () => {
 
   return (
     <>
-      <View className="bg-white relative pt-14 px-5 pb-5">
-        <View className="w-[450px] h-[90%] bg-[#007BBB] rounded-b-full absolute -left-9 -top-8"></View>
+      <View className="bg-white relative pt-14 pb-5">
+        <View className="absolute w-[130%] h-[130%] bg-[#007BBB] rounded-b-full -top-28 left-[-15%]"></View>
         <TouchableOpacity
-          className="flex-columns items-center justify-center gap-2"
+          className="flex-columns items-center justify-center gap-2 px-5"
           onPress={() => {
             router.push("account-info");
           }}

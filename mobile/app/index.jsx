@@ -21,27 +21,6 @@ const Index = () => {
     enabled: authReady,
   });
 
-  const { data: dataBranches, isLoading: loadingBranches } = useQuery({
-    queryKey: ["Branches"],
-    queryFn: branchApi.getAllBranches,
-  });
-
-  useEffect(() => {
-      if (!loadingBranches) {
-        const normalizedData = dataBranches.map((branch) => ({
-          ...branch,
-          coordinates: {
-            latitude: branch.coordinates.lat, 
-            longitude: branch.coordinates.lng, 
-            latitudeDelta: 0.0014, 
-            longitudeDelta: 0.0008,
-          },
-        }));
-        dispatch(setBranches(normalizedData));
-      }
-  }, [loadingBranches]);
-
-
   const storeLocation = async (currentLocation) => {
     try {
       await AsyncStorage.setItem(
@@ -56,20 +35,36 @@ const Index = () => {
   useEffect(() => {
     setLoading(true);
     const handleLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        return;
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          return;
+        }
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        const locationData = {
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        };
+        await storeLocation(locationData);
+        const branchesData = await branchApi.getAllBranches();
+        const normalizedData = branchesData.map((branch) => ({
+          ...branch,
+          coordinates: {
+            latitude: branch.coordinates.lat, 
+            longitude: branch.coordinates.lng, 
+            latitudeDelta: 0.0014, 
+            longitudeDelta: 0.0008,
+          },
+        }));
+        dispatch(setBranches(normalizedData));
+        setLocationReady(true);
+      } catch (error) {
+        console.error("Error in handleLocation:", error);
+      } finally {
+        setLoading(false);
       }
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      const locationData = {
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      };
-
-      await storeLocation(locationData);
-      setLocationReady(true);
     };
 
     handleLocation();

@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
     },
     placeholderStyle: {
         fontSize: 16,
+        color: '#C3C3C3'
     },
     selectedTextStyle: {
         borderRadius: 8,
