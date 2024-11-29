@@ -32,21 +32,13 @@ const DoctorSelect = ({
         }
     };
 
-    if (isLoading) {
-        return <Text>Loading...</Text>;
-    }
-
-    if (isError) {
-        return <Text>Error...</Text>;
-    }
-
     return (
         <TouchableOpacity
             onPress={ handleClick }
             style={ styles.container }
         >
             <Dropdown
-                disable={ !branchID }
+                disable={ !branchID || isLoading }
                 style={ [styles.dropdown, isFocus && { borderColor: '#007bbb' }] }
                 placeholderStyle={ styles.placeholderStyle }
                 selectedTextStyle={ styles.selectedTextStyle }

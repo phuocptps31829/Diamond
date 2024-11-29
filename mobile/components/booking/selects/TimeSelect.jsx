@@ -16,8 +16,8 @@ const TimeSelect = ({
         if (!timesList?.length) {
             ToastUI({
                 type: 'error',
-                text1: 'Vui lòng chọn thời gian',
-                text2: 'Chọn ngày để chọn thời gian',
+                text1: 'Vui lòng chọn ngày',
+                text2: 'Chọn ngày để chọn thời gian khám',
             });
             return;
         }
