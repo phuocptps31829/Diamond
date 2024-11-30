@@ -17,6 +17,7 @@ const MenuList = () => {
     dispatch(clearProfile());
     await AsyncStorage.removeItem("accessToken");
     await AsyncStorage.removeItem("refreshToken");
+    await AsyncStorage.removeItem("userSocketID");
     ToastUI({
       type: "success",
       text1: "Đăng xuất thành công",
