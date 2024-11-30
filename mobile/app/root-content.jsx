@@ -16,6 +16,7 @@ export default function RootContent() {
 
   useEffect(() => {
     if (!socket || !profile) return;
+    console.log("socket.connected", socket.connected);
     const playSound = async () => {
       const { sound } = await Audio.Sound.createAsync(
         require("../assets/audio/ui-hello-bells-om-fx-1-00-03.mp3")
