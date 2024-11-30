@@ -9,7 +9,7 @@ module.exports = {
             const idMid = req.user?.id;
 
             const user = await UserModel
-                .findOne({ isDeleted: false, _id: idParams || idMid })
+                .findOne({ _id: idParams || idMid })
                 .populate('roleID')
                 .lean();
 

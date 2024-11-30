@@ -24,8 +24,6 @@ const Package = ({
         )
         : false;
 
-    console.log(hasEmptyFields);
-
     useEffect(() => {
         setPackageLevel(pkg.levelID);
     }, [pkg.levelID]);

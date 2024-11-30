@@ -27,14 +27,14 @@ module.exports = {
 
             const totalRecords = await MedicalPackageModel
                 .countDocuments({
-                    isDeleted: false,
+
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
 
             const medicalPackages = await MedicalPackageModel
                 .find({
-                    isDeleted: false,
+
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 })
@@ -78,12 +78,12 @@ module.exports = {
             const { id } = req.params;
 
             const totalRecords = await MedicalPackageModel.countDocuments({
-                isDeleted: false,
+
                 specialtyID: id,
             });
             const medicalPackages = await MedicalPackageModel
                 .find({
-                    isDeleted: false,
+
                     specialtyID: id,
                 })
                 .skip(skip)
@@ -111,7 +111,7 @@ module.exports = {
             const medicalPackage = await MedicalPackageModel
                 .findOne({
                     _id: id,
-                    isDeleted: false,
+
                 })
                 .lean()
                 .populate("specialtyID");
@@ -127,7 +127,7 @@ module.exports = {
             const services = await ServiceModel
                 .find({
                     _id: { $in: arrayServices[0].servicesID },
-                    isDeleted: false,
+
                 }, {
                     _id: 1, name: 1
                 });
@@ -158,7 +158,7 @@ module.exports = {
             const medicalPackage = await MedicalPackageModel
                 .findOne({
                     slug: slug,
-                    isDeleted: false,
+
                 })
                 .populate("specialtyID")
                 .lean();
@@ -174,7 +174,7 @@ module.exports = {
             const services = await ServiceModel
                 .find({
                     _id: { $in: arrayServices[0].servicesID },
-                    isDeleted: false,
+
                 }, {
                     _id: 1, name: 1
                 });

@@ -13,10 +13,10 @@ module.exports = {
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await WorkScheduleModel.countDocuments({ isDeleted: false });
+            const totalRecords = await WorkScheduleModel.countDocuments({});
 
             const workSchedules = await WorkScheduleModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate("doctorID")
                 .populate({
                     path: 'clinicID',
@@ -102,7 +102,7 @@ module.exports = {
             const pipeline = [
                 {
                     $match: {
-                        isDeleted: false
+
                     }
                 },
                 {
@@ -222,7 +222,7 @@ module.exports = {
             const workSchedules = await WorkScheduleModel
                 .find({
                     doctorID: doctorID,
-                    isDeleted: false,
+
                     day: {
                         $gte: new Date().toISOString().slice(0, 10)
                     }
@@ -282,7 +282,7 @@ module.exports = {
             const pipeline = [
                 {
                     $match: {
-                        isDeleted: false,
+
                     }
                 },
                 {
@@ -406,11 +406,11 @@ module.exports = {
             const workSchedule = await WorkScheduleModel
                 .findOne({
                     'detail._id': id,
-                    isDeleted: false,
+
                 })
                 .populate({
                     path: 'doctorID',
-                    isDeleted: false,
+
                 });
 
 
@@ -480,7 +480,7 @@ module.exports = {
             const { id } = req.params;
 
             const workSchedules = await WorkScheduleModel
-                .find({ doctorID: id, isDeleted: false })
+                .find({ doctorID: id, })
                 .populate({
                     path: 'doctorID',
                     populate: {

@@ -6,7 +6,7 @@ module.exports = {
         try {
             const invoices = await InvoiceModel
                 .find({
-                    isDeleted: false
+
                 })
                 .populate('appointmentID')
                 .lean();

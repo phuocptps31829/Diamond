@@ -6,10 +6,10 @@ module.exports = {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
-            const totalRecords = await ResultModel.countDocuments({ isDeleted: false });
+            const totalRecords = await ResultModel.countDocuments({});
 
             const results = await ResultModel
-                .find({ isDeleted: false })
+                .find({})
                 .skip(skip)
                 .limit(limitDocuments)
                 .sort({
@@ -36,7 +36,7 @@ module.exports = {
             const { id } = req.params;
 
             const result = await ResultModel.findOne({
-                isDeleted: false,
+
                 _id: id
             });
 

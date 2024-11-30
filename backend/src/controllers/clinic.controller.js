@@ -7,10 +7,10 @@ module.exports = {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await ClinicModel.countDocuments({ isDeleted: false });
+            const totalRecords = await ClinicModel.countDocuments({});
 
             const clinics = await ClinicModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate("branchID")
                 .populate("specialtyID")
                 .skip(noPaginated ? undefined : skip)
@@ -61,7 +61,7 @@ module.exports = {
 
             const clinic = await ClinicModel
                 .findOne({
-                    isDeleted: false,
+
                     _id: id
                 })
                 .populate("branchID")
@@ -106,7 +106,7 @@ module.exports = {
 
             const clinics = await ClinicModel
                 .find({
-                    isDeleted: false,
+
                     specialtyID,
                     branchID
                 })

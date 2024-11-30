@@ -18,14 +18,14 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await UserModel.countDocuments({
-                isDeleted: false,
+
                 roleID: {
                     $in: [staffReceptionist, staffEditor, staffAccountant]
                 }
             });
             const staffs = await UserModel
                 .find({
-                    isDeleted: false,
+
                     roleID: {
                         $in: [staffReceptionist, staffEditor, staffAccountant]
                     }
@@ -69,7 +69,7 @@ module.exports = {
 
             const role = await RoleModel
                 .findOne({
-                    isDeleted: false,
+
                     name: roleName.toUpperCase()
                 })
                 .lean();
@@ -80,7 +80,7 @@ module.exports = {
 
             const staffs = await UserModel
                 .find({
-                    isDeleted: false,
+
                     roleID: role._id
                 })
                 .populate('roleID');
@@ -115,7 +115,7 @@ module.exports = {
 
             const staff = await UserModel
                 .findOne({
-                    isDeleted: false,
+
                     _id: idParams || idMid,
                 })
                 .populate('roleID');

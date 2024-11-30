@@ -7,6 +7,10 @@ import { useState } from "react";
 import ToastUI from "../ui/Toast";
 import { Validate } from "../../utils/validate";
 import ModalPayment from "./payment/Modal";
+import { useMutation } from "@tanstack/react-query";
+import { appointmentApi } from "../../services/appointmentsApi";
+import { useRouter } from 'expo-router';
+import PackageItem from "./item/Package";
 
 const BookingComponent = () => {
     const [enabledSwitch, setEnabledSwitch] = useState(false);
@@ -15,6 +19,8 @@ const BookingComponent = () => {
     const [doctorID, setDoctorID] = useState(null);
     const [schedule, setSchedule] = useState(null);
     const [time, setTime] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [packageLevel, setPackageLevel] = useState();
     const [helpForm, setHelpForm] = useState({
         fullName: '',
         phoneNumber: '',
@@ -30,6 +36,30 @@ const BookingComponent = () => {
 
     const profile = useSelector((state) => state.profile.profile);
     const itemData = useSelector((state) => state.booking.item);
+    const router = useRouter();
+
+    const { mutate: createAppointment, isPending } = useMutation({
+        mutationFn: appointmentApi.createAppointment,
+        onSuccess: (data) => {
+            setIsOpenModal(false);
+            ToastUI({
+                type: 'success',
+                text1: 'Đặt lịch thành công',
+                text2: 'Chúng tôi sẽ liên hệ với bạn sớm nhất',
+            });
+
+            console.log("data", data.data[0].appointmentID);
+            router.push('/detail-history/' + data.data[0].appointmentID);
+        },
+        onError: (error) => {
+            // console.log("error", error.response.data);
+            ToastUI({
+                type: 'error',
+                text1: 'Đặt lịch thất bại',
+                text2: 'Vui lòng thử lại sau',
+            });
+        }
+    });
 
     console.log("itemData", itemData);
     const handleSubmit = () => {
@@ -57,7 +87,7 @@ const BookingComponent = () => {
             ) {
                 ToastUI({
                     type: 'error',
-                    text1: 'Vui lòng nhập đủ thông tin người đặt giúp',
+                    text1: 'Vui lòng nhập đủ thông tin người được giúp',
                     text2: 'Nhập đủ thông tin bắt buộc (*) của người được đặt giúp.',
                 });
                 return;
@@ -91,9 +121,13 @@ const BookingComponent = () => {
             }
         }
 
+        setIsOpenModal(true);
+    };
+
+    const handlePayment = () => {
         const payload = {
             patientID: profile._id,
-            data: {
+            data: [{
                 workScheduleID: schedule._id,
                 ...(itemData?.services?.length
                     ? { medicalPackageID: itemData._id }
@@ -102,13 +136,32 @@ const BookingComponent = () => {
                 time: _combineDateTime(schedule.day, time),
                 status: "PENDING",
                 price: itemData.discountPrice,
-            }
+            }]
         };
 
-        console.log("payload", payload);
-        console.log("helpForm", helpForm);
+        // console.log("payload", payload);
+        // console.log("helpForm", helpForm);
 
-        setIsOpenModal(true);
+        createAppointment({
+            data: {
+                ...payload,
+                appointmentHelpUser: enabledSwitch
+                    ? {
+                        fullName: helpForm.fullName,
+                        phoneNumber: helpForm.phoneNumber,
+                        email: helpForm.email,
+                        gender: helpForm.gender,
+                        dateOfBirth: helpForm.dateOfBirth,
+                        insuranceCode: helpForm.insuranceCode,
+                        address: helpForm.address,
+                        citizenIdentificationNumber: helpForm.citizenIdentificationNumber,
+                        occupation: helpForm.occupation,
+                        ethnic: helpForm.ethnic,
+                    }
+                    : undefined,
+            },
+            provider: paymentMethod,
+        });
     };
 
     return (
@@ -122,7 +175,15 @@ const BookingComponent = () => {
                         Gói khám / Dịch vụ
                     </Text>
                     <View>
-                        <ServiceItem data={ itemData } />
+                        { itemData?.services?.length
+                            ? <PackageItem
+                                data={ itemData }
+                                packageLevel={ packageLevel }
+                                onSetPackageLevel={ setPackageLevel }
+                            />
+                            : <ServiceItem
+                                data={ itemData }
+                            /> }
                     </View>
                     <Text className="font-semibold text-lg my-2">
                         Thông tin đặt lịch
@@ -169,6 +230,9 @@ const BookingComponent = () => {
                 <ModalPayment
                     isOpen={ isOpenModal }
                     onClose={ () => setIsOpenModal(false) }
+                    paymentMethod={ paymentMethod }
+                    onSetPaymentMethod={ setPaymentMethod }
+                    onPay={ handlePayment }
                 />
             ) }
         </>

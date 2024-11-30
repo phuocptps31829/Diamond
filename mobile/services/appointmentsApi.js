@@ -16,4 +16,27 @@ export const appointmentApi = {
             throw error;
         }
     },
+    createAppointment: async ({ data, provider }) => {
+        let endpoint = null;
+        switch (provider) {
+            case "vnpay":
+                endpoint = "/invoices/payment/vnpay";
+                break;
+            case "momo":
+                endpoint = "/invoices/payment/momo";
+                break;
+            case "cod":
+                endpoint = "/invoices/payment/cod";
+                break;
+            default:
+                break;
+        }
+
+        console.log("data", data);
+        console.log("provider", provider);
+
+        const res = await axiosInstanceCUD.post(endpoint, data);
+        console.log(res.data);
+        return res.data;
+    },
 };

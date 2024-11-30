@@ -8,10 +8,10 @@ module.exports = {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await BranchModel.countDocuments({ isDeleted: false });
+            const totalRecords = await BranchModel.countDocuments({});
 
             const branches = await BranchModel
-                .find({ isDeleted: false })
+                .find({})
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
@@ -38,7 +38,7 @@ module.exports = {
             const { id } = req.params;
 
             const branch = await BranchModel.findOne({
-                isDeleted: false,
+
                 _id: id
             });
 

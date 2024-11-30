@@ -15,10 +15,10 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await UserModel.countDocuments({
-                isDeleted: false,
+
             });
             const users = await UserModel
-                .find({ isDeleted: false })
+                .find({})
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
@@ -54,7 +54,7 @@ module.exports = {
             const role = await RoleModel.findOne({ name: name });
 
             const users = await UserModel
-                .find({ isDeleted: false, roleID: role._id })
+                .find({ roleID: role._id })
                 .limit(limitDocuments)
                 .skip(skip)
                 .sort(sortOptions);
@@ -125,7 +125,7 @@ module.exports = {
             const idMid = req.user?.id;
 
             const user = await UserModel
-                .findOne({ isDeleted: false, _id: idParams || idMid })
+                .findOne({ _id: idParams || idMid })
                 .populate('roleID');
 
             if (!user) {

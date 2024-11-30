@@ -9,13 +9,13 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await NewsModel.countDocuments({
-                isDeleted: false,
+
                 ...(notHidden ? { isHidden: false } : {}),
             });
 
             const news = await NewsModel
                 .find({
-                    isDeleted: false,
+
                     ...(notHidden ? { isHidden: false } : {}),
                 })
                 .populate("specialtyID")
@@ -58,7 +58,7 @@ module.exports = {
             const news = await NewsModel
                 .findOne({
                     _id: id,
-                    isDeleted: false
+
                 })
                 .populate("specialtyID")
                 .lean();
@@ -91,7 +91,7 @@ module.exports = {
             const news = await NewsModel
                 .findOne({
                     slug: slug,
-                    isDeleted: false
+
                 })
                 .populate("specialtyID")
                 .lean();

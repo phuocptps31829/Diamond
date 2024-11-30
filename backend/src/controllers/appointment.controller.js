@@ -24,7 +24,7 @@ module.exports = {
             let { startDay, endDay } = req.checkValueQuery;
 
             const appointments = await AppointmentModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate('patientID')
                 .populate('serviceID')
                 .populate({
@@ -54,13 +54,13 @@ module.exports = {
             const formattedAppointmentsPromises = appointments.map(async appointment => {
                 const [invoice] = await Promise.all([
                     InvoiceModel
-                        .findOne({ appointmentID: appointment._id, isDeleted: false })
+                        .findOne({ appointmentID: appointment._id, })
                         .lean(),
                 ]);
 
                 const prescription = invoice
                     ? await PrescriptionModel
-                        .findOne({ isDeleted: false, invoiceID: invoice._id })
+                        .findOne({ invoiceID: invoice._id })
                         .lean() : null;
 
                 const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
@@ -87,7 +87,7 @@ module.exports = {
                 }) : []);
 
                 const result = await ResultModel
-                    .findOne({ isDeleted: false, appointmentID: appointment._id })
+                    .findOne({ appointmentID: appointment._id })
                     .lean();
 
                 let medicalPackage = null;
@@ -95,7 +95,7 @@ module.exports = {
                 if (appointment?.medicalPackageID) {
                     medicalPackage = await MedicalPackageModel
                         .findOne({
-                            isDeleted: false,
+
                             'services._id': appointment.medicalPackageID
                         });
                     level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
@@ -189,7 +189,7 @@ module.exports = {
 
             const appointments = await AppointmentModel
                 .find({
-                    isDeleted: false,
+
                 })
                 .populate('patientID')
                 .populate('serviceID')
@@ -222,20 +222,20 @@ module.exports = {
                 .map(async appointment => {
                     const [invoice, results, orderNumber] = await Promise.all([
                         InvoiceModel
-                            .findOne({ appointmentID: appointment._id, isDeleted: false })
+                            .findOne({ appointmentID: appointment._id, })
                             .lean(),
                         ResultModel
-                            .find({ appointmentID: appointment._id, isDeleted: false })
+                            .find({ appointmentID: appointment._id, })
                             .populate('serviceID')
                             .lean(),
                         OrderNumberModel
-                            .findOne({ appointmentID: appointment._id, isDeleted: false })
+                            .findOne({ appointmentID: appointment._id, })
                             .lean(),
                     ]);
 
                     const prescription = invoice
                         ? await PrescriptionModel
-                            .findOne({ isDeleted: false, invoiceID: invoice._id })
+                            .findOne({ invoiceID: invoice._id })
                             .lean() : null;
 
                     const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
@@ -262,7 +262,7 @@ module.exports = {
                     }) : []);
 
                     const result = await ResultModel
-                        .findOne({ isDeleted: false, appointmentID: appointment._id })
+                        .findOne({ appointmentID: appointment._id })
                         .lean();
 
                     let medicalPackage = null;
@@ -270,7 +270,7 @@ module.exports = {
                     if (appointment?.medicalPackageID) {
                         medicalPackage = await MedicalPackageModel
                             .findOne({
-                                isDeleted: false,
+
                                 'services._id': appointment.medicalPackageID
                             });
                         level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
@@ -362,7 +362,7 @@ module.exports = {
 
             const appointments = await AppointmentModel
                 .find({
-                    isDeleted: false,
+
                     patientID: id,
                     ...(status ? { status } : {}),
                     ...(startDay && endDay ? { time: { $gte: startDay, $lte: endDay } } :
@@ -398,14 +398,14 @@ module.exports = {
             const formattedAppointmentsPromises = appointments.map(async appointment => {
                 const [results] = await Promise.all([
                     ResultModel
-                        .find({ appointmentID: appointment._id, isDeleted: false })
+                        .find({ appointmentID: appointment._id, })
                         .populate('serviceID')
                         .lean(),
                 ]);
 
                 const resultPrescriptions = await Promise.all(results.map(async result => {
                     const prescription = await PrescriptionModel
-                        .findOne({ isDeleted: false, resultID: result._id })
+                        .findOne({ resultID: result._id })
                         .lean();
 
                     const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {
@@ -451,7 +451,7 @@ module.exports = {
                 if (appointment?.medicalPackageID) {
                     medicalPackage = await MedicalPackageModel
                         .findOne({
-                            isDeleted: false,
+
                             'services._id': appointment.medicalPackageID
                         });
                     level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
@@ -532,7 +532,7 @@ module.exports = {
     getAllAppointmentsForGenderYears: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate('serviceID')
                 .populate('medicalPackageID')
                 .populate('patientID');
@@ -581,7 +581,7 @@ module.exports = {
     getAllAppointmentsForSpecialty: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate('serviceID');
 
             const result = [];
@@ -593,7 +593,7 @@ module.exports = {
                 if (appointments[i]?.medicalPackageID) {
                     medicalPackage = await MedicalPackageModel
                         .findOne({
-                            isDeleted: false,
+
                             'services._id': appointments[i].medicalPackageID
                         });
                 }
@@ -635,7 +635,7 @@ module.exports = {
     getAllAppointmentsForAges: async (req, res, next) => {
         try {
             const appointments = await AppointmentModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate('serviceID')
                 .populate('medicalPackageID')
                 .populate('patientID');
@@ -689,7 +689,7 @@ module.exports = {
             const appointment = await AppointmentModel
                 .findOne({
                     _id: id,
-                    isDeleted: false
+
                 })
                 .populate('serviceID')
                 .populate({
@@ -734,7 +734,7 @@ module.exports = {
             if (appointment?.medicalPackageID) {
                 medicalPackage = await MedicalPackageModel
                     .findOne({
-                        isDeleted: false,
+
                         'services._id': appointment.medicalPackageID
                     })
                     .populate("specialtyID");
@@ -754,20 +754,20 @@ module.exports = {
 
             const [invoice, results, orderNumber] = await Promise.all([
                 InvoiceModel
-                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .findOne({ appointmentID: appointment._id, })
                     .lean(),
                 ResultModel
-                    .find({ appointmentID: appointment._id, isDeleted: false })
+                    .find({ appointmentID: appointment._id, })
                     .populate('serviceID')
                     .lean(),
                 OrderNumberModel
-                    .findOne({ appointmentID: appointment._id, isDeleted: false })
+                    .findOne({ appointmentID: appointment._id, })
                     .lean(),
             ]);
 
             const resultPrescriptions = await Promise.all(results.map(async result => {
                 const prescription = await PrescriptionModel
-                    .findOne({ isDeleted: false, resultID: result._id })
+                    .findOne({ resultID: result._id })
                     .lean();
 
                 const prescriptionMedicines = await Promise.all(prescription ? prescription.medicines.map(async m => {

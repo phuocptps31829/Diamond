@@ -6,12 +6,12 @@ module.exports = {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
-            const totalRecords = await ContractModel.countDocuments({ isDeleted: false });
+            const totalRecords = await ContractModel.countDocuments({});
             let noPaginated = req.query?.noPaginated === 'true';
 
             const contracts = await ContractModel
                 .find({
-                    isDeleted: false
+
                 })
                 .populate('doctorID', '_id fullName')
                 .populate('hospitalID', '_id name')
@@ -57,7 +57,7 @@ module.exports = {
 
             const contract = await ContractModel
                 .findOne({
-                    isDeleted: false,
+
                     _id: id
                 })
                 .populate('doctorID', '_id fullName')

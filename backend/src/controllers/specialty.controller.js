@@ -14,13 +14,13 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await SpecialtyModel.countDocuments({
-                isDeleted: false,
+
                 ...(notHidden ? { isHidden: false } : {}),
             });
 
             const specialties = await SpecialtyModel
                 .find({
-                    isDeleted: false,
+
                     ...(notHidden ? { isHidden: false } : {}),
                 })
                 .skip(noPaginated ? undefined : skip)
@@ -47,11 +47,11 @@ module.exports = {
     getAllSpecialtiesWithServices: async (req, res, next) => {
         try {
             const totalRecords = await SpecialtyModel.countDocuments({
-                isDeleted: false,
+
             });
             const specialties = await SpecialtyModel.aggregate([
                 {
-                    $match: { isDeleted: false }
+                    $match: {}
 
                 }, {
                     $lookup: {
@@ -96,7 +96,7 @@ module.exports = {
 
             const specialty = await SpecialtyModel.findOne({
                 _id: id,
-                isDeleted: false,
+
             });
 
             if (!specialty) {

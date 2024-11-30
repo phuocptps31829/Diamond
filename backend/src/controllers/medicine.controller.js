@@ -8,11 +8,11 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await MedicineModel.countDocuments({
-                isDeleted: false,
+
             });
 
             const medicines = await MedicineModel
-                .find({ isDeleted: false })
+                .find({})
                 .populate('medicineCategoryID')
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
@@ -52,7 +52,7 @@ module.exports = {
             const medicine = await MedicineModel
                 .findOne({
                     _id: id,
-                    isDeleted: false,
+
                 })
                 .populate('medicineCategoryID');
 
@@ -81,13 +81,13 @@ module.exports = {
 
             const totalRecords = await MedicineModel.countDocuments({
                 medicineCategoryID: id,
-                isDeleted: false,
+
             });
 
             const medicines = await MedicineModel
                 .find({
                     medicineCategoryID: id,
-                    isDeleted: false,
+
                 })
                 .populate('medicineCategoryID');
 

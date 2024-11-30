@@ -13,11 +13,11 @@ module.exports = {
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await UserModel.countDocuments({
-                isDeleted: false,
+
                 roleID: process.env.ROLE_PATIENT
             });
             const patients = await UserModel
-                .find({ isDeleted: false, roleID: process.env.ROLE_PATIENT })
+                .find({ roleID: process.env.ROLE_PATIENT })
                 .populate('roleID')
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
@@ -82,7 +82,7 @@ module.exports = {
             const patient = await UserModel
                 .findOne({
                     _id: idParams || idMid,
-                    isDeleted: false,
+
                     roleID: process.env.ROLE_PATIENT
                 })
                 .populate('roleID')

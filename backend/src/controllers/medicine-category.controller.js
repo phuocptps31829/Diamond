@@ -7,11 +7,11 @@ module.exports = {
         try {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
 
-            const totalRecords = await MedicineCategoryModel.countDocuments({ isDeleted: false });
+            const totalRecords = await MedicineCategoryModel.countDocuments({});
             let noPaginated = req.query?.noPaginated === 'true';
 
             const medicineCategories = await MedicineCategoryModel
-                .find({ isDeleted: false })
+                .find({})
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
@@ -25,7 +25,7 @@ module.exports = {
 
             const medicineCategoriesWithCount = await Promise.all(
                 medicineCategories.map(async (m) => {
-                    const totalMedicines = await MedicineModel.countDocuments({ isDeleted: false, medicineCategoryID: m._id });
+                    const totalMedicines = await MedicineModel.countDocuments({ medicineCategoryID: m._id });
                     return {
                         ...m.toObject(),
                         totalMedicines,

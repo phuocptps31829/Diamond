@@ -7,11 +7,11 @@ module.exports = {
             let { limitDocuments, skip, page, sortOptions } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await InvoiceModel.countDocuments({ isDeleted: false });
+            const totalRecords = await InvoiceModel.countDocuments({});
 
             const invoices = await InvoiceModel
                 .find({
-                    isDeleted: false,
+
                 })
                 .populate({
                     path: 'appointmentID',
@@ -58,7 +58,7 @@ module.exports = {
             const { id } = req.params;
 
             const invoice = await InvoiceModel.findOne({
-                isDeleted: false,
+
                 _id: id
             });
 

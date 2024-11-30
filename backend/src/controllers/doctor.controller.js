@@ -90,7 +90,7 @@ module.exports = {
 
             const doctor = await UserModel
                 .findOne({
-                    isDeleted: false, _id: idParams || idMid,
+                    _id: idParams || idMid,
                     roleID: process.env.ROLE_DOCTOR
                 })
                 .populate('roleID')
@@ -143,7 +143,7 @@ module.exports = {
                 roleID: process.env.ROLE_DOCTOR,
                 'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
                 'otherInfo.branchID': new mongoose.Types.ObjectId(branchID),
-                isDeleted: false,
+
                 isActivated: true
             });
 
@@ -166,7 +166,7 @@ module.exports = {
             const doctors = await UserModel.find({
                 roleID: process.env.ROLE_DOCTOR,
                 'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
-                isDeleted: false,
+
                 isActivated: true
             });
 
@@ -191,7 +191,7 @@ module.exports = {
                 roleID: process.env.ROLE_DOCTOR,
                 'otherInfo.specialtyID': new mongoose.Types.ObjectId(specialtyID),
                 'otherInfo.branchID': new mongoose.Types.ObjectId(branchID),
-                isDeleted: false,
+
                 isActivated: true
             });
 
@@ -199,9 +199,9 @@ module.exports = {
                 doctors.map(async doctor => {
                     const workSchedule = await WorkScheduleModel
                         .findOne({
-                            isDeleted: false,
+
                             doctorID: doctor._id,
-                            isDeleted: false,
+
                             day: {
                                 $gte: new Date().toISOString().slice(0, 10)
                             }
