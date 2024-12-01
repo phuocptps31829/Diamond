@@ -32,7 +32,7 @@ const ChatComponent = ({ setShowChat }) => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView();
   };
 
   useEffect(() => {
@@ -108,7 +108,6 @@ const ChatComponent = ({ setShowChat }) => {
   };
 
   const onSubmit = (event) => {
-    setIsFirstMessage(false);
     event.preventDefault();
     if (!message.trim()) return;
     const userSocketID = localStorage.getItem("userSocketID");
@@ -128,6 +127,7 @@ const ChatComponent = ({ setShowChat }) => {
                 name: "Admin",
               });
               setSendFirstMessage(false);
+              setIsFirstMessage(false);
             }, 500);
           }
         }
@@ -159,7 +159,7 @@ const ChatComponent = ({ setShowChat }) => {
   }, [socket, sendEvent]);
 
   return (
-    <div className="container-chat-shadow relative flex h-screen w-full flex-col bg-white antialiased sm:h-[500px] sm:w-[400px] sm:rounded-[20px]">
+    <div className="container-chat-shadow fixed top-0 sm:relative flex h-full w-full flex-col bg-white antialiased sm:h-[500px] sm:w-[400px] sm:rounded-[20px]">
       { chatted ? (
         <>
           <div className="rounded-t-[20px] bg-white">

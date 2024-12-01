@@ -22,7 +22,7 @@ import {
 } from "../../ui/Menubar";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
-import formatDate from "@/utils/format";
+import { formatDateTimeLocale } from "@/utils/format";
 
 export default function BottomLists({ dataUpcomingAppointments }) {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
@@ -135,7 +135,7 @@ export default function BottomLists({ dataUpcomingAppointments }) {
                       <span>{ appointment.doctor.fullName }</span>
                     </div>
                   </TableCell>
-                  <TableCell>{ formatDate(appointment.time) }</TableCell>
+                  <TableCell>{ formatDateTimeLocale(appointment.time, true) }</TableCell>
                   <TableCell>
                     <TooltipProvider>
                       <Tooltip>

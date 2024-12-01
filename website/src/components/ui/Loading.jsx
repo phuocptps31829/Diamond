@@ -1,4 +1,14 @@
+import { useEffect } from "react";
+
 const Loading = () => {
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   return (
     <div className="flex w-full flex-col items-center justify-center py-10 absolute top-0 z-50 left-0 bg-[#000000a2] h-full">
       <div className="pyramid-loader">

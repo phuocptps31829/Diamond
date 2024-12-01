@@ -15,13 +15,14 @@ import {
   MenubarTrigger,
 } from "../../ui/Menubar";
 import { CiMenuKebab } from "react-icons/ci";
-import { FaHourglassStart } from "react-icons/fa";
-import { MdOutlineDone } from "react-icons/md";
+import { MdOutlineDone, MdFreeCancellation } from "react-icons/md";
 import { FaRegHourglassHalf } from "react-icons/fa6";
+import { formatDateTimeLocale } from "@/utils/format";
 
-export default function BottomLists() {
-  const [timeLeft, setTimeLeft] = useState(2940);
-  const totalTime = 7940;
+export default function BottomLists({ dataAppointmentsByDoctor }) {
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [totalTime, setTotalTime] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -30,6 +31,26 @@ export default function BottomLists() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (dataAppointmentsByDoctor.length === 0) return;
+    const upcomingAppointments = dataAppointmentsByDoctor.data.filter(
+      (item) => item.status !== "EXAMINED"
+    ).sort((a, b) => new Date(a.time) - new Date(b.time)).slice(0, 4);
+    setUpcomingAppointments(upcomingAppointments);
+    const currentTime = new Date();
+    const targetTime = new Date(upcomingAppointments[0].time);
+    const secondsDifference = Math.floor((targetTime - currentTime) / 1000)
+
+    if (secondsDifference < 0) {
+      setTotalTime(0);
+      setTimeLeft(0);
+    }else {
+      setTotalTime(secondsDifference);
+      setTimeLeft(secondsDifference);
+    }
+
+  }, [dataAppointmentsByDoctor]);
 
   const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
@@ -89,7 +110,7 @@ export default function BottomLists() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>STT</TableHead>
+              <TableHead className="text-center">STT</TableHead>
               <TableHead>Tên bệnh nhân</TableHead>
               <TableHead>Trạng thái</TableHead>
               <TableHead>Thời gian</TableHead>
@@ -98,42 +119,62 @@ export default function BottomLists() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {Array(4)
-              .fill()
-              .map((_, idx) => (
-                <TableRow key={idx} className="h-12 text-[13px]">
-                  <TableCell>{idx + 1}</TableCell>
-                  <TableCell>Triệu Tiến Đạt</TableCell>
+          { upcomingAppointments.length === 0 ? (
+              <TableRow className="h-14 text-center text-[13px]">
+                <TableCell colSpan={ 6 }>Không có lịch hẹn nào !</TableCell>
+              </TableRow>
+            ) : (
+            upcomingAppointments.map((item, idx) => (
+                <TableRow key={idx} className={`${(idx === 0 && new Date(item.time) < new Date()) && "bg-green-100"} h-12 text-[13px]`}>
+                  <TableCell className="text-center">{idx + 1}</TableCell>
+                  <TableCell>{item.patient.fullName}</TableCell>
                   <TableCell>
                     <span
-                      className={`${idx === 0 ? "text-green-500" : "text-yellow-400"} font-semibold`}
+                      className={`${
+                        new Date(item.time) > new Date()
+                          ? "text-yellow-400"
+                          : "text-red-500"
+                      } font-semibold`}
                     >
-                      {idx === 0 ? "Đang diễn ra" : "Chưa diễn ra"}
+                      {new Date(item.time) > new Date() 
+                        ? "Chưa diễn ra"
+                        : "Tới hẹn chờ khám"}
                     </span>
                   </TableCell>
-                  <TableCell>12.05.2022 lúc 7:00</TableCell>
-                  <TableCell>Điện tim thường</TableCell>
+                  <TableCell>{formatDateTimeLocale(item.time, true)}</TableCell>
                   <TableCell>
-                    <Menubar className="border-none bg-transparent shadow-none">
-                      <MenubarMenu>
-                        <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                          <CiMenuKebab />
-                        </MenubarTrigger>
-                        <MenubarContent>
-                          <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                            {idx === 0 ? (
-                              <MdOutlineDone className="mr-2" size={18} />
-                            ) : (
-                              <FaHourglassStart className="mr-2" size={18} />
-                            )}
-                            <span>{idx === 0 ? "Hoàn thành" : "Bắt đầu"}</span>
-                          </MenubarItem>
-                        </MenubarContent>
-                      </MenubarMenu>
-                    </Menubar>
+                      <span className="max-w-[300px] truncate block">
+                        {item.service.name}
+                    </span>
                   </TableCell>
+                  {(idx === 0 && new Date(item.time) < new Date()) && (
+                    <TableCell>
+                      <Menubar className="border-none bg-transparent shadow-none">
+                        <MenubarMenu>
+                          <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
+                            <CiMenuKebab />
+                          </MenubarTrigger>
+                          <MenubarContent>
+                            <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                              <MdOutlineDone className="mr-2" size={18} />
+                              <span>
+                                Hoàn tất khám bệnh
+                              </span>
+                            </MenubarItem>
+                            <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                              <MdFreeCancellation className="mr-2" size={18} />
+                              <span>
+                                Hủy lịch hẹn
+                              </span>
+                            </MenubarItem>
+                          </MenubarContent>
+                        </MenubarMenu>
+                      </Menubar>
+                    </TableCell>    
+                  )}
                 </TableRow>
-              ))}
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

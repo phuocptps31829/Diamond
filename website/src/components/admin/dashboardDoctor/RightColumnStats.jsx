@@ -1,9 +1,32 @@
+import { useState, useEffect } from "react";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
 import DoughnutChart from "./chart/DoughnutChart";
 import { PiGenderIntersexBold } from "react-icons/pi";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
-export default function RightColumnStats() {
+export default function RightColumnStats({ dataAppointmentsByDoctor }) {
+  const [appointmentByAge, setAppointmentByAge] = useState({
+    male: 0,
+    female: 0,
+  });
+
+  useEffect(() => {
+    if (dataAppointmentsByDoctor.length === 0) return;
+
+    const male = dataAppointmentsByDoctor.data.filter(
+      (item) => item.patient.gender === "Nam"
+    ).length;
+    const female = dataAppointmentsByDoctor.data.filter(
+      (item) => item.patient.gender === "Nữ"
+    ).length;
+
+    setAppointmentByAge({
+      male,
+      female,
+    });
+
+  }, [dataAppointmentsByDoctor]);
+
   return (
     <div className="flex h-full flex-col">
       <div className="w-full flex-1 gap-6 rounded-md bg-white p-4 pt-2 shadow-sm">
@@ -13,7 +36,7 @@ export default function RightColumnStats() {
         <div className="flex h-full w-full items-center justify-center">
           <div className="relative h-[250px] w-full flex items-center justify-center">
             <div className="z-10 w-full h-full">
-              <DoughnutChart />
+              <DoughnutChart appointmentByAge={appointmentByAge} />
             </div>
             <div className="pointer-events-none absolute bottom-6 z-0 flex h-full w-full items-center justify-center">
               <PiGenderIntersexBold size={60} color="#ABAFDB" />
