@@ -45,7 +45,7 @@ const appointmentController = require('../controllers/appointment.controller');
 */
 router.get(
     '/',
-    cacheMiddleware.cache("appointments:"),
+    // cacheMiddleware.cache("appointments:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointments
@@ -91,7 +91,7 @@ router.get(
 */
 router.get(
     '/gender-years',
-    cacheMiddleware.cache("appointments:gender-years-"),
+    // cacheMiddleware.cache("appointments:gender-years-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForGenderYears
@@ -114,7 +114,7 @@ router.get(
 */
 router.get(
     '/ages-dashboard',
-    cacheMiddleware.cache("appointments:ages-dashboard-"),
+    // cacheMiddleware.cache("appointments:ages-dashboard-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForAges

@@ -19,7 +19,7 @@ export const prescriptionApi = {
         return res.data;
     },
     deletePrescriptionMultiple: async (ids) => {
-        const res = await axiosInstanceCUD.post(`/v1/prescriptions/delete-in-id`,
+        const res = await axiosInstanceCUD.post(`/v1/prescriptions/-id`,
             {
                 ids: [...ids],
             }

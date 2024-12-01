@@ -17,8 +17,6 @@ const DetailList = () => {
         </View>;
     }
 
-    console.log(medicalRecords);
-
     return medicalRecords?.data?.length ?
         medicalRecords.data.map((record, index) => <Accordion
             key={ index }

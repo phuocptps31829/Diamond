@@ -1,4 +1,5 @@
 import {
+    ActivityIndicator,
     Image,
     Modal,
     Text,
@@ -8,6 +9,7 @@ import {
 } from "react-native";
 
 const ModalPayment = ({
+    isPending,
     isOpen,
     paymentMethod,
     onClose,
@@ -70,17 +72,17 @@ const ModalPayment = ({
                         </TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={ .8 }
-                            className={ `flex-row items-center py-2 border-b ${paymentMethod === 'cc' ? 'text-primary-500 border-primary-500' : 'border-[#E5E5E5]'}` }
-                            onPress={ () => onSetPaymentMethod('momo') }
+                            className={ `flex-row items-center py-2 border-b ${paymentMethod === 'zalopay' ? 'text-primary-500 border-primary-500' : 'border-[#E5E5E5]'}` }
+                            onPress={ () => onSetPaymentMethod('zalopay') }
                         >
                             <Image
-                                source={ require("../../../assets/images/cash.png") }
+                                source={ require("../../../assets/images/zalopay.webp") }
                                 className="w-7 h-7 mr-2"
                             />
-                            <Text className={ `text-lg font-semibold ${paymentMethod === 'cc' ? 'text-primary-600' : 'text-gray-700'}` }>
+                            <Text className={ `text-lg font-semibold ${paymentMethod === 'zalopay' ? 'text-primary-600' : 'text-gray-700'}` }>
                                 Thanh toán ??
                             </Text>
-                            { paymentMethod === 'cc' && <View className="text-lg flex-1 self-end">
+                            { paymentMethod === 'zalopay' && <View className="text-lg flex-1 self-end">
                                 <Text className="text-lg flex-1 self-end">👈</Text>
                             </View> }
                         </TouchableOpacity>
@@ -103,12 +105,18 @@ const ModalPayment = ({
                     </View>
                     <View className="mt-4 flex-row justify-end">
                         <TouchableOpacity
-                            className="bg-primary-500 py-3 px-4 rounded-lg max-w-[140px]"
+                            className="bg-primary-500 py-3 flex-row items-center px-4 rounded-lg max-w-[160px]"
                             onPress={ onPay }
                         >
                             <Text className="text-center text-white uppercase font-semibold">
                                 Thanh toán
                             </Text>
+                            { isPending && <ActivityIndicator
+                                color="#fff"
+                                className="ml-2"
+                                size="small"
+                            />
+                            }
                         </TouchableOpacity>
                     </View>
                 </View>

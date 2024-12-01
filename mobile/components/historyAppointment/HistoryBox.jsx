@@ -9,16 +9,13 @@ const IMAGE_URL = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const HistoryBox = ({ item }) => {
     const router = useRouter();
-
     const itemImage = item?.service?.image || item?.medicalPackage?.image;
-
-    console.log('item', item);
 
     return (
         <View className="bg-white p-4 rounded-lg">
             <View className="flex-row justify-between">
                 <Text className="text-primary-600 font-semibold">
-                    { appointmentStatus[item.status] }
+                    { appointmentStatus[item.status]?.text }
                 </Text>
                 <Text className="text-primary-600 font-semibold">
                     { paymentStatus[item.payment.status] }

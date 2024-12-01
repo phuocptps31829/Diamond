@@ -282,6 +282,7 @@ module.exports = {
                             _id: appointment.patientID?._id,
                             fullName: appointment.patientID.fullName,
                             avatar: appointment.patientID.avatar,
+                            gender: appointment.patientID.gender
                         },
                         doctor: {
                             _id: appointment.workScheduleID.doctorID?._id,
@@ -362,7 +363,6 @@ module.exports = {
 
             const appointments = await AppointmentModel
                 .find({
-
                     patientID: id,
                     ...(status ? { status } : {}),
                     ...(startDay && endDay ? { time: { $gte: startDay, $lte: endDay } } :
@@ -451,7 +451,6 @@ module.exports = {
                 if (appointment?.medicalPackageID) {
                     medicalPackage = await MedicalPackageModel
                         .findOne({
-
                             'services._id': appointment.medicalPackageID
                         });
                     level = medicalPackage?.services.find(s => s._id.toString() === appointment.medicalPackageID.toString());
@@ -463,6 +462,7 @@ module.exports = {
                         _id: appointment.patientID?._id,
                         fullName: appointment.patientID.fullName,
                         avatar: appointment.patientID.avatar,
+                        gender: appointment.patientID.gender
                     },
                     doctor: {
                         _id: appointment.workScheduleID.doctorID?._id,
@@ -523,7 +523,8 @@ module.exports = {
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
                 data: formattedAppointments.slice(skip, skip + limitDocuments),
-                totalRecords: formattedAppointments.length
+                totalRecords: formattedAppointments.length,
+                totalPages: Math.ceil(formattedAppointments.length / limitDocuments)
             });
         } catch (error) {
             next(error);

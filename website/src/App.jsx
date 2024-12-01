@@ -100,6 +100,7 @@ import PrivacyPolicy from "./pages/client/Docs/PrivacyPolicy";
 import PaymentPolicy from "./pages/client/Docs/PaymentPolicy";
 import FacilityPage from "./pages/client/FacilityPage";
 import Branch from "./pages/client/Branch";
+import IsAuthenticated from "./layouts/protect/IsAuthenticated";
 
 const router = createBrowserRouter([
   {
@@ -236,23 +237,33 @@ const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login />,
+        element: <IsAuthenticated>
+          <Login />
+        </IsAuthenticated>,
       },
       {
         path: "register",
-        element: <Register />,
+        element: <IsAuthenticated>
+          <Register />
+        </IsAuthenticated>,
       },
       {
         path: "accuracy",
-        element: <Accuracy />,
+        element: <IsAuthenticated>
+          <Accuracy />
+        </IsAuthenticated>,
       },
       {
         path: "forget-password",
-        element: <ForgetPassword />,
+        element: <IsAuthenticated>
+          <ForgetPassword />
+        </IsAuthenticated>,
       },
       {
         path: "changepassword-accuracy",
-        element: <ChangePassAccuracy />,
+        element: <IsAuthenticated>
+          <ChangePassAccuracy />
+        </IsAuthenticated>,
       },
       {
         path: "change-password",

@@ -19,10 +19,6 @@ const BranchSelect = ({ specialtyID, onSelect }) => {
     }));
 
     console.log('branches: ', branchesData);
-    if (isLoading) {
-        return <Text>Loading...</Text>;
-    }
-
     if (isError) {
         return <Text>Error...</Text>;
     }

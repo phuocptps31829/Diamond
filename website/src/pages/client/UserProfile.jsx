@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { Outlet, useNavigate, useSearchParams } from "react-router-dom";
-
 import Sidebar from "../../components/client/infomationUser/Sidebar";
 import useScrollToTop from "@/hooks/useScrollToTop";
 import { useDispatch } from "react-redux";

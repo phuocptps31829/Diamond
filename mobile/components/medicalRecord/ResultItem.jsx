@@ -1,9 +1,13 @@
-import React from 'react';
-import { Image, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import DialogCustom from '../ui/Dialog';
 
 const IMAGE_URL = process.env.EXPO_PUBLIC_IMAGE_API_URL;
 
 const ResultItem = ({ results }) => {
+    const [imageOpen, setImageOpen] = useState(false);
+    const [image, setImage] = useState('');
+
     return (
         <View className="overflow-y-scroll">
             { results.map((result, index) => (
@@ -44,12 +48,18 @@ const ResultItem = ({ results }) => {
                                 { Array.isArray(result?.images) &&
                                     result?.images.length > 0 ? (
                                     result?.images.map((image, imgIndex) => (
-                                        <View key={ imgIndex }>
+                                        <TouchableOpacity
+                                            key={ imgIndex }
+                                            onPress={ () => {
+                                                setImageOpen(true);
+                                                setImage(image);
+                                            } }
+                                        >
                                             <Image
                                                 className="h-[100px] w-[100px] cursor-pointer rounded-md object-cover"
                                                 source={ { uri: `${IMAGE_URL}/${image}` } }
                                             />
-                                        </View>
+                                        </TouchableOpacity>
                                     ))
                                 ) : (
                                     <Text>Không có hình ảnh</Text>
@@ -70,7 +80,7 @@ const ResultItem = ({ results }) => {
                             </Text>
                         </View>
                         <View className="mt-1">
-                            <Text className="text-zinc-700 font-semibold">
+                            <Text className="text-zinc-700 mb-1 font-semibold">
                                 Thuốc kê:
                             </Text>
                             { result?.prescription?.medicines.map((medicine, i) => (
@@ -80,35 +90,35 @@ const ResultItem = ({ results }) => {
                                     ) }
                                     <View className="mt-2 flex flex-col gap-2">
                                         <View className="ml-4 list-disc text-gray-600">
-                                            <View>
-                                                <Text className="font-medium text-black">
-                                                    Tên thuốc:
+                                            <View className="">
+                                                <Text className="ml-4 font-medium text-black my-1">
+                                                    Tên thuốc: { ' ' }
+                                                    { medicine.name }  ({ medicine.unit })
                                                 </Text>{ " " }
-                                                { medicine.name } - { medicine.unit }
                                             </View>
-                                            <View>
-                                                <Text className="font-medium text-black">
-                                                    Thành phần:
+                                            <View className="">
+                                                <Text className="ml-4 font-medium text-black my-1">
+                                                    Thành phần: { ' ' }
+                                                    { medicine.ingredients }
                                                 </Text>{ " " }
-                                                { medicine.ingredients }
                                             </View>
-                                            <View>
-                                                <Text className="font-medium text-black">
-                                                    Hướng dẫn:
+                                            <View className="">
+                                                <Text className="ml-4 font-medium text-black my-1">
+                                                    Hướng dẫn: { ' ' }
+                                                    { medicine.instruction }
                                                 </Text>{ " " }
-                                                { medicine.instruction }
                                             </View>
-                                            <View>
-                                                <Text className="font-medium text-black">
-                                                    Tác dụng phụ:
+                                            <View className="">
+                                                <Text className="ml-4 font-medium text-black my-1">
+                                                    Tác dụng phụ: { ' ' }
+                                                    { medicine.sideEffects }
                                                 </Text>{ " " }
-                                                { medicine.sideEffects }
                                             </View>
                                             <View className="text-black">
-                                                <Text className="font-medium text-black">
-                                                    Lưu ý:
-                                                </Text>{ " " }
-                                                <Text className="text-red-500"> { medicine.note }</Text>
+                                                <Text Text className="ml-4 font-medium text-black mt-1" >
+                                                    Lưu ý: { ' ' }
+                                                    <Text className="text-red-500"> { medicine.note }</Text>
+                                                </Text>
                                             </View>
                                         </View>
                                     </View>
@@ -123,6 +133,14 @@ const ResultItem = ({ results }) => {
                     </View>
                 </View>
             )) }
+            <DialogCustom
+                setVisible={ setImageOpen }
+                visible={ imageOpen }
+                content={ <Image
+                    className="h-[300px] w-full cursor-pointer rounded-md object-cover"
+                    source={ { uri: `${IMAGE_URL}/${image}` } }
+                /> }
+            />
         </View>
     );
 };

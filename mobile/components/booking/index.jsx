@@ -48,11 +48,11 @@ const BookingComponent = () => {
                 text2: 'Chúng tôi sẽ liên hệ với bạn sớm nhất',
             });
 
-            console.log("data", data.data[0].appointmentID);
+            // console.log("data", data.data[0].appointmentID);
             router.push('/detail-history/' + data.data[0].appointmentID);
         },
         onError: (error) => {
-            // console.log("error", error.response.data);
+            console.log("error", error.response.data);
             ToastUI({
                 type: 'error',
                 text1: 'Đặt lịch thất bại',
@@ -61,7 +61,6 @@ const BookingComponent = () => {
         }
     });
 
-    console.log("itemData", itemData);
     const handleSubmit = () => {
         if (!profile) {
             return;
@@ -130,16 +129,18 @@ const BookingComponent = () => {
             data: [{
                 workScheduleID: schedule._id,
                 ...(itemData?.services?.length
-                    ? { medicalPackageID: itemData._id }
+                    ? { medicalPackageID: packageLevel }
                     : { serviceID: itemData._id }),
                 type: "Khám lần 1",
                 time: _combineDateTime(schedule.day, time),
                 status: "PENDING",
-                price: itemData.discountPrice,
+                price: itemData?.services?.length
+                    ? itemData?.services?.find(service => service._id === packageLevel)?.discountPrice
+                    : itemData?.discountPrice,
             }]
         };
 
-        // console.log("payload", payload);
+        console.log("payload", payload);
         // console.log("helpForm", helpForm);
 
         createAppointment({
@@ -228,6 +229,7 @@ const BookingComponent = () => {
             </View>
             { isOpenModal && (
                 <ModalPayment
+                    isPending={ isPending }
                     isOpen={ isOpenModal }
                     onClose={ () => setIsOpenModal(false) }
                     paymentMethod={ paymentMethod }

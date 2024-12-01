@@ -96,7 +96,7 @@ export const CalendarSelect = ({
             >
                 <Fontisto name="date" size={ 20 } color="#C3C3C3" />
                 <TextInput
-                    className="p-2 text-base leading-5 flex-1 text-gray-700"
+                    className="p-2 text-base leading-5 text-red flex-1"
                     placeholder="Chọn ngày khám"
                     value={ date
                         ? new Date(date).toLocaleDateString("vi-VN")

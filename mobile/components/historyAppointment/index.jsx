@@ -1,8 +1,8 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import FilterBar from './FilterBar';
 import HistoryBox from './HistoryBox';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { appointmentApi } from '../../services/appointmentsApi';
 import Loading from '../ui/Loading';
 
@@ -11,11 +11,18 @@ const HistoryAppointment = () => {
 
     const {
         data,
+        isLoading,
         error,
-        isLoading
-    } = useQuery({
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage
+    } = useInfiniteQuery({
         queryKey: ["historyAppointment"],
-        queryFn: appointmentApi.getAppointmentByPatient,
+        queryFn: ({ pageParam = 1 }) => appointmentApi.getAppointmentByPatient({
+            page: pageParam,
+            limit: 10
+        }),
+        getNextPageParam: (lastPage) => lastPage?.page < lastPage?.totalPages ? lastPage?.page + 1 : undefined
     });
 
     if (error) {
@@ -25,10 +32,12 @@ const HistoryAppointment = () => {
             </View>
         );
     }
+    const mappedData = data?.pages?.flatMap(group => group.data);
+    console.log('mappedData:', mappedData);
 
-    const filteredData = data?.data?.filter(item => selectedFilter !== "ALL" ?
-        item.status === selectedFilter :
-        true);
+    const filteredData = mappedData?.filter(item => selectedFilter !== "ALL"
+        ? item.status === selectedFilter
+        : true);
 
     if (isLoading) {
         return _loading();
@@ -48,8 +57,11 @@ const HistoryAppointment = () => {
                         data={ filteredData }
                         renderItem={ ({ item }) => <HistoryBox item={ item } /> }
                         contentContainerStyle={ { gap: 16 } }
+                        keyExtractor={ item => item._id }
                         className=""
                         showsVerticalScrollIndicator={ false }
+                        onEndReached={ hasNextPage && fetchNextPage }
+                        ListFooterComponent={ isFetchingNextPage && <ActivityIndicator size="large" color="#007bbb" /> }
                     />
                 </View>
             ) }
