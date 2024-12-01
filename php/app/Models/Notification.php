@@ -25,12 +25,13 @@ class Notification extends Model
     {
         $this->attributes['userID'] = new ObjectId($value);
     }
-
+    protected $attributes = [
+        'isRead' => false,
+    ];
     protected static function booted()
     {
         static::created(function ($notification) {
             // Thực hiện gọi API thông báo
-
         });
     }
 

@@ -2,15 +2,24 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\SendMail;
 use App\Models\Appointment;
+use App\Models\Branch;
+use App\Models\Clinic;
+use App\Models\MedicalPackage;
+use App\Models\Service;
+use App\Models\User;
+use App\Models\WorkSchedule;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use App\Models\Notification;
 use App\Events\NotificationsEvent;
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 use DateTime;
 use DateInterval;
+use MongoDB\BSON\ObjectId;
 
 class CheckAppointment extends Command
 {
@@ -26,7 +35,7 @@ class CheckAppointment extends Command
      *
      * @var string
      */
-    protected $description = 'Kiểm tra dữ liệu trong reidis';
+    protected $description = 'Chạy 1h một lần: Kiểm tra dữ liệu trong reidis gửi thông báo về lịch hẹn sắp tới';
 
     public function __construct()
     {
@@ -38,10 +47,7 @@ class CheckAppointment extends Command
      */
     public function handle()
     {
- for ($i = 0; $i < 4; $i++) {
         $this->checkAppointment();
-        sleep(15);
-    }
     }
 
 
@@ -49,7 +55,7 @@ class CheckAppointment extends Command
     {
         $appointmentsJson = Redis::get('upcomingAppointments');
         $ids=[];
-        event(new NotificationsEvent([2342424]));
+\Log::info($appointmentsJson) ;
         if ($appointmentsJson) {
             $appointments = json_decode($appointmentsJson, true);
             foreach ($appointments as $index => $appointment) {
@@ -60,7 +66,7 @@ class CheckAppointment extends Command
                     $redirect= new \stdClass();
                     $redirect->endpoint='appointments';
                     $redirect->_id=$appointment['id'];
-
+                    // Tạo thông báo cho lịch hẹn của bệnh nhân
                     $notification = Notification::create([
                         "userID" => $appointment['patientID'],
                         "title" => "Lịch hẹn!",
@@ -71,6 +77,32 @@ class CheckAppointment extends Command
                     ]);
                     $ids[]= $appointment['patientID'];
 //                    unset($appointments[$index]);
+                    $user=User::find($appointment['patientID']);
+                    if(isset($appointment['serviceID'])){
+                        $serviceName= Service::find($appointment['serviceID'])->name;
+                    }else{
+                        $serviceName=MedicalPackage::where('services._id',new  ObjectId($appointment['medicalPackageID']))->first()->name;
+                    }
+
+                    $workSchedule=WorkSchedule::find($appointment['workScheduleID']);
+                    $nameDoctor=User::find($workSchedule->doctorID)->fullName;
+                    $clinic=Clinic::find($workSchedule->clinicID);
+                    $branch=Branch::find($clinic->branchID);
+//                  Gửi mail nhắc nhở lịch khám
+                  if(isset($user->email)){
+                     $user->gender=="Nam"? $gender="anh":$gender="chị";
+                      $parts = explode(' ', trim($user->fullName));
+                      $userName=end($parts);
+                      $data = [];
+                      $data['name'] = $gender.' '.$userName;
+                      $data['fullName'] = $user->fullName;
+                      $data['nameService'] = $serviceName;
+                      $data['nameDoctor'] = $nameDoctor;
+                      $data['nameBranch'] = $branch->name;
+                      $data['link'] = '/profile/appointments/detail/'.$appointment['id'];
+                      $data['time'] =$inputTime->format('H:i'). ' ngày '.$inputTime->format('d-m-Y');
+                      Mail::to($user->email)->send(new SendMail($data));
+                  }
               }
             }
             Redis::set('upcomingAppointments', json_encode($appointments));

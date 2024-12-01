@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ClinicRequest extends FormRequest
@@ -22,20 +23,17 @@ class ClinicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'branchID' => 'required|exists:Branch,_id',
-            'specialtyID' => 'required|exists:Specialty,_id',
+            'branchID' =>  ['required',new IsValidMongoId('Branch')],
+            'specialtyID' =>  ['required',new IsValidMongoId('Specialty')],
             'name' => 'required|string',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'branchID.required' => 'Branch ID is required',
-            'branchID.exists' => 'Branch ID does not exist',
-            'specialtyID.required' => 'Specialty ID is required',
-            'specialtyID.exists' => 'Specialty ID does not exist',
-            'name.required' => 'Name is required',
-            'name.string' => 'Name should be a string',
+            'branchID' =>  ['nullable',new IsValidMongoId('Branch')],
+            'specialtyID' =>  ['nullable',new IsValidMongoId('Specialty')],
+            'name' => 'nullable|string',
         ];
     }
 }

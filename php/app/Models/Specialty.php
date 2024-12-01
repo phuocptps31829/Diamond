@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\BSON\ObjectId;
 use Mongodb\Laravel\Eloquent\Model;
 
 class Specialty extends Model

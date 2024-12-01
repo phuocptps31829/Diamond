@@ -182,11 +182,10 @@ class MedicineController extends Controller
     {
         try {
             $MedicineRequest = new MedicineRequest();
-            $Medicine = Medicine::create($request->validate($MedicineRequest->rules(), $MedicineRequest->messages()));
-
+            $Medicine = Medicine::create($request->validate($MedicineRequest->rules()));
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine created successfully.',
+                'message' => 'Thêm thuốc thành công!',
                 'data' => $Medicine,
             ], 201);
         } catch (\Exception $e) {
@@ -202,15 +201,15 @@ class MedicineController extends Controller
             $Medicine = Medicine::where('_id', $id)->first();
 
             if (!$Medicine) {
-                return createError(404, 'Medicine not found');
+                return createError(404, 'Không tìm thấy thuốc!');
             }
             $MedicineRequest = new MedicineRequest();
 
-            $Medicine->update($request->validate($MedicineRequest->rules(), $MedicineRequest->messages()));
+            $Medicine->update($request->validate($MedicineRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine update successfully.',
+                'message' => 'Cập nhật thuốc thành công!',
                 'data' => $Medicine,
             ], 201);
         } catch (\Exception $e) {
@@ -221,23 +220,23 @@ class MedicineController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
             $Medicine = Medicine::where('_id', $id)->first();
             if (!$Medicine) {
-                return createError(404, 'Medicine not found');
+                return createError(404, 'Không tìm thấy thuốc!');
             }
 
             $Medicine->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine deleted successfully.',
+                'message' => 'Xóa thuốc thành công!',
                 'data' => $Medicine,
             ], 200);
         } catch (\Exception $e) {

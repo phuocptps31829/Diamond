@@ -38,7 +38,10 @@ class ContractController extends Controller
             if ($data['isInternal']) {
                 $templateProcessor = new TemplateProcessor('docx/template/HopDongLaoDong.docx');
             } else {
-                return createError(404, "Hợp đồng chưa được phát triền!");
+                $templateProcessor = new TemplateProcessor('docx/template/HopDongLaoDongBSPartTime.docx');
+                $templateProcessor->setValue('starTime', $data['startTime']);
+                $templateProcessor->setValue('endTime', $data['endTime']);
+                $templateProcessor->setValue('countDate', $data['countDate']);
             }
 
             $info = $doctor->otherInfo;

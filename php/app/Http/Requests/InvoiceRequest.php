@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class InvoiceRequest extends FormRequest
@@ -13,7 +14,6 @@ class InvoiceRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,11 +22,11 @@ class InvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'patientID' => 'required|string',
+            'patientID' =>  ['required',new IsValidMongoId('User')],
             'data' => 'required|array',
-            'data.*.medicalPackageID' => 'nullable',
-            'data.*.serviceID' => 'nullable',
-            'data.*.workScheduleID' => 'required',
+            'data.*.medicalPackageID' => ['nullable',new IsValidMongoId('MedicalPackage')],
+            'data.*.serviceID' =>['nullable',new IsValidMongoId('Service')],
+            'data.*.workScheduleID' => ['required',new IsValidMongoId('WorkSchedule')],
             'data.*.type' => 'required|string',
             'data.*.time' => 'required|date',
             'data.*.status' => 'required|string',
@@ -44,14 +44,6 @@ class InvoiceRequest extends FormRequest
             'appointmentHelpUser.password' => 'nullable|string|min:6',
         ];
     }
-    public function messages()
-    {
-        return [
-            'prescriptionID.exists' => 'Invalid prescription ID.',
-            'appointmentID.exists' => 'Invalid Appointment ID.',
-            'serviceID.exists' => 'Invalid Service ID.',
-            'price.required' => 'Price is required.',
-            'price.numeric' => 'Price should be a number.',
-        ];
-    }
+
+
 }

@@ -164,11 +164,11 @@ class MedicineCategoryController extends Controller
     {
         try {
             $MedicineCategoryRequest = new MedicineCategoryRequest();
-            $MedicineCategory = MedicineCategory::create($request->validate($MedicineCategoryRequest->rules(), $MedicineCategoryRequest->messages()));
+            $MedicineCategory = MedicineCategory::create($request->validate($MedicineCategoryRequest->rules()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine category created successfully.',
+                'message' => 'Thêm danh mục thuốc thành công!',
                 'data' => $MedicineCategory,
             ], 201);
         } catch (\Exception $e) {
@@ -184,15 +184,15 @@ class MedicineCategoryController extends Controller
             $MedicineCategory = MedicineCategory::where('_id', $id)->first();
 
             if (!$MedicineCategory) {
-                return createError(404, 'Medicine category not found');
+                return createError(404, 'Không tìm thấy danh mục thuốc!');
             }
             $MedicineCategoryRequest = new MedicineCategoryRequest();
 
-            $MedicineCategory->update($request->validate($MedicineCategoryRequest->rules(), $MedicineCategoryRequest->messages()));
+            $MedicineCategory->update($request->validate($MedicineCategoryRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine category update successfully.',
+                'message' => 'Cập nhật danh mục thuốc thành công!',
                 'data' => $MedicineCategory,
             ], 201);
         } catch (\Exception $e) {
@@ -203,23 +203,23 @@ class MedicineCategoryController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
             $MedicineCategory = MedicineCategory::where('_id', $id)->first();
             if (!$MedicineCategory) {
-                return createError(404, 'Medicine category not found');
+                return createError(404, 'Không tìm thấy danh mục thuốc!');
             }
 
             $MedicineCategory->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'MedicineCategory deleted successfully.',
+                'message' => 'Xóa danh mục thuốc thành công!',
                 'data' => $MedicineCategory,
             ], 200);
         } catch (\Exception $e) {

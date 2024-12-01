@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use MongoDB\BSON\ObjectId;
 
 class ContractRequest extends FormRequest
 {
@@ -13,13 +14,13 @@ class ContractRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */    public function rules(): array
     {
+        $this->doctorID=new ObjectId($this->doctorID);
         return [
             'doctorID' => 'required|string',
             'hospitalID' => 'nullable|string',
@@ -31,6 +32,9 @@ class ContractRequest extends FormRequest
             "price"=>"required|numeric",
             "isInternal"=>"required|boolean",
             "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
+            "startTime"=>"required|string",
+            "endTime"=>"required|string",
+            "countDate"=>"required|numeric",
         ];
     }
 

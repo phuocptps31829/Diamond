@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PrescriptionRequest extends FormRequest
@@ -22,40 +23,28 @@ class PrescriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'resultID' => 'required|string',
+            'resultID' => ['required',new IsValidMongoId('Result')],
+            'appointmentID' => ['required',new IsValidMongoId('Appointment')],
             "advice" => 'required|string',
             'medicines' => 'nullable|array',
-            'medicines.*.medicineID' => 'required_without:medicineID|string',
-            'medicines.*.quantity' => 'required_without:medicineID|integer',
+            'medicines.*.medicineID' => ['required_without:medicineID',new IsValidMongoId('Medicine')],
+            'medicines.*.quantity' => 'required_without:medicineID|integer|min:1',
             'medicines.*.dosage' => 'required_without:medicineID|string',
-            "price" => "required|integer"
+            "price" => "required|integer|min:0"
         ];
     }
 
     public function update(): array
     {
         return [
-            'invoiceID' => 'nullable|string',
+            'resultID' => ['nullable',new IsValidMongoId('Result')],
+            'invoiceID' =>  ['nullable',new IsValidMongoId('Invoice')],
             "advice" => 'nullable|string',
             'medicines' => 'nullable|array',
-            'medicines.*.medicineID' => 'required_without:medicineID|string',
-            'medicines.*.quantity' => 'required_without:medicineID|integer',
+            'medicines.*.medicineID' =>  ['required_without:medicineID',new IsValidMongoId('Medicine')],
+            'medicines.*.quantity' => 'required_without:medicineID|integer|min:1',
             'medicines.*.dosage' => 'required_without:medicineID|string',
-            "price" => "nullable|integer"
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'advice.required' => 'Advice is required',
-            'advice.string' => 'Advice should be a string',
-            'medicines.*.medicineID.required' => 'Medicine ID is required',
-            'medicines.*.quantity.required' => 'Quantity is required',
-            'medicines.*.quantity.integer' => 'Quantity must be an integer',
-            'medicines.*.quantity.min' => 'Quantity must be at least 1',
-
-            'dosage.required' => 'Dosage is required',
-            'dosage.string' => 'Dosage should be a string',
+            "price" => "nullable|integer|min:0"
         ];
     }
 }

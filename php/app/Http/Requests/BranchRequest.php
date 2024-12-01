@@ -13,7 +13,6 @@ class BranchRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,22 +30,16 @@ class BranchRequest extends FormRequest
             'coordinates.lat' => 'required|numeric',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'name.required' => 'Name is required',
-            'name.string' => 'Name should be a string',
-            'workingTime.required' => 'Working time is required',
-            'workingTime.string' => 'Working time should be a string',
-            'imagesURL.array' => 'ImagesURL should be an array',
-            'address.required' => 'Address is required',
-            'address.string' => 'Address should be a string',
-            'hotline.required' => 'Hotline is required',
-            'hotline.string' => 'Hotline should be a string',
-            'coordinates.lng.required' => 'Lng is required',
-            'coordinates.lng.numeric' => 'Lng should be a number',
-            'coordinates.lat.required' => 'Lat is required',
-            'coordinates.lat.numeric' => 'Lat should be a number',
+            'name' => 'nullable|string',
+            'workingTime' => 'nullable|string',
+            'imagesURL' => 'nullable|array',
+            'address' => 'nullable|string',
+            'hotline' => 'nullable|string',
+            'coordinates.lng' => 'nullable|numeric',
+            'coordinates.lat' => 'nullable|numeric',
         ];
     }
 }

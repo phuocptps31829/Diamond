@@ -56,100 +56,149 @@ use MongoDB\BSON\ObjectId;
  *         description="Successful response",
  *     )
  * )
- * @OA\Post(
- *     path="/api/v1/doctors/add",
+ *  @OA\Post(
+ *      path="/api/v1/doctors/add",
+ *      tags={"Doctor Routes"},
+ *      summary="Add a new doctor",
+ *      description="This endpoint is used to add a new doctor to the system.",
+ *      @OA\RequestBody(
+ *          required=true,
+ *          @OA\MediaType(
+ *              mediaType="application/json",
+ *              @OA\Schema(
+ *                  type="object",
+ *                  required={"fullName", "roleID", "phoneNumber", "password", "isActivated", "otherInfo.specialtyID", "otherInfo.branchID", "otherInfo.verification.practicingCertificate", "otherInfo.verification.images"},
+ *                  @OA\Property(property="fullName", type="string", description="Full name of the doctor"),
+ *                  @OA\Property(property="roleID", type="string", description="Role ID of the doctor (MongoDB ObjectId)"),
+ *                  @OA\Property(property="phoneNumber", type="string", pattern="^[0-9]{10,11}$", description="Phone number of the doctor"),
+ *                  @OA\Property(property="email", type="string", format="email", description="Email address of the doctor"),
+ *                  @OA\Property(property="dateOfBirth", type="string", format="date", description="Date of birth of the doctor"),
+ *                  @OA\Property(property="address", type="string", description="Address of the doctor"),
+ *                  @OA\Property(property="gender", type="string", description="Gender of the doctor"),
+ *                  @OA\Property(property="password", type="string", description="Password for the doctor"),
+ *                  @OA\Property(property="avatar", type="string", format="uri", description="Avatar image URL"),
+ *                  @OA\Property(property="isActivated", type="boolean", description="Activation status of the doctor"),
+ *                  @OA\Property(property="citizenIdentificationNumber", type="integer", description="Citizen identification number"),
+ *                  @OA\Property(
+ *                      property="otherInfo",
+ *                      type="object",
+ *                      @OA\Property(property="specialtyID", type="string", description="Specialty ID (MongoDB ObjectId)"),
+ *                      @OA\Property(property="branchID", type="string", description="Branch ID (MongoDB ObjectId)"),
+ *                      @OA\Property(property="title", type="string", description="Title of the doctor"),
+ *                      @OA\Property(property="yearsExperience", type="string", description="Years of experience"),
+ *                      @OA\Property(property="detail", type="string", description="Additional details about the doctor"),
+ *                      @OA\Property(property="isInternal", type="boolean", description="Whether the doctor is internal or not"),
+ *                      @OA\Property(
+ *                          property="verification",
+ *                          type="object",
+ *                          @OA\Property(property="practicingCertificate", type="string", description="Practicing certificate number"),
+ *                          @OA\Property(property="images", type="array", @OA\Items(type="string", format="uri", description="List of verification images"))
+ *                      )
+ *                  )
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Doctor successfully added",
+ *          @OA\JsonContent(
+ *              @OA\Property(property="message", type="string", example="Doctor added successfully")
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=400,
+ *          description="Bad request, invalid data",
+ *          @OA\JsonContent(
+ *              @OA\Property(property="message", type="string", example="Invalid data provided")
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=500,
+ *          description="Internal server error",
+ *          @OA\JsonContent(
+ *              @OA\Property(property="message", type="string", example="An unexpected error occurred")
+ *          )
+ *      )
+ *  )
+ * @OA\Put(
+ *     path="/api/v1/doctors/update/{id}",
  *     tags={"Doctor Routes"},
- *     summary="Add a Doctor",
+ *     summary="Update doctor information",
+ *     description="This endpoint updates the information of an existing doctor.",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         description="Doctor ID to update (MongoDB ObjectId)",
+ *         @OA\Schema(type="string", example="674bf42cd")
+ *     ),
  *     @OA\RequestBody(
- *         required=false,
+ *         required=true,
  *         @OA\MediaType(
- *             mediaType="multipart/form-data",
+ *             mediaType="application/json",
  *             @OA\Schema(
- *                 required={},
- *                 @OA\Property(property="fullName", type="string", example="BS moi"),
- *                 @OA\Property(property="roleID", type="string", example="1"),
- *                 @OA\Property(property="phoneNumber", type="string", example="0300099989"),
- *                 @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
- *                 @OA\Property(property="dateOfBirth", type="string", format="date", example="2000-01-01"),
- *                 @OA\Property(property="gender", type="string", example="Nam"),
- *                 @OA\Property(property="password", type="string", example="123456"),
+ *                 type="object",
+ *                 required={"fullName", "roleID", "phoneNumber", "password", "isActivated", "otherInfo.specialtyID", "otherInfo.branchID", "otherInfo.verification.practicingCertificate", "otherInfo.verification.images"},
+ *                 @OA\Property(property="fullName", type="string", description="Full name of the doctor"),
+ *                 @OA\Property(property="roleID", type="string", description="Role ID of the doctor (MongoDB ObjectId)"),
+ *                 @OA\Property(property="phoneNumber", type="string", pattern="^[0-9]{10,11}$", description="Phone number of the doctor"),
+ *                 @OA\Property(property="email", type="string", format="email", description="Email address of the doctor"),
+ *                 @OA\Property(property="dateOfBirth", type="string", format="date", description="Date of birth of the doctor"),
+ *                 @OA\Property(property="address", type="string", description="Address of the doctor"),
+ *                 @OA\Property(property="gender", type="string", description="Gender of the doctor"),
+ *                 @OA\Property(property="password", type="string", description="Password for the doctor"),
+ *                 @OA\Property(property="avatar", type="string", format="uri", description="Avatar image URL"),
+ *                 @OA\Property(property="isActivated", type="boolean", description="Activation status of the doctor"),
+ *                 @OA\Property(property="citizenIdentificationNumber", type="integer", description="Citizen identification number"),
  *                 @OA\Property(
- *                     property="file",
- *                     type="string",
- *                     format="binary",
- *                     description="File ảnh đại diện của bác sĩ"
- *                 ),
- *                 @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
- *                 @OA\Property(property="isActivated", type="boolean", example=true),
- *                 @OA\Property(property="address[province]", type="string", example="province"),
- *                 @OA\Property(property="address[district]", type="string", example="district"),
- *                 @OA\Property(property="address[ward]", type="string", example="ward"),
- *                 @OA\Property(property="address[street]", type="string", example="street"),
- *                  @OA\Property(property="otherInfo[specialtyID]", type="string", example="specialtyID"),
- *                  @OA\Property(property="otherInfo[title]", type="string", example="title"),
- *                  @OA\Property(property="otherInfo[practicingCertificate]", type="string", example="practicingCertificate"),
- *                  @OA\Property(property="otherInfo[yearsExperience]", type="number", example=2),
- *                  @OA\Property(property="otherInfo[detail]", type="string", example="detail"),
- *                  @OA\Property(property="otherInfo[isInternal]", type="boolean", example=true),
+ *                     property="otherInfo",
+ *                     type="object",
+ *                     @OA\Property(property="specialtyID", type="string", description="Specialty ID (MongoDB ObjectId)"),
+ *                     @OA\Property(property="branchID", type="string", description="Branch ID (MongoDB ObjectId)"),
+ *                     @OA\Property(property="title", type="string", description="Title of the doctor"),
+ *                     @OA\Property(property="yearsExperience", type="string", description="Years of experience"),
+ *                     @OA\Property(property="detail", type="string", description="Additional details about the doctor"),
+ *                     @OA\Property(property="isInternal", type="boolean", description="Whether the doctor is internal or not"),
+ *                     @OA\Property(
+ *                         property="verification",
+ *                         type="object",
+ *                         @OA\Property(property="practicingCertificate", type="string", description="Practicing certificate number"),
+ *                         @OA\Property(property="images", type="array", @OA\Items(type="string", format="uri", description="List of verification images"))
+ *                     )
+ *                 )
  *             )
  *         )
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successful response",
- *     ),
- * )
- * @OA\put(
- *     path="/api/v1/doctors/update/{id}",
- *     tags={"Doctor Routes"},
- *     summary="Update Doctor",
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         description="object id",
- *         required=true,
- *         @OA\Schema(type="string")
- *     ),
- *     @OA\RequestBody(
- *         required=true,
+ *         description="Doctor information updated successfully",
  *         @OA\JsonContent(
- *             required={""},
- *             @OA\Property(property="fullName", type="string", example="BS moi"),
- *             @OA\Property(property="roleID", type="string", example="1"),
- *             @OA\Property(property="phoneNumber", type="string", example="0300099989"),
- *             @OA\Property(property="email", type="string", example="gmail123@gmail.com"),
- *             @OA\Property(property="dateOfBirth", type="string", example="2000-01-01"),
- *             @OA\Property(property="gender", type="string", example="Nam"),
- *             @OA\Property(property="password", type="string", example="123456"),
- *             @OA\Property(property="avatar", type="string", example="avatar"),
- *             @OA\Property(property="citizenIdentificationNumber", type="number", example=34256234),
- *             @OA\Property(property="isActivated", type="boolean", ),
- *              @OA\Property(
- *                  property="address",
- *                  type="object",
- *                  @OA\Property(property="province", type="string", example="province"),
- *                  @OA\Property(property="district", type="string", example="106.660172"),
- *                  @OA\Property(property="ward", type="string", example="106.660172"),
- *                  @OA\Property(property="street", type="string", example="106.660172"),
- *               ),
- *              @OA\Property(
- *                  property="otherInfo",
- *                  type="object",
- *                  @OA\Property(property="specialtyID", type="string", example=""),
- *                  @OA\Property(property="title", type="string", example="title"),
- *                  @OA\Property(property="practicingCertificate", type="string", example="practicingCertificate"),
- *                  @OA\Property(property="yearsExperience", type="number", example=2),
- *                  @OA\Property(property="detail", type="string", example="detail"),
- *                  @OA\Property(property="isInternal", type="boolean", ),
- *               ),
+ *             @OA\Property(property="message", type="string", example="Doctor updated successfully")
  *         )
  *     ),
  *     @OA\Response(
- *         response=200,
- *         description="Successful response",
+ *         response=400,
+ *         description="Bad request, invalid data",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Invalid data provided")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Doctor not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Doctor not found")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="An unexpected error occurred")
+ *         )
  *     )
  * )
- * @OA\delete(
+* @OA\delete(
  *     path="/api/v1/doctors/delete/{id}",
  *     tags={"Doctor Routes"},
  *     summary="Update Doctor",
@@ -239,7 +288,7 @@ class DoctorController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Doctor created successfully.',
+                'message' => 'Thêm tài khoản thành công!',
                 'data' => $doctor,
             ], 201);
         } catch (\Exception $e) {
@@ -255,7 +304,7 @@ class DoctorController extends Controller
             $Doctor = User::where('_id', $id)->first();
 
             if (!$Doctor) {
-                return createError(404, 'Doctor not found');
+                return createError(404, 'Không tìm thấy tài khoảng!');
             }
 
             $check = checkPhoneAndEmail($request->phoneNumber, $request->email, $Doctor->id);
@@ -282,7 +331,7 @@ class DoctorController extends Controller
             $Doctor->otherInfo = $otherInfo;
             return response()->json([
                 'status' => 'success',
-                'message' => 'Doctor update successfully.',
+                'message' => 'Cập nhật tài khoản thành công!',
                 'data' => $Doctor,
             ], 201);
         } catch (\Exception $e) {
@@ -294,23 +343,20 @@ class DoctorController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
-
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
-
             $Doctor = User::where('_id', $id)->first();
             if (!$Doctor) {
-                return createError(404, 'Doctor not found');
+                return createError(404, 'Không tìm thấy tài khoản!');
             }
-
             $Doctor->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Doctor deleted successfully.',
+                'message' => 'Xóa tài khoản thành công!',
                 'data' => $Doctor,
             ], 200);
         } catch (\Exception $e) {

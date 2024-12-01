@@ -77,7 +77,7 @@
                 Thông báo lịch khám sắp đến hạn - Y Khoa Diamod</h3>
             <p
                 style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                Kính gửi [Tên người dùng hoặc Khách hàng],</p>
+                Kính gửi {{$data['name']}},</p>
             <p
                 style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:20px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                 Chúng tôi xin nhắc nhở quý khách rằng lịch khám của quý khách tại <em><strong><span
@@ -97,31 +97,31 @@
                                 style="margin-bottom:8px;padding-left:6px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                                 <p
                                     style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:0px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                                    <strong>Họ và tên:</strong> [Tên khách hàng]</p>
+                                    <strong>Họ và tên:</strong>  {{$data['fullName']}}</p>
                             </li>
                             <li
                                 style="margin-bottom:8px;padding-left:6px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                                 <p
                                     style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:0px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                                    <strong>Dịch vụ:</strong> [Tên dịch vụ]</p>
+                                    <strong>Dịch vụ:</strong> {{$data['nameService']}}</p>
                             </li>
                             <li
                                 style="margin-bottom:8px;padding-left:6px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                                 <p
                                     style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:0px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                                    <strong>Bác sĩ:</strong> [Tên bác sĩ]</p>
+                                    <strong>Bác sĩ:</strong>  {{$data['nameDoctor']}}</p>
                             </li>
                             <li
                                 style="margin-bottom:8px;padding-left:6px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                                 <p
                                     style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:0px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                                    <strong>Chi nhánh:</strong> [Tên chi nhánh]</p>
+                                    <strong>Chi nhánh:</strong> {{$data['nameBranch']}}</p>
                             </li>
                             <li
                                 style="margin-bottom:8px;padding-left:6px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
                                 <p
                                     style="font-size:15px;line-height:24px;margin:16px 0;text-align:left;margin-bottom:0px;margin-top:0px;color:#374151;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale">
-                                    <strong>Thời gian:</strong> [Ngày và giờ]</p>
+                                    <strong>Thời gian:</strong> {{$data['time']}}</p>
                             </li>
                         </ul>
                     </td>
@@ -132,7 +132,7 @@
                    style="max-width:100%;text-align:left;margin-bottom:20px">
                 <tbody>
                 <tr style="width:100%">
-                    <td><a href=""
+                    <td><a href="{{env('URL_WEBSITE').$data['link']}}"
                            style="line-height:100%;text-decoration:none;display:inline-block;max-width:100%;mso-padding-alt:0px;color:#ffffff;background-color:#2884ad;border-color:#2884ad;padding:12px 34px 12px 34px;border-width:2px;border-style:solid;font-size:14px;font-weight:500;border-radius:9999px"
                            target="_blank"><span><!--[if mso]><i style="mso-font-width:425%;mso-text-raise:18" hidden>&#8202;&#8202;&#8202;&#8202;</i><![endif]--></span><span
                                 style="max-width:100%;display:inline-block;line-height:120%;mso-padding-alt:0px;mso-text-raise:9px">Bấm

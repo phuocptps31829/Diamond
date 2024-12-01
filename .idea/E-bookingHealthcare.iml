@@ -145,6 +145,12 @@
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/mpdf/psr-http-message-shim" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/mpdf/psr-log-aware-trait" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/setasign/fpdi" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/barryvdh/laravel-dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/dompdf/dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/dompdf/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/dompdf/php-svg-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/masterminds/html5" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/sabberworm/php-css-parser" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

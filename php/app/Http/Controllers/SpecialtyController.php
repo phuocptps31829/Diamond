@@ -170,10 +170,9 @@ class SpecialtyController extends Controller
         try {
             $SpecialtyRequest = new SpecialtyRequest();
             $specialty = Specialty::create($request->validate($SpecialtyRequest->rules(), $SpecialtyRequest->messages()));
-
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty created successfully.',
+                'message' => 'Thêm chuyên khoa thành công!.',
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
@@ -188,7 +187,7 @@ class SpecialtyController extends Controller
             $specialty = Specialty::where('_id', new ObjectId($id))->first();
 
             if (!$specialty) {
-                return createError(404, 'Specialty not found');
+                return createError(404, 'Không tìm thấy chuyên khoa!');
             }
             $specialtyRequest = new SpecialtyRequest();
 
@@ -196,7 +195,7 @@ class SpecialtyController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty update successfully.',
+                'message' => 'Cập nật chuyên khoa thành công.',
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
@@ -207,23 +206,23 @@ class SpecialtyController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID  không hợp lệ!');
             }
 
             $specialty = Specialty::where('_id', $id)->first();
             if (!$specialty) {
-                return createError(404, 'Specialty not found');
+                return createError(404, 'Không tìm thấy chuyên khoa!');
             }
 
             $specialty->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty deleted successfully.',
+                'message' => 'Xóa chuyên khoa thành công.',
                 'data' => $specialty,
             ], 200);
         } catch (\Exception $e) {

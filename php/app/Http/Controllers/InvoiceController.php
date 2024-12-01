@@ -526,7 +526,279 @@ class InvoiceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    function zaloPayment(Request $request)
+    {
+        try {
 
+            $InvoiceRequest = new InvoiceRequest();
+            $request->validate($InvoiceRequest->rules());
+            $allData = $request->all();
+            $totalPrice = array_reduce($allData['data'], function ($a, $b) {
+                return $a + (float)$b['price'];
+            }, 0);
+
+            $config = [
+                "app_id" => 2553,
+                "key1" => "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
+                "key2" => "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
+                "endpoint" => "https://sb-openapi.zalopay.vn/v2/create"
+            ];
+
+            $embeddata = '{}'; // Merchant's data
+            $items = '[]'; // Merchant's data
+            $transID = rand(0,1000000); //Random trans id
+            Redis::set(date("ymd") . "_" .$transID, json_encode($allData));
+            $order = [
+                "app_id" => $config["app_id"],
+                "app_time" => round(microtime(true) * 1000), // miliseconds
+                "app_trans_id" => date("ymd") . "_" . $transID, // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+                "app_user" => "diamond",
+                "item" => $items,
+                "embed_data" => $embeddata,
+                "amount" => $totalPrice,
+                "description" => "Thanh toán dịch vụ Diamond",
+                "bank_code" => "zalopayapp",
+                "callback_url"=> 'http://127.0.0.1:8000/'
+            ];
+            $data = $order["app_id"] . "|" . $order["app_trans_id"] . "|" . $order["app_user"] . "|" . $order["amount"]
+                . "|" . $order["app_time"] . "|" . $order["embed_data"] . "|" . $order["item"];
+            $order["mac"] = hash_hmac("sha256", $data, $config["key1"]);
+
+            $context = stream_context_create([
+                "http" => [
+                    "header" => "Content-type: application/x-www-form-urlencoded\r\n",
+                    "method" => "POST",
+                    "content" => http_build_query($order)
+                ]
+            ]);
+
+            $resp = file_get_contents($config["endpoint"], false, $context);
+            $result = json_decode($resp, true);
+            return response()->json([
+                'message' => "Create payment url successfully.",
+                'data' => [
+                    "payUrl" => $result['order_url']
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+
+            return handleException($e);
+        }
+    }
+    function zaloPaymentCallback(Request $request)
+    {
+        try {
+            $key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
+            $postdata = file_get_contents('php://input');
+            $postdatajson = json_decode($postdata, true);
+            $mac = hash_hmac("sha256", $postdatajson["data"], $key2);
+
+            $requestmac = $postdatajson["mac"];
+
+            // kiểm tra callback hợp lệ (đến từ ZaloPay server)
+            if (strcmp($mac, $requestmac) != 0) {
+                // callback không hợp lệ
+                return response()->json(['error' => 'Thanh toán thất bại.'], 400);
+            } else {
+                // thanh toán thành công
+                // merchant cập nhật trạng thái cho đơn hàng
+                $order_token = $request->query('order_token');
+                $app_trans_id = $request->query('app_trans_id');
+
+                $jsonData = Redis::get($app_trans_id);
+                if ($jsonData) {
+                    $signature = $order_token;
+                    $appointmentData = json_decode($jsonData, true);
+
+                    $newPatient = null;
+                    if (isset($appointmentData['appointmentHelpUser'])) {
+                        $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
+                        $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
+                        if (!$newUser) {
+                            $roleID = env('ROLE_PATIENT');
+                            $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
+
+                            $codePatient = "";
+                            if ($endUser && isset($endUser->otherInfo['patientCode'])) {
+                                $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
+                            } else {
+                                $codePatient = "BN1";
+                            }
+                            $otherInfo = [
+                                'occupation' => $appointmentHelpUser['occupation'] ?? '',
+                                'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
+                                'patientCode' => $codePatient,
+                                'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
+                            ];
+                            $newPatient = User::create([
+                                "fullName" => $appointmentHelpUser['fullName'],
+                                "phoneNumber" => $appointmentHelpUser['phoneNumber'],
+                                "email" => $appointmentHelpUser['email'],
+                                "gender" => $appointmentHelpUser['gender'],
+                                "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
+                                "address" => $appointmentHelpUser['address'],
+                                "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
+                                "otherInfo" => $otherInfo,
+                                "password" => generateRandomString(),
+                                "isActivated" => true,
+                                "roleID" => env('ROLE_PATIENT')
+                            ]);
+                        } else {
+                            $newPatient = $newUser;
+                        }
+                    }
+
+                    foreach ($appointmentData['data'] as $appointment) {
+                        $newAppointment = null;
+
+                        if ($newPatient) {
+
+                            if (isset($appointment['serviceID'])) {
+                                $newAppointment = Appointment::create([
+                                    'serviceID' => $appointment['serviceID'],
+                                    'workScheduleID' => $appointment['workScheduleID'],
+                                    'type' => $appointment['type'],
+                                    'time' => $appointment['time'],
+                                    'status' => $appointment['status'],
+                                    'payment' => [
+                                        'method' => 'ZALOPAY',
+                                        'refundCode' => $signature,
+                                        'status' => 'PENDING'
+                                    ],
+                                    'patientID' => $newPatient['id'],
+                                    'patientHelpID' => new objectId($appointmentData['patientID']),
+                                ]);
+                            } else {
+
+                                $newAppointment = Appointment::create([
+                                    'medicalPackageID' => $appointment['medicalPackageID'],
+                                    'workScheduleID' => $appointment['workScheduleID'],
+                                    'type' => $appointment['type'],
+                                    'time' => $appointment['time'],
+                                    'status' => $appointment['status'],
+                                    'payment' => [
+                                        'method' => 'ZALOPAY',
+                                        'refundCode' => $signature,
+                                        'status' => 'PENDING'
+                                    ],
+                                    'patientID' => $newPatient['id'],
+                                    'patientHelpID' => new objectId($appointmentData['patientID']),
+                                ]);
+
+                            }
+
+                            $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
+
+                            if ($patientUpdate) {
+                                $otherInfo = $patientUpdate->otherInfo ?: [];
+
+                                if (!isset($otherInfo['relatedPatientsID'])) {
+                                    $otherInfo['relatedPatientsID'] = [];
+                                }
+                                $newPatientId = new ObjectId($newPatient->id);
+                                $exists = false;
+
+                                foreach ($otherInfo['relatedPatientsID'] as $existingId) {
+                                    if ((string)$existingId === (string)$newPatientId) {
+                                        $exists = true;
+                                        break;
+                                    }
+                                }
+                                if (!$exists) {
+                                    $otherInfo['relatedPatientsID'][] = $newPatientId;
+                                    $patientUpdate->otherInfo = $otherInfo;
+                                    $patientUpdate->save();
+                                }
+                            }
+                        } else {
+                            if ($appointment['serviceID']) {
+                                $newAppointment = Appointment::create([
+                                    'serviceID' => $appointment['serviceID'],
+                                    'workScheduleID' => $appointment['workScheduleID'],
+                                    'type' => $appointment['type'],
+                                    'time' => $appointment['time'],
+                                    'status' => $appointment['status'],
+                                    'payment' => [
+                                        'method' => 'ZALOPAY',
+                                        'refundCode' => $signature,
+                                        'status' => 'PENDING'
+                                    ],
+                                    'patientID' => $appointmentData['patientID'],
+                                ]);
+                            } else {
+                                $newAppointment = Appointment::create([
+                                    'medicalPackageID' => $appointment['medicalPackageID'],
+                                    'workScheduleID' => $appointment['workScheduleID'],
+                                    'type' => $appointment['type'],
+                                    'time' => $appointment['time'],
+                                    'status' => $appointment['status'],
+                                    'payment' => [
+                                        'method' => 'ZALOPAY',
+                                        'refundCode' => $signature,
+                                        'status' => 'PENDING'
+                                    ],
+                                    'patientID' => $appointmentData['patientID'],
+                                ]);
+                            }
+
+                        }
+                        if (isset($appointment['serviceID'])) {
+                            $service = Service::where('id', $appointment['serviceID'])->first();
+                            $service->orderCount++;
+                            $service->save();
+                        } else {
+                            $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
+                            $medicalPackage->orderCount++;
+                            $medicalPackage->save();
+                        }
+                        // Tìm các cuộc hẹn trong ngày
+                        // "time": "2024-07-23T09:05:31.473+00:00"
+                        $date = $newAppointment->time;
+                        $startOfDay = Carbon::parse($date)->startOfDay();
+                        $endOfDay = Carbon::parse($date)->endOfDay();
+
+                        $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
+                            ->where('time', '<=', $endOfDay->toISOString())
+                            ->pluck('id');
+
+                        $listID = [];
+                        foreach ($appointmentIDsInDay as $appointment1) {
+                            array_push($listID, new ObjectId($appointment1));
+                        }
+
+                        $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
+                            ->orderBy('number', 'desc')
+                            ->first();
+
+                        $newOrderNumber = OrderNumber::create([
+                            'appointmentID' => $newAppointment->id,
+                            'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
+                            'priority' => 0
+                        ]);
+
+                        $newInvoice = Invoice::create([
+                            'appointmentID' => $newAppointment->id,
+                            'price' => (int)$appointment['price'],
+                        ]);
+                    }
+
+                    return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công.'], 200);
+
+                } else {
+                    return response()->json(['error' => 'Lỗi không tìm thấy dịch vụ. '], 404);
+                }
+
+                $datajson = json_decode($postdatajson["data"], true);
+                // echo "update order's status = success where app_trans_id = ". $dataJson["app_trans_id"];
+
+                $result["return_code"] = 1;
+                $result["return_message"] = "success";
+            }
+            return response()->json(['status' => 'success', 'message' => 'Buy successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     function vnpayPayment(Request $request)
     {
         try {

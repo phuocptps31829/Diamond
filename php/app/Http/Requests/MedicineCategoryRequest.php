@@ -13,7 +13,6 @@ class MedicineCategoryRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -25,11 +24,10 @@ class MedicineCategoryRequest extends FormRequest
             'name' => 'required|string',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'name.required' => 'Name is required',
-            'name.string' => 'Name should be a string',
+            'name' => 'nullable|string',
         ];
     }
 }

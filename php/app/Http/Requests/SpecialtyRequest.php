@@ -13,6 +13,20 @@ class SpecialtyRequest extends FormRequest
     {
         return true;
     }
+    public function prepareForValidation()
+    {
+        foreach ($this->all() as $key => $value) {
+            if (preg_match('/ID$/', $key) && preg_match('/^[a-f\d]{24}$/i', $value)) {
+                $this->merge([
+                    $key => new ObjectId($value)
+                ]);
+            } elseif (preg_match('/ID$/', $key) && !preg_match('/^[a-f\d]{24}$/i', $value)) {
+                throw ValidationException::withMessages([
+                    $key => ['ID không hợp lệ.']
+                ]);
+            }
+        }
+    }
 
     /**
      * Get the validation rules that apply to the request.

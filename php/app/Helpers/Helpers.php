@@ -1,5 +1,7 @@
 <?php
 
+use App\Events\NotificationsEvent;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cookie;
@@ -111,7 +113,25 @@ if (!function_exists('convertNumberToTextPrice')) {
     }
 
 }
+if (!function_exists('sendNotification')) {
 
+    function sendNotification($userID,$title,$description,$type=0,$endpoint=null,$_id=null)
+    {
+        $redirect= new \stdClass();
+        $redirect->endpoint=$endpoint;
+        $redirect->_id=$_id;
+        $notification = Notification::create([
+            "userID" => $userID,
+            "title" => $title,
+            'description'=>$description,
+            "type" => $type,
+            "isRead" => false,
+            "redirect" => $redirect
+        ]);
+        event(new NotificationsEvent($userID));
+        return true;
+    }
+}
 if (!function_exists('generateInvoiceCode')) {
 
     function generateInvoiceCode()
@@ -196,6 +216,43 @@ if (!function_exists('searchInTable')) {
         ];
         return JWT::encode($payload, $apiKeySecret, 'HS256', null, $header);
 
+    }
+    function callNotification($phoneNumber, $message)
+    {
+        $newPhoneNumber = substr($phoneNumber, 1);
+
+        $options = [
+            'from' => [
+                'type' => 'external',
+                'number' => env('PHONE_NUMBER'),
+                'alias' => 'STRINGEE_NUMBER'
+            ],
+            'to' => [
+                [
+                    'type' => 'external',
+                    'number' => '84' . $newPhoneNumber,
+                    'alias' => 'TO_NUMBER'
+                ]
+            ],
+            'answer_url' => env('ANSWER_URL'),
+            'actions' => [
+                [
+                    'action' => 'talk',
+                    'text' =>$message
+                ]
+            ]
+        ];
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'X-STRINGEE-AUTH' => getAccessToken()
+        ])->post(env('URL_CALL'), $options);
+
+        if ($response->successful()) {
+            return $OTP;
+        } else {
+            return false;
+        }
     }
 
     function sendOTP($phoneNumber)
@@ -383,19 +440,19 @@ if (!function_exists('searchInTable')) {
             createError(500, 'Required phone number or email');
         }
         if ($userId) {
-            $user = User::where('_id', $userId)->first();
+            $user = User::where('_id', new \MongoDB\BSON\ObjectId($userId))->first();
             if (!$user) {
                 return 'User not found';
             }
             if ($phoneNumber && $user->phoneNumber != $phoneNumber) {
-                $user = User::where('phoneNumber', $phoneNumber)->first();
-                if ($user) {
+                $userPhone = User::where('phoneNumber', $phoneNumber)->where('_id','!=',$userId)->first();
+                if ($userPhone) {
                     return 'Phone number already exists';
                 }
             }
             if ($email && $user && $user->email != $email) {
-                $user = User::where('email', $email)->first();
-                if ($user) {
+                $userMail = User::where('email', $email)->where('_id','!=',new \MongoDB\BSON\ObjectId($userId))->first();
+                if ($userMail) {
                     return 'Email already exists';
                 }
             }

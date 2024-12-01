@@ -39,10 +39,13 @@ use App\Http\Controllers\ContractController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/v1/prescriptions/export/{id}', [\App\Http\Controllers\PrescriptionController::class, 'export']);
+Route::post('/v1/notifications/update/is-read/{id}', [\App\Http\Controllers\NotificationController::class, 'updaetIsRead']);
 Route::post('/v1/patients/update/avatar/{id}', [PatientController::class, 'updateImage']);
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
 Route::middleware(['web'])->group(function () {
     Route::get('/v1/auth/google', [AuthController::class, 'loginGoogle']);
     Route::get('/v1/auth/google/callback', [AuthController::class, 'googleCallback']);
@@ -80,7 +83,6 @@ Route::put('/v1/work-schedules/update/{id}', [WorkScheduleController::class, 'up
 Route::delete('/v1/work-schedules/delete/{id}', [WorkScheduleController::class, 'deleteWorkSchedule']);
 
 Route::post('/v1/results/result-prescription/add', [ResultController::class, 'createResultAndPrescription']);
-
 Route::get('/v1/results', [ResultController::class, 'getAllResult'])->middleware('checkQueryParams');
 Route::get('/v1/results/{id}', [ResultController::class, 'getOneResult'])->middleware('CheckValidId');
 Route::post('/v1/results/add', [ResultController::class, 'createResult']);
@@ -100,6 +102,8 @@ Route::patch('/v1/invoices/update-status/{id}', [InvoiceController::class, 'upda
 Route::patch('/v1/invoices/payment/update-status/{id}', [InvoiceController::class, 'updatePaymentStatus']);
 Route::put('/v1/invoices/update/appointment-work-/{id}', [InvoiceController::class, 'updateWorkScheduleFromInvoice']);
 
+Route::post('/v1/invoices/payment/zalo', [InvoiceController::class, 'zaloPayment']);
+Route::post('/v1/invoices/payment/zalo/callback', [InvoiceController::class, 'vnpayPaymentCallback']);
 Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
 Route::get('/v1/invoices/payment/vnpay/vnpay_return', [InvoiceController::class, 'vnpayPaymentCallback']);
 Route::post('/v1/invoices/payment/momo/callback', [InvoiceController::class, 'momoPaymentCallback']);

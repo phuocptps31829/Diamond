@@ -169,11 +169,11 @@ class ClinicController extends Controller
         try {
 
             $ClinicRequest = new ClinicRequest();
-            $Clinic = Clinic::create($request->validate($ClinicRequest->rules(), $ClinicRequest->messages()));
+            $Clinic = Clinic::create($request->validate($ClinicRequest->rules()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic created successfully.',
+                'message' => 'Thêm phòng khám thành công!',
                 'data' => $Clinic,
             ], 201);
         } catch (\Exception $e) {
@@ -189,15 +189,15 @@ class ClinicController extends Controller
             $Clinic = Clinic::where('_id', $id)->first();
 
             if (!$Clinic) {
-                return createError(404, 'Clinic not found');
+                return createError(404, 'Không tìm thấy phòng khám!');
             }
             $ClinicRequest = new ClinicRequest();
 
-            $Clinic->update($request->validate($ClinicRequest->rules(), $ClinicRequest->messages()));
+            $Clinic->update($request->validate($ClinicRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic update successfully.',
+                'message' => 'Cập nhật phòng khám thành công!',
                 'data' => $Clinic,
             ], 201);
         } catch (\Exception $e) {
@@ -208,23 +208,22 @@ class ClinicController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
             $Clinic = Clinic::where('_id', $id)->first();
             if (!$Clinic) {
-                return createError(404, 'Clinic not found');
+                return createError(404, 'Không tìm thấy phòng khám!');
             }
 
             $Clinic->delete();
-
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic deleted successfully.',
+                'message' => 'Xóa phòng khám thành công!',
                 'data' => $Clinic,
             ], 200);
         } catch (\Exception $e) {

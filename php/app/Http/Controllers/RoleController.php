@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\RoleRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -61,7 +62,8 @@ use App\Http\Requests\RoleRequest;
  *         required=true,
  *         @OA\JsonContent(
  *             required={"name"},
- *             @OA\Property(property="name", type="string", example="New Role")
+ *             @OA\Property(property="name", type="string", example="New Role"),
+ *             @OA\Property(property="description", type="string", example="Description New Role")
  *         )
  *     ),
  *     @OA\Response(
@@ -84,7 +86,8 @@ use App\Http\Requests\RoleRequest;
  *         required=true,
  *         @OA\JsonContent(
  *             required={"name"},
- *             @OA\Property(property="name", type="string", example="New Role")
+ *             @OA\Property(property="name", type="string", example="New Role"),
+ *              @OA\Property(property="description", type="string", example="Description New Role")
  *         )
  *     ),
  *     @OA\Response(
@@ -165,11 +168,11 @@ class RoleController extends Controller
     {
         try {
             $RoleRequest = new RoleRequest();
-            $Role = Role::create($request->validate($RoleRequest->rules(), $RoleRequest->messages()));
+            $Role = Role::create($request->validate($RoleRequest->rules()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Role created successfully.',
+                'message' => 'Tạo Role thành công!',
                 'data' => $Role,
             ], 201);
         } catch (\Exception $e) {
@@ -181,19 +184,17 @@ class RoleController extends Controller
     {
         try {
             $id = $request->route('id');
-
-            $Role = Role::where('_id', $id)->first();
+            $Role = Role::where('_id', new ObjectId($id))->first();
 
             if (!$Role) {
-                return createError(404, 'Role not found');
+                return createError(404, 'Không tim thấy Role');
             }
             $RoleRequest = new RoleRequest();
-
-            $Role->update($request->validate($RoleRequest->rules(), $RoleRequest->messages()));
+            $Role->update($request->validate($RoleRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Role update successfully.',
+                'message' => 'Cập nhật Role thành công!',
                 'data' => $Role,
             ], 201);
         } catch (\Exception $e) {
@@ -204,23 +205,21 @@ class RoleController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ');
             }
 
             $Role = Role::where('_id', $id)->first();
             if (!$Role) {
-                return createError(404, 'Role not found');
+                return createError(404, 'Không tìm thấy Role');
             }
-
             $Role->delete();
-
             return response()->json([
                 'status' => 'success',
-                'message' => 'Role deleted successfully.',
+                'message' => 'Xóa Role thành công!',
                 'data' => $Role,
             ], 200);
         } catch (\Exception $e) {

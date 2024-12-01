@@ -168,10 +168,10 @@ class HospitalController extends Controller
     {
         try {
             $HospitalRequest = new HospitalRequest();
-            $Hospital = Hospital::create($request->validate($HospitalRequest->rules(), $HospitalRequest->messages()));
+            $Hospital = Hospital::create($request->validate($HospitalRequest->rules()));
             return response()->json([
                 'status' => 'success',
-                'message' => 'Hospital created successfully.',
+                'message' => 'Thêm bệnh viện thành công!',
                 'data' => $Hospital,
             ], 201);
         } catch (\Exception $e) {
@@ -187,15 +187,15 @@ class HospitalController extends Controller
             $Hospital = Hospital::where('_id', $id)->first();
 
             if (!$Hospital) {
-                return createError(404, 'Hospital not found');
+                return createError(404, 'Không tìm thấy bệnh viện!');
             }
             $HospitalRequest = new HospitalRequest();
 
-            $Hospital->update($request->validate($HospitalRequest->rules(), $HospitalRequest->messages()));
+            $Hospital->update($request->validate($HospitalRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Hospital update successfully.',
+                'message' => 'Cập nhật bệnh viện thành công!',
                 'data' => $Hospital,
             ], 201);
         } catch (\Exception $e) {
@@ -206,23 +206,23 @@ class HospitalController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
             $Hospital = Hospital::where('_id', $id)->first();
             if (!$Hospital) {
-                return createError(404, 'Hospital not found');
+                return createError(404, 'Không tìm thấy bệnh viện!');
             }
 
             $Hospital->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Hospital deleted successfully.',
+                'message' => 'Xóa bệnh viện thành công!',
                 'data' => $Hospital,
             ], 200);
         } catch (\Exception $e) {
