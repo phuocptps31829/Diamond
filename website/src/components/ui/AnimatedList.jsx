@@ -7,7 +7,7 @@ export const AnimatedList = React.memo(
     const [index, setIndex] = useState(0);
 
     const childrenArray = useMemo(
-      () => React.Children.toArray(children).reverse(),
+      () => React.Children.toArray(children),
       [children]
     );
 

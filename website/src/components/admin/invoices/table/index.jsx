@@ -20,13 +20,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
-import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function DataTable({ data, columns }) {

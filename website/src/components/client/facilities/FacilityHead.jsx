@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
-
+import avatarDefault from "@/assets/images/avatar_default.png";
+import { Link } from "react-router-dom";
 const FacilityHead = () => {
   return (
     <div className="overflow-hidden">
@@ -28,28 +27,28 @@ const FacilityHead = () => {
               <div className="flex justify-center -space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={avatarDefault}
                     alt="Bác sĩ 1"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={avatarDefault}
                     alt="Bác sĩ 2"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={avatarDefault}
                     alt="Bác sĩ 3"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={avatarDefault}
                     alt="Bác sĩ 4"
                   />
                   <AvatarFallback>BS</AvatarFallback>
@@ -73,28 +72,17 @@ const FacilityHead = () => {
           {/* End Avatar Group */}
           {/* Form */}
           <form>
-            <div className="mx-auto max-w-2xl rounded-lg border p-3 shadow-lg shadow-primary-foreground sm:flex sm:space-x-3">
-              <div className="pb-2 sm:flex-[1_0_0%] sm:pb-0">
-                <Label htmlFor="name">
-                  <span className="sr-only">Họ và tên của bạn</span>
-                </Label>
-                <Input type="text" id="name" placeholder="Họ và tên của bạn" />
-              </div>
-              <div className="border-t pt-2 sm:flex-[1_0_0%] sm:border-s sm:border-t-0 sm:ps-3 sm:pt-0">
-                <Label
-                  htmlFor="phone"
-                  className="block text-sm font-medium dark:text-white"
-                >
-                  <span className="sr-only">Số điện thoại của bạn</span>
-                </Label>
-                <Input
-                  type="tel"
-                  id="phone"
-                  placeholder="Số điện thoại của bạn"
-                />
-              </div>
+            <div className="mx-auto w-fit max-w-2xl rounded-lg border p-3 shadow-lg shadow-primary-foreground sm:flex sm:space-x-3 items-center">
               <div className="grid pt-2 sm:block sm:flex-[0_0_auto] sm:pt-0">
-                <Button variant="primary">Đặt lịch khám</Button>
+                <Link to="/branch">
+                  <Button variant="outline">Xem các chi nhánh</Button>
+                </Link>
+              </div>
+              <hr className="hidden sm:block h-8 border-l border-gray-300 mx-3" />
+              <div className="grid pt-2 sm:block sm:flex-[0_0_auto] sm:pt-0">
+                <Link to="/contact">
+                  <Button variant="primary">Liên hệ với chúng tôi</Button>
+                </Link>
               </div>
             </div>
           </form>

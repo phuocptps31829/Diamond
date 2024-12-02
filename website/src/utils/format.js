@@ -76,7 +76,7 @@ export function formatRelativeDate(from) {
         return formatDistanceToNowStrict(date, { addSuffix: true, locale: vi });
     } else {
         if (currentDate.getFullYear() === date.getFullYear()) {
-            return format(date, 'MMM d', { locale: vi });
+            return format(date, 'dd/MM/yyyy', { locale: vi });
         } else {
             return format(date, 'MMM d, yyyy', { locale: vi });
         }

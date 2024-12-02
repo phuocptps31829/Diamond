@@ -13,10 +13,11 @@ const center = {
 };
 
 const libraries = ["places"];
+const key = import.meta.env.VITE_GOOGLE_MAP_KEY;
 
 const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AlzaSytrHWQJELhQysT-JQJ4Syk6SPOO4AFZqwo",
+    googleMapsApiKey: key,
     libraries,
   });
 
@@ -82,9 +83,11 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
         }
 
         const { ward, district, city } = extractAddressComponents(
-          place.address_components,
+          place.address_components
         );
-        const formattedAddress = removePostalCode(place.formatted_address || place.name);
+        const formattedAddress = removePostalCode(
+          place.formatted_address || place.name
+        );
         setAddress({
           name: formattedAddress,
           lat: location.lat(),

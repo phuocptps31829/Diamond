@@ -13,16 +13,34 @@ export const columns = [
           table.getIsAllPageRowsSelected() ||
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
-        onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        checked={ row.getIsSelected() }
-        onCheckedChange={ (value) => row.toggleSelected(!!value) }
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
       />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    id: "stt",
+    header: ({ column }) => (
+      <Button
+        className="w-fit px-0 text-left"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        STT
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full pl-5 text-left">{row.index + 1}</div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -33,7 +51,7 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tên phòng khám
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -41,7 +59,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 font-medium">
-        { row.original.name }
+        {row.original.name}
       </div>
     ),
   },
@@ -51,13 +69,13 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Chuyên khoa
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{ row.original.specialty?.name }</div>,
+    cell: ({ row }) => <div className="">{row.original.specialty?.name}</div>,
   },
   {
     accessorKey: "branchName",
@@ -65,14 +83,14 @@ export const columns = [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Chi nhánh
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="">{ row.original.branch?.name }</div>;
+      return <div className="">{row.original.branch?.name}</div>;
     },
   },
 
@@ -80,7 +98,7 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <Action row={ row } />;
+      return <Action row={row} />;
     },
   },
 ];

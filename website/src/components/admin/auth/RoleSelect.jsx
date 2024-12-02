@@ -38,9 +38,9 @@ export function RoleSelect({ role, onSetSelectedRole }) {
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search framework..." />
+                    <CommandInput placeholder="Chọn quyền..." />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>Không có chức vụ này.</CommandEmpty>
                         <CommandGroup>
                             { roles.map((framework) => (
                                 <CommandItem

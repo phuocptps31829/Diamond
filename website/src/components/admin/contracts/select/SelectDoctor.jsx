@@ -29,7 +29,7 @@ export default function SelectDoctor({ control, name, errors, onChange }) {
       try {
         const data = await doctorApi.getAllDoctors();
         console.log(data);
-        setOptions(data);
+        setOptions(data.data);
       } catch (error) {
         console.error("Failed to fetch doctors:", error);
       }
