@@ -75,7 +75,7 @@ export default function DataTable({ data, columns }) {
     },
   });
   React.useEffect(() => {
-    table.getColumn("name")?.setFilterValue(debouncedSearchValue);
+    table.getColumn("title")?.setFilterValue(debouncedSearchValue);
   }, [debouncedSearchValue, table]);
   const handleRefresh = () => {
     queryClient.invalidateQueries("branches");
@@ -87,10 +87,10 @@ export default function DataTable({ data, columns }) {
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
-                value={ table.getColumn("name")?.getFilterValue() ?? "" }
+                value={ table.getColumn("title")?.getFilterValue() ?? "" }
                 onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
-                placeholder="Tìm kiếm chi nhánh"
+                placeholder="Nhập tên hợp đồng"
                 name="newsName"
                 type="text"
                 id="newsName"

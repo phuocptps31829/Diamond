@@ -32,7 +32,27 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     enableHiding: false,
   },
   {
-    accessorKey: "patient",
+    id: "stt",
+    header: ({ column }) => (
+      <Button
+        className="w-fit px-0 text-left"
+        variant="ghost"
+        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+      >
+        STT
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full pl-5 text-left">{ row.index + 1 }</div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+
+  {
+    id: "patient",
+    accessorFn: (row) => row.patient.fullName,
     header: ({ column }) => (
       <div className="ml-2 w-full text-left">
         <Button
@@ -111,13 +131,13 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     cell: ({ row }) => {
       const isMedicalPackage = !!row.original.medicalPackage;
       return (
-        <div className={ `py-1 px-2 rounded-md inline-block ${isMedicalPackage
-          ? "bg-primary-500/20 text-primary-900"
-          : "bg-[#13D6CB]/20 text-cyan-950"
-          }` }>
-          <span
-            className={ `line-clamp-1 text-xs font-bold uppercase` }
-          >
+        <div
+          className={ `rounded-md px-2 py-1 ${isMedicalPackage
+            ? "bg-primary-500/20 text-primary-900"
+            : "bg-[#13D6CB]/20 text-cyan-950"
+            }` }
+        >
+          <span className={ `line-clamp-1 text-xs font-bold uppercase` }>
             { row.original.service?.name || row.original.medicalPackage?.name }
           </span>
         </div>

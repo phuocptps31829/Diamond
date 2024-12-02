@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link, NavLink } from "react-router-dom";
 import { NavbarContext } from "../../../contexts/NavBarContext";
@@ -24,6 +24,8 @@ import { AnimatedList } from "@/components/ui/AnimatedList";
 import Notification from "./notion/NotionMessage";
 import { useSocket } from "@/hooks/useSocket";
 import { notificationsApi } from "@/services/notificationsApi";
+import { useQuery } from "@tanstack/react-query";
+import { Skeleton } from "@/components/ui/Skeleton";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const dataNav = [
@@ -59,7 +61,6 @@ const dataNav = [
   },
 ];
 
-
 export default function MainHeader() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -67,45 +68,9 @@ export default function MainHeader() {
   const userProfile = useSelector((state) => state.auth.userProfile);
   const { subscribe, socket } = useSocket(SOCKET_URL);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-  const handleLogout = () => {
-    dispatch(logoutAction());
-    dispatch(clearCart());
-    toast.success("Đăng xuất thành công");
-    navigate("/");
-  };
-  // const handleMouseEnter = () => {
-  //   if (tooltipTimeoutRef.current) {
-  //     clearTimeout(tooltipTimeoutRef.current);
-  //   }
-  //   setIsTooltipOpen(true);
-  // };
-  // const handleMouseLeave = () => {
-  //   tooltipTimeoutRef.current = setTimeout(() => {
-  //     setIsTooltipOpen(false);
-  //   }, 300);
-  // };
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const data = await notificationsApi.getNotificationsByUser();
-      setNotifications(data.data);
-    } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (userProfile) {
-      fetchNotifications();
-    }
-  }, [fetchNotifications, userProfile]);
 
   useEffect(() => {
     if (!socket) return;
-
     const handleNotification = (data) => {
       const userID = userProfile?._id;
       console.log("New notification:", data);
@@ -153,7 +118,6 @@ export default function MainHeader() {
             </div>
           </div>
         ));
-        fetchNotifications();
       }
     };
 
@@ -162,7 +126,69 @@ export default function MainHeader() {
     return () => {
       unsubscribe();
     };
-  }, [subscribe, socket, userProfile, fetchNotifications]);
+  }, [subscribe, socket, userProfile]);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    dispatch(clearCart());
+    toast.success("Đăng xuất thành công");
+    navigate("/");
+  };
+  // const handleMouseEnter = () => {
+  //   if (tooltipTimeoutRef.current) {
+  //     clearTimeout(tooltipTimeoutRef.current);
+  //   }
+  //   setIsTooltipOpen(true);
+  // };
+  // const handleMouseLeave = () => {
+  //   tooltipTimeoutRef.current = setTimeout(() => {
+  //     setIsTooltipOpen(false);
+  //   }, 300);
+  // };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => notificationsApi.getNotificationsByUser(),
+    enabled: !!userProfile,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="w-full bg-white/70 backdrop-blur-md">
+        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
+          <Skeleton className="h-10 w-56 rounded-md" />
+          <div className="hidden lg:block">
+            <ul className="flex items-center justify-center space-x-4">
+              { Array(4)
+                .fill(null)
+                .map((_, idx) => (
+                  <li key={ idx }>
+                    <Skeleton className="h-6 w-20 rounded-md" />
+                  </li>
+                )) }
+              <li>
+                <Skeleton className="h-6 w-6 rounded-md" />
+              </li>
+            </ul>
+          </div>
+
+          <div className="flex items-center space-x-3">
+            <Skeleton className="h-6 w-6 rounded-lg" />
+            <Skeleton className="h-6 w-6 rounded-lg" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+
+
+  const notifications = data?.data || [];
+  const allNotificationsRead = notifications.every(
+    (notification) => notification.isRead
+  );
   return (
     <div className="w-full bg-white/70 backdrop-blur-md">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
@@ -177,7 +203,7 @@ export default function MainHeader() {
                   className="relative block lg:hidden"
                   onClick={ toggleDropdown }
                 >
-                  { notifications.length > 0 && (
+                  { notifications.length > 0 && !allNotificationsRead && (
                     <span className="absolute right-0 flex h-3 w-3">
                       <span
                         className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
@@ -186,6 +212,7 @@ export default function MainHeader() {
                       <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
                     </span>
                   ) }
+
                   <FaBell size={ 25 } color="#007BBB" />
                 </button>
               </DropdownMenuTrigger>
@@ -237,7 +264,7 @@ export default function MainHeader() {
                     className="relative !mr-1 hidden lg:block"
                     onClick={ toggleDropdown }
                   >
-                    { notifications.length > 0 && (
+                    { notifications.length > 0 && !allNotificationsRead && (
                       <span className="absolute right-0 flex h-3 w-3">
                         <span
                           className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
@@ -257,7 +284,8 @@ export default function MainHeader() {
                     Thông báo
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="mb-4" />
-                  <AnimatedList>
+                  <AnimatedList baseDelay={ 1000 } minDelay={ 100 }>
+
                     { notifications.length === 0 ? (
                       <div className="my-3 text-center text-gray-500 dark:text-gray-400">
                         Bạn không có thông báo nào

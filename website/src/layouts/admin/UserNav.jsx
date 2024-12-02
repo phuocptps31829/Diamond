@@ -128,16 +128,7 @@ const UserNav = () => {
   return (
     <>
       <div className="mr-6 flex items-center gap-6">
-        <button className="relative">
-          <span className="absolute -right-1 flex h-3 w-3">
-            <span
-              className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-              style={{ animationDuration: "2s" }}
-            ></span>
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
-          </span>
-          <IoMdMailUnread size={25} color="#007BBB" />
-        </button>
+       
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="">

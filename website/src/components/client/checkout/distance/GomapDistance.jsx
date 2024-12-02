@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
 import { Link } from "react-router-dom";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+// import { AiOutlineLoading3Quarters } from "react-icons/ai";
 const libraries = ["places"];
 const keyGoogleMaps = import.meta.env.VITE_GOOGLE_MAP_KEY;
 const GomapDistance = ({ hospitalCoordinates, className, room }) => {
@@ -70,8 +70,7 @@ const GomapDistance = ({ hospitalCoordinates, className, room }) => {
   if (!room || !isLoaded || !hospitalCoordinates || distance === null)
     return (
       <div>
-        <AiOutlineLoading3Quarters className="animate-spin text-primary-500" />
-      </div>
+    </div>
     );
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${hospitalCoordinates?.lat},${hospitalCoordinates?.lng}`;
   return (
@@ -139,7 +138,7 @@ const GomapDistance = ({ hospitalCoordinates, className, room }) => {
           </TooltipProvider>
         </div>
       ) : (
-        <AiOutlineLoading3Quarters className="animate-spin text-primary-500" />
+      <div></div>
       ) }
     </div>
   );

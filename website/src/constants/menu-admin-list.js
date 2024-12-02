@@ -395,6 +395,11 @@ export const getMenuList = (pathname) => [
         icon: FaFileContract,
         submenus: [
           {
+            href: "/admin/contracts/list",
+            label: "Danh sách hợp đồng",
+            active: pathname === "/admin/contracts/list",
+          },
+          {
             href: "/admin/contracts/create/internist",
             label: "Thêm hợp đồng bác sĩ cơ hữu",
             active: pathname === "/admin/contracts/create/internist",
@@ -405,14 +410,9 @@ export const getMenuList = (pathname) => [
             active: pathname === "/admin/contracts/create/surgeon",
           },
           {
-            href: "/admin/contracts/create/clinic",
-            label: "Thêm hợp đồng phòng khám",
-            active: pathname === "/admin/contracts/create/clinic",
-          },
-          {
-            href: "/admin/contracts/list",
-            label: "Danh sách hợp đồng",
-            active: pathname === "/admin/contracts/list",
+            href: "/admin/contracts/create/service-rental",
+            label: "Thêm hợp đồng dịch vụ",
+            active: pathname === "/admin/contracts/create/service-rental",
           },
         ],
       },

@@ -36,6 +36,24 @@ export const columns = [
     enableHiding: false,
   },
   {
+    id: "stt",
+    header: ({ column }) => (
+      <Button
+        className="w-fit px-0 text-left"
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        STT
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div className="w-full pl-5 text-left">{row.index + 1}</div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "title",
     header: ({ column }) => (
       <div className="w-full text-left">

@@ -112,8 +112,8 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   }
   return (
     <div className="mx-auto max-w-screen-xl p-4">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 rounded-md bg-white p-4 md:grid-cols-2">
-        <div className="flex h-[400px] items-center">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:gap-10 rounded-md bg-white p-4 md:grid-cols-2">
+        <div className="flex h-[200px] md:h-[400px] items-center">
           <img
             src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
             alt={ product?.name }

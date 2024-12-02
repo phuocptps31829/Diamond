@@ -62,12 +62,11 @@ const FacilityFeatures = () => {
   return (
     <section className="py-1">
       <div className="container mx-auto max-w-screen-xl">
-        <p className="mb-4 text-xs text-muted-foreground">Cơ sở vật chất</p>
         <h2 className="text-3xl font-medium lg:text-4xl">
           Cơ sở vật chất hiện đại của Y khoa Diamond
         </h2>
 
-        <div className="mx-auto mb-10 mt-5 grid gap-5 md:grid-cols-2 lg:mt-6">
+        <div className="mx-auto mb-10 mt-2 grid gap-5 md:grid-cols-2 lg:mt-3">
           {features.map((feature, idx) => (
             <Card
               key={idx}

@@ -16,12 +16,12 @@ const breadcrumbData = [
 ];
 
 const ContractsAddPage = () => {
-  const { type } = useParams(); 
+  const { type } = useParams();
 
   let ContractComponent;
 
   switch (type) {
-    case "clinic":
+    case "service-rental":
       ContractComponent = ContractsClinicAdd;
       break;
     case "internist":
@@ -36,8 +36,8 @@ const ContractsAddPage = () => {
 
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
-      {ContractComponent ? <ContractComponent /> : <NotFound />}
+      <BreadcrumbCustom data={ breadcrumbData } />
+      { ContractComponent ? <ContractComponent /> : <NotFound /> }
     </div>
   );
 };

@@ -4,6 +4,11 @@ export const contractDoctorSchema = z
     doctorID: z.string().nonempty("Vui lòng chọn bác sĩ"),
     hospitalID: z.string().nonempty("Vui lòng chọn chi nhánh"),
     startDate: z.string().nonempty("Vui lòng chọn ngày bắt đầu"),
+    timeWork: z.string().nonempty("Vui lòng chọn thời gian làm việc"),
+    countDate: z
+      .string()
+      .nonempty("Vui lòng nhập tổng số ngày làm việc")
+      .regex(/^\d+$/, "Giá phải là số và không được chứa ký tự khác"),
     endDate: z.string().nonempty("Vui lòng chọn ngày kết thúc"),
     address: z.string().nonempty("Vui lòng nhập địa chỉ"),
     price: z
