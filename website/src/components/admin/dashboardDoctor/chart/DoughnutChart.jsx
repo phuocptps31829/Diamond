@@ -3,13 +3,13 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DoughnutChart = () => {
+const DoughnutChart = ({ appointmentByAge }) => {
   const data = {
     labels: ["Nam", "Nữ"],
     datasets: [
       {
         label: "Số lượng",
-        data: [70, 45],
+        data: [appointmentByAge.male, appointmentByAge.female],
         backgroundColor: ["#00E396", "#58BDFF"],
         order: 1,
       },

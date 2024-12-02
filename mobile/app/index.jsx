@@ -108,7 +108,7 @@ const Index = () => {
   return (
     <View className="w-full h-full bg-[#41bdff] flex flex-col justify-center items-center">
       <Image
-        source={require("../assets/images/brandLogo.png")}
+        source={require("../assets/images/logoWhite.png")}
         className="w-[335px]"
         resizeMode="contain"
       />

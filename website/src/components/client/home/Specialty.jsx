@@ -87,7 +87,7 @@ export default function Specialty() {
                             className="h-40 w-full rounded-md object-cover"
                           />
                         </div>
-                        <div className="my-3 text-center text-[16px] font-bold uppercase">
+                        <div className="my-3 text-center text-[14px] sm:text-[16px] font-bold uppercase">
                           {specialty.name}
                         </div>
                       </div>

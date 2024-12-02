@@ -24,7 +24,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL;
 
 const ChatAdvice = () => {
-  const [isRecording, setIsRecording] = useState(false);
   const profile = useSelector((state) => state.profile.profile);
   const [messages, setMessages] = useState(
     []
@@ -150,6 +149,7 @@ const ChatAdvice = () => {
   };
 
   const sendMessage = async () => {
+    if (newMessage.trim() === "") return;
     const userSocketID = await AsyncStorage.getItem("userSocketID");
     if (socket) {
       sendEvent(
@@ -157,6 +157,7 @@ const ChatAdvice = () => {
         { message: newMessage, room: userSocketID ? userSocketID : socket.id, name: profile.fullName || "", phoneNumber: profile.phoneNumber || "" },
         () => {
           setNewMessage("");
+          setIsEmojiPickerVisible(false);
         }
       );
     }

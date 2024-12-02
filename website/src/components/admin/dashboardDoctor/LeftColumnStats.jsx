@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 import { TbCalendarRepeat } from "react-icons/tb";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
@@ -12,18 +12,41 @@ import {
 } from "@/components/ui/Select";
 import LineChart from "./chart/LineChart";
 
-export default function LeftColumnStats() {
+export default function LeftColumnStats({ dataAppointmentsByDoctor }) {
+  const [totals, setTotals] = useState({
+    totalAppointments: 0,
+    totalExaminations: 0,
+    totalConfirmed: 0,
+  });
   const [yearNow, setYearNow] = useState(new Date().getFullYear());
 
   const handleYearChange = (e) => {
     setYearNow(Number(e.target.value));
   };
+
+  useEffect(() => {
+    if (dataAppointmentsByDoctor.length === 0) return;
+
+    const totalAppointments = dataAppointmentsByDoctor.data.length;
+    const totalExaminations = dataAppointmentsByDoctor.data.filter(
+      (item) => item.status === "EXAMINED"
+    ).length;
+    const totalConfirmed = totalAppointments - totalExaminations;
+
+    setTotals({
+      totalAppointments,
+      totalExaminations,
+      totalConfirmed,
+    });
+
+  }, [dataAppointmentsByDoctor]);
+
   const stats = [
     {
       id: 1,
       icon: FaCalendarAlt,
       bgColor: "#007BBB",
-      mainValue: 30,
+      mainValue: totals.totalAppointments,
       title: "Lịch hẹn",
       percentageBg: "#E5FBF9",
       percentageColor: "#00D3C7",
@@ -32,7 +55,7 @@ export default function LeftColumnStats() {
       id: 2,
       icon: FaCalendarCheck,
       bgColor: "#007BBB",
-      mainValue: 10,
+      mainValue: totals.totalExaminations,
       title: "Đã hoàn thành",
       percentageBg: "#E5FBF9",
       percentageColor: "#00D3C7",
@@ -41,7 +64,7 @@ export default function LeftColumnStats() {
       id: 3,
       icon: TbCalendarRepeat,
       bgColor: "#007BBB",
-      mainValue: 10,
+      mainValue: totals.totalConfirmed,
       title: "Đang chờ",
       percentageBg: "#E5FBF9",
       percentageColor: "#00D3C7",
@@ -51,9 +74,9 @@ export default function LeftColumnStats() {
   return (
     <div className="h-full">
       <div className="relative flex w-full rounded-md bg-white items-center">
-        {stats.map((stat, idx) => (
+        {stats.map((stat, index) => (
           <>
-            <div key={idx} className="flex flex-1 items-center p-5 px-8">
+            <div key={stat.id} className="flex flex-1 items-center p-5 px-8">
               <div
                 className={`flex h-[60px] w-[60px] items-center justify-center rounded-lg p-3`}
                 style={{ backgroundColor: stat.bgColor }}
@@ -67,7 +90,7 @@ export default function LeftColumnStats() {
                 <h3 className="font-semibold">{stat.title}</h3>
               </div>
             </div>
-            {idx !== stats.length - 1 && (
+            {index !== stats.length - 1 && (
               <span className="border-2 rounded-lg border-[#25b3ffb1] h-[45px] bg-red-500"></span>
             )}
           </>
