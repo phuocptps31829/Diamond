@@ -65,9 +65,9 @@ const Action = ({ row }) => {
           </DropdownMenuItem>
         </Link>
         {/* <Link to={`/admin/news/edit/${row.original._id}`}>
-          <DropdownMenuItem className="flex w-full items-center gap-2">
-            <FiEdit className="text-[15px]" />
-            <span>Sửa</span>
+          <DropdownMenuItem className="flex w-full items-center gap-2 text-primary-600">
+            <FiEdit className="text-[15px] text-primary-600" />
+            <span>Chỉnh sửa</span>
           </DropdownMenuItem>
         </Link> */}
         {/* <DropdownMenuItem className="flex w-full items-center gap-2">
@@ -77,8 +77,8 @@ const Action = ({ row }) => {
                 className="flex w-full cursor-pointer items-center gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
-                <RiDeleteBin6Line className="text-[15px]" />
-                <span>Xóa</span>
+                <RiDeleteBin6Line className="text-[15px] text-red-500" />
+                <span className="text-red-600">Xóa</span>
               </div>
             </AlertDialogTrigger>
             <AlertDialogContent>

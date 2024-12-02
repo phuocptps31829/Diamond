@@ -19,6 +19,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { doctorApi } from "@/services/doctorsApi";
 import toast from "react-hot-toast";
+import { LuLoader2 } from "react-icons/lu";
 
 
 export default function SelectDoctor({
@@ -31,10 +32,12 @@ export default function SelectDoctor({
 }) {
   const [open, setOpen] = useState(false);
   const [options, setOptions] = useState([]);
-  console.log(branchID,
-    specialtyID,);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (!specialtyID || !branchID) return;
+
+    setIsLoading(true);
     const fetchDoctors = async () => {
       try {
         const data = await doctorApi.getDoctorsByBranch(branchID, specialtyID);
@@ -42,6 +45,8 @@ export default function SelectDoctor({
         setOptions(data);
       } catch (error) {
         console.error("Failed to fetch doctors:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -70,6 +75,7 @@ export default function SelectDoctor({
             <Popover open={ open } onOpenChange={ setOpen }>
               <PopoverTrigger asChild>
                 <Button
+                  disabled={ isLoading }
                   variant="outline"
                   role="combobox"
                   aria-expanded={ open }
@@ -84,7 +90,9 @@ export default function SelectDoctor({
                   ) : (
                     <span className="text-gray-600">Chọn bác sĩ</span>
                   ) }
-                  <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
+                  { isLoading
+                    ? <LuLoader2 className="w-5 h-5 animate-spin text-primary-500" />
+                    : <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" /> }
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="popover-content-width-same-as-its-trigger p-0">

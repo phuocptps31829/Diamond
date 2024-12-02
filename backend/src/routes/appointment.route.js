@@ -68,7 +68,7 @@ router.get(
 */
 router.get(
     '/specialty',
-    cacheMiddleware.cache("appointments:specialty-"),
+    // cacheMiddleware.cache("appointments:specialty-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForSpecialty

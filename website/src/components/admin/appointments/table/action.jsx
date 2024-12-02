@@ -32,7 +32,7 @@ const Action = ({ row, onDelete }) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-fit min-w-0">
-        <Link to={`/admin/appointments/detail/${row.original._id}`}>
+        <Link to={ `/admin/appointments/detail/${row.original._id}` }>
           <DropdownMenuItem className="flex w-full items-center gap-2">
             <BiDetail className="text-[15px]" />
             <span> Chi tiết</span>
@@ -43,10 +43,10 @@ const Action = ({ row, onDelete }) => {
             <AlertDialogTrigger asChild>
               <div
                 className="flex w-full cursor-pointer items-center gap-2"
-                onClick={(e) => e.stopPropagation()}
+                onClick={ (e) => e.stopPropagation() }
               >
-                <RiDeleteBin6Line className="text-[15px]" />
-                <span>Xóa</span>
+                <RiDeleteBin6Line className="text-[15px] text-red-600" />
+                <span className="text-red-600">Xóa</span>
               </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -61,7 +61,7 @@ const Action = ({ row, onDelete }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(row.original._id)}>
+                <AlertDialogAction onClick={ () => onDelete(row.original._id) }>
                   Xác nhận
                 </AlertDialogAction>
               </AlertDialogFooter>

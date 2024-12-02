@@ -39,13 +39,13 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
     ).sort((a, b) => new Date(a.time) - new Date(b.time)).slice(0, 4);
     setUpcomingAppointments(upcomingAppointments);
     const currentTime = new Date();
-    const targetTime = new Date(upcomingAppointments[0].time);
-    const secondsDifference = Math.floor((targetTime - currentTime) / 1000)
+    const targetTime = new Date(upcomingAppointments?.[0]?.time);
+    const secondsDifference = Math.floor((targetTime - currentTime) / 1000);
 
     if (secondsDifference < 0) {
       setTotalTime(0);
       setTimeLeft(0);
-    }else {
+    } else {
       setTotalTime(secondsDifference);
       setTimeLeft(secondsDifference);
     }
@@ -82,13 +82,13 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
                 r="40"
                 fill="transparent"
                 strokeDasharray="251.2"
-                strokeDashoffset={251.2 - (251.2 * progress) / 100}
+                strokeDashoffset={ 251.2 - (251.2 * progress) / 100 }
                 transform="rotate(-90 50 50)"
               ></circle>
             </svg>
             <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
               <div className="bg-[#edfffd] p-4 rounded-[99px]">
-                <FaRegHourglassHalf size={30} color="#00E396" />
+                <FaRegHourglassHalf size={ 30 } color="#00E396" />
               </div>
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
             Cuộc hẹn tiếp theo trong
           </p>
           <p className="text-3xl mt-2 font-bold text-primary-500">
-            {formatTime(timeLeft)}
+            { formatTime(timeLeft) }
           </p>
         </div>
       </div>
@@ -119,35 +119,34 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-          { upcomingAppointments.length === 0 ? (
+            { upcomingAppointments.length === 0 ? (
               <TableRow className="h-14 text-center text-[13px]">
                 <TableCell colSpan={ 6 }>Không có lịch hẹn nào !</TableCell>
               </TableRow>
             ) : (
-            upcomingAppointments.map((item, idx) => (
-                <TableRow key={idx} className={`${(idx === 0 && new Date(item.time) < new Date()) && "bg-green-100"} h-12 text-[13px]`}>
-                  <TableCell className="text-center">{idx + 1}</TableCell>
-                  <TableCell>{item.patient.fullName}</TableCell>
+              upcomingAppointments.map((item, idx) => (
+                <TableRow key={ idx } className={ `${(idx === 0 && new Date(item.time) < new Date()) && "bg-green-100"} h-12 text-[13px]` }>
+                  <TableCell className="text-center">{ idx + 1 }</TableCell>
+                  <TableCell>{ item.patient.fullName }</TableCell>
                   <TableCell>
                     <span
-                      className={`${
-                        new Date(item.time) > new Date()
+                      className={ `${new Date(item.time) > new Date()
                           ? "text-yellow-400"
                           : "text-red-500"
-                      } font-semibold`}
+                        } font-semibold` }
                     >
-                      {new Date(item.time) > new Date() 
+                      { new Date(item.time) > new Date()
                         ? "Chưa diễn ra"
-                        : "Tới hẹn chờ khám"}
+                        : "Tới hẹn chờ khám" }
                     </span>
                   </TableCell>
-                  <TableCell>{formatDateTimeLocale(item.time, true)}</TableCell>
+                  <TableCell>{ formatDateTimeLocale(item.time, true) }</TableCell>
                   <TableCell>
-                      <span className="max-w-[300px] truncate block">
-                        {item.service.name}
+                    <span className="max-w-[300px] truncate block">
+                      { item.service.name }
                     </span>
                   </TableCell>
-                  {(idx === 0 && new Date(item.time) < new Date()) && (
+                  { (idx === 0 && new Date(item.time) < new Date()) && (
                     <TableCell>
                       <Menubar className="border-none bg-transparent shadow-none">
                         <MenubarMenu>
@@ -156,13 +155,13 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
                           </MenubarTrigger>
                           <MenubarContent>
                             <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                              <MdOutlineDone className="mr-2" size={18} />
+                              <MdOutlineDone className="mr-2" size={ 18 } />
                               <span>
                                 Hoàn tất khám bệnh
                               </span>
                             </MenubarItem>
                             <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                              <MdFreeCancellation className="mr-2" size={18} />
+                              <MdFreeCancellation className="mr-2" size={ 18 } />
                               <span>
                                 Hủy lịch hẹn
                               </span>
@@ -170,11 +169,11 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
                           </MenubarContent>
                         </MenubarMenu>
                       </Menubar>
-                    </TableCell>    
-                  )}
+                    </TableCell>
+                  ) }
                 </TableRow>
               ))
-            )}
+            ) }
           </TableBody>
         </Table>
       </div>

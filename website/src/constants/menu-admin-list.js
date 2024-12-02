@@ -32,7 +32,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/doctor-dashboard",
             label: "Bảng điều khiển bác sĩ",
-            exceptRoles: ["STAFF_ACCOUNTANT"],
+            exceptRoles: ["STAFF_ACCOUNTANT", "ADMIN", "SUPER_ADMIN"],
             active: pathname.includes("/admin/doctor-dashboard"),
           },
           {

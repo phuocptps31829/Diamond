@@ -193,16 +193,16 @@ export default function Form() {
                 />
               </label>
               <label
-                onClick={ () => setPaymentMethod("banking") }
-                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "banking" ? "border-primary-500" : ""
+                onClick={ () => setPaymentMethod("zalopay") }
+                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "zalopay" ? "border-primary-500" : ""
                   }` }
               >
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png"
+                  src="../../../../src/assets/images/zalopay.png"
                   className="mr-4 w-[10%]"
                   alt="Ngân hàng"
                 />
-                <span>Thanh toán ngân hàng</span>
+                <span>Thanh toán ZaloPay</span>
                 <input
                   type="radio"
                   name="payment"

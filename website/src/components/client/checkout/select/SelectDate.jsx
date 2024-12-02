@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Controller } from "react-hook-form";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import toast from "react-hot-toast";
+import { LuLoader2 } from "react-icons/lu";
 
 export default function SelectDate({
   control,
@@ -25,11 +26,13 @@ export default function SelectDate({
   onChange,
 }) {
   const [availableDates, setAvailableDates] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!doctorID) return;
 
     const fetchDates = async () => {
+      setIsLoading(true);
       try {
         const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorID);
         console.log(data);
@@ -39,6 +42,8 @@ export default function SelectDate({
         setAvailableDates(dates);
       } catch (error) {
         console.error("Failed to fetch available dates:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -77,20 +82,23 @@ export default function SelectDate({
               <PopoverTrigger asChild>
                 <Button
                   variant={ "outline" }
-                  disabled={ disabled }
+                  disabled={ disabled || isLoading }
                   className={ cn(
-                    "w-full justify-start py-[21px] text-left font-normal",
+                    "w-full py-[21px] text-left font-normal flex items-center justify-between",
                     !field.value && "text-muted-foreground",
                     errors[name] && "border-red-500",
                     doctorID ? "pointer-events-auto" : "pointer-events-none",
                   ) }
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  { field.value && availableDates.length > 0 ? (
-                    format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
-                  ) : (
-                    <span>Chọn ngày khám</span>
-                  ) }
+                  <div className="flex items-center">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    { field.value && availableDates.length > 0 ? (
+                      format(new Date(field.value), "dd/MM/yyyy", { locale: vi })
+                    ) : (
+                      <span>Chọn ngày khám</span>
+                    ) }
+                  </div>
+                  { isLoading && <LuLoader2 className="w-5 h-5 animate-spin text-primary-500" /> }
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">

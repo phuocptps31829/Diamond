@@ -60,8 +60,8 @@ const Action = ({ row }) => {
       <DropdownMenuContent align="end" className="w-fit min-w-0">
         <Link to={ `/admin/specialties/edit/${row.original._id}` }>
           <DropdownMenuItem className="flex w-fit items-center gap-2">
-            <FiEdit className="text-[15px]" />
-            <span>Sửa</span>
+            <FiEdit className="text-[15px] text-primary-600" />
+            <span className="text-primary-600">Chỉnh sửa</span>
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem className="flex w-fit items-center gap-2">
