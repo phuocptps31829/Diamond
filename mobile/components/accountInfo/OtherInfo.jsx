@@ -12,10 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { informationSchema } from "../../zods/informationSchema";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import SelectDropdown from "react-native-select-dropdown";
-import { ethnicGroups } from "../../constants/ethnics";
 import RadioGroup from "react-native-radio-buttons-group";
-import Entypo from "@expo/vector-icons/Entypo";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { patientApi } from "../../services/patientsApi";
@@ -23,6 +20,7 @@ import { useMutation } from "@tanstack/react-query";
 import ToastUI from "../../components/ui/Toast";
 import { setProfile } from "../../store/profile/profileSlice";
 import { useDispatch } from "react-redux";
+import EthnicSelect from "../booking/selects/EthnicSelect"
 import "moment/locale/vi";
 
 const radioButtons = [
@@ -278,48 +276,10 @@ const OtherInfo = () => {
             control={ control }
             name="ethnic"
             render={ ({ field: { onChange, value } }) => (
-              <SelectDropdown
-                data={ ethnicGroups }
-                defaultValue={ ethnicGroups.find((item) => item.value === value) }
-                onSelect={ (selectedItem) => {
-                  onChange(selectedItem.value);
-                } }
-                search={ true }
-                searchPlaceHolder="Tìm dân tộc..."
-                renderButton={ (selectedItem, isOpened) => {
-                  return (
-                    <View style={ styles.buttonContainer }>
-                      <Text style={ styles.buttonText }>
-                        { (selectedItem && selectedItem.name) || "Chọn dân tộc" }
-                      </Text>
-                      { isOpened ? (
-                        <Entypo
-                          name="chevron-small-up"
-                          size={ 24 }
-                          color="black"
-                        />
-                      ) : (
-                        <Entypo
-                          name="chevron-small-down"
-                          size={ 24 }
-                          color="black"
-                        />
-                      ) }
-                    </View>
-                  );
-                } }
-                renderItem={ (item, index) => {
-                  return (
-                    <View
-                      style={ [
-                        styles.itemContainer,
-                        index % 2 !== 0 && { backgroundColor: "#EDEDED" },
-                      ] }
-                    >
-                      <Text style={ styles.itemText }>{ item.name }</Text>
-                    </View>
-                  );
-                } }
+              <EthnicSelect
+                  onSelect={onChange}
+                  ethnic={ value }
+                  styleSecondary={ true }
               />
             ) }
           />

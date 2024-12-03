@@ -20,7 +20,7 @@ ChartJS.register(
   Legend,
 );
 
-const LineChart = () => {
+const LineChart = ({ dataTotalAppointmentsByYear }) => {
   const labels = [
     "Tháng 1",
     "Tháng 2",
@@ -31,14 +31,24 @@ const LineChart = () => {
     "Tháng 7",
     "Tháng 8",
     "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
   ];
+
+  const appointmentCountsByMonth = new Array(12).fill(0);
+
+  dataTotalAppointmentsByYear.forEach((appointment) => {
+    const month = new Date(appointment.time).getMonth(); 
+    appointmentCountsByMonth[month] += 1; 
+  });
 
   const data = {
     labels,
     datasets: [
       {
-        label: "Triệu đồng",
-        data: [11.5, 15.5, 14, 12, 13, 16, 13, 17, 15.5],
+        label: "Lịch hẹn",
+        data: appointmentCountsByMonth,
         borderColor: "rgb(53, 162, 235)",
         backgroundColor: "rgba(53, 162, 235, 0.5)",
         tension: 0.4,
@@ -75,7 +85,7 @@ const LineChart = () => {
         ticks: {
           stepSize: 5,
           callback: function (value) {
-            return value + " triệu";
+            return value;
           },
           color: "black",
           font: {
@@ -83,6 +93,7 @@ const LineChart = () => {
           },
         },
         grid: {
+          
           color: "rgba(0, 0, 0, 0.1)",
         },
       },

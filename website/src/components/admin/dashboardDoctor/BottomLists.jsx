@@ -14,6 +14,7 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "../../ui/Menubar";
+import { Link } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
 import { MdOutlineDone, MdFreeCancellation } from "react-icons/md";
 import { FaRegHourglassHalf } from "react-icons/fa6";
@@ -33,7 +34,12 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
   }, []);
 
   useEffect(() => {
-    if (dataAppointmentsByDoctor.length === 0) return;
+    if (!dataAppointmentsByDoctor || dataAppointmentsByDoctor.length === 0) {
+      setTotalTime(0);
+      setTimeLeft(0);
+      return;
+    }
+
     const upcomingAppointments = dataAppointmentsByDoctor.data.filter(
       (item) => item.status !== "EXAMINED"
     ).sort((a, b) => new Date(a.time) - new Date(b.time)).slice(0, 4);
@@ -59,7 +65,7 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
     return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
-  const progress = ((totalTime - timeLeft) / totalTime) * 100;
+  const progress = totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 100;
   return (
     <div className="mt-6 grid w-full grid-cols-[25%_72.8%] justify-between">
       <div className="w-full rounded-lg bg-white p-4">
@@ -103,9 +109,9 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Lịch hẹn sắp tới</h3>
-          <a href="#" className="text-[14px] text-blue-600 hover:underline">
+          <Link to="/" className="text-[14px] text-blue-600 hover:underline">
             Hiển thị tất cả
-          </a>
+          </Link>
         </div>
         <Table>
           <TableHeader>
@@ -147,21 +153,21 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
                         {item.service.name}
                     </span>
                   </TableCell>
-                  {(idx === 0 && new Date(item.time) < new Date()) && (
-                    <TableCell>
+                  <TableCell>
+                      {(idx === 0 && new Date(item.time) < new Date()) && (
                       <Menubar className="border-none bg-transparent shadow-none">
                         <MenubarMenu>
                           <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
                             <CiMenuKebab />
                           </MenubarTrigger>
                           <MenubarContent>
-                            <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                            <MenubarItem className="flex cursor-pointer items-center text-[13px] text-primary-500">
                               <MdOutlineDone className="mr-2" size={18} />
                               <span>
                                 Hoàn tất khám bệnh
                               </span>
                             </MenubarItem>
-                            <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                            <MenubarItem className="flex cursor-pointer items-center text-[13px] text-red-500">
                               <MdFreeCancellation className="mr-2" size={18} />
                               <span>
                                 Hủy lịch hẹn
@@ -170,8 +176,8 @@ export default function BottomLists({ dataAppointmentsByDoctor }) {
                           </MenubarContent>
                         </MenubarMenu>
                       </Menubar>
-                    </TableCell>    
-                  )}
+                       )}
+                  </TableCell>    
                 </TableRow>
               ))
             )}

@@ -52,7 +52,6 @@ export default function TopStats({ revenueData }) {
         prevData.map((item) => {
           const { presentRevenue, previousRevenue } = revenueData[item.key];
           const { value, percentage, isIncrease } = calculateStats(presentRevenue, previousRevenue);
-          console.log("type", typeof percentage);
           return {
             ...item,
             value,
