@@ -163,18 +163,17 @@ const getConfigCalendarSchedule = (
 };
 
 function CalendarSchedule({ doctorID, defaultEvents }) {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const userProfile = useSelector(state => state.auth.userProfile);
     const canDragDrop = userProfile?.role?._id === import.meta.env.VITE_ROLE_SUPER_ADMIN;
-
-    console.log(canDragDrop);
 
     const allSchedules = defaultEvents?.map(event => ({
         id: event._id,
         title: event.clinic.name,
         start: `${event.day} ${event.hour.startTime}`,
         end: `${event.day} ${event.hour.endTime}`,
+        // people: event?.appointment?.map(appointment => appointment.patient)
     }));
 
     const calendar = useCalendarApp(
@@ -191,11 +190,13 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
 
     if (defaultEvents?.length) {
         defaultEvents?.forEach(event => {
+            console.log(event);
             eventsServicePlugin?.add({
                 id: event._id,
                 title: event.clinic.name,
                 start: `${event.day} ${event.hour.startTime}`,
                 end: `${event.day} ${event.hour.endTime}`,
+                // people: event?.appointment?.map(appointment => appointment.patient),
             });
         });
     }

@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/Button';
 import { MoreHorizontal } from 'lucide-react';
-import { CiViewTimeline } from 'react-icons/ci';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,6 +23,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/AlertDialog';
+import { BiDetail } from 'react-icons/bi';
 
 const ActionMenu = ({ row }) => {
     const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ const ActionMenu = ({ row }) => {
 
     return (
         <>
-            {isPending ? (
+            { isPending ? (
                 <div className="h-5 w-5 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500"></div>
             ) : (
                 <DropdownMenu>
@@ -55,27 +55,27 @@ const ActionMenu = ({ row }) => {
                     <DropdownMenuContent align="end" className="w-fit min-w-0">
                         <DropdownMenuItem
                             className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/package/details/${row.original._id}`)}
+                            onClick={ () => navigate(`/admin/package/details/${row.original._id}`) }
                         >
-                            <CiViewTimeline className="text-[15px]" />
-                            <span>Chi tiết gói</span>
+                            <BiDetail className="text-[15px] text-yellow-600" />
+                            <span className='text-yellow-600'>Chi tiết</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem
                             className="flex w-full items-center gap-2"
-                            onClick={() => navigate(`/admin/packages/edit/${row.original._id}`)}
+                            onClick={ () => navigate(`/admin/packages/edit/${row.original._id}`) }
                         >
-                            <FiEdit className="text-[15px]" />
-                            <span>Chỉnh sửa</span>
+                            <FiEdit className="text-[15px] text-primary-600" />
+                            <span className='text-primary-600'>Chỉnh sửa</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="flex w-full items-center gap-2">
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <div
                                         className="flex w-full cursor-pointer items-center gap-2"
-                                        onClick={(e) => e.stopPropagation()}
+                                        onClick={ (e) => e.stopPropagation() }
                                     >
-                                        <RiDeleteBin6Line className="text-[15px]" />
-                                        <span>Xóa</span>
+                                        <RiDeleteBin6Line className="text-[15px] text-red-600" />
+                                        <span className='text-red-600'>Xóa</span>
                                     </div>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
@@ -91,7 +91,7 @@ const ActionMenu = ({ row }) => {
                                     <AlertDialogFooter>
                                         <AlertDialogCancel>Hủy</AlertDialogCancel>
                                         <AlertDialogAction
-                                            onClick={() => deletePackageMutation(row.original._id)}
+                                            onClick={ () => deletePackageMutation(row.original._id) }
                                         >
                                             Xóa
                                         </AlertDialogAction>
@@ -101,7 +101,7 @@ const ActionMenu = ({ row }) => {
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            )}
+            ) }
         </>
     );
 };

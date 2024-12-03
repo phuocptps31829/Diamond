@@ -60,8 +60,8 @@ const Action = ({ row }) => {
       <DropdownMenuContent align="end" className="w-full min-w-0">
         <Link to={ `/admin/news/detail/${row.original._id}` }>
           <DropdownMenuItem className="flex w-full items-center gap-2">
-            <BiDetail className="text-[15px]" />
-            <span> Chi tiết</span>
+            <BiDetail className="text-[15px] text-yellow-600" />
+            <span className="text-yellow-600">Chi tiết</span>
           </DropdownMenuItem>
         </Link>
         {/* <Link to={`/admin/news/edit/${row.original._id}`}>

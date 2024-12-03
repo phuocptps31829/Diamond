@@ -60,8 +60,8 @@ const ActionMenu = ({ row }) => {
                 navigate(`/admin/schedules/details/${row.original._id}`)
               }
             >
-              <FaRegCalendarAlt className="text-[15px]" />
-              <span>Thêm lịch làm việc</span>
+              <FaRegCalendarAlt className="text-[15px] text-yellow-600" />
+              <span className="text-yellow-600">Thêm lịch làm việc</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="flex w-full items-center gap-2"

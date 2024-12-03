@@ -132,7 +132,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       const isMedicalPackage = !!row.original.medicalPackage;
       return (
         <div
-          className={ `rounded-md px-2 py-1 ${isMedicalPackage
+          className={ `rounded-md px-2 py-1 inline-block ${isMedicalPackage
             ? "bg-primary-500/20 text-primary-900"
             : "bg-[#13D6CB]/20 text-cyan-950"
             }` }

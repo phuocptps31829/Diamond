@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import brandLogo from "@/assets/images/brandLogo.png";
+import banner from "@/assets/images/bannerloginadmin.jpg";
 import InputCustom from "@/components/ui/InputCustom";
 import { FaLock, FaPhoneAlt } from "react-icons/fa";
 import { useForm } from "react-hook-form";
@@ -57,10 +58,6 @@ const AuthComponent = () => {
                 navigate('/admin/appointments/list');
             }
 
-            if (role === "STAFF_EDITOR") {
-                navigate('/admin/news/list');
-            }
-
             if (role === "STAFF_ACCOUNTANT") {
                 navigate('/admin/accountant-dashboard');
             }
@@ -103,15 +100,13 @@ const AuthComponent = () => {
     return (
         <div className="bg-[#E8F2F7] h-dvh flex items-center justify-center">
             { isPendingLogin || isPendingProfile && <Loading /> }
-            <div className="bg-white w-[70%] rounded-xl flex items-start justify-center p-10">
-                <div className="flex-1 h-full pr-10">
-                    <div className="relative w-60 mb-2 items-center">
-                        <Link to={ "/" }>
-                            <img src={ brandLogo } className="w-full" alt="Logo" />
-                        </Link>
+            <div className="bg-white w-[70%] rounded-xl flex items-center justify-center p-10">
+                <div className="flex-1 h-full pr-10 border-r border-gray-400">
+                    <div className="relative w-full h-full">
+                        <img src={ banner } className="w-full h-full object-cover rounded-xl" alt="Banner" />
                     </div>
                 </div>
-                <div className="flex-1 pl-10 border-l border-gray-400">
+                <div className="flex-1 pl-10">
                     <div>
                         <h2 className="text-3xl mb-1">
                             Đăng nhập
@@ -171,14 +166,14 @@ const AuthComponent = () => {
                                 <div className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
                             ) }
                         </button>
-                        <div className="flex items-center justify-center">
+                        {/* <div className="flex items-center justify-center">
                             <Link
                                 to="/forget-password"
                                 className="text-sm font-bold italic text-primary-500 hover:underline"
                             >
                                 Quên mật khẩu?
                             </Link>
-                        </div>
+                        </div> */}
                     </form>
                 </div>
             </div>

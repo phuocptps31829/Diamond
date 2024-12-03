@@ -59,7 +59,7 @@ const ActionMenu = ({ row }) => {
               <FiEdit className="text-[15px] text-primary-600" />
               <span className="text-primary-600">Chỉnh sửa</span>
             </DropdownMenuItem>
-            <DropdownMenuItem className="flex w-fit items-center gap-2">
+            <DropdownMenuItem className="flex w-full items-center gap-2">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <div

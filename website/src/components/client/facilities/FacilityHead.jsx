@@ -2,12 +2,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import { Link } from "react-router-dom";
+import Banner from "@/assets/images/Faci.png";
+
 const FacilityHead = () => {
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden relative">
+      <img
+        src={ Banner }
+        alt="Banner"
+        className="object-cover w-full h-[450px] md:h-[310px] absolute top-0 left-0 z-[-1]"
+      />
       <div className="mx-auto max-w-[85rem] px-4 py-5 sm:px-6 lg:px-8">
         <div className="relative mx-auto grid max-w-4xl space-y-5 sm:space-y-6">
-          {/* Title */}
+          {/* Title */ }
           <div className="text-center">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Giải pháp y tế tiên tiến
@@ -19,36 +26,36 @@ const FacilityHead = () => {
               Cơ sở vât chất hiện đại
             </p>
           </div>
-          {/* End Title */}
-          {/* Avatar Group */}
+          {/* End Title */ }
+          {/* Avatar Group */ }
           <div className="text-center sm:flex sm:items-center sm:justify-center sm:text-start">
             <div className="flex-shrink-0 pb-5 sm:flex sm:pb-0 sm:pe-5">
-              {/* Avatar Group */}
+              {/* Avatar Group */ }
               <div className="flex justify-center -space-x-3">
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={avatarDefault}
+                    src={ avatarDefault }
                     alt="Bác sĩ 1"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={avatarDefault}
+                    src={ avatarDefault }
                     alt="Bác sĩ 2"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={avatarDefault}
+                    src={ avatarDefault }
                     alt="Bác sĩ 3"
                   />
                   <AvatarFallback>BS</AvatarFallback>
                 </Avatar>
                 <Avatar className="h-8 w-8">
                   <AvatarImage
-                    src={avatarDefault}
+                    src={ avatarDefault }
                     alt="Bác sĩ 4"
                   />
                   <AvatarFallback>BS</AvatarFallback>
@@ -59,7 +66,7 @@ const FacilityHead = () => {
                   </span>
                 </span>
               </div>
-              {/* End Avatar Group */}
+              {/* End Avatar Group */ }
             </div>
             <div className="mx-auto h-px w-32 border-t sm:mx-0 sm:h-full sm:w-auto sm:border-s sm:border-t-0" />
             <div className="pt-5 sm:ps-5 sm:pt-0">
@@ -69,8 +76,8 @@ const FacilityHead = () => {
               </div>
             </div>
           </div>
-          {/* End Avatar Group */}
-          {/* Form */}
+          {/* End Avatar Group */ }
+          {/* Form */ }
           <form>
             <div className="mx-auto w-fit max-w-2xl rounded-lg border p-3 shadow-lg shadow-primary-foreground sm:flex sm:space-x-3 items-center">
               <div className="grid pt-2 sm:block sm:flex-[0_0_auto] sm:pt-0">
@@ -86,16 +93,16 @@ const FacilityHead = () => {
               </div>
             </div>
           </form>
-          {/* End Form */}
-          {/* SVG Element */}
+          {/* End Form */ }
+          {/* SVG Element */ }
           <div
             className="absolute start-0 top-2/4 hidden -translate-x-40 -translate-y-2/4 transform md:block lg:-translate-x-80"
             aria-hidden="true"
           >
             <svg
               className="h-auto w-52"
-              width={717}
-              height={653}
+              width={ 717 }
+              height={ 653 }
               viewBox="0 0 717 653"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -117,16 +124,16 @@ const FacilityHead = () => {
               />
             </svg>
           </div>
-          {/* End SVG Element */}
-          {/* SVG Element */}
+          {/* End SVG Element */ }
+          {/* SVG Element */ }
           <div
             className="absolute end-0 top-2/4 hidden -translate-y-2/4 translate-x-40 transform md:block lg:translate-x-80"
             aria-hidden="true"
           >
             <svg
               className="h-auto w-72"
-              width={1115}
-              height={636}
+              width={ 1115 }
+              height={ 636 }
               viewBox="0 0 1115 636"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +155,7 @@ const FacilityHead = () => {
               />
             </svg>
           </div>
-          {/* End SVG Element */}
+          {/* End SVG Element */ }
         </div>
       </div>
     </div>

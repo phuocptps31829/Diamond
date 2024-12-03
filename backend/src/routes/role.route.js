@@ -59,6 +59,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 */
 router.get(
     '/',
+    authMiddleware.verifyAccessToken,
     authMiddleware.verifySuperAdmin,
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
