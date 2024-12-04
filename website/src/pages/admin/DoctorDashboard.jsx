@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import LeftColumnStats from "../../components/admin/dashboardDoctor/LeftColumnStats";
-import RightColumnStats from "../../components/admin/dashboardDoctor/RightColumnStats";
+import TopStats from "../../components/admin/dashboardDoctor/TopStats";
+import MiddleCharts from "../../components/admin/dashboardDoctor/MiddleCharts";
 import BottomLists from "../../components/admin/dashboardDoctor/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { appointmentApi } from "@/services/appointmentsApi";
@@ -35,10 +35,8 @@ export default function DoctorDashboard() {
   ) : (
     <>
       <BreadcrumbCustom data={breadcrumbData} />
-      <div className="grid grid-cols-[70%_27.8%] justify-between">
-        <LeftColumnStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-        <RightColumnStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      </div>
+      <TopStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
+      <MiddleCharts dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
       <BottomLists dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
     </>
   );

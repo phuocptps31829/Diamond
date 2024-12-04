@@ -9,7 +9,8 @@ import { ethnicGroups } from '../../../constants/ethnics';
 
 const EthnicSelect = ({
     ethnic,
-    onSelect
+    onSelect,
+    styleSecondary = false
 }) => {
     const [isFocus, setIsFocus] = useState(false);
 
@@ -30,7 +31,7 @@ const EthnicSelect = ({
             style={ styles.container }
         >
             <Dropdown
-                style={ [styles.dropdown, isFocus && { borderColor: '#007bbb' }] }
+                style={ [styleSecondary ? styles.dropdownStyleSecondary : styles.dropdown, isFocus && { borderColor: '#007bbb' }] }
                 placeholderStyle={ styles.placeholderStyle }
                 selectedTextStyle={ styles.selectedTextStyle }
                 itemContainerStyle={ styles.itemContainerStyle }
@@ -61,14 +62,18 @@ const EthnicSelect = ({
                         placeholder="Nhập dân tộc ..."
                     />
                 ) }
-                renderLeftIcon={ () => (
-                    <MaterialCommunityIcons
-                        style={ styles.icon }
-                        color={ isFocus ? '#007bbb' : '#C3C3C3' }
-                        name="human"
-                        size={ 20 }
-                    />
-                ) }
+                renderLeftIcon={
+                    !styleSecondary
+                        ? () => (
+                            <MaterialCommunityIcons
+                                style={styles.icon}
+                                color={isFocus ? '#007bbb' : '#C3C3C3'}
+                                name="human"
+                                size={20}
+                            />
+                        )
+                        : null
+                }
             />
         </TouchableOpacity>
     );
