@@ -1,4 +1,5 @@
 const WorkScheduleModel = require('../models/work-schedule.model');
+const AppointmentModel = require('../models/appointment.model');
 const { createError, timeDivision } = require("../utils/helper.util");
 const mongoose = require("mongoose");
 
@@ -525,8 +526,33 @@ module.exports = {
             }, {});
 
             const groupedArray = Object.values(groupedByDoctor);
-            const formattedGroupedArray = groupedArray.map(group => {
+            const formattedGroupedArray = await Promise.all(groupedArray.map(async group => {
                 const { doctor, schedules } = group;
+
+                const schedulesDetail = await Promise.all(schedules.map(async (schedule) => {
+                    const appointments = await AppointmentModel
+                        .find({
+                            workScheduleID: schedule._id,
+                        })
+                        .populate('patientID');
+
+                    return {
+                        _id: schedule._id,
+                        day: schedule.day,
+                        hour: schedule.hour,
+                        clinic: {
+                            _id: schedules[0].clinicID._id,
+                            name: schedules[0].clinicID.name,
+                        },
+                        appointments: appointments.map(appointment => ({
+                            _id: appointment._id,
+                            patient: appointment.patientID.fullName,
+                            time: appointment.time,
+                            status: appointment.status,
+                        })),
+                    };
+                }));
+
                 const formattedGroup = {
                     _id: doctor._id,
                     fullName: doctor.fullName,
@@ -542,19 +568,11 @@ module.exports = {
                         _id: doctor.otherInfo.branchID._id,
                         name: doctor.otherInfo.branchID.name,
                     },
-                    schedules: schedules.map(schedule => ({
-                        _id: schedule._id,
-                        day: schedule.day,
-                        hour: schedule.hour,
-                        clinic: {
-                            _id: schedules[0].clinicID._id,
-                            name: schedules[0].clinicID.name,
-                        }
-                    })),
+                    schedules: schedulesDetail,
                 };
 
                 return formattedGroup;
-            });
+            }));
 
             return res.status(200).json({
                 message: 'WorkSchedule retrieved successfully.',

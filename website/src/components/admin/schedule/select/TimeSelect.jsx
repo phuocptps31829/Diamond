@@ -19,6 +19,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useSearchParams } from "react-router-dom";
 import { timesSchedule } from "@/constants/schedule-times";
+import { toastUI } from "@/components/ui/Toastify";
 
 export default function TimeSelect({
     control,
@@ -30,6 +31,7 @@ export default function TimeSelect({
 }) {
     const [open, setOpen] = useState(false);
     const [searchParams] = useSearchParams();
+    const [isNotValidDate, setIsNotValidDate] = useState(false);
 
     const defaultStartTime = searchParams.get("startTime");
     const foundStartTime = timesSchedule.find((time) => time.slice(0, 2) === defaultStartTime.slice(0, 2));
@@ -37,6 +39,17 @@ export default function TimeSelect({
     useEffect(() => {
         errors[name] = undefined;
     }, [errors, name]);
+
+    useEffect(() => {
+        if (searchParams.get("date")) {
+            if (new Date(searchParams.get("date")) < new Date()) {
+                setIsNotValidDate(true);
+                toastUI("Không thể thêm lịch cho ngày đã qua", "error");
+            } else {
+                setIsNotValidDate(false);
+            }
+        }
+    }, [searchParams]);
 
     return (
         <div>
@@ -55,6 +68,7 @@ export default function TimeSelect({
                         <Popover open={ open } onOpenChange={ setOpen }>
                             <PopoverTrigger asChild>
                                 <Button
+                                    disabled={ isNotValidDate }
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={ open }
