@@ -52,7 +52,7 @@ export default function DataTable({ data, columns }) {
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.ceil(data.length / 5),
+    pageCount: Math.ceil(data.length / 10),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -69,7 +69,7 @@ export default function DataTable({ data, columns }) {
     },
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 10,
       },
     },
   });

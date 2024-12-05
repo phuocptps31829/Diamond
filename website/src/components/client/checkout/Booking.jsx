@@ -24,7 +24,6 @@ import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
 import SelectRelatedPatient from "./select/SelectRelatedPatient";
 import { useQuery } from "@tanstack/react-query";
 import { patientApi } from "@/services/patientsApi";
-import Loading from "@/components/ui/Loading";
 import { checkRequiredBookingFields } from "@/utils/validate";
 import Service from "./items/Service";
 import Package from "./items/Package";
@@ -39,11 +38,7 @@ export default function Form() {
   const [isBookingForOthers, setIsBookingForOthers] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [shouldNavigate, setShouldNavigate] = useState(false);
-
   const [relatedPatientID, setRelatedPatientID] = useState("");
-  const [packageLevel, setPackageLevel] = useState(
-    selectedProduct?.services?.[0]._id || ""
-  );
   const [isBlocking, setIsBlocking] = useNavigationPrompt(
     "Bạn có chắc chắn muốn rời khỏi trang này? Dữ liệu của bạn sẽ bị mất."
   );
@@ -61,8 +56,6 @@ export default function Form() {
 
   const {
     data: relatedInfo,
-    isLoading,
-    isError,
   } = useQuery({
     queryKey: ["relatedPatient", relatedPatientID],
     queryFn: () => patientApi.getRelatedPatient(relatedPatientID),
@@ -77,6 +70,12 @@ export default function Form() {
       (value) => value === "" || value === null || value === undefined
     );
   });
+
+  useEffect(() => {
+    if (bookingDetails?.length) {
+      setSelectedProduct(bookingDetails[0]);
+    }
+  }, []);
 
   const handleRemoveItem = (id, isService) => {
     dispatch(
@@ -225,7 +224,6 @@ export default function Form() {
   });
 
   useEffect(() => {
-    console.log(pathname);
     reset({
       fullName: "",
       email: "",
@@ -245,7 +243,6 @@ export default function Form() {
     });
   }, [pathname, reset]);
 
-  console.log(errors);
   const handleSwitchChange = (checked) => {
     setIsBookingForOthers(checked);
     setRelatedPatientID("");
@@ -328,11 +325,15 @@ export default function Form() {
   const onSubmit = (data, event) => {
     event.preventDefault();
 
+    if (!isValidInfo) {
+      toast.error("Vui lòng hoàn thiện hồ sơ trước khi đặt lịch!");
+      return;
+    }
+
     if (!isFullInfoToCheckout) {
       toast.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
       return;
     }
-    console.log(data, "d");
     const bookingInfo = {
       patientID: profile._id,
       appointmentHelpUser: isBookingForOthers
@@ -366,8 +367,6 @@ export default function Form() {
       })),
     };
     setIsBlocking(false);
-
-    console.log(bookingInfo);
 
     dispatch(saveBookingInfo(bookingInfo));
     setShouldNavigate(true);

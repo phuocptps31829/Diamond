@@ -367,11 +367,11 @@ export const getMenuList = (pathname) => [
             label: "Danh sách vai trò",
             active: pathname === "/admin/roles/list",
           },
-          {
-            href: "/admin/roles/create",
-            label: "Thêm vai trò",
-            active: pathname === "/admin/roles/create",
-          },
+          // {
+          //   href: "/admin/roles/create",
+          //   label: "Thêm vai trò",
+          //   active: pathname === "/admin/roles/create",
+          // },
         ],
       },
     ],
