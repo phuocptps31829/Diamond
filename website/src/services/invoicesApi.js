@@ -9,11 +9,22 @@ export const invoicesApi = {
     const res = await axiosInstanceGET.get("/invoices?noPaginated=true");
     return res.data;
   },
+  getAllInvoicesAdmin: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/invoices", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
   updateStatus: async (id, status) => {
-    const res = await axiosInstanceCUD.patch(
-      `/invoices/update-status/${id}`,
-      { status }
-    );
+    const res = await axiosInstanceCUD.patch(`/invoices/update-status/${id}`, {
+      status,
+    });
     return res.data;
   },
   updatePaymentStatus: async (id, status) => {

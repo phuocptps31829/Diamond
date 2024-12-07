@@ -4,7 +4,7 @@ import { ArrowUpDown } from "lucide-react";
 
 import Action from "./action";
 
-export const columns = [
+export const columns = (pageIndex, pageSize) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -40,7 +40,9 @@ export const columns = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full pl-5 text-left">{row.index + 1}</div>
+      <div className="w-full pl-5 text-left">
+        {pageIndex * pageSize + row.index + 1}
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,

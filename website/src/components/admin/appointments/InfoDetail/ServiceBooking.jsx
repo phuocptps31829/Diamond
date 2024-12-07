@@ -27,6 +27,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 
 import { Textarea } from "@/components/ui/Textarea";
 import { resultsApi } from "@/services/resultsApi";
+import { invoicesApi } from "@/services/invoicesApi";
 
 const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
   const queryClient = useQueryClient();
@@ -112,12 +113,17 @@ const ServiceBooking = ({ bookingData, setIsOpenForm }) => {
       const response = await resultsApi.addResultAndPrescription(data);
       return response;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
-      // handleChangeStatus("EXAMINED");
-      setIsOpenForm(false);
-      reset();
-      toastUI("Đã thêm thành công kết quả khám!", "success");
+    onSuccess: async () => {
+      try {
+        await invoicesApi.updateStatus(bookingData._id, "EXAMINED");
+        queryClient.invalidateQueries("appointments", bookingData._id);
+        setIsOpenForm(false);
+        reset();
+        toastUI("Đã thêm thành công kết quả khám!", "success");
+      } catch (error) {
+        toastUI("Đã xảy ra lỗi khi cập nhật trạng thái.", "error");
+        console.error("Error updating status:", error);
+      }
     },
     onError: (error) => {
       toastUI("Đã xảy ra lỗi khi thêm kết quả khám.", "error");

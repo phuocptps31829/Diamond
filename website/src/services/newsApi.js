@@ -6,7 +6,18 @@ export const newsApi = {
     const res = await axiosInstanceGET.get("/news?limit=9999");
     return res.data.data;
   },
+  getAllNews: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
 
+    const res = await axiosInstanceGET.get("/news", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
   getNewsById: async (id) => {
     const res = await axiosInstanceGET.get("/news/" + id);
     return res.data.data;

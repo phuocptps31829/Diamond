@@ -1,28 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
-import Loading from "@/components/ui/Loading";
 import NotFound from "@/components/ui/NotFound";
 import { columns } from "./table/columns";
 import DataTable from "./table";
 import { contractApi } from "@/services/contractApi";
+import { useState } from "react";
 
 const ContractsList = () => {
+  const [pageIndex, setPageIndex] = useState(0);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["contracts"],
-    queryFn: () => contractApi.getAllContracts(),
+    queryKey: ["contracts", pageIndex, 10],
+    queryFn: () =>
+      contractApi.getAllContractsAdmin({ page: pageIndex + 1, limit: 10 }),
     keepPreviousData: true,
   });
 
-  if (isLoading) {
-    return <Loading />;
-  }
-
   if (error) {
-    return <NotFound />;
+    return <NotFound message={error.message} />;
   }
 
-  console.log("data: ", data);
-  
-  return <DataTable columns={columns} data={data} />;
+  const tableData = {
+    data: data?.data || [],
+    pageCount: Math.ceil((data?.totalRecords || 0) / 10),
+    total: data?.totalRecords || 0,
+  };
+
+  return (
+    <DataTable
+      data={tableData.data}
+      columns={columns(pageIndex, 10)}
+      pageCount={tableData.pageCount}
+      pageSize={10}
+      pageIndex={pageIndex}
+      onPageChange={setPageIndex}
+      isLoading={isLoading}
+      total={tableData.total}
+    />
+  );
 };
 
 export default ContractsList;

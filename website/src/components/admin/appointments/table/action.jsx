@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { invoicesApi } from "@/services/invoicesApi";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,13 +18,31 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-
 import { MoreHorizontal } from "lucide-react";
 import { BiDetail } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { toastUI } from "@/components/ui/Toastify";
 
-const Action = ({ row, onDelete }) => {
+const Action = ({ row }) => {
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteAppointment } = useMutation({
+    mutationFn: invoicesApi.deleteInvoice,
+    onSuccess: () => {
+      toastUI("Xóa lịch khám thành công", "success");
+      queryClient.invalidateQueries("appointments", row.original._id);
+    },
+    onError: (err) => {
+      console.log(err);
+      toastUI("Xóa lịch khám không thành công", "error");
+    },
+  });
+
+  const handleDelete = () => {
+    deleteAppointment(row.original._id);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,7 +81,7 @@ const Action = ({ row, onDelete }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(row.original._id)}>
+                <AlertDialogAction onClick={handleDelete}>
                   Xác nhận
                 </AlertDialogAction>
               </AlertDialogFooter>

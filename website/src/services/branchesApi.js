@@ -10,7 +10,18 @@ export const branchApi = {
         });
         return res.data;
     },
-
+    getAllBranchesAdmin: async (filter) => {
+        const { page, limit } = filter;
+        const params = {
+          ...(page !== undefined && page !== null && { page }),
+          ...(limit !== undefined && limit !== null && { limit }),
+        };
+    
+        const res = await axiosInstanceGET.get("/branches", {
+          params: Object.keys(params).length > 0 ? params : undefined,
+        });
+        return res.data;
+      },
     getBranchesById: async (id) => {
         const res = await axiosInstanceGET.get(`/branches/${id}`);
         return res.data.data;

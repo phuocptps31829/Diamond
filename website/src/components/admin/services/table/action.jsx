@@ -30,7 +30,7 @@ const useDeleteService = () => {
   return useMutation({
     mutationFn: (serviceId) => serviceApi.deleteService(serviceId),
     onSuccess: () => {
-      queryClient.invalidateQueries("service");
+      queryClient.invalidateQueries("services");
       toastUI("Xóa dịch vụ thành công.", "success");
     },
     onError: (error) => {

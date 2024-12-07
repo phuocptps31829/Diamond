@@ -27,7 +27,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { resultsApi } from "@/services/resultsApi";
 import { Textarea } from "@/components/ui/Textarea";
-
+import { invoicesApi } from "@/services/invoicesApi";
 const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
   const [serviceResults, setServiceResults] = useState([]);
   const [loadingImage, setLoadingImage] = useState(false);
@@ -56,7 +56,8 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
   });
 
 
-
+  
+  
   const handleSelectService = async (serviceID) => {
     const currentValues = getValues();
 
@@ -174,7 +175,6 @@ console.log(medicines, "medicines");
     trigger("medicines");
   };
 
-  console.log(serviceResults, "serviceResults");
 
   const handleSelectCategoryMedicine = (index, categoryID) => {
     const currentMedicines = getValues("medicines");
@@ -200,10 +200,16 @@ console.log(medicines, "medicines");
       const response = await resultsApi.addResultAndPrescription(data);
       return response;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
-      toastUI("Đã thêm thành công kết quả khám!", "success");
-      closeForm();
+    onSuccess: async () => {
+      try {
+        await invoicesApi.updateStatus(bookingData._id, "EXAMINED");
+        queryClient.invalidateQueries("appointments", bookingData._id);
+        toastUI("Đã thêm thành công kết quả khám và cập nhật trạng thái!", "success");
+        closeForm();
+      } catch (error) {
+        toastUI("Đã xảy ra lỗi khi cập nhật trạng thái.", "error");
+        console.error("Error updating status:", error);
+      }
     },
     onError: (error) => {
       toastUI("Đã xảy ra lỗi khi thêm kết quả khám.", "error");

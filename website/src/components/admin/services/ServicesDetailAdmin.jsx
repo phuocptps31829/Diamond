@@ -13,7 +13,7 @@ const ServicesDetailAdmin = () => {
     error: errorService,
     isLoading: isLoadingService,
   } = useQuery({
-    queryKey: ["service", id],
+    queryKey: ["services", id],
     queryFn: () => serviceApi.getServiceById(id),
 
     enabled: !!id,

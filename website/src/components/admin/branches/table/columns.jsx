@@ -11,7 +11,7 @@ import {
 import { ArrowUpDown } from "lucide-react";
 import Action from "./action";
 
-export const columns = [
+export const columns = (pageIndex, pageSize) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -40,14 +40,16 @@ export const columns = [
       <Button
         className="w-fit px-0 text-left"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         STT
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full pl-5 text-left">{ row.index + 1 }</div>
+      <div className="w-full pl-5 text-left">
+        {pageIndex * pageSize + row.index + 1}
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
