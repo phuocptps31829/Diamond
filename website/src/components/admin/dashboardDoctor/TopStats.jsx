@@ -3,8 +3,9 @@ import { FaCalendarAlt, FaCalendarCheck } from "react-icons/fa";
 import { TbCalendarRepeat } from "react-icons/tb";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
 import { TbCalendarCancel } from "react-icons/tb";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export default function TopStats({ dataAppointmentsByDoctor }) {
+export default function TopStats({ dataAppointmentsByDoctor, loading }) {
   const [totals, setTotals] = useState({  
     totalAppointments: 0,
     totalExaminations: 0,
@@ -13,7 +14,7 @@ export default function TopStats({ dataAppointmentsByDoctor }) {
   });
 
   useEffect(() => {
-    if (!dataAppointmentsByDoctor || dataAppointmentsByDoctor.length === 0) return;
+    if (loading || !dataAppointmentsByDoctor || dataAppointmentsByDoctor.length === 0) return;
 
     const totalAppointments = dataAppointmentsByDoctor.data.length;
     const { EXAMINED, PENDING, CANCELLED } = dataAppointmentsByDoctor.data.reduce(
@@ -36,7 +37,7 @@ export default function TopStats({ dataAppointmentsByDoctor }) {
       totalCanceled
     });
 
-  }, [dataAppointmentsByDoctor]);
+  }, [dataAppointmentsByDoctor, loading]);
 
   const stats = [
     {
@@ -83,17 +84,30 @@ export default function TopStats({ dataAppointmentsByDoctor }) {
         {stats.map((stat, index) => (
           <>
             <div key={stat.id} className="flex flex-1 items-center p-5 px-8">
-              <div
-                className={`flex h-[60px] w-[60px] items-center justify-center rounded-lg p-3`}
-                style={{ backgroundColor: stat.bgColor }}
-              >
-                <stat.icon color="white" size={30} />
-              </div>
-              <div className="ml-3 flex flex-col">
-                <div className="flex items-center text-[26px] text-primary-700">
-                  <AnimatedValue value={stat.mainValue} />
+              {loading ? (
+                <Skeleton className="h-[60px] w-[60px] rounded-lg" />
+              ) : (
+                <div
+                  className={`flex h-[60px] w-[60px] items-center justify-center rounded-lg p-3`}
+                  style={{ backgroundColor: stat.bgColor }}
+                >
+                  <stat.icon color="white" size={30} />
                 </div>
-                <h3 className="font-semibold">{stat.title}</h3>
+              )}
+              <div className="ml-3 flex flex-col">
+                {loading ? (
+                  <>
+                    <Skeleton className="h-[26px] w-20 mb-2" />
+                    <Skeleton className="h-[20px] w-32" />
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center text-[26px] text-primary-700">
+                      <AnimatedValue value={stat.mainValue} />
+                    </div>
+                    <h3 className="font-semibold">{stat.title}</h3>
+                  </>
+                )}
               </div>
             </div>
             {index !== stats.length - 1 && (

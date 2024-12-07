@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableHeader,
@@ -17,30 +18,48 @@ import {
 import formatDate, { formatPrice } from "../../../utils/format";
 import Empty from "../../ui/Empty";
 import { CiMenuKebab } from "react-icons/ci";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export default function BottomLists({ allInvoices }) {
+export default function BottomLists({ allInvoices, loading }) {
   const [latestInvoices, setLatestInvoices] = useState([]);
   const [unpaidInvoices, setUnpaidInvoices] = useState([]);
 
   useEffect(() => {
-    if (allInvoices) {
-      const latestInvoices = allInvoices.slice(0, 4);
-      const unpaidInvoices = allInvoices
-        .filter((invoice) => invoice.status === "PENDING")
-        .slice(0, 4);
+    if (!loading && allInvoices) {
+      const latestInvoices = allInvoices.data.slice(0, 4);
+      const unpaidInvoices = allInvoices.data.filter((invoice) => invoice.status === "PENDING").slice(0, 4);
       setLatestInvoices(latestInvoices);
       setUnpaidInvoices(unpaidInvoices);
     }
-  }, [allInvoices]);
+  }, [allInvoices, loading]);
+
+  const renderSkeletonRows = (colCount) =>
+    Array(4)
+      .fill(0)
+      .map((_, idx) => (
+        <TableRow key={idx} className="h-12">
+          {Array(colCount)
+            .fill(0)
+            .map((_, colIdx) => (
+              <TableCell key={colIdx}>
+                <Skeleton className="h-4 w-full rounded-md" />
+              </TableCell>
+            ))}
+        </TableRow>
+  ));
 
   return (
     <div className="mt-6 grid w-full grid-cols-[55.8%_42%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Hóa đơn gần đây</h3>
-          <a href="#" className="text-[14px] text-blue-600 hover:underline">
+          {loading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <Link to="/" className="text-[14px] text-blue-600 hover:underline">
             Hiển thị tất cả
-          </a>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader>
@@ -54,7 +73,8 @@ export default function BottomLists({ allInvoices }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { latestInvoices.length > 0 ? (
+            {loading
+              ? renderSkeletonRows(6) : latestInvoices.length > 0 ? (
               latestInvoices.map((invoice, idx) => (
                 <TableRow key={ idx } className="h-12 text-[13px]">
                   <TableCell className="text-center">{ idx + 1 }</TableCell>
@@ -93,9 +113,13 @@ export default function BottomLists({ allInvoices }) {
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Hóa đơn chưa thanh toán</h3>
-          <a href="#" className="text-[14px] text-blue-600 hover:underline">
+          {loading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <Link to="/" className="text-[14px] text-blue-600 hover:underline">
             Hiển thị tất cả
-          </a>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader>
@@ -108,7 +132,8 @@ export default function BottomLists({ allInvoices }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { unpaidInvoices.length > 0 ? (
+            {loading
+              ? renderSkeletonRows(5) : unpaidInvoices.length > 0 ? (
               unpaidInvoices.map((invoice, idx) => (
                 <TableRow key={ idx } className="h-12 text-[13px]">
                   <TableCell className="text-center">{ idx + 1 }</TableCell>
