@@ -3,7 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
+
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -36,13 +36,20 @@ import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { getColumnsAppointments } from "./columns";
 import { invoicesApi } from "@/services/invoicesApi";
 import { toastUI } from "@/components/ui/Toastify";
-import Loading from "@/components/ui/Loading";
-import { RECORD_PER_PAGE } from "@/constants/config";
 
-export default function DataTable({ data }) {
+
+export default function DataTable({
+  data,
+  columns,
+  pageCount,
+  pageSize,
+  pageIndex,
+  onPageChange,
+  isLoading,
+  total,
+}) {
   const queryClient = useQueryClient();
 
   const [sorting, setSorting] = React.useState([]);
@@ -61,47 +68,29 @@ export default function DataTable({ data }) {
     defaultValues: {},
   });
   const onSubmit = () => {};
-  const { mutate: updateStatus, isPending } = useMutation({
-    mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
-    onSuccess: () => {
-      toastUI("Chỉnh sửa trạng thái thành công", "success");
-      queryClient.invalidateQueries("appointments");
-    },
-    onError: (err) => {
-      console.log(err);
-      toastUI("Chỉnh sửa trạng thái không thành công", "error");
-    },
-  });
-  const handleChangeStatus = (id, status) => {
-    updateStatus({ id, status });
-  };
-  const { mutate: deleteAppointment } = useMutation({
-    mutationFn: invoicesApi.deleteInvoice,
-    onSuccess: () => {
-      toastUI("Xóa lịch khám thành công", "success");
-      queryClient.invalidateQueries("appointments");
-    },
-    onError: (err) => {
-      console.log(err);
-      toastUI("Xóa lịch khám không thành công", "error");
-    },
-  });
-  const handleDeleteAppointment = (id) => {
-    deleteAppointment(id);
-  };
+  // const { mutate: updateStatus, isPending } = useMutation({
+  //   mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
+  //   onSuccess: () => {
+  //     toastUI("Chỉnh sửa trạng thái thành công", "success");
+  //     queryClient.invalidateQueries("appointments");
+  //   },
+  //   onError: (err) => {
+  //     console.log(err);
+  //     toastUI("Chỉnh sửa trạng thái không thành công", "error");
+  //   },
+  // });
+
+
 
   const table = useReactTable({
     data,
-    columns: getColumnsAppointments(
-      handleChangeStatus,
-      handleDeleteAppointment
-    ),
-    pageCount: Math.ceil(data.length / RECORD_PER_PAGE),
-
+    columns,
+    pageCount,
+    pageSize,
+    manualPagination: true,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -111,11 +100,19 @@ export default function DataTable({ data }) {
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
       pagination: {
-        pageSize: RECORD_PER_PAGE,
+        pageIndex,
+        pageSize,
       },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newPageIndex = updater({
+          pageIndex,
+          pageSize,
+        }).pageIndex;
+        onPageChange(newPageIndex);
+      }
     },
   });
 
@@ -144,9 +141,6 @@ export default function DataTable({ data }) {
     .getSelectedRowModel()
     .rows.map((row) => row.original._id);
 
-  if (isPending) {
-    return <Loading />;
-  }
   return (
     <div className="hidden-content flex h-[calc(100vh-140px)] w-[100%] flex-col overflow-hidden rounded-lg bg-white px-5 py-2">
       {/* Search */}
@@ -236,30 +230,46 @@ export default function DataTable({ data }) {
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isLoading ? (
+            <div className="absolute left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center py-10">
+              <div className="pyramid-loader">
+                <div className="wrapper">
+                  <span className="side side1"></span>
+                  <span className="side side2"></span>
+                  <span className="side side3"></span>
+                  <span className="side side4"></span>
+                  <span className="top"> </span>
+                  <span className="corner corner1"></span>
+                  <span className="corner corner2"></span>
+                  <span className="corner corner3"></span>
+                  <span className="corner corner4"></span>
+                  <span className="shadow"></span>
+                </div>
+              </div>
+            </div>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
+                className="h-[80px]"
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell className="h-16" key={cell.id}>
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -267,10 +277,7 @@ export default function DataTable({ data }) {
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={table.getAllColumns().length}
-                className="h-24 text-center"
-              >
+              <TableCell colSpan={columns.length} className="h-24 text-center">
                 Không có kết quả.
               </TableCell>
             </TableRow>
@@ -280,8 +287,8 @@ export default function DataTable({ data }) {
       <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
-          {table.getFilteredSelectedRowModel().rows.length} trên{" "}
-          {table.getFilteredRowModel().rows.length} trong danh sách.
+          {table.getFilteredSelectedRowModel().rows.length} trên {total} trong
+          danh sách.
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -292,9 +299,8 @@ export default function DataTable({ data }) {
           >
             Trước
           </Button>
-          {Array.from({ length: table.getPageCount() }, (_, index) => {
-            const currentPage = table.getState().pagination.pageIndex;
-            const pageCount = table.getPageCount();
+          {Array.from({ length: pageCount }, (_, index) => {
+            const currentPage = pageIndex;
             if (
               index === 0 ||
               index === pageCount - 1 ||
@@ -307,7 +313,7 @@ export default function DataTable({ data }) {
                   key={index}
                   variant={currentPage === index ? "solid" : "outline"}
                   size="sm"
-                  onClick={() => table.setPageIndex(index)}
+                  onClick={() => onPageChange(index)}
                 >
                   {index + 1}
                 </Button>

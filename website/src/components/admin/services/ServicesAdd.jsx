@@ -56,7 +56,7 @@ const ServicesAdd = () => {
   const mutation = useMutation({
     mutationFn: (serviceData) => serviceApi.createService(serviceData),
     onSuccess: () => {
-      queryClient.invalidateQueries("service");
+      queryClient.invalidateQueries("services");
       toastUI("Thêm dịch vụ thành công.", "success");
       reset();
       setImagePreview(null);

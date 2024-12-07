@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "../../components/ui/Avatar";
 import { Button } from "../../components/ui/Button";
@@ -18,7 +18,6 @@ import {
   TooltipTrigger,
 } from "../../components/ui/Tooltip";
 import { LogOut, User } from "lucide-react";
-import { IoMdMailUnread } from "react-icons/io";
 import { FaBell } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { roles } from "@/constants/roles";
@@ -29,6 +28,7 @@ import Notification from "./notion/NotionMessage";
 import { useSocket } from "@/hooks/useSocket";
 import { notificationsApi } from "@/services/notificationsApi";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const UserNav = () => {
@@ -36,37 +36,9 @@ const UserNav = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
-
-  const handleLogout = () => {
-    dispatch(logoutAction());
-    toastUI("Đăng xuất thành công!", "success");
-    navigate("/admin/auth");
-  };
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const fetchNotifications = useCallback(async () => {
-    try {
-      const data = await notificationsApi.getNotificationsByUser();
-      setNotifications(data.data);
-    } catch (error) {
-      console.error("Failed to fetch notifications:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (userProfile) {
-      fetchNotifications();
-    }
-  }, [fetchNotifications, userProfile]);
-
+  const { subscribe, socket } = useSocket(SOCKET_URL);
   useEffect(() => {
     if (!socket) return;
-
     const handleNotification = (data) => {
       const userID = userProfile?._id;
       console.log("New notification:", data);
@@ -77,9 +49,9 @@ const UserNav = () => {
           <div
             className={`${
               t.visible ? "animate-enter" : "animate-leave"
-            } pointer-events-auto flex w-full max-w-[28rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out`}
+            } pointer-events-auto flex w-full max-w-[26rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out`}
           >
-            <div className="w-0 flex-1 p-4 py-5">
+            <div className="w-0 flex-1 p-4 py-3">
               <div className="flex items-start">
                 <div className="flex-shrink-0 pt-0.5">
                   <svg
@@ -115,7 +87,6 @@ const UserNav = () => {
             </div>
           </div>
         ));
-        fetchNotifications();
       }
     };
 
@@ -124,16 +95,34 @@ const UserNav = () => {
     return () => {
       unsubscribe();
     };
-  }, [subscribe, socket, userProfile, fetchNotifications]);
+  }, [subscribe, socket, userProfile]);
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    toastUI("Đăng xuất thành công!", "success");
+    navigate("/admin/auth");
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const { data } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => notificationsApi.getNotificationsByUser(),
+    enabled: !!userProfile,
+  });
+
+  const notifications = data?.data || [];
+  const allNotificationsRead = notifications.every(
+    (notification) => notification.isRead
+  );
   return (
     <>
-      <div className="mr-6 flex items-center gap-6">
-       
-
+      <div className=" flex items-center gap-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="">
             <button className="relative" onClick={toggleDropdown}>
-              {notifications.length > 0 && (
+              {notifications.length > 0 && !allNotificationsRead && (
                 <span className="absolute right-0 flex h-3 w-3">
                   <span
                     className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
@@ -145,7 +134,7 @@ const UserNav = () => {
               <FaBell size={25} color="#007BBB" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-4 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
+          <DropdownMenuContent className="scrollbar-thin positionFixed scrollbar-thumb-primary-500 scrollbar-track-gray-200 mt-4 max-h-[500px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800">
             <DropdownMenuLabel className="text-base font-semibold dark:text-white">
               Thông báo
             </DropdownMenuLabel>

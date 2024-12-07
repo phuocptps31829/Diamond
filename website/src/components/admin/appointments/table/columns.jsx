@@ -5,10 +5,25 @@ import { ArrowUpDown } from "lucide-react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import avatarDefault from "@/assets/images/avatar_default.png";
 import Action from "./action";
-import StatusCell from "./StatusCell";
 import { formatDateTimeLocale } from "@/utils/format";
+import { Badge } from "@/components/ui/Badge";
+const statusOptions = [
+  { value: "PENDING", label: "Chờ xác nhận", variant: "pending" },
+  { value: "CONFIRMED", label: "Chờ khám", variant: "confirmed" },
+  { value: "EXAMINED", label: "Đã khám", variant: "examined" },
+  { value: "CANCELLED", label: "Đã hủy", variant: "cancelled" },
+];
 
-export const getColumnsAppointments = (onChangeStatus, onDelete) => [
+const getStatusLabel = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.label : "";
+};
+
+const getStatusVariant = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.variant : "default";
+};
+export const getColumnsAppointments = (pageIndex, pageSize) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -44,7 +59,9 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full pl-5 text-left">{ row.index + 1 }</div>
+      <div className="w-full pl-5 text-left">
+        { pageIndex * pageSize + row.index + 1 }
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -132,7 +149,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
       const isMedicalPackage = !!row.original.medicalPackage;
       return (
         <div
-          className={ `rounded-md px-2 py-1 inline-block ${isMedicalPackage
+          className={ `rounded-md px-2 py-1 ${isMedicalPackage
             ? "bg-primary-500/20 text-primary-900"
             : "bg-[#13D6CB]/20 text-cyan-950"
             }` }
@@ -200,7 +217,15 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
         </Button>
       </div>
     ),
-    cell: ({ row }) => <StatusCell row={ row } onChangeStatus={ onChangeStatus } />,
+    cell: ({ row }) => (
+      <div className="w-full">
+        <span className="w-full whitespace-nowrap">
+          <Badge variant={ getStatusVariant(row.original.status) }>
+            { getStatusLabel(row.original.status) }
+          </Badge>
+        </span>
+      </div>
+    ),
   },
   {
     accessorKey: "invoice",
@@ -233,7 +258,7 @@ export const getColumnsAppointments = (onChangeStatus, onDelete) => [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <Action row={ row } onDelete={ onDelete } />;
+      return <Action row={ row } />;
     },
   },
 ];

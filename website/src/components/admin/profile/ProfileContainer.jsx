@@ -34,7 +34,6 @@ const ProfileContainer = () => {
       confirmPassword: "",
     },
   });
-  console.log(errors);
   const { data: branchData, isLoading: isBranchLoading } = useQuery({
     queryKey: ["branches", userProfile?.otherInfo?.branchID],
     queryFn: () =>

@@ -67,7 +67,7 @@ const BranchesEdit = () => {
   const mutation = useMutation({
     mutationFn: (newsData) => branchApi.updateBranch(id, newsData),
     onSuccess: () => {
-      queryClient.invalidateQueries("branches");
+      queryClient.invalidateQueries("branches", id);
       toastUI("Chỉnh sửa chi nhánh thành công.", "success");
     },
     onError: (error) => {

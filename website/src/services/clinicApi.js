@@ -11,6 +11,18 @@ export const clinicsApi = {
     });
     return res.data.data;
   },
+  getAllClinicsAdmin: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/clinics", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
 
   getClinicBySpecialtyAndBranch: async ({ branchID, specialtyID }) => {
     const res = await axiosInstanceGET.get(

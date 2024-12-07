@@ -5,7 +5,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -28,7 +27,16 @@ import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
 
-export default function DataTable({ data, columns }) {
+export default function DataTable({
+  data,
+  columns,
+  pageCount,
+  pageSize,
+  pageIndex,
+  onPageChange,
+  isLoading,
+  total,
+}) {
   const queryClient = useQueryClient();
 
   const [sorting, setSorting] = React.useState([]);
@@ -52,11 +60,12 @@ export default function DataTable({ data, columns }) {
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.ceil(data.length / 10),
+    pageCount,
+    pageSize,
+    manualPagination: true,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -66,13 +75,22 @@ export default function DataTable({ data, columns }) {
       columnFilters,
       columnVisibility,
       rowSelection,
-    },
-    initialState: {
       pagination: {
-        pageSize: 10,
+        pageIndex,
+        pageSize,
       },
     },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newPageIndex = updater({
+          pageIndex,
+          pageSize,
+        }).pageIndex;
+        onPageChange(newPageIndex);
+      }
+    },
   });
+
   React.useEffect(() => {
     table.getColumn("invoiceCode")?.setFilterValue(debouncedSearchValue);
   }, [debouncedSearchValue, table]);
@@ -80,8 +98,8 @@ export default function DataTable({ data, columns }) {
     queryClient.invalidateQueries("invoices");
   };
   return (
-    <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
-      <div className="flex mb-2">
+    <div className="hidden-content flex h-[calc(100vh-140px)] w-[100%] flex-col overflow-hidden rounded-lg bg-white px-5 py-2">
+      <div className="mb-2 flex">
         <form className="mr-1 flex" onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
@@ -122,23 +140,38 @@ export default function DataTable({ data, columns }) {
         <TableHeader>
           { table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={ headerGroup.id }>
-              { headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={ header.id }>
-                    { header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      ) }
-                  </TableHead>
-                );
-              }) }
+              { headerGroup.headers.map((header) => (
+                <TableHead key={ header.id }>
+                  { header.isPlaceholder
+                    ? null
+                    : flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    ) }
+                </TableHead>
+              )) }
             </TableRow>
           )) }
         </TableHeader>
         <TableBody>
-          { table.getRowModel().rows?.length ? (
+          { isLoading ? (
+            <div className="absolute left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center py-10">
+              <div className="pyramid-loader">
+                <div className="wrapper">
+                  <span className="side side1"></span>
+                  <span className="side side2"></span>
+                  <span className="side side3"></span>
+                  <span className="side side4"></span>
+                  <span className="top"> </span>
+                  <span className="corner corner1"></span>
+                  <span className="corner corner2"></span>
+                  <span className="corner corner3"></span>
+                  <span className="corner corner4"></span>
+                  <span className="shadow"></span>
+                </div>
+              </div>
+            </div>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 className="h-[80px]"
@@ -154,21 +187,18 @@ export default function DataTable({ data, columns }) {
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={ columns ? columns.length : 1 }
-                className="h-24 text-center"
-              >
+              <TableCell colSpan={ columns.length } className="h-24 text-center">
                 Không có kết quả.
               </TableCell>
             </TableRow>
           ) }
         </TableBody>
       </Table>
-      <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
+      <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
-          { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
-          { table.getFilteredRowModel().rows.length } trong danh sách.
+          { table.getFilteredSelectedRowModel().rows.length } trên { total } trong
+          danh sách.
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -179,9 +209,8 @@ export default function DataTable({ data, columns }) {
           >
             Trước
           </Button>
-          { Array.from({ length: table.getPageCount() }, (_, index) => {
-            const currentPage = table.getState().pagination.pageIndex;
-            const pageCount = table.getPageCount();
+          { Array.from({ length: pageCount }, (_, index) => {
+            const currentPage = pageIndex;
             if (
               index === 0 ||
               index === pageCount - 1 ||
@@ -194,7 +223,7 @@ export default function DataTable({ data, columns }) {
                   key={ index }
                   variant={ currentPage === index ? "solid" : "outline" }
                   size="sm"
-                  onClick={ () => table.setPageIndex(index) }
+                  onClick={ () => onPageChange(index) }
                 >
                   { index + 1 }
                 </Button>

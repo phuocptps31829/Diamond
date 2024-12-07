@@ -5,7 +5,7 @@ import { ArrowUpDown } from "lucide-react";
 import Action from "./action";
 import { formatCurrency } from "@/utils/format";
 
-export const columns = [
+export const columns = (pageIndex, pageSize) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -41,7 +41,9 @@ export const columns = [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full pl-5 text-left">{row.index + 1}</div>
+      <div className="w-full pl-5 text-left">
+        {pageIndex * pageSize + row.index + 1}
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -149,7 +151,23 @@ export const columns = [
           target="_blank"
           className="whitespace w-full text-blue-500 underline"
         >
-          {row.original.invoiceCode}
+          <Button variant="primary" className="w-fit">
+            Tải xuống
+            <svg
+              className="ml-1 size-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              ></path>
+            </svg>{" "}
+          </Button>
         </a>
       </div>
     ),

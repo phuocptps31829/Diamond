@@ -46,35 +46,34 @@ const AuthComponent = () => {
             dispatch(setUserProfile(data.data));
 
             if (role === "SUPER_ADMIN" || role === "ADMIN") {
-                navigate('/admin');
+                navigate("/admin");
             }
 
             if (role === "DOCTOR") {
-                navigate('/admin/doctor-dashboard');
+                navigate("/admin/doctor-dashboard");
             }
 
             if (role === "STAFF_RECEPTIONIST") {
-                navigate('/admin/appointments/list');
+                navigate("/admin/appointments/list");
             }
 
             if (role === "STAFF_ACCOUNTANT") {
-                navigate('/admin/accountant-dashboard');
+                navigate("/admin/accountant-dashboard");
             }
-
         },
         onError: (err) => {
             console.log(err);
-        }
+        },
     });
 
     const { mutate: login, isPending: isPendingLogin } = useMutation({
         mutationFn: authApi.login,
         onSuccess: (data) => {
-            Cookies.set('accessToken', data.accessToken.token, {
-                expires: new Date(data.accessToken.expires * 1000)
+            Cookies.set("accessToken", data.accessToken.token, {
+                expires: new Date(data.accessToken.expires * 1000),
             });
-            Cookies.set('refreshToken', data.refreshToken.token, {
-                expires: new Date(data.refreshToken.expires * 1000)
+            Cookies.set("refreshToken", data.refreshToken.token, {
+                expires: new Date(data.refreshToken.expires * 1000),
             });
             getUserProfile();
         },
@@ -85,7 +84,7 @@ const AuthComponent = () => {
                 err.message ||
                 "Đã xảy ra lỗi, vui lòng thử lại.";
             toastUI(errorMessage || "Đăng nhập thất bại!", "error");
-        }
+        },
     });
 
     const onSubmit = (data) => {
@@ -166,13 +165,13 @@ const AuthComponent = () => {
                             ) }
                         </button>
                         {/* <div className="flex items-center justify-center">
-                            <Link
-                                to="/forget-password"
-                                className="text-sm font-bold italic text-primary-500 hover:underline"
-                            >
-                                Quên mật khẩu?
-                            </Link>
-                        </div> */}
+                                <Link
+                                    to="/forget-password"
+                                    className="text-sm font-bold italic text-primary-500 hover:underline"
+                                >
+                                    Quên mật khẩu?
+                                </Link>
+                            </div> */}
                     </form>
                 </div>
             </div>

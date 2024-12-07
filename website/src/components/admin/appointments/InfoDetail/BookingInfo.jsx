@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
@@ -87,8 +87,8 @@ const BookingInfo = ({ data }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: ({ id, priority }) =>
       invoicesApi.updateOrderNumber(id, priority),
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
+    onSuccess: (id) => {
+      queryClient.invalidateQueries("appointment", id);
       toastUI("Cập nhật số ưu tiên thành công!", "success");
     },
     onError: (error) => {
@@ -103,8 +103,8 @@ const BookingInfo = ({ data }) => {
   };
   const paymentMutation = useMutation({
     mutationFn: ({ id, status }) => invoicesApi.updatePaymentStatus(id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries("appointments");
+    onSuccess: (id) => {
+      queryClient.invalidateQueries("appointment", id);
       toastUI("Đã cập nhật trạng thái thanh toán!", "success");
     },
     onError: (error) => {
@@ -118,9 +118,9 @@ const BookingInfo = ({ data }) => {
 
   const { mutate: updateStatus } = useMutation({
     mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
-    onSuccess: () => {
+    onSuccess: (id) => {
       toastUI("Chỉnh sửa trạng thái thành công", "success");
-      queryClient.invalidateQueries("appointments");
+      queryClient.invalidateQueries("appointment", id);
     },
     onError: (err) => {
       console.log(err);
@@ -157,24 +157,24 @@ const BookingInfo = ({ data }) => {
       }),
   });
 
-  useEffect(() => {
-    if (bookingData.results.length > 0 && bookingData.status !== "EXAMINED") {
-      updateStatus({ id: bookingData._id, status: "EXAMINED" });
-    }
-  }, [
-    bookingData.results.length,
-    bookingData.status,
-    bookingData._id,
-    updateStatus,
-  ]);
-
-  // const handleChangeStatus = (status) => {
-  //   if (status === "EXAMINED" && bookingData.results.length === 0) {
-  //     toastUI("Vui lòng xác nhận lịch đặt và thêm kết quả trước", "error");
-  //     return;
+  // useEffect(() => {
+  //   if (bookingData.results.length > 0 && bookingData.status !== "EXAMINED") {
+  //     updateStatus({ id: bookingData._id, status: "EXAMINED" });
   //   }
-  //   updateStatus({ id: bookingData._id, status });
-  // };
+  // }, [
+  //   bookingData.results.length,
+  //   bookingData.status,
+  //   bookingData._id,
+  //   updateStatus,
+  // ]);
+
+  const handleChangeStatus = (status) => {
+    if (status === "EXAMINED" && bookingData.results.length === 0) {
+      toastUI("Vui lòng xác nhận lịch đặt và thêm kết quả trước", "error");
+      return;
+    }
+    updateStatus({ id: bookingData._id, status });
+  };
   const handleChangeDoctor = (doctorId) => {
     const selectedDoctor = availableDoctors.find(
       (doctor) => doctor._id === doctorId
@@ -196,17 +196,14 @@ const BookingInfo = ({ data }) => {
     setIsAlertDialogOpen(false);
   };
 
-  const statusLabel =
-    statusOptions.find((option) => option.value === bookingData.status)
-      ?.label || bookingData.status;
   const isBookingTimePassed = new Date(bookingData.time) < new Date();
 
   const { mutate: updateAppointmentWorkShedule } = useMutation({
     mutationFn: ({ id, wordScheduleId }) =>
       appointmentApi.updateAppointmentWorkShedule(id, wordScheduleId),
-    onSuccess: () => {
+    onSuccess: (id) => {
       toastUI("Cập nhật lịch khám bác sĩ", "success");
-      queryClient.invalidateQueries("appointments");
+      queryClient.invalidateQueries("appointments",id);
     },
     onError: (err) => {
       console.log(err);
@@ -398,10 +395,9 @@ const BookingInfo = ({ data }) => {
             <div className="flex w-max items-center justify-center gap-2">
               <p>
                 <strong className="font-medium text-black">Trạng thái :</strong>
-                <span className="px-1 text-gray-600">{statusLabel}</span>
               </p>
 
-              {/* <div className=" ">
+              <div className=" ">
                 <Select
                   disabled={
                     bookingData.status === "CANCELLED" ||
@@ -422,7 +418,7 @@ const BookingInfo = ({ data }) => {
                     ))}
                   </SelectContent>
                 </Select>
-              </div> */}
+              </div>
             </div>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Phòng khám:</strong>{" "}
@@ -435,7 +431,9 @@ const BookingInfo = ({ data }) => {
               <div className=" ">
                 <Select
                   disabled={
-                    bookingData.status === "CANCELLED" || isBookingTimePassed || bookingData.results.length > 0
+                    bookingData.status === "CANCELLED" ||
+                    isBookingTimePassed ||
+                    bookingData.results.length > 0
                   }
                   className="w-full"
                   onValueChange={handleChangeDoctor}
@@ -460,7 +458,7 @@ const BookingInfo = ({ data }) => {
           </div>
         </div>
         <div className="mt-2 w-full text-end">
-          {bookingData.status === "CONFIRMED" && !isOpenForm &&  (
+          {bookingData.status === "CONFIRMED" && !isOpenForm && (
             <Button
               className=""
               variant="custom"

@@ -20,14 +20,34 @@ export const appointmentApi = {
 
     return res.data;
   },
+  getAllAppointmentsAdmin: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/appointments", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
   getAppointmentByPatient: async (params) => {
     const res = await axiosInstanceGET.get(`/appointments/get-by-patient`, {
       params,
     });
     return res.data;
   },
-  getAppointmentByDoctor: async () => {
-    const res = await axiosInstanceGET.get(`/appointments/get-by-doctor`);
+  getAppointmentByDoctor: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/appointments/get-by-doctor", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
     return res.data;
   },
   getAppointmentById: async (id) => {
