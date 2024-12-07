@@ -35,6 +35,7 @@ const AuthComponent = () => {
     });
 
     const { mutate: getUserProfile, isPending: isPendingProfile } = useMutation({
+        cacheTime: 0,
         mutationFn: authApi.getProfileInfo,
         onSuccess: (data) => {
             const role = data.data.role.name;

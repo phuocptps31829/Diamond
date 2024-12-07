@@ -211,15 +211,17 @@ export const CertificateInFixPage = ({
       </AlertDialog>
 
       <Dialog open={isZoomed} onOpenChange={() => setIsZoomed(false)}>
-        <DialogContent className="max-w-[50vw]">
+        <DialogContent className="max-w-[50vw] w-fit">
           <DialogHeader>
             <DialogTitle>Ảnh chứng chỉ</DialogTitle>
           </DialogHeader>
-          <img
-            src={`${URL_IMAGE}/${data[selectedZoomImageIndex]}`}
-            alt={`Zoomed Certificate ${selectedZoomImageIndex + 1}`}
-            className="h-full w-full object-cover"
-          />
+          <div className="flex items-center justify-center">
+            <img
+              src={`${URL_IMAGE}/${data[selectedZoomImageIndex]}`}
+              alt={`Zoomed Certificate ${selectedZoomImageIndex + 1}`}
+              className="h-full w-full object-cover max-w-[300px]"
+            />
+          </div>
         </DialogContent>
       </Dialog>
     </AlertDialog>

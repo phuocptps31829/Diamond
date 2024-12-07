@@ -6,18 +6,35 @@ import { FaBriefcaseMedical, FaUserDoctor } from "react-icons/fa6";
 import { IoMdContacts } from "react-icons/io";
 import { LiaInfoSolid } from "react-icons/lia";
 import { NavbarContext } from "@/contexts/NavBarContext";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutAction } from "@/redux/authSlice";
+import { clearCart } from "@/redux/cartSlice";
 import brandLogo from "@/assets/images/brandLogo.png";
+import toast from "react-hot-toast";
+
 export default function NavigationBarMobile() {
+  const dispatch = useDispatch();
   const { isNavbarVisible, setIsNavbarVisible, toggleNavbar } =
     useContext(NavbarContext);
   const userProfile = useSelector((state) => state.auth.userProfile);
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+    dispatch(clearCart());
+    toast.success("Đăng xuất thành công");
+    setIsNavbarVisible(false);
+  };
 
   const menuItems = [
     {
       icon: <FaNotesMedical className="h-6 w-6" />,
       label: "Gói khám",
-      link: "/category-service",
+      link: "/packages",
+    },
+    {
+      icon: <FaNotesMedical className="h-6 w-6" />,
+      label: "Dịch vụ",
+      link: "/services",
     },
     {
       icon: <FaBriefcaseMedical className="h-6 w-6" />,
@@ -87,8 +104,8 @@ export default function NavigationBarMobile() {
                     Thông tin
                   </Link>
                   <Link
-                    onClick={ () => setIsNavbarVisible(false) }
-                    to="/logout"
+                    onClick={handleLogout}
+                    to="/"
                     className="w-full rounded px-4 py-2 text-center text-blue-500 shadow-sm shadow-zinc-400"
                   >
                     Đăng xuất
@@ -146,7 +163,7 @@ export default function NavigationBarMobile() {
                 </div>
               </li>
             </ul>
-            <div className="m-4 mt-0 flex items-center justify-between space-x-3">
+            {/* <div className="m-4 mt-0 flex items-center justify-between space-x-3">
               <Link
                 onClick={ () => setIsNavbarVisible(false) }
                 to="/none"
@@ -171,7 +188,7 @@ export default function NavigationBarMobile() {
                 />
                 Zalo
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </nav>

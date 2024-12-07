@@ -5,7 +5,6 @@ import MiddleCharts from "../../components/admin/dashboardDoctor/MiddleCharts";
 import BottomLists from "../../components/admin/dashboardDoctor/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { appointmentApi } from "@/services/appointmentsApi";
-import Loading from "@/components/ui/Loading";
 
 const breadcrumbData = [
   {
@@ -30,14 +29,12 @@ export default function DoctorDashboard() {
     setDataAppointmentsByDoctor(appointmentsByAges);
   }, [isPendingAppointmentsByDoctor, appointmentsByAges]);
 
-  return isPendingAppointmentsByDoctor ? (
-    <Loading />
-  ) : (
+  return (
     <>
       <BreadcrumbCustom data={breadcrumbData} />
-      <TopStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      <MiddleCharts dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      <BottomLists dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
+      <TopStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} loading={isPendingAppointmentsByDoctor} />
+      <MiddleCharts dataAppointmentsByDoctor={dataAppointmentsByDoctor} loading={isPendingAppointmentsByDoctor} />
+      <BottomLists dataAppointmentsByDoctor={dataAppointmentsByDoctor} loading={isPendingAppointmentsByDoctor} />
     </>
-  );
+  )
 }
