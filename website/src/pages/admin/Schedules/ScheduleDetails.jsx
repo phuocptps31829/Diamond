@@ -4,8 +4,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import Loading from "@/components/ui/Loading";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const getBreadcrumbData = (id, name) => [
     {
@@ -18,6 +17,8 @@ const getBreadcrumbData = (id, name) => [
 ];
 
 const ScheduleDetailsPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
     const { id } = useParams();
 
     const { data, isLoading, isError } = useQuery({

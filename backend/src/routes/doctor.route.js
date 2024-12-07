@@ -4,7 +4,7 @@ const router = express.Router();
 
 const doctorController = require('../controllers/doctor.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
-const authMiddleware = require('../middlewares/auth.middleware');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -36,6 +36,7 @@ const authMiddleware = require('../middlewares/auth.middleware');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("Doctor:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     doctorController.getAllDoctors

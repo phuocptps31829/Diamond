@@ -59,7 +59,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
-    // cacheMiddleware.cache("services:"),
+    cacheMiddleware.cache("Service:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     serviceController.getAllServices

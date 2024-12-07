@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { medicineApi } from "@/services/medicineApi";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -16,6 +17,8 @@ const breadcrumbData = [
 ];
 
 const MedicinesListPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const {
     data: dataAllMedicines,
     error: errorAllMedicines,

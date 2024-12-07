@@ -36,7 +36,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
-    cacheMiddleware.cache("specialties:"),
+    cacheMiddleware.cache("Specialty:"),
     helperMiddleware.checkQueryParams,
     specialtyController.getAllSpecialties
 );

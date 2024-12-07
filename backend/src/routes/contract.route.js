@@ -4,6 +4,7 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const contractController = require('../controllers/contract.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const contractController = require('../controllers/contract.controller');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("Contract:"),
     helperMiddleware.checkQueryParams,
     contractController.getAllContracts
 );

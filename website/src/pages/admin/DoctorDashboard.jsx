@@ -6,6 +6,7 @@ import BottomLists from "../../components/admin/dashboardDoctor/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { appointmentApi } from "@/services/appointmentsApi";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -19,6 +20,9 @@ const breadcrumbData = [
 
 export default function DoctorDashboard() {
   const [dataAppointmentsByDoctor, setDataAppointmentsByDoctor] = useState([]);
+
+  useAuthRedirect(["DOCTOR"], "/admin/dashboard");
+
   const { data: appointmentsByAges, isPending: isPendingAppointmentsByDoctor } =
     useQuery({
       queryKey: ["appointmentsDoctor"],
@@ -34,10 +38,10 @@ export default function DoctorDashboard() {
     <Loading />
   ) : (
     <>
-      <BreadcrumbCustom data={breadcrumbData} />
-      <TopStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      <MiddleCharts dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      <BottomLists dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
+      <BreadcrumbCustom data={ breadcrumbData } />
+      <TopStats dataAppointmentsByDoctor={ dataAppointmentsByDoctor } />
+      <MiddleCharts dataAppointmentsByDoctor={ dataAppointmentsByDoctor } />
+      <BottomLists dataAppointmentsByDoctor={ dataAppointmentsByDoctor } />
     </>
   );
 }

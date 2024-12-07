@@ -45,7 +45,7 @@ const appointmentController = require('../controllers/appointment.controller');
 */
 router.get(
     '/',
-    // cacheMiddleware.cache("appointments:"),
+    cacheMiddleware.cache("Appointment:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointments

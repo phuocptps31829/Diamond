@@ -1,5 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
-import brandLogo from "@/assets/images/brandLogo.png";
+import { useNavigate } from "react-router-dom";
 import banner from "@/assets/images/bannerloginadmin.jpg";
 import InputCustom from "@/components/ui/InputCustom";
 import { FaLock, FaPhoneAlt } from "react-icons/fa";
@@ -35,10 +34,10 @@ const AuthComponent = () => {
     });
 
     const { mutate: getUserProfile, isPending: isPendingProfile } = useMutation({
+        cacheTime: 0,
         mutationFn: authApi.getProfileInfo,
         onSuccess: (data) => {
             const role = data.data.role.name;
-            console.log(role, selectedRole, selectedRole !== role);
             if (selectedRole !== role) {
                 toastUI("Bạn không có quyền truy cập mục này.", "warning");
                 return;

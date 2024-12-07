@@ -6,6 +6,7 @@ import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { invoicesApi } from "@/services/invoicesApi";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -18,6 +19,8 @@ const breadcrumbData = [
 ];
 
 export default function AccountantDashboard() {
+  useAuthRedirect(["STAFF_ACCOUNTANT"], "/admin/dashboard");
+
   const {
     data: revenueStatistics,
     error: errorRevenueStatistics,
