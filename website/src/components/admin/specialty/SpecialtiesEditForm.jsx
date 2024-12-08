@@ -53,7 +53,6 @@ export default function Form() {
     mutationFn: (updatedSpecialty) => specialtyApi.updateSpecialty(updatedSpecialty),
     onSuccess: () => {
       toastUI("Cập nhật chuyên khoa thành công", "success");
-      navigate("/admin/specialties/list");
     },
     onError: (err) => {
       console.error("Update error: ", err);

@@ -3,6 +3,7 @@ import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
 import { useQuery } from '@tanstack/react-query';
 import { patientApi } from '@/services/patientsApi';
 import Loading from '@/components/ui/Loading';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const breadcrumbData = [
     {
@@ -15,6 +16,8 @@ const breadcrumbData = [
 ];
 
 const PatientsListPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"], "/admin/dashboard");
+
     const { data: allPatients, isLoading: isLoadingPatients } = useQuery({
         queryKey: ['patientsNoPaginated'],
         queryFn: () => patientApi.getAllPatients({

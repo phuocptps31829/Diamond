@@ -1,5 +1,6 @@
 import StaffsFormAdd from "@/components/admin/staff/StaffFormAdd";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,10 +13,12 @@ const breadcrumbData = [
 ];
 
 const StaffsFormPageAdd = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />
-      <StaffsFormAdd/>
+      <StaffsFormAdd />
     </div>
   );
 };

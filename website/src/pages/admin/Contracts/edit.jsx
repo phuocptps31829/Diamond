@@ -4,6 +4,7 @@ import ContractsDoctorSurgeonEdit from "@/components/admin/contracts/edit/Contra
 import ContractsClinicEdit from "@/components/admin/contracts/edit/ContractsClinicEdit";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import NotFound from "@/components/ui/NotFound";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -16,6 +17,8 @@ const breadcrumbData = [
 ];
 
 const ContractsEditPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const { type } = useParams();
 
   let ContractComponent;
@@ -36,8 +39,8 @@ const ContractsEditPage = () => {
 
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
-      {ContractComponent ? <ContractComponent /> : <NotFound />}
+      <BreadcrumbCustom data={ breadcrumbData } />
+      { ContractComponent ? <ContractComponent /> : <NotFound /> }
     </div>
   );
 };

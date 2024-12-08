@@ -21,33 +21,25 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { specialtyApi } from "@/services/specialtiesApi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toastUI } from "@/components/ui/Toastify";
-import Loading from "@/components/ui/Loading";
+import { useQueryClient } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 import { Link } from "react-router-dom";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
-import { RECORD_PER_PAGE } from "@/constants/config";
+import LoadingV2 from "@/components/ui/LoadingV2";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export default function DataTable({ data, columns, branchData }) {
+export default function DataTable({
+  data,
+  columns,
+  pageCount,
+  pageSize,
+  pageIndex,
+  onPageChange,
+  total,
+  isLoading
+}) {
   const queryClient = useQueryClient();
-  const { mutate: deleteSpecialty, isPending } = useMutation({
-    mutationFn: specialtyApi.deleteSpecialty,
-    onSuccess: () => {
-      toastUI("Xóa chuyên khoa thành công", "success");
-      queryClient.invalidateQueries('roles');
-    },
-    onError: (err) => {
-      console.log(err);
-      toastUI("Xóa chuyên khoa không thành công", "error");
-    },
-  });
 
-  const handleDeleteSpecialty = (id) => {
-    if (!confirm("Chắc chắn muốn xóa?")) return;
-    deleteSpecialty(id);
-  };
   const {
     handleSubmit,
     formState: { errors },
@@ -58,6 +50,7 @@ export default function DataTable({ data, columns, branchData }) {
       patientName: "",
     },
   });
+
   const onSubmit = () => {
   };
   const [sorting, setSorting] = React.useState([]);
@@ -71,8 +64,10 @@ export default function DataTable({ data, columns, branchData }) {
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
   const table = useReactTable({
     data,
-    branchData,
-    columns: columns(handleDeleteSpecialty),
+    pageCount,
+    pageSize,
+    manualPagination: true,
+    columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -87,10 +82,14 @@ export default function DataTable({ data, columns, branchData }) {
       columnVisibility,
       rowSelection,
     },
-    initialState: {
-      pagination: {
-        pageSize: RECORD_PER_PAGE,
-      },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newPageIndex = updater({
+          pageIndex,
+          pageSize,
+        }).pageIndex;
+        onPageChange(newPageIndex);
+      }
     },
   });
 
@@ -101,9 +100,6 @@ export default function DataTable({ data, columns, branchData }) {
     queryClient.invalidateQueries("specialties");
   };
 
-  if (isPending) {
-    return <Loading />;
-  }
   return (
     <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
       {/* Search */ }
@@ -160,42 +156,44 @@ export default function DataTable({ data, columns, branchData }) {
           )) }
         </TableHeader>
         <TableBody>
-          { table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                className=""
-                key={ row.id }
-                data-state={ row.getIsSelected() && "selected" }
-              >
-                { row.getVisibleCells().map((cell) => (
-                  <TableCell key={ cell.id }>
-                    { flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    ) }
-                  </TableCell>
-                )) }
+          { isLoading
+            ? <LoadingV2 />
+            : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  className=""
+                  key={ row.id }
+                  data-state={ row.getIsSelected() && "selected" }
+                >
+                  { row.getVisibleCells().map((cell) => (
+                    <TableCell key={ cell.id }>
+                      { flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      ) }
+                    </TableCell>
+                  )) }
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={ columns.length }
+                  className="h-full text-center"
+                >
+                  Không có kết quả.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={ columns.length }
-                className="h-24 text-center "
-              >
-                Không có kết quả.
-              </TableCell>
-            </TableRow>
-          ) }
+            ) }
         </TableBody>
       </Table>
-      <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
+      <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
-          { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
-          { table.getFilteredRowModel().rows.length } trong danh sách.
+          { table.getFilteredSelectedRowModel().rows.length } trên { total } trong
+          danh sách.
         </div>
-        <div className="space-x-2 flex items-center">
+        <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -204,9 +202,17 @@ export default function DataTable({ data, columns, branchData }) {
           >
             Trước
           </Button>
-          { Array.from({ length: table.getPageCount() }, (_, index) => {
-            const currentPage = table.getState().pagination.pageIndex;
-            const pageCount = table.getPageCount();
+          { isLoading
+            ? <div className="flex gap-1 items-center">
+              { Array.from({ length: 3 }, (_, index) => {
+                return (
+                  <Skeleton key={ index } className="h-[30.5px] bg-slate-100 w-[30.5px]" />
+                );
+              }) }
+            </div>
+            : '' }
+          { Array.from({ length: pageCount }, (_, index) => {
+            const currentPage = pageIndex;
             if (
               index === 0 ||
               index === pageCount - 1 ||
@@ -219,7 +225,7 @@ export default function DataTable({ data, columns, branchData }) {
                   key={ index }
                   variant={ currentPage === index ? "solid" : "outline" }
                   size="sm"
-                  onClick={ () => table.setPageIndex(index) }
+                  onClick={ () => onPageChange(index) }
                 >
                   { index + 1 }
                 </Button>

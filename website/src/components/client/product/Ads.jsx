@@ -5,7 +5,6 @@ import ads3 from "../../../assets/images/loginBanners/03.png";
 const ads = [ads1, ads2, ads3];
 
 export default function AdsProduct({ index, isLoginForm }) {
-  console.log(isLoginForm);
   return (
     <img
       src={ ads[index] }

@@ -1,17 +1,26 @@
 import { axiosInstanceCUD, axiosInstanceGET } from './axiosInstance';
 
 export const workScheduleApi = {
-    getAllWorkSchedules: async () => {
-        const res = await axiosInstanceGET.get('/work-schedules');
+    getAllWorkSchedules: async (params) => {
+        const res = await axiosInstanceGET.get('/work-schedules', {
+            params: {
+                ...params,
+            },
+        });
         return res.data;
     },
     getWorkSchedulesByDoctors: async (doctorId) => {
         const res = await axiosInstanceGET.get(`/work-schedules/doctor?doctorID=${doctorId}`);
         return res.data;
     },
-    getWorkSchedulesByDoctorID: async (doctorId) => {
+    getWorkSchedulesByDoctorID: async (doctorId, params) => {
         const res = await axiosInstanceGET.get(
-            `/work-schedules/get-by-doctor-id/${doctorId}`
+            `/work-schedules/get-by-doctor-id/${doctorId}`,
+            {
+                params: {
+                    ...params,
+                },
+            }
         );
         return res.data;
     },

@@ -11,7 +11,6 @@ import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import Cookies from "js-cookie";
 import { toastUI } from "@/components/ui/Toastify";
-import Loading from "@/components/ui/Loading";
 import { useDispatch } from "react-redux";
 import { setUserProfile } from "@/redux/authSlice";
 
@@ -92,12 +91,17 @@ const AuthComponent = () => {
             toastUI("Vui lòng chọn quyền", "warning");
             return;
         }
-        login(data);
+        login({
+            data,
+            params: {
+                isAdmin: true
+            }
+        });
     };
 
     return (
         <div className="bg-[#E8F2F7] h-dvh flex items-center justify-center">
-            { isPendingLogin || isPendingProfile && <Loading /> }
+            { isPendingLogin || isPendingProfile && <div className="absolute top-0 left-0 right-0 bottom-0 z-50"></div> }
             <div className="bg-white w-[70%] rounded-xl flex items-center justify-center p-10">
                 <div className="flex-1 h-full pr-10 border-r border-gray-400">
                     <div className="relative w-full h-full">

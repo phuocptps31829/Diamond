@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const initialBreadcrumbData = [
   {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const PackagesFormFixPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const { id } = useParams();
   const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
   const {

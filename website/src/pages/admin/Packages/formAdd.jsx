@@ -1,5 +1,6 @@
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import PackagesFormAdd from "@/components/admin/packages/PackagesFormAdd";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,9 +13,11 @@ const breadcrumbData = [
 ];
 
 const PackagesFormAddPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   return (
     <>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <PackagesFormAdd />
     </>
   );

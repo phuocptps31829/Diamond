@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import { useDispatch } from "react-redux";
 import { setUserProfile } from "@/redux/authSlice";
-import Loading from "@/components/ui/Loading";
 
 export default function AdminLayout() {
   const [isOpen, setIsOpen] = useState(true);
@@ -55,7 +54,7 @@ export default function AdminLayout() {
 
   return (
     <>
-      { isLoading && <Loading /> }
+      { isLoading && <div className="absolute top-0 left-0 right-0 bottom-0 z-50"></div> }
       <Toaster />
       <Sidebar isOpen={ isOpen } onToggleOpen={ setIsOpen } />
       <main

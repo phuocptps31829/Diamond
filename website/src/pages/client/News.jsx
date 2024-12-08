@@ -8,19 +8,19 @@ import NotFound from '@/components/ui/NotFound';
 export default function News() {
   useScrollToTop();
   const { data, error, isLoading } = useQuery({
-    queryKey: ["news"],
+    queryKey: ["news", "noPaginated"],
     queryFn: newsApi.takeItAllNews,
   });
 
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <div className="bg-[#E8F2F7]">
       <NewsBanner />
-      <NewsAbove news={data} isLoading={isLoading} />
-      <NewsBelow news={data} isLoading={isLoading} />
+      <NewsAbove news={ data } isLoading={ isLoading } />
+      <NewsBelow news={ data } isLoading={ isLoading } />
     </div>
   );
 }

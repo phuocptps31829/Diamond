@@ -16,7 +16,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import SpinLoader from "@/components/ui/SpinLoader";
 import { toastUI } from "@/components/ui/Toastify";
 import { specialtyApi } from "@/services/specialtiesApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -35,8 +35,8 @@ const ActionMenu = ({ row }) => {
       queryClient.invalidateQueries("allMedicinesCategories");
       toast("Xóa danh mục thuốc thành công.", "success");
     },
-    onError: () => {
-      toast("Xóa danh mục thuốc thất bại.");
+    onError: (error) => {
+      toast(error?.response?.data?.message || "Xóa danh mục thuốc thất bại.", "error");
     },
   });
 
@@ -56,7 +56,7 @@ const ActionMenu = ({ row }) => {
             <DropdownMenuItem
               className="flex w-full items-center gap-2"
               onClick={ () =>
-                navigate(`/admin/medicinesCategories/edit/${row.original._id}`)
+                navigate(`/admin/medicines-categories/edit/${row.original._id}`)
               }
             >
               <FiEdit className="text-[15px] text-primary-600" />

@@ -1,8 +1,10 @@
 import DataTableSchedule from "@/components/admin/schedule/table";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
-import Loading from "@/components/ui/Loading";
+import { RECORD_PER_PAGE } from "@/constants/config";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 
 const breadcrumbData = [
@@ -16,6 +18,9 @@ const breadcrumbData = [
 ];
 
 const ScheduleTablePage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    const [pageIndex, setPageIndex] = useState(0);
+
     const userProfile = useSelector((state) => state.auth.userProfile);
 
     const roleID = userProfile?.role?._id;
@@ -24,15 +29,24 @@ const ScheduleTablePage = () => {
     switch (roleID) {
         case import.meta.env.VITE_ROLE_DOCTOR:
             options = {
-                queryKey: ['workSchedules', userProfile?._id],
-                queryFn: () => workScheduleApi.getWorkSchedulesByDoctorID(userProfile?._id),
+                queryKey: ['workSchedules', userProfile?._id, pageIndex, RECORD_PER_PAGE],
+                queryFn: () => workScheduleApi.getWorkSchedulesByDoctorID(
+                    userProfile?._id,
+                    {
+                        page: pageIndex + 1,
+                        limit: RECORD_PER_PAGE
+                    }
+                ),
                 enabled: !!userProfile
             };
             break;
         case import.meta.env.VITE_ROLE_SUPER_ADMIN:
             options = {
-                queryKey: ['workSchedules'],
-                queryFn: workScheduleApi.getAllWorkSchedules
+                queryKey: ['workSchedules', pageIndex, RECORD_PER_PAGE],
+                queryFn: () => workScheduleApi.getAllWorkSchedules({
+                    page: pageIndex + 1,
+                    limit: RECORD_PER_PAGE
+                })
             };
             break;
         default:
@@ -41,14 +55,24 @@ const ScheduleTablePage = () => {
 
     const { data, isLoading, isError } = useQuery(options);
 
-    if (isLoading) {
-        return <Loading />;
-    }
+    const tableData = {
+        data: data?.data || [],
+        pageCount: Math.ceil((data?.totalRecords || 0) / 10),
+        total: data?.totalRecords || 0,
+    };
 
     return (
         <>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <DataTableSchedule workSchedules={ data?.data } />
+            <DataTableSchedule
+                workSchedules={ tableData.data }
+                isLoading={ isLoading }
+                pageCount={ tableData.pageCount }
+                pageSize={ 10 }
+                pageIndex={ pageIndex }
+                onPageChange={ setPageIndex }
+                total={ tableData.total }
+            />
         </>
     );
 };

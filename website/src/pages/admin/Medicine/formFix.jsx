@@ -6,6 +6,7 @@ import MedicinesFormFix from "@/components/admin/medicine/MedicinesFormFix";
 import { medicineApi } from "@/services/medicineApi";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const initialBreadcrumbData = [
   {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const MedicineFormFixPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const { id } = useParams();
   const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
   const {
@@ -42,18 +45,18 @@ const MedicineFormFixPage = () => {
     }
   }, [isLoadingMedicine, medicineDetail]);
 
-  if (errorMedicine) return <NotFound message={errorMedicine.message} />;
+  if (errorMedicine) return <NotFound message={ errorMedicine.message } />;
 
   return (
     <>
-      {isLoadingMedicine ? (
+      { isLoadingMedicine ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
-          <MedicinesFormFix medicineDetail={medicineDetail} />
+          <BreadcrumbCustom data={ breadcrumbData } />
+          <MedicinesFormFix medicineDetail={ medicineDetail } />
         </>
-      )}
+      ) }
     </>
   );
 };

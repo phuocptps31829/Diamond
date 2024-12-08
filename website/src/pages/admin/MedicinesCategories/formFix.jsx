@@ -6,10 +6,11 @@ import MedicinesCategoriesFormFix from "@/components/admin/medicineCategories/Me
 import { medicineApi } from "@/services/medicineApi";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const initialBreadcrumbData = [
   {
-    href: "/admin/medicinesCategories/list",
+    href: "/admin/medicines-categories/list",
     title: "Danh mục thuốc",
   },
   {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const MedicinesCategoriesFormFixPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const { id } = useParams();
   const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
   const {
@@ -43,20 +46,20 @@ const MedicinesCategoriesFormFixPage = () => {
   }, [isLoadingMedicineCategories, medicineCategoriesDetail]);
 
   if (errorMedicineCategories)
-    return <NotFound message={errorMedicineCategories.message} />;
+    return <NotFound message={ errorMedicineCategories.message } />;
 
   return (
     <>
-      {isLoadingMedicineCategories ? (
+      { isLoadingMedicineCategories ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
+          <BreadcrumbCustom data={ breadcrumbData } />
           <MedicinesCategoriesFormFix
-            medicineCategoriesDetail={medicineCategoriesDetail}
+            medicineCategoriesDetail={ medicineCategoriesDetail }
           />
         </>
-      )}
+      ) }
     </>
   );
 };

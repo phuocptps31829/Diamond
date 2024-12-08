@@ -27,6 +27,7 @@ const cache = (key) => {
                             console.error("Error setting cache:", err);
                         }
                     });
+                    console.log('Cached for:', customKey);
                     res.send = originalSend;
                     return res.send(body);
                 };

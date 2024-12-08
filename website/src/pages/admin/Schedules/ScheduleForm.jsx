@@ -1,11 +1,14 @@
 import CreateSchedule from "@/components/admin/schedule/dialogs/CreateSchedule";
 import UpdateSchedule from "@/components/admin/schedule/dialogs/UpdateSchedule";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const ScheduleFormPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
     const { doctorID, scheduleID } = useParams();
     const [searchParams] = useSearchParams();
     const [infoForm, setInfoForm] = useState({

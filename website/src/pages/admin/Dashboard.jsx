@@ -44,7 +44,7 @@ export default function Dashboard() {
         error: errorAllNews,
         isLoading: isLoadingNews,
     } = useQuery({
-        queryKey: ['news'],
+        queryKey: ['news', "noPaginated"],
         queryFn: newsApi.takeItAllNews,
     });
 
@@ -110,15 +110,15 @@ export default function Dashboard() {
     return (
         <>
             <BreadcrumbCustom data={ breadcrumbData } />
-            <TopStats 
-                allData={{ allNews, allPatients: allPatients, allAppointments: allAppointments, allInvoices: allInvoices }} 
-                loading={{ isLoadingNews, isLoadingPatients, isLoadingAppointments, isLoadingInvoices }} 
+            <TopStats
+                allData={ { allNews, allPatients: allPatients, allAppointments: allAppointments, allInvoices: allInvoices } }
+                loading={ { isLoadingNews, isLoadingPatients, isLoadingAppointments, isLoadingInvoices } }
             />
-            <MiddleCharts 
-                allData={{ dataTotalPatients: totalPatientsBySpecialty, dataAllSpecialties: allSpecialties, dataPatientsByAges: appointmentsByAges }} 
-                loading={{ isLoadingTotalPatientsBySpecialty, isLoadingSpecialties, isLoadingAppointmentsByAges }}
+            <MiddleCharts
+                allData={ { dataTotalPatients: totalPatientsBySpecialty, dataAllSpecialties: allSpecialties?.data, dataPatientsByAges: appointmentsByAges } }
+                loading={ { isLoadingTotalPatientsBySpecialty, isLoadingSpecialties, isLoadingAppointmentsByAges } }
             />
-            <BottomLists dataUpcomingAppointments={ upcomingAppointments } loading={isLoadingUpcomingAppointments} />
+            <BottomLists dataUpcomingAppointments={ upcomingAppointments } loading={ isLoadingUpcomingAppointments } />
         </>
-    )
+    );
 }

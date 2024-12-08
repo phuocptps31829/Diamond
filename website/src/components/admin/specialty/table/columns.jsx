@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/DropdownMenu";
+import { ArrowUpDown } from "lucide-react";
 import {
   Dialog,
   DialogTrigger,
@@ -14,14 +8,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { FiEdit } from "react-icons/fi";
-import { Link } from "react-router-dom";
 import { useState } from "react";
 import Action from "./action";
 
-// export const columns =
-export const columns = (onDelete) =>
+export const columns = (pageIndex, pageSize) =>
   [
     {
       id: "select",
@@ -58,7 +48,9 @@ export const columns = (onDelete) =>
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="w-full pl-5 text-left">{ row.index + 1 }</div>
+        <div className="w-full pl-5 text-left">
+          { pageIndex * pageSize + row.index + 1 }
+        </div>
       ),
       enableSorting: false,
       enableHiding: false,

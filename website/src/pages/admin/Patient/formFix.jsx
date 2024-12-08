@@ -6,6 +6,7 @@ import NotFound from '@/components/ui/NotFound';
 import { useQuery } from '@tanstack/react-query';
 import { patientApi } from '@/services/patientsApi';
 import Loading from '@/components/ui/Loading';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const initialBreadcrumbData = [
     {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const PatientsFormFixPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"], "/admin/dashboard");
+
     const { id } = useParams();
     const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
 
@@ -43,18 +46,18 @@ const PatientsFormFixPage = () => {
         }
     }, [isLoadingPatient, patientDetail]);
 
-    if (errorPatient) return <NotFound message={errorPatient.message} />;
+    if (errorPatient) return <NotFound message={ errorPatient.message } />;
 
     return (
         <>
-            {isLoadingPatient ? (
+            { isLoadingPatient ? (
                 <Loading />
             ) : (
                 <>
-                    <BreadcrumbCustom data={breadcrumbData} />
-                    <PatientFormFix patientDetail={patientDetail} />
+                    <BreadcrumbCustom data={ breadcrumbData } />
+                    <PatientFormFix patientDetail={ patientDetail } />
                 </>
-            )}
+            ) }
         </>
     );
 };

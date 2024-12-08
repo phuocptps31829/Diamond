@@ -18,7 +18,7 @@ const breadcrumbData = [
 ];
 
 export default function AccountantDashboard() {
-  useAuthRedirect(["STAFF_ACCOUNTANT"], "/admin/dashboard");
+  useAuthRedirect(["STAFF_ACCOUNTANT", "SUPER_ADMIN"], "/admin/dashboard");
 
   const {
     data: revenueStatistics,
@@ -46,9 +46,9 @@ export default function AccountantDashboard() {
   return (
     <>
       <BreadcrumbCustom data={ breadcrumbData } />
-      <TopStats revenueData={ revenueStatistics } loading={isLoadingRevenueStatistics} />
-      <MiddleCharts revenueData={ revenueStatistics } loading={isLoadingRevenueStatistics} />
-      <BottomLists allInvoices={ allInvoices } loading={isLoadingallInvoices} />
+      <TopStats revenueData={ revenueStatistics } loading={ isLoadingRevenueStatistics } />
+      <MiddleCharts revenueData={ revenueStatistics } loading={ isLoadingRevenueStatistics } />
+      <BottomLists allInvoices={ allInvoices } loading={ isLoadingallInvoices } />
     </>
-  )
+  );
 }

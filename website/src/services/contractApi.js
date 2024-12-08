@@ -2,7 +2,7 @@ import { axiosInstanceGET, axiosInstanceCUD } from "./axiosInstance";
 
 export const contractApi = {
   getAllContracts: async () => {
-    const res = await axiosInstanceGET.get("/contracts?limit=9999");
+    const res = await axiosInstanceGET.get("/contracts?noPaginated=true");
     return res.data.data;
   },
   getAllContractsAdmin: async (filter) => {

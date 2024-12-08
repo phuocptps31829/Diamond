@@ -26,9 +26,18 @@ import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
-import { RECORD_PER_PAGE } from "@/constants/config";
+import { Skeleton } from "@/components/ui/Skeleton";
+import LoadingV2 from "@/components/ui/LoadingV2";
 
-export default function DataTableSchedule({ workSchedules }) {
+export default function DataTableSchedule({
+    workSchedules,
+    pageCount,
+    pageSize,
+    pageIndex,
+    onPageChange,
+    total,
+    isLoading
+}) {
     const queryClient = useQueryClient();
     const [sorting, setSorting] = useState([]);
     const [columnFilters, setColumnFilters] = useState(
@@ -37,10 +46,6 @@ export default function DataTableSchedule({ workSchedules }) {
     const [columnVisibility, setColumnVisibility] =
         useState({});
     const [rowSelection, setRowSelection] = useState({});
-    const [pagination, setPagination] = useState({
-        pageIndex: 0,
-        pageSize: RECORD_PER_PAGE,
-    });
     const [searchValue, setSearchValue] = useState("");
     const [debouncedSearchValue] = useDebounce(searchValue, 500);
     const {
@@ -58,8 +63,10 @@ export default function DataTableSchedule({ workSchedules }) {
 
     const table = useReactTable({
         data: workSchedules,
-        columns: columnsSchedule,
-        onPaginationChange: setPagination,
+        pageCount,
+        pageSize,
+        manualPagination: true,
+        columns: columnsSchedule(pageIndex, pageSize),
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
@@ -70,10 +77,18 @@ export default function DataTableSchedule({ workSchedules }) {
         onRowSelectionChange: setRowSelection,
         state: {
             sorting,
-            pagination,
             columnFilters,
             columnVisibility,
             rowSelection,
+        },
+        onPaginationChange: (updater) => {
+            if (typeof updater === "function") {
+                const newPageIndex = updater({
+                    pageIndex,
+                    pageSize,
+                }).pageIndex;
+                onPageChange(newPageIndex);
+            }
         },
     });
 
@@ -144,41 +159,43 @@ export default function DataTableSchedule({ workSchedules }) {
                     )) }
                 </TableHeader>
                 <TableBody>
-                    { table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={ row.id }
-                                data-state={ row.getIsSelected() && "selected" }
-                            >
-                                { row.getVisibleCells().map((cell) => (
-                                    <TableCell key={ cell.id }>
-                                        { flexRender(
-                                            cell.column.columnDef.cell,
-                                            cell.getContext()
-                                        ) }
-                                    </TableCell>
-                                )) }
+                    { isLoading
+                        ? <LoadingV2 />
+                        : table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={ row.id }
+                                    data-state={ row.getIsSelected() && "selected" }
+                                >
+                                    { row.getVisibleCells().map((cell) => (
+                                        <TableCell key={ cell.id }>
+                                            { flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            ) }
+                                        </TableCell>
+                                    )) }
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={ columnsSchedule?.length }
+                                    className="h-full text-center"
+                                >
+                                    Không có kết quả.
+                                </TableCell>
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow>
-                            <TableCell
-                                colSpan={ columnsSchedule.length }
-                                className="h-24 text-center"
-                            >
-                                Không có kết quả.
-                            </TableCell>
-                        </TableRow>
-                    ) }
+                        ) }
                 </TableBody>
             </Table>
-            <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
+            <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
                 <div className="flex-1 text-sm text-muted-foreground">
                     <span className="pr-1">Đã chọn</span>
-                    { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
-                    { table.getFilteredRowModel().rows.length } trong danh sách.
+                    { table.getFilteredSelectedRowModel().rows.length } trên { total } trong
+                    danh sách.
                 </div>
-                <div className="space-x-2 flex items-center">
+                <div className="flex items-center space-x-2">
                     <Button
                         variant="outline"
                         size="sm"
@@ -187,9 +204,17 @@ export default function DataTableSchedule({ workSchedules }) {
                     >
                         Trước
                     </Button>
-                    { Array.from({ length: table.getPageCount() }, (_, index) => {
-                        const currentPage = table.getState().pagination.pageIndex;
-                        const pageCount = table.getPageCount();
+                    { isLoading
+                        ? <div className="flex gap-1 items-center">
+                            { Array.from({ length: 3 }, (_, index) => {
+                                return (
+                                    <Skeleton key={ index } className="h-[30.5px] bg-slate-100 w-[30.5px]" />
+                                );
+                            }) }
+                        </div>
+                        : '' }
+                    { Array.from({ length: pageCount }, (_, index) => {
+                        const currentPage = pageIndex;
                         if (
                             index === 0 ||
                             index === pageCount - 1 ||
@@ -202,7 +227,7 @@ export default function DataTableSchedule({ workSchedules }) {
                                     key={ index }
                                     variant={ currentPage === index ? "solid" : "outline" }
                                     size="sm"
-                                    onClick={ () => table.setPageIndex(index) }
+                                    onClick={ () => onPageChange(index) }
                                 >
                                     { index + 1 }
                                 </Button>

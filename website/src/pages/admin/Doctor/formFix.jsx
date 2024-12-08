@@ -6,6 +6,7 @@ import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
 import { doctorApi } from '@/services/doctorsApi';
 import NotFound from '@/components/ui/NotFound';
 import Loading from '@/components/ui/Loading';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const initialBreadcrumbData = [
     {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const DoctorsFormFixPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
     const { id } = useParams();
     const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
     const {
@@ -42,18 +45,18 @@ const DoctorsFormFixPage = () => {
         }
     }, [isLoadingDoctor, doctorDetail]);
 
-    if (errorDoctor) return <NotFound message={errorDoctor.message} />;
+    if (errorDoctor) return <NotFound message={ errorDoctor.message } />;
 
     return (
         <>
-            {isLoadingDoctor ? (
+            { isLoadingDoctor ? (
                 <Loading />
             ) : (
                 <>
-                    <BreadcrumbCustom data={breadcrumbData} />
-                    <DoctorsFormFix dataDoctor={doctorDetail} />
+                    <BreadcrumbCustom data={ breadcrumbData } />
+                    <DoctorsFormFix dataDoctor={ doctorDetail } />
                 </>
-            )}
+            ) }
         </>
     );
 };

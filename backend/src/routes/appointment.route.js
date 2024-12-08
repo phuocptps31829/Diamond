@@ -68,7 +68,7 @@ router.get(
 */
 router.get(
     '/specialty',
-    // cacheMiddleware.cache("appointments:specialty-"),
+    cacheMiddleware.cache("Appointment:specialty-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForSpecialty
@@ -91,7 +91,7 @@ router.get(
 */
 router.get(
     '/gender-years',
-    // cacheMiddleware.cache("appointments:gender-years-"),
+    cacheMiddleware.cache("Appointment:gender-years-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForGenderYears
@@ -114,7 +114,7 @@ router.get(
 */
 router.get(
     '/ages-dashboard',
-    // cacheMiddleware.cache("appointments:ages-dashboard-"),
+    cacheMiddleware.cache("Appointment:ages-dashboard-"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     appointmentController.getAllAppointmentsForAges

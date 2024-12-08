@@ -1,7 +1,10 @@
 import NewsDetailAdmin from "@/components/admin/news/NewsDetailAdmin";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const NewsDetailPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const breadcrumbData = [
     {
       title: "Tin tức",
@@ -13,7 +16,7 @@ const NewsDetailPage = () => {
   ];
   return (
     <div className="">
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <NewsDetailAdmin />
     </div>
   );

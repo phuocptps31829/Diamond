@@ -1,5 +1,6 @@
 import SpecialtiesForm from "@/components/admin/specialty/SpecialtiesForm";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,6 +13,8 @@ const breadcrumbData = [
 ];
 
 const SpecialtiesFormPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />

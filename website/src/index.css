@@ -637,5 +637,3 @@
 div:has(.positionFixed)[data-radix-popper-content-wrapper] {
   left: -58px !important;
 }
-
-

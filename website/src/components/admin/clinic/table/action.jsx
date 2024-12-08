@@ -34,8 +34,7 @@ const useDeleteClinic = () => {
       toastUI("Xóa phòng khám thành công.", "success");
     },
     onError: (error) => {
-      toastUI("Xóa phòng khám thất bại.", "error");
-      console.error("Error deleting news:", error);
+      toastUI(error?.response?.data?.message || "Xóa phòng khám thất bại.", "error");
     },
   });
 };

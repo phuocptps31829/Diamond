@@ -7,7 +7,7 @@ import NewsCard from "@/components/ui/NewsCard";
 
 export default function News() {
   const { data, error, isLoading } = useQuery({
-    queryKey: ["news"],
+    queryKey: ["news", "noPaginated"],
     queryFn: newsApi.takeItAllNews,
   });
 

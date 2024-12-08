@@ -40,7 +40,7 @@ export const serviceApi = {
     return res.data;
   },
   takeItAllServices: async () => {
-    const res = await axiosInstanceGET.get("/services?limit=9999");
+    const res = await axiosInstanceGET.get("/services?noPaginated=true");
     return res.data.data;
   },
   getServiceById: async (id) => {

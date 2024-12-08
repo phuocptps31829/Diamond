@@ -5,15 +5,20 @@ export const authApi = {
     const res = await axiosInstanceGET.get(`/auth/get-user-by-token`);
     return res.data;
   },
-  login: async (data) => {
-    console.log(data);
-    const res = await axiosInstanceCUD.post(`/auth/login`, data);
-
+  login: async ({ data, params }) => {
+    const res = await axiosInstanceCUD.post(
+      `/auth/login`,
+      data,
+      {
+        params: {
+          ...params
+        }
+      }
+    );
     return res.data.data;
   },
   refreshToken: async (refreshToken) => {
     const res = await axiosInstanceCUD.post(`/auth/refresh-token?refreshToken=${refreshToken}`);
-    console.log(res.data);
     return res.data;
   },
   changePassword: async ({ password, newPassword }) => {
@@ -21,7 +26,6 @@ export const authApi = {
       password,
       newPassword
     });
-    console.log(res.data);
     return res.data;
   },
   registerSendOtp: async (data) => {
@@ -42,7 +46,6 @@ export const authApi = {
   },
   changePasswordForgot: async (data) => {
     const res = await axiosInstanceCUD.put('/auth/forgot-password/reset-password', data);
-    console.log(res.data);
     return res.data;
   }
 };

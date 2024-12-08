@@ -1,5 +1,6 @@
 import PatientResult from "@/components/admin/patient/result/addResult";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,9 +13,11 @@ const breadcrumbData = [
 ];
 
 const PatientsResult = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"], "/admin/dashboard");
+
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <PatientResult />
     </div>
   );

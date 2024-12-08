@@ -5,7 +5,7 @@ const { Server } = require("socket.io");
 const getRedisClient = require('./src/config/redisClient');
 
 const app = require('./app');
-const { callRoutes } = require('./src/utils/init-cache');
+const { callRoutes, delCaches } = require('./src/utils/init-cache');
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
@@ -113,8 +113,8 @@ let roomMessages = {};
     // Listen for new notifications
     const subscriber = await redisClient.duplicate();
     await subscriber.connect();
-    subscriber.v4.subscribe('laravel_database_Notifications', (channel, message) => {
-        const appointmentIds = JSON.parse(JSON.parse(channel).data.ids);
+    subscriber.v4.subscribe('laravel_database_Notifications', (message, channel) => {
+        const appointmentIds = JSON.parse(JSON.parse(message).data.ids);
         console.log('appointmentIds:', appointmentIds);
         const messageNotification = {
             data: {
@@ -135,7 +135,9 @@ let roomMessages = {};
         // }
     });
 
-    subscriber.v4.subscribe('laravel_database_reset_cache', (channel, message) => {
+    subscriber.v4.subscribe('laravel_database_reset_cache', async (message, channel) => {
+        const modelsName = JSON.parse(JSON.parse(message).data.model);
+        await Promise.all(modelsName.map(async (modelName) => delCaches(modelName)));
     });
 
     // MongoDB connection

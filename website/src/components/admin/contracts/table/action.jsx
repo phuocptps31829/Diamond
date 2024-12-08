@@ -21,9 +21,7 @@ import { branchApi } from "@/services/branchesApi";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
-import { FiEdit } from "react-icons/fi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
 
 const useDeleteBranch = () => {
   const queryClient = useQueryClient();
@@ -32,15 +30,12 @@ const useDeleteBranch = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("branches");
       toastUI(
-        "Xóa chi nhánh thành công.",
+        "Xóa hóa đơn thành công.",
         "success",
       );
     },
     onError: (error) => {
-      toastUI(
-        "Xóa chi nhánh thất bại.",
-        "error",
-      );
+      toastUI(error?.response?.data?.message || "Xóa hóa đơn thất bại.", "error");
       console.error("Error deleting branch:", error);
     },
   });

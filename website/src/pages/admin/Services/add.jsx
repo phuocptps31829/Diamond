@@ -1,7 +1,10 @@
 import ServicesAdd from "@/components/admin/services/ServicesAdd";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const ServicesAddPage = () => {
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
     const breadcrumbData = [
         {
             title: "Dịch vụ",

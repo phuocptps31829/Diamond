@@ -4,12 +4,17 @@ import { axiosInstanceIMG } from "./axiosInstance";
 
 export const specialtyApi = {
   // Get all
-  getAllSpecialties: async () => {
+  getAllSpecialties: async (params) => {
     const res = await axiosInstanceGET.get(
       '/specialties',
-      { params: { notHidden: true } }
+      {
+        params: {
+          ...params,
+          notHidden: true
+        }
+      }
     );
-    return res.data.data;
+    return res.data;
   },
   getNoPaginate: async () => {
     const res = await axiosInstanceGET.get('/specialties', {

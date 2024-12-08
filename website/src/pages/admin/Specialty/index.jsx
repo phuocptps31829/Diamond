@@ -1,4 +1,4 @@
-import PatientsList from "@/components/admin/specialty/SpecialtiesList";
+import SpecialtyList from "@/components/admin/specialty/SpecialtiesList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
@@ -18,7 +18,7 @@ const SpecialtiesListPage = () => {
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />
-      <PatientsList />
+      <SpecialtyList />
     </div>
   );
 };

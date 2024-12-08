@@ -1,5 +1,6 @@
 import NewsEdit from "@/components/admin/news/NewsEdit";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,9 +13,11 @@ const breadcrumbData = [
 ];
 
 const NewsEditPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <NewsEdit />
     </div>
   );

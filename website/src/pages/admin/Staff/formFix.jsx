@@ -6,6 +6,7 @@ import NotFound from "@/components/ui/NotFound";
 import { useQuery } from "@tanstack/react-query";
 import staffApi from "@/services/staffApi.js";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const initialBreadcrumbData = [
   {
@@ -21,6 +22,8 @@ const initialBreadcrumbData = [
 ];
 
 const StaffsFormPageFix = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const { id } = useParams();
   const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);
 
@@ -43,18 +46,18 @@ const StaffsFormPageFix = () => {
     }
   }, [isLoadingStaff, staffDetail]);
 
-  if (errorStaff) return <NotFound message={errorStaff.message} />;
+  if (errorStaff) return <NotFound message={ errorStaff.message } />;
 
   return (
     <>
-      {isLoadingStaff ? (
+      { isLoadingStaff ? (
         <Loading />
       ) : (
         <>
-          <BreadcrumbCustom data={breadcrumbData} />
-          <StaffsFormFix staffDetail={staffDetail} />
+          <BreadcrumbCustom data={ breadcrumbData } />
+          <StaffsFormFix staffDetail={ staffDetail } />
         </>
-      )}
+      ) }
     </>
   );
 };

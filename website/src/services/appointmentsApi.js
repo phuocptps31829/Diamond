@@ -7,7 +7,7 @@ export const appointmentApi = {
   },
   get5UpcomingAppointments: async () => {
     const res = await axiosInstanceGET.get(
-      "/appointments?limit=9999&sort=-time"
+      "/appointments?noPaginated=true&sort=-time"
     );
     return res.data.data;
   },

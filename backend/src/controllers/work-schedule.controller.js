@@ -14,8 +14,6 @@ module.exports = {
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await WorkScheduleModel.countDocuments({});
-
             const workSchedules = await WorkScheduleModel
                 .find({})
                 .populate("doctorID")
@@ -82,8 +80,8 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'WorkSchedule retrieved successfully.',
-                data: noPaginated ? formattedGroupedArray : paginatedGroupedArray,
-                totalRecords
+                data: paginatedGroupedArray.slice(skip, skip + limitDocuments),
+                totalRecords: formattedGroupedArray.length
             });
         } catch (error) {
             next(error);
@@ -223,7 +221,6 @@ module.exports = {
             const workSchedules = await WorkScheduleModel
                 .find({
                     doctorID: doctorID,
-
                     day: {
                         $gte: new Date().toISOString().slice(0, 10)
                     }

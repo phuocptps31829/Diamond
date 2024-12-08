@@ -37,11 +37,7 @@ const useDeleteBranch = () => {
       );
     },
     onError: (error) => {
-      toastUI(
-        "Xóa chi nhánh thất bại.",
-        "error",
-      );
-      console.error("Error deleting branch:", error);
+      toastUI(error?.response?.data?.message || "Xóa chi nhánh thất bại.", "error");
     },
   });
 };

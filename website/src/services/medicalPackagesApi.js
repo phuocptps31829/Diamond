@@ -28,7 +28,7 @@ export const medicalPackageApi = {
     return res.data;
   },
   takeItAllPackages: async () => {
-    const res = await axiosInstanceGET.get("/medical-packages?limit=9999");
+    const res = await axiosInstanceGET.get("/medical-packages?noPaginated=true");
     return res.data.data;
   },
   getMedicalPackageById: async (id) => {

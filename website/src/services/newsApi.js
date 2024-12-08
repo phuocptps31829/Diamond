@@ -3,7 +3,7 @@ import { axiosInstanceCUD } from "./axiosInstance";
 
 export const newsApi = {
   takeItAllNews: async () => {
-    const res = await axiosInstanceGET.get("/news?limit=9999");
+    const res = await axiosInstanceGET.get("/news?noPaginated=true");
     return res.data.data;
   },
   getAllNews: async (filter) => {
