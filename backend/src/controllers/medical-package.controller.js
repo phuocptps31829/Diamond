@@ -24,17 +24,15 @@ module.exports = {
                 ...(gender ? { "applicableObject.gender": gender } : {}),
                 ...(search ? { slug: { $regex: search, $options: 'i' } } : {})
             };
-
+            console.log('sortOptions', sortOptions);
             const totalRecords = await MedicalPackageModel
                 .countDocuments({
-
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 });
 
             const medicalPackages = await MedicalPackageModel
                 .find({
-
                     ...(notHidden ? { isHidden: false } : {}),
                     ...queryOptions
                 })
@@ -43,7 +41,7 @@ module.exports = {
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
-                    createdAt: -1
+                    createdAt: -1,
                 })
                 .lean();
 

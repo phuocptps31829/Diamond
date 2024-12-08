@@ -35,8 +35,8 @@ const ActionMenu = ({ row }) => {
       queryClient.invalidateQueries("allMedicines");
       toast("Xóa thuốc thành công.", "success");
     },
-    onError: () => {
-      toast("Xóa thuốc thất bại.");
+    onError: (error) => {
+      toast(error?.response?.data?.message || "Xóa thuốc thất bại.", "error");
     },
   });
 

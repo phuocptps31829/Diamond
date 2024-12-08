@@ -797,13 +797,13 @@ module.exports = {
                     ...(prescription ?
                         {
                             prescription: {
+                                _id: prescription._id,
                                 advice: prescription.advice,
                                 medicines: prescriptionMedicines
                             }
                         } : {}
                     )
                 };
-
                 return formatted;
             }));
 

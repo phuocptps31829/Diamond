@@ -30,13 +30,12 @@ const useDeleteBranch = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("branches");
       toastUI(
-        "Xóa hóa đơn thành công.",
+        "Xóa hợp đồng thành công.",
         "success",
       );
     },
     onError: (error) => {
-      toastUI(error?.response?.data?.message || "Xóa hóa đơn thất bại.", "error");
-      console.error("Error deleting branch:", error);
+      toastUI(error?.response?.data?.message || "Xóa hợp đồng thất bại.", "error");
     },
   });
 };

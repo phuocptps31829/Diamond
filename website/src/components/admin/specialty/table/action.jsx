@@ -33,8 +33,7 @@ const useDeleteSpecialty = () => {
       toastUI("Xóa chuyên khoa thành công.", "success");
     },
     onError: (error) => {
-      toastUI("Xóa chuyên khoa thất bại.", "error");
-      console.error("Error deleting specialty:", error);
+      toastUI(error?.response?.data?.message || "Xóa chuyên khoa thất bại.", "error");
     },
   });
 };

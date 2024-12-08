@@ -30,11 +30,10 @@ const useDeleteService = () => {
         mutationFn: (serviceId) => serviceApi.deleteService(serviceId),
         onSuccess: () => {
             queryClient.invalidateQueries("service");
-            toastUI("Xóa dịch vụ thành công.", "success");
+            toastUI("Xóa lịch làm việc thành công.", "success");
         },
         onError: (error) => {
-            toastUI("Xóa dịch vụ thất bại.", "error");
-            console.error("Error deleting news:", error);
+            toastUI(error?.response?.data?.message || 'Xóa lịch làm việc thất bại.', "error");
         },
     });
 };

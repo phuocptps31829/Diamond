@@ -87,6 +87,9 @@ export const appointmentApi = {
       case "cod":
         endpoint = "/invoices/payment/cod";
         break;
+      case "zalopay":
+        endpoint = "/invoices/payment/zalopay";
+        break;
       default:
         break;
     }

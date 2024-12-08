@@ -57,9 +57,6 @@ export default function LoginComponent() {
   const onSubmit = (data) => {
     mutation.mutate({
       data,
-      params: {
-        isAdmin: false
-      }
     });
   };
 

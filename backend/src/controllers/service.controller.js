@@ -39,8 +39,8 @@ module.exports = {
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
-                    createdAt: -1,
                     ...sortOptions,
+                    createdAt: -1,
                 })
                 .lean();
 

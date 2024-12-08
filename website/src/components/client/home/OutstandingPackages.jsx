@@ -17,16 +17,17 @@ export default function OutstandingPackages() {
     error,
     isLoading: loadingMedicalPackages,
   } = useQuery({
-    queryKey: ["medical-packages"],
-    queryFn: medicalPackageApi.getAllMedicalPackages,
+    queryKey: ["medical-packages", "outstanding"],
+    queryFn: () => medicalPackageApi.getAllMedicalPackages({
+      page: 1,
+      limit: 8,
+      sort: '-orderCount',
+    }),
   });
 
   useEffect(() => {
     if (!loadingMedicalPackages) {
-      const sortedMedicalPackages = medicalPackages?.data.sort(
-        (a, b) => b.orderCount - a.orderCount,
-      );
-      setOutstandingMedicalPackages(sortedMedicalPackages?.slice(0, 8));
+      setOutstandingMedicalPackages(medicalPackages?.data);
     }
   }, [loadingMedicalPackages, medicalPackages]);
 

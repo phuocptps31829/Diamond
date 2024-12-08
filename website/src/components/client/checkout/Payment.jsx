@@ -5,10 +5,12 @@ import { useSelector } from "react-redux";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useReadNumber } from "@/hooks/useReadNumber";
 import { toast } from "react-toastify";
+
 import VNPAY_ICON from "../../../assets/images/vnpay.png";
 import ZALOPAY_ICON from "../../../assets/images/zalopay.png";
 import MOMO_ICON from "../../../assets/images/momo.png";
 import CASH_ICON from "../../../assets/images/cash.png";
+import SpinLoader from "@/components/ui/SpinLoader";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -20,7 +22,7 @@ export default function Form() {
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const readNumber = useReadNumber();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () =>
       appointmentApi.createAppointment(
         bookingInfo.bookingInfoCheckout,
@@ -36,6 +38,9 @@ export default function Form() {
         location.href = data.data.payUrl;
       }
       if (paymentMethod === "cod") {
+        location.href = "/payment-success";
+      }
+      if (paymentMethod === "zalopay") {
         location.href = "/payment-success";
       }
     },
@@ -286,7 +291,8 @@ export default function Form() {
               size="default"
               variant="primary"
             >
-              Tiến hành thanh toán
+
+              { isPending ? <SpinLoader /> : "Tiến hành thanh toán" }
             </Button>
           </div>
         </div>

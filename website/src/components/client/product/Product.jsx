@@ -159,16 +159,27 @@ export default function Product({ product }) {
           </div>
           <hr className="mb-1" />
           <div className="flex items-center justify-between sm:mt-2">
-            <div className="flex gap-[3px] text-[8px] opacity-35 md:text-[10px]">
-              <FaHeart />
-              <FaHeart />
-              <FaHeart />
-              <FaHeart />
-              <FaHeart />
+            <div className="flex gap-[3px] text-[8px] opacity-85 md:text-[12px]">
+              { product?.applicableObject?.age?.min + " - " + product?.applicableObject?.age?.max } tuổi
+              {/* { product?.applicableObject?.gender === '0' ?
+                "Nam/Nữ"
+                : product?.applicableObject?.gender
+              } */}
             </div>
-            <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
-              <SiTicktick /> { orderCount }
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger
+                  className="cursor-pointer"
+                  asChild>
+                  <div className="flex items-center gap-1 text-[9px] font-semibold md:gap-2 md:text-[12px]">
+                    <SiTicktick /> { orderCount }
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  { orderCount } lượt đặt
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           <div className="mt-2 flex w-full items-center justify-center gap-2">
             <div
@@ -183,8 +194,8 @@ export default function Product({ product }) {
                   <button
                     onClick={ () => handleAddClick(false) }
                     className={ `group flex h-full w-full items-center justify-center rounded-md border py-1 text-[10px] font-semibold transition duration-300 ease-in-out md:py-2 md:text-[13px] ${isInCart
-                        ? "bg-red-500 text-white"
-                        : "bg-primary-500 text-primary-500"
+                      ? "bg-red-500 text-white"
+                      : "bg-primary-500 text-primary-500"
                       }` }
                   >
                     { isInCart ? (

@@ -17,16 +17,17 @@ export default function OutstandingServices() {
     error,
     isLoading: loadingMedicalService,
   } = useQuery({
-    queryKey: ["medical-services"],
-    queryFn: serviceApi.getAllServices,
+    queryKey: ["services", "outstanding"],
+    queryFn: () => serviceApi.getAllServices({
+      page: 1,
+      limit: 8,
+      sort: '-orderCount',
+    }),
   });
 
   useEffect(() => {
     if (!loadingMedicalService) {
-      const sortedMedicalPackages = medicalServices?.data.sort(
-        (a, b) => b.orderCount - a.orderCount
-      );
-      setOutstandingMedicalPackages(sortedMedicalPackages?.slice(0, 8));
+      setOutstandingMedicalPackages(medicalServices?.data);
     }
   }, [loadingMedicalService, medicalServices]);
 

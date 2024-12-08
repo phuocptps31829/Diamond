@@ -34,8 +34,8 @@ const ActionMenu = ({ row }) => {
       queryClient.invalidateQueries("staffs");
       toast("Xóa nhân viên thành công.", "success");
     },
-    onError: () => {
-      toast("Xóa nhân viên thất bại.", "error");
+    onError: (error) => {
+      toast(error?.response?.data?.message || "Xóa nhân viên thất bại.", "error");
     },
   });
 

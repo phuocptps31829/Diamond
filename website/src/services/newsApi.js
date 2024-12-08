@@ -2,8 +2,13 @@ import { axiosInstanceGET } from "./axiosInstance";
 import { axiosInstanceCUD } from "./axiosInstance";
 
 export const newsApi = {
-  takeItAllNews: async () => {
-    const res = await axiosInstanceGET.get("/news?noPaginated=true");
+  takeItAllNews: async (params) => {
+    const res = await axiosInstanceGET.get("/news", {
+      params: {
+        ...params,
+        noPaginated: true,
+      },
+    });
     return res.data.data;
   },
   getAllNews: async (filter) => {

@@ -33,10 +33,10 @@ const ActionMenu = ({ row }) => {
         mutationFn: (packageId) => packageApi.deletePackage(packageId),
         onSuccess: () => {
             queryClient.invalidateQueries('takeItAllPackages');
-            toast('Xóa gói sản phẩm thành công.', 'success');
+            toast('Xóa gói khám thành công.', 'success');
         },
-        onError: () => {
-            toast('Xóa gói sản phẩm thất bại.');
+        onError: (error) => {
+            toast(error?.response?.data?.message || 'Xóa gói khám thất bại.', "error");
         },
     });
 

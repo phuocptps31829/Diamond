@@ -35,8 +35,8 @@ const ActionMenu = ({ row }) => {
       queryClient.invalidateQueries("patients");
       toast("Xóa người dùng thành công.", "success");
     },
-    onError: () => {
-      toast("Xóa người dùng thất bại.", "error");
+    onError: (error) => {
+      toast(error?.response?.data?.message || 'Xóa người dùng thất bại.', "error");
     },
   });
 

@@ -8,7 +8,11 @@ import NewsCard from "@/components/ui/NewsCard";
 export default function News() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["news", "noPaginated"],
-    queryFn: newsApi.takeItAllNews,
+    queryFn: () => newsApi.takeItAllNews({
+      page: 1,
+      limit: 6,
+      sort: "-createdAt",
+    }),
   });
 
   if (error) {

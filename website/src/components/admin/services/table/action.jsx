@@ -34,8 +34,7 @@ const useDeleteService = () => {
       toastUI("Xóa dịch vụ thành công.", "success");
     },
     onError: (error) => {
-      toastUI("Xóa dịch vụ thất bại.", "error");
-      console.error("Error deleting news:", error);
+      toastUI(error?.response?.data?.message || "Xóa dịch vụ thất bại.", "error");
     },
   });
 };

@@ -35,8 +35,7 @@ const useDeleteNews = () => {
       toastUI("Xóa tin tức thành công.", "success");
     },
     onError: (error) => {
-      toastUI("Xóa tin tức thất bại.", "error");
-      console.error("Error deleting news:", error);
+      toastUI(error?.response?.data?.message || "Xóa tin tức thất bại.", "error");
     },
   });
 };

@@ -36,8 +36,8 @@ const ActionMenu = ({ row }) => {
       queryClient.invalidateQueries("doctors");
       toast("Xóa bác sĩ thành công.", "success");
     },
-    onError: () => {
-      toast("Xóa bác sĩ thất bại.");
+    onError: (error) => {
+      toast(error?.response?.data?.message || "Xóa hóa đơn thất bại.", "error");
     },
   });
 
