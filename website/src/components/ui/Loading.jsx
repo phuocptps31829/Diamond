@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-const Loading = () => {
+const Loading = ({ ScaleMini = false }) => {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -10,7 +10,7 @@ const Loading = () => {
   }, []);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center py-10 absolute top-0 z-50 left-0 bg-[#000000a2] h-full">
+    <div className={`${ScaleMini ? "scale-[0.65]" : "bg-[#000000a2]"} flex w-full flex-col items-center justify-center py-10 absolute top-0 z-50 left-0 h-full`}>
       <div className="pyramid-loader">
         <div className="wrapper">
           <span className="side side1"></span>
