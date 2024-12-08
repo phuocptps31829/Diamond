@@ -4,8 +4,11 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useReadNumber } from "@/hooks/useReadNumber";
-import VNPAY_ICON from "../../../assets/images/vnpay.png";
 import { toast } from "react-toastify";
+import VNPAY_ICON from "../../../assets/images/vnpay.png";
+import ZALOPAY_ICON from "../../../assets/images/zalopay.png";
+import MOMO_ICON from "../../../assets/images/momo.png";
+import CASH_ICON from "../../../assets/images/cash.png";
 
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -180,7 +183,7 @@ export default function Form() {
                   }` }
               >
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png"
+                  src={ MOMO_ICON }
                   className="mr-4 w-[10%]"
                   alt="MOMO"
                 />
@@ -193,16 +196,16 @@ export default function Form() {
                 />
               </label>
               <label
-                onClick={ () => setPaymentMethod("banking") }
-                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "banking" ? "border-primary-500" : ""
+                onClick={ () => setPaymentMethod("zalopay") }
+                className={ `flex cursor-pointer items-center rounded-md border-2 border-gray-200 p-4 ${paymentMethod === "zalopay" ? "border-primary-500" : ""
                   }` }
               >
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/6963/6963703.png"
+                  src={ ZALOPAY_ICON }
                   className="mr-4 w-[10%]"
                   alt="Ngân hàng"
                 />
-                <span>Thanh toán ngân hàng</span>
+                <span>Thanh toán ZaloPay</span>
                 <input
                   type="radio"
                   name="payment"
@@ -233,7 +236,7 @@ export default function Form() {
                   }` }
               >
                 <img
-                  src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png"
+                  src={ CASH_ICON }
                   className="mr-4 w-[10%]"
                   alt="Phòng khám"
                 />
@@ -254,14 +257,14 @@ export default function Form() {
         </p>
         {/* Nút tiếp tục */ }
         <div className="mt-7">
-          <div className="flex w-full justify-between">
-            <p className="flex justify-end text-base">
+          <div className="flex flex-col md:flex-row w-full justify-between">
+            <p className="flex order-2 md:order-1 justify-start md:justify-end text-base">
               Bằng chữ:
               <span className="ml-1 font-bold text-red-500">
                 { totalAmountInWords }
               </span>
             </p>
-            <p className="flex justify-end text-xl md:text-2xl">
+            <p className="flex order-1 md:order-2 justify-start md:justify-end text-xl md:text-2xl">
               Tổng tiền:
               <strong className="ml-3 font-medium text-red-500">
                 { totalAmount.toLocaleString() }₫

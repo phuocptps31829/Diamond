@@ -5,6 +5,7 @@ const { Server } = require("socket.io");
 const getRedisClient = require('./src/config/redisClient');
 
 const app = require('./app');
+const { callRoutes } = require('./src/utils/init-cache');
 const PORT = process.env.PORT || 3000;
 const server = http.createServer(app);
 
@@ -134,12 +135,16 @@ let roomMessages = {};
         // }
     });
 
+    subscriber.v4.subscribe('laravel_database_reset_cache', (channel, message) => {
+    });
+
     // MongoDB connection
     mongoose.connect(process.env.MONGO_CONNECTION_STRING)
         .then(() => {
             console.log('Connected to database');
             server.listen(PORT, () => {
                 console.log(`Server started on port ${PORT}`);
+                callRoutes();
             });
         })
         .catch(err => {

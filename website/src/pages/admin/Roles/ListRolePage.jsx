@@ -3,6 +3,7 @@ import DataTableRole from "@/components/admin/role/table";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { roleApi } from "@/services/roleApi";
 import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
     {
@@ -15,6 +16,8 @@ const breadcrumbData = [
 ];
 
 const ListRolePage = () => {
+    useAuthRedirect(["SUPER_ADMIN"], "/admin/dashboard");
+
     const { data, isLoading, isError } = useQuery({
         queryKey: ['roles'],
         queryFn: roleApi.getAllRoles

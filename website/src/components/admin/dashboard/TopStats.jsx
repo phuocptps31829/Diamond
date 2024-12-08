@@ -3,6 +3,7 @@ import { FaCalendarAlt, FaUserPlus, FaMoneyCheckAlt } from "react-icons/fa";
 import { HiMiniArrowUpRight, HiMiniArrowDownRight } from "react-icons/hi2";
 import AnimatedValue from "@/components/ui/AnimatedNumberCounter";
 import { IoNewspaperSharp } from "react-icons/io5";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 // Định nghĩa các biểu tượng và màu sắc
 const ICONS = {
@@ -102,12 +103,15 @@ const calculateTotal = (data, dateField, valueField) => {
   };
 };
 
-export default function TopStats({
-  allNews,
-  allPatients,
-  allAppointments,
-  allInvoices,
-}) {
+export default function TopStats({ allData, loading }) {
+  const [isLoadingStats, setIsLoadingStats] = useState({
+    news: true,
+    patients: true,
+    appointments: true,
+    invoices: true,
+  });
+  const { allNews, allPatients, allAppointments, allInvoices } = allData;
+  const { isLoadingNews, isLoadingPatients, isLoadingAppointments, isLoadingInvoices } = loading;
   const [statsData, setStatsData] = useState([
     {
       id: 1,
@@ -143,79 +147,102 @@ export default function TopStats({
     },
   ]);
 
-  // Tính toán số liệu thống kê khi dữ liệu thay đổi
-  useEffect(() => {
-    if (allNews && allPatients && allAppointments && allInvoices) {
-      const newsStats = calculateStats(allNews, "updatedAt");
-      const patientStats = calculateStats(allPatients, "updatedAt");
-      const appointmentStats = calculateStats(allAppointments, "time");
-      const invoiceStats = calculateTotal(allInvoices, "createdAt", "price");
+  const updateStatsData = (data, id, calculateFn, keyField) => {
+    const stats = calculateFn(data, keyField);
+    setStatsData((prevStats) =>
+      prevStats.map((stat) => {
+        if (stat.id === id) {
+          return {
+            ...stat,
+            value: stats.count,
+            percentage: `${stats.percentageChange}%`,
+            isIncrease: stats.isIncrease,
+          };
+        }
+        return stat;
+      })
+    );
+  };
 
+  useEffect(() => {
+    if (!isLoadingNews && allNews) {
+      updateStatsData(allNews, 3, calculateStats, "updatedAt");
+      setIsLoadingStats((prev) => ({ ...prev, news: false }));
+    }
+  }, [allNews, isLoadingNews]);
+  
+  useEffect(() => {
+    if (!isLoadingPatients && allPatients) {
+      updateStatsData(allPatients.data, 2, calculateStats, "updatedAt");
+      setIsLoadingStats((prev) => ({ ...prev, patients: false }));
+    }
+  }, [allPatients, isLoadingPatients]);
+  
+  useEffect(() => {
+    if (!isLoadingAppointments && allAppointments) {
+      updateStatsData(allAppointments.data, 1, calculateStats, "time");
+      setIsLoadingStats((prev) => ({ ...prev, appointments: false }));
+    }
+  }, [allAppointments, isLoadingAppointments]);
+
+  useEffect(() => {
+    if (!isLoadingInvoices && allInvoices) {
+      const invoiceStats = calculateTotal(allInvoices.data, "createdAt", "price");
       setStatsData((prevStats) =>
         prevStats.map((stat) => {
-          if (stat.id === 1) {
-            return {
-              ...stat,
-              value: appointmentStats.count,
-              percentage: `${appointmentStats.percentageChange}%`,
-              isIncrease: appointmentStats.isIncrease,
-            };
-          } else if (stat.id === 2) {
-            return {
-              ...stat,
-              value: patientStats.count,
-              percentage: `${patientStats.percentageChange}%`,
-              isIncrease: patientStats.isIncrease,
-            };
-          } else if (stat.id === 3) {
-            return {
-              ...stat,
-              value: newsStats.count,
-              percentage: `${newsStats.percentageChange}%`,
-              isIncrease: newsStats.isIncrease,
-            };
-          } else if (stat.id === 4) {
+          if (stat.id === 4) {
             return {
               ...stat,
               value: invoiceStats.total,
               percentage: `${invoiceStats.percentageChange}%`,
               isIncrease: invoiceStats.isIncrease,
             };
-          } else {
-            return stat;
           }
-        }),
+          return stat;
+        })
       );
+      setIsLoadingStats((prev) => ({ ...prev, invoices: false }));
     }
-  }, [allNews, allPatients, allAppointments, allInvoices]);
+  }, [allInvoices, isLoadingInvoices]);
 
   return (
     <div className="w-full">
       <div className="grid grid-cols-4 gap-6">
-        { statsData.map((stat) => (
+        {statsData.map((stat) => (
           <div key={ stat.id } className="rounded-md bg-white p-4 shadow-sm">
             <div className="flex flex-col">
-              <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#CAEDFF]">
-                { stat.icon }
-              </div>
-              <div className="mt-2 font-semibold">{ stat.title }</div>
-              <div className="my-2 text-[30px] text-primary-500">
-                <AnimatedValue value={ stat.value } isCurrency={ stat.id === 4 } />
-              </div>
-              <div className="flex gap-1 text-[14px]">
-                <span
-                  className={ `flex items-center gap-1 ${stat.isIncrease ? COLORS.trendUp : COLORS.trendDown
-                    }` }
-                >
-                  { stat.isIncrease ? (
-                    <HiMiniArrowUpRight color="#13D6CB" size={ 18 } />
-                  ) : (
-                    <HiMiniArrowDownRight color="red" size={ 18 } />
-                  ) }
-                  { stat.percentage }
-                </span>
-                <span className="text-[#808080]">với tháng trước</span>
-              </div>
+              {isLoadingStats[stat.id === 1 ? 'appointments' : stat.id === 2 ? 'patients' : stat.id === 3 ? 'news' : 'invoices'] ? (
+                  <>
+                    <Skeleton className="h-12 w-12 rounded-md bg-[#CAEDFF]" />
+                    <Skeleton className="mt-2 h-5 w-3/4 rounded-md" />
+                    <Skeleton className="my-3 h-8 w-1/2 rounded-md" />
+                    <Skeleton className="h-5 w-1/3 rounded-md" />
+                  </>
+                ) : (
+                <>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#CAEDFF]">
+                    { stat.icon }
+                  </div>
+                  <div className="mt-2 font-semibold">{ stat.title }</div>
+                  <div className="my-2 text-[30px] text-primary-500">
+                    <AnimatedValue value={ stat.value } isCurrency={ stat.id === 4 } />
+                  </div>
+                  <div className="flex gap-1 text-[14px]">
+                    <span
+                      className={ `flex items-center gap-1 ${stat.isIncrease ? COLORS.trendUp : COLORS.trendDown
+                        }` }
+                    >
+                      { stat.isIncrease ? (
+                        <HiMiniArrowUpRight color="#13D6CB" size={ 18 } />
+                      ) : (
+                        <HiMiniArrowDownRight color="red" size={ 18 } />
+                      ) }
+                      { stat.percentage }
+                    </span>
+                    <span className="text-[#808080]">với tháng trước</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         )) }

@@ -2,6 +2,7 @@ const express = require('express');
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const newsController = require('../controllers/news.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 const router = express.Router();
 
@@ -35,6 +36,7 @@ const router = express.Router();
 */
 router.get(
     '/',
+    cacheMiddleware.cache("News:"),
     helperMiddleware.checkQueryParams,
     newsController.getAllNews
 );

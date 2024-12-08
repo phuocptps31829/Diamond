@@ -188,9 +188,7 @@ module.exports = {
             let { startDay, endDay } = req.checkValueQuery;
 
             const appointments = await AppointmentModel
-                .find({
-
-                })
+                .find({})
                 .populate('patientID')
                 .populate('serviceID')
                 .populate({
@@ -601,8 +599,8 @@ module.exports = {
 
                 const year = new Date(item.time).getFullYear().toString();
                 const specialtyID = item?.serviceID
-                    ? item.serviceID.specialtyID.toString()
-                    : medicalPackage.specialtyID.toString();
+                    ? item.serviceID?.specialtyID?.toString()
+                    : medicalPackage?.specialtyID?.toString();
 
                 let yearObj = result.find(obj => obj.year === year);
                 if (!yearObj) {
@@ -613,7 +611,7 @@ module.exports = {
                     result.push(yearObj);
                 }
 
-                let specialtyObj = yearObj.specialties.find(spec => spec.specialtyID === specialtyID);
+                let specialtyObj = yearObj.specialties.find(spec => spec?.specialtyID === specialtyID);
                 if (!specialtyObj) {
                     specialtyObj = {
                         specialtyID,
@@ -900,5 +898,6 @@ module.exports = {
         } catch (error) {
             next(error);
         }
-    }
+    },
+
 };

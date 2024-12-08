@@ -4,6 +4,7 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const branchController = require('../controllers/branch.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const branchController = require('../controllers/branch.controller');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("Branch:"),
     helperMiddleware.checkQueryParams,
     branchController.getAllBranches
 );

@@ -58,7 +58,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
-    // cacheMiddleware.cache("medicalPackages:"),
+    cacheMiddleware.cache("MedicalPackage:"),
     helperMiddleware.checkQueryParams,
     helperMiddleware.checkValueQuery,
     medicalPackageController.getAllMedicalPackages

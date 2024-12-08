@@ -4,6 +4,7 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const invoiceController = require('../controllers/invoice.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const invoiceController = require('../controllers/invoice.controller');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("Invoice:"),
     helperMiddleware.checkQueryParams,
     invoiceController.getAllInvoices
 );

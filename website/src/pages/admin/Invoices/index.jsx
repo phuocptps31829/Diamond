@@ -1,5 +1,6 @@
 import InvoiceList from "@/components/admin/invoices/InvoiceList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,6 +13,8 @@ const breadcrumbData = [
 ];
 
 const InvoicesListPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "STAFF_ACCOUNTANT"], "/admin/dashboard");
+
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />

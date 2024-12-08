@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import SupportComponent from "@/components/admin/support/index.jsx";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -13,6 +14,8 @@ const breadcrumbData = [
 ];
 
 const SupportPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -22,7 +25,7 @@ const SupportPage = () => {
 
   return (
     <div>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <SupportComponent />
     </div>
   );

@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/Command";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { clinicsApi } from "@/services/clinicApi";
+import { toastUI } from "@/components/ui/Toastify";
+import { useSearchParams } from "react-router-dom";
 
 export default function Selectclinic({
     control,
@@ -29,7 +31,9 @@ export default function Selectclinic({
 }) {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
-    console.log(branchID, specialtyID);
+    const [isNotValidDate, setIsNotValidDate] = useState(false);
+    const [searchParams] = useSearchParams();
+
     useEffect(() => {
         if (!specialtyID || !branchID) return;
 
@@ -50,6 +54,17 @@ export default function Selectclinic({
         errors[name] = undefined;
     }, [branchID, specialtyID, errors, name]);
 
+    useEffect(() => {
+        if (searchParams.get("date")) {
+            if (new Date(searchParams.get("date")) < new Date()) {
+                setIsNotValidDate(true);
+                toastUI("Không thể thêm lịch cho ngày đã qua", "error");
+            } else {
+                setIsNotValidDate(false);
+            }
+        }
+    }, [searchParams]);
+
     return (
         <div>
             <label
@@ -67,6 +82,7 @@ export default function Selectclinic({
                         <Popover open={ open } onOpenChange={ setOpen }>
                             <PopoverTrigger asChild>
                                 <Button
+                                    disabled={ isNotValidDate }
                                     variant="outline"
                                     role="combobox"
                                     aria-expanded={ open }

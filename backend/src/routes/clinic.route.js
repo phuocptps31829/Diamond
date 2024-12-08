@@ -4,6 +4,7 @@ const router = express.Router();
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const clinicController = require('../controllers/clinic.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const clinicController = require('../controllers/clinic.controller');
 */
 router.get(
     '/',
+    cacheMiddleware.cache("Clinic:"),
     helperMiddleware.checkQueryParams,
     clinicController.getAllClinics
 );

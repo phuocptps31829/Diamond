@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/user.controller');
-const authController = require('../controllers/auth.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
-const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi

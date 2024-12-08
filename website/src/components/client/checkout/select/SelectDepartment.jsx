@@ -19,6 +19,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { branchApi } from "@/services/branchesApi";
 import toast from "react-hot-toast";
+import { LuLoader2 } from "react-icons/lu";
 
 export default function SelectDepartment({
   control,
@@ -30,15 +31,20 @@ export default function SelectDepartment({
 }) {
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchDepartments = async () => {
       if (!specialtyID) return;
+
+      setIsLoading(true);
       try {
         const data = await branchApi.getAllBranchesBySpecialty(specialtyID);
         setDepartments(data);
       } catch (error) {
         console.error("Failed to fetch departments:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -74,6 +80,7 @@ export default function SelectDepartment({
                   errors[name] && "border-red-500",
                   selectedProductID ? 'pointer-events-auto' : 'pointer-events-none'
                 ) }
+                disabled={ isLoading }
               >
                 { field.value ? (
                   departments.find(
@@ -82,7 +89,9 @@ export default function SelectDepartment({
                 ) : (
                   <span className="text-gray-600">Chọn chi nhánh</span>
                 ) }
-                <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
+                { isLoading
+                  ? <LuLoader2 className="w-5 h-5 animate-spin text-primary-500" />
+                  : <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" /> }
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
@@ -99,7 +108,7 @@ export default function SelectDepartment({
                           field.onChange(
                             currentValue,
                           );
-                          onChange(currentValue,department.coordinates);
+                          onChange(currentValue, department.coordinates);
                           setOpen(false);
                         } }
                       >

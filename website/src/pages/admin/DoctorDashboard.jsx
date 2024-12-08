@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import LeftColumnStats from "../../components/admin/dashboardDoctor/LeftColumnStats";
-import RightColumnStats from "../../components/admin/dashboardDoctor/RightColumnStats";
+import TopStats from "../../components/admin/dashboardDoctor/TopStats";
+import MiddleCharts from "../../components/admin/dashboardDoctor/MiddleCharts";
 import BottomLists from "../../components/admin/dashboardDoctor/BottomLists";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { appointmentApi } from "@/services/appointmentsApi";
-import Loading from "@/components/ui/Loading";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -19,6 +19,9 @@ const breadcrumbData = [
 
 export default function DoctorDashboard() {
   const [dataAppointmentsByDoctor, setDataAppointmentsByDoctor] = useState([]);
+
+  useAuthRedirect(["DOCTOR"], "/admin/dashboard");
+
   const { data: appointmentsByAges, isPending: isPendingAppointmentsByDoctor } =
     useQuery({
       queryKey: ["appointmentsDoctor"],
@@ -30,16 +33,12 @@ export default function DoctorDashboard() {
     setDataAppointmentsByDoctor(appointmentsByAges);
   }, [isPendingAppointmentsByDoctor, appointmentsByAges]);
 
-  return isPendingAppointmentsByDoctor ? (
-    <Loading />
-  ) : (
+  return (
     <>
-      <BreadcrumbCustom data={breadcrumbData} />
-      <div className="grid grid-cols-[70%_27.8%] justify-between">
-        <LeftColumnStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-        <RightColumnStats dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
-      </div>
-      <BottomLists dataAppointmentsByDoctor={dataAppointmentsByDoctor} />
+      <BreadcrumbCustom data={ breadcrumbData } />
+      <TopStats dataAppointmentsByDoctor={ dataAppointmentsByDoctor } loading={ isPendingAppointmentsByDoctor } />
+      <MiddleCharts dataAppointmentsByDoctor={ dataAppointmentsByDoctor } loading={ isPendingAppointmentsByDoctor } />
+      <BottomLists dataAppointmentsByDoctor={ dataAppointmentsByDoctor } loading={ isPendingAppointmentsByDoctor } />
     </>
   );
 }

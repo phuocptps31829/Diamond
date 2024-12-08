@@ -4,9 +4,9 @@ import { HiMiniArrowUpRight, HiMiniArrowDownRight } from "react-icons/hi2";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { GiMoneyStack } from "react-icons/gi";
 import { GrMoney } from "react-icons/gr";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-
-export default function TopStats({ revenueData }) {
+export default function TopStats({ revenueData, loading }) {
   const [data, setData] = useState([
     {
       key: "byDay",
@@ -47,12 +47,11 @@ export default function TopStats({ revenueData }) {
   };
 
   useEffect(() => {
-    if (revenueData) {
+    if (!loading && revenueData) {
       setData((prevData) =>
         prevData.map((item) => {
           const { presentRevenue, previousRevenue } = revenueData[item.key];
           const { value, percentage, isIncrease } = calculateStats(presentRevenue, previousRevenue);
-          console.log("type", typeof percentage);
           return {
             ...item,
             value,
@@ -62,12 +61,29 @@ export default function TopStats({ revenueData }) {
         })
       );
     }
-  }, [revenueData]);
+  }, [revenueData, loading]);
 
   return (
     <div className="w-full">
       <div className="grid grid-cols-3 gap-6">
-        { data.map((item, index) => (
+      {loading
+          ? Array(3)
+              .fill(0)
+              .map((_, index) => (
+                <div className="rounded-md bg-white p-4 shadow-sm" key={index}>
+                  <div className="flex flex-col">
+                    <Skeleton className="h-12 w-12 rounded-md bg-[#CAEDFF]" />
+                    <Skeleton className="mt-2 h-5 w-3/4 rounded-md" />
+                    <Skeleton className="my-2 h-10 w-2/3 rounded-md" />
+                    <div className="flex gap-1">
+                      <Skeleton className="h-4 w-16 rounded-md" />
+                      <Skeleton className="h-4 w-20 rounded-md" />
+                    </div>
+                  </div>
+                </div>
+              ))
+          :
+        data.map((item, index) => (
           <div className="rounded-md bg-white p-4 shadow-sm" key={ index }>
             <div className="flex flex-col">
               <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[#CAEDFF]">
@@ -92,7 +108,7 @@ export default function TopStats({ revenueData }) {
               </div>
             </div>
           </div>
-        )) }
+        ))}
       </div>
     </div>
   );

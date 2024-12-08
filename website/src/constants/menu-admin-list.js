@@ -32,7 +32,7 @@ export const getMenuList = (pathname) => [
           {
             href: "/admin/doctor-dashboard",
             label: "Bảng điều khiển bác sĩ",
-            exceptRoles: ["STAFF_ACCOUNTANT"],
+            exceptRoles: ["STAFF_ACCOUNTANT", "ADMIN", "SUPER_ADMIN"],
             active: pathname.includes("/admin/doctor-dashboard"),
           },
           {
@@ -47,7 +47,7 @@ export const getMenuList = (pathname) => [
   },
   {
     groupLabel: "",
-    roles: ["ADMIN", "SUPER_ADMIN", "DOCTOR", "STAFF_RECEPTIONIST"],
+    roles: ["ADMIN", "SUPER_ADMIN", "STAFF_RECEPTIONIST"],
     menus: [
       {
         href: "/admin/support",
@@ -271,12 +271,6 @@ export const getMenuList = (pathname) => [
             label: "Danh sách lịch làm việc",
             active: pathname === "/admin/schedules/list",
           },
-          {
-            href: "/admin/schedules/details",
-            label: "Thêm lịch làm việc",
-            exceptRoles: ["DOCTOR"],
-            active: pathname === "/admin/schedules/details",
-          },
         ],
       },
     ],
@@ -373,11 +367,11 @@ export const getMenuList = (pathname) => [
             label: "Danh sách vai trò",
             active: pathname === "/admin/roles/list",
           },
-          {
-            href: "/admin/roles/create",
-            label: "Thêm vai trò",
-            active: pathname === "/admin/roles/create",
-          },
+          // {
+          //   href: "/admin/roles/create",
+          //   label: "Thêm vai trò",
+          //   active: pathname === "/admin/roles/create",
+          // },
         ],
       },
     ],

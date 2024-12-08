@@ -74,8 +74,6 @@ const ContractsDoctorInternistAdd = () => {
       return;
     }
     canvas.toBlob(async (blob) => {
-      console.log("%cSignature Blob:", "font-weight: bold;", blob);
-
       const formData = new FormData();
       formData.append("file", blob, "signature.png");
       formData.append("doctorID", data.doctorID);

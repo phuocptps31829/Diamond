@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/components/ui/NotFound";
 import Loading from "@/components/ui/Loading";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -16,6 +17,8 @@ const breadcrumbData = [
 ];
 
 const PackagesListPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+
   const {
     data: dataTakeItAllPackages,
     error: errorTakeItAllPackages,

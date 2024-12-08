@@ -1,5 +1,6 @@
 import AppointmentsList from "@/components/admin/appointments/AppointmentsList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -12,6 +13,8 @@ const breadcrumbData = [
 ];
 
 const AppointmentsListPage = () => {
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+
   return (
     <div>
       <BreadcrumbCustom data={ breadcrumbData } />

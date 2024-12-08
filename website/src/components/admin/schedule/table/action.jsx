@@ -57,8 +57,8 @@ const Action = ({ row }) => {
             <DropdownMenuContent align="end" className="w-full min-w-0">
                 <Link to={ `/admin/schedules/details/${row.original._id}` }>
                     <DropdownMenuItem className="flex w-full items-center gap-2">
-                        <BiDetail className="text-[15px]" />
-                        <span> Chi tiết</span>
+                        <BiDetail className="text-[15px] text-yellow-600" />
+                        <span className="text-yellow-600"> Chi tiết</span>
                     </DropdownMenuItem>
                 </Link>
                 <DropdownMenuItem className="flex w-full items-center gap-2">
@@ -68,8 +68,8 @@ const Action = ({ row }) => {
                                 className="flex cursor-pointer items-center gap-2"
                                 onClick={ (e) => e.stopPropagation() }
                             >
-                                <RiDeleteBin6Line className="text-[15px]" />
-                                <span>Xóa</span>
+                                <RiDeleteBin6Line className="text-[15px] text-red-600" />
+                                <span className="text-red-600">Xóa</span>
                             </div>
                         </AlertDialogTrigger>
                         <AlertDialogContent>

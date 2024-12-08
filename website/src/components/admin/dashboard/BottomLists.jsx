@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableHeader,
@@ -23,12 +24,28 @@ import {
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 import { formatDateTimeLocale } from "@/utils/format";
+import { Skeleton } from "@/components/ui/Skeleton";
 
-export default function BottomLists({ dataUpcomingAppointments }) {
+const   renderSkeletonRows = (colCount) =>
+  Array(5)
+    .fill(0)
+    .map((_, idx) => (
+      <TableRow key={idx} className="h-12">
+        {Array(colCount)
+          .fill(0)
+          .map((_, colIdx) => (
+            <TableCell key={colIdx}>
+              <Skeleton className="h-4 w-full rounded-md" />
+            </TableCell>
+          ))}
+      </TableRow>
+));
+
+export default function BottomLists({ dataUpcomingAppointments, loading }) {
   const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [closestPatients, setClosestPatients] = useState([]);
   useEffect(() => {
-    if (!dataUpcomingAppointments) return;
+    if (loading || !dataUpcomingAppointments) return;
     const now = new Date();
     const upcomingAppointments = dataUpcomingAppointments
       .filter((appointment) => {
@@ -47,16 +64,20 @@ export default function BottomLists({ dataUpcomingAppointments }) {
       .sort((a, b) => new Date(b.time) - new Date(a.time));
 
     setClosestPatients(closestPatientsList.slice(0, 5));
-  }, [dataUpcomingAppointments]);
+  }, [dataUpcomingAppointments, loading]);
 
   return (
     <div className="mt-6 grid w-full grid-cols-[32%_65.8%] justify-between">
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Bệnh nhân gần đây</h3>
-          <a href="#" className="text-[14px] text-blue-600 hover:underline">
+          {loading ? (
+            <Skeleton className="h-6 w-28" />
+          ) : (
+            <Link to="/" className="text-[14px] text-blue-600 hover:underline">
             Hiển thị tất cả
-          </a>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader>
@@ -68,28 +89,36 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { closestPatients.map((appointment, index) => (
-              <TableRow key={ index } className="p-0 text-[13px]">
-                <TableCell>{ index + 1 }</TableCell>
-                <TableCell>{ appointment.patient.fullName }</TableCell>
-                <TableCell>{ appointment.result.diagnose }</TableCell>
-                <TableCell>
-                  <Menubar className="border-none bg-transparent shadow-none">
-                    <MenubarMenu>
-                      <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                        <CiMenuKebab />
-                      </MenubarTrigger>
-                      <MenubarContent>
-                        <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                          <FaEdit className="mr-2" size={ 18 } />{ " " }
-                          <span>Xem chi tiết</span>
-                        </MenubarItem>
-                      </MenubarContent>
-                    </MenubarMenu>
-                  </Menubar>
-                </TableCell>
+          {loading ? (
+              renderSkeletonRows(4)
+            ) : closestPatients.length === 0 ? (
+              <TableRow className="h-14 text-center text-[13px]">
+                <TableCell colSpan={6}>Không có bệnh nhân nào !</TableCell>
               </TableRow>
-            )) }
+            ) : (
+              closestPatients.map((appointment, index) => (
+                <TableRow key={ index } className="p-0 text-[13px]">
+                  <TableCell>{ index + 1 }</TableCell>
+                  <TableCell>{ appointment.patient.fullName }</TableCell>
+                  <TableCell>{ appointment.result.diagnose }</TableCell>
+                  <TableCell>
+                    <Menubar className="border-none bg-transparent shadow-none">
+                      <MenubarMenu>
+                        <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
+                          <CiMenuKebab />
+                        </MenubarTrigger>
+                        <MenubarContent>
+                          <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                            <FaEdit className="mr-2" size={ 18 } />{ " " }
+                            <span>Xem chi tiết</span>
+                          </MenubarItem>
+                        </MenubarContent>
+                      </MenubarMenu>
+                    </Menubar>
+                  </TableCell>
+                </TableRow>
+              ))
+          )}
           </TableBody>
         </Table>
       </div>
@@ -97,9 +126,13 @@ export default function BottomLists({ dataUpcomingAppointments }) {
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Lịch hẹn sắp tới</h3>
-          <a href="#" className="text-[14px] text-blue-600 hover:underline">
+          {loading ? (
+            <Skeleton className="h-6 w-32" />
+          ) : (
+            <Link to="/" className="text-[14px] text-blue-600 hover:underline">
             Hiển thị tất cả
-          </a>
+            </Link>
+          )}
         </div>
         <Table>
           <TableHeader>
@@ -113,7 +146,8 @@ export default function BottomLists({ dataUpcomingAppointments }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            { filteredAppointments.length === 0 ? (
+            {loading
+              ? renderSkeletonRows(6) : filteredAppointments.length === 0 ? (
               <TableRow className="h-14 text-center text-[13px]">
                 <TableCell colSpan={ 6 }>Không có lịch hẹn nào !</TableCell>
               </TableRow>

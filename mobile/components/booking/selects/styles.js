@@ -18,6 +18,13 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 8,
         backgroundColor: 'white',
     },
+    dropdownStyleSecondary: {
+        height: 50,
+        borderColor: '#E5E5E5',
+        borderBottomWidth: 1,
+        paddingHorizontal: 8,
+        backgroundColor: 'white',
+    },
     itemContainerStyle: {
         borderRadius: 8,
         backgroundColor: 'white',

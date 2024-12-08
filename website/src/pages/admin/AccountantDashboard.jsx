@@ -3,9 +3,9 @@ import BottomLists from "@/components/admin/dashboardAccountant/BottomLists";
 import MiddleCharts from "@/components/admin/dashboardAccountant/MiddleCharts";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import NotFound from "@/components/ui/NotFound";
-import Loading from "@/components/ui/Loading";
 import { useQuery } from "@tanstack/react-query";
 import { invoicesApi } from "@/services/invoicesApi";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
@@ -18,6 +18,8 @@ const breadcrumbData = [
 ];
 
 export default function AccountantDashboard() {
+  useAuthRedirect(["STAFF_ACCOUNTANT"], "/admin/dashboard");
+
   const {
     data: revenueStatistics,
     error: errorRevenueStatistics,
@@ -43,16 +45,10 @@ export default function AccountantDashboard() {
 
   return (
     <>
-      { isLoadingRevenueStatistics || isLoadingallInvoices ? (
-        <Loading />
-      ) : (
-        <>
-          <BreadcrumbCustom data={ breadcrumbData } />
-          <TopStats revenueData={ revenueStatistics } />
-          <MiddleCharts revenueData={ revenueStatistics.byYear } />
-          <BottomLists allInvoices={ allInvoices.data } />
-        </>
-      ) }
+      <BreadcrumbCustom data={ breadcrumbData } />
+      <TopStats revenueData={ revenueStatistics } loading={isLoadingRevenueStatistics} />
+      <MiddleCharts revenueData={ revenueStatistics } loading={isLoadingRevenueStatistics} />
+      <BottomLists allInvoices={ allInvoices } loading={isLoadingallInvoices} />
     </>
-  );
+  )
 }

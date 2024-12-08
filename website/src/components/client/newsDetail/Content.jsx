@@ -46,7 +46,7 @@ export default function ContentNews({
       setLatestNews(
         allNews
           .filter((item) => item._id !== news._id)
-          .slice(allNews.length - 5, allNews.length)
+          .slice(0, 6)
           .reverse()
       );
     }
@@ -125,7 +125,7 @@ export default function ContentNews({
           </h2>
 
           { isLoading || isLoadingAllNews
-            ? Array.from({ length: 3 }).map((_, index) => (
+            ? Array.from({ length: 6 }).map((_, index) => (
               <div className="flex" key={ index }>
                 <div className="flex flex-col overflow-hidden rounded-md bg-white shadow-lg sm:h-[150px] sm:flex-row">
                   <div className="h-full min-w-[145px] max-w-[145px] bg-gray-200">

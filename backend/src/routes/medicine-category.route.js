@@ -2,6 +2,7 @@ const express = require('express');
 
 const helperMiddleware = require('../middlewares/helper.middleware');
 const medicineCategoryController = require('../controllers/medicine-category.controller');
+const cacheMiddleware = require('../middlewares/cache.middleware');
 
 const router = express.Router();
 
@@ -35,6 +36,7 @@ const router = express.Router();
 */
 router.get(
     '/',
+    cacheMiddleware.cache("MedicineCategory:"),
     helperMiddleware.checkQueryParams,
     medicineCategoryController.getAllMedicineCategories
 );

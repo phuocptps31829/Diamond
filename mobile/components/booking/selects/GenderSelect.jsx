@@ -61,6 +61,7 @@ const GenderSelect = ({
                 onBlur={ () => setIsFocus(false) }
                 onChange={ item => {
                     onSelect(item.value);
+                    onSelect(item.value);
                     setIsFocus(false);
                 } }
                 renderInputSearch={ (onSearch) => (

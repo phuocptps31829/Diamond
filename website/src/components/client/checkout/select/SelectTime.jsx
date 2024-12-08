@@ -18,6 +18,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import toast from "react-hot-toast";
+import { LuLoader2 } from "react-icons/lu";
 
 export default function SelectTime({
   control,
@@ -29,11 +30,13 @@ export default function SelectTime({
 }) {
   const [open, setOpen] = useState(false);
   const [times, setTimes] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchDates = async () => {
       if (!doctorID) return;
 
+      setIsLoading(true);
       try {
         const data = await workScheduleApi.getWorkSchedulesByDoctors(doctorID);
 
@@ -53,6 +56,8 @@ export default function SelectTime({
         }
       } catch (error) {
         console.error("Failed to fetch available dates:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -87,18 +92,23 @@ export default function SelectTime({
                   variant="outline"
                   role="combobox"
                   aria-expanded={ open }
+                  disabled={ isLoading }
                   className={ cn(
-                    "w-full justify-between py-[21px]",
+                    "w-full justify-between py-[21px] flex items-center",
                     errors[name] && "border-red-500",
                     date ? 'pointer-events-auto' : 'pointer-events-none'
                   ) }
                 >
-                  { field.value ? (
-                    times.find((timeObj) => timeObj.time === field.value)?.time
-                  ) : (
-                    <span className="text-gray-600">Chọn giờ khám</span>
-                  ) }
-                  <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
+                  <div>
+                    { field.value ? (
+                      times.find((timeObj) => timeObj.time === field.value)?.time
+                    ) : (
+                      <span className="text-gray-600">Chọn giờ khám</span>
+                    ) }
+                  </div>
+                  { isLoading
+                    ? <LuLoader2 className="w-5 h-5 animate-spin text-primary-500" />
+                    : <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" /> }
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="popover-content-width-same-as-its-trigger p-0">

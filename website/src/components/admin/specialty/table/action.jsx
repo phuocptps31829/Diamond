@@ -60,19 +60,19 @@ const Action = ({ row }) => {
       <DropdownMenuContent align="end" className="w-fit min-w-0">
         <Link to={ `/admin/specialties/edit/${row.original._id}` }>
           <DropdownMenuItem className="flex w-fit items-center gap-2">
-            <FiEdit className="text-[15px]" />
-            <span>Sửa</span>
+            <FiEdit className="text-[15px] text-primary-600" />
+            <span className="text-primary-600">Chỉnh sửa</span>
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="flex w-fit items-center gap-2">
+        <DropdownMenuItem className="flex w-full items-center gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div
                 className="flex w-full cursor-pointer items-center gap-2"
                 onClick={ (e) => e.stopPropagation() }
               >
-                <RiDeleteBin6Line className="text-[15px]" />
-                <span>Xóa</span>
+                <RiDeleteBin6Line className="text-[15px] text-red-600" />
+                <span className="text-red-600 flex-1">Xóa</span>
               </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
