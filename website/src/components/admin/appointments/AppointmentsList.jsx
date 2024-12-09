@@ -3,13 +3,18 @@ import DataTable from "./table";
 import NotFound from "@/components/ui/NotFound";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getColumnsAppointments } from "./table/columns";
 
 const AppointmentsList = () => {
   const profile = useSelector((state) => state.auth.userProfile);
   const roleID = profile?.role?._id;
   const [pageIndex, setPageIndex] = useState(0);
+  const [tableData, setTableData] = useState({
+    data: [],
+    pageCount: 0,
+    total: 0,
+  });
 
   let options = {
     keepPreviousData: true,
@@ -43,16 +48,18 @@ const AppointmentsList = () => {
   }
 
   const { data, error, isLoading } = useQuery(options);
-
+  useEffect(() => {
+    if (!isLoading) {
+      setTableData({
+        data: data?.data || [],
+        pageCount: Math.ceil((data?.totalRecords || 0) / 10),
+        total: data?.totalRecords || 0,
+      });
+    }
+  }, [data, isLoading]);
   if (error) {
     return <NotFound message={error.message} />;
   }
-
-  const tableData = {
-    data: data?.data || [],
-    pageCount: Math.ceil((data?.totalRecords || 0) / 10),
-    total: data?.totalRecords || 0,
-  };
 
   return (
     <DataTable

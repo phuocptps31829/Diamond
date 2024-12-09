@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { getStatusPaymentStyle } from "../utils/StatusStyle";
 import { IoBulbOutline } from "react-icons/io5";
 import { GiMedicines } from "react-icons/gi";
@@ -50,6 +50,7 @@ import {
 import { Card } from "@/components/ui/Card";
 import ServiceBooking from "./ServiceBooking";
 import { appointmentApi } from "@/services/appointmentsApi";
+import { prescriptionApi } from "@/services/prescriptionApi";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -132,6 +133,8 @@ const BookingInfo = ({ data }) => {
     const date = new Date(timestamp);
     return date.toISOString().split("T")[0];
   };
+  console.log(data, "data");
+  
 
   const extractTime = (timestamp) => {
     const date = new Date(timestamp);
@@ -167,6 +170,17 @@ const BookingInfo = ({ data }) => {
   //   bookingData._id,
   //   updateStatus,
   // ]);
+  const handleDownloadPrescription = () => {
+    prescriptionApi
+      .exportPrescription(data.results[0].prescription._id)
+      .then(() => {
+        toastUI("Tải xuống đơn thuốc thành công!", "success");
+      })
+      .catch((error) => {
+        console.error("Error downloading prescription:", error);
+        toastUI("Tải xuống đơn thuốc thất bại. Vui lòng thử lại!", "error");
+      });
+  };
 
   const handleChangeStatus = (status) => {
     if (status === "EXAMINED" && bookingData.results.length === 0) {
@@ -203,7 +217,7 @@ const BookingInfo = ({ data }) => {
       appointmentApi.updateAppointmentWorkShedule(id, wordScheduleId),
     onSuccess: (id) => {
       toastUI("Cập nhật lịch khám bác sĩ", "success");
-      queryClient.invalidateQueries("appointments",id);
+      queryClient.invalidateQueries("appointments", id);
     },
     onError: (err) => {
       console.log(err);
@@ -212,7 +226,7 @@ const BookingInfo = ({ data }) => {
   });
 
   return (
-    <div className="mt-8 w-full">
+    <div className="w-full">
       <div className="flex w-full justify-between">
         <div className="my-2 flex items-center justify-start gap-2">
           {" "}
@@ -614,53 +628,82 @@ const BookingInfo = ({ data }) => {
                 </Card>
               ))}
             </div>
-            <div className="mt-5 w-full text-end">
+            <div className="mt-5 flex w-full items-center justify-between gap-2">
               {bookingData.results.length > 0 && (
-                <Link
-                  to={`/admin/appointments/create/${bookingData.patient._id}`}
-                >
-                  <Button
-                    variant={
-                      bookingData.payment.status === "PAID"
-                        ? "custom"
-                        : "outline"
-                    }
-                    className="ml-2"
-                  >
-                    Thêm lịch tái khám
-                  </Button>
-                </Link>
+                <>
+                  <div className="">
+                    <Button
+                      variant="primary"
+                      className="w-fit"
+                      onClick={handleDownloadPrescription}
+                    >
+                      Tải xuống đơn thuốc
+                      <svg
+                        className="ml-1 size-4"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                          strokeLinejoin="round"
+                          strokeLinecap="round"
+                        ></path>
+                      </svg>{" "}
+                    </Button>
+                  </div>
+                </>
               )}
               {bookingData.results.length > 0 &&
                 bookingData.payment.status !== "PAID" && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="custom" className="ml-2">
-                        Thanh toán
+                  <div>
+                    <Link
+                      to={`/admin/appointments/create/${bookingData.patient._id}`}
+                    >
+                      <Button
+                        variant={
+                          bookingData.payment.status === "PAID"
+                            ? "custom"
+                            : "outline"
+                        }
+                        className="ml-2"
+                      >
+                        Thêm lịch tái khám
                       </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Xác nhận thanh toán</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Bạn có chắc chắn muốn thanh toán{" "}
-                          <span className="font-bold text-black">
-                            {formatCurrency(
-                              bookingData.invoice.price +
-                                bookingData.invoice.arisePrice
-                            )}
-                          </span>{" "}
-                          đơn khám bệnh này không?
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Hủy</AlertDialogCancel>
-                        <AlertDialogAction onClick={handlePayment}>
-                          Xác nhận
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                    </Link>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="custom" className="ml-2">
+                          Thanh toán
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Xác nhận thanh toán
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Bạn có chắc chắn muốn thanh toán{" "}
+                            <span className="font-bold text-black">
+                              {formatCurrency(
+                                bookingData.invoice.price +
+                                  bookingData.invoice.arisePrice
+                              )}
+                            </span>{" "}
+                            đơn khám bệnh này không?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Hủy</AlertDialogCancel>
+                          <AlertDialogAction onClick={handlePayment}>
+                            Xác nhận
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 )}
             </div>
           </div>

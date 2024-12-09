@@ -35,7 +35,7 @@ export const contractApi = {
     return res.data.data;
   },
   exportContract: async (id) => {
-    const res = await axiosInstanceCUD.post(`/contracts/export/${id}`);
+    const res = await axiosInstanceCUD.get(`/contracts/export/${id}`);
     return res.data.data;
   },
 };
