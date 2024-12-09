@@ -55,4 +55,8 @@ export const invoicesApi = {
     );
     return res.data;
   },
+  exportInvoice: async (id) => {
+    const res = await axiosInstanceCUD.get(`/invoices/export/${id}`);
+    return res.data;
+  },
 };

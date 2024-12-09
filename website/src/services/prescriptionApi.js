@@ -25,5 +25,9 @@ export const prescriptionApi = {
             }
         );
         return res.data;
-    }
+    },
+    exportPrescription: async (id) => {
+        const res = await axiosInstanceCUD.get(`/prescriptions/export/${id}`);
+        return res.data;
+    },
 };
