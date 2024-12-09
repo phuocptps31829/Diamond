@@ -62,45 +62,6 @@ export default function Form() {
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10">
       <div className="container mx-auto gap-5 rounded-lg bg-white px-10 py-5 pb-10">
-        {/* <div>
-          <div className="my-3 flex flex-col items-center justify-between md:flex-row">
-            <h1 className="text-[16px] font-bold md:text-[24px]">
-              Thông tin đặt lịch khám
-            </h1>
-            <span className="mt-4 text-[16px] md:mt-0 md:text-[20px]">
-              <strong>Tổng dịch vụ:</strong>{ " " }
-              { bookingInfo.bookingDetails?.length } dịch vụ
-            </span>
-          </div>
-          <div className="mb-6 flex flex-col justify-between text-[16px] md:flex-row md:text-[18px]">
-            <div className="w-full md:w-[50%]">
-              <p>Dịch vụ đã chọn:</p>
-              { cart.map((item, index) => (
-                <div
-                  key={ index }
-                  className="relative mb-3 mt-2 max-w-full rounded-lg border border-primary-500 px-2 py-2 md:px-3 md:py-2"
-                >
-                  <div className="flex flex-row items-center md:flex-row">
-                    <img
-                      src={ `${import.meta.env.VITE_IMAGE_API_URL}/${item.image}` }
-                      className="w-[60px] sm:w-[80px] md:w-[110px]"
-                      alt={ item.name }
-                    />
-                    <div className="ml-3 flex flex-col">
-                      <a
-                        href="/"
-                        className="text-[12px] font-bold uppercase sm:text-[16px] md:text-[18px]"
-                      >
-                        { item.name }
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )) }
-            </div>
-          </div>
-        </div>
-        <hr /> */}
         <h1 className="my-3 text-[16px] font-bold md:text-[24px]">
           Thông tin người khám
         </h1>
@@ -290,6 +251,7 @@ export default function Form() {
               className="rounded-md sm:h-10 sm:px-8"
               size="default"
               variant="primary"
+              disabled={ isPending }
             >
 
               { isPending ? <SpinLoader /> : "Tiến hành thanh toán" }

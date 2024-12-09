@@ -4,7 +4,7 @@ import { RECORD_PER_PAGE } from "@/constants/config";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { workScheduleApi } from "@/services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const breadcrumbData = [
@@ -20,6 +20,11 @@ const breadcrumbData = [
 const ScheduleTablePage = () => {
     useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
     const [pageIndex, setPageIndex] = useState(0);
+    const [tableData, setTableData] = useState({
+        data: [],
+        pageCount: 0,
+        total: 0,
+    });
 
     const userProfile = useSelector((state) => state.auth.userProfile);
 
@@ -55,11 +60,15 @@ const ScheduleTablePage = () => {
 
     const { data, isLoading, isError } = useQuery(options);
 
-    const tableData = {
-        data: data?.data || [],
-        pageCount: Math.ceil((data?.totalRecords || 0) / 10),
-        total: data?.totalRecords || 0,
-    };
+    useEffect(() => {
+        if (!isLoading) {
+            setTableData({
+                data: data?.data || [],
+                pageCount: Math.ceil((data?.totalRecords || 0) / 10),
+                total: data?.totalRecords || 0,
+            });
+        }
+    }, [data, isLoading]);
 
     return (
         <>

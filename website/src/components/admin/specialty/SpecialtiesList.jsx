@@ -2,11 +2,16 @@ import DataTable from "./table";
 import { columns } from "./table/columns";
 import { useQuery } from "@tanstack/react-query";
 import { specialtyApi } from "@/services/specialtiesApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RECORD_PER_PAGE } from "@/constants/config";
 
 const SpecialtiesList = () => {
   const [pageIndex, setPageIndex] = useState(0);
+  const [tableData, setTableData] = useState({
+    data: [],
+    pageCount: 0,
+    total: 0,
+  });
 
   const {
     data: specialtiesDataResponse,
@@ -20,13 +25,17 @@ const SpecialtiesList = () => {
     }),
   });
 
-  if (errorLoadingSpecialties) return <div>Error loading data</div>;
+  useEffect(() => {
+    if (!loadingSpecialties) {
+      setTableData({
+        data: specialtiesDataResponse?.data || [],
+        pageCount: Math.ceil((specialtiesDataResponse?.totalRecords || 0) / 10),
+        total: specialtiesDataResponse?.totalRecords || 0,
+      });
+    }
+  }, [specialtiesDataResponse, loadingSpecialties]);
 
-  const tableData = {
-    data: specialtiesDataResponse?.data || [],
-    pageCount: Math.ceil((specialtiesDataResponse?.totalRecords || 0) / 10),
-    total: specialtiesDataResponse?.totalRecords || 0,
-  };
+  if (errorLoadingSpecialties) return <div>Error loading data</div>;
 
   return <DataTable
     columns={ columns(pageIndex, RECORD_PER_PAGE) }

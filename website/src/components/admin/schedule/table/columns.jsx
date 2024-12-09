@@ -19,9 +19,11 @@ export const columnsSchedule = (pageIndex, pageSize) => [
             />
         ),
         cell: ({ row }) => (
-            <div className="w-full pl-5 text-left">
-                { pageIndex * pageSize + row.index + 1 }
-            </div>
+            <Checkbox
+                checked={ row.getIsSelected() }
+                onCheckedChange={ (value) => row.toggleSelected(!!value) }
+                aria-label="Select row"
+            />
         ),
         enableSorting: false,
         enableHiding: false,

@@ -26,8 +26,7 @@ import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { Link } from "react-router-dom";
 import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/Skeleton";
-import LoadingV2 from "@/components/ui/LoadingV2";
+import Loading from "@/components/ui/Loading";
 
 export default function DataTableSchedule({
     workSchedules,
@@ -160,7 +159,7 @@ export default function DataTableSchedule({
                 </TableHeader>
                 <TableBody>
                     { isLoading
-                        ? <LoadingV2 />
+                        ? <Loading ScaleMini={ true } />
                         : table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
@@ -204,15 +203,6 @@ export default function DataTableSchedule({
                     >
                         Trước
                     </Button>
-                    { isLoading
-                        ? <div className="flex gap-1 items-center">
-                            { Array.from({ length: 3 }, (_, index) => {
-                                return (
-                                    <Skeleton key={ index } className="h-[30.5px] bg-slate-100 w-[30.5px]" />
-                                );
-                            }) }
-                        </div>
-                        : '' }
                     { Array.from({ length: pageCount }, (_, index) => {
                         const currentPage = pageIndex;
                         if (

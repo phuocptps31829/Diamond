@@ -25,8 +25,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 import { Link } from "react-router-dom";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
-import LoadingV2 from "@/components/ui/LoadingV2";
-import { Skeleton } from "@/components/ui/Skeleton";
+import Loading from "@/components/ui/Loading";
 
 export default function DataTable({
   data,
@@ -81,6 +80,10 @@ export default function DataTable({
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
     onPaginationChange: (updater) => {
       if (typeof updater === "function") {
@@ -157,7 +160,7 @@ export default function DataTable({
         </TableHeader>
         <TableBody>
           { isLoading
-            ? <LoadingV2 />
+            ? <Loading ScaleMini={ true } />
             : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
@@ -202,15 +205,6 @@ export default function DataTable({
           >
             Trước
           </Button>
-          { isLoading
-            ? <div className="flex gap-1 items-center">
-              { Array.from({ length: 3 }, (_, index) => {
-                return (
-                  <Skeleton key={ index } className="h-[30.5px] bg-slate-100 w-[30.5px]" />
-                );
-              }) }
-            </div>
-            : '' }
           { Array.from({ length: pageCount }, (_, index) => {
             const currentPage = pageIndex;
             if (
