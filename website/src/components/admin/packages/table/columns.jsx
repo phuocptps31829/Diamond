@@ -76,8 +76,8 @@ export const columnsSchedule = (pageIndex, pageSize) => [
                                 ) }
                                 <div className={ `${loading ? 'hidden' : 'block'} h-14 w-20` }>
                                     <img
-                                        src={ URL_IMAGE + '/' + row.original.image }
-                                        alt={ row.original.image }
+                                        src={ URL_IMAGE + '/' + row.original?.image }
+                                        alt={ row.original?.image }
                                         className={ `${loading ? 'hidden' : 'block'} h-full w-full cursor-pointer rounded-sm border border-primary-200 object-cover` }
                                         onLoad={ handleImageLoad }
                                     />
@@ -89,7 +89,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
                                 <DialogTitle>Hình ảnh lớn</DialogTitle>
                             </DialogHeader>
                             <img
-                                src={ URL_IMAGE + '/' + row.original.image }
+                                src={ URL_IMAGE + '/' + row.original?.image }
                                 alt="large-thumbnail w-full h-auto"
                             />
                         </DialogContent>
@@ -112,7 +112,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
         ),
         cell: ({ row }) => (
             <div className="flex items-center gap-3 py-4">
-                <span title={ row.original.name } className="w-full font-medium max-w-[300px] truncate">{ row.original.name }</span>
+                <span title={ row.original?.name } className="w-full font-medium max-w-[300px] truncate">{ row.original?.name }</span>
             </div>
         ),
     },
@@ -128,7 +128,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original?.specialty.name || 'null' }</div>,
+        cell: ({ row }) => <div className="">{ row.original?.specialty?.name || 'null' }</div>,
     },
     {
         accessorKey: 'createdAt',
@@ -143,7 +143,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
             </Button>
         ),
         cell: ({ row }) => {
-            const date = new Date(row.original.createdAt);
+            const date = new Date(row.original?.createdAt);
             const formattedDate = date.toLocaleDateString('vi-VN', {
                 year: 'numeric',
                 month: '2-digit',
@@ -169,7 +169,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
             </Button>
         ),
         cell: ({ row }) => {
-            const status = row.original.isHidden;
+            const status = row.original?.isHidden;
             return (
                 <div className={ !status ? 'text-green-500' : 'text-red-500' }>
                     { !status ? 'Hiển thị' : 'Ẩn' }

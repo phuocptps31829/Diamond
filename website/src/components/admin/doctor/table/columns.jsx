@@ -13,29 +13,7 @@ import ActionMenu from './actionMenu';
 import { Skeleton } from '@/components/ui/Skeleton';
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
-export const columnsSchedule = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && 'indeterminate')
-                }
-                onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={ row.getIsSelected() }
-                onCheckedChange={ (value) => row.toggleSelected(!!value) }
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
+export const columnsSchedule = (pageIndex, pageSize) => [
     {
         id: 'index',
         header: () => (
@@ -45,7 +23,9 @@ export const columnsSchedule = [
         ),
         cell: ({ row }) => (
             <div className="flex items-center gap-3 py-4 lowercase">
-                <span className="w-full whitespace-nowrap text-center">{ row.index + 1 }</span>
+                <span className="w-full whitespace-nowrap text-center">
+                    {pageIndex * pageSize + row.index + 1}
+                </span>
             </div>
         ),
         enableSorting: false,
@@ -85,7 +65,7 @@ export const columnsSchedule = [
                                         className={ `${loading ? 'hidden' : 'block'} h-10 min-w-10 max-w-10` }
                                     >
                                         <img
-                                            src={ URL_IMAGE + '/' + row.original.avatar }
+                                            src={ URL_IMAGE + '/' + row.original?.avatar }
                                             alt={ row.original.avatar }
                                             className={ `${loading ? 'hidden' : 'block'} h-full w-full cursor-pointer rounded-[999px] border border-primary-200 object-cover` }
                                             onLoad={ handleImageLoad }
@@ -93,21 +73,22 @@ export const columnsSchedule = [
                                     </div>
                                 </div>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="w-fit">
                                 <DialogHeader>
                                     <DialogTitle>Hình ảnh lớn</DialogTitle>
                                 </DialogHeader>
                                 <img
-                                    src={ URL_IMAGE + '/' + row.original.avatar }
-                                    alt="large-thumbnail w-full h-auto"
+                                    src={ URL_IMAGE + '/' + row.original?.avatar }
+                                    alt="avatar"
+                                    className="max-h-[500px]"
                                 />
                             </DialogContent>
                         </Dialog>
                     </div>
                     <span className="w-full whitespace-nowrap">
-                        { row.original.otherInfo.title }
+                        { row.original?.otherInfo?.title }
                         { ' ' }
-                        { row.original.fullName }
+                        { row.original?.fullName }
                     </span>
                 </div>
             );
@@ -126,7 +107,7 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="">{ row.original.otherInfo.specialty.name }</div>,
+        cell: ({ row }) => <div className="">{ row.original?.otherInfo?.specialty?.name }</div>,
     },
     {
         accessorKey: 'otherInfo.isInternal',
@@ -141,7 +122,7 @@ export const columnsSchedule = [
             </Button>
         ),
         cell: ({ row }) => (
-            <div className="">{ row.original.otherInfo.isInternal ? 'Khoa nội' : 'Khoa ngoại' }</div>
+            <div className="">{ row.original?.otherInfo?.isInternal ? 'Khoa nội' : 'Khoa ngoại' }</div>
         ),
     },
     {
@@ -156,7 +137,7 @@ export const columnsSchedule = [
                 <ArrowUpDown className="ml-2 h-4 w-4" />
             </Button>
         ),
-        cell: ({ row }) => <div className="pl-3 text-primary-500">{ row.original.phoneNumber }</div>,
+        cell: ({ row }) => <div className="pl-3 text-primary-500">{ row.original?.phoneNumber }</div>,
     },
     {
         accessorKey: 'status',
@@ -171,7 +152,7 @@ export const columnsSchedule = [
             </Button>
         ),
         cell: ({ row }) => {
-            const status = row.original.isActivated;
+            const status = row.original?.isActivated;
             return (
                 <div className={ status === true ? 'text-green-500' : 'text-red-500' }>
                     { status === true ? 'Hoạt động' : 'Đang khóa' }

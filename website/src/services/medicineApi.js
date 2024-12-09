@@ -1,6 +1,31 @@
 import { axiosInstanceGET, axiosInstanceCUD } from "./axiosInstance";
 
 export const medicineApi = {
+
+  getDataMedicines: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+    const res = await axiosInstanceGET.get("/medicines", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
+
+  getDataMedicinesCategories: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+    const res = await axiosInstanceGET.get("/medicine-categories", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
+
   getAllMedicines: async (params) => {
     const res = await axiosInstanceGET.get("/medicines", {
       params

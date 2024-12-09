@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
 import ActionMenu from "./actionMenu";
 
-export const columnsSchedule = [
+export const columnsSchedule = (pageIndex, pageSize) => [
   {
     id: "select",
     header: ({ table }) => (
@@ -36,7 +36,7 @@ export const columnsSchedule = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 lowercase">
         <span className="w-full whitespace-nowrap text-center">
-          {row.index + 1}
+          {pageIndex * pageSize + row.index + 1}
         </span>
       </div>
     ),
