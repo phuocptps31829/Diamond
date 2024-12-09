@@ -64,11 +64,11 @@ const Action = ({ row }) => {
             <span className="text-primary-600">Chỉnh sửa</span>
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem className="flex w-fit items-center gap-2">
+        <DropdownMenuItem className="flex w-full items-center gap-2">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <div
-                className="flex cursor-pointer items-center gap-2"
+                className="flex cursor-pointer items-center gap-2 "
                 onClick={ (e) => e.stopPropagation() }
               >
                 <RiDeleteBin6Line className="text-[15px] text-red-600" />

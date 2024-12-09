@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { ArrowUpDown } from "lucide-react";
 import Action from "./action";
-import { Checkbox } from "@/components/ui/Checkbox";
 import { contractApi } from "@/services/contractApi";
 const handleDownloadContract = (id) => {
   contractApi
@@ -16,28 +15,7 @@ const handleDownloadContract = (id) => {
 };
 
 export const columns = (pageIndex, pageSize) => [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
+  
   {
     id: "stt",
     header: ({ column }) => (
