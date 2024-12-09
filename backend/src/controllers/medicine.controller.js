@@ -4,18 +4,12 @@ const { createError } = require("../utils/helper.util");
 module.exports = {
     getAllMedicines: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
-
-            const totalRecords = await MedicineModel.countDocuments({
-
-            });
 
             const medicines = await MedicineModel
                 .find({})
                 .populate('medicineCategoryID')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -25,7 +19,7 @@ module.exports = {
                 createError(404, 'No medicines found.');
             }
 
-            const formattedMedicines = medicines.map((medicine) => {
+            let formattedMedicines = medicines.map((medicine) => {
                 const newMedicine = { ...medicine.toObject() };
                 newMedicine.medicineCategory = {
                     _id: newMedicine.medicineCategoryID._id,
@@ -35,11 +29,18 @@ module.exports = {
                 return newMedicine;
             });
 
+            if (search) {
+                formattedMedicines = formattedMedicines.filter(medicine => {
+                    return medicine.name.toLowerCase().includes(search.toLowerCase()) ||
+                        medicine.medicineCategory.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Medicines retrieved successfully.',
-                data: formattedMedicines,
-                totalRecords
+                data: noPaginated ? formattedMedicines : formattedMedicines.slice(skip, skip + limitDocuments),
+                totalRecords: formattedMedicines.length
             });
         } catch (error) {
             next(error);

@@ -5,22 +5,14 @@ module.exports = {
     getAllNews: async (req, res, next) => {
         try {
             const notHidden = req.query.notHidden === 'true';
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
-
-            const totalRecords = await NewsModel.countDocuments({
-
-                ...(notHidden ? { isHidden: false } : {}),
-            });
 
             const news = await NewsModel
                 .find({
-
                     ...(notHidden ? { isHidden: false } : {}),
                 })
                 .populate("specialtyID")
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -31,7 +23,7 @@ module.exports = {
                 createError(404, 'No news found.');
             }
 
-            const formattedNews = news.map((news) => {
+            let formattedNews = news.map((news) => {
                 const newNews = { ...news };
                 newNews.specialty = {
                     _id: newNews.specialtyID._id,
@@ -41,11 +33,18 @@ module.exports = {
                 return newNews;
             });
 
+            if (search) {
+                formattedNews = formattedNews.filter(news => {
+                    return news.title.toLowerCase().includes(search.toLowerCase()) ||
+                        news.specialty.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'News retrieved successfully.',
-                data: formattedNews,
-                totalRecords
+                data: noPaginated ? formattedNews : formattedNews.slice(skip, skip + limitDocuments),
+                totalRecords: formattedNews.length
             });
         } catch (error) {
             next(error);

@@ -8,15 +8,28 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
             const totalRecords = await RoleModel.countDocuments({
-
+                ...(search ? {
+                    name: {
+                        $regex: search,
+                        $options: 'i'
+                    }
+                } : {})
             });
             const roles = await RoleModel
-                .find({})
+                .find({
+                    ...(search ? {
+                        name: {
+                            $regex: search,
+                            $options: 'i'
+                        }
+                    } : {})
+                })
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({

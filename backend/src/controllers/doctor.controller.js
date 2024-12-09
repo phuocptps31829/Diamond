@@ -12,11 +12,19 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
             const { specialtyID, gender } = req.query;
 
+            const searchQuery = search ? {
+                $or: [
+                    { fullName: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                    { phone: { $regex: search, $options: 'i' } },
+                ]
+            } : {};
             const totalRecords = await UserModel.countDocuments({
                 roleID: process.env.ROLE_DOCTOR,
                 ...specialtyID && {
@@ -24,7 +32,8 @@ module.exports = {
                 },
                 ...gender && {
                     gender
-                }
+                },
+                ...searchQuery
             });
             const doctors = await UserModel
                 .find({
@@ -34,7 +43,8 @@ module.exports = {
                     },
                     ...gender && {
                         gender
-                    }
+                    },
+                    ...searchQuery
                 })
                 .populate('roleID')
                 .skip(noPaginated ? undefined : skip)

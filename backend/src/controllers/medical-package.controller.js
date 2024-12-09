@@ -22,14 +22,7 @@ module.exports = {
                     }
                 } : {}),
                 ...(gender ? { "applicableObject.gender": gender } : {}),
-                ...(search ? { slug: { $regex: search, $options: 'i' } } : {})
             };
-            console.log('sortOptions', sortOptions);
-            const totalRecords = await MedicalPackageModel
-                .countDocuments({
-                    ...(notHidden ? { isHidden: false } : {}),
-                    ...queryOptions
-                });
 
             const medicalPackages = await MedicalPackageModel
                 .find({
@@ -37,15 +30,13 @@ module.exports = {
                     ...queryOptions
                 })
                 .populate('specialtyID')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1,
                 })
                 .lean();
 
-            const formattedMedicalPackages = medicalPackages.map(package => {
+            let formattedMedicalPackages = medicalPackages.map(package => {
                 const formattedPackage = {
                     ...package,
                     specialty: {
@@ -58,13 +49,18 @@ module.exports = {
                 return formattedPackage;
             });
 
+            if (search) {
+                formattedMedicalPackages = formattedMedicalPackages.filter(package => {
+                    return package.name.toLowerCase().includes(search.toLowerCase()) ||
+                        package.specialty.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'MedicalPackages retrieved successfully.',
-                data: formattedMedicalPackages?.length
-                    ? formattedMedicalPackages
-                    : [],
-                totalRecords
+                data: noPaginated ? formattedMedicalPackages : formattedMedicalPackages.slice(skip, skip + limitDocuments),
+                totalRecords: formattedMedicalPackages.length
             });
         } catch (error) {
             next(error);

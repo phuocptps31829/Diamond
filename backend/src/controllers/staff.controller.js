@@ -13,26 +13,18 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await UserModel.countDocuments({
-
-                roleID: {
-                    $in: [staffReceptionist, staffEditor, staffAccountant]
-                }
-            });
             const staffs = await UserModel
                 .find({
-
                     roleID: {
                         $in: [staffReceptionist, staffEditor, staffAccountant]
                     }
                 })
                 .populate('roleID')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -53,11 +45,20 @@ module.exports = {
                 return staffObject;
             });
 
+            if (search) {
+                transformedStaffs = transformedStaffs.filter(staff => {
+                    return staff.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        staff.email.toLowerCase().includes(search.toLowerCase()) ||
+                        staff.phone.toLowerCase().includes(search.toLowerCase()) ||
+                        staff.role.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Staffs retrieved successfully.',
-                data: transformedStaffs,
-                totalRecords
+                data: noPaginated ? transformedStaffs : transformedStaffs.slice(skip, skip + limitDocuments),
+                totalRecords: transformedStaffs.length
             });
         } catch (error) {
             next(error);

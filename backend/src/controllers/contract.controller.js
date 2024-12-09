@@ -4,19 +4,14 @@ const { createError } = require('../utils/helper.util');
 module.exports = {
     getAllContracts: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
 
-            const totalRecords = await ContractModel.countDocuments({});
             let noPaginated = req.query?.noPaginated === 'true';
 
             const contracts = await ContractModel
-                .find({
-
-                })
+                .find({})
                 .populate('doctorID', '_id fullName')
                 .populate('hospitalID', '_id name')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -27,7 +22,7 @@ module.exports = {
                 createError(404, "No contracts found.");
             }
 
-            const formattedContracts = contracts.map(contract => {
+            let formattedContracts = contracts.map(contract => {
                 const formattedContract = {
                     ...contract,
                     doctor: contract.doctorID,
@@ -40,12 +35,20 @@ module.exports = {
                 return formattedContract;
             });
 
+            // search by doctor name, hospital name, or contract number
+            if (search) {
+                formattedContracts = formattedContracts.filter(contract => {
+                    return contract.doctor.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        contract.hospital.name.toLowerCase().includes(search.toLowerCase()) ||
+                        contract.contractNumber.toLowerCase().includes(search.toLowerCase());
+                });
+            }
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'Contracts retrieved successfully.',
-                data: formattedContracts,
-                totalRecords
+                data: noPaginated ? formattedContracts : formattedContracts.slice(skip, skip + limitDocuments),
+                totalRecords: formattedContracts.length
             });
         } catch (error) {
             next(error);

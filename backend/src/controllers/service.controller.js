@@ -21,14 +21,7 @@ module.exports = {
                     }
                 } : {}),
                 ...(gender ? { "applicableObject.gender": gender } : {}),
-                ...(search ? { slug: { $regex: search, $options: 'i' } } : {})
             };
-
-            const totalRecords = await ServiceModel
-                .countDocuments({
-                    ...(notHidden ? { isHidden: false } : {}),
-                    ...queryOptions
-                });
 
             const services = await ServiceModel
                 .find({
@@ -36,15 +29,13 @@ module.exports = {
                     ...queryOptions
                 })
                 .populate('specialtyID')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1,
                 })
                 .lean();
 
-            const formattedServices = services.map(service => {
+            let formattedServices = services.map(service => {
                 const formattedService = {
                     ...service,
                     specialty: {
@@ -57,11 +48,18 @@ module.exports = {
                 return formattedService;
             });
 
+            if (search) {
+                formattedServices = formattedServices.filter(service => {
+                    return service.name.toLowerCase().includes(search.toLowerCase()) ||
+                        service.specialty.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Services retrieved successfully.',
-                data: formattedServices?.length ? formattedServices : [],
-                totalRecords
+                data: noPaginated ? formattedServices : formattedServices.slice(skip, skip + limitDocuments),
+                totalRecords: formattedServices.length
             });
         } catch (error) {
             next(error);

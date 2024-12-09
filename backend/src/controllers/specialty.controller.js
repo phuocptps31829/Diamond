@@ -9,22 +9,16 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
+
             let noPaginated = req.query?.noPaginated === 'true';
-
-            const totalRecords = await SpecialtyModel.countDocuments({
-
-                ...(notHidden ? { isHidden: false } : {}),
-            });
 
             const specialties = await SpecialtyModel
                 .find({
-
                     ...(notHidden ? { isHidden: false } : {}),
                 })
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -37,8 +31,8 @@ module.exports = {
             return res.status(200).json({
                 page: page || 1,
                 message: 'Specialties retrieved successfully.',
-                data: specialties,
-                totalRecords
+                data: noPaginated ? specialties : specialties.slice(skip, skip + limitDocuments),
+                totalRecords: specialties.length
             });
         } catch (error) {
             next(error);

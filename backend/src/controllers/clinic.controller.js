@@ -4,17 +4,13 @@ const { createError } = require('../utils/helper.util');
 module.exports = {
     getAllClinics: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
-
-            const totalRecords = await ClinicModel.countDocuments({});
 
             const clinics = await ClinicModel
                 .find({})
                 .populate("branchID")
                 .populate("specialtyID")
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -25,7 +21,7 @@ module.exports = {
                 createError(404, "No clinics found.");
             }
 
-            const clinicsPromises = clinics.map(clinic => {
+            let clinicsPromises = clinics.map(clinic => {
                 const formattedClinic = {
                     ...clinic,
                     branch: {
@@ -45,11 +41,19 @@ module.exports = {
                 return formattedClinic;
             });
 
+            if (search) {
+                clinicsPromises = clinicsPromises.filter(clinic => {
+                    return clinic.branch.name.toLowerCase().includes(search.toLowerCase()) ||
+                        clinic.specialty.name.toLowerCase().includes(search.toLowerCase()) ||
+                        clinic.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Clinics retrieved successfully.',
-                data: clinicsPromises,
-                totalRecords
+                data: noPaginated ? clinicsPromises : clinicsPromises.slice(skip, skip + limitDocuments),
+                totalRecords: clinicsPromises.length
             });
         } catch (error) {
             next(error);

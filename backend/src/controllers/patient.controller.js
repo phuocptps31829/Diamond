@@ -8,19 +8,14 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await UserModel.countDocuments({
-
-                roleID: process.env.ROLE_PATIENT
-            });
             const patients = await UserModel
                 .find({ roleID: process.env.ROLE_PATIENT })
                 .populate('roleID')
-                .skip(noPaginated ? undefined : skip)
-                .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
                     ...sortOptions,
                     createdAt: -1
@@ -64,11 +59,19 @@ module.exports = {
 
             transformedPatients = await Promise.all(relatedPatientsPromises);
 
+            if (search) {
+                transformedPatients = transformedPatients.filter(patient => {
+                    return patient.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        patient.email.toLowerCase().includes(search.toLowerCase()) ||
+                        patient.phone.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Patients retrieved successfully.',
-                data: transformedPatients,
-                totalRecords
+                data: noPaginated ? transformedPatients : transformedPatients.slice(skip, skip + limitDocuments),
+                totalRecords: transformedPatients.length
             });
         } catch (error) {
             next(error);

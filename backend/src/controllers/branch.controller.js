@@ -5,13 +5,26 @@ const mongoose = require("mongoose");
 module.exports = {
     getAllBranches: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await BranchModel.countDocuments({});
+            const searchQuery = search ? {
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { address: { $regex: search, $options: 'i' } },
+                    { phone: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                ]
+            } : {};
+
+            const totalRecords = await BranchModel.countDocuments({
+                ...searchQuery
+            });
 
             const branches = await BranchModel
-                .find({})
+                .find({
+                    ...searchQuery
+                })
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({

@@ -4,15 +4,11 @@ const { createError } = require("../utils/helper.util");
 module.exports = {
     getAllInvoices: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const totalRecords = await InvoiceModel.countDocuments({});
-
             const invoices = await InvoiceModel
-                .find({
-
-                })
+                .find({})
                 .populate({
                     path: 'appointmentID',
                     populate: {
@@ -30,7 +26,7 @@ module.exports = {
                 createError(404, "No invoices found.");
             }
 
-            const formattedInvoices = invoices.map(invoice => {
+            let formattedInvoices = invoices.map(invoice => {
                 const formattedInvoice = {
                     ...invoice.toObject(),
                     patient: {
@@ -43,11 +39,19 @@ module.exports = {
                 return formattedInvoice;
             });
 
+            if (search) {
+                formattedInvoices = formattedInvoices.filter(invoice => {
+                    return invoice.patient.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
+                        invoice.status.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
             return res.status(200).json({
                 page: page || 1,
                 message: 'Invoices retrieved successfully.',
-                data: formattedInvoices,
-                totalRecords
+                data: noPaginated ? formattedInvoices : formattedInvoices.slice(skip, skip + limitDocuments),
+                totalRecords: formattedInvoices.length
             });
         } catch (error) {
             next(error);

@@ -18,7 +18,8 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
 
             let { startDay, endDay } = req.checkValueQuery;
@@ -48,7 +49,10 @@ module.exports = {
                         }
                     }
                 })
-                .sort({ createdAt: -1 })
+                .sort({
+                    ...sortOptions,
+                    createdAt: -1
+                })
                 .lean();
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
@@ -161,13 +165,32 @@ module.exports = {
 
             const formattedAppointments = await Promise.all(formattedAppointmentsPromises);
 
+            let searchResult = formattedAppointments;
+            if (search) {
+                const searchValue = search.toLowerCase();
+                searchResult = formattedAppointments.filter(appointment => {
+                    const patientName = appointment.patient.fullName.toLowerCase();
+                    const doctorName = appointment.doctor.fullName.toLowerCase();
+                    const serviceName = appointment.service?.name.toLowerCase();
+                    const clinicName = appointment.clinic.name.toLowerCase();
+                    const branchName = appointment.branch.name.toLowerCase();
+
+                    return patientName.includes(searchValue) ||
+
+                        doctorName.includes(searchValue) ||
+                        (serviceName && serviceName.includes(searchValue)) ||
+                        clinicName.includes(searchValue) ||
+                        branchName.includes(searchValue);
+                });
+            }
+
             const response = {
                 page: page || 1,
                 message: 'Appointments retrieved successfully.',
                 data: noPaginated ?
-                    formattedAppointments :
-                    formattedAppointments.slice(skip, skip + limitDocuments),
-                totalRecords: formattedAppointments.length
+                    searchResult :
+                    searchResult.slice(skip, skip + limitDocuments),
+                totalRecords: searchResult.length
             };
 
             return res.status(200).json(response);

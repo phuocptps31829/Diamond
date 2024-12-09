@@ -10,8 +10,10 @@ module.exports = {
                 limitDocuments,
                 page,
                 skip,
-                sortOptions
+                sortOptions,
+                search
             } = req.customQueries;
+
             let noPaginated = req.query?.noPaginated === 'true';
 
             const workSchedules = await WorkScheduleModel
@@ -48,7 +50,7 @@ module.exports = {
             }, {});
 
             const groupedArray = Object.values(groupedByDoctor);
-            const formattedGroupedArray = groupedArray.map(group => {
+            let formattedGroupedArray = groupedArray.map(group => {
                 const { doctor, schedules } = group;
                 const formattedGroup = {
                     _id: doctor._id,
@@ -75,12 +77,19 @@ module.exports = {
                 return formattedGroup;
             });
 
-            const paginatedGroupedArray = formattedGroupedArray.slice(skip, skip + limitDocuments);
+            if (search) {
+                formattedGroupedArray = formattedGroupedArray.filter(group => {
+                    return group.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        group.email.toLowerCase().includes(search.toLowerCase()) ||
+                        group.phoneNumber.toLowerCase().includes(search.toLowerCase()) ||
+                        group.branch.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'WorkSchedule retrieved successfully.',
-                data: paginatedGroupedArray.slice(skip, skip + limitDocuments),
+                data: noPaginated ? formattedGroupedArray : formattedGroupedArray.slice(skip, skip + limitDocuments),
                 totalRecords: formattedGroupedArray.length
             });
         } catch (error) {

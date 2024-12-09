@@ -5,13 +5,21 @@ const { createError } = require('../utils/helper.util');
 module.exports = {
     getAllMedicineCategories: async (req, res, next) => {
         try {
-            let { limitDocuments, skip, page, sortOptions } = req.customQueries;
+            let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
 
-            const totalRecords = await MedicineCategoryModel.countDocuments({});
             let noPaginated = req.query?.noPaginated === 'true';
 
+            const queryOptions = {
+                ...(search ? { name: { $regex: search, $options: 'i' } } : {})
+            };
+
+            const totalRecords = await MedicineCategoryModel.countDocuments({
+                ...queryOptions
+            });
             const medicineCategories = await MedicineCategoryModel
-                .find({})
+                .find({
+                    ...queryOptions
+                })
                 .skip(noPaginated ? undefined : skip)
                 .limit(noPaginated ? undefined : limitDocuments)
                 .sort({
