@@ -31,6 +31,18 @@ export const medicalPackageApi = {
     const res = await axiosInstanceGET.get("/medical-packages?noPaginated=true");
     return res.data.data;
   },
+  getDataMedicalPackages: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/medical-packages", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
   getMedicalPackageById: async (id) => {
     const res = await axiosInstanceGET.get(`/medical-packages/${id}`);
     return res.data.data;

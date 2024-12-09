@@ -13,7 +13,7 @@ import {
 import ActionMenu from './actionMenu';
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
-export const columnsSchedule = [
+export const columnsSchedule = (pageIndex, pageSize) => [
     {
         id: 'select',
         header: ({ table }) => (
@@ -45,7 +45,9 @@ export const columnsSchedule = [
         ),
         cell: ({ row }) => (
             <div className="flex items-center gap-3 py-4 lowercase">
-                <span className="w-full whitespace-nowrap text-center">{ row.index + 1 }</span>
+                <span className="w-full whitespace-nowrap text-center">
+                    {pageIndex * pageSize + row.index + 1}
+                </span>
             </div>
         ),
     },

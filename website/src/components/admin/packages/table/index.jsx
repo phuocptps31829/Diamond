@@ -25,8 +25,18 @@ import { useDebounce } from "use-debounce";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useNavigate } from "react-router-dom";
 import { RECORD_PER_PAGE } from "@/constants/config";
+import Loading from "@/components/ui/Loading";
 
-export default function DataTable({ columns, allPackages }) {
+export default function DataTable({ 
+  columns, 
+  data,
+  pageCount,
+  pageSize,
+  pageIndex,
+  onPageChange,
+  isLoading,
+  total,
+  }) {
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -52,9 +62,11 @@ export default function DataTable({ columns, allPackages }) {
   };
 
   const table = useReactTable({
-    data: allPackages,
+    data: data,
     columns,
-    pageCount: Math.ceil(allPackages.length / RECORD_PER_PAGE),
+    pageCount: pageCount,
+    pageSize,
+    manualPagination: true,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -68,11 +80,24 @@ export default function DataTable({ columns, allPackages }) {
       columnFilters,
       columnVisibility,
       rowSelection,
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
     },
     initialState: {
       pagination: {
         pageSize: RECORD_PER_PAGE,
       },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newPageIndex = updater({
+          pageIndex,
+          pageSize,
+        }).pageIndex;
+        onPageChange(newPageIndex);
+      }
     },
   });
 
@@ -139,7 +164,8 @@ export default function DataTable({ columns, allPackages }) {
           )) }
         </TableHeader>
         <TableBody>
-          { table.getRowModel().rows?.length ? (
+          {isLoading ? <Loading ScaleMini={true} />
+          : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 className=""
@@ -172,7 +198,7 @@ export default function DataTable({ columns, allPackages }) {
         <div className="flex-1 text-sm text-muted-foreground">
           <span className="pr-1">Đã chọn</span>
           { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
-          { table.getFilteredRowModel().rows.length } trong danh sách.
+          { total } trong danh sách.
         </div>
         <div className="flex items-center space-x-2">
           <Button
