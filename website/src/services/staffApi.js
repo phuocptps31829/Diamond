@@ -1,6 +1,20 @@
 import { axiosInstanceGET, axiosInstanceCUD } from "./axiosInstance";
 
 const staffApi = {
+
+  getDataStaffs: async (filter) => {
+    const { page, limit } = filter;
+    const params = {
+      ...(page !== undefined && page !== null && { page }),
+      ...(limit !== undefined && limit !== null && { limit }),
+    };
+
+    const res = await axiosInstanceGET.get("/staffs", {
+      params: Object.keys(params).length > 0 ? params : undefined,
+    });
+    return res.data;
+  },
+
   getAllStaff: async () => {
     const res = await axiosInstanceGET.get("/staffs");
     return res.data.data;

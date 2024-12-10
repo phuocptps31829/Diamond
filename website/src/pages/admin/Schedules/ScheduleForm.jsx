@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const ScheduleFormPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "DOCTOR"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"], "/admin/dashboard");
 
     const { doctorID, scheduleID } = useParams();
     const [searchParams] = useSearchParams();

@@ -25,7 +25,7 @@ function translateRole(role) {
   }
 }
 
-export const columns = [
+export const columns = (pageIndex, pageSize) => [
   {
     accessorKey: "index",
     header: () => (
@@ -36,7 +36,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 lowercase">
         <span className="w-full whitespace-nowrap text-center">
-          {row.index + 1}
+          {pageIndex * pageSize + row.index + 1}
         </span>
       </div>
     ),

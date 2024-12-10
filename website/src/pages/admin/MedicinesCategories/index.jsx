@@ -1,9 +1,5 @@
 import MedicinesCategoriesList from "@/components/admin/medicineCategories/MedicinesCategoriesList";
 import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
-import { useQuery } from "@tanstack/react-query";
-import { medicineApi } from "@/services/medicineApi";
-import NotFound from "@/components/ui/NotFound";
-import Loading from "@/components/ui/Loading";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
@@ -18,33 +14,10 @@ const breadcrumbData = [
 const MedicinesCategoriesListPage = () => {
   useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
 
-  const {
-    data: dataAllMedicinesCategories,
-    error: errorAllMedicinesCategories,
-    isLoading: isLoadingAllMedicinesCategories,
-  } = useQuery({
-    queryKey: ["allMedicinesCategoriesNoPaginated"],
-    queryFn: () => medicineApi.getAllMedicinesCategories({
-      noPaginated: true,
-    }),
-  });
-
-  if (errorAllMedicinesCategories) {
-    return <NotFound />;
-  }
-
   return (
     <>
-      { isLoadingAllMedicinesCategories ? (
-        <Loading />
-      ) : (
-        <>
-          <BreadcrumbCustom data={ breadcrumbData } />
-          <MedicinesCategoriesList
-            allMedicineCategories={ dataAllMedicinesCategories }
-          />
-        </>
-      ) }
+      <BreadcrumbCustom data={breadcrumbData} />
+      <MedicinesCategoriesList />
     </>
   );
 };

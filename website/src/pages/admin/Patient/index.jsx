@@ -1,42 +1,29 @@
-import PatientsList from '@/components/admin/patient/PatientsList';
-import BreadcrumbCustom from '@/components/ui/BreadcrumbCustom';
-import { useQuery } from '@tanstack/react-query';
-import { patientApi } from '@/services/patientsApi';
-import Loading from '@/components/ui/Loading';
-import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import PatientsList from "@/components/admin/patient/PatientsList";
+import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
-    {
-        title: 'Bệnh nhân',
-    },
-    {
-        href: '/admin/patients/list',
-        title: 'Danh sách bệnh nhân',
-    },
+  {
+    title: "Bệnh nhân",
+  },
+  {
+    href: "/admin/patients/list",
+    title: "Danh sách bệnh nhân",
+  },
 ];
 
 const PatientsListPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"], "/admin/dashboard");
+  useAuthRedirect(
+    ["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"],
+    "/admin/dashboard"
+  );
 
-    const { data: allPatients, isLoading: isLoadingPatients } = useQuery({
-        queryKey: ['patientsNoPaginated'],
-        queryFn: () => patientApi.getAllPatients({
-            noPaginated: true,
-        }),
-    });
-
-    return (
-        <>
-            { isLoadingPatients ? (
-                <Loading />
-            ) : (
-                <>
-                    <BreadcrumbCustom data={ breadcrumbData } />
-                    <PatientsList allPatients={ allPatients?.data } />
-                </>
-            ) }
-        </>
-    );
+  return (
+    <>
+      <BreadcrumbCustom data={breadcrumbData} />
+      <PatientsList />
+    </>
+  );
 };
 
 export default PatientsListPage;

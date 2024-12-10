@@ -45,7 +45,6 @@ const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
           "#4BC0C0",
           "#9966FF",
           "#FF9F40",
-          "#FF6633",
         ],
       },
     ],
@@ -65,7 +64,7 @@ const DoughnutChart = ({ dataTotalPatientsByYear, dataAllSpecialties }) => {
           usePointStyle: true,
           pointStyle: "circle",
           filter: (legendItem) => {
-            return legendItem.index < 7;
+            return legendItem.index < 6;
           },
         },
       },
