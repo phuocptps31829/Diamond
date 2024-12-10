@@ -15,7 +15,7 @@ module.exports = {
 
             let noPaginated = req.query?.noPaginated === 'true';
 
-            const specialties = await SpecialtyModel
+            let specialties = await SpecialtyModel
                 .find({
                     ...(notHidden ? { isHidden: false } : {}),
                 })
@@ -26,6 +26,12 @@ module.exports = {
 
             if (!specialties.length) {
                 createError(404, 'No specialties found.');
+            }
+
+            if (search) {
+                specialties = specialties.filter(specialty => {
+                    return specialty.name.toLowerCase().includes(search.toLowerCase());
+                });
             }
 
             return res.status(200).json({

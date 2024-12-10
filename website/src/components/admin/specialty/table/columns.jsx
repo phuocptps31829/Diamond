@@ -14,28 +14,6 @@ import Action from "./action";
 export const columns = (pageIndex, pageSize) =>
   [
     {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={ row.getIsSelected() }
-          onCheckedChange={ (value) => row.toggleSelected(!!value) }
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       id: "stt",
       header: ({ column }) => (
         <Button

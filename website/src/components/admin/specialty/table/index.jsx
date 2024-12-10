@@ -22,7 +22,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useQueryClient } from "@tanstack/react-query";
-import { useDebounce } from "use-debounce";
 import { Link } from "react-router-dom";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import Loading from "@/components/ui/Loading";
@@ -35,7 +34,9 @@ export default function DataTable({
   pageIndex,
   onPageChange,
   total,
-  isLoading
+  isLoading,
+  searchValue,
+  setSearchValue,
 }) {
   const queryClient = useQueryClient();
 
@@ -59,8 +60,7 @@ export default function DataTable({
   const [columnVisibility, setColumnVisibility] =
     React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [searchValue, setSearchValue] = React.useState("");
-  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const table = useReactTable({
     data,
     pageCount,
@@ -96,9 +96,6 @@ export default function DataTable({
     },
   });
 
-  React.useEffect(() => {
-    table.getColumn("name")?.setFilterValue(debouncedSearchValue);
-  }, [debouncedSearchValue, table]);
   const handleRefresh = () => {
     queryClient.invalidateQueries("specialties");
   };
@@ -111,7 +108,7 @@ export default function DataTable({
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
-                value={ table.getColumn("name")?.getFilterValue() ?? "" }
+                value={ searchValue }
                 onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm chuyên khoa"

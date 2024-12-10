@@ -77,18 +77,29 @@ module.exports = {
                 .find({
                     specialtyID: id,
                 })
+                .populate('specialtyID')
                 .skip(skip)
                 .limit(limitDocuments)
-                .sort(sortOptions);
+                .sort(sortOptions)
+                .lean();
 
-            if (!services.length) {
-                createError(404, 'No service found.');
-            }
+            let formattedServices = services.map(service => {
+                const formattedService = {
+                    ...service,
+                    specialty: {
+                        _id: service.specialtyID._id,
+                        name: service.specialtyID.name,
+                    }
+                };
+
+                delete formattedService.specialtyID;
+                return formattedService;
+            });
 
             return res.status(200).json({
                 page: page || 1,
                 message: 'Service retrieved successfully.',
-                data: services,
+                data: formattedServices,
                 totalRecords
             });
         } catch (error) {

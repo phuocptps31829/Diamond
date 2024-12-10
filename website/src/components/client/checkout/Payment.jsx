@@ -22,6 +22,7 @@ export default function Form() {
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const readNumber = useReadNumber();
 
+  console.log(bookingInfo);
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
       appointmentApi.createAppointment(

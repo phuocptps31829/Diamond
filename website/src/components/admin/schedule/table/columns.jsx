@@ -7,23 +7,21 @@ import Action from "./action";
 
 export const columnsSchedule = (pageIndex, pageSize) => [
     {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={ (value) => table.toggleAllPageRowsSelected(!!value) }
-                aria-label="Select all"
-            />
+        id: "stt",
+        header: ({ column }) => (
+            <Button
+                className="w-fit px-0 text-left"
+                variant="ghost"
+                onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+            >
+                STT
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
         ),
         cell: ({ row }) => (
-            <Checkbox
-                checked={ row.getIsSelected() }
-                onCheckedChange={ (value) => row.toggleSelected(!!value) }
-                aria-label="Select row"
-            />
+            <div className="w-full pl-5 text-left">
+                { pageIndex * pageSize + row.index + 1 }
+            </div>
         ),
         enableSorting: false,
         enableHiding: false,

@@ -4,8 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { specialtyApi } from "@/services/specialtiesApi";
 import { useEffect, useState } from "react";
 import { RECORD_PER_PAGE } from "@/constants/config";
+import { useDebounce } from "use-debounce";
 
 const SpecialtiesList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
@@ -13,15 +15,18 @@ const SpecialtiesList = () => {
     total: 0,
   });
 
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const {
     data: specialtiesDataResponse,
     isLoading: loadingSpecialties,
     isError: errorLoadingSpecialties,
   } = useQuery({
-    queryKey: ["specialties", pageIndex, RECORD_PER_PAGE],
+    queryKey: ["specialties", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () => specialtyApi.getAllSpecialties({
       page: pageIndex + 1,
-      limit: RECORD_PER_PAGE
+      limit: RECORD_PER_PAGE,
+      search: debouncedSearchValue,
     }),
   });
 
@@ -46,6 +51,8 @@ const SpecialtiesList = () => {
     onPageChange={ setPageIndex }
     isLoading={ loadingSpecialties }
     total={ tableData.total }
+    searchValue={ searchValue }
+    setSearchValue={ setSearchValue }
   />;
 };
 

@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
 import { SiTicktick } from "react-icons/si";
 import { AiOutlineDoubleRight } from "react-icons/ai";
 import { MdOutlineAddCircle } from "react-icons/md";
@@ -35,6 +34,7 @@ export default function Product({ product }) {
     orderCount,
     services,
   } = product;
+
   const isService = !services || !services?.length;
 
   useEffect(() => {
@@ -45,7 +45,6 @@ export default function Product({ product }) {
   }, [cartItems, _id, isService]);
 
   const handleAddClick = (isNavigate) => {
-    console.log("prd", product);
     if (!profileCustomer) {
       toast.error("Vui lòng đăng nhập để đặt lịch.");
 
@@ -56,7 +55,7 @@ export default function Product({ product }) {
       ? {
         serviceID: _id,
         name,
-        specialtyID: specialty._id,
+        specialtyID: specialty?._id,
         price: discountPrice,
         image,
       }
@@ -71,31 +70,33 @@ export default function Product({ product }) {
         services,
       };
 
+    const toBookingItem = {
+      ...(isService
+        ? {
+          serviceID: _id,
+        }
+        : {
+          medicalPackageID: _id,
+        }),
+      bookingDetail: {
+        specialtyID: specialty._id,
+        ...(isService ? {} : { levelID: services[0]._id }),
+        name,
+        image,
+        price: discountPrice || 0,
+        selectedBranchID: "",
+        selectedDoctorID: "",
+        selectedWorkScheduleID: "",
+        selectedDate: "",
+        selectedTime: "",
+        clinic: "",
+      },
+    };
+
     if (!isInCart) {
       dispatch(addToCart(newItem));
       dispatch(
-        initBookingDetails({
-          ...(isService
-            ? {
-              serviceID: _id,
-            }
-            : {
-              medicalPackageID: _id,
-            }),
-          bookingDetail: {
-            specialtyID: specialty._id,
-            ...(isService ? {} : { levelID: services[0]._id }),
-            name,
-            image,
-            price: discountPrice || 0,
-            selectedBranchID: "",
-            selectedDoctorID: "",
-            selectedWorkScheduleID: "",
-            selectedDate: "",
-            selectedTime: "",
-            clinic: "",
-          },
-        })
+        initBookingDetails(toBookingItem)
       );
     } else {
       if (!isNavigate) {

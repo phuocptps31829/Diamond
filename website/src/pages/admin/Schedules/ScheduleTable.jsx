@@ -6,6 +6,7 @@ import { workScheduleApi } from "@/services/workSchedulesApi";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useDebounce } from "use-debounce";
 
 const breadcrumbData = [
     {
@@ -18,13 +19,17 @@ const breadcrumbData = [
 ];
 
 const ScheduleTablePage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "DOCTOR"], "/admin/dashboard");
+
+    const [searchValue, setSearchValue] = useState('');
     const [pageIndex, setPageIndex] = useState(0);
     const [tableData, setTableData] = useState({
         data: [],
         pageCount: 0,
         total: 0,
     });
+
+    const [debouncedSearchValue] = useDebounce(searchValue, 500);
 
     const userProfile = useSelector((state) => state.auth.userProfile);
 
@@ -34,12 +39,13 @@ const ScheduleTablePage = () => {
     switch (roleID) {
         case import.meta.env.VITE_ROLE_DOCTOR:
             options = {
-                queryKey: ['workSchedules', userProfile?._id, pageIndex, RECORD_PER_PAGE],
+                queryKey: ['workSchedules', userProfile?._id, pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
                 queryFn: () => workScheduleApi.getWorkSchedulesByDoctorID(
                     userProfile?._id,
                     {
                         page: pageIndex + 1,
-                        limit: RECORD_PER_PAGE
+                        limit: RECORD_PER_PAGE,
+                        search: debouncedSearchValue
                     }
                 ),
                 enabled: !!userProfile
@@ -47,10 +53,11 @@ const ScheduleTablePage = () => {
             break;
         case import.meta.env.VITE_ROLE_SUPER_ADMIN:
             options = {
-                queryKey: ['workSchedules', pageIndex, RECORD_PER_PAGE],
+                queryKey: ['workSchedules', pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
                 queryFn: () => workScheduleApi.getAllWorkSchedules({
                     page: pageIndex + 1,
-                    limit: RECORD_PER_PAGE
+                    limit: RECORD_PER_PAGE,
+                    search: debouncedSearchValue
                 })
             };
             break;
@@ -81,6 +88,8 @@ const ScheduleTablePage = () => {
                 pageIndex={ pageIndex }
                 onPageChange={ setPageIndex }
                 total={ tableData.total }
+                searchValue={ searchValue }
+                setSearchValue={ setSearchValue }
             />
         </>
     );

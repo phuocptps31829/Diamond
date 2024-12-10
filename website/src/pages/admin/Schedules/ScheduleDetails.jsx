@@ -17,7 +17,7 @@ const getBreadcrumbData = (id, name) => [
 ];
 
 const ScheduleDetailsPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "DOCTOR"], "/admin/dashboard");
 
     const { id } = useParams();
 

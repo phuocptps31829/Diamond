@@ -16,7 +16,7 @@ import {
     TableRow,
 } from "@/components/ui/Table";
 import { columnsSchedule } from "./columns";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
@@ -24,7 +24,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { patientSchema } from "@/zods/client/patient";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { Link } from "react-router-dom";
-import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
 
@@ -35,7 +34,9 @@ export default function DataTableSchedule({
     pageIndex,
     onPageChange,
     total,
-    isLoading
+    isLoading,
+    searchValue,
+    setSearchValue,
 }) {
     const queryClient = useQueryClient();
     const [sorting, setSorting] = useState([]);
@@ -45,8 +46,7 @@ export default function DataTableSchedule({
     const [columnVisibility, setColumnVisibility] =
         useState({});
     const [rowSelection, setRowSelection] = useState({});
-    const [searchValue, setSearchValue] = useState("");
-    const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
     const {
         handleSubmit,
         formState: { errors },
@@ -91,9 +91,6 @@ export default function DataTableSchedule({
         },
     });
 
-    useEffect(() => {
-        table.getColumn("fullName")?.setFilterValue(debouncedSearchValue);
-    }, [debouncedSearchValue, table]);
     const handleRefresh = () => {
         queryClient.invalidateQueries("workSchedules");
     };
@@ -105,7 +102,7 @@ export default function DataTableSchedule({
                     <div className="mb-2">
                         <div className="relative mr-1 w-[300px]">
                             <InputCustomSearch
-                                value={ table.getColumn("fullName")?.getFilterValue() ?? "" }
+                                value={ searchValue }
                                 onChange={ (event) => setSearchValue(event.target.value) }
                                 className="col-span-1 sm:col-span-1"
                                 placeholder="Tìm kiếm lịch làm việc"
