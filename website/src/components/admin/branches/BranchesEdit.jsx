@@ -24,7 +24,8 @@ const BranchesEdit = () => {
   const { id } = useParams();
   const [isPending, setIsPending] = useState(false);
   const queryClient = useQueryClient();
-
+  console.log(address,'dhsjh');
+  
   const {
     handleSubmit,
     formState: { errors },
@@ -109,10 +110,11 @@ const BranchesEdit = () => {
       imageName = imagePreview.split("/").pop();
     }
 
+    
     const branchData = {
       name: data.branch_name,
       imagesURL: [imageName],
-      address: address?.formatted_address || null,
+      address: address?.name || data.address,
       workingTime: data.working_hours,
       hotline: data.hotline,
       coordinates: {
@@ -121,7 +123,6 @@ const BranchesEdit = () => {
       },
     };
 
-    console.log(branchData);
 
     mutation.mutate(branchData);
   };

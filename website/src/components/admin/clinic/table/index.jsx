@@ -27,6 +27,7 @@ import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { useDebounce } from "use-debounce";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import Loading from "@/components/ui/Loading";
 
 export default function DataTable({
   data,
@@ -155,22 +156,8 @@ export default function DataTable({
         </TableHeader>
         <TableBody>
           { isLoading ? (
-            <div className="absolute left-0 top-0 z-50 flex h-full w-full flex-col items-center justify-center py-10">
-              <div className="pyramid-loader">
-                <div className="wrapper">
-                  <span className="side side1"></span>
-                  <span className="side side2"></span>
-                  <span className="side side3"></span>
-                  <span className="side side4"></span>
-                  <span className="top"> </span>
-                  <span className="corner corner1"></span>
-                  <span className="corner corner2"></span>
-                  <span className="corner corner3"></span>
-                  <span className="corner corner4"></span>
-                  <span className="shadow"></span>
-                </div>
-              </div>
-            </div>
+                        <Loading ScaleMini={true} />
+
           ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

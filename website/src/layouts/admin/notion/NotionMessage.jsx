@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import { notificationsApi } from "@/services/notificationsApi";
 import { formatRelativeDate } from "@/utils/format";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
 const typeStyles = {
   0: { color: "#ec6d6d", icon: "📢" },
@@ -10,18 +9,8 @@ const typeStyles = {
   2: { color: "#fff0b5", icon: "🎉" },
 };
 
-const Notification = ({
-  _id,
-  title,
-  description,
-  createdAt,
-  redirect,
-  type,
-  isRead,
-}) => {
+const Notification = ({ _id, title, description, createdAt, type, isRead }) => {
   const { color, icon } = typeStyles[type] || { color: "#ccc", icon: "🔔" };
-  const link = `/profile/${redirect?.endpoint || "appointments"}/detail/${redirect?._id}`;
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const handleNotificationClick = async (event) => {
     event.preventDefault();
@@ -33,7 +22,6 @@ const Notification = ({
         console.error("Failed to update notification as read:", error);
       }
     }
-    navigate(link);
   };
   return (
     <div onClick={handleNotificationClick}>
@@ -45,13 +33,13 @@ const Notification = ({
           // light styles
           "bg-white [box-shadow:0_0_0_1px_rgba(0,0,0,.03),0_2px_4px_rgba(0,0,0,.05),0_12px_24px_rgba(0,0,0,.05)]",
           // dark styles
-          "transform-gpu dark:bg-transparent dark:backdrop-blur-md dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]",
+          "transform-gpu dark:bg-transparent dark:backdrop-blur-md dark:[border:1px_solid_rgba(255,255,255,.1)] dark:[box-shadow:0_-20px_80px_-20px_#ffffff1f_inset]"
         )}
       >
         <div className="flex flex-row items-center gap-3">
           {/* Icon */}
           <div
-            className="flex size-10 items-center justify-center rounded-2xl"
+            className="flex size-10 w-11  items-center justify-center rounded-2xl"
             style={{
               backgroundColor: color,
             }}
@@ -67,7 +55,9 @@ const Notification = ({
                 {formatRelativeDate(createdAt)}
               </span>
             </figcaption>
-            <p className={`text-[12px] font-normal dark:text-white/60 ${isRead ? 'text-gray-500': 'text-black'}`}>
+            <p
+              className={`text-[12px] font-normal dark:text-white/60 ${isRead ? "text-gray-500" : "text-black"}`}
+            >
               {description}
             </p>
           </div>

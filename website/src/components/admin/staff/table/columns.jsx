@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowUpDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import {
@@ -27,28 +26,6 @@ function translateRole(role) {
 }
 
 export const columns = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     accessorKey: "index",
     header: () => (
@@ -134,7 +111,9 @@ export const columns = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div className="">{translateRole(row.original.role.name)}</div>,
+    cell: ({ row }) => (
+      <div className="">{translateRole(row.original.role.name)}</div>
+    ),
   },
   {
     accessorKey: "phoneNumber",

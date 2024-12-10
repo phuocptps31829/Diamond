@@ -20,6 +20,7 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
     googleMapsApiKey: key,
     libraries,
   });
+  console.log();
 
   const mapRef = useRef();
   const [marker, setMarker] = useState(null);
@@ -88,14 +89,16 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
         const formattedAddress = removePostalCode(
           place.formatted_address || place.name
         );
-        setAddress({
+        const addressDetails = {
           name: formattedAddress,
           lat: location.lat(),
           lng: location.lng(),
           ward,
           district,
           city,
-        });
+        };
+        console.log(addressDetails);
+        setAddress(addressDetails);
       }
     });
   }, [isLoaded, marker, setAddress]);
