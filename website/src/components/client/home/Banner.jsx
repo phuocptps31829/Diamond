@@ -9,7 +9,7 @@ export default function Banner() {
       <div className="absolute bottom-0 h-10 w-full bg-gradient-to-t from-[#e8f2f7f7] to-transparent"></div>
       <img src={ banner } alt="Banner" className="h-full w-full object-cover" />
       <div className="absolute inset-0 flex h-full w-full flex-col items-center justify-center">
-        <div className="font-medium text-primary-500 sm:mb-2 md:text-[20px]">
+        <div className="font-bold bg-gradient-to-b bg-clip-text text-transparent from-black via-[#20556aa7] to-[#000000] sm:mb-2 md:text-[20px]">
           Nền tảng công nghệ
         </div>
         <div className="mt-2 flex max-w-[260px] flex-col text-center text-[20px] text-primary-950 sm:text-[25px] md:max-w-full md:flex-row md:gap-[10px] md:text-left">

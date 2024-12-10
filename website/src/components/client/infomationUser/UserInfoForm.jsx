@@ -259,7 +259,7 @@ const UserInfoForm = () => {
             <div className="w-40 h-40 rounded-full overflow-hidden">
               <img
                 alt={ profileFetched?.data?.fullName }
-                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-contain w-full h-full" />
+                src={ `${import.meta.env.VITE_IMAGE_API_URL}/${imagePreview}` } className="object-cover w-full h-full" />
             </div>
 
             <div className="mt-4 w-full max-w-sm bg-white p-2 text-center">

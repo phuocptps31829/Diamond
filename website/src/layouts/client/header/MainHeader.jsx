@@ -313,7 +313,7 @@ export default function MainHeader() {
                       <div className="relative">
                         <Avatar>
                           <AvatarImage
-                            className="cursor-pointer"
+                            className="cursor-pointer w-100 h-100 object-cover"
                             src={
                               userProfile?.avatar
                                 ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`

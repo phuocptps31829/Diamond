@@ -18,7 +18,7 @@ const breadcrumbData = [
 ];
 
 const ScheduleTablePage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"], "/admin/dashboard");
     const [pageIndex, setPageIndex] = useState(0);
     const [tableData, setTableData] = useState({
         data: [],

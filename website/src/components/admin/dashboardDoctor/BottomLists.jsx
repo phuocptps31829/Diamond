@@ -7,16 +7,7 @@ import {
   TableHead,
   TableCell,
 } from "../../ui/Table";
-import {
-  Menubar,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarTrigger,
-} from "../../ui/Menubar";
 import { Link } from "react-router-dom";
-import { CiMenuKebab } from "react-icons/ci";
-import { MdOutlineDone, MdFreeCancellation } from "react-icons/md";
 import { FaRegHourglassHalf } from "react-icons/fa6";
 import { formatDateTimeLocale } from "@/utils/format";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -134,7 +125,6 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
               <TableHead>Trạng thái</TableHead>
               <TableHead>Thời gian</TableHead>
               <TableHead>Dịch vụ</TableHead>
-              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -194,31 +184,6 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
                     <span className="max-w-[300px] truncate block">
                       { item.service.name }
                     </span>
-                  </TableCell>
-                  <TableCell>
-                    { (idx === 0 && new Date(item.time) < new Date()) && (
-                      <Menubar className="border-none bg-transparent shadow-none">
-                        <MenubarMenu>
-                          <MenubarTrigger className="cursor-pointer rounded-sm bg-[#F1F1F1] p-2">
-                            <CiMenuKebab />
-                          </MenubarTrigger>
-                          <MenubarContent>
-                            <MenubarItem className="flex cursor-pointer items-center text-[13px] text-primary-500">
-                              <MdOutlineDone className="mr-2" size={ 18 } />
-                              <span>
-                                Hoàn tất khám bệnh
-                              </span>
-                            </MenubarItem>
-                            <MenubarItem className="flex cursor-pointer items-center text-[13px] text-red-500">
-                              <MdFreeCancellation className="mr-2" size={ 18 } />
-                              <span>
-                                Hủy lịch hẹn
-                              </span>
-                            </MenubarItem>
-                          </MenubarContent>
-                        </MenubarMenu>
-                      </Menubar>
-                    ) }
                   </TableCell>
                 </TableRow>
               ))
