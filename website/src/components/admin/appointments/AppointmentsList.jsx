@@ -9,6 +9,7 @@ import { getColumnsAppointments } from "./table/columns";
 const AppointmentsList = () => {
   const profile = useSelector((state) => state.auth.userProfile);
   const roleID = profile?.role?._id;
+  
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],

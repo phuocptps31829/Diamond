@@ -41,8 +41,6 @@ const UserNav = () => {
     if (!socket) return;
     const handleNotification = (data) => {
       const userID = userProfile?._id;
-      console.log("New notification:", data);
-      console.log("User ID:", userID);
 
       if (data.data?.userIDs.includes(userID)) {
         toast.custom((t) => (

@@ -4,20 +4,23 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
-    title: 'Lịch hẹn'
+    title: "Lịch hẹn",
   },
   {
-    href: '/admin/appointments/create',
-    title: 'Thêm lịch hẹn'
+    href: "/admin/appointments/create",
+    title: "Thêm lịch hẹn",
   },
 ];
 
 const AppointmentsAddPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+  useAuthRedirect(
+    ["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"],
+    "/admin/dashboard"
+  );
 
   return (
     <div>
-      <BreadcrumbCustom data={ breadcrumbData } />
+      <BreadcrumbCustom data={breadcrumbData} />
       <AppointmentsAdd />
     </div>
   );

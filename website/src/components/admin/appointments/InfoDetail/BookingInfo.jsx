@@ -50,10 +50,11 @@ import {
 import { Card } from "@/components/ui/Card";
 import ServiceBooking from "./ServiceBooking";
 import { appointmentApi } from "@/services/appointmentsApi";
-import { prescriptionApi } from "@/services/prescriptionApi";
+import { useSelector } from "react-redux";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
+  const profile = useSelector((state) => state.auth.userProfile);
   const { stylePayment, textPayment } = getStatusPaymentStyle(
     bookingData.payment.status
   );
@@ -134,7 +135,6 @@ const BookingInfo = ({ data }) => {
     return date.toISOString().split("T")[0];
   };
   console.log(data, "data");
-  
 
   const extractTime = (timestamp) => {
     const date = new Date(timestamp);
@@ -170,17 +170,6 @@ const BookingInfo = ({ data }) => {
   //   bookingData._id,
   //   updateStatus,
   // ]);
-  const handleDownloadPrescription = () => {
-    prescriptionApi
-      .exportPrescription(data.results[0].prescription._id)
-      .then(() => {
-        toastUI("Tải xuống đơn thuốc thành công!", "success");
-      })
-      .catch((error) => {
-        console.error("Error downloading prescription:", error);
-        toastUI("Tải xuống đơn thuốc thất bại. Vui lòng thử lại!", "error");
-      });
-  };
 
   const handleChangeStatus = (status) => {
     if (status === "EXAMINED" && bookingData.results.length === 0) {
@@ -286,12 +275,18 @@ const BookingInfo = ({ data }) => {
           <FaUserInjured className="text-xl text-primary-500" />
           <span className="font-medium text-primary-900"> Bệnh nhân :</span>
           <strong className="">
-            <Link
-              to={`/admin/patients/${bookingData.patient._id}`}
-              className="font-semibold text-primary-900 underline"
-            >
-              {bookingData.patient.fullName}
-            </Link>
+            {profile.role.name === "DOCTOR" ? (
+              <span className="font-semibold text-primary-900 underline">
+                {bookingData.patient.fullName}
+              </span>
+            ) : (
+              <Link
+                to={`/admin/patients/${bookingData.patient._id}`}
+                className="font-semibold text-primary-900 underline"
+              >
+                {bookingData.patient.fullName}
+              </Link>
+            )}
           </strong>
           <Avatar className="ml-2 size-6">
             <AvatarImage
@@ -414,6 +409,8 @@ const BookingInfo = ({ data }) => {
               <div className=" ">
                 <Select
                   disabled={
+                    profile.role.name === "DOCTOR" ||
+
                     bookingData.status === "CANCELLED" ||
                     bookingData.status === "EXAMINED"
                   }
@@ -445,9 +442,9 @@ const BookingInfo = ({ data }) => {
               <div className=" ">
                 <Select
                   disabled={
+                    profile.role.name === "DOCTOR" ||
                     bookingData.status === "CANCELLED" ||
-                    isBookingTimePassed ||
-                    bookingData.results.length > 0
+                    isBookingTimePassed 
                   }
                   className="w-full"
                   onValueChange={handleChangeDoctor}
@@ -632,27 +629,28 @@ const BookingInfo = ({ data }) => {
               {bookingData.results.length > 0 && (
                 <>
                   <div className="">
-                    <Button
-                      variant="primary"
-                      className="w-fit"
-                      onClick={handleDownloadPrescription}
+                    <Link
+                      target="blank"
+                      to={`${import.meta.env.VITE_CUD_API_URL}/prescriptions/export/${data.results[0].prescription._id}`}
                     >
-                      Tải xuống đơn thuốc
-                      <svg
-                        className="ml-1 size-4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                          strokeLinejoin="round"
-                          strokeLinecap="round"
-                        ></path>
-                      </svg>{" "}
-                    </Button>
+                      <Button variant="primary" className="w-fit">
+                        Tải xuống đơn thuốc
+                        <svg
+                          className="ml-1 size-4"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                            strokeLinejoin="round"
+                            strokeLinecap="round"
+                          ></path>
+                        </svg>
+                      </Button>
+                    </Link>
                   </div>
                 </>
               )}

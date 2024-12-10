@@ -2,7 +2,7 @@ import AppointmentsDetailAdmin from "@/components/admin/appointments/Appointment
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const AppointmentsDetailPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"], "/admin/dashboard");
 
   return (
     <div>
