@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
 import Header from "./header";
@@ -17,6 +18,7 @@ import notification_sound from "../../assets/audio/ui-hello-bells-om-fx-1-00-03.
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export default function AppLayout() {
+  const [showChat, setShowChat] = useState(false);
   const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,7 +34,7 @@ export default function AppLayout() {
           className={ `${t.visible ? "animate-enter" : "animate-leave"
             } pointer-events-auto flex w-full max-w-[26rem] rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition duration-300 ease-in-out` }
         >
-          <div className="w-0 flex-1 p-4 py-3">
+          <div className="w-0 flex-1 p-4 py-3 cursor-pointer" onClick={() => setShowChat(true)}>
             <div className="flex items-center">
               <div className="flex-shrink-0 pt-0.5">
                 <svg
@@ -48,8 +50,9 @@ export default function AppLayout() {
                   />
                 </svg>
               </div>
-              <div className="ml-3 flex-1">
-                Bạn có một tin nhắn mới !
+              <div className="ml-3 flex-1 flex flex-col text-[14px]">
+                <span>Bạn có một tin nhắn mới !</span>
+                <span className="text-[11px] text-gray-600">Nhấn vào để xem tin nhắn.</span>
               </div>
             </div>
           </div>
@@ -107,7 +110,7 @@ export default function AppLayout() {
         <Outlet />
       </div>
       <Balloon />
-      <BalloonMessage />
+      <BalloonMessage showChat={showChat} setShowChat={setShowChat} />
       <Footer />
     </>
   );
