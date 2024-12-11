@@ -15,7 +15,7 @@ const statusOptions = [
 
 const getStatusLabel = (status) => {
   const statusOption = statusOptions.find((option) => option.value === status);
-  return statusOption ? statusOption.label : "";
+  return statusOption ? statusOption.label : "No status";
 };
 
 const getStatusVariant = (status) => {
@@ -199,7 +199,7 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
           <Badge variant={getStatusVariant(row.original.status)}>
-            {getStatusLabel(row.original.status)}
+            {getStatusLabel(row.original.status || "Lỗi trạng thái")}
           </Badge>
         </span>
       </div>

@@ -8,21 +8,41 @@ const typeStyles = {
   1: { color: "#E1F2FC", icon: "ℹ️" },
   2: { color: "#fff0b5", icon: "🎉" },
 };
-
 const Notification = ({ _id, title, description, createdAt, type, isRead }) => {
   const { color, icon } = typeStyles[type] || { color: "#ccc", icon: "🔔" };
   const queryClient = useQueryClient();
+
   const handleNotificationClick = async (event) => {
     event.preventDefault();
+
     if (!isRead) {
+      const previousNotifications = queryClient.getQueryData(["notifications"]);
+
+      queryClient.setQueryData(["notifications"], (oldData) => {
+        if (!oldData || !oldData.data) return oldData;
+
+        return {
+          ...oldData,
+          data: oldData.data.map((notification) =>
+            notification._id === _id
+              ? { ...notification, isRead: true }
+              : notification
+          ),
+        };
+      });
+
       try {
         await notificationsApi.IsReadNotification(_id);
-        queryClient.invalidateQueries(["notifications", _id]);
+
+        // Invalidate cache để đồng bộ dữ liệu từ server (nếu cần)
+        // queryClient.invalidateQueries(["notifications"]);
       } catch (error) {
         console.error("Failed to update notification as read:", error);
+        queryClient.setQueryData(["notifications"], previousNotifications);
       }
     }
   };
+
   return (
     <div onClick={handleNotificationClick}>
       <figure
@@ -39,7 +59,7 @@ const Notification = ({ _id, title, description, createdAt, type, isRead }) => {
         <div className="flex flex-row items-center gap-3">
           {/* Icon */}
           <div
-            className="flex size-10 w-11  items-center justify-center rounded-2xl"
+            className="flex size-10 w-11 items-center justify-center rounded-2xl"
             style={{
               backgroundColor: color,
             }}
@@ -47,16 +67,24 @@ const Notification = ({ _id, title, description, createdAt, type, isRead }) => {
             <span className="text-lg">{icon}</span>
           </div>
           {/* Content */}
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden w-10/12 mx-auto">
             <figcaption className="flex flex-row items-center whitespace-pre text-lg font-medium dark:text-white">
-              <span className="text-sm sm:text-lg">{title}</span>
-              <span className="mx-1">·</span>
+              <h1
+                className={`text-sm sm:text-base ${isRead ? "text-gray-600/65" : "text-black"}`}
+              >
+                {title}
+              </h1>
+              <span
+                className={`mx-1 ${isRead ? "text-gray-600/65" : "text-black"}`}
+              >
+                ·
+              </span>
               <span className="text-xs text-gray-500">
                 {formatRelativeDate(createdAt)}
               </span>
             </figcaption>
             <p
-              className={`text-[12px] font-normal dark:text-white/60 ${isRead ? "text-gray-500" : "text-black"}`}
+              className={`text-[12px] font-normal dark:text-white/60 ${isRead ? "text-gray-600/65" : "text-black"}`}
             >
               {description}
             </p>

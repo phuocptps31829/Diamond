@@ -28,12 +28,13 @@ import Notification from "./notion/NotionMessage";
 import { useSocket } from "@/hooks/useSocket";
 import { notificationsApi } from "@/services/notificationsApi";
 import toast from "react-hot-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 const UserNav = () => {
   const userProfile = useSelector((state) => state.auth.userProfile);
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { subscribe, socket } = useSocket(SOCKET_URL);
@@ -41,8 +42,8 @@ const UserNav = () => {
     if (!socket) return;
     const handleNotification = (data) => {
       const userID = userProfile?._id;
-
       if (data.data?.userIDs.includes(userID)) {
+        queryClient.invalidateQueries(["notifications"]);
         toast.custom((t) => (
           <div
             className={`${
@@ -116,7 +117,7 @@ const UserNav = () => {
   );
   return (
     <>
-      <div className=" flex items-center gap-6">
+      <div className="flex items-center gap-6">
         <DropdownMenu>
           <DropdownMenuTrigger asChild className="">
             <button className="relative" onClick={toggleDropdown}>
@@ -144,7 +145,7 @@ const UserNav = () => {
                 </div>
               ) : (
                 notifications.map((item, idx) => (
-                  <DropdownMenuItem asChild key={idx} className="">
+                  <DropdownMenuItem asChild key={idx}>
                     <Notification {...item} />
                   </DropdownMenuItem>
                 ))
