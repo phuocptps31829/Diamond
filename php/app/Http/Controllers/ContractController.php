@@ -39,8 +39,7 @@ class ContractController extends Controller
                 $templateProcessor = new TemplateProcessor('docx/template/HopDongLaoDong.docx');
             } else {
                 $templateProcessor = new TemplateProcessor('docx/template/HopDongLaoDongBSPartTime.docx');
-                $templateProcessor->setValue('starTime', $data['startTime']);
-                $templateProcessor->setValue('endTime', $data['endTime']);
+                $templateProcessor->setValue('timeWork', $data['timeWork']);
                 $templateProcessor->setValue('countDate', $data['countDate']);
             }
 

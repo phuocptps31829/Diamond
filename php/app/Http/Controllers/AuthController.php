@@ -58,13 +58,14 @@ class AuthController extends Controller
                 ]);
                 $token = generateAccessRefreshToken($userNew);
             }
-            return response()->json([
-                'message' => 'User logged in successfully.',
-                'data' => [
-                    'accessToken' => $token['accessToken'],
-                    'refreshToken' => $token['refreshToken']
-                ]
-            ], 200);
+            return redirect(env('FACEBOOK_LOGIN_REDIRECT')."?accessToken=".$token['accessToken']['token']."&refreshToken=".$token['refreshToken']['token']);
+//            return response()->json([
+//                'message' => 'User logged in successfully.',
+//                'data' => [
+//                    'accessToken' => $token['accessToken'],
+//                    'refreshToken' => $token['refreshToken']
+//                ]
+//            ], 200);
         } catch (Exception $e) {
               return handleException($e);
         }
@@ -94,13 +95,16 @@ class AuthController extends Controller
                 ]);
                 $token = generateAccessRefreshToken($userNew);
             }
-            return response()->json([
-                'message' => 'User logged in successfully.',
-                'data' => [
-                    'accessToken' => $token['accessToken'],
-                    'refreshToken' => $token['refreshToken']
-                ]
-            ], 200);
+            \Log::info($token['accessToken']);
+            $redirect=env('GOOGLE_LOGIN_REDIRECT')."?accessToken=".$token['accessToken']['token']."&refreshToken=".$token['refreshToken']['token'];
+            return redirect($redirect);
+//            return response()->json([
+//                'message' => 'User logged in successfully.',
+//                'data' => [
+//                    'accessToken' => $token['accessToken'],
+//                    'refreshToken' => $token['refreshToken']
+//                ]
+//            ], 200);
         } catch (Exception $e) {
               return handleException($e);
         }
@@ -312,10 +316,10 @@ class AuthController extends Controller
                 'phoneNumber' => 'required|string',
                 'password' => 'required|string',
             ], [
-                'phoneNumber.required' => 'Phone number is required',
-                'phoneNumber.string' => 'Phone number should be a string',
-                'password.required' => 'Password is required',
-                'password.string' => 'Password should be a string'
+                'phoneNumber.required' => 'Số điện thoại không không được bỏ trống!',
+                'phoneNumber.string' => 'Số điện thoại phải là chuỗi!',
+                'password.required' => 'Mật khẩu không được bỏ trống',
+                'password.string' =>'Mật khẩu phải là chuỗi!'
             ]);
 
             $user = User::where('phoneNumber', '=', $request->phoneNumber)->first();
@@ -333,6 +337,15 @@ class AuthController extends Controller
                 return createError(400, 'Không tiềm thấy tài khoản của bạn!');
             }
 
+            if(strval($user->roleID)==env('ROLE_PATIENT')){
+                if(isset($request->isAdmin)){
+                    return createError(403, 'Tài khoản hoặc mật khẩu không đúng!');
+                }
+            }else{
+                if(!isset($request->isAdmin)){
+                    return createError(403, 'Tài khoản hoặc mật khẩu không đúng!');
+                }
+            }
             $token = generateAccessRefreshToken($user);
 
             return response()->json([

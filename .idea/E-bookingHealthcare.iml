@@ -151,6 +151,9 @@
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/dompdf/php-svg-lib" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/masterminds/html5" />
       <excludeFolder url="file://$MODULE_DIR$/php/vendor/sabberworm/php-css-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/laravel/horizon" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/spatie/image-optimizer" />
+      <excludeFolder url="file://$MODULE_DIR$/php/vendor/spatie/laravel-image-optimizer" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

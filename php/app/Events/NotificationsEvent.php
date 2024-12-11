@@ -16,7 +16,7 @@ namespace App\Events;
 //use Illuminate\Foundation\Events\Dispatchable;
 //use Illuminate\Queue\SerializesModels;
 
-namespace App\Events;
+//namespace App\Events;
 //
 //use Illuminate\Broadcasting\Channel;
 //use Illuminate\Broadcasting\InteractsWithSockets;
@@ -68,7 +68,7 @@ class NotificationsEvent implements ShouldBroadcastNow
      */
     public function __construct($ids)
     {
-        $this->ids = $ids;
+        $this->ids = array_map('strval', $ids);
     }
 
     /**

@@ -74,7 +74,8 @@ class Kernel extends HttpKernel
         'CheckSecret' => \App\Http\Middleware\ChekcSecret::class,
         'CheckChat' => \App\Http\Middleware\CheckChat::class,
         'permission' => \App\Http\Middleware\Permission::class,
-        'jwt.auth' => \App\Http\Middleware\JwtAuthenticate::class,
+        'jwtAuth' => \App\Http\Middleware\JwtAuthenticate::class,
+    'optimizeImages' => \Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages::class,
 
     ];
 }

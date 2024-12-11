@@ -28,7 +28,7 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '(Nhắc nhở) Y khoa Diamond - Lịch hẹn của bạn sắp đến!',
+            subject: 'Y khoa Diamond - Lịch hẹn của bạn sắp đến!',
         );
     }
 

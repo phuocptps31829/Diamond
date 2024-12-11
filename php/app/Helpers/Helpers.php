@@ -128,7 +128,7 @@ if (!function_exists('sendNotification')) {
             "isRead" => false,
             "redirect" => $redirect
         ]);
-        event(new NotificationsEvent($userID));
+        event(new NotificationsEvent([$userID]));
         return true;
     }
 }
@@ -249,7 +249,7 @@ if (!function_exists('searchInTable')) {
         ])->post(env('URL_CALL'), $options);
 
         if ($response->successful()) {
-            return $OTP;
+            return true;
         } else {
             return false;
         }
@@ -355,12 +355,27 @@ if (!function_exists('searchInTable')) {
 
     function uploadImage($image, $nameFolder = null)
     {
-        $newName = time() . '_' . $image->getClientOriginalName();
-        if ($nameFolder) {
-            $image->move(public_path('images/' . $nameFolder . '/'), $newName);
-        } else {
-            $image->move('images/', $newName);
+        // Tạo tên mới cho ảnh
+        $newName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.webp';
+        $destinationPath = $nameFolder
+            ? public_path('images/' . $nameFolder . '/')
+            : public_path('images/');
+        // Di chuyển ảnh vào thư mục đích
+        $image->move($destinationPath, $newName);
+        $fullPath = $destinationPath . $newName;
+        $quality = 85;
+        // Log dung lượng trước khi tối ưu hóa
+        $sizeBefore = filesize($fullPath);
+        if ($sizeBefore > 2 * 1024 * 1024) { // Lớn hơn 2MB
+            $quality = 15;
+        } elseif ($sizeBefore > 1 * 1024 * 1024) { // Lớn hơn 1MB
+            $quality = 25;
         }
+        \Log::info("Dung lượng trước khi tối ưu: {$sizeBefore} bytes (".($sizeBefore / 1024)." KB)");
+        // Chuyển đổi sang WebP và giảm dung lượng
+        exec("cwebp -q {$quality}  " . escapeshellarg($fullPath) . " -o " . escapeshellarg($fullPath));
+        $sizeAfter = filesize($fullPath);
+        \Log::info("Dung lượng sau khi tối ưu: {$sizeAfter} bytes (".($sizeAfter / 1024)." KB)");
         return $newName;
     }
 

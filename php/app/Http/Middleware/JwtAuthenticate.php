@@ -18,18 +18,16 @@ class JwtAuthenticate
     public function handle(Request $request, Closure $next): Response
     {
         $accessToken = $request->bearerToken();
-
         if (!$accessToken) {
-            return createError(403, 'accessToken token not found.');
+            return createError(401, 'accessToken token not found.');
         }
-        $verifiedUser = JWT::decode($accessToken, new Key(env('ACCESS_TOKEN_SECRET'), 'HS256'));
-        if (!$verifiedUser) {
-            return createError(403, 'Invalid access token.');
+        try {
+            $verifiedUser = JWT::decode($accessToken, new Key(env('ACCESS_TOKEN_SECRET'), 'HS256'));
+        }catch (\Exception $e){
+            return createError(401, 'Invalid access token.');
         }
-        if ((time()) > $verifiedUser->ext) {
-            return response()->json(['error' => 'Token hết hạn.'], 401);
-        }
-        $request->merge(['jwtAuth' => $verifiedUser]);
-        return $next($request);
+
+        $request->merge(['jwtAuth' =>get_object_vars($verifiedUser)]);
+           return $next($request);
     }
 }

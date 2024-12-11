@@ -1235,6 +1235,145 @@
                 }
             }
         },
+        "/api/v1/work-schedules/add": {
+            "post": {
+                "tags": [
+                    "Work Schedules"
+                ],
+                "summary": "Thêm lịch làm việc mới",
+                "description": "API này dùng để thêm lịch làm việc mới.",
+                "operationId": "cad737acda492920b2dbbaa28caa0ec1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "doctorID": {
+                                        "type": "string",
+                                        "example": "66fd6dce2efb40d76dda5058"
+                                    },
+                                    "day": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-04"
+                                    },
+                                    "clinicID": {
+                                        "type": "string",
+                                        "example": "671d94f9563a4d298e693faa"
+                                    },
+                                    "hour": {
+                                        "properties": {
+                                            "startTime": {
+                                                "type": "string",
+                                                "example": "07:00"
+                                            },
+                                            "endTime": {
+                                                "type": "string",
+                                                "example": "09:00"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Thêm thành công"
+                    },
+                    "400": {
+                        "description": "Lỗi xảy ra"
+                    }
+                }
+            }
+        },
+        "/api/v1/work-schedules/update/{scheduleID}": {
+            "put": {
+                "tags": [
+                    "Work Schedules"
+                ],
+                "summary": "Cập nhật lịch làm việc",
+                "description": "Cập nhật thông tin lịch làm việc của bác sĩ trong phòng khám.",
+                "operationId": "004c4a0aad90f54308bd98e9720f4cde",
+                "parameters": [
+                    {
+                        "name": "scheduleID",
+                        "in": "path",
+                        "description": "ID của lịch làm việc cần cập nhật",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "doctorID": {
+                                        "type": "string",
+                                        "example": "66fd6dce2efb40d76dda5058"
+                                    },
+                                    "day": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-03"
+                                    },
+                                    "clinicID": {
+                                        "type": "string",
+                                        "example": "671d94f9563a4d298e693faa"
+                                    },
+                                    "hour": {
+                                        "properties": {
+                                            "startTime": {
+                                                "type": "string",
+                                                "example": "07:00"
+                                            },
+                                            "endTime": {
+                                                "type": "string",
+                                                "example": "09:00"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Lịch làm việc đã được cập nhật thành công",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Work schedule updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Dữ liệu không hợp lệ"
+                    },
+                    "404": {
+                        "description": "Không tìm thấy lịch làm việc"
+                    }
+                }
+            }
+        },
         "/api/v1/medical-packages": {
             "get": {
                 "tags": [
@@ -4651,6 +4790,10 @@
         {
             "name": "Image Routes",
             "description": "Image Routes"
+        },
+        {
+            "name": "Work Schedules",
+            "description": "Work Schedules"
         },
         {
             "name": "Medical package Routes",

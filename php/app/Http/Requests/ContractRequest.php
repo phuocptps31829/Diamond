@@ -32,9 +32,10 @@ class ContractRequest extends FormRequest
             "price"=>"required|numeric",
             "isInternal"=>"required|boolean",
             "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
-            "startTime"=>"required|string",
-            "endTime"=>"required|string",
+            "startTime"=>"nullable|string",
+            "endTime"=>"nullable|string",
             "countDate"=>"required|numeric",
+            "timeWork"=>"nullable|integer",
         ];
     }
 

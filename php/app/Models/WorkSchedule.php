@@ -47,30 +47,16 @@ class WorkSchedule extends Model
     public static function boot()
     {
         parent::boot();
+
+        static::updating(function ($model) {
+            if (Appointment::where("WorkScheduleID", new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể cập nhật đã có lịch khám!');
+            }
+        });
+
         static::updated(function ($model) {
             $appointment = Appointment::where("WorkScheduleID", new ObjectId($model->_id))->first();
             $ids=[];
-            if ($appointment) {
-//                  Tạo thông báo lịch làm việc của bác sĩ phụ trách đã bị thay đổi
-                $redirect = new \stdClass();
-                $redirect->endpoint = 'appointments';
-                $redirect->_id = $appointment->id;
-                Notification::create([
-                    "userID" => $appointment->patientID,
-                    "title" => "Chú ý!",
-                    'description' => 'Lịch hẹn lúc ' . $appointment->hour['startTime'] . ' đến ' . $appointment->hour['endTime'] . ' ngày ' . Carbon::parse($appointment->day)->format('d-m-Y') . " bác sĩ phụ trách có thay đổi lịch làm việc!",
-                    "type" => 0,
-                    "isRead" => false,
-                    "redirect" => $redirect
-                ]);
-                $ids[]=$appointment->patientID;
-
-//                Gọi điện thông báo cho bệnh nhân về lịch khám đã có sự thay đổi
-                $patient=User::find($appointment->patientID);
-                    callNotification($patient->phoneNumber,"
-                    Xin chào đây là cuộc gọi đến từ y khoa diamond, xin thông báo lịch hẹn của bạn có thay đổi xin mời vào website hoặc ứng dụng diamond để xem chi tiết.
-                    ");
-            }
 //            Thông báo cho bác sĩ lịch làm việc đã thay dổi
             $beforeModel=$model->getOriginal();
             $redirectDoctor = new \stdClass();
@@ -80,13 +66,13 @@ class WorkSchedule extends Model
                 "userID" => $model->doctorID,
                 "title" => "Chú ý!",
                 'description' => 'Lịch làm việc lúc '
-                    . $beforeModel->hour['startTime'] . ' đến '
-                    . $beforeModel->hour['endTime'] . ' ngày '
-                    . Carbon::parse($beforeModel->day)->format('d-m-Y')
+                    . $beforeModel['hour']['startTime'] . ' đến '
+                    . $beforeModel['hour']['endTime'] . ' ngày '
+                    . Carbon::parse($beforeModel['day'])->format('d-m-Y')
                     ." đã được thay đổi thành "
-                    . $model->hour['startTime'] . ' đến '
-                    . $model->hour['endTime'] . ' ngày '
-                    . Carbon::parse($model->day)->format('d-m-Y')
+                    . $model['hour']['startTime'] . ' đến '
+                    . $model['hour']['endTime'] . ' ngày '
+                    . Carbon::parse($model['day'])->format('d-m-Y')
                 ,
                 "type" => 0,
                 "isRead" => false,
@@ -95,7 +81,20 @@ class WorkSchedule extends Model
             $ids[]=$model->doctorID;
 
             event(new NotificationsEvent($ids));
-//            Gửi mail thông báo cho bác sĩ về lịch làm việc đã bị thay đổi
+        });
+
+        static::created(function ($model) {
+            sendNotification(
+                $model->doctorID,
+                "Lưu ý!",
+                "Bạn có lịch làm việc vào lúc"
+                . $model->hour['startTime'] . ' đến '
+                . $model->hour['endTime'] . ' ngày '
+                . Carbon::parse($model->day)->format('d-m-Y'),
+                0,
+                "work-schedules",
+                $model->id,
+            );
         });
 
         static::deleting(function ($model) {

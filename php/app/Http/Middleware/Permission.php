@@ -25,19 +25,16 @@ class Permission
         $hasPermission = false;
 //        Mảng các id của các quyền đang có
         $roles=[
-            'superadmin'=>env('SUPERADMIN'),
+            'superAdmin'=>env('ROLE_SUPER_ADMIN'),
             'admin'=>env('ADMIN'),
-            'doctor'=>env('DOCTOR'),
-            'patient'=>env('PATIENT'),
-            'editer'=>env('RECEPTIONIST'),
-            'nurse'=>env('NURSE'),
+            'doctor'=>env('ROLE_DOCTOR'),
+            'patient'=>env('ROLE_PATIENT'),
+            'receptionist'=>env('ROLE_STAFF_RECEPTIONIST')
         ];
-
         $roleValuesToCheck = array_map(function ($role) use ($roles) {
             return $roles[$role] ?? null;
         }, $permissions);
-
-        if (!in_array($jwtAuth->role, $roleValuesToCheck)) {
+        if (!in_array($jwtAuth['role'], $roleValuesToCheck)) {
             return response()->json(['error' => 'Không có quyền thực hiện.'], 403);
         }
 

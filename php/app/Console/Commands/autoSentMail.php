@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Mail\SendMail;
+use App\Mail\SendMailNewAppointment;
+use App\Mail\SendMailRegister;
 use App\Models\Appointment;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
@@ -53,7 +55,16 @@ class autoSentMail extends Command
         $data['nameService'] = 'This is a test mail';
         $data['nameDoctor'] = 'Test mail';
         $data['nameBranch'] = 'Test mail';
+
         $data['time'] = '2020-12-12 12:12:12';
-        Mail::to('gameming132@gmail.com')->send(new SendMail($data));
+        $data['link'] = '2020-12-12 12:12:12';
+        Mail::to('gameming132@gmail.com')->queue(new SendMail($data));
+//        Mail::to('gameming132@gmail.com')->queue(new SendMailRegister($data));
+//        $data['fullName'] = 'gameming132';
+//        $data['nameService'] = 'gameming132';
+//        $data['time'] = 'gameming132';
+//        $data['address'] = 'gameming132';
+//        Mail::to('gameming132@gmail.com')->queue(new SendMailNewAppointment($data));
+        \Log::info('send mail');
     }
 }

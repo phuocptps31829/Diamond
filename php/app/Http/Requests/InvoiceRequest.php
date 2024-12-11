@@ -26,7 +26,7 @@ class InvoiceRequest extends FormRequest
             'data' => 'required|array',
             'data.*.medicalPackageID' => ['nullable',new IsValidMongoId('MedicalPackage')],
             'data.*.serviceID' =>['nullable',new IsValidMongoId('Service')],
-            'data.*.workScheduleID' => ['required',new IsValidMongoId('WorkSchedule')],
+            'data.*.workScheduleID' => 'nullable|string',
             'data.*.type' => 'required|string',
             'data.*.time' => 'required|date',
             'data.*.status' => 'required|string',

@@ -63,7 +63,7 @@ use MongoDB\BSON\ObjectId;
 
 class NotificationController extends Controller
 {
-    public function updaetIsRead(Request $request)
+    public function updateIsRead(Request $request)
     {
         try {
             $id = $request->route('id');

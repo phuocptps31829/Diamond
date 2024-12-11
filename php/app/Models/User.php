@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\SendMailRegister;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Mail;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -86,6 +89,30 @@ class User extends Authenticatable
     public static function boot()
     {
         parent::boot();
+        static::created(function ($model) {
+            sendNotification(
+                $model->doctorID,
+                "Xin chào!",
+                "Chào mừng bạn đến với hệ thống y khoa DIAMOND",
+                0,
+                ""
+            );
+//            Gửi mail
+            $data = [];
+              if (isset($model->email) && $model->email != "") {
+                  $data['fullName'] ='';
+                  if (isset($model->gender)) {
+                      if ($model->gender === 'Nam') {
+                          $data['fullName'] .= ' anh ';
+                      } elseif ($model->gender === 'Nữ') {
+                          $data['fullName'] .= ' chị ';
+                      }
+                  }
+                  $data['fullName'] .= $model->fullName;
+             Mail::to($model->email)->queue(new SendMailRegister($data));
+             }
+        });
+
         static::deleting(function ($model) {
             if (WorkSchedule::where("doctorID",new ObjectId($model->_id))->exists()) {
                 throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch làm việc!');

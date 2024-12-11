@@ -6,7 +6,7 @@ class DataExistsException extends Exception
 {
     protected $message;
     protected $code;
-    public function __construct($message = 'Error', $code = 400)
+    public function __construct($message = 'Error', $code = 409)
     {
         parent::__construct($message, $code);
     }

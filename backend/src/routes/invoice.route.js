@@ -68,7 +68,7 @@ router.get(
     invoiceController.getInvoiceByID
 );
 
-router.post(
+router.get(
     '/payment/zalopay',
     invoiceController.zaloPayPayment
 );

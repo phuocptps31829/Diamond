@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PrescriptionRequest;
+use App\Models\Appointment;
 use App\Models\Invoice;
+use App\Models\Medicine;
 use App\Models\Prescription;
+use App\Models\Result;
+use App\Models\User;
 use Illuminate\Http\Request;
 use MongoDB\BSON\ObjectID;
 use PDF;
@@ -501,22 +505,26 @@ class PrescriptionController extends Controller
         if(!$prescription){
             return createError(404, 'Không tìm thấy đơn thuốc!');
         }
+    $medicines=[];
+        foreach ($prescription->medicines as $medicine) {
+            $nameUnit=Medicine::find($medicine['medicineID']);
+            $medicine['unit']=$nameUnit->unit;
+            $medicine['name']=$nameUnit->name;
+            $medicines[]=$medicine;
+        }
+        $result=Result::find($prescription->resultID);
+        $appointment=Appointment::find($result->appointmentID);
+        $patient=User::find($appointment->patientID);
 
-        $prescription = [
-            'patient_name' => 'Nguyễn Văn A',
-            'doctor_name' => 'Bác sĩ B',
-            'medications' => [
-                ['name' => 'Paracetamol', 'dosage' => '500mg', 'quantity' => 10],
-                ['name' => 'Amoxicillin', 'dosage' => '250mg', 'quantity' => 20],
-            ],
-            'instructions' => 'Sử dụng thuốc đúng theo chỉ định của bác sĩ.',
-        ];
-
+//        return view('pdf.prescription', compact('prescription','patient','medicines'))->render();
         // Render view thành HTML
-        $pdf = PDF::loadView('pdf.prescription', compact('prescription'));
+        $pdf = PDF::loadView('pdf.prescription', compact('prescription','patient','medicines'));
 
         // Trả về file PDF
-        return $pdf->download('don-thuoc.pdf');
+//        return $pdf->download('don-thuoc.pdf');
+        return response($pdf->stream('don-thuoc.pdf'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline ; filename="don-thuoc.pdf"');
     }
     public function getAllPrescription(Request $request)
     {
