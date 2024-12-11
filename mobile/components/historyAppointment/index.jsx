@@ -33,7 +33,6 @@ const HistoryAppointment = () => {
         );
     }
     const mappedData = data?.pages?.flatMap(group => group.data);
-    console.log('mappedData:', mappedData);
 
     const filteredData = mappedData?.filter(item => selectedFilter !== "ALL"
         ? item.status === selectedFilter

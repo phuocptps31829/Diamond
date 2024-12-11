@@ -6,10 +6,6 @@ const { createError, compareHashedValue } = require('../utils/helper.util');
 // # Roles ID in database
 const ROLE_SUPER_ADMIN = process.env.ROLE_SUPER_ADMIN;
 const ROLE_ADMIN = process.env.ROLE_ADMIN;
-const ROLE_DOCTOR = process.env.ROLE_DOCTOR;
-const ROLE_STAFF = process.env.ROLE_STAFF;
-const ROLE_EDITOR = process.env.ROLE_EDITOR;
-const ROLE_PATIENT = process.env.ROLE_PATIENT;
 
 const verifyAccessToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
