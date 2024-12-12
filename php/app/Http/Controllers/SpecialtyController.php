@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Specialty;
 use Illuminate\Http\Request;
 use App\Http\Requests\SpecialtyRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -125,10 +126,10 @@ class SpecialtyController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Specialty::where('isDeleted', false)->count();
+            $totalRecords = Specialty::count();
 
-            $specialties = Specialty::where('isDeleted', false)
-                ->skip($skip)
+            $specialties = Specialty::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -149,12 +150,11 @@ class SpecialtyController extends Controller
     {
         try {
             $id = $request->route('id');
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', new ObjectId($id))->first();
 
             if (!$specialty) {
                 return createError(404, 'Specialty not found');
             }
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Specialties retrieved successfully.',
@@ -170,14 +170,12 @@ class SpecialtyController extends Controller
         try {
             $SpecialtyRequest = new SpecialtyRequest();
             $specialty = Specialty::create($request->validate($SpecialtyRequest->rules(), $SpecialtyRequest->messages()));
-
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty created successfully.',
+                'message' => 'Thêm chuyên khoa thành công!.',
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
-
                return handleException($e);
         }
     }
@@ -186,10 +184,10 @@ class SpecialtyController extends Controller
         try {
             $id = $request->route('id');
 
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', new ObjectId($id))->first();
 
             if (!$specialty) {
-                return createError(404, 'Specialty not found');
+                return createError(404, 'Không tìm thấy chuyên khoa!');
             }
             $specialtyRequest = new SpecialtyRequest();
 
@@ -197,7 +195,7 @@ class SpecialtyController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty update successfully.',
+                'message' => 'Cập nật chuyên khoa thành công.',
                 'data' => $specialty,
             ], 201);
         } catch (\Exception $e) {
@@ -208,23 +206,23 @@ class SpecialtyController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID  không hợp lệ!');
             }
 
-            $specialty = Specialty::where('_id', $id)->where('isDeleted', false)->first();
+            $specialty = Specialty::where('_id', $id)->first();
             if (!$specialty) {
-                return createError(404, 'Specialty not found');
+                return createError(404, 'Không tìm thấy chuyên khoa!');
             }
 
-            $specialty->update(['isDeleted' => true]);
+            $specialty->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Specialty deleted successfully.',
+                'message' => 'Xóa chuyên khoa thành công.',
                 'data' => $specialty,
             ], 200);
         } catch (\Exception $e) {

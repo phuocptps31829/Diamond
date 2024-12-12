@@ -15,13 +15,13 @@ class Invoice extends Model
         'prescriptionID',
         'price',
         'arisePrice',
-        'isDeleted',
+        "invoiceCode",
+        "prescriptionID"
     ];
 
     protected $casts = [
         'price' => 'integer',
-        'arisePrice' => 'integer',
-        'isDeleted' => 'boolean',
+        'arisePrice' => 'integer'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -34,10 +34,17 @@ class Invoice extends Model
     {
         $this->attributes['prescriptionID'] = new ObjectId($value);
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            $model->invoiceCode = generateInvoiceCode();
+        });
 
+        static::deleting(function ($model) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa!');
+        });
+    }
     public function getTable()
     {
         return 'Invoice';

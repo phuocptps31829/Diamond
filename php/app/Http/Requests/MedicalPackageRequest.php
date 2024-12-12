@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MedicalPackageRequest extends FormRequest
@@ -22,16 +23,16 @@ class MedicalPackageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required',
+            'specialtyID' =>  ['required',new IsValidMongoId('Specialty')],
             'name' => 'required|string',
             'image' => 'required|string',
             'shortDescription' => 'required|string',
             'details' => 'required|string',
             'services.*' => 'required|array',
             'services.*.servicesID' => 'required|array',
-            'services.*.servicesID.*' => 'required|string',
+            'services.*.servicesID.*' => ['required',new IsValidMongoId('Service')],
             'services.*.levelName' => 'required|string',
-            'services.*.price' => 'required|numeric',
+            'services.*.price' => 'required|numeric|min:0',
             'services.*.discountPrice' => 'nullable|numeric',
             'services.*._id'=>"nullable|string",
             'services.*.duration' => 'required|numeric',
@@ -45,32 +46,30 @@ class MedicalPackageRequest extends FormRequest
 
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'slug.string' => 'Slug should be a string',
-            'slug.required' => 'Slug is required',
-            'specialtyID.required' => 'Specialty ID is required',
-            'specialtyID.exists' => 'Specialty ID must exist in the Specialty collection',
-            'name.required' => 'Name is required',
-            'name.string' => 'Name must be a string',
-            'image.required' => 'Image is required',
-            'image.string' => 'Image must be a string',
-            'shortDescription.required' => 'Short description is required',
-            'shortDescription.string' => 'Short description must be a string',
-            'details.required' => 'Detail is required',
-            'details.string' => 'Detail must be a string',
-            'services.required' => 'Services are required',
-            'services.array' => 'Services must be an array',
-            'services.*.servicesID.required' => 'Services ID is required for each services',
-            'services.*.servicesID.exists' => 'Each Services ID must exist in the Services collection',
-            'services.*.levelName.required' => 'Level name is required for each services',
-            'services.*.levelName.string' => 'Level name must be a string',
-            'services.*.price.required' => 'Price is required for each services',
-            'services.*.price.numeric' => 'Price must be a number',
-            'services.*.discountPrice.numeric' => 'Discount price must be a number',
-            'services.*.duration.required' => 'duration is required for each services',
-            'services.*.duration.numeric' => 'duration must be a number',
+            'specialtyID' =>  ['nullable',new IsValidMongoId('Specialty')],
+            'name' => 'nullable|string',
+            'image' => 'nullable|string',
+            'shortDescription' => 'nullable|string',
+            'details' => 'nullable|string',
+            'services.*' => 'nullable|array',
+            'services.*.servicesID' => 'nullable|array',
+            'services.*.servicesID.*' => ['nullable',new IsValidMongoId('Service')],
+            'services.*.levelName' => 'nullable|string',
+            'services.*.price' => 'nullable|nullable|min:0',
+            'services.*.discountPrice' => 'nullable|numeric',
+            'services.*._id'=>"nullable|string",
+            'services.*.duration' => 'nullable|numeric',
+            'slug' => 'nullable|string',
+            'isHidden' => 'nullable|boolean',
+
+            'applicableObject.gender' => 'nullable|string',
+            'applicableObject.age.min' => 'nullable|numeric',
+            'applicableObject.age.max' => 'nullable|numeric',
+            'applicableObject.isFamily' => 'nullable|boolean',
         ];
     }
+
 }

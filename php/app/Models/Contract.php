@@ -20,13 +20,12 @@ class Contract extends Model
         "title",
         "file",
         "price",
-        'isDeleted',
-    ];
-
-    protected $casts = [
-        'startDate' => 'string',
-        'endDate' => 'integer',
-        'isDeleted' => 'boolean',
+        "agent",
+        "position",
+        "tin",
+        "name",
+        "accountNumber",
+        "bankName",
     ];
 
     const CREATED_AT = 'createdAt';
@@ -39,9 +38,6 @@ class Contract extends Model
     {
         $this->attributes['hospitalID'] = new ObjectId($value);
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {

@@ -20,8 +20,7 @@ class MedicalPackage extends Model
         'services',
         'applicableObject',
         'orderCount',
-        'isHidden',
-        'isDeleted',
+        'isHidden'
     ];
 
     protected $casts = [
@@ -30,7 +29,6 @@ class MedicalPackage extends Model
         'shortDescription' => 'string',
         'details' => 'string',
         'isHidden' => 'boolean',
-        'isDeleted' => 'boolean',
         'orderCount' => 'integer'
     ];
     const CREATED_AT = 'createdAt';
@@ -46,7 +44,6 @@ class MedicalPackage extends Model
     }
 
     protected $attributes = [
-        'isDeleted' => false,
         'orderCount' => 0,
     ];
     public function setServicesAttribute($value)
@@ -67,5 +64,14 @@ class MedicalPackage extends Model
     public function getTable()
     {
         return 'MedicalPackage';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Appointment::where("medicalPackageID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch hẹn khám!');
+            }
+        });
     }
 }
