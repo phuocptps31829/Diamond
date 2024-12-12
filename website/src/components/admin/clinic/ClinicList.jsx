@@ -4,17 +4,26 @@ import { clinicsApi } from "@/services/clinicApi";
 import { useQuery } from "@tanstack/react-query";
 import NotFound from "@/components/ui/NotFound";
 import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
+import { RECORD_PER_PAGE } from "@/constants/config";
 const ClinicsList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
     pageCount: 0,
     total: 0,
   });
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["clinics", pageIndex, 10],
+    queryKey: ["clinics", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>
-      clinicsApi.getAllClinicsAdmin({ page: pageIndex + 1, limit: 10 }),
+      clinicsApi.getAllClinicsAdmin({
+        page: pageIndex + 1,
+        limit: RECORD_PER_PAGE,
+        search: debouncedSearchValue,
+      }),
     keepPreviousData: true,
   });
   useEffect(() => {
@@ -40,6 +49,8 @@ const ClinicsList = () => {
       onPageChange={setPageIndex}
       isLoading={isLoading}
       total={tableData.total}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
     />
   );
 };
