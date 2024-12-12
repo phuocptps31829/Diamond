@@ -13,8 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
 
-const BalloonMessage = () => {
-  const [showChat, setShowChat] = useState(false);
+const BalloonMessage = ({ showChat, setShowChat}) => {
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
