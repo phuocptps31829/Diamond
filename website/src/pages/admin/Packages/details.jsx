@@ -52,7 +52,7 @@ const PackageDetailPage = () => {
     return (
         <>
             { isLoadingPackage ? (
-                <Loading />
+                <Loading ScaleMini={ true } />
             ) : (
                 <>
                     <BreadcrumbCustom data={ breadcrumbData } />

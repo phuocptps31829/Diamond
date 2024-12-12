@@ -24,10 +24,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!specialties.length) {
-                createError(404, 'No specialties found.');
-            }
-
             if (search) {
                 specialties = specialties.filter(specialty => {
                     return specialty.name.toLowerCase().includes(search.toLowerCase());

@@ -44,6 +44,8 @@ export default function NewsBelow({ news, isLoading }) {
     }
   };
 
+  console.log(paginatedNews);
+
   return (
     <div ref={ containerRef } className="mx-auto max-w-screen-xl p-4 lg:pb-6">
       <div className="flex items-center gap-5">
@@ -79,11 +81,13 @@ export default function NewsBelow({ news, isLoading }) {
               </div>
             </div>
           ))
-          : paginatedNews.map((newsItem, index) => (
-            <div key={ index }>
-              <NewsItem { ...newsItem } />
-            </div>
-          )) }
+          : paginatedNews
+            .filter(news => news.isHidden === false)
+            .map((newsItem, index) => (
+              <div key={ index }>
+                <NewsItem { ...newsItem } />
+              </div>
+            )) }
       </div>
       { totalPages > 1 && (
         <CustomPagination

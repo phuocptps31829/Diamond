@@ -15,18 +15,18 @@ const AppointmentsDetailAdmin = () => {
     enabled: !!id,
   });
   if (isLoading) {
-    return <Loading />;
+    return <Loading ScaleMini={ true } />;
   }
 
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
-  
+
   return (
     <div className="w-full">
       <h1 className="mb-3 text-2xl font-bold">Chi tiết lịch đặt</h1>
       <div className="w-full">
-        <BookingInfo data={data} />
+        <BookingInfo data={ data } />
       </div>
     </div>
   );

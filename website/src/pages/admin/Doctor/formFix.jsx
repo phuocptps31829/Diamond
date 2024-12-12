@@ -50,7 +50,7 @@ const DoctorsFormFixPage = () => {
     return (
         <>
             { isLoadingDoctor ? (
-                <Loading />
+                <Loading ScaleMini={ true } />
             ) : (
                 <>
                     <BreadcrumbCustom data={ breadcrumbData } />

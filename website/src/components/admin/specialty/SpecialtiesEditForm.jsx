@@ -100,7 +100,7 @@ export default function Form() {
     }
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <Loading ScaleMini={ true } />;
 
   console.log(errors);
   return (

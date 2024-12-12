@@ -34,7 +34,7 @@ const UpdateRolePage = () => {
     console.log(data);
 
     if (isLoading) {
-        return <Loading />;
+        return <Loading ScaleMini={ true } />;
     }
 
     if (isError) {

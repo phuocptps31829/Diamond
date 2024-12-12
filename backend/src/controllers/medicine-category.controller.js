@@ -27,10 +27,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!medicineCategories.length) {
-                createError(404, 'No medicine categories found.');
-            }
-
             const medicineCategoriesWithCount = await Promise.all(
                 medicineCategories.map(async (m) => {
                     const totalMedicines = await MedicineModel.countDocuments({ medicineCategoryID: m._id });

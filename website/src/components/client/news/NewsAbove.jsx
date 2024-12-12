@@ -2,7 +2,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import NewsCard from "@/components/ui/NewsCard";
 
 export default function NewsAbove({ news, isLoading }) {
-  console.log("news", news);
+  console.log(news.filter(news => !news.isHidden), 'news');
+
   return (
     <div className="mx-auto max-w-screen-xl p-3 py-5 pb-4 md:p-5">
       <div className="mt-2 flex items-center gap-5">
@@ -31,30 +32,31 @@ export default function NewsAbove({ news, isLoading }) {
             </div>
           </div>
           <div className="flex flex-col gap-5">
-            { Array.from({ length: 5 }).map((_, index) => (
-              <div
-                key={ index }
-                className="flex flex-row items-center overflow-hidden rounded-md bg-white"
-              >
-                <div className="h-full min-w-[195px] max-w-[195px]">
-                  <Skeleton className="h-full min-h-[126px] w-full" />
-                </div>
-                <div className="p-3">
-                  <div className="mb-[6px] flex flex-wrap gap-2 text-[12px]">
-                    <Skeleton className="h-4 w-16 flex-shrink-0" />
-                    <Skeleton className="h-4 w-24 flex-shrink-0" />
-                    <div className="flex-shrink-0">|</div>
-                    <Skeleton className="h-4 w-16 flex-shrink-0" />
+            { Array.from({ length: 5 })
+              .map((_, index) => (
+                <div
+                  key={ index }
+                  className="flex flex-row items-center overflow-hidden rounded-md bg-white"
+                >
+                  <div className="h-full min-w-[195px] max-w-[195px]">
+                    <Skeleton className="h-full min-h-[126px] w-full" />
                   </div>
-                  <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
-                  <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
-                  <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
-                    <Skeleton className="h-4 w-8" />
-                    <Skeleton className="h-4 w-8" />
+                  <div className="p-3">
+                    <div className="mb-[6px] flex flex-wrap gap-2 text-[12px]">
+                      <Skeleton className="h-4 w-16 flex-shrink-0" />
+                      <Skeleton className="h-4 w-24 flex-shrink-0" />
+                      <div className="flex-shrink-0">|</div>
+                      <Skeleton className="h-4 w-16 flex-shrink-0" />
+                    </div>
+                    <Skeleton className="my-2 h-6 w-full sm:w-3/4" />
+                    <Skeleton className="line-clamp-2 h-4 w-full text-ellipsis sm:w-3/4" />
+                    <div className="mt-3 flex items-center gap-2 text-[13px] font-semibold opacity-50">
+                      <Skeleton className="h-4 w-8" />
+                      <Skeleton className="h-4 w-8" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )) }
+              )) }
           </div>
         </div>
       ) : (
@@ -69,6 +71,7 @@ export default function NewsAbove({ news, isLoading }) {
           <div className="flex flex-col gap-5">
             { news
               .slice(1, 6)
+              .filter(news => news.isHidden === false)
               .map((newsItem, index) => (
                 <NewsCard
                   key={ index }

@@ -155,7 +155,7 @@ const UserInfoForm = () => {
 
   return (
     <div className="w-full p-2 md:p-6">
-      { isLoading && <Loading /> }
+      { isLoading && <Loading ScaleMini={ true } /> }
       <h2 className="col-span-2 text-xl font-bold p-4 md:p-0">Thông tin tài khoản</h2>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="flex flex-col-reverse gap-2 md:flex-row">

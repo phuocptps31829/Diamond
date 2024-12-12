@@ -30,10 +30,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!staffs.length) {
-                createError(404, 'No staffs found.');
-            }
-
             let transformedStaffs = staffs.map(staff => {
                 const staffObject = staff.toObject();
                 staffObject.role = {

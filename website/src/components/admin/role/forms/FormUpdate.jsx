@@ -44,7 +44,7 @@ const UpdateRoleForm = ({ role }) => {
     };
 
     if (isPending) {
-        return <Loading />;
+        return <Loading ScaleMini={ true } />;
     }
 
     return (

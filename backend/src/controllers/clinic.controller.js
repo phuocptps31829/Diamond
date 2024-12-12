@@ -17,10 +17,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!clinics.length) {
-                createError(404, "No clinics found.");
-            }
-
             let clinicsPromises = clinics.map(clinic => {
                 const formattedClinic = {
                     ...clinic,

@@ -10,6 +10,17 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import SpinLoader from "@/components/ui/SpinLoader";
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle as DialogTitleTrigger,
+  DialogTrigger,
+} from "@/components/ui/Dialog";
+import cancelImage from "../../../assets/images/xxx-icon.png";
 
 const statusOptions = [
   { value: "PENDING", label: "Chờ xác nhận", variant: "pending" },
@@ -45,6 +56,7 @@ const getStatusPaymentStyle = (status) => {
 const AppointmentDetail = () => {
   const { id } = useParams();
   const [appointment, setAppointment] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["appointment", id],
@@ -60,6 +72,7 @@ const AppointmentDetail = () => {
         ...appointment,
         status: data?.data?.status,
       });
+      setOpenDialog(false);
     },
     onError: (error) => {
       console.log(error);
@@ -175,18 +188,52 @@ const AppointmentDetail = () => {
           }
         </TableBody>
       </Table>
-      { appointment?.status === "PENDING" && <Button
-        variant="primary"
-        onClick={ cancelAppointment }
-        className="mt-4 float-end bg-red-500 hover:bg-red-600 p-1 text-xs text-white md:px-3 md:py-4 md:text-base"
-      >
-        { isPending
-          ? <SpinLoader />
-          : <span className="flex items-center">
-            <MdCancel className="mr-2" />
+      { appointment?.status === "PENDING" && <Dialog open={ openDialog } onOpenChange={ setOpenDialog }>
+        <DialogTrigger asChild >
+          <Button
+            disabled={ isPending }
+            variant="primary"
+            onClick={ (e) => e.stopPropagation() }
+            className="mt-4 float-end bg-red-500 hover:bg-red-600 p-1 text-xs text-white md:px-5 md:py-4 md:text-[15px]"
+          >
             Hủy lịch
-          </span> }
-      </Button> }
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            <DialogTitleTrigger className="text-center pt-6">
+              <img src={ cancelImage } alt="cancel-appointment" className="w-16 h-16 mx-auto" />
+              <span className="pt-4 inline-block text-[18px] font-semibold">
+                Bạn có chắc chắn muốn hủy lịch khám này?
+              </span>
+            </DialogTitleTrigger>
+            <DialogDescription className="text-center">
+              Hành động này không thể hoàn tác. Lịch khám sẽ bị hủy khỏi hệ thống.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline" className="mr-2">
+                Hủy
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              disabled={ isPending }
+              variant="secondary"
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={ cancelAppointment }
+            >
+              { isPending
+                ? <SpinLoader />
+                : <span className="flex items-center">
+                  <MdCancel className="mr-2" />
+                  Xác nhận
+                </span> }
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog> }
     </div>
   );
 };

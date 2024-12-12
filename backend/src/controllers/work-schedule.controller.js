@@ -30,10 +30,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!workSchedules.length) {
-                createError(404, 'No workSchedule found.');
-            }
-
             const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
                 const doctorId = schedule.doctorID._id.toString();
                 if (!acc[doctorId]) {

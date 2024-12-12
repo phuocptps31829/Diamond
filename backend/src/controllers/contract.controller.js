@@ -18,9 +18,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!contracts.length) {
-                createError(404, "No contracts found.");
-            }
             let formattedContracts = contracts.map(contract => {
                 const formattedContract = {
                     ...contract,
