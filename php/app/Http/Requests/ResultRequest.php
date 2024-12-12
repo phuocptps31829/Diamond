@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ResultRequest extends FormRequest
@@ -12,6 +13,20 @@ class ResultRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+    public function prepareForValidation()
+    {
+        foreach ($this->all() as $key => $value) {
+            if (preg_match('/ID$/', $key) && preg_match('/^[a-f\d]{24}$/i', $value)) {
+                $this->merge([
+                    $key => new ObjectId($value)
+                ]);
+            } elseif (preg_match('/ID$/', $key) && !preg_match('/^[a-f\d]{24}$/i', $value)) {
+                throw ValidationException::withMessages([
+                    $key => ['ID không hợp lệ.']
+                ]);
+            }
+        }
     }
 
     /**
@@ -25,8 +40,8 @@ class ResultRequest extends FormRequest
             'diagnose' => 'required|string',
             'images' => 'nullable|array',
             'description'=>'nullable|string',
-            'appointmentID'=>'required|string',
-            'serviceID'=>'required|string',
+            'appointmentID'=>['required',new IsValidMongoId('Appointment')],
+            'serviceID'=>['required',new IsValidMongoId('Service')],
         ];
     }
     public function createResultAndPrescription(): array
@@ -34,8 +49,8 @@ class ResultRequest extends FormRequest
         return [
             'payload' => 'required|array',
             'payload.*.result' => 'required|array',
-            'payload.*.result.appointmentID' => 'required|string',
-            'payload.*.result.serviceID' => 'required|string',
+            'payload.*.result.appointmentID' => ['required',new IsValidMongoId('Appointment')],
+            'payload.*.result.serviceID' => ['required',new IsValidMongoId('Service')],
             'payload.*.result.diagnose' => 'required|string',
             'payload.*.result.images' => 'nullable|array',
             'payload.*.result.images.*' => 'nullable|string',
@@ -43,8 +58,9 @@ class ResultRequest extends FormRequest
 
             'payload.*.prescription' => 'nullable|array',
             'payload.*.prescription.advice' => 'required_with:payload.*.prescription|string',
+            'payload.*.prescription.price' => 'required_with:payload.*.prescription|integer|min:0',
             'payload.*.prescription.medicines' => 'nullable|array',
-            'payload.*.prescription.medicines.*.medicineID' => 'required_with:payload.*.prescription.medicines|string',
+            'payload.*.prescription.medicines.*.medicineID' => ['required_with:payload.*.prescription.medicines',new IsValidMongoId('Medicine')],
             'payload.*.prescription.medicines.*.quantity' => 'required_with:payload.*.prescription.medicines|integer',
             'payload.*.prescription.medicines.*.dosage' => 'required_with:payload.*.prescription.medicines|string',
         ];
@@ -55,18 +71,8 @@ class ResultRequest extends FormRequest
             'diagnose' => 'nullable|string',
             'images' => 'nullable|array',
             'description'=>'nullable|string',
-            'appointmentID'=>'nullable|string',
-            'serviceID'=>'nullable|string',
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'score.required' => 'Score is required',
-            'score.numeric' => 'Score should be a number',
-            'subject.required' => 'Subject is required',
-            'subject.string' => 'Subject should be a string',
-            'studentID.required' => 'Student ID is required',
+            'appointmentID'=>['nullable',new IsValidMongoId('Appointment')],
+            'serviceID'=>['nullable',new IsValidMongoId('Service')],
         ];
     }
 }

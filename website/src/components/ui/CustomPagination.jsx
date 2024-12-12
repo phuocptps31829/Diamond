@@ -15,6 +15,7 @@ export default function CustomPagination({
   onPageChange,
   maxVisiblePages = 5,
 }) {
+  console.log(currentPage, totalPages);
   const renderPageNumbers = () => {
     let pages = [];
 
@@ -46,17 +47,17 @@ export default function CustomPagination({
     }
 
     return pages.map((page, index) => (
-      <PaginationItem key={index}>
-        {page === "…" ? (
+      <PaginationItem key={ index }>
+        { page === "…" ? (
           <PaginationEllipsis />
         ) : (
           <PaginationLink
-            onClick={() => onPageChange(page)}
-            isActive={currentPage === page}
+            onClick={ () => onPageChange(page) }
+            isActive={ currentPage === page }
           >
-            {page}
+            { page }
           </PaginationLink>
-        )}
+        ) }
       </PaginationItem>
     ));
   };
@@ -66,16 +67,16 @@ export default function CustomPagination({
       <PaginationContent className="hover:cursor-pointer">
         <PaginationItem>
           <PaginationPrevious
-            onClick={() => onPageChange(currentPage > 1 ? currentPage - 1 : 1)}
+            onClick={ () => onPageChange(currentPage > 1 ? currentPage - 1 : 1) }
             className={
               currentPage === 1 ? "opacity-50 hover:cursor-default" : ""
             }
           />
         </PaginationItem>
-        {renderPageNumbers()}
+        { renderPageNumbers() }
         <PaginationItem>
           <PaginationNext
-            onClick={() =>
+            onClick={ () =>
               onPageChange(
                 currentPage < totalPages ? currentPage + 1 : totalPages
               )

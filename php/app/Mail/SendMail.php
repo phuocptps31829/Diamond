@@ -13,12 +13,13 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    protected $data;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -27,7 +28,7 @@ class SendMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Send mail',
+            subject: 'Y khoa Diamond - Lịch hẹn của bạn sắp đến!',
         );
     }
 
@@ -37,7 +38,10 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.send_mail',
+            view: 'mail.send_mail', // Đường dẫn đến view
+            with: [
+                'data' => $this->data, // Truyền dữ liệu vào view
+            ]
         );
     }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use MongoDB\BSON\ObjectId;
 use Mongodb\Laravel\Eloquent\Model;
 
 class Branch extends Model
@@ -15,28 +16,24 @@ class Branch extends Model
         'imagesURL',
         'address',
         'hotline',
-        'coordinates',
-        'isDeleted'
+        'coordinates'
     ];
 
     protected $casts = [
         'name' => 'string',
         'address' => 'string',
         'workingTime' => 'string',
-        'hotline' => 'string',
-        'isDeleted' => 'boolean',
+        'hotline' => 'string'
     ];
 
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-    // Đặt giá trị mặc định
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
+
     public function setImageURLAttribute($value)
     {
         $this->attributes['imagesURL'] = $value;
     }
+
     public function setCoordinatesAttribute($value)
     {
         $this->attributes['coordinates'] = $value;
@@ -45,4 +42,19 @@ class Branch extends Model
     {
         return 'Branch';
     }
+
+    public function Clinics()
+    {
+        return $this->hasMany(Clinic::class, 'branchID', '_id');
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Clinic::where("branchID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có dữ liệu phòng khám!', 400);
+            }
+        });
+    }
+
 }

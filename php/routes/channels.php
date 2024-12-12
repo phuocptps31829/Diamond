@@ -16,3 +16,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     // return (int) $user->id === (int) $id;
     return true;
 });
+Broadcast::channel('Notifications', function ($user) {
+    return true;  // Hoặc kiểm tra quyền truy cập của người dùng
+});

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\ValidDoctorID;
 
@@ -23,9 +24,9 @@ class WorkScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'doctorID' => "required|string",
-            'day' => "required|string",
-            'clinicID' => "required|string",
+            'doctorID' => ['required',new IsValidMongoId('User')],
+            'day' => "required|string|regex:/^\d{4}-\d{2}-\d{2}$/",
+            'clinicID' =>  ['required',new IsValidMongoId('Clinic')],
             'hour.startTime' => "required|string",
             'hour.endTime' => "required|string",
         ];
@@ -33,24 +34,12 @@ class WorkScheduleRequest extends FormRequest
     public function update(): array
     {
         return [
-            'doctorID' => "nullable|string",
-            'day' => "nullable|string",
-            'clinicID' => "nullable|string",
-            'hour' => "nullable",
-            'hour.startTime' => "required_with:hour|string",
-            'hour.endTime' => "nullable|string",
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'doctorID.required' => 'Doctor ID is required',
-            'doctorID.exists' => 'Doctor ID must exist in the doctor table',
-            'day.date_format' => 'Invalid day time format',
-            'clinicID.required' => 'Clinic ID is required',
-            'clinicID.regex' => 'Invalid clinic ID',
-            'hour.startTime.regex' => 'Invalid time format. The correct format is HH:mm.',
-            'hour.endTime.regex' => 'Invalid time format. The correct format is HH:mm.',
+            'doctorID' => ['nullable',new IsValidMongoId('User')],
+            'day' => "nullable|string|regex:/^\d{4}-\d{2}-\d{2}$/",
+            'clinicID' => ['nullable',new IsValidMongoId('Clinic')],
+            'hour' => 'nullable|array',
+            'hour.startTime' => 'required_with:hour|string',
+            'hour.endTime' => 'required_with:hour|string',
         ];
     }
 }

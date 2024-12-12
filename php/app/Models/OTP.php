@@ -12,8 +12,7 @@ class OTP extends Model
     use HasFactory;
     protected $fillable = [
         'otp',
-        'phoneNumber',
-        'isDeleted',
+        'phoneNumber'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -23,9 +22,7 @@ class OTP extends Model
         $currentTime = now()->timestamp;
         return ($currentTime - $this->time->timestamp) > $time;
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
+
     public function getTable()
     {
         return 'OTP';

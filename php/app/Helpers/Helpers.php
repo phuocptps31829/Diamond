@@ -1,14 +1,150 @@
 <?php
 
+use App\Events\NotificationsEvent;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Storage;
+use App\Models\Invoice;
+
+if (!function_exists('convertNumberToTextPrice')) {
 
 
-if (!function_exists('generateDate')) {
+    function convertNumberToTextPrice($number)
+    {
+        $hyphen = ' ';
+        $conjunction = ' ';
+        $separator = ' ';
+        $negative = 'negative ';
+        $decimal = ' point ';
+        $dictionary = array(
+            0 => 'Không',
+            1 => 'Một',
+            2 => 'Hai',
+            3 => 'Ba',
+            4 => 'Bốn',
+            5 => 'Năm',
+            6 => 'Sáu',
+            7 => 'Bảy',
+            8 => 'Tám',
+            9 => 'Chín',
+            10 => 'Mười',
+            11 => 'Mười một',
+            12 => 'Mười hai',
+            13 => 'Mười ba',
+            14 => 'Mười bốn',
+            15 => 'Mười năm',
+            16 => 'Mười sáu',
+            17 => 'Mười bảy',
+            18 => 'Mười tám',
+            19 => 'Mười chín',
+            20 => 'Hai mươi',
+            30 => 'Ba mươi',
+            40 => 'Bốn mươi',
+            50 => 'Năm mươi',
+            60 => 'Sáu mươi',
+            70 => 'Bảy mươi',
+            80 => 'Tám mươi',
+            90 => 'Chín mươi',
+            100 => 'trăm',
+            1000 => 'ngàn',
+            1000000 => 'triệu',
+            1000000000 => 'tỷ',
+            1000000000000 => 'nghìn tỷ',
+            1000000000000000 => 'ngàn triệu triệu',
+            1000000000000000000 => 'tỷ tỷ'
+        );
+
+        if (!is_numeric($number)) {
+            return false;
+        }
+
+        // Kiểm tra số âm
+        if ($number < 0) {
+            return $negative . convertNumberToTextPrice(abs($number));
+        }
+
+        $string = $fraction = null;
+        if (strpos($number, '.') !== false) {
+            list($number, $fraction) = explode('.', $number);
+        }
+
+        // Xử lý số nguyên
+        if ($number < 21) {
+            $string = $dictionary[$number];
+        } elseif ($number < 100) {
+            $tens = ((int)($number / 10)) * 10;
+            $units = $number % 10;
+            $string = $dictionary[$tens];
+            if ($units) {
+                $string .= $hyphen . $dictionary[$units];
+            }
+        } elseif ($number < 1000) {
+            $hundreds = floor($number / 100);
+            $remainder = $number % 100;
+            $string = $dictionary[$hundreds] . ' ' . $dictionary[100];
+            if ($remainder) {
+                $string .= $conjunction . convertNumberToTextPrice($remainder);
+            }
+        } else {
+            $baseUnit = pow(1000, floor(log($number, 1000)));
+            $numBaseUnits = (int)($number / $baseUnit);
+            $remainder = $number % $baseUnit;
+            $string = convertNumberToTextPrice($numBaseUnits) . ' ' . $dictionary[$baseUnit];
+            if ($remainder) {
+                $string .= $separator . convertNumberToTextPrice($remainder);
+            }
+        }
+
+        // Xử lý phần thập phân nếu có
+        if (null !== $fraction && is_numeric($fraction)) {
+            $string .= $decimal;
+            $words = array();
+            foreach (str_split((string)$fraction) as $number) {
+                $words[] = $dictionary[$number];
+            }
+            $string .= implode(' ', $words);
+        }
+
+        return $string;
+    }
+
+}
+if (!function_exists('sendNotification')) {
+
+    function sendNotification($userID,$title,$description,$type=0,$endpoint=null,$_id=null)
+    {
+        $redirect= new \stdClass();
+        $redirect->endpoint=$endpoint;
+        $redirect->_id=$_id;
+        $notification = Notification::create([
+            "userID" => $userID,
+            "title" => $title,
+            'description'=>$description,
+            "type" => $type,
+            "isRead" => false,
+            "redirect" => $redirect
+        ]);
+        event(new NotificationsEvent([$userID]));
+        return true;
+    }
+}
+if (!function_exists('generateInvoiceCode')) {
+
+    function generateInvoiceCode()
+    {
+            $randomNumber = rand(100, 999);
+            $randomLetters = strtoupper(Str::random(3));
+            $randomLastNumber =  substr(time(), -5);
+            $invoiceCode = "HD{$randomNumber}{$randomLetters}{$randomLastNumber}";
+
+        return $invoiceCode;
+    }
+}
+    if (!function_exists('generateDate')) {
     function generateDate($date)
     {
         $date = Carbon\Carbon::parse($date);
@@ -48,6 +184,9 @@ if (!function_exists('handleException')) {
         if ($e instanceof \Illuminate\Validation\ValidationException) {
             return createError(422, 'Validation failed', $e->errors());
         }
+        if ($e instanceof \App\Exceptions\DataExistsException) {
+            return createError($e->getCode(), $e->getMessage());
+        }
         return createError($e->getCode() ?: 500, $e->getMessage());
     }
 }
@@ -77,6 +216,43 @@ if (!function_exists('searchInTable')) {
         ];
         return JWT::encode($payload, $apiKeySecret, 'HS256', null, $header);
 
+    }
+    function callNotification($phoneNumber, $message)
+    {
+        $newPhoneNumber = substr($phoneNumber, 1);
+
+        $options = [
+            'from' => [
+                'type' => 'external',
+                'number' => env('PHONE_NUMBER'),
+                'alias' => 'STRINGEE_NUMBER'
+            ],
+            'to' => [
+                [
+                    'type' => 'external',
+                    'number' => '84' . $newPhoneNumber,
+                    'alias' => 'TO_NUMBER'
+                ]
+            ],
+            'answer_url' => env('ANSWER_URL'),
+            'actions' => [
+                [
+                    'action' => 'talk',
+                    'text' =>$message
+                ]
+            ]
+        ];
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'X-STRINGEE-AUTH' => getAccessToken()
+        ])->post(env('URL_CALL'), $options);
+
+        if ($response->successful()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function sendOTP($phoneNumber)
@@ -179,12 +355,27 @@ if (!function_exists('searchInTable')) {
 
     function uploadImage($image, $nameFolder = null)
     {
-        $newName = time() . '_' . $image->getClientOriginalName();
-        if ($nameFolder) {
-            $image->move(public_path('images/' . $nameFolder . '/'), $newName);
-        } else {
-            $image->move('images/', $newName);
+        // Tạo tên mới cho ảnh
+        $newName = time() . '_' . Str::slug(pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)) . '.webp';
+        $destinationPath = $nameFolder
+            ? public_path('images/' . $nameFolder . '/')
+            : public_path('images/');
+        // Di chuyển ảnh vào thư mục đích
+        $image->move($destinationPath, $newName);
+        $fullPath = $destinationPath . $newName;
+        $quality = 85;
+        // Log dung lượng trước khi tối ưu hóa
+        $sizeBefore = filesize($fullPath);
+        if ($sizeBefore > 2 * 1024 * 1024) { // Lớn hơn 2MB
+            $quality = 15;
+        } elseif ($sizeBefore > 1 * 1024 * 1024) { // Lớn hơn 1MB
+            $quality = 25;
         }
+        \Log::info("Dung lượng trước khi tối ưu: {$sizeBefore} bytes (".($sizeBefore / 1024)." KB)");
+        // Chuyển đổi sang WebP và giảm dung lượng
+        exec("cwebp -q {$quality}  " . escapeshellarg($fullPath) . " -o " . escapeshellarg($fullPath));
+        $sizeAfter = filesize($fullPath);
+        \Log::info("Dung lượng sau khi tối ưu: {$sizeAfter} bytes (".($sizeAfter / 1024)." KB)");
         return $newName;
     }
 
@@ -264,19 +455,19 @@ if (!function_exists('searchInTable')) {
             createError(500, 'Required phone number or email');
         }
         if ($userId) {
-            $user = User::where('_id', $userId)->first();
+            $user = User::where('_id', new \MongoDB\BSON\ObjectId($userId))->first();
             if (!$user) {
                 return 'User not found';
             }
             if ($phoneNumber && $user->phoneNumber != $phoneNumber) {
-                $user = User::where('phoneNumber', $phoneNumber)->first();
-                if ($user) {
+                $userPhone = User::where('phoneNumber', $phoneNumber)->where('_id','!=',$userId)->first();
+                if ($userPhone) {
                     return 'Phone number already exists';
                 }
             }
             if ($email && $user && $user->email != $email) {
-                $user = User::where('email', $email)->first();
-                if ($user) {
+                $userMail = User::where('email', $email)->where('_id','!=',new \MongoDB\BSON\ObjectId($userId))->first();
+                if ($userMail) {
                     return 'Email already exists';
                 }
             }

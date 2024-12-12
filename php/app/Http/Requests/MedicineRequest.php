@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MedicineRequest extends FormRequest
@@ -22,10 +23,7 @@ class MedicineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'medicineCategoryID' => [
-                'required',
-                'exists:MedicineCategory,_id',
-            ],
+            'medicineCategoryID' =>  ['required',new IsValidMongoId('MedicineCategory')],
             'medicineCode' => 'required|string',
             'name' => 'required|string',
             'ingredients' => 'required|string',
@@ -34,33 +32,22 @@ class MedicineRequest extends FormRequest
             'type' => 'required|string',
             'instruction' => 'required|string',
             'note' => 'required|string',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
         ];
     }
-
-    public function messages()
+    public function update(): array
     {
         return [
-            'medicineCategoryID.required' => 'Medicine category ID is required.',
-            'medicineCategoryID.exists' => 'The Medicine category ID is invalid',
-            'medicineCode.required' => 'Medicine code is required.',
-            'medicineCode.string' => 'Medicine code should be a string.',
-            'name.required' => 'Name is required.',
-            'name.string' => 'Name should be a string.',
-            'ingredients.required' => 'Ingredients are required.',
-            'ingredients.string' => 'Ingredients should be a string.',
-            'unit.required' => 'Unit is required.',
-            'unit.string' => 'Unit should be a string.',
-            'sideEffects.required' => 'Side effects are required.',
-            'sideEffects.string' => 'Side effects should be a string.',
-            'type.required' => 'Type is required.',
-            'type.string' => 'Type should be a string.',
-            'instruction.required' => 'Instruction is required.',
-            'instruction.string' => 'Instruction should be a string.',
-            'note.required' => 'Note is required.',
-            'note.string' => 'Note should be a string.',
-            'price.required' => 'Price is required.',
-            'price.numeric' => 'Price should be a number.',
+            'medicineCategoryID' =>  ['nullable',new IsValidMongoId('MedicineCategory')],
+            'medicineCode' => 'nullable|string',
+            'name' => 'nullable|string',
+            'ingredients' => 'nullable|string',
+            'unit' => 'nullable|string',
+            'sideEffects' => 'nullable|string',
+            'type' => 'nullable|string',
+            'instruction' => 'nullable|string',
+            'note' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
         ];
     }
 }

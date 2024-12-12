@@ -55,65 +55,66 @@ use MongoDB\BSON\ObjectId;
  *         description="Successful response",
  *     )
  * )
- * @OA\Post(
- *     path="/api/v1/news/add",
- *     tags={"News Routes"},
- *     summary="Add a News",
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 type="object",
- *                 required={},
- *                 @OA\Property(property="specialtyID", type="string", example="1"),
- *                 @OA\Property(property="title", type="string", example="Title of the new News"),
- *                 @OA\Property(property="file", type="string", format="binary", description="Image file"),
- *                 @OA\Property(property="content", type="string", example="Content of the new News"),
- *                 @OA\Property(property="author", type="string", example="Author of the new News"),
- *                 @OA\Property(property="isHidden", type="boolean", example=false)
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Successful response"
- *     )
- * )
- * @OA\Post(
- *     path="/api/v1/news/update/{id}?_method=PUT",
- *     tags={"News Routes"},
- *     summary="Update a News by ID",
- *     @OA\Parameter(
- *         name="id",
- *         in="path",
- *         required=true,
- *         @OA\Schema(
- *             type="string"
- *         ),
- *         description="ID of the news item to update"
- *     ),
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\MediaType(
- *             mediaType="multipart/form-data",
- *             @OA\Schema(
- *                 type="object",
- *                 required={},
- *                 @OA\Property(property="specialtyID", type="string", example="1"),
- *                 @OA\Property(property="title", type="string", example="Title of the new News"),
- *                @OA\Property(property="file", type="string", format="binary", description="Image file"),
- *                 @OA\Property(property="content", type="string", example="Content of the new News"),
- *                 @OA\Property(property="author", type="string", example="Author of the new News"),
- *                 @OA\Property(property="isHidden", type="boolean", example=false)
- *             )
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Successful response"
- *     )
- * )
+ *  @OA\Post(
+ *      path="/api/v1/news/add",
+ *      tags={"News Routes"},
+ *      summary="Add a News",
+ *      @OA\RequestBody(
+ *          required=true,
+ *          @OA\MediaType(
+ *              mediaType="application/json",
+ *              @OA\Schema(
+ *                  type="object",
+ *                  required={},
+ *                  @OA\Property(property="specialtyID", type="string", example="1"),
+ *                  @OA\Property(property="title", type="string", example="Title of the new News"),
+ *                  @OA\Property(property="image", type="string", description="dd"),
+ *                  @OA\Property(property="content", type="string", example="Content of the new News"),
+ *                  @OA\Property(property="author", type="string", example="Author of the new News"),
+ *                  @OA\Property(property="isHidden", type="boolean", example=false)
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Successful response"
+ *      )
+ *  )
+ *
+ *  @OA\Put(
+ *      path="/api/v1/news/update/{id}",
+ *      tags={"News Routes"},
+ *      summary="Update a News by ID",
+ *      @OA\Parameter(
+ *          name="id",
+ *          in="path",
+ *          required=true,
+ *          @OA\Schema(
+ *              type="string"
+ *          ),
+ *          description="ID of the news item to update"
+ *      ),
+ *      @OA\RequestBody(
+ *          required=true,
+ *          @OA\MediaType(
+ *              mediaType="application/json",
+ *              @OA\Schema(
+ *                  type="object",
+ *                  required={},
+ *                  @OA\Property(property="specialtyID", type="string", example="1"),
+ *                  @OA\Property(property="title", type="string", example="Title of the new News"),
+ *                  @OA\Property(property="image", type="string",  description="rrrrrr"),
+ *                  @OA\Property(property="content", type="string", example="Content of the new News"),
+ *                  @OA\Property(property="author", type="string", example="Author of the new News"),
+ *                  @OA\Property(property="isHidden", type="boolean", example=false)
+ *              )
+ *          )
+ *      ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Successful response"
+ *      )
+ *  )
  *  @OA\delete(
  *     path="/api/v1/news/delete/{id}",
  *     tags={"News Routes"},
@@ -127,8 +128,32 @@ use MongoDB\BSON\ObjectId;
  *     ),
  *     @OA\Response(
  *         response=200,
- *         description="Successful response",
+ *         description="Successful response"
  *     )
+ * )
+ * @OA\Patch(
+ *     path="/api/v1/news/plus-view-count/{id}",
+ *     tags={"News Routes"},
+ *     summary="Increase the view count of a news item",
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         ),
+ *         description="ID of the news item for which the view count will be increased"
+ *     ),
+ *     @OA\RequestBody(
+ *         required=false,
+ *         @OA\MediaType(
+ *             mediaType="application/json",
+ *         )
+ *     ),
+ *      @OA\Response(
+ *          response=200,
+ *          description="Successful response"
+ *      )
  * )
  */
 
@@ -137,13 +162,12 @@ class NewsController extends Controller
     public function getAllNews(Request $request)
     {
         try {
-
             $page = $request->get('page');
             $limit = $request->get('limitDocuments');
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = News::where('isDeleted', false)->count();
+            $totalRecords = News::count();
 
             $News = News::where('isDeleted', false)
                 ->skip($skip)
@@ -167,7 +191,7 @@ class NewsController extends Controller
     {
         try {
             $id = $request->route('id');
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
                 return createError(404, 'News not found');
@@ -197,7 +221,7 @@ class NewsController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'News created successfully.',
+                'message' => 'Tạo tin tức thành công!',
                 'data' => $News,
             ], 201);
         } catch (\Exception $e) {
@@ -210,17 +234,17 @@ class NewsController extends Controller
         try {
             $id = $request->route('id');
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
-                return createError(404, 'News not found');
+                return createError(404, 'Không tìm thấy tin tức!');
             }
             $News->update([
                 "viewCount" => $News->viewCount + 1
             ]);
             return response()->json([
                 'status' => 'success',
-                'message' => 'News update view count successfully.',
+                'message' => 'Tăng lượt xem thành công!',
                 'data' => $News,
             ], 201);
         } catch (\Exception $e) {
@@ -232,10 +256,10 @@ class NewsController extends Controller
         try {
             $id = $request->route('id');
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
 
             if (!$News) {
-                return createError(404, 'News not found');
+                return createError(404, 'Không tìm thấy tin tức!');
             }
 
             $checkSlug = checkSlug($request->title, 'News', $id);
@@ -244,11 +268,11 @@ class NewsController extends Controller
             }
             $NewsRequest = new NewsRequest();
 
-            $News->update($request->validate($NewsRequest->rules(), $NewsRequest->messages()));
+            $News->update($request->validate($NewsRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'News update successfully.',
+                'message' => 'Cập nhật tin tức thành công!',
                 'data' => $News,
             ], 201);
         } catch (\Exception $e) {
@@ -259,23 +283,23 @@ class NewsController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
-            $News = News::where('_id', $id)->where('isDeleted', false)->first();
+            $News = News::where('_id', $id)->first();
             if (!$News) {
-                return createError(404, 'News not found');
+                return createError(404, 'Không tìm thấy tin tức!');
             }
 
-            $News->update(['isDeleted' => true]);
+            $News->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'News deleted successfully.',
+                'message' => 'Xóa tin tức thành công!',
                 'data' => $News,
             ], 200);
         } catch (\Exception $e) {

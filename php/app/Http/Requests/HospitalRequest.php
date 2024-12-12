@@ -13,7 +13,6 @@ class HospitalRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,17 +27,13 @@ class HospitalRequest extends FormRequest
             'hotline' => 'required|string',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'name.required' => 'Name is required',
-            'name.string' => 'Name should be a string',
-            'image.required' => 'Image is required',
-            'image.string' => 'Image should be a string',
-            'address.required' => 'Address is required',
-            'address.string' => 'Address should be a string',
-            'hotline.required' => 'Hotline is required',
-            'hotline.string' => 'Hotline should be a string',
+            'name' => 'nullable|string',
+            'image' => 'nullable|string',
+            'address' => 'nullable|string',
+            'hotline' => 'nullable|string',
         ];
     }
 }

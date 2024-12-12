@@ -21,7 +21,6 @@ module.exports = {
             if (!contracts.length) {
                 createError(404, "No contracts found.");
             }
-
             let formattedContracts = contracts.map(contract => {
                 const formattedContract = {
                     ...contract,
@@ -35,12 +34,12 @@ module.exports = {
                 return formattedContract;
             });
 
-            // search by doctor name, hospital name, or contract number
             if (search) {
                 formattedContracts = formattedContracts.filter(contract => {
-                    return contract.doctor.fullName.toLowerCase().includes(search.toLowerCase()) ||
-                        contract.hospital.name.toLowerCase().includes(search.toLowerCase()) ||
-                        contract.contractNumber.toLowerCase().includes(search.toLowerCase());
+                    return contract?.doctor?.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        contract?.hospital?.name.toLowerCase().includes(search.toLowerCase()) ||
+                        contract.title.toLowerCase().includes(search.toLowerCase()) ||
+                        contract.address.toLowerCase().includes(search.toLowerCase());
                 });
             }
 

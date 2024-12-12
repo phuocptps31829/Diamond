@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\IsValidMongoId;
 
 class ServiceRequest extends FormRequest
 {
@@ -13,7 +14,6 @@ class ServiceRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,44 +22,39 @@ class ServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required',
+            'specialtyID' => ['required',  new IsValidMongoId('Specialty') ],
             'name' => 'required|string',
             'slug' => 'required|string',
             'image' => 'required|string',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
             'shortDescription' => 'required|string',
             'details' => 'required|string',
-            'discountPrice' => 'nullable|numeric',
+            'discountPrice' => 'nullable|numeric|min:0',
             'duration' => 'required|numeric',
             'isHidden' => 'required|boolean',
-            'applicableObject.gender' => 'required|string',
-            'applicableObject.age.min' => 'required|numeric',
-            'applicableObject.age.max' => 'required|numeric',
+            'applicableObject.gender' => 'required|string|in:Nam,Nữ',
+            'applicableObject.age.min' => 'required|numeric|min:0|max:200',
+            'applicableObject.age.max' => 'required|numeric|min:0|max:200',
             'applicableObject.isFamily' => 'required|boolean',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'specialtyID.required' => 'Specialty ID is required',
-            'specialtyID.exists' => 'The Specialty ID is invalid.',
-            'name.required' => 'Name is required',
-            'slug.string' => 'Slug should be a string',
-            'slug.required' => 'Slug is required',
-            'name.string' => 'Name should be a string',
-            'image.required' => 'Image is required',
-            'image.string' => 'Image should be a string',
-            'price.required' => 'Price is required',
-            'price.numeric' => 'Price should be a number',
-            'shortDescription.required' => 'Short description is required',
-            'shortDescription.string' => 'Short description should be a string',
-            'details.required' => 'Details are required',
-            'details.string' => 'Details should be a string',
-            'discountPrice.numeric' => 'Discount Price should be a number',
-            'isHidden.required' => 'isHidden is required',
-            'isHidden.boolean' => 'isHidden should be a boolean',
-            'duration.required' => 'duration is required',
-            'duration.numeric' => 'duration should be a number',
+            'specialtyID' => ['nullable',  new IsValidMongoId('Specialty') ],
+            'name' => 'nullable|string',
+            'slug' => 'nullable|string',
+            'image' => 'nullable|string',
+            'price' => 'nullable|numeric|min:0',
+            'shortDescription' => 'nullable|string',
+            'details' => 'nullable|string',
+            'discountPrice' => 'nullable|numeric|min:0',
+            'duration' => 'nullable|numeric',
+            'isHidden' => 'nullable|boolean',
+            'applicableObject.gender' => 'nullable|string|in:Nam,Nữ',
+            'applicableObject.age.min' => 'nullable|numeric|min:0|max:200',
+            'applicableObject.age.max' => 'nullable|numeric|min:0|max:200',
+            'applicableObject.isFamily' => 'nullable|boolean',
         ];
     }
 }
