@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NewsRequest extends FormRequest
@@ -22,29 +23,25 @@ class NewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'specialtyID' => 'required',
+            'specialtyID' => ['required',new IsValidMongoId('Specialty')],
             'title' => 'required|string',
-            'image' => 'string',
+            'image' => 'required|string',
             'slug' => 'required|string',
             'content' => 'required|string',
             'author' => 'required|string',
             'isHidden' => 'required|boolean',
         ];
     }
-    public function messages()
+    public function update(): array
     {
         return [
-            'specialtyID.exists' => 'The Specialty ID is invalid.',
-            'title.required' => 'Title is required',
-            'title.string' => 'Title should be a string',
-            'image.required' => 'Image is required',
-            'image.string' => 'Image should be a string',
-            'content.required' => 'Content is required',
-            'content.string' => 'Content should be a string',
-            'author.required' => 'Author is required',
-            'author.string' => 'Author should be a string',
-            'isHidden.required' => 'isHidden is required',
-            'isHidden.boolean' => 'isHidden should be a boolean'
+            'specialtyID' => ['nullable',new IsValidMongoId('Specialty')],
+            'title' => 'nullable|string',
+            'image' => 'nullable|string',
+            'slug' => 'nullable|string',
+            'content' => 'nullable|string',
+            'author' => 'nullable|string',
+            'isHidden' => 'nullable|boolean',
         ];
     }
 }

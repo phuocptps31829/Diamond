@@ -30,3 +30,28 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+import Echo from 'laravel-echo';
+import io from 'socket.io-client';
+
+window.io = io;  // Gán 'io' vào window.io
+window.Echo = new Echo({
+    broadcaster: 'socket.io',
+    host: window.location.hostname + ':6001',  // Đảm bảo địa chỉ này đúng
+});
+
+// Kiểm tra kết nối
+window.Echo.connector.socket.on('connect', () => {
+    console.log('Connected to Echo server');
+
+    // Sau khi kết nối, mới đăng ký kênh
+    window.Echo.channel('Notifications')
+        .listen('NotificationsEvent', (event) => {
+            console.log('Event received:', event);  // Kiểm tra dữ liệu sự kiện nhận được
+        });
+});
+
+window.Echo.connector.socket.on('disconnect', () => {
+    console.log('Disconnected from Echo server');
+});
+
+console.log(window.Echo);  // Kiểm tra xem Echo đã được khởi tạo chưa

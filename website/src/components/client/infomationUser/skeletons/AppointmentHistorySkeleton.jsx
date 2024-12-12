@@ -1,10 +1,9 @@
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Table, TableBody, TableCell, TableRow, TableHeader, TableHead } from "@/components/ui/Table";
 
-const AppointmentHistorySkeleton = () => {
-
+const AppointmentHistorySkeleton = ({ numRows }) => {
   return (
-    <div className="px-3 md:px-6 pb-3 md:pb-6">
+    <div className="px-3 md:px-6">
       <Table>
         <TableHeader className="bg-gray-100">
           <TableRow>
@@ -29,7 +28,7 @@ const AppointmentHistorySkeleton = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          { Array.from({ length: 5 }).map((_, index) => (
+          { Array.from({ length: numRows }).map((_, index) => (
             <TableRow key={ index }>
               <TableCell className="text-xs md:text-sm">
                 <Skeleton className="h-6 w-6 rounded-md" />
@@ -53,9 +52,6 @@ const AppointmentHistorySkeleton = () => {
           )) }
         </TableBody>
       </Table>
-      <div className="flex justify-center">
-        <Skeleton className="h-6 mt-4 w-32 rounded-md" />
-      </div>
     </div>
   );
 };

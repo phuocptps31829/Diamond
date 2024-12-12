@@ -10,14 +10,10 @@ export const invoicesApi = {
     return res.data;
   },
   getAllInvoicesAdmin: async (filter) => {
-    const { page, limit } = filter;
-    const params = {
-      ...(page !== undefined && page !== null && { page }),
-      ...(limit !== undefined && limit !== null && { limit }),
-    };
-
     const res = await axiosInstanceGET.get("/invoices", {
-      params: Object.keys(params).length > 0 ? params : undefined,
+      params: {
+        ...filter,
+      },
     });
     return res.data;
   },

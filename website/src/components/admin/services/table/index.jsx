@@ -21,7 +21,6 @@ import { staffSchema } from "@/zods/client/staff";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDebounce } from "use-debounce";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -36,6 +35,8 @@ export default function DataTable({
   onPageChange,
   isLoading,
   total,
+  searchValue,
+  setSearchValue,
 }) {
   const queryClient = useQueryClient();
   const {
@@ -53,8 +54,6 @@ export default function DataTable({
   const onSubmit = () => {};
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [searchValue, setSearchValue] = React.useState("");
-  const [debouncedSearchValue] = useDebounce(searchValue, 500);
 
   const table = useReactTable({
     data,
@@ -89,9 +88,7 @@ export default function DataTable({
       }
     },
   });
-  React.useEffect(() => {
-    table.getColumn("name")?.setFilterValue(debouncedSearchValue);
-  }, [debouncedSearchValue, table]);
+
   const handleRefresh = () => {
     queryClient.invalidateQueries("services");
   };
@@ -103,13 +100,13 @@ export default function DataTable({
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
               <InputCustomSearch
-                value={table.getColumn("name")?.getFilterValue() ?? ""}
+                value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm dịch vụ"
-                name="newsName"
+                name="serviceName"
                 type="text"
-                id="newsName"
+                id="serviceName"
                 icon={<FaSearch />}
                 control={control}
                 errors={errors}

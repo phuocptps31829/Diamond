@@ -125,10 +125,9 @@ class ClinicController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Clinic::where('isDeleted', false)->count();
+            $totalRecords = Clinic::count();
 
-            $Clinics = Clinic::where('isDeleted', false)
-                ->skip($skip)
+            $Clinics = Clinic::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -149,7 +148,7 @@ class ClinicController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
 
             if (!$Clinic) {
                 return createError(404, 'Clinic not found');
@@ -170,11 +169,11 @@ class ClinicController extends Controller
         try {
 
             $ClinicRequest = new ClinicRequest();
-            $Clinic = Clinic::create($request->validate($ClinicRequest->rules(), $ClinicRequest->messages()));
+            $Clinic = Clinic::create($request->validate($ClinicRequest->rules()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic created successfully.',
+                'message' => 'Thêm phòng khám thành công!',
                 'data' => $Clinic,
             ], 201);
         } catch (\Exception $e) {
@@ -187,18 +186,18 @@ class ClinicController extends Controller
         try {
             $id = $request->route('id');
 
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
 
             if (!$Clinic) {
-                return createError(404, 'Clinic not found');
+                return createError(404, 'Không tìm thấy phòng khám!');
             }
             $ClinicRequest = new ClinicRequest();
 
-            $Clinic->update($request->validate($ClinicRequest->rules(), $ClinicRequest->messages()));
+            $Clinic->update($request->validate($ClinicRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic update successfully.',
+                'message' => 'Cập nhật phòng khám thành công!',
                 'data' => $Clinic,
             ], 201);
         } catch (\Exception $e) {
@@ -209,23 +208,22 @@ class ClinicController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
-            $Clinic = Clinic::where('_id', $id)->where('isDeleted', false)->first();
+            $Clinic = Clinic::where('_id', $id)->first();
             if (!$Clinic) {
-                return createError(404, 'Clinic not found');
+                return createError(404, 'Không tìm thấy phòng khám!');
             }
 
-            $Clinic->update(['isDeleted' => true]);
-
+            $Clinic->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Clinic deleted successfully.',
+                'message' => 'Xóa phòng khám thành công!',
                 'data' => $Clinic,
             ], 200);
         } catch (\Exception $e) {

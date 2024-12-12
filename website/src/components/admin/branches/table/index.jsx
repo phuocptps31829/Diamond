@@ -24,7 +24,6 @@ import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
-import { useDebounce } from "use-debounce";
 import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
@@ -38,6 +37,8 @@ export default function DataTable({
   onPageChange,
   isLoading,
   total,
+  searchValue,
+  setSearchValue,
 }) {
   const queryClient = useQueryClient();
 
@@ -45,8 +46,6 @@ export default function DataTable({
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [searchValue, setSearchValue] = React.useState("");
-  const [debouncedSearchValue] = useDebounce(searchValue, 500);
   const {
     handleSubmit,
     formState: { errors },
@@ -92,9 +91,6 @@ export default function DataTable({
     },
   });
 
-  React.useEffect(() => {
-    table.getColumn("name")?.setFilterValue(debouncedSearchValue);
-  }, [debouncedSearchValue, table]);
   const handleRefresh = () => {
     queryClient.invalidateQueries("branches");
   };
@@ -104,17 +100,17 @@ export default function DataTable({
         <form className="mr-1 flex" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
             <div className="relative mr-1 w-[300px]">
-              <InputCustomSearch
-                value={table.getColumn("name")?.getFilterValue() ?? ""}
-                onChange={(event) => setSearchValue(event.target.value)}
+            <InputCustomSearch
+                value={ searchValue }
+                onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm chi nhánh"
-                name="newsName"
+                name="branchName"
                 type="text"
-                id="newsName"
-                icon={<FaSearch />}
-                control={control}
-                errors={errors}
+                id="branchName"
+                icon={ <FaSearch /> }
+                control={ control }
+                errors={ errors }
               />
             </div>
           </div>

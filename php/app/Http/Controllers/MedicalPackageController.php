@@ -6,6 +6,7 @@ use App\Models\MedicalPackage;
 use Illuminate\Http\Request;
 use App\Http\Requests\MedicalPackageRequest;
 use MongoDB\BSON\ObjectId;
+use function PHPUnit\Framework\isEmpty;
 
 /**
  * @OA\Get(
@@ -66,12 +67,11 @@ use MongoDB\BSON\ObjectId;
  *             @OA\Property(property="name", type="string", example="name MedicalPackage"),
  *             @OA\Property(property="image", type="string", example="image MedicalPackage"),
  *             @OA\Property(property="shortDescription", type="string", example="shortDescription MedicalPackage"),
- *             @OA\Property(property="detail", type="string", example="detail MedicalPackage"),
+ *             @OA\Property(property="details", type="string", example="detail MedicalPackage"),
  *             @OA\Property(property="isHidden", type="boolean", example=false),
- *             @OA\Property(property="isDeleted", type="boolean", example=false),
- *  *             @OA\Property(property="services", type="array",
+ *             @OA\Property(property="services", type="array",
  *                 @OA\Items(
- *                     @OA\Property(property="serviceID", type="array",
+ *                     @OA\Property(property="servicesID", type="array",
  *                         @OA\Items(type="string", example="")
  *                     ),
  *                     @OA\Property(property="levelName", type="string", example="Level"),
@@ -79,7 +79,21 @@ use MongoDB\BSON\ObjectId;
  *                     @OA\Property(property="discountPrice", type="number", nullable=true, example=80),
  *                     @OA\Property(property="duration", type="number", nullable=true, example=80),
  *                 )
- *             )
+ *             ),
+ *                  @OA\Property(
+ *                  property="applicableObject",
+ *                  type="object",
+ *                  required={"gender", "age", "isFamily"},
+ *                  @OA\Property(property="gender", type="string", example="Nam", description="Giới tính áp dụng"),
+ *                  @OA\Property(
+ *                      property="age",
+ *                      type="object",
+ *                      required={"min", "max"},
+ *                      @OA\Property(property="min", type="integer", example=0, description="Tuổi tối thiểu"),
+ *                      @OA\Property(property="max", type="integer", example=100, description="Tuổi tối đa")
+ *                  ),
+ *                  @OA\Property(property="isFamily", type="boolean", example=true, description="Áp dụng cho gia đình hay không")
+ *              )
  *         )
  *     ),
  *     @OA\Response(
@@ -106,20 +120,33 @@ use MongoDB\BSON\ObjectId;
  *             @OA\Property(property="name", type="string", example="name MedicalPackage"),
  *             @OA\Property(property="image", type="string", example="image MedicalPackage"),
  *             @OA\Property(property="shortDescription", type="string", example="shortDescription MedicalPackage"),
- *             @OA\Property(property="detail", type="string", example="detail MedicalPackage"),
+ *             @OA\Property(property="details", type="string", example="detail MedicalPackage"),
  *             @OA\Property(property="isHidden", type="boolean", example=false),
- *             @OA\Property(property="isDeleted", type="boolean", example=false),
- *  *             @OA\Property(property="services", type="array",
+ *             @OA\Property(property="services", type="array",
  *                 @OA\Items(
- *                     @OA\Property(property="serviceID", type="array",
- *                         @OA\Items(type="string", example="")
+ *                     @OA\Property(property="servicesID", type="array",
+ *                         @OA\Items(type="string", example="674a1b67c79d72a91103bad6")
  *                     ),
  *                     @OA\Property(property="levelName", type="string", example="Level"),
  *                     @OA\Property(property="price", type="number", example=100),
  *                     @OA\Property(property="discountPrice", type="number", nullable=true, example=80),
  *                     @OA\Property(property="duration", type="number", nullable=true, example=80),
  *                 )
- *             )
+ *             ),
+ *                  @OA\Property(
+ *                  property="applicableObject",
+ *                  type="object",
+ *                  required={"gender", "age", "isFamily"},
+ *                  @OA\Property(property="gender", type="string", example="Nam", description="Giới tính áp dụng"),
+ *                  @OA\Property(
+ *                      property="age",
+ *                      type="object",
+ *                      required={"min", "max"},
+ *                      @OA\Property(property="min", type="integer", example=0, description="Tuổi tối thiểu"),
+ *                      @OA\Property(property="max", type="integer", example=100, description="Tuổi tối đa")
+ *                  ),
+ *                  @OA\Property(property="isFamily", type="boolean", example=true, description="Áp dụng cho gia đình hay không")
+ *              )
  *         )
  *     ),
  *     @OA\Response(
@@ -156,10 +183,9 @@ class MedicalPackageController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = MedicalPackage::where('isDeleted', false)->count();
+            $totalRecords = MedicalPackage::count();
 
-            $MedicineCategories = MedicalPackage::where('isDeleted', false)
-                ->skip($skip)
+            $MedicineCategories = MedicalPackage::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -180,7 +206,7 @@ class MedicalPackageController extends Controller
     {
         try {
             $id = $request->route('id');
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
 
             if (!$MedicalPackage) {
                 return createError(404, 'Medicine category not found');
@@ -206,18 +232,17 @@ class MedicalPackageController extends Controller
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
-            $validatedData=$request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
+            $validatedData=$request->validate($MedicalPackageRequest->rules());
 
             foreach ($validatedData['services'] as &$service) {
                     $service['_id'] = new ObjectId();
             }
 
             $MedicalPackage = MedicalPackage::create($validatedData);
-//            $MedicalPackage = MedicalPackage::create($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine category created successfully.',
+                'message' => 'Thêm gói khám thành công!',
                 'data' => $MedicalPackage,
             ], 201);
         } catch (\Exception $e) {
@@ -235,23 +260,24 @@ class MedicalPackageController extends Controller
             if ($checkSlug) {
                 $request->merge(['slug' => $checkSlug]);
             }
-            $validatedData=$request->validate($MedicalPackageRequest->rules(), $MedicalPackageRequest->messages());
+            $validatedData=$request->validate($MedicalPackageRequest->update());
+           if(isset($validatedData['services'])){
+               foreach ($validatedData['services'] as &$service) {
+                   $service['_id'] = new ObjectId($service['_id']);
+               }
+           }
 
-            foreach ($validatedData['services'] as &$service) {
-                $service['_id'] = new ObjectId($service['_id']);
-            }
-
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
 
             if (!$MedicalPackage) {
-                return createError(404, 'Medicine category not found');
+                return createError(404, 'Không tìm thấy gói khám');
             }
 
             $MedicalPackage->update($validatedData);
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Medicine category update successfully.',
+                'message' => 'Cập nhật gói khámt thành công!',
                 'data' => $MedicalPackage,
             ], 201);
         } catch (\Exception $e) {
@@ -262,23 +288,23 @@ class MedicalPackageController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không đươc bỏ trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
-            $MedicalPackage = MedicalPackage::where('_id', $id)->where('isDeleted', false)->first();
+            $MedicalPackage = MedicalPackage::where('_id', $id)->first();
             if (!$MedicalPackage) {
-                return createError(404, 'Medicine category not found');
+                return createError(404, 'Không tìm thấy gói khám!');
             }
 
-            $MedicalPackage->update(['isDeleted' => true]);
+            $MedicalPackage->delete();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'MedicalPackage deleted successfully.',
+                'message' => 'Xóa gói khám thành công!',
                 'data' => $MedicalPackage,
             ], 200);
         } catch (\Exception $e) {

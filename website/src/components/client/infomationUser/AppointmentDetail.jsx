@@ -1,29 +1,76 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { formatCurrency, formatDateTimeLocale } from "@/utils/format";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { status } from "./AppointmentHistory";
+import { MdCancel } from "react-icons/md";
 import ResultDialog from "./dialogs/ResultDialog";
 import AppointmentDetailSkeleton from "./skeletons/AppointmentDetailSkeleton";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import SpinLoader from "@/components/ui/SpinLoader";
+import { useEffect, useState } from "react";
 
-const paymentStatus = {
-  "PENDING": "Chờ thanh toán",
-  "PAID": "Đã thanh toán",
+const statusOptions = [
+  { value: "PENDING", label: "Chờ xác nhận", variant: "pending" },
+  { value: "CONFIRMED", label: "Chờ khám", variant: "confirmed" },
+  { value: "EXAMINED", label: "Đã khám", variant: "examined" },
+  { value: "CANCELLED", label: "Đã hủy", variant: "cancelled" },
+];
+
+const getStatusLabel = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.label : "";
+};
+
+const getStatusVariant = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.variant : "default";
+};
+
+const getStatusPaymentStyle = (status) => {
+  switch (status) {
+    case "PENDING":
+      return {
+        stylePayment: "bg-yellow-500/20 text-yellow-900",
+        textPayment: "Chưa thanh toán",
+      };
+    case "PAID":
+      return { stylePayment: "bg-green-500/20 text-green-900", textPayment: "Đã thanh toán" };
+    default:
+      return { stylePayment: "bg-gray-500/20 text-gray-900", textPayment: "Không xác định" };
+  }
 };
 
 const AppointmentDetail = () => {
   const { id } = useParams();
+  const [appointment, setAppointment] = useState(null);
 
-  const { data: appointment, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["appointment", id],
     queryFn: () => appointmentApi.getAppointmentById(id),
     enabled: !!id,
   });
-
-  console.log(appointment);
-
   const product = appointment?.service || appointment?.medicalPackage;
+
+  const { mutate: cancelAppointment, isPending } = useMutation({
+    mutationFn: () => appointmentApi.cancelAppointment(id),
+    onSuccess: (data) => {
+      setAppointment({
+        ...appointment,
+        status: data?.data?.status,
+      });
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      setAppointment(data);
+    }
+  }, [data, isLoading]);
 
   if (isLoading) {
     return <AppointmentDetailSkeleton />;
@@ -31,7 +78,9 @@ const AppointmentDetail = () => {
 
   return (
     <div className="p-3 md:p-6">
-      <h2 className="mb-3 text-xl font-bold">{ product?.name }</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xl font-bold">{ product?.name }</h2>
+      </div>
       <Table className="rounded-md border">
         <TableBody>
           <TableRow>
@@ -39,7 +88,7 @@ const AppointmentDetail = () => {
               <span className="me-2">🏨</span> Nơi khám
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { appointment?.clinic?.name + " - " + appointment?.branch?.name }
+              { appointment?.clinic?.name + " - Chi nhánh " + appointment?.branch?.name }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -71,15 +120,20 @@ const AppointmentDetail = () => {
               <span className="me-2">📌</span>Trạng thái
             </TableCell>
             <TableCell className="px-4 whitespace-nowrap">
-              { status[appointment?.status] }
+              <Badge variant={ getStatusVariant(appointment?.status) }>
+                { getStatusLabel(appointment?.status) }
+              </Badge>
             </TableCell>
           </TableRow>
           <TableRow>
             <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
               <span className="me-2">💵</span>Tổng tiền
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { formatCurrency(appointment?.invoice?.price) } - { paymentStatus[appointment?.invoice?.status] }
+            <TableCell className="px-4 whitespace-nowrap flex gap-3 items-center">
+              { formatCurrency(appointment?.invoice?.price) } -
+              <span className={ `px-2 py-1 rounded-md ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}` }>
+                { getStatusPaymentStyle(appointment?.payment?.status).textPayment }
+              </span>
             </TableCell>
           </TableRow>
           <TableRow>
@@ -121,6 +175,18 @@ const AppointmentDetail = () => {
           }
         </TableBody>
       </Table>
+      { appointment?.status === "PENDING" && <Button
+        variant="primary"
+        onClick={ cancelAppointment }
+        className="mt-4 float-end bg-red-500 hover:bg-red-600 p-1 text-xs text-white md:px-3 md:py-4 md:text-base"
+      >
+        { isPending
+          ? <SpinLoader />
+          : <span className="flex items-center">
+            <MdCancel className="mr-2" />
+            Hủy lịch
+          </span> }
+      </Button> }
     </div>
   );
 };

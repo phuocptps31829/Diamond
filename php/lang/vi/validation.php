@@ -80,5 +80,17 @@ return [
     'prohibited_unless' => ':attribute bị cấm trừ khi :other là một trong :values.',
     'relatable' => ':attribute không thể liên kết với tài nguyên này.',
     'url.required_if' => ':attribute không được để trống',
+    'attributes' => [
+        'specialtyID' => 'Specialty ID',
+        'appointmentID'=> "Appointment ID",
+        'serviceID'=> "Service ID",
+        "invoiceID"=>"Invoice ID",
+        "resultID"=>"Result ID",
+        "medicineID"=>"Medicine ID",
+        "otherInfo.specialtyID"=>"Specialty ID",
+        "otherInfo.branchID"=>"branch ID",
+        "roleID"=>"Role ID",
+
+    ],
 ];
 ?>

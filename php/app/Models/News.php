@@ -19,8 +19,7 @@ class News extends Model
         'author',
         'viewCount',
         'slug',
-        'isHidden',
-        'isDeleted',
+        'isHidden'
     ];
 
     protected $casts = [
@@ -29,25 +28,32 @@ class News extends Model
         'content' => 'string',
         'author' => 'string',
         'viewCount' => 'integer',
-        'isHidden' => 'boolean',
-        'isDeleted' => 'boolean',
+        'isHidden' => 'boolean'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
+
     public function setSpecialtyIDAttribute($value)
     {
         $this->attributes['specialtyID'] = new ObjectId($value);
     }
+
     protected $attributes = [
-        'viewCount' => 0,
-        'isDeleted' => false,
+        'viewCount' => 0
     ];
+
     public static function createSlug($title)
     {
         return Str::slug($title);
     }
+
     public function getTable()
     {
         return 'News';
+    }
+
+    public function specialty()
+    {
+        $this->belongsTo(Specialty::class, 'specialtyID', '_id');
     }
 }

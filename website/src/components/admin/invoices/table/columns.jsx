@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/Button";
 
 import { ArrowUpDown } from "lucide-react";
-import Action from "./action";
 import { formatCurrency } from "@/utils/format";
 import { Link } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
+import { getStatusPaymentStyle } from "../../appointments/utils/StatusStyle";
 
 export const columns = (pageIndex, pageSize) => [
   {
@@ -111,6 +111,33 @@ export const columns = (pageIndex, pageSize) => [
     ),
   },
   {
+    accessorKey: "invoiceStatus",
+    header: ({ column }) => (
+      <div className="w-full text-left">
+        <Button
+          className="px-0 text-base"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Thanh toán
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      </div>
+    ),
+    cell: ({ row }) => {
+      const { stylePayment, textPayment } = getStatusPaymentStyle(
+        row.original.status
+      );
+      return (
+        <div
+          className={`flex w-fit items-center justify-center rounded-md p-1 px-2 text-center text-xs font-bold uppercase ${stylePayment}`}
+        >
+          <span className="whitespace-nowrap">{textPayment}</span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "file",
     header: ({ column }) => (
       <Button
@@ -123,23 +150,17 @@ export const columns = (pageIndex, pageSize) => [
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="w-full">
+      <div className="w-full text-center">
         <Link
           target="blank"
           to={`${import.meta.env.VITE_CUD_API_URL}/invoices/export/${row.original._id}`}
         >
-          <Button variant="primary" className="w-fit flex items-center">
-            Xem hóa đơn
+          <Button variant="primary" className="flex w-fit items-center">
+            Xem 
             <IoEyeSharp className="ml-1" />
           </Button>
         </Link>
       </div>
     ),
-  },
-
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => <Action row={row} />,
   },
 ];

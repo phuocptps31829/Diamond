@@ -14,13 +14,11 @@ class Result extends Model
         'appointmentID',
         'diagnose',
         'images',
-        'description',
-        'isDeleted',
+        'description'
     ];
 
     protected $casts = [
-        'name' => 'string',
-        'isDeleted' => 'boolean',
+        'name' => 'string'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -32,12 +30,31 @@ class Result extends Model
     {
         $this->attributes['appointmentID'] = new ObjectId($value);
     }
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {
         return 'Result';
+    }
+
+
+    // Quan hệ với Prescription (nếu có Prescription)
+    public function prescriptions()
+    {
+        return $this->hasMany(Prescription::class, 'resultID');
+    }
+
+    // Quan hệ với Service (nếu có kết quả cho dịch vụ)
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'serviceID');
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Prescription::where("resultID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có đơn thuốc!');
+            }
+        });
     }
 }

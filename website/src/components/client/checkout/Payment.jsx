@@ -42,7 +42,7 @@ export default function Form() {
         location.href = "/payment-success";
       }
       if (paymentMethod === "zalopay") {
-        location.href = "/payment-success";
+        location.href = data.data.payUrl;
       }
     },
     onError: (error) => {

@@ -13,7 +13,6 @@ class RoleRequest extends FormRequest
     {
         return false;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,14 +25,11 @@ class RoleRequest extends FormRequest
             'description' => 'required|string',
         ];
     }
-
-    public function messages(): array
+    public function update(): array
     {
         return [
-            'name.required' => 'Name is required',
-            'name.string' => 'Name should be a string',
-            'description.required' => 'Name is required',
-            'description.string' => 'Description should be a string',
+            'name' => 'nullable|string',
+            'description' => 'nullable|string',
         ];
     }
 }
