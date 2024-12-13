@@ -7,9 +7,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
+import { appointmentApi } from "@/services/appointmentsApi";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "@/components/ui/Loading";
 
 const MedicalRecords = () => {
   const userProfile = useSelector((state) => state.auth.userProfile);
+
+  const { data: medicalRecords, isLoading } = useQuery({
+    queryKey: ["patientMedicalRecords"],
+    queryFn: () => appointmentApi.getAppointmentByPatient({ status: 'EXAMINED' })
+  });
 
   return (
     <div className="p-6 space-y-6">
@@ -81,13 +89,19 @@ const MedicalRecords = () => {
           </Card>
         </TabsContent>
         <TabsContent value="records">
-          <Card>
-            <CardHeader className="!pb-1">
-              <CardTitle className="text-base">Chi tiết bệnh án</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <MedicalRecordAccordion />
-            </CardContent>
+          <Card className="relative min-h-52">
+            { isLoading
+              ? <Loading ScaleMini={ true } />
+              : <>
+                <CardHeader className="!pb-1">
+                  <CardTitle className="text-base">Chi tiết bệnh án</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <MedicalRecordAccordion medicalRecords={ medicalRecords } />
+                </CardContent>
+              </>
+            }
+
           </Card>
         </TabsContent>
       </Tabs>

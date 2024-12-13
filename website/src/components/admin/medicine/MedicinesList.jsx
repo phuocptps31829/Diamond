@@ -4,8 +4,11 @@ import { medicineApi } from "@/services/medicineApi";
 import DataTable from "./table";
 import { columnsSchedule } from "./table/columns";
 import NotFound from "@/components/ui/NotFound";
+import { RECORD_PER_PAGE } from "@/constants/config";
+import { useDebounce } from "use-debounce";
 
 const MedicinesList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
@@ -13,9 +16,15 @@ const MedicinesList = () => {
     total: 0,
   });
 
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["medicines", pageIndex, 10],
-    queryFn: () => medicineApi.getDataMedicines({ page: pageIndex + 1, limit: 10 }),
+    queryKey: ["medicines", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
+    queryFn: () => medicineApi.getDataMedicines({ 
+      page: pageIndex + 1, 
+      limit: 10,
+      search: debouncedSearchValue,
+     }),
     keepPreviousData: true,
   });
 
@@ -42,6 +51,8 @@ const MedicinesList = () => {
             onPageChange={setPageIndex}
             isLoading={isLoading}
             total={tableData.total} 
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
           />;
 };
 

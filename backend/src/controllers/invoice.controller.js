@@ -41,9 +41,9 @@ module.exports = {
 
             if (search) {
                 formattedInvoices = formattedInvoices.filter(invoice => {
-                    return invoice.patient.fullName.toLowerCase().includes(search.toLowerCase()) ||
-                        invoice.invoiceNumber.toLowerCase().includes(search.toLowerCase()) ||
-                        invoice.status.toLowerCase().includes(search.toLowerCase());
+                    return invoice?.patient?.fullName.toLowerCase().includes(search.toLowerCase()) ||
+                        invoice?.invoiceCode?.toLowerCase().includes(search.toLowerCase()) ||
+                        invoice?.status.toLowerCase().includes(search.toLowerCase());
                 });
             }
 

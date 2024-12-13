@@ -12,19 +12,14 @@ class Prescription extends Model
     protected $fillable = [
         'resultID',
         'advice',
-        'medicines',
-        'isDeleted',
+        'medicines'
     ];
 
     protected $casts = [
         'advice' => 'string',
-        'isDeleted' => 'boolean',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
     public function setMedicinesAttribute($value)
     {
         $this->attributes['medicines'] = $value;
@@ -38,4 +33,23 @@ class Prescription extends Model
     {
         return 'Prescription';
     }
+
+    public function result()
+    {
+        return $this->belongsTo(Result::class, 'resultID');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Invoice::where("prescriptionID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có hóa đơn!');
+            }else{
+                throw new \App\Exceptions\DataExistsException('Không thể xóa!');
+            }
+        });
+    }
+
+
 }

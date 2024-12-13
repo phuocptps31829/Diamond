@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 use App\Models\WorkSchedule;
 use App\Http\Requests\WorkScheduleRequest;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use MongoDB\BSON\ObjectId;
 
 class WorkScheduleController extends Controller
 {
@@ -15,10 +17,10 @@ class WorkScheduleController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = WorkSchedule::where('isDeleted', false)->count();
+            $totalRecords = WorkSchedule::count();
 
-            $workSchedule = WorkSchedule::where('isDeleted', false)
-                ->skip($skip)
+            $workSchedule = WorkSchedule::
+                skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -39,7 +41,7 @@ class WorkScheduleController extends Controller
     {
         try {
             $id = $request->route('id');
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
 
             if (!$workSchedule) {
                 return createError(404, 'WorkSchedule not found');
@@ -59,10 +61,15 @@ class WorkScheduleController extends Controller
     {
         try {
             $workScheduleRequest = new workScheduleRequest();
-            $workSchedule = WorkSchedule::create($request->validate($workScheduleRequest->rules()));
+            $dataSchedule = $request->validate($workScheduleRequest->rules());
+           $checkDay=WorkSchedule::where('day',$dataSchedule['day'])->where('doctorID',new ObjectId($dataSchedule['doctorID']))->first();
+           if($checkDay){
+               return createError(400,"Bác sĩ đã có lịch làm việc vào ngày ".Carbon::parse($dataSchedule['day'])->format('d/m/Y'));
+           }
+            $workSchedule = WorkSchedule::create($dataSchedule);
             return response()->json([
                 'status' => 'success',
-                'message' => 'WorkSchedule created successfully.',
+                'message' => 'Thêm lịch làm việc thành công!',
                 'data' => $workSchedule,
             ], 201);
         } catch (\Exception $e) {
@@ -74,20 +81,29 @@ class WorkScheduleController extends Controller
     {
         try {
             $id = $request->route('id');
-
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workScheduleRequest = new WorkScheduleRequest();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
 
             if (!$workSchedule) {
-                return createError(404, 'WorkSchedule not found');
+                return createError(404, 'Không tìm thấy lịch làm việc!');
             }
-
-            $workScheduleRequest = new WorkScheduleRequest();
-
-            $workSchedule->update($request->validate($workScheduleRequest->update()));
+            $dataSchedule = $request->validate($workScheduleRequest->update());
+//            $checkDay=WorkSchedule::where('day',$dataSchedule['day'])->where('doctorID',new ObjectId($dataSchedule['doctorID']))->first();
+            if($dataSchedule['day']==$workSchedule->day){
+                $dataUpdate=$request->validate($workScheduleRequest->update());
+                $workSchedule->update($dataUpdate);
+            }else{
+                \Log::info($dataSchedule['day']."  fdfd  ".$workSchedule->day);
+                $checkWorkScheduleDoctor=WorkSchedule::where('doctorID',new ObjectId($dataSchedule['doctorID']))->where('day',$dataSchedule['day'])->first();
+                if($checkWorkScheduleDoctor){
+                    return createError(400,"Đã có lịch làm việc vào ngày ".Carbon::parse($dataSchedule['day'])->format('d/m/Y'));
+                }
+                $workSchedule->update($request->validate($workScheduleRequest->update()));
+            }
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'News update successfully.',
+                'message' => 'Cập nhật lịch làm việc thành công!',
                 'data' => $workSchedule,
             ], 201);
         } catch (\Exception $e) {
@@ -98,23 +114,21 @@ class WorkScheduleController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID Không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
 
-            $workSchedule = WorkSchedule::where('_id', $id)->where('isDeleted', false)->first();
+            $workSchedule = WorkSchedule::where('_id', $id)->first();
             if (!$workSchedule) {
-                return createError(404, 'WorkSchedule not found');
+                return createError(404, 'Không tìm thấy lịch làm việc!');
             }
-
-            $workSchedule->update(['isDeleted' => true]);
-
+            $workSchedule->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'WorkSchedule deleted successfully.',
+                'message' => 'Xóa lịch làm việc thành công!',
                 'data' => $workSchedule,
             ], 200);
         } catch (\Exception $e) {

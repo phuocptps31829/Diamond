@@ -4,8 +4,11 @@ import { patientApi } from "@/services/patientsApi";
 import NotFound from "@/components/ui/NotFound";
 import DataTable from "./table";
 import { columnsSchedule } from "./table/columns";
+import { RECORD_PER_PAGE } from "@/constants/config";
+import { useDebounce } from "use-debounce";
 
 const PatientsList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
@@ -13,10 +16,16 @@ const PatientsList = () => {
     total: 0,
   });
 
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["medical-packages", pageIndex, 10],
+    queryKey: ["medical-packages", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>
-      patientApi.getDataPatients({ page: pageIndex + 1, limit: 10 }),
+      patientApi.getDataPatients({ 
+        page: pageIndex + 1, 
+        limit: 10,
+        search: debouncedSearchValue,
+      }),
     keepPreviousData: true,
   });
 
@@ -43,6 +52,8 @@ const PatientsList = () => {
       onPageChange={setPageIndex}
       isLoading={isLoading}
       total={tableData.total}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
     />
   );
 };

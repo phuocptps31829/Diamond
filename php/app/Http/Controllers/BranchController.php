@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Clinic;
 use Illuminate\Http\Request;
 use App\Http\Requests\BranchRequest;
+use MongoDB\BSON\ObjectId;
 
 /**
  * @OA\Get(
@@ -151,10 +153,9 @@ class BranchController extends Controller
             $skip = $request->get('skip');
             $sortOptions = $request->get('sortOptions');
 
-            $totalRecords = Branch::where('isDeleted', false)->count();
+            $totalRecords = Branch::count();
 
-            $branches = Branch::where('isDeleted', false)
-                ->skip($skip)
+            $branches = Branch::skip($skip)
                 ->take($limit)
                 ->orderBy(key($sortOptions), current($sortOptions))
                 ->get();
@@ -175,7 +176,7 @@ class BranchController extends Controller
     {
         try {
             $id = $request->route('id');
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
+            $Branch = Branch::where('_id', $id)->first();
 
             if (!$Branch) {
                 return createError(404, 'Branch not found');
@@ -200,7 +201,7 @@ class BranchController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Branch created successfully.',
+                'message' => 'Thêm chi nhánh thành công!',
                 'data' => $Branch,
             ], 201);
         } catch (\Exception $e) {
@@ -213,18 +214,18 @@ class BranchController extends Controller
         try {
             $id = $request->route('id');
 
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
+            $Branch = Branch::where('_id', $id)->first();
 
             if (!$Branch) {
-                return createError(404, 'Branch not found');
+                return createError(404, 'Không tìm thấy chi nhánh!');
             }
             $BranchRequest = new BranchRequest();
 
-            $Branch->update($request->validate($BranchRequest->rules(), $BranchRequest->messages()));
+            $Branch->update($request->validate($BranchRequest->update()));
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Branch update successfully.',
+                'message' => 'Cập nhật chi nhánh thành công!',
                 'data' => $Branch,
             ], 201);
         } catch (\Exception $e) {
@@ -235,23 +236,21 @@ class BranchController extends Controller
     {
         try {
             if (!$id) {
-                return createError(400, 'ID is required');
+                return createError(400, 'ID không được trống!');
             }
 
             if (!isValidMongoId($id)) {
-                return createError(400, 'Invalid mongo ID');
+                return createError(400, 'ID không hợp lệ!');
             }
+            $Branch = Branch::find(new objectId($id));
 
-            $Branch = Branch::where('_id', $id)->where('isDeleted', false)->first();
             if (!$Branch) {
-                return createError(404, 'Branch not found');
+                return createError(404, 'không tìm thấy chi nhánh!');
             }
-
-            $Branch->update(['isDeleted' => true]);
-
+            $Branch->delete();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Branch deleted successfully.',
+                'message' => 'Xóa chi nhánh thành công!',
                 'data' => $Branch,
             ], 200);
         } catch (\Exception $e) {

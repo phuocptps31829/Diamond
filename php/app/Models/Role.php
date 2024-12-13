@@ -13,11 +13,9 @@ class Role extends Model
     protected $fillable = [
         'name',
         'description',
-        'isDeleted',
         'isSystem'
     ];
     protected $attributes = [
-        'isDeleted' => false,
         'isSystem'=>false
     ];
     const CREATED_AT = 'createdAt';
@@ -26,4 +24,16 @@ class Role extends Model
     {
         return 'Role';
     }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if ($model->isSystem) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa!');
+            }
+        });
+    }
+
+
+
 }

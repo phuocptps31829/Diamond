@@ -22,8 +22,7 @@ import { doctorSchema } from "@/zods/client/doctor";
 import { FaSearch, FaPlus } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDebounce } from "use-debounce";
-import InputCustomSearch from "@/components/ui/InputCustomSearch";
+import { InputSearch } from "@/components/ui/InputSearch";
 import { useNavigate } from "react-router-dom";
 import { RECORD_PER_PAGE } from "@/constants/config";
 import Loading from "@/components/ui/Loading";
@@ -37,6 +36,8 @@ export default function DataTable({
   onPageChange,
   isLoading,
   total,
+  searchValue,
+  setSearchValue
  }) {
   const navigate = useNavigate();
   const {
@@ -54,12 +55,9 @@ export default function DataTable({
   const onSubmit = () => { };
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [searchValue, setSearchValue] = React.useState("");
-  const [debouncedSearchValue] = useDebounce(searchValue, 300);
 
   const handleResetSearch = () => {
     setSearchValue("");
-    table.getColumn("title")?.setFilterValue("");
   };
 
   const table = useReactTable({
@@ -101,19 +99,15 @@ export default function DataTable({
     },
   });
 
-  React.useEffect(() => {
-    table.getColumn("fullName")?.setFilterValue(debouncedSearchValue);
-  }, [debouncedSearchValue, table]);
-
   return (
     <div className="w-[100%] rounded-lg bg-white px-5 py-2 overflow-hidden h-[calc(100vh-140px)] flex flex-col hidden-content">
       {/* Search */ }
       <div className="flex mb-2">
         <form onSubmit={ handleSubmit(onSubmit) } className="mr-1 flex">
-          <div className="mb-2">
+          <div className="my-2">
             <div className="relative mr-1 w-[300px]">
-              <InputCustomSearch
-                value={ table.getColumn("fullName")?.getFilterValue() ?? "" }
+              <InputSearch
+                value={ searchValue }
                 onChange={ (event) => setSearchValue(event.target.value) }
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm bác sĩ"

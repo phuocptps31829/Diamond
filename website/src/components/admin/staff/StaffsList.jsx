@@ -4,8 +4,11 @@ import staffApi from "@/services/staffApi.js";
 import DataTable from "./table";
 import { columns } from "./table/columns";
 import NotFound from "@/components/ui/NotFound";
+import { RECORD_PER_PAGE } from "@/constants/config";
+import { useDebounce } from "use-debounce";
 
 const StaffsList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
@@ -13,9 +16,15 @@ const StaffsList = () => {
     total: 0,
   });
 
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["medical-packages", pageIndex, 10],
-    queryFn: () => staffApi.getDataStaffs({ page: pageIndex + 1, limit: 10 }),
+    queryKey: ["medical-packages", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
+    queryFn: () => staffApi.getDataStaffs({ 
+      page: pageIndex + 1, 
+      limit: 10,
+      search: debouncedSearchValue,
+    }),
     keepPreviousData: true,
   });
 
@@ -42,6 +51,8 @@ const StaffsList = () => {
       onPageChange={setPageIndex}
       isLoading={isLoading}
       total={tableData.total}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
     />
   );
 };

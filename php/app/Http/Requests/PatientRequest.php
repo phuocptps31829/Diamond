@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\IsValidMongoId;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PatientRequest extends FormRequest
@@ -13,7 +14,6 @@ class PatientRequest extends FormRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -23,10 +23,10 @@ class PatientRequest extends FormRequest
     {
         return [
             'fullName' => 'required|string',
-            "roleID"=>"nullable|string",
+            "roleID"=> ['required',new IsValidMongoId('Role')],
             'phoneNumber' => [
                 'required',
-                'regex:/^[0-9]{10}$/',
+                'regex:/^[0-9]{10,11}$/',
             ],
             'email' => [
                 'nullable',
@@ -44,7 +44,8 @@ class PatientRequest extends FormRequest
             'otherInfo.patientCode' => 'nullable|string',
             'otherInfo.insuranceCode' => 'nullable|string',
             'otherInfo.ethnic' => 'nullable|string',
-            'otherInfo.relatedPatientsID' => 'nullable|array',
+            'otherInfo.relatedPatientsID' => 'nullable|array|',
+            'otherInfo.relatedPatientsID.*' => ['required_with:otherInfo.relatedPatientsID',new IsValidMongoId('User')],
             'otherInfo.healthInformation' => 'nullable|array',
             'otherInfo.healthInformation.*.type' => 'required_with:healthInformation|string',
             'otherInfo.healthInformation.*.data' => 'required_with:healthInformation|string',
@@ -55,11 +56,11 @@ class PatientRequest extends FormRequest
     public function update(): array
     {
         return [
-            'fullName' => 'required|string',
-            "roleID"=>"nullable|string",
+            'fullName' => 'nullable|string',
+            "roleID"=> ['nullable',new IsValidMongoId('Role')],
             'phoneNumber' => [
-                'required',
-                'regex:/^[0-9]{10}$/',
+                'nullable',
+                'regex:/^[0-9]{10,11}$/',
             ],
             'email' => [
                 'nullable',
@@ -77,28 +78,13 @@ class PatientRequest extends FormRequest
             'otherInfo.occupation' => 'nullable|string',
             'otherInfo.insuranceCode' => 'nullable|string',
             'otherInfo.ethnic' => 'nullable|string',
-            'otherInfo.relatedPatientsID' => 'nullable|array',
+            'otherInfo.relatedPatientsID' => 'nullable|array|',
+            'otherInfo.relatedPatientsID.*' => ['required_with:otherInfo.relatedPatientsID',new IsValidMongoId('User')],
             'otherInfo.healthInformation' => 'nullable|array',
             'otherInfo.healthInformation.*.type' => 'required_with:healthInformation|string',
             'otherInfo.healthInformation.*.data' => 'required_with:healthInformation|string',
             'otherInfo.healthInformation.*.unit' => 'required_with:healthInformation|string',
             'otherInfo.healthInformation.*.date' => 'required_with:healthInformation|date_format:Y-m-d',
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'otherInfo.patientCode.required' => 'Patient code is required',
-            'otherInfo.patientCode.string' => 'Patient code should be a string',
-            'otherInfo.occupation.string' => 'Occupation should be a string',
-            'otherInfo.insuranceCode.string' => 'Insurance code should be a string',
-            'otherInfo.ethic.string' => 'Ethic should be a string',
-            'otherInfo.healthInformation.array' => 'Health information should be an array',
-            'otherInfo.healthInformation.*.type.required_with' => 'Type is required when health information is present',
-            'otherInfo.healthInformation.*.data.required_with' => 'Data is required when health information is present',
-            'otherInfo.healthInformation.*.unit.required_with' => 'Unit is required when health information is present',
-            'otherInfo.healthInformation.*.date.required_with' => 'Date is required when health information is present',
-            'otherInfo.healthInformation.*.date.date_format' => 'Date format should be YYYY-MM-DD',
         ];
     }
 }

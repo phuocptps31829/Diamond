@@ -3,7 +3,10 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Mail\SendMailRegister;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Mail;
 use MongoDB\Laravel\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -30,8 +33,7 @@ class User extends Authenticatable
         'citizenIdentificationNumber',
         'roleID',
         'otherInfo',
-        'isActivated',
-        'isDeleted',
+        'isActivated'
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
@@ -43,9 +45,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-    protected $attributes = [
-        'isDeleted' => false,
     ];
 
     /**
@@ -62,7 +61,6 @@ class User extends Authenticatable
         'gender' => 'string',
         'avatar' => 'string',
         'citizenIdentificationNumber' => 'string',
-        'isDeleted' => 'boolean',
     ];
     public function setRoleIDAttribute($value)
     {
@@ -87,5 +85,44 @@ class User extends Authenticatable
     public function getTable()
     {
         return 'User';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::created(function ($model) {
+            sendNotification(
+                $model->doctorID,
+                "Xin chào!",
+                "Chào mừng bạn đến với hệ thống y khoa DIAMOND",
+                0,
+                ""
+            );
+//            Gửi mail
+            $data = [];
+              if (isset($model->email) && $model->email != "") {
+                  $data['fullName'] ='';
+                  if (isset($model->gender)) {
+                      if ($model->gender === 'Nam') {
+                          $data['fullName'] .= ' anh ';
+                      } elseif ($model->gender === 'Nữ') {
+                          $data['fullName'] .= ' chị ';
+                      }
+                  }
+                  $data['fullName'] .= $model->fullName;
+             Mail::to($model->email)->queue(new SendMailRegister($data));
+             }
+        });
+
+        static::deleting(function ($model) {
+            if (WorkSchedule::where("doctorID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch làm việc!');
+            }
+            if (Appointment::where("patientID",new ObjectId($model->_id))->orWhere( "patientHelpID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có lịch hẹn!');
+            }
+            if (Contract::where("doctorID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có hợp đồng!');
+            }
+        });
     }
 }

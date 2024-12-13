@@ -14,7 +14,6 @@ class Hospital extends Model
         'name',
         'address',
         'hotline',
-        'isDeleted'
     ];
 
     protected $casts = [
@@ -22,17 +21,22 @@ class Hospital extends Model
         'name' => 'string',
         'address' => 'string',
         'hotline' => 'string',
-        'isDeleted' => 'boolean',
     ];
     const CREATED_AT = 'createdAt';
     const UPDATED_AT = 'updatedAt';
     // Đặt giá trị mặc định
-    protected $attributes = [
-        'isDeleted' => false,
-    ];
 
     public function getTable()
     {
         return 'Hospital';
+    }
+    public static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($model) {
+            if (Contract::where("hospitalID",new ObjectId($model->_id))->exists()) {
+                throw new \App\Exceptions\DataExistsException('Không thể xóa đã có dữ liệu hợp đồng!');
+            }
+        });
     }
 }

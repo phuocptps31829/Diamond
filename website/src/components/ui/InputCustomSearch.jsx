@@ -39,7 +39,7 @@ function InputCustomSearch({
         className="mb-2 block text-sm font-medium leading-none text-black"
         htmlFor={ `${name}Input` }
       >
-        { label } { required && <span className="text-red-500">*</span> }
+        {/* { label } { required && <span className="text-red-500">*</span> } */}
       </label>
       <div>
         <div className="relative">

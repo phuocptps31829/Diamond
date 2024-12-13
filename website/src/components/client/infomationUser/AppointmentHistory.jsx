@@ -15,12 +15,23 @@ import { formatDateTimeLocale } from "@/utils/format";
 import AppointmentHistorySkeleton from "./skeletons/AppointmentHistorySkeleton";
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
+import { Badge } from "@/components/ui/Badge";
 
-export const status = {
-  PENDING: "Chờ xác nhận",
-  CONFIRMED: "Đã xác nhận",
-  CANCELED: "Đã hủy",
-  EXAMINED: "Đã khám",
+const statusOptions = [
+  { value: "PENDING", label: "Chờ xác nhận", variant: "pending" },
+  { value: "CONFIRMED", label: "Chờ khám", variant: "confirmed" },
+  { value: "EXAMINED", label: "Đã khám", variant: "examined" },
+  { value: "CANCELLED", label: "Đã hủy", variant: "cancelled" },
+];
+
+const getStatusLabel = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.label : "";
+};
+
+const getStatusVariant = (status) => {
+  const statusOption = statusOptions.find((option) => option.value === status);
+  return statusOption ? statusOption.variant : "default";
 };
 
 const RECORD_PER_PAGE = 10;
@@ -33,6 +44,7 @@ const AppointmentHistory = () => {
     () => parseInt(queryParams.get("page")) || 1
   );
   const [appointments, setAppointments] = useState([]);
+  const [skeletonRows, setSkeletonRows] = useState(5);
   const [selectedDate, setSelectedDate] = useState({
     from: new Date(new Date()
       .setFullYear(new Date().getFullYear() - 1))
@@ -57,6 +69,8 @@ const AppointmentHistory = () => {
   useEffect(() => {
     if (!isLoading && appointmentsData) {
       setAppointments(appointmentsData);
+      const totalPages = Math.ceil(appointmentsData?.totalRecords / RECORD_PER_PAGE);
+      setSkeletonRows(totalPages > 1 ? RECORD_PER_PAGE : appointmentsData?.totalRecords);
     }
   }, [appointmentsData, isLoading, curPage]);
 
@@ -99,7 +113,10 @@ const AppointmentHistory = () => {
         </div>
       </div>
       { isLoading
-        ? <AppointmentHistorySkeleton />
+        ? <AppointmentHistorySkeleton
+          numRows={ skeletonRows }
+          totalPages={ totalPages }
+        />
         : <Table>
           <TableHeader className="bg-gray-100">
             <TableRow>
@@ -130,7 +147,16 @@ const AppointmentHistory = () => {
                   { RECORD_PER_PAGE * (curPage - 1) + index + 1 }
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                  { appointment?.service?.name || appointment?.medicalPackage?.name }
+                  <div
+                    className={ `inline-block rounded-md px-2 py-1 ${appointment?.medicalPackage?.services?.length > 0
+                      ? "bg-primary-500/20 text-primary-900"
+                      : "bg-[#13D6CB]/20 text-cyan-950"
+                      }` }
+                  >
+                    <span className={ `line-clamp-1 text-xs font-bold uppercase` }>
+                      { appointment?.service?.name || appointment?.medicalPackage?.name }
+                    </span>
+                  </div>
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap  md:text-sm">
                   { formatDateTimeLocale(appointment.time) }
@@ -139,7 +165,9 @@ const AppointmentHistory = () => {
                   { appointment.type }
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap  md:text-sm">
-                  { status[appointment.status] }
+                  <Badge variant={ getStatusVariant(appointment?.status) }>
+                    { getStatusLabel(appointment?.status) }
+                  </Badge>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -165,7 +193,7 @@ const AppointmentHistory = () => {
         appointments.totalRecords > 0 && (
           <CustomPagination
             totalPages={ totalPages }
-            curPage={ curPage }
+            currentPage={ curPage }
             onPageChange={ handlePageChange }
           />
         )

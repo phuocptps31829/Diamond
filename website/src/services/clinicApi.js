@@ -12,14 +12,10 @@ export const clinicsApi = {
     return res.data.data;
   },
   getAllClinicsAdmin: async (filter) => {
-    const { page, limit } = filter;
-    const params = {
-      ...(page !== undefined && page !== null && { page }),
-      ...(limit !== undefined && limit !== null && { limit }),
-    };
-
     const res = await axiosInstanceGET.get("/clinics", {
-      params: Object.keys(params).length > 0 ? params : undefined,
+      params: {
+        ...filter,
+      },
     });
     return res.data;
   },
@@ -32,7 +28,7 @@ export const clinicsApi = {
           branchID,
           specialtyID,
         },
-      },
+      }
     );
     return res.data.data;
   },
@@ -60,7 +56,7 @@ export const clinicsApi = {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     console.log("res.data.data: ", res.data.data);
     return res.data.data;
@@ -68,7 +64,7 @@ export const clinicsApi = {
 
   deleteClinic: async (id) => {
     const res = await axiosInstanceCUD.post(
-      `/clinics/delete/${id}?_method=DELETE`,
+      `/clinics/delete/${id}?_method=DELETE`
     );
     return res.data.data;
   },
