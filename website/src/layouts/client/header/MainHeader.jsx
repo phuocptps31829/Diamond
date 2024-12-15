@@ -134,6 +134,9 @@ export default function MainHeader() {
     dispatch(logoutAction());
     dispatch(clearCart());
     toast.success("Đăng xuất thành công");
+    localStorage.removeItem("phoneNumber");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userSocketID");
     navigate("/");
   };
   // const handleMouseEnter = () => {
@@ -308,9 +311,9 @@ export default function MainHeader() {
                         <p>{userProfile?.fullName.split(" ").at(-1)} </p>
                       </div>
                       <div className="relative">
-                        <Avatar>
+                        <Avatar className="w-10 h-10">
                           <AvatarImage
-                            className="w-100 h-100 cursor-pointer object-cover"
+                            className="w-full h-full cursor-pointer object-cover"
                             src={
                               userProfile?.avatar
                                 ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`

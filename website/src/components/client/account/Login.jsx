@@ -12,12 +12,15 @@ import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/client/account";
+import { useSocket } from "@/hooks/useSocket";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import SpinLoader from "@/components/ui/SpinLoader";
 import toast from "react-hot-toast";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export default function LoginComponent() {
+  const { socket } = useSocket(SOCKET_URL);
   const navigate = useNavigate();
 
   const {
@@ -35,7 +38,6 @@ export default function LoginComponent() {
   const mutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      console.log(data);
       Cookies.set('accessToken', data.accessToken.token, {
         expires: new Date(data.accessToken.expires * 1000)
       });
@@ -43,6 +45,7 @@ export default function LoginComponent() {
         expires: new Date(data.refreshToken.expires * 1000)
       });
       navigate('/profile/information');
+      localStorage.setItem("userSocketID", socket.id);
     },
     onError: (error) => {
       console.log(error);

@@ -7,6 +7,7 @@ import { MdInsertEmoticon } from "react-icons/md";
 import { IoCloseCircleOutline, IoSend } from "react-icons/io5";
 import LogoNoLetters from "@/assets/images/LogoNoLetters.png";
 import { GrFormNextLink } from "react-icons/gr";
+import { useSelector } from "react-redux";
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
@@ -17,7 +18,8 @@ const options = [
   "Tôi cần tư vấn về gói khám sức khỏe",
 ];
 
-const ChatComponent = ({ setShowChat }) => {
+const ChatComponent = ({ setShowChat, setConnect }) => {
+  const userProfile = useSelector((state) => state.auth.userProfile);
   const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
@@ -28,12 +30,17 @@ const ChatComponent = ({ setShowChat }) => {
   const [sendFirstMessage, setSendFirstMessage] = useState(true);
   const [chatted, setChatted] = useState(false);
   const pickerRef = useRef(null);
-
   const messagesEndRef = useRef(null);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView();
   };
+  
+  useEffect(() => {
+    const phoneNumber = userProfile ? userProfile.phoneNumber : (localStorage.getItem("phoneNumber") || "");
+    const userName = userProfile ? userProfile.fullName : (localStorage.getItem("userName") || "");
+    setPhoneNumber(phoneNumber);
+    setUserName(userName);
+  }, [userProfile]);
 
   useEffect(() => {
     scrollToBottom();
@@ -141,8 +148,11 @@ const ChatComponent = ({ setShowChat }) => {
     }
     if (socket) {
       localStorage.setItem("userSocketID", socket.id);
+      localStorage.setItem("userName", userName);
+      localStorage.setItem("phoneNumber", phoneNumber);
     }
     setChatted(true);
+    setConnect(true);
   };
 
   useEffect(() => {

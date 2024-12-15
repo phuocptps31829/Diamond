@@ -37,6 +37,7 @@ export default function DataTable({
   isLoading,
   searchValue,
   setSearchValue,
+  total
 }) {
   const navigate = useNavigate();
   const {
@@ -184,9 +185,20 @@ export default function DataTable({
       </Table>
       <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          <span className="pr-1">Đã chọn</span>
-          {table.getFilteredSelectedRowModel().rows.length} trên{" "}
-          {table.getFilteredRowModel().rows.length} trong danh sách.
+          {`Hiển thị từ `}
+          <span className="font-bold text-primary-500">
+            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
+          </span>
+          {` đến `}
+          <span className="font-bold text-primary-500">
+            {Math.min(
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+              total
+            )}
+          </span>
+          {` trong tổng số `}
+          <span className="font-bold text-primary-500">{total}</span>
+          {` mục.`}
         </div>
         <div className="flex items-center space-x-2">
           <Button

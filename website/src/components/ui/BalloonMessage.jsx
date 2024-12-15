@@ -13,7 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/Tooltip";
 
-const BalloonMessage = ({ showChat, setShowChat}) => {
+const BalloonMessage = ({ showChat, setShowChat, setConnect }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ const BalloonMessage = ({ showChat, setShowChat}) => {
           transition={{ duration: 0.5 }}
           className="fixed bottom-0 right-0 z-50 w-full sm:bottom-5 sm:right-5 sm:w-auto"
         >
-          <ChatComponent setShowChat={setShowChat} showChat={showChat} />
+          <ChatComponent setShowChat={setShowChat} showChat={showChat} setConnect={setConnect} />
         </motion.div>
       ) : (
         <div className="fixed bottom-10 right-5 flex gap-4">
