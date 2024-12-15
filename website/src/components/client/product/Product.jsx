@@ -112,7 +112,7 @@ export default function Product({ product }) {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white shadow-custom">
+    <div className="flex h-full flex-col overflow-hidden rounded-xl bg-white">
       <Link
         to={ isService ? `/service/${slug}` : `/package/${slug}` }
         className="group block w-full overflow-hidden"

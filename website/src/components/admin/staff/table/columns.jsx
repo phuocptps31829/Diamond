@@ -81,13 +81,14 @@ export const columns = (pageIndex, pageSize) => [
                   </div>
                 </div>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="w-fit">
                 <DialogHeader>
                   <DialogTitle>Hình ảnh lớn</DialogTitle>
                 </DialogHeader>
                 <img
-                  src={URL_IMAGE + "/" + row.original.avatar}
-                  alt="large-thumbnail w-full h-auto"
+                  src={URL_IMAGE + "/" + row.original?.avatar}
+                  alt="avatar"
+                  className="max-h-[500px]"
                 />
               </DialogContent>
             </Dialog>

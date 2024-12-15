@@ -47,12 +47,12 @@ const PackageServiceOther = ({
             <CarouselContent className="ml-1 md:m-0">
               { isPackage
                 ? medicalPackageSpecialty.map((item) => (
-                  <CarouselItem key={ item._id } className="p-2 md:basis-1/2 lg:basis-1/4">
+                  <CarouselItem key={ item._id } className="md:basis-1/2 lg:basis-1/4">
                     <Product product={ item } />
                   </CarouselItem>
                 ))
                 : serviceSpecialty?.map((item) => (
-                  <CarouselItem key={ item._id } className="p-2 md:basis-1/2 lg:basis-1/4">
+                  <CarouselItem key={ item._id } className="md:basis-1/2 lg:basis-1/4">
                     <Product product={ item } />
                   </CarouselItem>
                 )) }

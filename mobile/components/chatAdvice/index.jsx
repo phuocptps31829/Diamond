@@ -11,7 +11,6 @@ import {
   Image,
   ActivityIndicator
 } from "react-native";
-import { useSelector } from "react-redux";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -20,11 +19,15 @@ import { emojis } from "rn-emoji-picker/dist/data";
 import empty_chat from "../../assets/images/support.png";
 import { useSocket } from "../../hooks/useSocket";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setConnectFirstTime } from "../../store/chat/chatSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SOCKET_URL = process.env.EXPO_PUBLIC_SOCKET_URL;
 
 const ChatAdvice = () => {
+  const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
+  const connectFirstTime = useSelector((state) => state.chat.connectFirstTime);
   const [messages, setMessages] = useState(
     []
   );
@@ -112,6 +115,7 @@ const ChatAdvice = () => {
     if (socket) {
       setLoadingSendFirstMessage(true);
       await AsyncStorage.setItem("userSocketID", socket.id);
+      dispatch(setConnectFirstTime(!connectFirstTime));
       sendMessageFirst();
     }
   };
@@ -246,20 +250,14 @@ const ChatAdvice = () => {
                   />
                 </TouchableOpacity>
               </View>
-              {newMessage.trim() === "" ? (
-                <TouchableOpacity 
-                  className="bg-[#5DBAEE] rounded-full ml-3 h-11 w-11 flex justify-center items-center"
-                >
-                  <FontAwesome5 name="microphone" size={20} color="white" />
-                </TouchableOpacity>
-              ) : (
+              {newMessage.trim() !== "" && (
                 <TouchableOpacity
                   className="bg-[#1ba4f3] rounded-full ml-3 h-11 w-11 flex justify-center items-center"
                   onPress={sendMessage}
                 >
                   <Feather name="send" size={22} color="white" />
                 </TouchableOpacity>
-              )}
+            )}
             </>
           )}
         

@@ -13,12 +13,15 @@ import Balloon from "@/components/ui/Balloon";
 import BalloonMessage from "@/components/ui/BalloonMessage";
 import Cookies from "js-cookie";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
 import notification_sound from "../../assets/audio/ui-hello-bells-om-fx-1-00-03.mp3"
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export default function AppLayout() {
+  const userProfile = useSelector((state) => state.auth.userProfile);
   const [showChat, setShowChat] = useState(false);
+  const [connect, setConnect] = useState(false);
   const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -75,12 +78,13 @@ export default function AppLayout() {
 
   useEffect(() => {
     if (socket) {
+      console.log("connect socket");
       const userSocketID = localStorage.getItem("userSocketID");
       if (userSocketID) {
         sendEvent("joinRoom", userSocketID);
       }
     }
-  }, [socket, sendEvent]);
+  }, [socket, sendEvent, userProfile, connect]);
 
   const { data: profileFetched } = useQuery({
     queryKey: ["userProfile"],
@@ -110,7 +114,7 @@ export default function AppLayout() {
         <Outlet />
       </div>
       <Balloon />
-      <BalloonMessage showChat={showChat} setShowChat={setShowChat} />
+      <BalloonMessage showChat={showChat} setShowChat={setShowChat} setConnect={setConnect} />
       <Footer />
     </>
   );

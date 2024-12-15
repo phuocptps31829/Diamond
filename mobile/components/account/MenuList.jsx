@@ -6,11 +6,13 @@ import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import { useRouter } from "expo-router";
 import { menuItems } from "../../constants/menu-items";
 import ToastUI from "../../components/ui/Toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearProfile } from "../../store/profile/profileSlice";
+import { setConnectFirstTime } from "../../store/chat/chatSlice";
 
 const MenuList = () => {
   const dispatch = useDispatch();
+  const connectFirstTime = useSelector((state) => state.chat.connectFirstTime);
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -18,6 +20,7 @@ const MenuList = () => {
     await AsyncStorage.removeItem("accessToken");
     await AsyncStorage.removeItem("refreshToken");
     await AsyncStorage.removeItem("userSocketID");
+    dispatch(setConnectFirstTime(!connectFirstTime));
     ToastUI({
       type: "success",
       text1: "Đăng xuất thành công",
