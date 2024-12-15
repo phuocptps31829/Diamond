@@ -147,6 +147,11 @@ const AppointmentDetail = () => {
               <span className={ `px-2 py-1 rounded-md ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}` }>
                 { getStatusPaymentStyle(appointment?.payment?.status).textPayment }
               </span>
+              { appointment?.payment?.status === "PAID" && <a
+                href={ import.meta.env.VITE_CUD_API_URL + "/invoices/export/" + appointment?.invoice?._id }
+                className="text-xs text-white px-2 py-1 rounded-md bg-blue-500 cursor-pointer inline-block">
+                📜 Xem hóa đơn
+              </a> }
             </TableCell>
           </TableRow>
           <TableRow>

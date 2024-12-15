@@ -4,8 +4,11 @@ import DataTable from "./table";
 import { columnsSchedule } from "./table/columns";
 import { medicalPackageApi } from "@/services/medicalPackagesApi";
 import NotFound from "@/components/ui/NotFound";
+import { RECORD_PER_PAGE } from "@/constants/config";
+import { useDebounce } from "use-debounce";
 
 const PackagesList = () => {
+  const [searchValue, setSearchValue] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [tableData, setTableData] = useState({
     data: [],
@@ -13,14 +16,21 @@ const PackagesList = () => {
     total: 0,
   });
 
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
   const { data, error, isLoading } = useQuery({
-    queryKey: ["medical-packages", pageIndex, 10],
-    queryFn: () => medicalPackageApi.getDataMedicalPackages({ page: pageIndex + 1, limit: 10 }),
+    queryKey: ["medical-packages", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
+    queryFn: () =>
+      medicalPackageApi.getDataMedicalPackages({
+        page: pageIndex + 1,
+        limit: 10,
+        search: debouncedSearchValue,
+      }),
     keepPreviousData: true,
   });
 
-  useEffect (() => {
-    if(!isLoading) {
+  useEffect(() => {
+    if (!isLoading) {
       setTableData({
         data: data?.data || [],
         pageCount: Math.ceil((data?.totalRecords || 0) / 10),
@@ -33,16 +43,20 @@ const PackagesList = () => {
     return <NotFound message={error.message} />;
   }
 
-  return <DataTable 
-            data={tableData.data}
-            columns={columnsSchedule(pageIndex, 10)}
-            pageCount={tableData.pageCount}
-            pageSize={10}
-            pageIndex={pageIndex}
-            onPageChange={setPageIndex}
-            isLoading={isLoading}
-            total={tableData.total}
-        />;
+  return (
+    <DataTable
+      data={tableData.data}
+      columns={columnsSchedule(pageIndex, 10)}
+      pageCount={tableData.pageCount}
+      pageSize={10}
+      pageIndex={pageIndex}
+      onPageChange={setPageIndex}
+      isLoading={isLoading}
+      total={tableData.total}
+      searchValue={searchValue}
+      setSearchValue={setSearchValue}
+    />
+  );
 };
 
 export default PackagesList;

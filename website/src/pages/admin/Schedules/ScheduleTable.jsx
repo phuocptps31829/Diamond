@@ -30,6 +30,9 @@ const ScheduleTablePage = () => {
     });
 
     const [debouncedSearchValue] = useDebounce(searchValue, 500);
+    useEffect(() => {
+        setPageIndex(0);
+    }, [debouncedSearchValue]);
 
     const userProfile = useSelector((state) => state.auth.userProfile);
 

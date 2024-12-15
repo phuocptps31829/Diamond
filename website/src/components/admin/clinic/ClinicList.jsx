@@ -38,21 +38,21 @@ const ClinicsList = () => {
     }
   }, [data, isLoading]);
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <DataTable
-      data={tableData.data}
-      columns={columns(pageIndex, 10)}
-      pageCount={tableData.pageCount}
-      pageSize={10}
-      pageIndex={pageIndex}
-      onPageChange={setPageIndex}
-      isLoading={isLoading}
-      total={tableData.total}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
+      data={ tableData.data }
+      columns={ columns(pageIndex, 10) }
+      pageCount={ tableData.pageCount }
+      pageSize={ 10 }
+      pageIndex={ pageIndex }
+      onPageChange={ setPageIndex }
+      isLoading={ isLoading }
+      total={ tableData.total }
+      searchValue={ searchValue }
+      setSearchValue={ setSearchValue }
     />
   );
 };

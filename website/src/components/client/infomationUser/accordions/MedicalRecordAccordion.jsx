@@ -192,6 +192,13 @@ export function MedicalRecordAccordion({ medicalRecords }) {
                                                                         </strong>{ " " }
                                                                         <span className="text-red-500"> { medicine.note }</span>
                                                                     </li>
+                                                                    <li className="list-none mt-2 float-right pr-4">
+                                                                        { <a
+                                                                            href={ import.meta.env.VITE_CUD_API_URL + "/prescriptions/export/" + result?.prescription?._id }
+                                                                            className="text-xs text-white px-2 py-1 rounded-md bg-blue-500 cursor-pointer inline-block">
+                                                                            📜 Xem đơn thuốc
+                                                                        </a> }
+                                                                    </li>
                                                                 </ul>
                                                             </li>
                                                         </React.Fragment>

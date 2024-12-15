@@ -227,7 +227,7 @@ module.exports = {
                 .find({
                     doctorID: doctorID,
                     day: {
-                        $gte: new Date().toISOString().slice(0, 10)
+                        $gt: new Date().toISOString().slice(0, 10)
                     }
                 })
                 .populate("doctorID")
