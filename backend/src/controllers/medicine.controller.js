@@ -15,10 +15,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!medicines.length) {
-                createError(404, 'No medicines found.');
-            }
-
             let formattedMedicines = medicines.map((medicine) => {
                 const newMedicine = { ...medicine.toObject() };
                 newMedicine.medicineCategory = {

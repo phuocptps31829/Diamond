@@ -7,7 +7,6 @@ import SelectDoctor from "./select/SelectDoctor";
 import SelectDate from "./select/SelectDate";
 import SelectTime from "./select/SelectTime";
 import { AppointmentAdminSchema } from "@/zods/admin/appointmentsAdmin";
-import SelectService from "./select/SelectServices";
 import SelectMedicalPackage from "./select/SelectMedicalPackage";
 import { useNavigate, useParams } from "react-router-dom";
 import InputCustom from "@/components/ui/InputCustom";
@@ -16,6 +15,7 @@ import { toastUI } from "@/components/ui/Toastify";
 import SelectLevelMedicalPackage from "./select/SelectLevelMedicalPackage";
 import SpinLoader from "@/components/ui/SpinLoader";
 import { appointmentApi } from "@/services/appointmentsApi";
+import SelectService from "./select/SelectServices";
 
 const AppointmentsAdd = () => {
   const { id } = useParams();

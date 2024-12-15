@@ -32,10 +32,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!branches.length) {
-                createError(404, "No branches found.");
-            }
-
             return res.status(200).json({
                 page: page || 1,
                 message: 'Branches retrieved successfully.',

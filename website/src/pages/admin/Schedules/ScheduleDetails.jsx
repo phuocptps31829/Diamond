@@ -30,7 +30,7 @@ const ScheduleDetailsPage = () => {
     const breadcrumbData = getBreadcrumbData(id, data?.data?.[0]?.fullName);
 
     if (isLoading) {
-        return <Loading />;
+        return <Loading ScaleMini={ true } />;
     }
 
     return (

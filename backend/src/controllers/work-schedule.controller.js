@@ -30,10 +30,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!workSchedules.length) {
-                createError(404, 'No workSchedule found.');
-            }
-
             const groupedByDoctor = workSchedules.reduce((acc, schedule) => {
                 const doctorId = schedule.doctorID._id.toString();
                 if (!acc[doctorId]) {
@@ -231,7 +227,7 @@ module.exports = {
                 .find({
                     doctorID: doctorID,
                     day: {
-                        $gte: new Date().toISOString().slice(0, 10)
+                        $gt: new Date().toISOString().slice(0, 10)
                     }
                 })
                 .populate("doctorID")

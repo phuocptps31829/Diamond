@@ -50,7 +50,7 @@ const PackagesFormFixPage = () => {
   return (
     <>
       { isLoadingPackage ? (
-        <Loading />
+        <Loading ScaleMini={ true } />
       ) : (
         <>
           <BreadcrumbCustom data={ breadcrumbData } />

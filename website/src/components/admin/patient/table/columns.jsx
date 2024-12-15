@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
-import { Checkbox } from '@/components/ui/Checkbox';
 import { ArrowUpDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/Skeleton';
 import {
@@ -14,28 +13,6 @@ import ActionMenu from './actionMenu';
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export const columnsSchedule = (pageIndex, pageSize) => [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && 'indeterminate')
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Select row"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
     {
         accessorKey: 'index',
         header: () => (
@@ -91,13 +68,14 @@ export const columnsSchedule = (pageIndex, pageSize) => [
                                     </div>
                                 </div>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="w-fit">
                                 <DialogHeader>
                                     <DialogTitle>Hình ảnh lớn</DialogTitle>
                                 </DialogHeader>
                                 <img
-                                    src={URL_IMAGE + '/' + row.original.avatar}
-                                    alt="large-thumbnail w-full h-auto"
+                                    src={ URL_IMAGE + '/' + row.original?.avatar }
+                                    alt="avatar"
+                                    className="max-h-[500px]"
                                 />
                             </DialogContent>
                         </Dialog>

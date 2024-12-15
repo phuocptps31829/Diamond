@@ -42,7 +42,7 @@ module.exports = {
                     specialty: {
                         _id: package.specialtyID._id,
                         name: package.specialtyID.name,
-                    }
+                    },
                 };
 
                 delete formattedPackage.specialtyID;
@@ -126,14 +126,20 @@ module.exports = {
                     _id: 1, name: 1
                 });
 
-            const formattedMedicalPackage = {
+            let formattedMedicalPackage = {
                 ...medicalPackage,
                 allServices: services
             };
 
-            formattedMedicalPackage.specialty = {
-                _id: formattedMedicalPackage.specialtyID._id,
-                name: formattedMedicalPackage.specialtyID.name
+            formattedMedicalPackage = {
+                ...formattedMedicalPackage,
+                specialty: {
+                    _id: formattedMedicalPackage.specialtyID._id,
+                    name: formattedMedicalPackage.specialtyID.name
+                },
+                services: formattedMedicalPackage.services.sort((a, b) => {
+                    return a.discountPrice - b.discountPrice;
+                })
             };
             delete formattedMedicalPackage.specialtyID;
 
@@ -173,14 +179,20 @@ module.exports = {
                     _id: 1, name: 1
                 });
 
-            const formattedMedicalPackage = {
+            let formattedMedicalPackage = {
                 ...medicalPackage,
                 allServices: services
             };
 
-            formattedMedicalPackage.specialty = {
-                _id: formattedMedicalPackage.specialtyID._id,
-                name: formattedMedicalPackage.specialtyID.name
+            formattedMedicalPackage = {
+                ...formattedMedicalPackage,
+                specialty: {
+                    _id: formattedMedicalPackage.specialtyID._id,
+                    name: formattedMedicalPackage.specialtyID.name
+                },
+                services: formattedMedicalPackage.services.sort((a, b) => {
+                    return a.discountPrice - b.discountPrice;
+                })
             };
             delete formattedMedicalPackage.specialtyID;
 

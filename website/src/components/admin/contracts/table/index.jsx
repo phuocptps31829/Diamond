@@ -19,12 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
-import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
 
@@ -114,17 +113,13 @@ export default function DataTable({
               />
             </div>
           </div>
-          <Link to={"/admin/branches/create"}>
-            <Button
-              onClick={handleRefresh}
-              size="icon"
-              variant="outline"
-              className="mr-1 mt-2 h-11 w-11"
-            >
-              <FaPlus className="text-primary-500"></FaPlus>
-            </Button>
-          </Link>
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
+
+          <Button
+            onClick={handleRefresh}
+            size="icon"
+            variant="outline"
+            className="mr-1 mt-2 h-11 w-11"
+          >
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>

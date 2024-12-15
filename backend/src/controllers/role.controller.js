@@ -37,10 +37,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!roles.length) {
-                createError(404, 'No roles found.');
-            }
-
             return res.status(200).json({
                 page: page || 1,
                 message: 'Roles retrieved successfully.',

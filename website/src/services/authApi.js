@@ -17,6 +17,10 @@ export const authApi = {
     );
     return res.data.data;
   },
+  googleLogin: async (data) => {
+    const res = await axiosInstanceCUD.get('/auth/google', data);
+    return res.data;
+  },
   refreshToken: async (refreshToken) => {
     const res = await axiosInstanceCUD.post(`/auth/refresh-token?refreshToken=${refreshToken}`);
     return res.data;
@@ -47,5 +51,5 @@ export const authApi = {
   changePasswordForgot: async (data) => {
     const res = await axiosInstanceCUD.put('/auth/forgot-password/reset-password', data);
     return res.data;
-  }
+  },
 };

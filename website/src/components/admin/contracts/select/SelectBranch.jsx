@@ -38,10 +38,6 @@ export default function SelectBranch({ control, name, errors, onChange }) {
     fetchBranches();
   }, []);
 
-  useEffect(() => {
-    errors[name] = undefined;
-  }, [errors, name]);
-
   const handleClick = () => {
     if (!options.length) {
       toastUI("Không có chi nhánh nào để chọn", "warning");
@@ -77,7 +73,14 @@ export default function SelectBranch({ control, name, errors, onChange }) {
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-                <Command>
+                <Command
+                  filter={(branchId, search) => {
+                    const branch = options.find((b) => b._id === branchId);
+                    if (!branch) return 0;
+                    return branch.name.toLowerCase().includes(search.toLowerCase()) ? 1 : 0;
+                  }}
+                
+                >
                   <CommandInput placeholder="Nhập tên chi nhánh" />
                   <CommandList>
                     <CommandEmpty>Không tìm thấy!</CommandEmpty>

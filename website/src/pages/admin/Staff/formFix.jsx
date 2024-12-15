@@ -51,7 +51,7 @@ const StaffsFormPageFix = () => {
   return (
     <>
       { isLoadingStaff ? (
-        <Loading />
+        <Loading ScaleMini={ true } />
       ) : (
         <>
           <BreadcrumbCustom data={ breadcrumbData } />

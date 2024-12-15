@@ -101,7 +101,7 @@ export default function DataTableRole({ data }) {
     };
 
     if (isPending) {
-        return <Loading />;
+        return <Loading ScaleMini={ true } />;
     }
 
     return (

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { AiOutlineSchedule } from "react-icons/ai";
+import { AiOutlineDoubleRight, AiOutlineSchedule } from "react-icons/ai";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -90,7 +90,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
       <div className="mx-auto max-w-screen-xl pb-4">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-4 rounded-md bg-white p-8 md:grid-cols-2 md:py-10">
           <div className="container flex items-center justify-center">
-            <Skeleton className="h-[400px] w-[400px] overflow-hidden rounded-md" />
+            <Skeleton className="h-full w-full overflow-hidden rounded-md" />
           </div>
           <div className="flex flex-col items-start justify-center text-start">
             <Skeleton className="mb-4 h-8 w-3/4 md:h-12" />
@@ -113,17 +113,17 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
   return (
     <div className="mx-auto max-w-screen-xl p-4">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 md:gap-10 rounded-md bg-white p-4 md:grid-cols-2">
-        <div className="flex h-[200px] md:h-[400px] items-center">
+        <div className="flex items-center">
           <img
             src={ `${import.meta.env.VITE_IMAGE_API_URL}/${product?.image}` }
             alt={ product?.name }
-            className="h-full w-full rounded-md object-cover md:object-contain"
+            className="h-full w-full rounded-md object-cover md:object-fill"
           />
         </div>
         <div className="flex w-full flex-col items-start justify-start pt-4 text-start">
           <div>
             <h4>{ isService ? "Dịch vụ" : "Gói khám" }</h4>
-            <h3 className="mt-2 text-xl font-bold md:text-3xl">
+            <h3 className="mt-1 text-xl font-bold md:text-3xl line-clamp-2 pt-2">
               { product.name }
             </h3>
             <div className="my-2 flex items-center gap-2">
@@ -132,11 +132,11 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                 { product.orderCount || 0 } lượt đã đặt
               </span>
             </div>
-            <p className="mb-4 w-full text-justify text-sm font-normal leading-[27px] text-gray-600">
+            <p className="mb-4 w-full text-justify text-sm font-normal leading-[27px] text-gray-600 line-clamp-3">
               { product.shortDescription }
             </p>
           </div>
-          <div>
+          <>
             { product?.services && (
               <div className="mb-4 w-full">
                 <h4 className="mb-2 text-lg font-semibold">Cấp độ gói:</h4>
@@ -171,16 +171,17 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
                   </span>
                 </span>
                 <Button
-                  className=""
+                  className="flex items-center justify-center w-[40%] gap-2"
                   size="lg"
                   variant="custom"
                   onClick={ handleAddToCart }
                 >
                   { isInCart ? "Thanh toán ngay" : "Đặt lịch ngay" }
+                  <AiOutlineDoubleRight />
                 </Button>
               </div>
             </div>
-          </div>
+          </>
         </div>
       </div>
     </div>

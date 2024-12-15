@@ -54,7 +54,7 @@ export default function SelectLevelMedicalPackage({
                     errors[name] && "border-red-500",
                     levels.length === 0
                       ? "pointer-events-none"
-                      : "pointer-events-auto",
+                      : "pointer-events-auto"
                   )}
                 >
                   {field.value ? (
@@ -66,7 +66,17 @@ export default function SelectLevelMedicalPackage({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-                <Command>
+                <Command
+                  filter={(levelId, search) => {
+                    const level = levels.find((d) => d._id === levelId);
+                    if (!level) return 0;
+                    return level.levelName
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                      ? 1
+                      : 0;
+                  }}
+                >
                   <CommandInput placeholder="Nhập tên cấp độ" />
                   <CommandList className="">
                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
@@ -77,7 +87,7 @@ export default function SelectLevelMedicalPackage({
                           value={level._id}
                           onSelect={(currentValue) => {
                             field.onChange(
-                              currentValue === field.value ? "" : currentValue,
+                              currentValue === field.value ? "" : currentValue
                             );
                             onChange(currentValue, level.discountPrice);
                             setOpen(false);
@@ -88,7 +98,7 @@ export default function SelectLevelMedicalPackage({
                               "mr-2 h-4 w-4",
                               field.value?._id === level._id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                           {level.levelName}

@@ -24,7 +24,7 @@ const ListRolePage = () => {
     });
 
     if (isLoading) {
-        return <Loading />;
+        return <Loading ScaleMini={ true } />;
     }
 
     if (!data) {

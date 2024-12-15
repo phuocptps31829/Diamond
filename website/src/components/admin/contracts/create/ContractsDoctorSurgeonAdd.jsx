@@ -12,12 +12,11 @@ import { Label } from "@/components/ui/Label";
 import SelectDoctor from "../select/SelectDoctor";
 import SelectDate from "../select/SelectDate";
 import SelectBranch from "../select/SelectBranch";
-import { contractDoctorSchema } from "@/zods/admin/contractAdmin";
+import {  contractDoctorSurgeonSchema } from "@/zods/admin/contractAdmin";
 import { contractApi } from "@/services/contractApi";
 import SelectTimeWork from "../select/SelectTimeWork";
 
 const ContractsDoctorSurgeonAdd = () => {
-  const [isPending, setIsPending] = useState(false);
   const sigCanvas = useRef({});
   const [isTimeWork, setIsTimeWork] = useState(null);
   const queryClient = useQueryClient();
@@ -38,7 +37,7 @@ const ContractsDoctorSurgeonAdd = () => {
     control,
     reset,
   } = useForm({
-    resolver: zodResolver(contractDoctorSchema),
+    resolver: zodResolver(contractDoctorSurgeonSchema),
     defaultValues: {
       doctorID: "",
       hospitalID: "",
@@ -51,6 +50,7 @@ const ContractsDoctorSurgeonAdd = () => {
       isInternal: false,
     },
   });
+  console.log("errors", errors);
 
   const mutation = useMutation({
     mutationFn: (contractData) =>
@@ -59,14 +59,12 @@ const ContractsDoctorSurgeonAdd = () => {
       queryClient.invalidateQueries("contracts");
       toastUI("Thêm Hợp đồng bác sĩ ngoài giờ thành công.", "success");
       reset();
-      setIsPending(false);
       setIsTimeWork(null);
       sigCanvas.current.clear();
       navigate("/admin/contracts/list");
     },
     onError: (error) => {
       toastUI("Thêm Hợp đồng bác sĩ ngoài giờ thất bại.", "error");
-      setIsPending(false);
       console.error("Error creating contract:", error);
     },
   });
@@ -75,6 +73,9 @@ const ContractsDoctorSurgeonAdd = () => {
     sigCanvas.current.clear();
   };
   const onSubmit = async (data) => {
+    console.log("Raw form data:", data);
+    console.log("Doctor ID:", data.doctorID);
+    console.log("Hospital ID:", data.hospitalID);
     const canvas = sigCanvas.current.getTrimmedCanvas();
     const isCanvas = sigCanvas.current.isEmpty();
     if (isCanvas) {
@@ -97,7 +98,6 @@ const ContractsDoctorSurgeonAdd = () => {
       formData.append("address", data.address);
       formData.append("price", data.price);
       formData.append("isInternal", data.isInternal);
-      setIsPending(true);
       mutation.mutate(formData);
       console.log("Contract data:", formData);
     });
@@ -221,10 +221,10 @@ const ContractsDoctorSurgeonAdd = () => {
           <div className="mt-10 w-full text-end">
             <Button
               type="submit"
-              disabled={isPending || mutation.isPending}
+              disabled={mutation.isPending}
               variant="custom"
             >
-              {isPending || mutation.isPending ? (
+              {mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>

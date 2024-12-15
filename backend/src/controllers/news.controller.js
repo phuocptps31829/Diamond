@@ -19,10 +19,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!news.length) {
-                createError(404, 'No news found.');
-            }
-
             let formattedNews = news.map((news) => {
                 const newNews = { ...news };
                 newNews.specialty = {

@@ -15,7 +15,9 @@ const ClinicsList = () => {
     total: 0,
   });
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
-
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchValue]);
   const { data, error, isLoading } = useQuery({
     queryKey: ["clinics", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>
@@ -36,21 +38,21 @@ const ClinicsList = () => {
     }
   }, [data, isLoading]);
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <DataTable
-      data={tableData.data}
-      columns={columns(pageIndex, 10)}
-      pageCount={tableData.pageCount}
-      pageSize={10}
-      pageIndex={pageIndex}
-      onPageChange={setPageIndex}
-      isLoading={isLoading}
-      total={tableData.total}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
+      data={ tableData.data }
+      columns={ columns(pageIndex, 10) }
+      pageCount={ tableData.pageCount }
+      pageSize={ 10 }
+      pageIndex={ pageIndex }
+      onPageChange={ setPageIndex }
+      isLoading={ isLoading }
+      total={ tableData.total }
+      searchValue={ searchValue }
+      setSearchValue={ setSearchValue }
     />
   );
 };

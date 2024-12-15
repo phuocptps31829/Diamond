@@ -4,26 +4,26 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useParams } from "react-router-dom";
 
 const ServicesEditPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
 
-  const { id } = useParams();
+    const { id } = useParams();
 
-  const breadcrumbData = [
-    {
-      title: "Dịch vụ",
-    },
-    {
-      href: `/admin/services/edit/${id}`,
-      title: "Chỉnh sửa dịch vụ",
-    },
-  ];
+    const breadcrumbData = [
+        {
+            title: "Dịch vụ",
+        },
+        {
+            href: `/admin/services/edit/${id}`,
+            title: "Chỉnh sửa dịch vụ",
+        },
+    ];
 
-  return (
-    <div>
-      <BreadcrumbCustom data={breadcrumbData} />
-      <ServicesEdit />
-    </div>
-  );
+    return (
+        <div>
+            <BreadcrumbCustom data={ breadcrumbData } />
+            <ServicesEdit />
+        </div>
+    );
 };
 
 export default ServicesEditPage;

@@ -55,10 +55,6 @@ module.exports = {
                 })
                 .lean();
 
-            if (!doctors.length) {
-                createError(404, 'No doctors found.');
-            }
-
             let transformedDoctorsPromises = doctors.map(async doctor => {
                 const specialty = await SpecialtyModel.findById(doctor.otherInfo.specialtyID);
                 const branch = await BranchModel.findById(doctor.otherInfo.branchID);

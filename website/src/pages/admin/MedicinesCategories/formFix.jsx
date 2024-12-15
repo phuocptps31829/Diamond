@@ -51,7 +51,7 @@ const MedicinesCategoriesFormFixPage = () => {
   return (
     <>
       { isLoadingMedicineCategories ? (
-        <Loading />
+        <Loading ScaleMini={ true } />
       ) : (
         <>
           <BreadcrumbCustom data={ breadcrumbData } />

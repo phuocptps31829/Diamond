@@ -50,7 +50,7 @@ const ResultDialog = ({ trigger, appointment }) => {
               </div>
               <div className="my-4">
                 <strong>Mô tả:</strong>{ " " }
-                { result.description || "Không có mô tả" }
+                <p className="inline-block" dangerouslySetInnerHTML={ { __html: result.description } } />
               </div>
               <div className="my-4">
                 <strong>Hình ảnh liên quan:</strong>

@@ -12,12 +12,15 @@ import { useForm } from "react-hook-form";
 import InputCustom from "@/components/ui/InputCustom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "@/zods/client/account";
+import { useSocket } from "@/hooks/useSocket";
 import { useMutation } from "@tanstack/react-query";
 import { authApi } from "@/services/authApi";
 import SpinLoader from "@/components/ui/SpinLoader";
 import toast from "react-hot-toast";
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export default function LoginComponent() {
+  const { socket } = useSocket(SOCKET_URL);
   const navigate = useNavigate();
 
   const {
@@ -35,7 +38,6 @@ export default function LoginComponent() {
   const mutation = useMutation({
     mutationFn: authApi.login,
     onSuccess: (data) => {
-      console.log(data);
       Cookies.set('accessToken', data.accessToken.token, {
         expires: new Date(data.accessToken.expires * 1000)
       });
@@ -43,6 +45,7 @@ export default function LoginComponent() {
         expires: new Date(data.refreshToken.expires * 1000)
       });
       navigate('/profile/information');
+      localStorage.setItem("userSocketID", socket.id);
     },
     onError: (error) => {
       console.log(error);
@@ -60,9 +63,21 @@ export default function LoginComponent() {
     });
   };
 
-  const handleLoginGoogle = () => {
-    window.location.href = `${import.meta.env.VITE_CUD_API_URL}/auth/google`;
-  };
+  const { mutate: loginGG, isPending: ggPending } = useMutation({
+    mutationFn: authApi.googleLogin,
+    onSuccess: (data) => {
+      console.log(data);
+      window.location.href = data.data.url;
+    },
+    onError: (error) => {
+      console.log(error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      toast.error(errorMessage);
+    },
+  });
 
   return (
     <div className="flex h-auto items-center justify-center bg-[#E8F2F7] px-2 py-3 md:px-3">
@@ -165,7 +180,7 @@ export default function LoginComponent() {
               </div>
               <button
                 className={ `${mutation.isPending ? "bg-gray-500 cursor-default" : "bg-primary-400 hover:bg-primary-500"} my-5 flex w-full items-center justify-center gap-3 rounded-md py-2 text-lg font-semibold text-white` }
-                disabled={ mutation.isPending }
+                disabled={ mutation.isPending || ggPending }
               >
                 { mutation.isPending ? <SpinLoader /> : "Đăng nhập" }
               </button>
@@ -179,7 +194,8 @@ export default function LoginComponent() {
               {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
-                  onClick={ handleLoginGoogle }
+                  disabled={ ggPending || mutation.isPending }
+                  onClick={ loginGG }
                   type="button"
                   className="flex-2 bg-customGray-50 my-2 flex w-[100%] items-center justify-center rounded-lg bg-gray-500 bg-opacity-40 px-4 text-black hover:bg-opacity-60 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 md:flex-1 md:px-1 py-[10px]"
                 >

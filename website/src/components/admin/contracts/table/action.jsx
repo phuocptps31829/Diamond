@@ -17,35 +17,35 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import { toastUI } from "@/components/ui/Toastify";
-import { branchApi } from "@/services/branchesApi";
+import { contractApi } from "@/services/contractApi";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-const useDeleteBranch = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (branchId) => branchApi.deleteBranch(branchId),
-    onSuccess: () => {
-      queryClient.invalidateQueries("branches");
-      toastUI(
-        "Xóa hợp đồng thành công.",
-        "success",
-      );
-    },
-    onError: (error) => {
-      toastUI(error?.response?.data?.message || "Xóa hợp đồng thất bại.", "error");
-    },
-  });
-};
+// const useDeleteBranch = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: (contractId) => contractApi.deleteConTract(contractId),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries("contracts");
+//       toastUI("Xóa hợp đồng thành công.", "success");
+//     },
+//     onError: (error) => {
+//       toastUI(
+//         error?.response?.data?.message || "Xóa hợp đồng thất bại.",
+//         "error"
+//       );
+//     },
+//   });
+// };
 
 const Action = ({ row }) => {
-  const deleteMutation = useDeleteBranch();
+  // const deleteMutation = useDeleteBranch();
 
-  const handleDelete = () => {
-    deleteMutation.mutate(row.original._id);
-  };
+  // const handleDelete = () => {
+  //   deleteMutation.mutate(row.original._id);
+  // };
 
   return (
     <DropdownMenu>
@@ -61,7 +61,7 @@ const Action = ({ row }) => {
             <AlertDialogTrigger asChild>
               <div
                 className="flex cursor-pointer items-center gap-2"
-                onClick={ (e) => e.stopPropagation() }
+                onClick={(e) => e.stopPropagation()}
               >
                 <RiDeleteBin6Line className="text-[15px] text-red-600" />
                 <span className="text-red-600">Xóa hợp đồng</span>
@@ -73,25 +73,25 @@ const Action = ({ row }) => {
                   Bạn có chắc chắn muốn xóa chi nhánh này?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Hành động này không thể hoàn tác. Chi nhánh sẽ bị xóa vĩnh viễn
-                  khỏi hệ thống.
+                  Hành động này không thể hoàn tác. Chi nhánh sẽ bị xóa vĩnh
+                  viễn khỏi hệ thống.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={ handleDelete }
-                  disabled={ deleteMutation.isPending }
+                {/* <AlertDialogAction
+                  onClick={handleDelete}
+                  disabled={deleteMutation.isPending}
                 >
-                  { deleteMutation.isPending ? (
+                  {deleteMutation.isPending ? (
                     <span className="flex items-center gap-2">
                       <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
                       Đang xóa...
                     </span>
                   ) : (
                     "Xóa"
-                  ) }
-                </AlertDialogAction>
+                  )}
+                </AlertDialogAction> */}
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

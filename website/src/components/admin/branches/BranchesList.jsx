@@ -16,7 +16,9 @@ const BranchesList = () => {
     total: 0,
   });
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
-
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchValue]);
   const { data, error, isLoading } = useQuery({
     queryKey: ["branches", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>
@@ -38,21 +40,21 @@ const BranchesList = () => {
     }
   }, [data, isLoading]);
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <DataTable
-      data={tableData.data}
-      columns={columns(pageIndex, RECORD_PER_PAGE)}
-      pageCount={tableData.pageCount}
-      pageSize={RECORD_PER_PAGE}
-      pageIndex={pageIndex}
-      onPageChange={setPageIndex}
-      isLoading={isLoading}
-      total={tableData.total}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
+      data={ tableData.data }
+      columns={ columns(pageIndex, RECORD_PER_PAGE) }
+      pageCount={ tableData.pageCount }
+      pageSize={ RECORD_PER_PAGE }
+      pageIndex={ pageIndex }
+      onPageChange={ setPageIndex }
+      isLoading={ isLoading }
+      total={ tableData.total }
+      searchValue={ searchValue }
+      setSearchValue={ setSearchValue }
     />
   );
 };

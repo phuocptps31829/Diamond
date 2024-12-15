@@ -21,10 +21,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!patients.length) {
-                createError(404, 'No patients found.');
-            }
-
             let transformedPatients = patients.map(patient => {
                 const patientObject = patient.toObject();
                 patientObject.role = {
