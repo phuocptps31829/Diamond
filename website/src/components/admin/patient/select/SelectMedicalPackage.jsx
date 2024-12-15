@@ -27,14 +27,20 @@ export default function SelectMedicalPackage({
 }) {
   const [open, setOpen] = useState(false);
   const [medicalPackages, setMedicalPackages] = useState([]);
+  const [isPending, setIsPending] = useState(false); 
 
   useEffect(() => {
     const fetchMedicalPackages = async () => {
+      setIsPending(true);
       try {
-        const data = await medicalPackageApi.getAllMedicalPackages({ limit: 9999 });
+        const data = await medicalPackageApi.getAllMedicalPackages({
+          limit: 9999,
+        });
         setMedicalPackages(data?.data);
       } catch (error) {
         console.error("Failed to fetch medical packages:", error);
+      } finally {
+        setIsPending(false); 
       }
     };
 
@@ -44,85 +50,92 @@ export default function SelectMedicalPackage({
   return (
     <div className="">
       <Controller
-        control={ control }
-        name={ name }
-        rules={ { required: "Vui lòng chọn một gói khám." } }
-        render={ ({ field }) => (
-          <Popover open={ open } onOpenChange={ setOpen }>
+        control={control}
+        name={name}
+        rules={{ required: "Vui lòng chọn một gói khám." }}
+        render={({ field }) => (
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={ open }
-                className={ cn(
+                aria-expanded={open}
+                className={cn(
                   "w-full justify-between py-[21px]",
-                  errors[name] && "border-red-500",
-                ) }
+                  errors[name] && "border-red-500"
+                )}
               >
-                { field.value ? (
+                {field.value ? (
                   medicalPackages.find(
-                    (medicalPackage) => medicalPackage._id === field.value,
+                    (medicalPackage) => medicalPackage._id === field.value
                   )?.name
                 ) : (
-                  <span className="text-gray-600">Chọn gói khám</span>
-                ) }
+                  <span className="text-gray-600">
+                    {isPending ? "Đang tải..." : "Chọn gói khám"}
+                  </span>
+                )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command
-               filter={(medicalPackageId, search) => {
-                const medicalPackage = medicalPackages.find((d) => d._id === medicalPackageId);
-                if (!medicalPackage) return 0;
-                return medicalPackage.name
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-                  ? 1
-                  : 0;
-              }}
-              
-              >
-                <CommandInput placeholder="Nhập tên gói khám" />
-                <CommandList className="">
-                  <CommandEmpty>Không tìm thấy!</CommandEmpty>
-                  <CommandGroup>
-                    { medicalPackages.map((medicalPackage) => (
-                      <CommandItem
-                        key={ medicalPackage._id }
-                        value={ medicalPackage._id }
-                        onSelect={ (currentValue) => {
-                          field.onChange(
-                            currentValue === field.value ? "" : currentValue,
-                          );
-                          onChange(
-                            currentValue,
-                            medicalPackage.specialty._id,
-                            medicalPackage.services,
-                          );
-                          setOpen(false);
-                        } }
-                      >
-                        <Check
-                          className={ cn(
-                            "mr-2 h-4 w-4",
-                            field.value === medicalPackage._id
-                              ? "opacity-100"
-                              : "opacity-0",
-                          ) }
-                        />
-                        { medicalPackage.name }
-                      </CommandItem>
-                    )) }
-                  </CommandGroup>
-                </CommandList>
-              </Command>
+              {isPending ? (
+                <div className="p-4 text-center">Đang tải...</div>
+              ) : (
+                <Command
+                  filter={(medicalPackageId, search) => {
+                    const medicalPackage = medicalPackages.find(
+                      (d) => d._id === medicalPackageId
+                    );
+                    if (!medicalPackage) return 0;
+                    return medicalPackage.name
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                      ? 1
+                      : 0;
+                  }}
+                >
+                  <CommandInput placeholder="Nhập tên gói khám" />
+                  <CommandList className="">
+                    <CommandEmpty>Không tìm thấy!</CommandEmpty>
+                    <CommandGroup>
+                      {medicalPackages.map((medicalPackage) => (
+                        <CommandItem
+                          key={medicalPackage._id}
+                          value={medicalPackage._id}
+                          onSelect={(currentValue) => {
+                            field.onChange(
+                              currentValue === field.value ? "" : currentValue
+                            );
+                            onChange(
+                              currentValue,
+                              medicalPackage.specialty._id,
+                              medicalPackage.services
+                            );
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              field.value === medicalPackage._id
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {medicalPackage.name}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              )}
             </PopoverContent>
           </Popover>
-        ) }
+        )}
       />
-      { errors[name] && (
-        <p className="mt-2 text-sm text-red-600">{ errors[name].message }</p>
-      ) }
+      {errors[name] && (
+        <p className="mt-2 text-sm text-red-600">{errors[name].message}</p>
+      )}
     </div>
   );
 }

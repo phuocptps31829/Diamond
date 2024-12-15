@@ -31,8 +31,8 @@ export default function SelectDepartment({
 }) {
   const [open, setOpen] = useState(false);
   const [departments, setDepartments] = useState([]);
-  console.log(selectedServiceID);
-  console.log(selectedMedicalPackageID);
+
+  console.log(departments, "d");
 
   useEffect(() => {
     const fetchDepartments = async () => {
@@ -91,22 +91,21 @@ export default function SelectDepartment({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command>
-                <CommandInput placeholder="Nhập tên khoa" />
-                <CommandList
-                  className=""
-                  filter={(departmentId, search) => {
-                    const department = departments?.data?.find(
-                      (d) => d._id === departmentId
-                    );
-                    if (!department) return 0;
-                    return department.name
-                      .toLowerCase()
-                      .includes(search.toLowerCase())
-                      ? 1
-                      : 0;
-                  }}
-                >
+              <Command
+                filter={(departmentId, search) => {
+                  const department = departments.find(
+                    (d) => d._id === departmentId
+                  );
+                  if (!department) return 0;
+                  return department.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                    ? 1
+                    : 0;
+                }}
+              >
+                <CommandInput placeholder="Nhập tên chi nhánh" />
+                <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>
                   <CommandGroup>
                     {departments.map((department) => (

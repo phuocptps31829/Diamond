@@ -23,29 +23,29 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-// const useDeleteBranch = () => {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     mutationFn: (contractId) => contractApi.deleteConTract(contractId),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries("contracts");
-//       toastUI("Xóa hợp đồng thành công.", "success");
-//     },
-//     onError: (error) => {
-//       toastUI(
-//         error?.response?.data?.message || "Xóa hợp đồng thất bại.",
-//         "error"
-//       );
-//     },
-//   });
-// };
+const useDeleteContract = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (contractId) => contractApi.deleteContract(contractId),
+    onSuccess: () => {
+      queryClient.invalidateQueries("contracts");
+      toastUI("Xóa hợp đồng thành công.", "success");
+    },
+    onError: (error) => {
+      toastUI(
+        error?.response?.data?.message || "Xóa hợp đồng thất bại.",
+        "error"
+      );
+    },
+  });
+};
 
 const Action = ({ row }) => {
-  // const deleteMutation = useDeleteBranch();
+  const deleteMutation = useDeleteContract();
 
-  // const handleDelete = () => {
-  //   deleteMutation.mutate(row.original._id);
-  // };
+  const handleDelete = () => {
+    deleteMutation.mutate(row.original._id);
+  };
 
   return (
     <DropdownMenu>
@@ -79,7 +79,7 @@ const Action = ({ row }) => {
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Hủy</AlertDialogCancel>
-                {/* <AlertDialogAction
+                <AlertDialogAction
                   onClick={handleDelete}
                   disabled={deleteMutation.isPending}
                 >
@@ -91,7 +91,7 @@ const Action = ({ row }) => {
                   ) : (
                     "Xóa"
                   )}
-                </AlertDialogAction> */}
+                </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
