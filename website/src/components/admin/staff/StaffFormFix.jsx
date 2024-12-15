@@ -33,7 +33,7 @@ export default function StaffsFormFix({ staffDetail }) {
       staffName: "",
       phone: "",
       email: undefined,
-      birthDate: undefined,
+      birthDate: "",
       password: undefined,
       confirmPassword: undefined,
       citizenIdentificationNumber: undefined,
@@ -128,7 +128,7 @@ export default function StaffsFormFix({ staffDetail }) {
   return (
     <div className="w-[100%] rounded-lg bg-white px-7 py-6 min-h-[calc(100vh-140px)]">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
-        Thông tin người dùng
+        Thông tin nhân viên
       </h1>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="grid-cols-1 gap-[10px] sm:grid md:flex">
@@ -269,7 +269,6 @@ export default function StaffsFormFix({ staffDetail }) {
               <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                 <InputCustom
                   label={ "Mật khẩu" }
-                  required
                   className="col-span-1 sm:col-span-1"
                   name="password"
                   type="password"
@@ -282,7 +281,6 @@ export default function StaffsFormFix({ staffDetail }) {
               <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                 <InputCustom
                   label={ "Nhập lại mật khẩu" }
-                  required
                   className="col-span-1 sm:col-span-1"
                   name="confirmPassword"
                   type="password"

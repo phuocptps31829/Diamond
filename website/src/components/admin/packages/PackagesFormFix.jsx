@@ -146,7 +146,7 @@ const PackagesFormFix = ({ packageDetail }) => {
   useEffect(() => {
     if (isInitialized) return;
 
-    const dataRender = (data, firstTime = false) => {
+    const dataRender = (data) => {
       setImagePreview(data.image);
       const formattedServices =
         data.services?.map((service) => ({
@@ -158,17 +158,13 @@ const PackagesFormFix = ({ packageDetail }) => {
           _id: service._id,
         })) || [];
 
-      if (firstTime) {
-        setValue("services", formattedServices.reverse());
-      } else {
-        setValue("services", formattedServices);
-      }
+      setValue("services", formattedServices);
     };
 
     if (dataNewUpdate !== null) {
       dataRender(dataNewUpdate);
     } else {
-      dataRender(packageDetail, true);
+      dataRender(packageDetail);
     }
 
     setIsInitialized(true);

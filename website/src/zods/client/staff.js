@@ -11,9 +11,7 @@ export const staffSchema = z
     email: z.string().email("Email không hợp lệ").optional().or(z.literal("")),
     birthDate: z
       .string()
-      .min(1, "Ngày sinh không được để trống")
-      .optional()
-      .or(z.literal("")),
+      .min(1, "Ngày sinh không được để trống"),
     citizenIdentificationNumber: z
       .string()
       .min(9, "Số CMND không hợp lệ")
@@ -28,7 +26,7 @@ export const staffSchema = z
     password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự").optional(),
     confirmPassword: z
       .string()
-      .min(6, "Nhập lại mật khẩu không hợp lệ'").optional(),
+      .min(6, "Nhập lại mật khẩu không hợp lệ").optional(),
     address: z
       .string()
       .min(1, "Địa chỉ không được để trống")
