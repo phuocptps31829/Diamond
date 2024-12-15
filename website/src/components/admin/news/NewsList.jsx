@@ -16,7 +16,9 @@ const NewsList = () => {
     total: 0,
   });
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
-
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchValue]);
   const { data, error, isLoading } = useQuery({
     queryKey: ["news", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>

@@ -23,6 +23,9 @@ const AppointmentsList = () => {
   let options = {
     keepPreviousData: true,
   };
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchValue]);
 
   switch (roleID) {
     case import.meta.env.VITE_ROLE_DOCTOR:
