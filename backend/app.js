@@ -88,8 +88,6 @@ app.use((err, req, res, next) => {
     let errorMessage;
     let statusCode;
 
-    console.log(err);
-
     if (err?.length > 0) {
         statusCode = 400;
         errorMessage = err[0].msg || 'Bad request';

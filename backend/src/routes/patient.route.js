@@ -37,6 +37,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
+    authMiddleware.verifyAdmin,
     cacheMiddleware.cache("Patient:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

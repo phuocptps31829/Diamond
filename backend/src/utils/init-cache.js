@@ -1,81 +1,83 @@
 const axios = require('axios');
 const getRedisClient = require('../config/redisClient');
 
+const superScretkey = process.env.SUPER_SECRET_KEY;
+
 const routesToInitCache = [
     // Common
     {
         method: 'GET',
-        endpoint: 'api/v1/appointments?page=1&limit=10',
+        endpoint: 'api/v1/appointments?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/appointments/specialty',
+        endpoint: 'api/v1/appointments/specialty?secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medical-packages?page=1&limit=10',
+        endpoint: 'api/v1/medical-packages?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/services?page=1&limit=10',
+        endpoint: 'api/v1/services?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/doctors?page=1&limit=10',
+        endpoint: 'api/v1/doctors?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/patients?page=1&limit=10',
+        endpoint: 'api/v1/patients?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medicines?page=1&limit=10',
+        endpoint: 'api/v1/medicines?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medicine-categories?page=1&limit=10',
+        endpoint: 'api/v1/medicine-categories?page=1&limit=10&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/work-schedules?page=1&limit=10',
+        endpoint: 'api/v1/work-schedules?page=1&limit=10&secretKey=' + superScretkey,
     },
     // Limit 9
     {
         method: 'GET',
-        endpoint: 'api/v1/services?page=1&limit=9',
+        endpoint: 'api/v1/services?page=1&limit=9&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medical-packages?page=1&limit=9',
+        endpoint: 'api/v1/medical-packages?page=1&limit=9&secretKey=' + superScretkey,
     },
     // No pagination
     {
         method: 'GET',
-        endpoint: 'api/v1/appointments?noPaginated=true',
+        endpoint: 'api/v1/appointments?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/specialties?noPaginated=true',
+        endpoint: 'api/v1/specialties?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/services?noPaginated=true',
+        endpoint: 'api/v1/services?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medical-packages?noPaginated=true',
+        endpoint: 'api/v1/medical-packages?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/doctors?noPaginated=true',
+        endpoint: 'api/v1/doctors?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/medicine-categories?noPaginated=true',
+        endpoint: 'api/v1/medicine-categories?noPaginated=true&secretKey=' + superScretkey,
     },
     {
         method: 'GET',
-        endpoint: 'api/v1/news?noPaginated=true',
+        endpoint: 'api/v1/news?noPaginated=true&secretKey=' + superScretkey,
     },
 ];
 

@@ -7,7 +7,7 @@ const { validationResult } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 
 const createError = (statusCode, message) => {
-    throw new createHttpError(statusCode, message);
+    throw createHttpError(statusCode, message);
 };
 
 const sendEmail = async (email, subject, html, attachments = []) => {

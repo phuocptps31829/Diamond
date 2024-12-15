@@ -124,7 +124,7 @@ export default function DataTableRole({ data }) {
                             />
                         </div>
                     </div>
-                    <Link to={ "/admin/roles/create" }>
+                    {/* <Link to={ "/admin/roles/create" }>
                         <Button
                             onClick={ handleRefresh }
                             size="icon"
@@ -133,8 +133,13 @@ export default function DataTableRole({ data }) {
                         >
                             <FaPlus className="text-primary-500"></FaPlus>
                         </Button>
-                    </Link>
-                    <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
+                    </Link> */}
+                    <Button
+                        size="icon"
+                        variant="outline"
+                        className="mr-1 mt-2 h-11 w-11"
+                        onClick={ handleRefresh }
+                    >
                         <FaArrowsRotate className="text-primary-500" />
                     </Button>
                 </form>
@@ -189,9 +194,20 @@ export default function DataTableRole({ data }) {
             </Table>
             <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
                 <div className="flex-1 text-sm text-muted-foreground">
-                    <span className="pr-1">Đã chọn</span>
-                    { table.getFilteredSelectedRowModel().rows.length } trên{ " " }
-                    { table.getFilteredRowModel().rows.length } trong danh sách.
+                    { `Hiển thị từ ` }
+                    <span className="font-bold text-primary-500">
+                        { table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1 }
+                    </span>
+                    { ` đến ` }
+                    <span className="font-bold text-primary-500">
+                        { Math.min(
+                            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+                            6
+                        ) }
+                    </span>
+                    { ` trong tổng số ` }
+                    <span className="font-bold text-primary-500">{ 6 }</span>
+                    { ` mục.` }
                 </div>
                 <div className="space-x-2 flex items-center">
                     <Button

@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const getRedisClient = require('../config/redisClient');
 
 const cache = (key) => {
@@ -9,34 +10,30 @@ const cache = (key) => {
                 return acc + curr + req.query[curr];
             }, key);
 
-            redisClient.GET(customKey, (err, data) => {
-                if (err) {
-                    console.error('Redis error:', err);
-                    return next();
-                }
+            const getAsync = promisify(redisClient.GET).bind(redisClient);
+            const setexAsync = promisify(redisClient.SETEX).bind(redisClient);
 
-                if (data) {
-                    console.log('Cache hit for:', customKey);
-                    return res.send(JSON.parse(data));
-                }
+            const data = await getAsync(customKey);
+            if (data) {
+                console.log('Cache hit for:', customKey);
+                return res.json(JSON.parse(data));
+            }
 
-                const originalSend = res.send;
-                res.send = (body) => {
-                    redisClient.SETEX(customKey, 3600, JSON.stringify(body), (err) => {
-                        if (err) {
-                            console.error("Error setting cache:", err);
-                        }
-                    });
+            const originalSend = res.json.bind(res);
+            res.json = async (body) => {
+                try {
+                    await setexAsync(customKey, 3600, JSON.stringify(body));
                     console.log('Cached for:', customKey);
-                    res.send = originalSend;
-                    return res.send(body);
-                };
+                } catch (err) {
+                    console.error("Error setting cache:", err);
+                }
+                return originalSend(body);
+            };
 
-                next();
-            });
+            next();
         } catch (error) {
             console.error('Error in cache middleware:', error);
-            next();
+            next(error);
         }
     };
 };
