@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 
 module.exports = {
     getAllBranches: async (req, res, next) => {
-        res.redirect('https://app.example.io');
-        return;
         try {
             let { limitDocuments, skip, page, sortOptions, search } = req.customQueries;
             let noPaginated = req.query?.noPaginated === 'true';

@@ -123,7 +123,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
         <div className="flex w-full flex-col items-start justify-start pt-4 text-start">
           <div>
             <h4>{ isService ? "Dịch vụ" : "Gói khám" }</h4>
-            <h3 className="mt-2 text-xl font-bold md:text-3xl line-clamp-2">
+            <h3 className="mt-1 text-xl font-bold md:text-3xl line-clamp-2 pt-2">
               { product.name }
             </h3>
             <div className="my-2 flex items-center gap-2">
