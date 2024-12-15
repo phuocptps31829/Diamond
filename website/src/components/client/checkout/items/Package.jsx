@@ -87,10 +87,10 @@ const Package = ({
                                     >
                                         { service.levelName }
                                     </span>
-                                )) : 99 }
+                                )) : '' }
                             </div>
                             <p className="mt-1">
-                                Giá: <span>{ formatCurrency(pkg.services.find(service => {
+                                Giá: <span>{ formatCurrency(pkg.services?.find(service => {
                                     return service._id === packageLevel;
                                 })?.discountPrice) }</span>
                             </p>

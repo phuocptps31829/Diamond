@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import NewsCard from "@/components/ui/NewsCard";
 
 export default function NewsAbove({ news, isLoading }) {
-  console.log(news.filter(news => !news.isHidden), 'news');
+  const filteredNews = news?.filter(news => !news.isHidden);
 
   return (
     <div className="mx-auto max-w-screen-xl p-3 py-5 pb-4 md:p-5">
@@ -63,15 +63,14 @@ export default function NewsAbove({ news, isLoading }) {
         <div className="mt-6 flex flex-col gap-5 md:flex-row">
           <div className="lg:max-w-[60%] w-full" >
             <NewsCard
-              newsItem={ news[0] }
+              newsItem={ filteredNews[0] }
               className="flex-col overflow-hidden rounded-md border md:row-span-3 md:grid-rows-subgrid"
               firstNews={ true }
             />
           </div>
           <div className="flex flex-col gap-5">
-            { news
+            { filteredNews
               .slice(1, 6)
-              .filter(news => news.isHidden === false)
               .map((newsItem, index) => (
                 <NewsCard
                   key={ index }
