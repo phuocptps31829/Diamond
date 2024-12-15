@@ -17,10 +17,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!results.length) {
-                createError(404, "Không có kết quả.s found.");
-            }
-
             return res.status(200).json({
                 page: page || 1,
                 message: 'Results retrieved successfully.',

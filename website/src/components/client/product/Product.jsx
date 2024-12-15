@@ -70,6 +70,8 @@ export default function Product({ product }) {
         services,
       };
 
+    console.log(newItem);
+
     const toBookingItem = {
       ...(isService
         ? {

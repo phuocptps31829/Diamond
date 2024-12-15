@@ -30,6 +30,7 @@ const SpecialtiesList = () => {
       page: pageIndex + 1,
       limit: RECORD_PER_PAGE,
       search: debouncedSearchValue,
+      notHidden: false,
     }),
   });
 

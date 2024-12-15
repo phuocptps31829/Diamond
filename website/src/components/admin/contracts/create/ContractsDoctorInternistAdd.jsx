@@ -48,6 +48,8 @@ const ContractsDoctorInternistAdd = () => {
     },
   });
 
+  console.log("Errors:", errors);
+
   const mutation = useMutation({
     mutationFn: (contractData) => contractApi.createContractDoctor(contractData),
     onSuccess: () => {

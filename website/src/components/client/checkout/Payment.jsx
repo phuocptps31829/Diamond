@@ -22,7 +22,6 @@ export default function Form() {
   const profileCustomer = useSelector((state) => state.auth.userProfile);
   const readNumber = useReadNumber();
 
-  console.log(bookingInfo);
   const { mutate, isPending } = useMutation({
     mutationFn: () =>
       appointmentApi.createAppointment(
@@ -30,12 +29,10 @@ export default function Form() {
         paymentMethod
       ),
     onSuccess: (data) => {
-      console.log(data);
       if (paymentMethod === "momo") {
         location.href = data.data.payUrl;
       }
       if (paymentMethod === "vnpay") {
-        console.log(data.payUrl);
         location.href = data.data.payUrl;
       }
       if (paymentMethod === "cod") {

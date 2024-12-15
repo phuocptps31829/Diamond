@@ -219,7 +219,7 @@ export function MedicalRecordAccordion({ medicalRecords }) {
                 </AccordionItem>;
             }) }
         </Accordion> : <div className="mt-2">
-            <p>⛔ Bạn chưa có bệnh án nào.</p>
+            <p className="text-center">⛔ Bạn chưa có bệnh án nào.</p>
         </div>
     );
 }

@@ -334,7 +334,7 @@ export default function Form() {
       toast.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
       return;
     }
-
+    console.log(bookingDetails);
     const bookingInfo = {
       patientID: profile._id,
       appointmentHelpUser: isBookingForOthers

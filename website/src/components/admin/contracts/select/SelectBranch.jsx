@@ -38,9 +38,9 @@ export default function SelectBranch({ control, name, errors, onChange }) {
     fetchBranches();
   }, []);
 
-  useEffect(() => {
-    errors[name] = undefined;
-  }, [errors, name]);
+  // useEffect(() => {
+  //   errors[name] = undefined;
+  // }, [errors, name]);
 
   const handleClick = () => {
     if (!options.length) {
@@ -50,29 +50,29 @@ export default function SelectBranch({ control, name, errors, onChange }) {
   };
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={ handleClick }>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Vui lòng chọn chi nhánh" }}
-        render={({ field }) => {
+        control={ control }
+        name={ name }
+        rules={ { required: "Vui lòng chọn chi nhánh" } }
+        render={ ({ field }) => {
           return (
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={ open } onOpenChange={ setOpen }>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
-                  aria-expanded={open}
-                  className={cn(
+                  aria-expanded={ open }
+                  className={ cn(
                     "w-full justify-between py-[21px]",
                     errors[name] && "border-red-500"
-                  )}
+                  ) }
                 >
-                  {field.value ? (
+                  { field.value ? (
                     options.find((branch) => branch._id === field.value)?.name
                   ) : (
                     <span className="text-gray-600">Chọn chi nhánh</span>
-                  )}
+                  ) }
                   <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -82,38 +82,38 @@ export default function SelectBranch({ control, name, errors, onChange }) {
                   <CommandList>
                     <CommandEmpty>Không tìm thấy!</CommandEmpty>
                     <CommandGroup>
-                      {options.map((branch) => (
+                      { options.map((branch) => (
                         <CommandItem
-                          key={branch._id}
-                          value={branch._id}
-                          onSelect={(currentValue) => {
+                          key={ branch._id }
+                          value={ branch._id }
+                          onSelect={ (currentValue) => {
                             field.onChange(currentValue);
                             onChange(currentValue);
                             setOpen(false);
-                          }}
+                          } }
                         >
                           <Check
-                            className={cn(
+                            className={ cn(
                               "mr-2 h-4 w-4",
                               field.value === branch._id
                                 ? "opacity-100"
                                 : "opacity-0"
-                            )}
+                            ) }
                           />
-                          {branch.name}
+                          { branch.name }
                         </CommandItem>
-                      ))}
+                      )) }
                     </CommandGroup>
                   </CommandList>
                 </Command>
               </PopoverContent>
             </Popover>
           );
-        }}
+        } }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }

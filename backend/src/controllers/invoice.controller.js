@@ -22,10 +22,6 @@ module.exports = {
                     createdAt: -1
                 });
 
-            if (!invoices.length) {
-                createError(404, "No invoices found.");
-            }
-
             let formattedInvoices = invoices.map(invoice => {
                 const formattedInvoice = {
                     ...invoice.toObject(),
