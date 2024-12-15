@@ -1,85 +1,40 @@
-import { Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
+import empty from "../../assets/images/empty.png";
 import Entypo from "@expo/vector-icons/Entypo";
 
-const dataSystemNotification = [
-  {
-    id: 1,
-    date: "03/09/2024",
-    data: [
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-    ],
-  },
-  {
-    id: 2,
-    date: "06/09/2024",
-    data: [
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-      {
-        title: "Hệ thống",
-        subTitle: "Lịch khám bệnh!",
-        status: "13:00 - 14:00 ngày 04/09/2024 tại phòng khám 1",
-        fullTime: "19:49 03/09/2024",
-      },
-    ],
-  },
-];
-
-const PromotionNotification = () => {
+const PromotionNotification = ({ data }) => {
   return (
-    <View className="px-4 pb-4">
-      {dataSystemNotification.map((item) => (
-        <View key={item.id}>
-          <Text className="font-bold mt-4 mb-2">{item.date}</Text>
-          {item.data.map((notification, index) => (
+    <View className="px-4 pb-4 mt-2">
+      {data.length > 0 ? (
+        data.map((item, index) => (
+          <View key={index}>
             <View
               key={index}
               className="bg-white p-3 rounded-lg space-y-1 mb-2"
             >
-              <Text className="text-[#007BBB] font-semibold">
-                {notification.title}
+              <Text className="text-primary-700 font-semibold text-[15px]">
+                {item.title}
               </Text>
-              <Text className="font-semibold">{notification.subTitle}</Text>
-              <Text className="text-[12px] text-gray-600">
-                {notification.status}
+              <Text className="leading-5 text-[13.5px]">
+                {item.description}
               </Text>
-              <View className="flex-row items-center space-x-2 pt-1">
+              <View className="flex-row items-center space-x-2">
                 <Entypo name="clock" size={12} color="gray" />
                 <Text className="text-[12px] text-gray-600">
-                  {notification.fullTime}
+                  {formatDateTimeLocale(item.createdAt)}
                 </Text>
               </View>
             </View>
-          ))}
+          </View>
+        ))
+      ) : (
+        <View className="w-full flex justify-center items-center mt-5">
+          <Image source={empty} className="w-[70px] h-[70px] mb-4" />
+          <Text className="font-normal text-gray-600">
+            Không có thông báo nào.
+          </Text>
         </View>
-      ))}
+      )}
     </View>
   );
 };

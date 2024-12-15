@@ -43,7 +43,7 @@ const ListDoctors = ({ listDoctors }) => {
                 >
                   <Text className="font-bold">BS. {item.fullName}</Text>
                   <Text className="text-[12px] text-gray-400 font-semibold">
-                    Bác sĩ
+                    { item?.otherInfo?.specialty?.name }
                   </Text>
                 </Pressable>
                 <View className="flex-row items-center justify-between">
@@ -61,11 +61,8 @@ const ListDoctors = ({ listDoctors }) => {
                   </Pressable>
                   <Pressable
                     className="self-end border border-blue-500 px-4 py-2 rounded-[999px]"
-                    onPress={() => {
-                      router.push({
-                        pathname: "/detail-doctor",
-                        params: { id: item._id },
-                      });
+                    onPress={ () => {
+                      router.push(`/service?id_specialty=${item?.otherInfo?.specialty?._id}`);
                     }}
                   >
                     <Text className="font-semibold text-[12px]">

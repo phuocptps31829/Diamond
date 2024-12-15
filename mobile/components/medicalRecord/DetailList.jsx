@@ -25,7 +25,7 @@ const DetailList = () => {
                 content: <ResultItem results={ record?.results } />
             } }
         />) :
-        <Text>Không có lịch sử khám bệnh</Text>;
+        <Text className="text-center py-3">Không có lịch sử khám bệnh</Text>;
 };
 
 export default DetailList;

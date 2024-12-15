@@ -1,5 +1,5 @@
 import { Text, View, Pressable, ActivityIndicator } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import PromotionNotification from "./PromotionNotification";
 import SystemNotification from "./SystemNotification";
@@ -7,9 +7,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useQuery } from "@tanstack/react-query";
 import { notificationsApi } from "../../services/notificationsApi";
+import { use } from "react";
 
 const HeaderNavigation = () => {
   const [activeTab, setActiveTab] = useState("system");
+  const [notificationRead, setNotificationRead] = useState([]);
+  const [notificationUnread, setNotificationUnread] = useState([]);
 
   const {
     data,
@@ -19,6 +22,15 @@ const HeaderNavigation = () => {
     queryKey: ["notifications"],
     queryFn: notificationsApi.getNotifications,
   });
+
+  useEffect(() => {
+    if (data) {
+      const notificationRead = data.filter((item) => item.isRead === true);
+      const notificationUnread = data.filter((item) => item.isRead === false);
+      setNotificationRead(notificationRead);
+      setNotificationUnread(notificationUnread);
+    }
+  }, [data]);
 
   const handleChooseTab = (tab) => {
     setActiveTab(tab);
@@ -65,8 +77,8 @@ const HeaderNavigation = () => {
           </View>
         ) : (
           <>
-            {activeTab === "system" && <SystemNotification data={data} />}
-            {activeTab === "promotion" && <PromotionNotification data={data} />}
+            {activeTab === "system" && <SystemNotification data={notificationRead} />}
+            {activeTab === "promotion" && <PromotionNotification data={notificationUnread} />}
           </>
         )}
       </ScrollView>

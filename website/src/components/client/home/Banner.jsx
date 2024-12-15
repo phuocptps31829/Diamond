@@ -18,8 +18,8 @@ export default function Banner() {
         </div>
         <div className="mt-2 flex flex-row gap-4 sm:mt-4">
           <Link
-            to="/download"
-            target="_blank"
+            // to="/download"
+            // target="_blank"
             className="flex w-32 items-center rounded-lg border border-primary-100 bg-gradient-to-l from-[#163a4d] to-[#000000d5] px-3 py-1 text-white transition-colors sm:w-48 sm:px-4 sm:py-2"
           >
             <div className="mr-3">
@@ -33,8 +33,8 @@ export default function Banner() {
             </div>
           </Link>
           <Link
-            to="/download"
-            target="_blank"
+            // to="/download"
+            // target="_blank"
             className="flex w-32 items-center rounded-lg border border-primary-100 bg-gradient-to-l from-[#163a4d] to-[#000000d5] px-3 py-1 text-white transition-colors sm:w-48 sm:px-4 sm:py-2"
           >
             <div className="mr-3">
