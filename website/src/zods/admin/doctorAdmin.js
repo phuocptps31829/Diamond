@@ -3,7 +3,10 @@ import { z } from 'zod';
 export const doctorAdminSchema = z
     .object({
         fullName: z.string().min(1, 'Tên bác sĩ không được để trống'),
-        phoneNumber: z.string().min(1, 'Số điện thoại không được để trống'),
+        phoneNumber: z
+        .string()
+        .min(1, 'Số điện thoại không được để trống')
+        .regex(/^\d{10}$/, 'Số điện thoại phải gồm đúng 10 chữ số'),
         email: z.string().email('Email không hợp lệ'),
         dateOfBirth: z.string().min(1, 'Ngày sinh không được để trống'),
         gender: z.string().min(1, 'Giới tính không được để trống'),

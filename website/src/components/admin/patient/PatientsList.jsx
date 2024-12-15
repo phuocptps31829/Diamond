@@ -18,6 +18,10 @@ const PatientsList = () => {
 
   const [debouncedSearchValue] = useDebounce(searchValue, 500);
 
+  useEffect(() => {
+    setPageIndex(0);
+  }, [debouncedSearchValue]);
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["medical-packages", pageIndex, RECORD_PER_PAGE, debouncedSearchValue],
     queryFn: () =>

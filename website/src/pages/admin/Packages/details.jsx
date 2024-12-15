@@ -15,7 +15,10 @@ const initialBreadcrumbData = [
         title: 'Sản phẩm',
     },
     {
-        href: '/admin/packages/create',
+        href: "/admin/packages/list",
+        title: "Danh sách gói",
+    },
+    {
         title: 'Chi tiết gói',
     },
     {
@@ -41,7 +44,7 @@ const PackageDetailPage = () => {
         if (!isLoadingPackage && packageDetail) {
             setBreadcrumbData((prevBreadcrumbData) => {
                 const updatedData = [...prevBreadcrumbData];
-                updatedData[2].title = packageDetail.name || 'NaN';
+                updatedData[3].title = packageDetail.name || 'NaN';
                 return updatedData;
             });
         }

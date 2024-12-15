@@ -186,7 +186,9 @@ export default function TopStats({ allData, loading }) {
   }, [allAppointments, isLoadingAppointments]);
 
   useEffect(() => {
-    if (!isLoadingInvoices && allInvoices) {
+    console.log("allInvoices", allInvoices)
+    if (!isLoadingInvoices && allInvoices?.data) {
+      console.log("oke nhe")
       const invoiceStats = calculateTotal(allInvoices.data, "createdAt", "price");
       setStatsData((prevStats) =>
         prevStats.map((stat) => {

@@ -25,7 +25,7 @@ export default function BottomLists({ allInvoices, loading }) {
   const [unpaidInvoices, setUnpaidInvoices] = useState([]);
 
   useEffect(() => {
-    if (!loading && allInvoices) {
+    if (!loading && allInvoices?.data) {
       const latestInvoices = allInvoices.data.slice(0, 4);
       const unpaidInvoices = allInvoices.data.filter((invoice) => invoice.status === "PENDING").slice(0, 4);
       setLatestInvoices(latestInvoices);

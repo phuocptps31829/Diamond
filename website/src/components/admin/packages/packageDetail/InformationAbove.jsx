@@ -17,15 +17,16 @@ const formatDate = (date) => {
 
 const InformationAbove = ({ packageDetail }) => {
     return (
-        <div className="grid grid-cols-[30%,70%] rounded-lg bg-white p-6">
-            <div className="mr-7 max-h-[300px] overflow-hidden rounded-sm">
+        <div className="grid grid-cols-[43%,2%,55%] rounded-lg bg-white p-6">
+            <div className="w-full h-fit overflow-hidden rounded-sm">
                 <img
                     src={URL_IMAGE + '/' + packageDetail.image}
                     alt=""
-                    className="h-full w-full object-cover"
+                    className="w-full object-cover"
                 />
             </div>
-            <div className="text-[15px] leading-10">
+            <div></div>
+            <div className="text-[15px] leading-9">
                 <h2 className="text-[22px] font-semibold">{packageDetail.name}</h2>
                 <div className="my-1 flex items-center gap-2">
                     <AiOutlineSchedule size={25} />
@@ -36,7 +37,7 @@ const InformationAbove = ({ packageDetail }) => {
                 <div className="font-semibold">
                     Chuyên khoa: <span>{packageDetail.specialty.name}</span>
                 </div>
-                <p className="mb-4 line-clamp-3 w-full max-w-full break-words text-justify text-sm font-normal leading-7 text-gray-600">
+                <p className="line-clamp-3 w-full max-w-full break-words text-justify text-sm font-normal leading-7 text-gray-600">
                     {packageDetail.shortDescription}
                 </p>
                 <div className="font-semibold">

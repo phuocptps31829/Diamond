@@ -32,9 +32,9 @@ export default function StaffsFormAdd() {
       staffName: "",
       phone: "",
       email: undefined,
-      birthDate: undefined,
-      password: undefined,
-      confirmPassword: undefined,
+      birthDate: "",
+      password: "",
+      confirmPassword: "",
       citizenIdentificationNumber: undefined,
       address: undefined,
       gender: "Nam",
@@ -90,7 +90,7 @@ export default function StaffsFormAdd() {
   return (
     <div className="w-[100%] rounded-lg bg-white px-7 py-6 min-h-[calc(100vh-140px)]">
       <h1 className="mb-4 mr-2 h-fit bg-white text-2xl font-bold">
-        Thông tin người dùng
+        Thông tin nhân viên
       </h1>
       <form onSubmit={ handleSubmit(onSubmit) }>
         <div className="grid-cols-1 gap-[10px] sm:grid md:flex">
@@ -155,7 +155,7 @@ export default function StaffsFormAdd() {
                       htmlFor="ngaysinh"
                       className="left-[15px] mb-2 block bg-white px-1 text-sm"
                     >
-                      Ngày sinh
+                      Ngày sinh <span className="text-red-500">*</span>
                     </label>
                     <SelectBirthDate
                       control={ control }

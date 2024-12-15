@@ -109,7 +109,9 @@ export default function DataTable({
             <div className="relative mr-1 w-[300px]">
               <InputSearch
                 value={ searchValue }
-                onChange={ (e) => setSearchValue(e.target.value) }
+                onChange={ (e) => {
+                  setSearchValue(e.target.value);
+                }}
                 className="col-span-1 sm:col-span-1"
                 placeholder="Tìm kiếm gói sản phẩm"
                 name="packageName"
