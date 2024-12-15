@@ -37,7 +37,13 @@ class AuthController extends Controller
 {
     public function loginFacebook()
     {
-        return Socialite::driver('facebook')->redirect();
+        $url= Socialite::driver('facebook')->redirect()->getTargetUrl();
+        return  response()->json([
+            'message' => 'Successfully',
+            'data' => [
+                'url' => $url
+            ]
+        ], 200);
     }
     public function facebookCallback()
     {
@@ -74,7 +80,13 @@ class AuthController extends Controller
 
     public function loginGoogle()
     {
-        return Socialite::driver('google')->redirect();
+      $url= Socialite::driver('google')->redirect()->getTargetUrl();
+       return  response()->json([
+        'message' => 'Successfully',
+        'data' => [
+            'url' => $url
+        ]
+    ], 200);
     }
 
     public function googleCallback()
