@@ -67,7 +67,6 @@ const AppointmentsAdd = () => {
   const [clinic, setClinic] = useState("");
   const [workScheduleID, setWorkScheduleID] = useState("");
   const [isServiceSelected, setIsServiceSelected] = useState(true);
-  console.log(selectedLevel, "selectedLevel");
 
   const handleChangeService = (serviceId, specialtyID, price) => {
     setSelectedService({ serviceId, specialtyID, price });

@@ -23,7 +23,6 @@ const icons = {
     "CANCELLED": '⛔',
     "CONFIRMED": '✅',
 };
-
 const getConfigCalendarSchedule = (
     navigate,
     setSearchParams,
@@ -132,7 +131,7 @@ function CalendarSchedule({ doctorID, defaultEvents }) {
                     start: `${event.day} ${event.hour.startTime}`,
                     end: `${event.day} ${event.hour.endTime}`,
                     people: event?.appointments?.map(appointment => {
-                        return `${appointment.patient} (${new Date(appointment.time).toTimeString().split(' ')[0].slice(0, 5) + ' ' + icons[appointment.status]})`;
+                        return `${appointment?.patient} (${new Date(appointment?.time).toTimeString().split(' ')[0].slice(0, 5) + ' ' + icons[appointment?.status]})`;
                     }),
                 });
             });

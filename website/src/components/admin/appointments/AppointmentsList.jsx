@@ -64,7 +64,10 @@ const AppointmentsList = () => {
       };
       break;
     default:
-      options = {};
+      options = {
+        ...options,
+        queryFn: () => Promise.resolve({ data: [], totalRecords: 0 }),
+      };
   }
 
   const { data, error, isLoading } = useQuery(options);
