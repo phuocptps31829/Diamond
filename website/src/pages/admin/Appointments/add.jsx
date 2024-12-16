@@ -20,7 +20,7 @@ const AppointmentsAddPage = () => {
 
   return (
     <div>
-      <BreadcrumbCustom data={ breadcrumbData } />
+      <BreadcrumbCustom data={breadcrumbData} />
       <AppointmentsAdd />
     </div>
   );

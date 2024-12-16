@@ -13,11 +13,14 @@ const breadcrumbData = [
 ];
 
 const PatientsResult = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTOINIST"], "/admin/dashboard");
+  useAuthRedirect(
+    ["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"],
+    "/admin/dashboard"
+  );
 
   return (
     <div>
-      <BreadcrumbCustom data={ breadcrumbData } />
+      <BreadcrumbCustom data={breadcrumbData} />
       <PatientResult />
     </div>
   );

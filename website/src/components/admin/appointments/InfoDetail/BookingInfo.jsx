@@ -229,7 +229,13 @@ const BookingInfo = ({ data }) => {
             </strong>
           </div>
           {bookingData.orderNumber.priority !== undefined && (
-            <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
+            <div
+              className={`flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1 ${
+                profile.role.name === "DOCTOR"
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }`}
+            >
               <FcHighPriority className="text-xl" />
               {isPending ? (
                 <AiOutlineLoading3Quarters className="animate-spin" />
@@ -241,7 +247,10 @@ const BookingInfo = ({ data }) => {
 
               <Dialog>
                 <DialogTrigger>
-                  <FaRegEdit className="ml-1 cursor-pointer text-xl text-black" />
+                  <FaRegEdit
+                    className="ml-1 cursor-pointer text-xl text-black"
+                    d
+                  />
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -410,7 +419,6 @@ const BookingInfo = ({ data }) => {
                 <Select
                   disabled={
                     profile.role.name === "DOCTOR" ||
-
                     bookingData.status === "CANCELLED" ||
                     bookingData.status === "EXAMINED"
                   }
@@ -444,7 +452,7 @@ const BookingInfo = ({ data }) => {
                   disabled={
                     profile.role.name === "DOCTOR" ||
                     bookingData.status === "CANCELLED" ||
-                    isBookingTimePassed 
+                    isBookingTimePassed
                   }
                   className="w-full"
                   onValueChange={handleChangeDoctor}
@@ -468,24 +476,25 @@ const BookingInfo = ({ data }) => {
             </div>
           </div>
         </div>
-        <div className="mt-2 w-full text-end">
-          {bookingData.status === "CONFIRMED" && !isOpenForm && (
-            <Button
-              className=""
-              variant="custom"
-              onClick={() => {
-                if (bookingData.medicalPackage) {
-                  setIsOpenForm("MedicalPackage");
-                } else {
-                  setIsOpenForm("Service");
-                }
-              }}
-            >
-              Thêm kết quả
-            </Button>
-          )}
-        </div>
-
+        {profile.role.name !== "STAFF_RECEPTIONIST" && (
+          <div className="mt-2 w-full text-end">
+            {bookingData.status === "CONFIRMED" && !isOpenForm && (
+              <Button
+                className=""
+                variant="custom"
+                onClick={() => {
+                  if (bookingData.medicalPackage) {
+                    setIsOpenForm("MedicalPackage");
+                  } else {
+                    setIsOpenForm("Service");
+                  }
+                }}
+              >
+                Thêm kết quả
+              </Button>
+            )}
+          </div>
+        )}
         {/* Prescription Section */}
         {bookingData.results.length > 0 && (
           <div className="">
@@ -654,23 +663,17 @@ const BookingInfo = ({ data }) => {
                   </div>
                 </>
               )}
-              {bookingData.results.length > 0 &&
-                bookingData.payment.status !== "PAID" && (
-                  <div>
-                    <Link
-                      to={`/admin/appointments/create/${bookingData.patient._id}`}
-                    >
-                      <Button
-                        variant={
-                          bookingData.payment.status === "PAID"
-                            ? "custom"
-                            : "outline"
-                        }
-                        className="ml-2"
-                      >
-                        Thêm lịch tái khám
-                      </Button>
-                    </Link>
+              {bookingData.results.length > 0 && (
+                <div>
+                  <Link
+                    to={`/admin/appointments/create/${bookingData.patient._id}`}
+                  >
+                    <Button variant="outline" className="ml-2">
+                      Thêm lịch tái khám
+                    </Button>
+                  </Link>
+
+                  {bookingData.payment.status !== "PAID" && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <Button variant="custom" className="ml-2">
@@ -701,8 +704,9 @@ const BookingInfo = ({ data }) => {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  </div>
-                )}
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}

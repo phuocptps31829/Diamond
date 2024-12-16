@@ -46,6 +46,7 @@ const AppointmentsList = () => {
       };
       break;
     case import.meta.env.VITE_ROLE_SUPER_ADMIN:
+    case import.meta.env.VITE_ROLE_STAFF_RECEPTIONIST:
       options = {
         ...options,
         queryKey: [
@@ -63,7 +64,10 @@ const AppointmentsList = () => {
       };
       break;
     default:
-      options = {};
+      options = {
+        ...options,
+        queryFn: () => Promise.resolve({ data: [], totalRecords: 0 }),
+      };
   }
 
   const { data, error, isLoading } = useQuery(options);

@@ -47,9 +47,15 @@ const getStatusPaymentStyle = (status) => {
         textPayment: "Chưa thanh toán",
       };
     case "PAID":
-      return { stylePayment: "bg-green-500/20 text-green-900", textPayment: "Đã thanh toán" };
+      return {
+        stylePayment: "bg-green-500/20 text-green-900",
+        textPayment: "Đã thanh toán",
+      };
     default:
-      return { stylePayment: "bg-gray-500/20 text-gray-900", textPayment: "Không xác định" };
+      return {
+        stylePayment: "bg-gray-500/20 text-gray-900",
+        textPayment: "Không xác định",
+      };
   }
 };
 
@@ -91,154 +97,183 @@ const AppointmentDetail = () => {
 
   return (
     <div className="p-3 md:p-6">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-xl font-bold">{ product?.name }</h2>
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="text-xl font-bold">{product?.name}</h2>
       </div>
       <Table className="rounded-md border">
         <TableBody>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">🏨</span> Nơi khám
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { appointment?.clinic?.name + " - Chi nhánh " + appointment?.branch?.name }
+            <TableCell className="whitespace-nowrap px-4">
+              {appointment?.clinic?.name +
+                " - Chi nhánh " +
+                appointment?.branch?.name}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">🧑‍⚕️</span> Bác sĩ
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { appointment?.doctor?.fullName }
+            <TableCell className="whitespace-nowrap px-4">
+              {appointment?.doctor?.fullName}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">🕒</span> Ngày giờ khám
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { formatDateTimeLocale(appointment?.time) }
+            <TableCell className="whitespace-nowrap px-4">
+              {formatDateTimeLocale(appointment?.time)}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">⚙️</span> Loại khám
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { appointment?.type }
+            <TableCell className="whitespace-nowrap px-4">
+              {appointment?.type}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">📌</span>Trạng thái
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              <Badge variant={ getStatusVariant(appointment?.status) }>
-                { getStatusLabel(appointment?.status) }
+            <TableCell className="whitespace-nowrap px-4">
+              <Badge variant={getStatusVariant(appointment?.status)}>
+                {getStatusLabel(appointment?.status)}
               </Badge>
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">💵</span>Tổng tiền
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap flex gap-3 items-center">
-              { formatCurrency(appointment?.invoice?.price) } -
-              <span className={ `px-2 py-1 rounded-md ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}` }>
-                { getStatusPaymentStyle(appointment?.payment?.status).textPayment }
+            <TableCell className="flex items-center gap-3 whitespace-nowrap px-4">
+              {formatCurrency(appointment?.invoice?.price)} -
+              <span
+                className={`rounded-md px-2 py-1 ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}`}
+              >
+                {
+                  getStatusPaymentStyle(appointment?.payment?.status)
+                    .textPayment
+                }
               </span>
-              { appointment?.payment?.status === "PAID" && <a
-                href={ import.meta.env.VITE_CUD_API_URL + "/invoices/export/" + appointment?.invoice?._id }
-                className="text-xs text-white px-2 py-1 rounded-md bg-blue-500 cursor-pointer inline-block">
-                📜 Xem hóa đơn
-              </a> }
+              {appointment?.payment?.status === "PAID" && (
+                <a
+                  target="_blank"
+                  href={
+                    import.meta.env.VITE_CUD_API_URL +
+                    "/invoices/export/" +
+                    appointment?.invoice?._id
+                  }
+                  className="inline-block cursor-pointer rounded-md bg-blue-500 px-2 py-1 text-xs text-white"
+                >
+                  📜 Xem hóa đơn
+                </a>
+              )}
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+            <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
               <span className="me-2">🫰</span> Phương thức thanh toán
             </TableCell>
-            <TableCell className="px-4 whitespace-nowrap">
-              { appointment?.payment?.method === "COD"
+            <TableCell className="whitespace-nowrap px-4">
+              {appointment?.payment?.method === "COD"
                 ? "Thanh toán trực tiếp"
-                : appointment?.payment?.method }
+                : appointment?.payment?.method}
             </TableCell>
           </TableRow>
-          {
-            appointment?.status === "EXAMINED" && <>
+          {appointment?.status === "EXAMINED" && (
+            <>
               <TableRow>
-                <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+                <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
                   <span className="me-2">📰</span>Kết quả khám
                 </TableCell>
-                <TableCell className="px-4 whitespace-nowrap">
+                <TableCell className="whitespace-nowrap px-4">
                   <ResultDialog
                     trigger={
-                      <p className="text-blue-500 underline cursor-pointer">Xem kết quả</p>
+                      <p className="cursor-pointer text-blue-500 underline">
+                        Xem kết quả
+                      </p>
                     }
-                    appointment={ appointment }
+                    appointment={appointment}
                   />
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell className="px-4 py-3 w-1/5 whitespace-nowrap border-r">
+                <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
                   <span className="me-2">📜</span>Chi tiết bệnh án
                 </TableCell>
-                <TableCell className="px-4 whitespace-nowrap">
-                  <Link to='/profile/medical-records' className="text-blue-500 underline cursor-pointer">
+                <TableCell className="whitespace-nowrap px-4">
+                  <Link
+                    to="/profile/medical-records"
+                    className="cursor-pointer text-blue-500 underline"
+                  >
                     Xem chi tiết
                   </Link>
                 </TableCell>
               </TableRow>
             </>
-          }
+          )}
         </TableBody>
       </Table>
-      { appointment?.status === "PENDING" && <Dialog open={ openDialog } onOpenChange={ setOpenDialog }>
-        <DialogTrigger asChild >
-          <Button
-            disabled={ isPending }
-            variant="primary"
-            onClick={ (e) => e.stopPropagation() }
-            className="mt-4 float-end bg-red-500 hover:bg-red-600 p-1 text-xs text-white md:px-5 md:py-4 md:text-[15px]"
-          >
-            Hủy lịch
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader className="text-center">
-            <DialogTitleTrigger className="text-center pt-6">
-              <img src={ cancelImage } alt="cancel-appointment" className="w-16 h-16 mx-auto" />
-              <span className="pt-4 inline-block text-[18px] font-semibold">
-                Bạn có chắc chắn muốn hủy lịch khám này?
-              </span>
-            </DialogTitleTrigger>
-            <DialogDescription className="text-center">
-              Hành động này không thể hoàn tác. Lịch khám sẽ bị hủy khỏi hệ thống.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline" className="mr-2">
-                Hủy
-              </Button>
-            </DialogClose>
+      {appointment?.status === "PENDING" && (
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogTrigger asChild>
             <Button
-              type="button"
-              disabled={ isPending }
-              variant="secondary"
-              className="bg-red-600 hover:bg-red-700 text-white"
-              onClick={ cancelAppointment }
+              disabled={isPending}
+              variant="primary"
+              onClick={(e) => e.stopPropagation()}
+              className="float-end mt-4 bg-red-500 p-1 text-xs text-white hover:bg-red-600 md:px-5 md:py-4 md:text-[15px]"
             >
-              { isPending
-                ? <SpinLoader />
-                : <span className="flex items-center">
-                  <MdCancel className="mr-2" />
-                  Xác nhận
-                </span> }
+              Hủy lịch
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> }
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="text-center">
+              <DialogTitleTrigger className="pt-6 text-center">
+                <img
+                  src={cancelImage}
+                  alt="cancel-appointment"
+                  className="mx-auto h-16 w-16"
+                />
+                <span className="inline-block pt-4 text-[18px] font-semibold">
+                  Bạn có chắc chắn muốn hủy lịch khám này?
+                </span>
+              </DialogTitleTrigger>
+              <DialogDescription className="text-center">
+                Hành động này không thể hoàn tác. Lịch khám sẽ bị hủy khỏi hệ
+                thống.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" className="mr-2">
+                  Hủy
+                </Button>
+              </DialogClose>
+              <Button
+                type="button"
+                disabled={isPending}
+                variant="secondary"
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={cancelAppointment}
+              >
+                {isPending ? (
+                  <SpinLoader />
+                ) : (
+                  <span className="flex items-center">
+                    <MdCancel className="mr-2" />
+                    Xác nhận
+                  </span>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
