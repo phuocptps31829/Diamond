@@ -1,6 +1,7 @@
 import { Text, View, Image } from "react-native";
 import empty from "../../assets/images/empty.png";
 import Entypo from "@expo/vector-icons/Entypo";
+import { formatDateTimeLocale } from "../../utils/format";
 
 const PromotionNotification = ({ data }) => {
   return (

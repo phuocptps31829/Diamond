@@ -28,7 +28,7 @@ export const menuItems = [
     {
         icon: <MaterialIcons name="policy" size={ 28 } color="#FBCC50" />,
         text: "Chính sách quyền riêng tư",
-        navigateTo: 'https://diamond.id.vn/',
+        navigateTo: 'https://diamond.id.vn/docs/privacy-policy',
     },
     {
         icon: <FontAwesome5 name="user-friends" size={ 20 } color="#FBCC50" />,

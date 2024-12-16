@@ -76,10 +76,9 @@ export default function PatientFormFix({ patientDetail }) {
       setValue("occupation", newData.otherInfo?.occupation || "");
       setValue("ethnic", newData.otherInfo?.ethnic || "");
 
+      setImagePreview(newData.avatar);
       setFileImage(null);
-      setImagePreview(null);
       setLoadingImage(false);
-      setIsInitialized(true);
       toast("Cập nhật người dùng thành công!", "success");
       queryClient.invalidateQueries(["patient", patientDetail._id]);
     },

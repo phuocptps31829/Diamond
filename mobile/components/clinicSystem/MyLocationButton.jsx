@@ -8,11 +8,11 @@ const MyLocationButton = ({ handleZoomToCurrentLocation, location }) => {
         <Pressable
           disabled={!location}
           onPress={handleZoomToCurrentLocation}
-          className="absolute top-5 right-5 bg-white w-[60px] h-[60px] flex justify-center items-center shadow-sm rounded-full"
+          className="absolute top-[495px] right-[10px] bg-primary-700 z-50 w-[50px] h-[50px] flex justify-center items-center shadow-sm rounded-full"
         >
           <View className="flex-row gap-2 font-semibold justify-center items-center">
             {location ? (
-              <FontAwesome6 name="location-crosshairs" size={30} color="gray" />
+              <FontAwesome6 name="location-crosshairs" size={23} color="white" />
             ) : (
               <ActivityIndicator size="small" color="gray" />
             )}

@@ -51,7 +51,7 @@ export default function StaffsFormFix({ staffDetail }) {
         phoneNumber,
         avatar,
         email,
-        dataOfBirth,
+        dateOfBirth,
         address,
         citizenIdentificationNumber,
         role,
@@ -61,7 +61,7 @@ export default function StaffsFormFix({ staffDetail }) {
       setValue("staffName", fullName);
       setValue("phone", phoneNumber);
       setValue("email", email || "");
-      setValue("birthDate", dataOfBirth || "");
+      setValue("birthDate", dateOfBirth || "");
       setValue(
         "citizenIdentificationNumber",
         citizenIdentificationNumber || ""
@@ -193,7 +193,7 @@ export default function StaffsFormFix({ staffDetail }) {
                       htmlFor="ngaysinh"
                       className="left-[15px] mb-2 block bg-white px-1 text-sm"
                     >
-                      Ngày sinh
+                      Ngày sinh <span className="text-red-500">*</span>
                     </label>
                     <SelectBirthDate
                       control={ control }
