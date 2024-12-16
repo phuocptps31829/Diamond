@@ -34,6 +34,16 @@ const radioButtons = [
   },
 ];
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString); 
+  const year = date.getUTCFullYear(); 
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0"); 
+  const day = String(date.getUTCDate()).padStart(2, "0"); 
+
+  return `${year}-${month}-${day}`; 
+};
+
+
 const OtherInfo = () => {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.profile.profile);
@@ -74,6 +84,7 @@ const OtherInfo = () => {
       return patientApi.updatePatient(id, requestBody);
     },
     onSuccess: (newData) => {
+      console.log("newData", newData);
       newData._id = profile._id;
       dispatch(setProfile(newData));
       ToastUI({
@@ -110,7 +121,7 @@ const OtherInfo = () => {
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
       email: data.email,
-      dateOfBirth: data.dateOfBirth,
+      dateOfBirth: formatDate(data.dateOfBirth),
       gender: data.gender,
       password: data.password,
       citizenIdentificationNumber: data.citizenIdentificationNumber,
@@ -122,8 +133,6 @@ const OtherInfo = () => {
         ethnic: data.ethnic,
       },
     };
-
-    console.log("requestBody", requestBody);
 
     updatePatientMutation({
       id: profile._id,
@@ -245,10 +254,8 @@ const OtherInfo = () => {
                     isVisible={ isDatePickerVisible }
                     mode="date"
                     onConfirm={ (date) => {
-                      const formattedDate = date.toLocaleDateString("vi-VN");
                       hideDatePicker();
-                      console.log("Ngày sinh:", formattedDate);
-                      onChange(formattedDate);
+                      onChange(date.toISOString());
                     } }
                     onCancel={ hideDatePicker }
                     locale="vi"

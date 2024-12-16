@@ -103,7 +103,7 @@ const Index = () => {
     };
 
     handleAuth();
-  }, [authReady, data]);
+  }, [authReady, data, isLoading]);
 
   return (
     <View className="w-full h-full bg-[#41bdff] flex flex-col justify-center items-center">

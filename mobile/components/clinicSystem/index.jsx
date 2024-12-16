@@ -62,6 +62,7 @@ const ClinicMapSystem = () => {
   }, [location]);
 
   const handleZoomToCurrentLocation = () => {
+    console.log("location", location)
     if (location) {
       mapRef.current.animateToRegion(location, 2000);
     }
