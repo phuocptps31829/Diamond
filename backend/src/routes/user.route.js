@@ -4,6 +4,7 @@ const router = express.Router();
 
 const userController = require('../controllers/user.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi
@@ -35,6 +36,7 @@ const helperMiddleware = require('../middlewares/helper.middleware');
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN]),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,
     userController.getAllUsers

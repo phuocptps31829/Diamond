@@ -46,7 +46,7 @@ const HistoryBox = ({ item }) => {
                 </Text>
                 <Text className="font-medium text-zinc-500">
                     Thành tiền: <Text className="text-zinc-800">
-                        { formatCurrency(9999) }
+                        { formatCurrency(item?.service ? item.service.price : item.medicalPackage.level.price) }
                     </Text>
                 </Text>
             </View>

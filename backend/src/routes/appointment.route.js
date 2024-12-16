@@ -45,6 +45,12 @@ const appointmentController = require('../controllers/appointment.controller');
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([
+        process.env.ROLE_ADMIN,
+        process.env.ROLE_SUPER_ADMIN,
+        process.env.ROLE_DOCTOR,
+        process.env.ROLE_STAFF_RECEPTIONIST,
+    ]),
     cacheMiddleware.cache("Appointment:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

@@ -12,6 +12,7 @@ import { setBranches } from "../store/branches/branchesSlice";
 
 const Index = () => {
   const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
   const [locationReady, setLocationReady] = useState(false);
   const [authReady, setAuthReady] = useState(false);
@@ -52,9 +53,9 @@ const Index = () => {
         const normalizedData = branchesData.map((branch) => ({
           ...branch,
           coordinates: {
-            latitude: branch.coordinates.lat, 
-            longitude: branch.coordinates.lng, 
-            latitudeDelta: 0.0014, 
+            latitude: branch.coordinates.lat,
+            longitude: branch.coordinates.lng,
+            latitudeDelta: 0.0014,
             longitudeDelta: 0.0008,
           },
         }));
@@ -108,13 +109,13 @@ const Index = () => {
   return (
     <View className="w-full h-full bg-[#41bdff] flex flex-col justify-center items-center">
       <Image
-        source={require("../assets/images/logoWhite.png")}
+        source={ require("../assets/images/logoWhite.png") }
         className="w-[335px]"
         resizeMode="contain"
       />
-      {(loading || isLoading) && (
+      { (loading || isLoading) && (
         <ActivityIndicator size="large" color="#fff" />
-      )}
+      ) }
     </View>
   );
 };

@@ -12,7 +12,7 @@ const breadcrumbData = [
     title: "Thống kê",
   },
   {
-    href: "/admin/doctor-dashboard",
+    href: "/admin/accountant-dashboard",
     title: "Bảng điều khiển kế toán",
   },
 ];

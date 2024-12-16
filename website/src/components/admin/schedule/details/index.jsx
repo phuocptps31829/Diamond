@@ -19,8 +19,9 @@ const calendarControls = createCalendarControlsPlugin();
 
 const icons = {
     "PENDING": '⏱️',
-    "EXAMINED": '✅',
+    "EXAMINED": '☑️',
     "CANCELLED": '⛔',
+    "CONFIRMED": '✅',
 };
 
 const getConfigCalendarSchedule = (

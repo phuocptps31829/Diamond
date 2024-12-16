@@ -1,15 +1,32 @@
 import { DataTable } from 'react-native-paper';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { formatCurrency, formatDateTimeLocale } from '../../utils/format';
-import { appointmentStatus, paymentStatus } from '../../constants/status';
+import { appointmentStatus } from '../../constants/status';
 import DialogCustom from '../ui/Dialog';
 import { useState } from 'react';
 import Result from './Result';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { Link } from 'expo-router';
+import { useMutation } from '@tanstack/react-query';
+import { appointmentApi } from '../../services/appointmentsApi';
 
 const DetailHistory = ({ data }) => {
+    const [appointment, setAppointment] = useState(data);
     const [showResultDialog, setShowResultDialog] = useState(false);
+
+    const { mutate: cancelAppointment, isPending } = useMutation({
+        mutationFn: () => appointmentApi.cancelAppointment(data._id),
+        onSuccess: (data) => {
+            setAppointment({
+                ...appointment,
+                status: data?.data?.status,
+            });
+            // setShowResultDialog(false);
+        },
+        onError: (error) => {
+            console.log(error);
+        },
+    });
 
     return (
         <>
@@ -93,6 +110,8 @@ const DetailHistory = ({ data }) => {
                             className="flex-row px-4"
                         >
                             <TouchableOpacity
+                                onPress={ cancelAppointment }
+                                disabled={ isPending }
                                 className="bg-red-600 px-4 py-2 rounded-lg flex-row items-center justify-center mt-4 w-full"
                             >
                                 <MaterialCommunityIcons name="trash-can" size={ 20 } color="white" />

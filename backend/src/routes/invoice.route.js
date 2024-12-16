@@ -5,6 +5,7 @@ const router = express.Router();
 const helperMiddleware = require('../middlewares/helper.middleware');
 const invoiceController = require('../controllers/invoice.controller');
 const cacheMiddleware = require('../middlewares/cache.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi
@@ -36,6 +37,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([process.env.ROLE_STAFF_ACCOUNTANT, process.env.ROLE_SUPER_ADMIN]),
     cacheMiddleware.cache("Invoice:"),
     helperMiddleware.checkQueryParams,
     invoiceController.getAllInvoices

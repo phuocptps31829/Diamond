@@ -5,6 +5,7 @@ const router = express.Router();
 const doctorController = require('../controllers/doctor.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const cacheMiddleware = require('../middlewares/cache.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi

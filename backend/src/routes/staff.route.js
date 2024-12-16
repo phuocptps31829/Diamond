@@ -4,6 +4,7 @@ const router = express.Router();
 
 const staffController = require('../controllers/staff.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 const cacheMiddleware = require('../middlewares/cache.middleware');
 
 /**
@@ -36,6 +37,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN]),
     cacheMiddleware.cache("Staff:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

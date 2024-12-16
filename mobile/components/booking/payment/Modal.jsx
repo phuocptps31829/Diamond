@@ -80,7 +80,7 @@ const ModalPayment = ({
                                 className="w-7 h-7 mr-2"
                             />
                             <Text className={ `text-lg font-semibold ${paymentMethod === 'zalopay' ? 'text-primary-600' : 'text-gray-700'}` }>
-                                Thanh toán ??
+                                Thanh toán Zalopay
                             </Text>
                             { paymentMethod === 'zalopay' && <View className="text-lg flex-1 self-end">
                                 <Text className="text-lg flex-1 self-end">👈</Text>
