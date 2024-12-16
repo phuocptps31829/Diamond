@@ -98,7 +98,7 @@ export default function StaffsFormFix({ staffDetail }) {
       roleID: data.role,
       phoneNumber: data.phone,
       email: data.email || "",
-      dataOfBirth: data.birthDate || "",
+      dateOfBirth: data.birthDate || "",
       address: data.address || "",
       gender: data.gender,
       password: data.password,

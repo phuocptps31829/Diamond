@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Text, View, Image, Pressable, ScrollView } from "react-native";
 import RenderHtml from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
+import { useRouter } from "expo-router";
 import { URL_IMAGE } from "../../configs/urls";
 
 const DoctorInformation = ({ doctor }) => {
-  console.log("doctor", doctor);
+  const router = useRouter();
   const { width } = useWindowDimensions();
   const [showInfor, setShowInfor] = useState(0);
 
@@ -25,7 +26,9 @@ const DoctorInformation = ({ doctor }) => {
         <Text className="font-semibold text-[15px]">
           BS. { doctor.fullName }
         </Text>
-        <Text className="text-gray-400 font-semibold">Bác sĩ</Text>
+        <Text className="text-gray-400 font-semibold">
+          { doctor?.otherInfo?.specialty?.name }
+        </Text>
       </View>
       <View className="flex-row bg-[#f1ce6fa0] p-[5px] m-4 rounded-md">
         <Pressable
@@ -38,18 +41,6 @@ const DoctorInformation = ({ doctor }) => {
               } text-center font-semibold ` }
           >
             Giới thiệu
-          </Text>
-        </Pressable>
-        <Pressable
-          className={ `${showInfor === 1 ? "bg-primary-500" : ""
-            } flex-1 p-3 rounded-md` }
-          onPress={ () => handleShowInfor(1) }
-        >
-          <Text
-            className={ `${showInfor === 1 ? "text-white" : "text-black"
-              } text-center font-semibold ` }
-          >
-            Lịch làm việc
           </Text>
         </Pressable>
       </View>
@@ -76,7 +67,12 @@ const DoctorInformation = ({ doctor }) => {
         </View>
       </ScrollView>
       <View className="absolute bottom-7 flex justify-center items-center w-full">
-        <Pressable className="fixed bg-[#007BBB] w-[300px] p-3 rounded-lg">
+        <Pressable 
+          className="fixed bg-[#007BBB] w-[300px] p-3 rounded-lg"
+          onPress={ () => {
+            router.push(`/service?id_specialty=${doctor?.otherInfo?.specialty?._id}`);
+          }}
+        >
           <Text className="text-white text-center font-semibold text-[15px]">
             Đặt hẹn ngay
           </Text>
