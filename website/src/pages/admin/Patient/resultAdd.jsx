@@ -4,11 +4,11 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const breadcrumbData = [
   {
-    title: "Người dùng",
+    title: "Lịch đặt khám",
   },
   {
     href: "/admin/patients/result",
-    title: "Thêm kết quả khám bệnh",
+    title: "Thêm lịch đặt khám",
   },
 ];
 

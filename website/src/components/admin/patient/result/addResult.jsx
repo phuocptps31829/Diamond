@@ -523,7 +523,7 @@ export default function PatientResult() {
             </div>
             <div className="mt-5 flex justify-end">
               <Button variant="custom" type="submit" disabled={ isPending }>
-                { isPending ? <SpinLoader /> : "Đặt lịch" }
+                { isPending ? <SpinLoader /> : "Đặt lịch ngay" }
               </Button>
             </div>
             {/* Line 4 */ }

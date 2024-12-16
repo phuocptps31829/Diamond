@@ -360,7 +360,7 @@ export default function DoctorsFormAdd() {
                 htmlFor="hoten"
                 className="left-[15px] mb-2 block bg-white px-1 text-lg md:text-sm"
               >
-                Khoa <span className="text-red-500">*</span>
+                Loại bác sĩ <span className="text-red-500">*</span>
               </label>
               <SelectDepartment
                 control={ control }

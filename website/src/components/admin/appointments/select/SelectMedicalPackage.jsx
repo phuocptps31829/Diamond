@@ -72,7 +72,19 @@ export default function SelectMedicalPackage({
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command>
+              <Command
+                filter={(medicalPackageId, search) => {
+                  const medicalPackage = medicalPackages.find(
+                    (d) => d._id === medicalPackageId
+                  );
+                  if (!medicalPackage) return 0;
+                  return medicalPackage.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                    ? 1
+                    : 0;
+                }}
+              >
                 <CommandInput placeholder="Nhập tên gói khám" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>

@@ -66,7 +66,17 @@ export default function SelectService({ control, name, errors, onChange }) {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command>
+              <Command
+                filter={(serviceId, search) => {
+                  const service = services.find((s) => s._id === serviceId);
+                  if (!service) return 0;
+                  return service.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                    ? 1
+                    : 0;
+                }}
+              >
                 <CommandInput placeholder="Nhập tên dịch vụ" />
                 <CommandList className="">
                   <CommandEmpty>Không tìm thấy!</CommandEmpty>

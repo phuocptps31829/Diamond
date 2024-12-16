@@ -19,12 +19,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { FaArrowsRotate } from "react-icons/fa6";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputCustomSearch from "@/components/ui/InputCustomSearch";
-import { Link } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/ui/Loading";
 
@@ -114,17 +113,13 @@ export default function DataTable({
               />
             </div>
           </div>
-          <Link to={"/admin/branches/create"}>
-            <Button
-              onClick={handleRefresh}
-              size="icon"
-              variant="outline"
-              className="mr-1 mt-2 h-11 w-11"
-            >
-              <FaPlus className="text-primary-500"></FaPlus>
-            </Button>
-          </Link>
-          <Button size="icon" variant="outline" className="mr-1 mt-2 h-11 w-11">
+
+          <Button
+            onClick={handleRefresh}
+            size="icon"
+            variant="outline"
+            className="mr-1 mt-2 h-11 w-11"
+          >
             <FaArrowsRotate className="text-primary-500" />
           </Button>
         </form>
@@ -174,9 +169,23 @@ export default function DataTable({
       </Table>
       <div className="flex items-end justify-end space-x-2 pb-2 pt-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          <span className="pr-1">Đã chọn</span>
-          {table.getFilteredSelectedRowModel().rows.length} trên {total} trong
-          danh sách.
+          {`Hiển thị từ `}
+          <span className="font-bold text-primary-500">
+            {table.getState().pagination.pageIndex *
+              table.getState().pagination.pageSize +
+              1}
+          </span>
+          {` đến `}
+          <span className="font-bold text-primary-500">
+            {Math.min(
+              (table.getState().pagination.pageIndex + 1) *
+                table.getState().pagination.pageSize,
+              total
+            )}
+          </span>
+          {` trong tổng số `}
+          <span className="font-bold text-primary-500">{total}</span>
+          {` mục.`}
         </div>
         <div className="flex items-center space-x-2">
           <Button
@@ -187,8 +196,9 @@ export default function DataTable({
           >
             Trước
           </Button>
-          {Array.from({ length: pageCount }, (_, index) => {
-            const currentPage = pageIndex;
+          {Array.from({ length: table.getPageCount() }, (_, index) => {
+            const currentPage = table.getState().pagination.pageIndex;
+            const pageCount = table.getPageCount();
             if (
               index === 0 ||
               index === pageCount - 1 ||
@@ -201,7 +211,7 @@ export default function DataTable({
                   key={index}
                   variant={currentPage === index ? "solid" : "outline"}
                   size="sm"
-                  onClick={() => onPageChange(index)}
+                  onClick={() => table.setPageIndex(index)}
                 >
                   {index + 1}
                 </Button>

@@ -48,7 +48,7 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
 
   {
     id: "patient",
-    accessorFn: (row) => row.patient.fullName,
+    accessorFn: (row) => row.patient?.fullName,
     header: ({ column }) => (
       <div className="ml-2 w-full text-left">
         <Button
@@ -72,9 +72,9 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
             <Avatar className="size-8">
               <AvatarImage
                 src={
-                  row.original.patient.avatar &&
-                    isValidAvatar(row.original.patient.avatar)
-                    ? `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.patient.avatar}`
+                  row.original.patient?.avatar &&
+                    isValidAvatar(row.original.patient?.avatar)
+                    ? `${import.meta.env.VITE_IMAGE_API_URL}/${row.original.patient?.avatar}`
                     : avatarDefault
                 }
                 alt="@shadcn"
@@ -105,7 +105,7 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
     cell: ({ row }) => (
       <div className="w-full">
         <span className="w-full whitespace-nowrap">
-          { row.original.doctor.fullName || "Lỗi tên bác sĩ" }
+          { row.original.doctor?.fullName || "Lỗi tên bác sĩ" }
         </span>
       </div>
     ),
@@ -156,7 +156,7 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
     ),
     cell: ({ row }) => (
       <div className="w-full">
-        <span className="w-full whitespace-nowrap">{ row.original.type }</span>
+        <span className="w-full whitespace-nowrap">{ row.original.type || ''}</span>
       </div>
     ),
   },
@@ -222,7 +222,7 @@ export const getColumnsAppointments = (pageIndex, pageSize) => [
     ),
     cell: ({ row }) => {
       const { stylePayment, textPayment } = getStatusPaymentStyle(
-        row.original.payment.status
+        row.original.payment?.status
       );
       return (
         <div

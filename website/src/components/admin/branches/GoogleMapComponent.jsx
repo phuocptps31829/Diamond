@@ -45,6 +45,7 @@ const GoogleMapComponent = ({ setAddress, register, errors, coordinates }) => {
     let city = "";
 
     addressComponents.forEach((component) => {
+      
       const types = component.types;
       if (types.includes("administrative_area_level_3")) {
         ward = component.long_name;

@@ -10,7 +10,9 @@ import {
 } from "@/components/ui/Popover";
 import {
   Command,
+  CommandEmpty,
   CommandGroup,
+  CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/Command";
@@ -19,7 +21,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { specialtyApi } from "@/services/specialtiesApi";
 
-export default function SelectSpecialty({ control, name, errors, disabled, onChange }) {
+export default function SelectSpecialty({
+  control,
+  name,
+  errors,
+  disabled,
+  onChange,
+}) {
   const [open, setOpen] = React.useState(false);
   const {
     data: specialties,
@@ -31,7 +39,7 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
   });
 
   if (isLoading) {
-    return <Skeleton className="w-full h-10" />;
+    return <Skeleton className="h-10 w-full" />;
   }
 
   if (error) {
@@ -40,70 +48,85 @@ export default function SelectSpecialty({ control, name, errors, disabled, onCha
   return (
     <div>
       <Controller
-        control={ control }
-        name={ name }
-        rules={ { required: "Chọn chuyên khoa" } }
-        render={ ({ field }) => (
-          <Popover open={ open } onOpenChange={ setOpen }>
+        control={control}
+        name={name}
+        rules={{ required: "Chọn chuyên khoa" }}
+        render={({ field }) => (
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={ open }
-                className={ cn(
+                aria-expanded={open}
+                className={cn(
                   "w-full justify-between py-[21px]",
-                  errors[name] && "",
-                ) }
-                disabled={ disabled }
+                  errors[name] && ""
+                )}
+                disabled={disabled}
               >
-                { field.value ? (
-                  specialties.find(
-                    (specialty) => specialty._id === field.value,
-                  )?.name
+                {field.value ? (
+                  specialties.find((specialty) => specialty._id === field.value)
+                    ?.name
                 ) : (
                   <span className="text-gray-600">Chọn chuyên khoa</span>
-                ) }
+                )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="popover-content-width-same-as-its-trigger p-0">
-              <Command className="text-left">
+              <Command
+                className="text-left"
+                filter={(specialtyId, search) => {
+                  const specialty = specialties.find(
+                    (s) => s._id === specialtyId
+                  );
+                  if (!specialty) return 0;
+                  return specialty.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                    ? 1
+                    : 0;
+                }}
+              >
+                <CommandInput placeholder="Nhập tên chuyên khoa" />
+                <CommandEmpty>Không tìm thấy!</CommandEmpty>
+
                 <CommandList>
                   <CommandGroup>
-                    { specialties.map((specialty) => (
+                    {specialties.map((specialty) => (
                       <CommandItem
-                        key={ specialty._id }
-                        value={ specialty._id }
-                        onSelect={ (currentValue) => {
+                        key={specialty._id}
+                        value={specialty._id}
+                        onSelect={(currentValue) => {
                           if (!disabled) {
                             field.onChange(currentValue);
                             onChange(currentValue);
                             setOpen(false);
                           }
-                        } }
-                        disabled={ disabled }
+                        }}
+                        disabled={disabled}
                       >
                         <Check
-                          className={ cn(
+                          className={cn(
                             "mr-2 h-4 w-4",
                             field.value === specialty._id
                               ? "opacity-100"
-                              : "opacity-0",
-                          ) }
+                              : "opacity-0"
+                          )}
                         />
-                        { specialty.name }
+                        {specialty.name}
                       </CommandItem>
-                    )) }
+                    ))}
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        ) }
+        )}
       />
-      { errors[name] && (
-        <span className="text-sm text-red-500">{ errors[name].message }</span>
-      ) }
+      {errors[name] && (
+        <span className="text-sm text-red-500">{errors[name].message}</span>
+      )}
     </div>
   );
 }

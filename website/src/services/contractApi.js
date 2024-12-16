@@ -34,4 +34,8 @@ export const contractApi = {
     const res = await axiosInstanceCUD.get(`/contracts/export/${id}`);
     return res.data.data;
   },
+  deleteContract: async (id) => {
+    const res = await axiosInstanceCUD.delete(`/contracts/delete/${id}`);
+    return res.data.data;
+  },
 };
