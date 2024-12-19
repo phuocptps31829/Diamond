@@ -46,6 +46,8 @@ const AppointmentsList = () => {
       };
       break;
     case import.meta.env.VITE_ROLE_SUPER_ADMIN:
+    case import.meta.env.ADMIN:
+    case import.meta.env.VITE_ROLE_STAFF_RECEPTIONIST:
       options = {
         ...options,
         queryKey: [
@@ -77,21 +79,21 @@ const AppointmentsList = () => {
     }
   }, [data, isLoading]);
   if (error) {
-    return <NotFound message={error.message} />;
+    return <NotFound message={ error.message } />;
   }
 
   return (
     <DataTable
-      data={tableData.data}
-      columns={getColumnsAppointments(pageIndex, RECORD_PER_PAGE)}
-      pageCount={tableData.pageCount}
-      pageSize={RECORD_PER_PAGE}
-      pageIndex={pageIndex}
-      onPageChange={setPageIndex}
-      isLoading={isLoading}
-      total={tableData.total}
-      searchValue={searchValue}
-      setSearchValue={setSearchValue}
+      data={ tableData.data }
+      columns={ getColumnsAppointments(pageIndex, RECORD_PER_PAGE) }
+      pageCount={ tableData.pageCount }
+      pageSize={ RECORD_PER_PAGE }
+      pageIndex={ pageIndex }
+      onPageChange={ setPageIndex }
+      isLoading={ isLoading }
+      total={ tableData.total }
+      searchValue={ searchValue }
+      setSearchValue={ setSearchValue }
     />
   );
 };

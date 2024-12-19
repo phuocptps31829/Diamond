@@ -86,7 +86,7 @@ const DetailHistory = ({ data }) => {
                             </DataTable.Row>
                         </DataTable>
                     </View>
-                    { data?.status === "PENDING" && <View
+                    {/* { data?.status === "PENDING" && <View
                         className="flex-1 justify-end pb-4"
                     >
                         <View
@@ -101,7 +101,7 @@ const DetailHistory = ({ data }) => {
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                    </View> }
+                    </View> } */}
                 </View>
             </View>
             <DialogCustom

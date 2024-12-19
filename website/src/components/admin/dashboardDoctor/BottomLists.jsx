@@ -61,7 +61,7 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
   return (
     <div className="mt-6 grid w-full grid-cols-[25%_72.8%] justify-between">
       <div className="w-full rounded-lg bg-white p-4">
-        {loading ? (
+        { loading ? (
           <div className="flex flex-col items-center justify-center h-full">
             <Skeleton className="h-44 w-44 rounded-full mx-auto" />
             <Skeleton className="h-6 w-36 mt-3" />
@@ -104,18 +104,18 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
               { formatTime(timeLeft) }
             </p>
           </div>
-        )}
+        ) }
       </div>
       <div className="w-full rounded-lg border bg-white p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">Lịch hẹn sắp tới</h3>
-          {loading ? (
+          { loading ? (
             <Skeleton className="h-6 w-32" />
           ) : (
             <Link to="/" className="text-[14px] text-blue-600 hover:underline">
-            Hiển thị tất cả
+              Hiển thị tất cả
             </Link>
-          )}
+          ) }
         </div>
         <Table>
           <TableHeader>
@@ -128,66 +128,66 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-          {loading
+            { loading
               ? Array(4)
-                  .fill(null)
-                  .map((_, idx) => (
-                    <TableRow key={idx} className="h-14">
-                      <TableCell className="text-center">
-                        <div className="w-full flex justify-center items-center">
-                          <Skeleton className="h-4 w-full" />
-                        </div>
-                      </TableCell>
-                      <TableCell>
+                .fill(null)
+                .map((_, idx) => (
+                  <TableRow key={ idx } className="h-14">
+                    <TableCell className="text-center">
+                      <div className="w-full flex justify-center items-center">
                         <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <Skeleton className="h-4 w-full" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="w-full flex justify-center items-center">
-                          <Skeleton className="h-6 w-6" />
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                    <TableCell>
+                      <div className="w-full flex justify-center items-center">
+                        <Skeleton className="h-6 w-6" />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
               :
               upcomingAppointments.length === 0 ? (
                 <TableRow className="h-14 text-center text-[13px]">
                   <TableCell colSpan={ 6 }>Không có lịch hẹn nào !</TableCell>
                 </TableRow>
-            ) : (
-              upcomingAppointments.map((item, idx) => (
-                <TableRow key={ idx } className={ `${(idx === 0 && new Date(item.time) < new Date()) && "bg-green-100"} h-12 text-[13px]` }>
-                  <TableCell className="text-center">{ idx + 1 }</TableCell>
-                  <TableCell>{ item.patient.fullName }</TableCell>
-                  <TableCell>
-                    <span
-                      className={ `${new Date(item.time) > new Date()
-                        ? "text-yellow-400"
-                        : "text-red-500"
-                        } font-semibold` }
-                    >
-                      { new Date(item.time) > new Date()
-                        ? "Chưa diễn ra"
-                        : "Tới hẹn chờ khám" }
-                    </span>
-                  </TableCell>
-                  <TableCell>{ formatDateTimeLocale(item.time, true) }</TableCell>
-                  <TableCell>
-                    <span className="max-w-[300px] truncate block">
-                      { item.service.name }
-                    </span>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
+              ) : (
+                upcomingAppointments.map((item, idx) => (
+                  <TableRow key={ idx } className={ `${(idx === 0 && new Date(item.time) < new Date()) && "bg-green-100"} h-12 text-[13px]` }>
+                    <TableCell className="text-center">{ idx + 1 }</TableCell>
+                    <TableCell>{ item.patient.fullName }</TableCell>
+                    <TableCell>
+                      <span
+                        className={ `${new Date(item.time) > new Date()
+                          ? "text-yellow-400"
+                          : "text-red-500"
+                          } font-semibold` }
+                      >
+                        { new Date(item.time) > new Date()
+                          ? "Chưa diễn ra"
+                          : "Tới hẹn chờ khám" }
+                      </span>
+                    </TableCell>
+                    <TableCell>{ formatDateTimeLocale(item.time, true) }</TableCell>
+                    <TableCell>
+                      <span className="max-w-[300px] truncate block">
+                        { item?.service?.name || item?.medicalPackage?.name }
+                      </span>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) }
           </TableBody>
         </Table>
       </div>
