@@ -2,7 +2,7 @@ import React from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import FilterBar from './FilterBar';
 import HistoryBox from './HistoryBox';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { appointmentApi } from '../../services/appointmentsApi';
 import Loading from '../ui/Loading';
 
@@ -20,7 +20,9 @@ const HistoryAppointment = () => {
         queryKey: ["historyAppointment"],
         queryFn: ({ pageParam = 1 }) => appointmentApi.getAppointmentByPatient({
             page: pageParam,
-            limit: 10
+            limit: 10,
+            startDay: '2023-12-16',
+            endDay: '2025-01-16'
         }),
         getNextPageParam: (lastPage) => lastPage?.page < lastPage?.totalPages ? lastPage?.page + 1 : undefined
     });
@@ -37,6 +39,8 @@ const HistoryAppointment = () => {
     const filteredData = mappedData?.filter(item => selectedFilter !== "ALL"
         ? item.status === selectedFilter
         : true);
+
+    console.log(data?.pages);
 
     if (isLoading) {
         return _loading();

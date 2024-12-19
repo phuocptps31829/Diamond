@@ -5,6 +5,7 @@ const router = express.Router();
 const workScheduleController = require('../controllers/work-schedule.controller');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const cacheMiddleware = require('../middlewares/cache.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 /**
  * @openapi
@@ -36,6 +37,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN]),
     cacheMiddleware.cache("WorkSchedule:"),
     helperMiddleware.checkQueryParams,
     workScheduleController.getAllWorkSchedules

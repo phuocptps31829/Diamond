@@ -38,7 +38,7 @@ export default function TopStats({ revenueData, loading }) {
   ]);
 
   const calculateStats = (present, previous) => {
-    const percentage = ((present - previous) / (previous || 1) * 100).toFixed(2);
+    const percentage = previous > 0 ? ((present - previous) / (previous || 1) * 100).toFixed(2) : present > 0 ? 100 : 0;
     return {
       value: present,
       percentage: `${Math.abs(Math.round(percentage))} %`,

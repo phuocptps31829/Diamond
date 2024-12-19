@@ -3,6 +3,7 @@ const express = require('express');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const medicineCategoryController = require('../controllers/medicine-category.controller');
 const cacheMiddleware = require('../middlewares/cache.middleware');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -36,6 +37,7 @@ const router = express.Router();
 */
 router.get(
     '/',
+    authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN, process.env.ROLE_DOCTOR]),
     cacheMiddleware.cache("MedicineCategory:"),
     helperMiddleware.checkQueryParams,
     medicineCategoryController.getAllMedicineCategories

@@ -37,11 +37,11 @@ const AuthComponent = () => {
         mutationFn: authApi.getProfileInfo,
         onSuccess: (data) => {
             const role = data.data.role.name;
+
             if (selectedRole !== role) {
                 toastUI("Bạn không có quyền truy cập mục này.", "warning");
                 return;
             }
-
             dispatch(setUserProfile(data.data));
 
             if (role === "SUPER_ADMIN" || role === "ADMIN") {

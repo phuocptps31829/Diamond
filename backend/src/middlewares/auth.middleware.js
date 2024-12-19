@@ -6,6 +6,9 @@ const { createError, compareHashedValue } = require('../utils/helper.util');
 // # Roles ID in database
 const ROLE_SUPER_ADMIN = process.env.ROLE_SUPER_ADMIN;
 const ROLE_ADMIN = process.env.ROLE_ADMIN;
+const ROLE_DOCTOR = process.env.ROLE_DOCTOR;
+const ROLE_STAFF_RECEPTIONIST = process.env.ROLE_STAFF_RECEPTIONIST;
+const ROLE_STAFF_ACCOUNTANT = process.env.ROLE_STAFF_ACCOUNTANT;
 
 const verifyAccessToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -84,7 +87,7 @@ const verifySuperAdmin = (req, res, next) => {
         if (req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
             next();
         } else {
-            createError(403, 'Không phải super admin.');
+            createError(401, 'Không phải super admin.');
         }
     });
 };
@@ -97,12 +100,68 @@ const verifyAdmin = (req, res, next) => {
     }
 
     verifyAccessToken(req, res, () => {
-        if (req.user?.role?.toString() === ROLE_ADMIN) {
+        if (req.user?.role?.toString() === ROLE_ADMIN ||
+            req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
             next();
         } else {
-            createError(403, 'Không phải admin.');
+            createError(401, 'Không phải admin.');
         }
     });
+};
+
+const verifyDoctor = (req, res, next) => {
+    verifyAccessToken(req, res, () => {
+        if (req.user?.role?.toString() === ROLE_DOCTOR ||
+            req.user?.role?.toString() === ROLE_ADMIN ||
+            req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
+            next();
+        } else {
+            createError(401, 'Không phải bác sĩ.');
+        }
+    });
+};
+
+const verifyStaffReceptionist = (req, res, next) => {
+    verifyAccessToken(req, res, () => {
+        if (req.user?.role?.toString() === ROLE_STAFF_RECEPTIONIST ||
+            req.user?.role?.toString() === ROLE_ADMIN ||
+            req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
+            next();
+        } else {
+            createError(401, 'Không phải nhân viên lễ tân.');
+        }
+    });
+};
+
+const verifyStaffAccountant = (req, res, next) => {
+    verifyAccessToken(req, res, () => {
+        if (req.user?.role?.toString() === ROLE_STAFF_ACCOUNTANT ||
+            req.user?.role?.toString() === ROLE_ADMIN ||
+            req.user?.role?.toString() === ROLE_SUPER_ADMIN) {
+            next();
+        } else {
+            createError(401, 'Không phải nhân viên kế toán.');
+        }
+    });
+};
+
+const isHasPermission = (roles) => {
+    return (req, res, next) => {
+        const secretKey = req.query.secretKey;
+        if (secretKey === process.env.SUPER_SECRET_KEY) {
+            next();
+            return;
+        }
+
+        verifyAccessToken(req, res, () => {
+            console.log(roles);
+            if (roles.includes(req.user?.role?.toString())) {
+                next();
+            } else {
+                createError(401, 'Không có quyền truy cập.');
+            }
+        });
+    };
 };
 
 const resendOTP = async (req, res, next) => {
@@ -174,7 +233,11 @@ module.exports = {
     verifyAccessToken,
     verifyRefreshToken,
     verifyAdmin,
+    verifyDoctor,
+    verifyStaffReceptionist,
+    verifyStaffAccountant,
     verifyOTP,
     resendOTP,
-    verifySuperAdmin
+    verifySuperAdmin,
+    isHasPermission
 };

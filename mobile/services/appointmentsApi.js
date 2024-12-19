@@ -5,6 +5,7 @@ export const appointmentApi = {
         const res = await axiosInstanceGET.get(`/appointments/get-by-patient`, {
             params
         });
+        console.log(res.data);
         return res.data;
     },
     getAppointmentById: async (id) => {
@@ -28,6 +29,9 @@ export const appointmentApi = {
             case "cod":
                 endpoint = "/invoices/payment/cod";
                 break;
+            case "zalopay":
+                endpoint = "/invoices/payment/zalopay";
+                break;
             default:
                 break;
         }
@@ -37,6 +41,11 @@ export const appointmentApi = {
 
         const res = await axiosInstanceCUD.post(endpoint, data);
         console.log(res.data);
+        return res.data;
+    },
+
+    cancelAppointment: async (id) => {
+        const res = await axiosInstanceCUD.post(`/invoices/cancel/${id}`);
         return res.data;
     },
 };

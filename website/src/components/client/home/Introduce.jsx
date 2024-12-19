@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
 import { HiCursorClick } from "react-icons/hi";
+
+import img1 from "../../../assets/images/cơ sở vật chất-min.jpg";
+import img2 from "../../../assets/images/đội ngũ bác sĩ-min.jpg";
+import img3 from "../../../assets/images/bệnh án điện tử-min.jpg";
+import img4 from "../../../assets/images/hệ thống phòng khám-min.jpg";
+
 export default function Introduce() {
   return (
     <div className="mx-auto max-w-screen-xl md:my-4">
@@ -25,7 +31,7 @@ export default function Introduce() {
             </span>
             <img
               className="rounded-md"
-              src="https://img.ykhoadiamond.com/Uploads/Content/24102023/e53d8836-2510-4902-941f-e413e146cf8c.png" />
+              src={ img2 } />
           </Link>
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
@@ -41,7 +47,7 @@ export default function Introduce() {
             </span>
             <img
               className="rounded-md"
-              src="https://img.ykhoadiamond.com/Uploads/Content/30032023/070e0c71-7e39-4b15-94f5-7575d61728da.png" />
+              src={ img1 } />
           </Link>
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
@@ -57,7 +63,7 @@ export default function Introduce() {
             </span>
             <img
               className="rounded-md"
-              src="https://img.ykhoadiamond.com/Uploads/Content/30032023/cc88ee5b-520d-4e9d-a47c-abfc7f09abd3.png" />
+              src={ img3 } />
           </Link>
         </div>
         <div className="flex items-center justify-center rounded-md bg-primary-100">
@@ -73,7 +79,7 @@ export default function Introduce() {
             </span>
             <img
               className="rounded-md"
-              src="https://img.ykhoadiamond.com/Uploads/Content/22092023/3f1b2005-7741-4046-9146-13dd53def29c.png" />
+              src={ img4 } />
           </Link>
         </div>
       </div>

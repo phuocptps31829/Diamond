@@ -7,6 +7,9 @@ const authMiddleware = require('../middlewares/auth.middleware');
 const helperMiddleware = require('../middlewares/helper.middleware');
 const cacheMiddleware = require('../middlewares/cache.middleware');
 
+const ROLE_SUPER_ADMIN = process.env.ROLE_SUPER_ADMIN;
+const ROLE_ADMIN = process.env.ROLE_ADMIN;
+
 /**
  * @openapi
  * '/api/v1/patients':
@@ -37,7 +40,11 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
-    authMiddleware.verifyAdmin,
+    authMiddleware.isHasPermission([
+        ROLE_ADMIN,
+        ROLE_SUPER_ADMIN,
+        process.env.STAFF_RECEPTIONIST,
+    ]),
     cacheMiddleware.cache("Patient:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

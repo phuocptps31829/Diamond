@@ -18,7 +18,7 @@ export default function News() {
   if (error) {
     return <div>Error loading news</div>;
   }
-  const newsData = data || [];
+  const newsData = data?.filter(news => !news.isHidden) || [];
 
   return (
     <div className="my-4 w-full bg-primary-500 py-4">
