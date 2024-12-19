@@ -27,7 +27,9 @@ const checkValueQuery = (req, res, next) => {
             specialtyID = null,
             gender = null,
             startDay = null,
-            endDay = new Date().toISOString().slice(0, 10),
+            endDay = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                .toISOString()
+                .slice(0, 10),
             date = null,
             time = null
         } = req.query;

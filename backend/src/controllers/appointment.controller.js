@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const AppointmentModel = require('../models/appointment.model');
 const ServiceModel = require('../models/service.model');
 const InvoiceModel = require('../models/invoice.model');
@@ -415,6 +414,8 @@ module.exports = {
                 })
                 .sort({ time: -1 })
                 .lean();
+
+            console.log(appointments);
 
             const formattedAppointmentsPromises = appointments.map(async appointment => {
                 const [results] = await Promise.all([

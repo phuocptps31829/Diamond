@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const cartData = JSON.parse(localStorage.getItem("cart")) || [];
-console.log('cartInit', cartData);
+
 const formattedCart = cartData.map((item) => {
   return {
     ...(item.serviceID
@@ -12,7 +12,7 @@ const formattedCart = cartData.map((item) => {
       ...(item.medicalPackageID
         ? { levelID: item.levelID }
         : {}),
-      price: 0,
+      price: item.price,
       selectedBranchID: "",
       selectedDoctorID: "",
       selectedWorkScheduleID: "",
@@ -27,8 +27,6 @@ const initialState = {
   bookingDetails: formattedCart,
   bookingInfoCheckout: null,
 };
-
-console.log(initialState);
 
 const infoBookingSlice = createSlice({
   name: "infoBooking",
@@ -51,6 +49,7 @@ const infoBookingSlice = createSlice({
       }
     },
     initBookingDetails: (state, action) => {
+      console.log('action.payload', action.payload);
       state.bookingDetails = state.bookingDetails.filter(
         (detail) => detail?.serviceID
           ? detail?.serviceID !== null
@@ -97,7 +96,7 @@ const infoBookingSlice = createSlice({
     },
     setCurIdSelected: (state, action) => {
       state.curIdSelected = action.payload;
-    }
+    },
   },
 });
 

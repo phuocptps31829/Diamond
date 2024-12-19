@@ -4,7 +4,6 @@ import { formatCurrency, formatDateTimeLocale } from "@/utils/format";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { MdCancel } from "react-icons/md";
-import ResultDialog from "./dialogs/ResultDialog";
 import AppointmentDetailSkeleton from "./skeletons/AppointmentDetailSkeleton";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -98,7 +97,7 @@ const AppointmentDetail = () => {
   return (
     <div className="p-3 md:p-6">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-xl font-bold">{product?.name}</h2>
+        <h2 className="text-xl font-bold">{ product?.name }</h2>
       </div>
       <Table className="rounded-md border">
         <TableBody>
@@ -107,9 +106,9 @@ const AppointmentDetail = () => {
               <span className="me-2">🏨</span> Nơi khám
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              {appointment?.clinic?.name +
+              { appointment?.clinic?.name +
                 " - Chi nhánh " +
-                appointment?.branch?.name}
+                appointment?.branch?.name }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -117,7 +116,7 @@ const AppointmentDetail = () => {
               <span className="me-2">🧑‍⚕️</span> Bác sĩ
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              {appointment?.doctor?.fullName}
+              { appointment?.doctor?.fullName }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -125,7 +124,7 @@ const AppointmentDetail = () => {
               <span className="me-2">🕒</span> Ngày giờ khám
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              {formatDateTimeLocale(appointment?.time)}
+              { formatDateTimeLocale(appointment?.time) }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -133,7 +132,7 @@ const AppointmentDetail = () => {
               <span className="me-2">⚙️</span> Loại khám
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              {appointment?.type}
+              { appointment?.type }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -141,8 +140,8 @@ const AppointmentDetail = () => {
               <span className="me-2">📌</span>Trạng thái
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              <Badge variant={getStatusVariant(appointment?.status)}>
-                {getStatusLabel(appointment?.status)}
+              <Badge variant={ getStatusVariant(appointment?.status) }>
+                { getStatusLabel(appointment?.status) }
               </Badge>
             </TableCell>
           </TableRow>
@@ -151,16 +150,16 @@ const AppointmentDetail = () => {
               <span className="me-2">💵</span>Tổng tiền
             </TableCell>
             <TableCell className="flex items-center gap-3 whitespace-nowrap px-4">
-              {formatCurrency(appointment?.invoice?.price)} -
+              { formatCurrency(appointment?.invoice?.price) } -
               <span
-                className={`rounded-md px-2 py-1 ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}`}
+                className={ `rounded-md px-2 py-1 ${getStatusPaymentStyle(appointment?.payment?.status).stylePayment}` }
               >
                 {
                   getStatusPaymentStyle(appointment?.payment?.status)
                     .textPayment
                 }
               </span>
-              {appointment?.payment?.status === "PAID" && (
+              { appointment?.payment?.status === "PAID" && (
                 <a
                   target="_blank"
                   href={
@@ -172,7 +171,7 @@ const AppointmentDetail = () => {
                 >
                   📜 Xem hóa đơn
                 </a>
-              )}
+              ) }
             </TableCell>
           </TableRow>
           <TableRow>
@@ -180,28 +179,13 @@ const AppointmentDetail = () => {
               <span className="me-2">🫰</span> Phương thức thanh toán
             </TableCell>
             <TableCell className="whitespace-nowrap px-4">
-              {appointment?.payment?.method === "COD"
+              { appointment?.payment?.method === "COD"
                 ? "Thanh toán trực tiếp"
-                : appointment?.payment?.method}
+                : appointment?.payment?.method }
             </TableCell>
           </TableRow>
-          {appointment?.status === "EXAMINED" && (
+          { appointment?.status === "EXAMINED" && (
             <>
-              <TableRow>
-                <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
-                  <span className="me-2">📰</span>Kết quả khám
-                </TableCell>
-                <TableCell className="whitespace-nowrap px-4">
-                  <ResultDialog
-                    trigger={
-                      <p className="cursor-pointer text-blue-500 underline">
-                        Xem kết quả
-                      </p>
-                    }
-                    appointment={appointment}
-                  />
-                </TableCell>
-              </TableRow>
               <TableRow>
                 <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">
                   <span className="me-2">📜</span>Chi tiết bệnh án
@@ -216,16 +200,16 @@ const AppointmentDetail = () => {
                 </TableCell>
               </TableRow>
             </>
-          )}
+          ) }
         </TableBody>
       </Table>
-      {appointment?.status === "PENDING" && (
-        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      { appointment?.status === "PENDING" && (
+        <Dialog open={ openDialog } onOpenChange={ setOpenDialog }>
           <DialogTrigger asChild>
             <Button
-              disabled={isPending}
+              disabled={ isPending }
               variant="primary"
-              onClick={(e) => e.stopPropagation()}
+              onClick={ (e) => e.stopPropagation() }
               className="float-end mt-4 bg-red-500 p-1 text-xs text-white hover:bg-red-600 md:px-5 md:py-4 md:text-[15px]"
             >
               Hủy lịch
@@ -235,7 +219,7 @@ const AppointmentDetail = () => {
             <DialogHeader className="text-center">
               <DialogTitleTrigger className="pt-6 text-center">
                 <img
-                  src={cancelImage}
+                  src={ cancelImage }
                   alt="cancel-appointment"
                   className="mx-auto h-16 w-16"
                 />
@@ -256,24 +240,24 @@ const AppointmentDetail = () => {
               </DialogClose>
               <Button
                 type="button"
-                disabled={isPending}
+                disabled={ isPending }
                 variant="secondary"
                 className="bg-red-600 text-white hover:bg-red-700"
-                onClick={cancelAppointment}
+                onClick={ cancelAppointment }
               >
-                {isPending ? (
+                { isPending ? (
                   <SpinLoader />
                 ) : (
                   <span className="flex items-center">
                     <MdCancel className="mr-2" />
                     Xác nhận
                   </span>
-                )}
+                ) }
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
+      ) }
     </div>
   );
 };

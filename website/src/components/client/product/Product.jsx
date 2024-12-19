@@ -70,8 +70,6 @@ export default function Product({ product }) {
         services,
       };
 
-    console.log(newItem);
-
     const toBookingItem = {
       ...(isService
         ? {
@@ -85,7 +83,7 @@ export default function Product({ product }) {
         ...(isService ? {} : { levelID: services[0]._id }),
         name,
         image,
-        price: discountPrice || 0,
+        price: isService ? discountPrice : services[0].discountPrice,
         selectedBranchID: "",
         selectedDoctorID: "",
         selectedWorkScheduleID: "",

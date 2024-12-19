@@ -63,9 +63,9 @@ export function MedicalRecordAccordion({ medicalRecords }) {
                                         <div
                                             className="rounded-md"
                                         >
-                                            <div className="py-2 flex w-fit md:items-center gap-1">
+                                            <div className="py-2 flex w-fit md:items-start gap-1">
                                                 <FaKitMedical className="text-xl mr-1 text-primary-500" />
-                                                <p className="font-medium text-nowrap text-primary-900">
+                                                <p className="font-medium text-nowrap text-primary-900 pr-1">
                                                     Dịch vụ:
                                                 </p>{ " " }
                                                 <span className="inline-block">

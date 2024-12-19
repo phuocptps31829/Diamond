@@ -123,6 +123,7 @@ export default function Form() {
         ...(selectedProduct?.serviceID
           ? { serviceID: selectedProduct.serviceID }
           : { medicalPackageID: selectedProduct?.medicalPackageID }),
+        price: selectedProduct?.price,
         newChange: {
           selectedBranchID: branchID,
           selectedDoctorID: "",
@@ -146,6 +147,7 @@ export default function Form() {
         ...(selectedProduct?.serviceID
           ? { serviceID: selectedProduct.serviceID }
           : { medicalPackageID: selectedProduct?.medicalPackageID }),
+        price: selectedProduct?.price,
         newChange: {
           selectedDoctorID: doctorID,
           selectedWorkScheduleID: "",
@@ -166,6 +168,7 @@ export default function Form() {
         ...(selectedProduct?.serviceID
           ? { serviceID: selectedProduct.serviceID }
           : { medicalPackageID: selectedProduct?.medicalPackageID }),
+        price: selectedProduct?.price,
         newChange: {
           selectedDate: date,
           selectedWorkScheduleID: "",
@@ -184,6 +187,7 @@ export default function Form() {
         ...(selectedProduct?.serviceID
           ? { serviceID: selectedProduct.serviceID }
           : { medicalPackageID: selectedProduct?.medicalPackageID }),
+        price: selectedProduct?.price,
         newChange: {
           selectedWorkScheduleID: workScheduleID,
           selectedTime: time,
@@ -334,7 +338,7 @@ export default function Form() {
       toast.error("Vui lòng chọn đầy đủ thông tin trước khi đặt lịch!");
       return;
     }
-    console.log(bookingDetails);
+
     const bookingInfo = {
       patientID: profile._id,
       appointmentHelpUser: isBookingForOthers
