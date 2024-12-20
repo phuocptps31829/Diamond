@@ -20,7 +20,7 @@ const breadcrumbData = [
 export default function DoctorDashboard() {
   const [dataAppointmentsByDoctor, setDataAppointmentsByDoctor] = useState([]);
 
-  useAuthRedirect(["DOCTOR"], "/admin/dashboard");
+  useAuthRedirect(["DOCTOR"]);
 
   const { data: appointmentsByAges, isPending: isPendingAppointmentsByDoctor } =
     useQuery({

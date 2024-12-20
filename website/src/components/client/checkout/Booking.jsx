@@ -570,7 +570,7 @@ export default function Form() {
                       <InputCustom
                         label="Họ và tên"
                         className="col-span-1 sm:col-span-1"
-                        placeholder="Nhập tên của bạn"
+                        placeholder="Nhập tên"
                         name="fullName"
                         type="text"
                         id="fullName"
@@ -586,7 +586,7 @@ export default function Form() {
                         <InputCustom
                           label="Số điện thoại"
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập số điện thoại của bạn"
+                          placeholder="Nhập số điện thoại"
                           name="phoneNumber"
                           type="text"
                           id="phoneNumber"
@@ -599,7 +599,7 @@ export default function Form() {
                         <InputCustom
                           label="Email"
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập email của bạn"
+                          placeholder="Nhập email"
                           name="email"
                           type="email"
                           id="email"
@@ -637,11 +637,11 @@ export default function Form() {
                     <div className="mb-4 flex flex-col gap-4 md:flex-row">
                       <div className="flex-1">
                         <label htmlFor="occupation" className="mb-1 block">
-                          Nghề nghiệp:
+                          Nghề nghiệp
                         </label>
                         <InputCustom
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập nghề nghiệp của bạn"
+                          placeholder="Nhập nghề nghiệp"
                           name="occupation"
                           type="text"
                           id="occupation"
@@ -651,7 +651,7 @@ export default function Form() {
                       </div>
                       <div className="flex-1">
                         <label htmlFor="ethnic" className="mb-2 block">
-                          Dân tộc:
+                          Dân tộc
                         </label>
                         <SelectEthnic
                           control={ control }
@@ -665,10 +665,10 @@ export default function Form() {
                     <div className="mb-4 flex flex-col gap-4 md:flex-row">
                       <div className="flex-1">
                         <InputCustom
-                          label="CCCD/CMND"
+                          label="CCCD"
                           required
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập CCCD/CMND của bạn"
+                          placeholder="Nhập CCCD"
                           name="citizenIdentificationNumber"
                           type="text"
                           id="citizenIdentificationNumber"
@@ -677,12 +677,10 @@ export default function Form() {
                         />
                       </div>
                       <div className="flex-1">
-                        <label htmlFor="insuranceCode" className="mb-1 block">
-                          Bảo hiểm y tế:
-                        </label>
                         <InputCustom
+                          label="Bảo hiểm y tế"
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập BHYT của bạn"
+                          placeholder="Nhập BHYT"
                           name="insuranceCode"
                           type="text"
                           id="insuranceCode"
@@ -696,7 +694,7 @@ export default function Form() {
                         <InputCustom
                           label="Địa chỉ"
                           className="col-span-1 sm:col-span-1"
-                          placeholder="Nhập địa chỉ cụ thể của bạn"
+                          placeholder="Nhập địa chỉ cụ thể"
                           name="address"
                           type="text"
                           id="address"

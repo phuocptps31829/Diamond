@@ -18,7 +18,7 @@ const breadcrumbData = [
 ];
 
 export default function AccountantDashboard() {
-  useAuthRedirect(["STAFF_ACCOUNTANT", "SUPER_ADMIN"], "/admin/dashboard");
+  useAuthRedirect(["STAFF_ACCOUNTANT", "SUPER_ADMIN"]);
 
   const {
     data: revenueStatistics,

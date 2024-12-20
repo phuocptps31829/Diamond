@@ -74,7 +74,10 @@ const AuthComponent = () => {
             Cookies.set("refreshToken", data.refreshToken.token, {
                 expires: new Date(data.refreshToken.expires * 1000),
             });
-            getUserProfile();
+
+            setTimeout(() => {
+                getUserProfile();
+            }, 100);
         },
         onError: (err) => {
             console.log(err);

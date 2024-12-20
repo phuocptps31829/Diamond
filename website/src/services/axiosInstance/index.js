@@ -37,8 +37,10 @@ const interceptors = (axiosInstance) => {
 
   axiosInstance.interceptors.request.use((config) => {
     const accessToken = Cookies.get('accessToken');
+    console.log('accessToken', accessToken);
 
     if (accessToken && !config.headers.Authorization) {
+      console.log('accessToke222n', accessToken);
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
 
@@ -56,6 +58,7 @@ const interceptors = (axiosInstance) => {
         if (isRefreshing) {
           return new Promise((resolve) => {
             addRefreshSubscriber(token => {
+              console.log("this", token);
               originalRequest.headers.Authorization = `Bearer ${token}`;
               resolve(axiosInstance(originalRequest));
             });

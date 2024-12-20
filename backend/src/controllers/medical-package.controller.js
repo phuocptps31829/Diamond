@@ -10,6 +10,8 @@ module.exports = {
             let { branch, specialtyID, gender } = req.checkValueQuery;
             let noPaginated = req.query?.noPaginated === 'true';
 
+            console.log('sortOptions', sortOptions);
+
             const queryOptions = {
                 ...(branch ? {
                     branchID: {
@@ -53,6 +55,16 @@ module.exports = {
                 formattedMedicalPackages = formattedMedicalPackages.filter(package => {
                     return package.name.toLowerCase().includes(search.toLowerCase()) ||
                         package.specialty.name.toLowerCase().includes(search.toLowerCase());
+                });
+            }
+
+            if (sortOptions?.discountPrice === 1) {
+                formattedMedicalPackages = formattedMedicalPackages.sort((a, b) => {
+                    return a.services[0].discountPrice - b.services[0].discountPrice;
+                });
+            } else if (sortOptions?.discountPrice === -1) {
+                formattedMedicalPackages = formattedMedicalPackages.sort((a, b) => {
+                    return b.services[0].discountPrice - a.services[0].discountPrice;
                 });
             }
 

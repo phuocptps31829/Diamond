@@ -14,8 +14,7 @@ export const otherBookingSchema = z.object({
 
   phoneNumber: z
     .string()
-    .min(10, "Số điện thoại phải có ít nhất 10 ký tự")
-    .regex(/^\d+$/, "Số điện thoại chỉ được chứa các chữ số"),
+    .regex(/(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/, "Số điện thoại không hợp lệ"),
 
   gender: z.string().min(1, "Giới tính không được để trống!"),
 
@@ -24,7 +23,7 @@ export const otherBookingSchema = z.object({
   citizenIdentificationNumber: z
     .string()
     .min(1, "Số CCCD không được để trống!")
-    .regex(/^\d{9,12}$/, "Số CCCD phải là số có từ 9 đến 12 chữ số"),
+    .regex(/^\d{12}$/, "Số CCCD phải là số có 12 chữ số"),
 
   department: z.string().min(1, "Chi nhánh không được để trống!"),
 

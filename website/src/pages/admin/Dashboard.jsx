@@ -9,6 +9,7 @@ import NotFound from '@/components/ui/NotFound';
 import { appointmentApi } from '@/services/appointmentsApi';
 import { newsApi } from '@/services/newsApi';
 import { specialtyApi } from '@/services/specialtiesApi';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const breadcrumbData = [
     {
@@ -21,6 +22,8 @@ const breadcrumbData = [
 ];
 
 export default function Dashboard() {
+    useAuthRedirect(["ADMIN", "SUPER_ADMIN"]);
+
     const {
         data: upcomingAppointments,
         error: errorUpcomingAppointments,
