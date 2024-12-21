@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import {  useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import InputCustom from "@/components/ui/InputCustom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -33,7 +33,6 @@ const ContractsDoctorInternistAdd = () => {
     handleSubmit,
     formState: { errors },
     control,
-    reset,
   } = useForm({
     resolver: zodResolver(contractDoctorInternistSchema),
     defaultValues: {
