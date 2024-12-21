@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useSocket } from "@/hooks/useSocket";
 import Header from "./header";
 import Footer from "./Footer";
@@ -19,12 +19,23 @@ import notification_sound from "../../assets/audio/ui-hello-bells-om-fx-1-00-03.
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL;
 
 export default function AppLayout() {
+  const location = useLocation();
   const userProfile = useSelector((state) => state.auth.userProfile);
   const [showChat, setShowChat] = useState(false);
   const [connect, setConnect] = useState(false);
+  const pathNamePrev = useRef(location.pathname);
+  const userProfilePrev = useRef(userProfile);
   const { sendEvent, subscribe, socket } = useSocket(SOCKET_URL);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if ((location.pathname !== pathNamePrev.current) || (userProfilePrev.current !== userProfile)) {
+      setShowChat(false);
+      pathNamePrev.current = location.pathname;
+      userProfilePrev.current = userProfile;
+    } 
+  }, [location.pathname, userProfile]);
 
   useEffect(() => {
     if (!socket) return;
