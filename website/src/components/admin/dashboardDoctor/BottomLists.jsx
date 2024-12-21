@@ -182,7 +182,7 @@ export default function BottomLists({ dataAppointmentsByDoctor, loading }) {
                   <TableCell>{ formatDateTimeLocale(item.time, true) }</TableCell>
                   <TableCell>
                     <span className="max-w-[300px] truncate block">
-                      { item.service.name }
+                        { item.service?.name || item.medicalPackage?.name }
                     </span>
                   </TableCell>
                 </TableRow>
