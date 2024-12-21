@@ -9,7 +9,11 @@ export const AppointmentAdminSchema = z
     date: z.string().min(1, "Ngày khám không được để trống!"),
     doctor: z.string().min(1, "Bác sĩ không được để trống!"),
     time: z.string().min(1, "Thời gian khám không được để trống!"),
-    type: z.string().min(1, "Loại khám không được để trống!"),
+    type: z
+      .string()
+      .nonempty("Loại khám không được để trống!")
+      .min(5, "Loại hình khám phải có ít nhất 5 ký tự"),
+
     isServiceSelected: z.boolean(),
   })
   .refine(

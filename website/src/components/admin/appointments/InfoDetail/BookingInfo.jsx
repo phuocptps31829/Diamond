@@ -51,6 +51,7 @@ import { Card } from "@/components/ui/Card";
 import ServiceBooking from "./ServiceBooking";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useSelector } from "react-redux";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -118,7 +119,7 @@ const BookingInfo = ({ data }) => {
     paymentMutation.mutate({ id: bookingData._id, status: "PAID" });
   };
 
-  const { mutate: updateStatus } = useMutation({
+  const { mutate: updateStatus, isPending: isLoadingStatus } = useMutation({
     mutationFn: ({ id, status }) => invoicesApi.updateStatus(id, status),
     onSuccess: (id) => {
       toastUI("Chỉnh sửa trạng thái thành công", "success");
@@ -201,18 +202,19 @@ const BookingInfo = ({ data }) => {
 
   const isBookingTimePassed = new Date(bookingData.time) < new Date();
 
-  const { mutate: updateAppointmentWorkShedule } = useMutation({
-    mutationFn: ({ id, wordScheduleId }) =>
-      appointmentApi.updateAppointmentWorkShedule(id, wordScheduleId),
-    onSuccess: (id) => {
-      toastUI("Cập nhật lịch khám bác sĩ", "success");
-      queryClient.invalidateQueries("appointments", id);
-    },
-    onError: (err) => {
-      console.log(err);
-      toastUI("Cập nhật lịch khám bác sĩ không thành công", "error");
-    },
-  });
+  const { mutate: updateAppointmentWorkShedule, isPending: isLoadingDoctor } =
+    useMutation({
+      mutationFn: ({ id, wordScheduleId }) =>
+        appointmentApi.updateAppointmentWorkShedule(id, wordScheduleId),
+      onSuccess: (id) => {
+        toastUI("Cập nhật lịch khám bác sĩ thành công", "success");
+        queryClient.invalidateQueries("appointments", id);
+      },
+      onError: (err) => {
+        console.log(err);
+        toastUI("Cập nhật lịch khám bác sĩ không thành công", "error");
+      },
+    });
 
   return (
     <div className="w-full">
@@ -231,26 +233,29 @@ const BookingInfo = ({ data }) => {
           {bookingData.orderNumber.priority !== undefined && (
             <div
               className={`flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1 ${
-                profile.role.name === "DOCTOR"
+                profile.role.name === "DOCTOR" || isPending
                   ? "pointer-events-none opacity-50"
                   : ""
               }`}
             >
               <FcHighPriority className="text-xl" />
               {isPending ? (
-                <AiOutlineLoading3Quarters className="animate-spin" />
+                <span className="flex flex-nowrap items-center gap-2">
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                  Đang xử lí
+                </span>
               ) : (
-                <strong className="font-medium text-primary-900">
+                <strong
+                  className="font-medium text-primary-900"
+                  style={{ visibility: isPending ? "hidden" : "visible" }}
+                >
                   Số ưu tiên : {bookingData.orderNumber?.priority}
                 </strong>
               )}
 
               <Dialog>
                 <DialogTrigger>
-                  <FaRegEdit
-                    className="ml-1 cursor-pointer text-xl text-black"
-                    d
-                  />
+                  <FaRegEdit className="ml-1 cursor-pointer text-xl text-black" />
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
@@ -270,8 +275,12 @@ const BookingInfo = ({ data }) => {
                   </div>
                   <DialogFooter>
                     <DialogClose asChild>
-                      <Button variant="custom" onClick={handleSave}>
-                        Lưu
+                      <Button
+                        variant="custom"
+                        onClick={handleSave}
+                        disabled={isPending}
+                      >
+                        {isPending ? "Đang lưu..." : "Lưu"}
                       </Button>
                     </DialogClose>
                   </DialogFooter>
@@ -284,7 +293,8 @@ const BookingInfo = ({ data }) => {
           <FaUserInjured className="text-xl text-primary-500" />
           <span className="font-medium text-primary-900"> Bệnh nhân :</span>
           <strong className="">
-            {profile.role.name === "DOCTOR" ? (
+            {profile.role?.name === "DOCTOR" ||
+            profile.role?.name === "STAFF_RECEPTIONIST" ? (
               <span className="font-semibold text-primary-900 underline">
                 {bookingData.patient.fullName}
               </span>
@@ -368,7 +378,7 @@ const BookingInfo = ({ data }) => {
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">Chi nhánh:</strong>{" "}
-              {bookingData.branch.name}
+              {bookingData.branch?.name}
             </p>
 
             <p className="text-gray-600">
@@ -384,20 +394,20 @@ const BookingInfo = ({ data }) => {
             <p className="text-gray-600">
               <strong className="font-medium text-black">Tổng giá:</strong>{" "}
               {formatCurrency(
-                bookingData.invoice.price + bookingData.invoice.arisePrice
+                bookingData?.invoice?.price + bookingData?.invoice?.arisePrice
               )}
             </p>
             <p className="text-red-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{" "}
-              {formatCurrency(bookingData.invoice.arisePrice || 0)}
+              {formatCurrency(bookingData?.invoice?.arisePrice || 0)}
             </p>
             <p className="text-gray-600">
               <strong className="font-medium text-black">
                 Phương thức thanh toán:
               </strong>{" "}
-              {bookingData.payment.method === "COD"
+              {bookingData?.payment?.method === "COD"
                 ? "Tại phòng khám"
-                : bookingData.payment.method}
+                : bookingData.payment?.method}
             </p>
 
             <div className="flex w-max items-center justify-center gap-2">
@@ -416,27 +426,37 @@ const BookingInfo = ({ data }) => {
               </p>
 
               <div className=" ">
-                <Select
-                  disabled={
-                    profile.role.name === "DOCTOR" ||
-                    bookingData.status === "CANCELLED" ||
-                    bookingData.status === "EXAMINED"
-                  }
-                  className="w-full"
-                  value={bookingData.status}
-                  onValueChange={handleChangeStatus}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn trạng thái" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {isLoadingStatus ? (
+                  <div>
+                    <Skeleton className="h-8 w-32 place-content-center text-center">
+                      <div className="w-full text-center">
+                        <AiOutlineLoading3Quarters className="w-full animate-spin" />
+                      </div>
+                    </Skeleton>
+                  </div>
+                ) : (
+                  <Select
+                    disabled={
+                      profile.role.name === "DOCTOR" ||
+                      bookingData.status === "CANCELLED" ||
+                      bookingData.status === "EXAMINED"
+                    }
+                    className="w-full"
+                    value={bookingData.status}
+                    onValueChange={handleChangeStatus}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Chọn trạng thái" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {statusOptions.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
             <p className="text-gray-600">
@@ -448,30 +468,43 @@ const BookingInfo = ({ data }) => {
                 Thay đổi bác sĩ :
               </strong>
               <div className=" ">
-                <Select
-                  disabled={
-                    profile.role.name === "DOCTOR" ||
-                    bookingData.status === "CANCELLED" ||
-                    isBookingTimePassed
-                  }
-                  className="w-full"
-                  onValueChange={handleChangeDoctor}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Chọn bác sĩ" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableDoctors?.map((option) => (
-                      <SelectItem
-                        key={option._id}
-                        value={option._id}
-                        className="cursor-pointer"
-                      >
-                        {option.fullName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {isLoadingDoctor ? (
+                  <div>
+                    <Skeleton className="h-8 w-32 place-content-center text-center">
+                      <div className="w-full text-center">
+                        <AiOutlineLoading3Quarters className="w-full animate-spin" />
+                      </div>
+                    </Skeleton>
+                  </div>
+                ) : (
+                  <Select
+                    disabled={
+                      availableDoctors?.length === 0 ||
+                      profile.role.name === "DOCTOR" ||
+                      profile.role.name === "STAFF_RECEPTIONIST" ||
+                      bookingData.status === "CANCELLED" ||
+                      bookingData.status === "EXAMINED" ||
+                      isBookingTimePassed
+                    }
+                    className="w-full"
+                    onValueChange={handleChangeDoctor}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Chọn bác sĩ" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableDoctors?.map((option) => (
+                        <SelectItem
+                          key={option._id}
+                          value={option._id}
+                          className="cursor-pointer"
+                        >
+                          {option.fullName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
             </div>
           </div>
@@ -510,7 +543,7 @@ const BookingInfo = ({ data }) => {
                         <div className="mb-4 mt-2">
                           <strong>Dịch vụ:</strong>{" "}
                           <span className="text-primary-500">
-                            {result.service.name || "Không có dịch vụ"}
+                            {result.service?.name || "Không có dịch vụ"}
                           </span>
                         </div>
                         <div className="my-4">
@@ -572,7 +605,7 @@ const BookingInfo = ({ data }) => {
                           </strong>{" "}
                         </div>
                         <span className="my-3 ml-1 block text-gray-700">
-                          {result.prescription.advice}
+                          {result.prescription?.advice}
                         </span>
                         <div className="my-2 flex items-center justify-start">
                           <div className="flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
@@ -583,50 +616,52 @@ const BookingInfo = ({ data }) => {
                           </div>
                         </div>
                         <ul className="ml-4">
-                          {result.prescription.medicines.map((medicine, i) => (
-                            <React.Fragment key={medicine._id}>
-                              {i !== 0 && (
-                                <div className="my-3 border border-dashed border-primary-200"></div>
-                              )}
-                              <li className="mt-2 flex flex-col gap-2">
-                                <ul className="ml-4 list-disc text-gray-600">
-                                  <li>
-                                    <strong className="font-medium text-black">
-                                      Tên thuốc:
-                                    </strong>{" "}
-                                    {medicine.name} - {medicine.unit}
-                                  </li>
-                                  <li>
-                                    <strong className="font-medium text-black">
-                                      Thành phần:
-                                    </strong>{" "}
-                                    {medicine.ingredients}
-                                  </li>
-                                  <li>
-                                    <strong className="font-medium text-black">
-                                      Hướng dẫn:
-                                    </strong>{" "}
-                                    {medicine.instruction}
-                                  </li>
-                                  <li>
-                                    <strong className="font-medium text-black">
-                                      Tác dụng phụ:
-                                    </strong>{" "}
-                                    {medicine.sideEffects}
-                                  </li>
-                                  <li className="text-black">
-                                    <strong className="font-medium text-black">
-                                      Lưu ý:
-                                    </strong>{" "}
-                                    <span className="text-red-500">
-                                      {" "}
-                                      {medicine.note}
-                                    </span>
-                                  </li>
-                                </ul>
-                              </li>
-                            </React.Fragment>
-                          ))}
+                          {result.prescription?.medicines?.map(
+                            (medicine, i) => (
+                              <React.Fragment key={medicine._id}>
+                                {i !== 0 && (
+                                  <div className="my-3 border border-dashed border-primary-200"></div>
+                                )}
+                                <li className="mt-2 flex flex-col gap-2">
+                                  <ul className="ml-4 list-disc text-gray-600">
+                                    <li>
+                                      <strong className="font-medium text-black">
+                                        Tên thuốc:
+                                      </strong>{" "}
+                                      {medicine.name} - {medicine.unit}
+                                    </li>
+                                    <li>
+                                      <strong className="font-medium text-black">
+                                        Thành phần:
+                                      </strong>{" "}
+                                      {medicine.ingredients}
+                                    </li>
+                                    <li>
+                                      <strong className="font-medium text-black">
+                                        Hướng dẫn:
+                                      </strong>{" "}
+                                      {medicine.instruction}
+                                    </li>
+                                    <li>
+                                      <strong className="font-medium text-black">
+                                        Tác dụng phụ:
+                                      </strong>{" "}
+                                      {medicine.sideEffects}
+                                    </li>
+                                    <li className="text-black">
+                                      <strong className="font-medium text-black">
+                                        Lưu ý:
+                                      </strong>{" "}
+                                      <span className="text-red-500">
+                                        {" "}
+                                        {medicine.note}
+                                      </span>
+                                    </li>
+                                  </ul>
+                                </li>
+                              </React.Fragment>
+                            )
+                          )}
                         </ul>
                       </div>
                     )}

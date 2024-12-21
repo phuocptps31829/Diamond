@@ -173,7 +173,7 @@ const ServicesAdd = () => {
                 <div className="w-full">
                   <Label
                     htmlFor="specialtyID"
-                    className="mb-2 block text-sm font-medium leading-none text-gray-700"
+                    className="mb-3 block text-sm font-medium leading-none text-gray-700"
                   >
                     Chuyên khoa:
                   </Label>
