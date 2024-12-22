@@ -52,6 +52,7 @@ import ServiceBooking from "./ServiceBooking";
 import { appointmentApi } from "@/services/appointmentsApi";
 import { useSelector } from "react-redux";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Badge } from "@/components/ui/Badge";
 
 const BookingInfo = ({ data }) => {
   const bookingData = data;
@@ -135,8 +136,6 @@ const BookingInfo = ({ data }) => {
     const date = new Date(timestamp);
     return date.toISOString().split("T")[0];
   };
-  console.log(data, "data");
-
   const extractTime = (timestamp) => {
     const date = new Date(timestamp);
     return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
@@ -160,17 +159,6 @@ const BookingInfo = ({ data }) => {
         hour: extractTime(bookingData.time),
       }),
   });
-
-  // useEffect(() => {
-  //   if (bookingData.results.length > 0 && bookingData.status !== "EXAMINED") {
-  //     updateStatus({ id: bookingData._id, status: "EXAMINED" });
-  //   }
-  // }, [
-  //   bookingData.results.length,
-  //   bookingData.status,
-  //   bookingData._id,
-  //   updateStatus,
-  // ]);
 
   const handleChangeStatus = (status) => {
     if (status === "EXAMINED" && bookingData.results.length === 0) {
@@ -233,7 +221,10 @@ const BookingInfo = ({ data }) => {
           {bookingData.orderNumber.priority !== undefined && (
             <div
               className={`flex items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1 ${
-                profile.role.name === "DOCTOR" || isPending
+                profile.role.name === "DOCTOR" ||
+                bookingData.status === "CANCELLED" ||
+                isPending ||
+                bookingData.results.length > 0
                   ? "pointer-events-none opacity-50"
                   : ""
               }`}
@@ -300,7 +291,7 @@ const BookingInfo = ({ data }) => {
               </span>
             ) : (
               <Link
-                to={`/admin/patients/${bookingData.patient._id}`}
+                to={`/admin/patients/edit/${bookingData.patient._id}`}
                 className="font-semibold text-primary-900 underline"
               >
                 {bookingData.patient.fullName}
@@ -596,7 +587,7 @@ const BookingInfo = ({ data }) => {
                       </div>
                     </div>
 
-                    {result.prescription && (
+                    {result.prescription ? (
                       <div className="my-6 mt-1 rounded-md border-2 border-dashed border-primary-200 bg-[#fafdffdd] p-4">
                         <div className="flex w-fit items-center gap-1 rounded-md bg-primary-100/30 px-2 py-1">
                           <IoBulbOutline className="text-xl text-yellow-500" />
@@ -664,40 +655,47 @@ const BookingInfo = ({ data }) => {
                           )}
                         </ul>
                       </div>
+                    ) : (
+                      <div className="mb-5 w-full text-start">
+                        <Badge variant="outline" className="mt-2">
+                        ⛔ Không có đơn thuốc
+                        </Badge>
+                      </div>
                     )}
                   </div>
                 </Card>
               ))}
             </div>
             <div className="mt-5 flex w-full items-center justify-between gap-2">
-              {bookingData.results.length > 0 && (
-                <>
-                  <div className="">
-                    <Link
-                      target="blank"
-                      to={`${import.meta.env.VITE_CUD_API_URL}/prescriptions/export/${data.results[0].prescription._id}`}
-                    >
-                      <Button variant="primary" className="w-fit">
-                        Tải xuống đơn thuốc
-                        <svg
-                          className="ml-1 size-4"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                            strokeLinejoin="round"
-                            strokeLinecap="round"
-                          ></path>
-                        </svg>
-                      </Button>
-                    </Link>
-                  </div>
-                </>
-              )}
+              {bookingData.results.length > 0 ||
+                (bookingData.result[0]?.prescription?._id && (
+                  <>
+                    <div className="">
+                      <Link
+                        target="blank"
+                        to={`${import.meta.env.VITE_CUD_API_URL}/prescriptions/export/${data.results[0]?.prescription?._id}`}
+                      >
+                        <Button variant="primary" className="w-fit">
+                          Tải xuống đơn thuốc
+                          <svg
+                            className="ml-1 size-4"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                              strokeLinejoin="round"
+                              strokeLinecap="round"
+                            ></path>
+                          </svg>
+                        </Button>
+                      </Link>
+                    </div>
+                  </>
+                ))}
               {bookingData.results.length > 0 && (
                 <div>
                   <Link

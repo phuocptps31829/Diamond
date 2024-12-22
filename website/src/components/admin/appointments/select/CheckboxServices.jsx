@@ -10,8 +10,6 @@ const RadioServices = ({
   onChange,
   index,
   services,
-  onBeforeChange,
-  selectedService,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -39,11 +37,6 @@ const RadioServices = ({
             <RadioGroup
               value={field.value}
               onValueChange={(newValue) => {
-                if (onBeforeChange && !onBeforeChange(newValue)) {
-                  field.onChange(selectedService);
-                  return;
-                }
-
                 field.onChange(newValue);
                 if (onChange) {
                   onChange(newValue);

@@ -6,9 +6,7 @@ import SelectMedicine from "../select/SelectMedicine";
 import { Button } from "@/components/ui/Button";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import medicineResultSchema, {
-  validateData,
-} from "@/zods/admin/medicineResultSchema";
+import medicineResultSchema from "@/zods/admin/medicineResultSchema";
 import RadioServices from "../select/CheckboxServices";
 import Uploader from "../utils/Uploader";
 import { imageApi } from "@/services/imageApi";
@@ -33,8 +31,8 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
   const [loadingImage, setLoadingImage] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedService, setSelectedService] = useState(null);
-  const [validationError, setValidationError] = useState(null);
   const queryClient = useQueryClient();
+  console.log(serviceResults);
 
   const {
     handleSubmit,
@@ -46,6 +44,7 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     reset,
   } = useForm({
     resolver: zodResolver(medicineResultSchema),
+    mode: "onChange",
     defaultValues: {
       diagnosis: "",
       detail: "",
@@ -55,60 +54,49 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     },
   });
 
-
-  
-  
   const handleSelectService = async (serviceID) => {
     const currentValues = getValues();
 
     if (selectedService) {
-      const errors = validateData(currentValues);
-      if (errors.length > 0) {
-        setValidationError(errors[0]);
-        return;
-      }
       updateServiceResults(selectedService, currentValues);
     }
-
     setSelectedService(serviceID);
     populateFormFields(serviceID);
-    setValidationError(null);
-    
   };
   const updateServiceResults = (serviceID, values) => {
-    console.log("call updateServiceResults");
+    return new Promise((resolve) => {
+      setServiceResults((prevResults) => {
+        const existingResultIndex = prevResults.findIndex(
+          (result) => result.serviceID === serviceID
+        );
 
-    setServiceResults((prevResults) => {
-      const existingResultIndex = prevResults.findIndex(
-        (result) => result.serviceID === serviceID
-      );
+        const newResult = {
+          serviceID,
+          result: {
+            diagnosis: values.diagnosis,
+            detail: values.detail,
+            advice: values.advice,
+            images: values.images,
+          },
+          prescription: values.medicines,
+        };
 
-      const newResult = {
-        serviceID,
-        result: {
-          diagnosis: values.diagnosis,
-          detail: values.detail,
-          advice: values.advice,
-          images: values.images,
-        },
-        prescription: values.medicines,
-      };
+        const updatedResults =
+          existingResultIndex !== -1
+            ? prevResults.map((result, index) =>
+                index === existingResultIndex ? newResult : result
+              )
+            : [...prevResults, newResult];
 
-      if (existingResultIndex !== -1) {
-        const updatedResults = [...prevResults];
-        updatedResults[existingResultIndex] = newResult;
+        resolve(updatedResults);
         return updatedResults;
-      } else {
-        return [...prevResults, newResult];
-      }
+      });
     });
   };
-
   const populateFormFields = (serviceID) => {
     const selectedServiceResult = serviceResults.find(
       (result) => result.serviceID === serviceID
     );
-
     if (selectedServiceResult) {
       setValue("diagnosis", selectedServiceResult.result.diagnosis);
       setValue("detail", selectedServiceResult.result.detail);
@@ -142,7 +130,6 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     setIsOpenForm(false);
     setServiceResults([]);
     setSelectedService(null);
-    setValidationError(null);
     reset();
   };
 
@@ -150,10 +137,9 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
     control,
     name: "medicines",
   });
-console.log(medicines, "medicines");
 
   const addMedicine = () => {
-    const currentMedicines = getValues("medicines");
+    const currentMedicines = getValues("medicines") || [];
     const newMedicine = {
       id: Date.now(),
       medicineCategoryID: "",
@@ -164,6 +150,8 @@ console.log(medicines, "medicines");
     };
     setValue("medicines", [...currentMedicines, newMedicine], {
       shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
     });
     trigger("medicines");
   };
@@ -174,7 +162,6 @@ console.log(medicines, "medicines");
     setValue("medicines", updatedMedicines, { shouldValidate: true });
     trigger("medicines");
   };
-
 
   const handleSelectCategoryMedicine = (index, categoryID) => {
     const currentMedicines = getValues("medicines");
@@ -204,7 +191,10 @@ console.log(medicines, "medicines");
       try {
         await invoicesApi.updateStatus(bookingData._id, "EXAMINED");
         queryClient.invalidateQueries("appointments", bookingData._id);
-        toastUI("Đã thêm thành công kết quả khám và cập nhật trạng thái!", "success");
+        toastUI(
+          "Đã thêm thành công kết quả khám và cập nhật trạng thái!",
+          "success"
+        );
         closeForm();
       } catch (error) {
         toastUI("Đã xảy ra lỗi khi cập nhật trạng thái.", "error");
@@ -216,23 +206,73 @@ console.log(medicines, "medicines");
       console.error("Error creating appointment:", error);
     },
   });
+  const isServiceResultComplete = (serviceResult) => {
+    if (!serviceResult) return false;
 
-  const handleConfirmSave = async () => {
-    const currentValues = getValues();
-    if (selectedService) {
-      updateServiceResults(selectedService, currentValues);
+    if (
+      !serviceResult.result?.diagnosis?.trim() ||
+      !serviceResult.result?.detail?.trim() ||
+      !serviceResult.result?.advice?.trim()
+    ) {
+      return false;
     }
 
-    const isValid = await trigger();
-    console.log("isValid", isValid);
+    if (serviceResult.prescription && serviceResult.prescription.length > 0) {
+      const hasMedicineErrors = serviceResult.prescription.some(
+        (medicine) =>
+          !medicine.medicineCategoryID ||
+          !medicine.medicineID ||
+          !medicine.quantity ||
+          !medicine.usage?.trim()
+      );
+      return !hasMedicineErrors;
+    }
 
-    if (isValid) {
-      setOpen(true);
-    } else {
-      setOpen(false);
+    return true;
+  };
+  const handleConfirmSave = async () => {
+    try {
+      const currentValues = getValues();
+      let updatedServiceResults = serviceResults;
+
+      if (selectedService) {
+        // Đợi cho updateServiceResults hoàn tất
+        updatedServiceResults = await updateServiceResults(
+          selectedService,
+          currentValues
+        );
+      }
+
+      const allServices = bookingData.medicalPackage?.services || [];
+      const missingServices = allServices.filter((service) => {
+        const serviceResult = updatedServiceResults.find(
+          (result) => result.serviceID === service._id
+        );
+        return !isServiceResultComplete(serviceResult);
+      });
+
+      if (missingServices.length > 0) {
+        const missingServiceNames = missingServices
+          .map((service) => service.name)
+          .join(", ");
+        toastUI(
+          `Vui lòng điền đầy đủ thông tin cho các dịch vụ: ${missingServiceNames}`,
+          "error"
+        );
+        return;
+      }
+
+      const isValid = await trigger();
+      if (isValid) {
+        setOpen(true);
+      } else {
+        setOpen(false);
+      }
+    } catch (error) {
+      console.error("Error in handleConfirmSave:", error);
+      toastUI("Đã xảy ra lỗi khi lưu kết quả", "error");
     }
   };
-
   const uploadServiceImages = async (images) => {
     if (images.length === 0) return [];
 
@@ -252,6 +292,26 @@ console.log(medicines, "medicines");
   };
 
   const onSubmit = async () => {
+    const allServices = bookingData.medicalPackage?.services || [];
+    const missingServices = allServices.filter((service) => {
+      const serviceResult = serviceResults.find(
+        (result) => result.serviceID === service._id
+      );
+      return !isServiceResultComplete(serviceResult);
+    });
+
+    if (missingServices.length > 0) {
+      const missingServiceNames = missingServices
+        .map((service) => service.name)
+        .join(", ");
+      toastUI(
+        `Vui lòng điền đầy đủ thông tin cho các dịch vụ: ${missingServiceNames}`,
+        "error"
+      );
+      setOpen(false);
+      return;
+    }
+
     setOpen(false);
     setLoadingImage(true);
 
@@ -274,11 +334,7 @@ console.log(medicines, "medicines");
       setServiceResults(updatedServiceResults);
       const dataAll = {
         payload: updatedServiceResults.map((serviceResult) => {
-          const totalMedicinePrice = serviceResult.prescription.reduce((total, medicine) => {
-            return total + medicine.price * medicine.quantity;
-          }, 0);
-      
-          return {
+          const resultData = {
             result: {
               appointmentID: bookingData._id,
               serviceID: serviceResult.serviceID,
@@ -286,35 +342,37 @@ console.log(medicines, "medicines");
               images: serviceResult.result.images,
               description: serviceResult.result.detail,
             },
-            prescription: {
-              price: totalMedicinePrice,
-              advice: serviceResult.result.advice,
-              medicines: serviceResult.prescription.map((medicine) => ({
-                medicineID: medicine.medicineID,
-                quantity: medicine.quantity,
-                dosage: medicine.usage,
-              })),
-            },
           };
-        })
-      };
 
+          if (serviceResult.prescription?.length > 0) {
+            const totalMedicinePrice = serviceResult.prescription.reduce(
+              (total, medicine) => total + medicine.price * medicine.quantity,
+              0
+            );
+
+            return {
+              ...resultData,
+              prescription: {
+                price: totalMedicinePrice,
+                advice: serviceResult.result.advice,
+                medicines: serviceResult.prescription.map((medicine) => ({
+                  medicineID: medicine.medicineID,
+                  quantity: medicine.quantity,
+                  dosage: medicine.usage,
+                })),
+              },
+            };
+          }
+
+          return resultData;
+        }),
+      };
       mutation.mutate(dataAll);
     } catch (error) {
       console.error("Error in onSubmit:", error);
     } finally {
       setLoadingImage(false);
     }
-  };
-  const canChangeService = () => {
-    if (!selectedService) return true;
-    const currentValues = getValues();
-    const errors = validateData(currentValues);
-    if (errors.length > 0) {
-      setValidationError(errors[0]);
-      return false;
-    }
-    return true;
   };
 
   return (
@@ -331,16 +389,7 @@ console.log(medicines, "medicines");
                 name="serviceID"
                 onChange={handleSelectService}
                 control={control}
-                onBeforeChange={canChangeService}
-                selectedService={selectedService}
               />
-              <div className="">
-                {validationError && (
-                  <span className="text-sm text-red-500">
-                    {validationError}
-                  </span>
-                )}
-              </div>
             </div>
 
             <div className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 max-h-[600px] w-[70%] space-y-4 overflow-y-auto px-2 pl-7">
