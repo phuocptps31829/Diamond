@@ -3,7 +3,7 @@ import BreadcrumbCustom from "@/components/ui/BreadcrumbCustom";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const NewsDetailPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
   const breadcrumbData = [
     {

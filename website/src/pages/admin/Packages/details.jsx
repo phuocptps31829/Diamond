@@ -27,7 +27,7 @@ const initialBreadcrumbData = [
 ];
 
 const PackageDetailPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
     const { id } = useParams();
     const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);

@@ -16,7 +16,7 @@ const breadcrumbData = [
 ];
 
 const ListRolePage = () => {
-    useAuthRedirect(["SUPER_ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN"]);
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['roles'],

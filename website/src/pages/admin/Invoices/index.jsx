@@ -13,7 +13,7 @@ const breadcrumbData = [
 ];
 
 const InvoicesListPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "STAFF_ACCOUNTANT"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "STAFF_ACCOUNTANT"]);
 
   return (
     <div>

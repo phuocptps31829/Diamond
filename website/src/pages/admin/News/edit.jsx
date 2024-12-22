@@ -13,7 +13,7 @@ const breadcrumbData = [
 ];
 
 const NewsEditPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
   return (
     <div>

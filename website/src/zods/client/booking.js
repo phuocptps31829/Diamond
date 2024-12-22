@@ -20,6 +20,12 @@ export const otherBookingSchema = z.object({
 
   dateOfBirth: z.string().min(1, "Ngày sinh không được để trống!"),
 
+  occupation: z.string().optional(),
+
+  ethnic: z.string().optional(),
+
+  insuranceCode: z.string().optional(),
+
   citizenIdentificationNumber: z
     .string()
     .min(1, "Số CCCD không được để trống!")

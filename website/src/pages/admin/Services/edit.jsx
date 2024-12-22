@@ -4,7 +4,7 @@ import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 import { useParams } from "react-router-dom";
 
 const ServicesEditPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
     const { id } = useParams();
 

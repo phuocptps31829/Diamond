@@ -17,7 +17,7 @@ const breadcrumbData = [
 ];
 
 const ContractsAddPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
   const { type } = useParams();
 

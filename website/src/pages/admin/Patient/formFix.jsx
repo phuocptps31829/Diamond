@@ -22,7 +22,7 @@ const initialBreadcrumbData = [
 ];
 
 const PatientsFormFixPage = () => {
-    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+    useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"]);
 
     const { id } = useParams();
     const [breadcrumbData, setBreadcrumbData] = useState(initialBreadcrumbData);

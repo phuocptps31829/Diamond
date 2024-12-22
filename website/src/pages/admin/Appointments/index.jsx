@@ -17,7 +17,7 @@ const AppointmentsListPage = () => {
     "SUPER_ADMIN",
     "ADMIN", "STAFF_RECEPTIONIST",
     "DOCTOR"
-  ], "/admin/dashboard");
+  ]);
 
   return (
     <div>

@@ -12,11 +12,11 @@ const breadcrumbData = [
 ];
 
 const MedicinesCategoriesListPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN"]);
 
   return (
     <>
-      <BreadcrumbCustom data={breadcrumbData} />
+      <BreadcrumbCustom data={ breadcrumbData } />
       <MedicinesCategoriesList />
     </>
   );

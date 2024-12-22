@@ -13,7 +13,7 @@ const breadcrumbData = [
 ];
 
 const AppointmentsEditPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST", "DOCTOR"]);
 
   return (
     <div>

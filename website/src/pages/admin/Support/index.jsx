@@ -14,7 +14,7 @@ const breadcrumbData = [
 ];
 
 const SupportPage = () => {
-  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"], "/admin/dashboard");
+  useAuthRedirect(["SUPER_ADMIN", "ADMIN", "STAFF_RECEPTIONIST"]);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
