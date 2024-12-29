@@ -28,7 +28,7 @@ const MedicinesCategoriesFormAdd = () => {
     onSuccess: () => {
       reset();
       toast("Thêm mới danh mục thuốc thành công!", "success");
-      navigate("/admin/medicinesCategories/list");
+      navigate("/admin/medicines-categories/list");
     },
     onError: () => {
       toast("Thêm mới danh mục thuốc thất bại!", "error");

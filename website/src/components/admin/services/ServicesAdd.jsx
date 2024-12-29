@@ -47,7 +47,6 @@ const ServicesAdd = () => {
       minAge: 0,
     },
   });
-  console.log(errors);
 
   const handleSpecialtyChange = (specialtyId) => {
     console.log(specialtyId);

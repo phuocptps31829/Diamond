@@ -109,13 +109,13 @@ export default function StaffsFormAdd() {
               <div className="w-full grid-cols-1 md:flex md:gap-[20px]">
                 <div className="relative md:mb-1 md:w-1/2 xl:mb-[4px] 2xl:mb-3">
                   <InputCustom
-                    label={ "Họ và tên người dùng" }
+                    label={ "Họ và tên nhân viên" }
                     required
                     className="col-span-1 sm:col-span-1"
                     name="staffName"
                     type="text"
                     id="staffName"
-                    placeholder="Nhập họ và tên bệnh nhân"
+                    placeholder="Nhập họ và tên nhân viên"
                     control={ control }
                     errors={ errors }
                   />

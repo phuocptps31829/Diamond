@@ -28,7 +28,7 @@ export default function SelectSpecialty({
 }) {
   const [open, setOpen] = React.useState(false);
   const {
-    data: specialties,
+    data: specialties = [],
     error,
     isLoading,
   } = useQuery({
@@ -40,9 +40,10 @@ export default function SelectSpecialty({
     return <Skeleton className="h-10 w-full" />;
   }
 
-  if (error) {
-    return <div> Lỗi khi tải chuyên khoa</div>;
+  if (error || !Array.isArray(specialties)) {
+    return <div>Lỗi khi tải chuyên khoa hoặc dữ liệu không hợp lệ</div>;
   }
+
   return (
     <div>
       <Controller
@@ -75,7 +76,7 @@ export default function SelectSpecialty({
               <Command className="text-left">
                 <CommandList>
                   <CommandGroup>
-                    {specialties.map((specialty) => (
+                    {specialties?.map((specialty) => (
                       <CommandItem
                         key={specialty._id}
                         value={specialty._id}

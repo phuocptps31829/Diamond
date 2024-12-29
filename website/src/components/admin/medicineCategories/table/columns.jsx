@@ -13,7 +13,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4 lowercase">
         <span className="w-full whitespace-nowrap text-center">
-          { pageIndex * pageSize + row.index + 1 }
+          {pageIndex * pageSize + row.index + 1}
         </span>
       </div>
     ),
@@ -24,7 +24,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Tên danh mục thuốc
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -33,7 +33,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
     cell: ({ row }) => (
       <div className="flex items-center gap-3 py-4">
         <span className="w-full whitespace-nowrap font-medium">
-          { row.original.name }
+          {row.original.name}
         </span>
       </div>
     ),
@@ -44,7 +44,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Ngày tạo
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -61,7 +61,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
         second: "2-digit",
       });
 
-      return <div>{ formattedDate }</div>;
+      return <div className="whitespace-nowrap">{formattedDate}</div>;
     },
   },
   {
@@ -70,19 +70,19 @@ export const columnsSchedule = (pageIndex, pageSize) => [
       <Button
         className="px-0 text-base"
         variant="ghost"
-        onClick={ () => column.toggleSorting(column.getIsSorted() === "asc") }
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Số lượng thuốc
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="">{ row.original?.totalMedicines }</div>;
+      return <div className="">{row.original?.totalMedicines}</div>;
     },
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <ActionMenu row={ row } />,
+    cell: ({ row }) => <ActionMenu row={row} />,
   },
 ];

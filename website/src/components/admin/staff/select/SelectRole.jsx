@@ -26,7 +26,7 @@ export default function SelectRole({
 
   const roles = [
     { _id: "66fccab9682b8e25c2dc43a5", name: "Nhân viên Tiếp nhận" },
-    { _id: "66fcc996682b8e25c2dc43a2", name: "Nhân viên Editor" },
+    // { _id: "66fcc996682b8e25c2dc43a2", name: "Nhân viên Editor" },
     { _id: "6721089fcb8947c1b985365f", name: "Nhân viên Kế toán" },
   ];
 
