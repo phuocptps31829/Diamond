@@ -157,34 +157,34 @@ export default function MainHeader() {
     enabled: !!userProfile,
   });
 
-  if (isLoading) {
-    return (
-      <div className="w-full bg-white/70 backdrop-blur-md">
-        <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
-          <Skeleton className="h-10 w-56 rounded-md" />
-          <div className="hidden lg:block">
-            <ul className="flex items-center justify-center space-x-4">
-              {Array(4)
-                .fill(null)
-                .map((_, idx) => (
-                  <li key={idx}>
-                    <Skeleton className="h-6 w-20 rounded-md" />
-                  </li>
-                ))}
-              <li>
-                <Skeleton className="h-6 w-6 rounded-md" />
-              </li>
-            </ul>
-          </div>
+  // if (isLoading) {
+  //   return (
+  //     <div className="w-full bg-white/70 backdrop-blur-md">
+  //       <div className="mx-auto flex max-w-screen-xl items-center justify-between px-3 py-1 md:px-5">
+  //         <Skeleton className="h-10 w-56 rounded-md" />
+  //         <div className="hidden lg:block">
+  //           <ul className="flex items-center justify-center space-x-4">
+  //             {Array(4)
+  //               .fill(null)
+  //               .map((_, idx) => (
+  //                 <li key={idx}>
+  //                   <Skeleton className="h-6 w-20 rounded-md" />
+  //                 </li>
+  //               ))}
+  //             <li>
+  //               <Skeleton className="h-6 w-6 rounded-md" />
+  //             </li>
+  //           </ul>
+  //         </div>
 
-          <div className="flex items-center space-x-3">
-            <Skeleton className="h-6 w-6 rounded-lg" />
-            <Skeleton className="h-6 w-6 rounded-lg" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  //         <div className="flex items-center space-x-3">
+  //           <Skeleton className="h-6 w-6 rounded-lg" />
+  //           <Skeleton className="h-6 w-6 rounded-lg" />
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   const notifications = data?.data || [];
   const allNotificationsRead = notifications.every(
@@ -258,160 +258,173 @@ export default function MainHeader() {
               </li>
             ))}
             <li className="px-5">|</li>
-            {userProfile && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild className="">
-                  <button
-                    className="relative !mr-1 hidden lg:block"
-                    onClick={toggleDropdown}
-                  >
-                    {notifications.length > 0 && !allNotificationsRead && (
-                      <span className="absolute right-0 flex h-3 w-3">
-                        <span
-                          className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
-                          style={{ animationDuration: "2s" }}
-                        ></span>
-                        <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
-                      </span>
-                    )}
-                    <FaBell size={25} color="#007BBB" />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="bottom"
-                  className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 positionFixed mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
-                >
-                  <DropdownMenuLabel className="text-base font-semibold dark:text-white">
-                    Thông báo
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="mb-4" />
-                  <AnimatedList baseDelay={1000} minDelay={100}>
-                    {notifications.length === 0 ? (
-                      <div className="my-3 text-center text-gray-500 dark:text-gray-400">
-                        Bạn không có thông báo nào
-                      </div>
-                    ) : (
-                      notifications.map((item, idx) => (
-                        <DropdownMenuItem asChild key={idx} className="">
-                          <Notification {...item} />
-                        </DropdownMenuItem>
-                      ))
-                    )}
-                  </AnimatedList>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
-            <li className="h-auto">
-              {userProfile ? (
-                <div className="relative">
+            {isLoading ? (
+                <div className="flex items-center space-x-3">
+                  <Skeleton className="h-8 w-8 rounded-lg" />
+                  <div className="flex flex-col gap-1">
+                    <Skeleton className="h-4 w-20 rounded-lg" />
+                    <Skeleton className="h-4 w-12 rounded-lg" />
+                  </div>
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                </div>
+            ) : (
+              <>
+                {userProfile && (
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="flex w-full items-center justify-center">
-                      <div className="mx-3 flex flex-col items-start justify-center">
-                        <p>Xin chào</p>
-                        <p>{userProfile?.fullName.split(" ").at(-1)} </p>
-                      </div>
-                      <div className="relative">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage
-                            className="w-full h-full cursor-pointer object-cover"
-                            src={
-                              userProfile?.avatar
-                                ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
-                                : "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
-                            }
-                          />
-                        </Avatar>
-                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
-                      </div>
+                    <DropdownMenuTrigger asChild className="">
+                      <button
+                        className="relative !mr-1 hidden lg:block"
+                        onClick={toggleDropdown}
+                      >
+                        {notifications.length > 0 && !allNotificationsRead && (
+                          <span className="absolute right-0 flex h-3 w-3">
+                            <span
+                              className="absolute -left-[2px] -top-[2px] inline-flex h-4 w-4 animate-ping rounded-full bg-[#13D6CB] opacity-75"
+                              style={{ animationDuration: "2s" }}
+                            ></span>
+                            <span className="relative inline-flex h-3 w-3 rounded-full bg-[#13D6CB]"></span>
+                          </span>
+                        )}
+                        <FaBell size={25} color="#007BBB" />
+                      </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="mt-1">
-                      <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <Link to={"/profile/information"}>
-                        <DropdownMenuItem>
-                          <FaRegUser className="mr-2" />
-                          Thông tin
-                        </DropdownMenuItem>
-                      </Link>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleLogout}>
-                        <FaPowerOff className="mr-2" />
-                        Đăng xuất
-                      </DropdownMenuItem>
+                    <DropdownMenuContent
+                      side="bottom"
+                      className="scrollbar-thin scrollbar-thumb-primary-500 scrollbar-track-gray-200 positionFixed mt-[0.9rem] max-h-[400px] w-[400px] overflow-y-auto rounded-xl bg-white p-4 shadow-lg dark:bg-gray-800"
+                    >
+                      <DropdownMenuLabel className="text-base font-semibold dark:text-white">
+                        Thông báo
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator className="mb-4" />
+                      <AnimatedList baseDelay={1000} minDelay={100}>
+                        {notifications.length === 0 ? (
+                          <div className="my-3 text-center text-gray-500 dark:text-gray-400">
+                            Bạn không có thông báo nào
+                          </div>
+                        ) : (
+                          notifications.map((item, idx) => (
+                            <DropdownMenuItem asChild key={idx} className="">
+                              <Notification {...item} />
+                            </DropdownMenuItem>
+                          ))
+                        )}
+                      </AnimatedList>
                     </DropdownMenuContent>
                   </DropdownMenu>
-
-                  {/* {hasAppointments && (
-                    <TooltipProvider>
-                      <Tooltip open={isTooltipOpen}>
-                        <TooltipTrigger asChild>
-                          <div
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
-                          >
-                            <Badge
-                              variant="destructive"
-                              className="absolute -right-2 -top-2 z-20 flex h-5 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
-                            >
-                              {appointments.length}
-                            </Badge>
+                )}
+                <li className="h-auto">
+                  {userProfile ? (
+                    <div className="relative">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="flex w-full items-center justify-center">
+                          <div className="mx-3 flex flex-col items-start justify-center">
+                            <p>Xin chào</p>
+                            <p>{userProfile?.fullName.split(" ").at(-1)} </p>
                           </div>
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="bottom"
-                          className="bottom mt-[9px] rounded-xl border border-gray-200 p-0 shadow-2xl"
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          <div className="max-w-xs bg-white p-4">
-                            <div className="mb-2 flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <IoCalendarOutline className="h-5 w-5 text-primary-500" />
-                                <h3 className="text-sm font-semibold text-black">
-                                  Lịch hẹn khám bệnh
-                                </h3>
-                              </div>
-                              <Link
-                                to="/appointments"
-                                className="ml-1 rounded-full p-1 text-primary-500 transition-colors hover:bg-gray-100 hover:text-primary-700"
-                                aria-label="Xem chi tiết lịch hẹn"
+                          <div className="relative">
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage
+                                className="w-full h-full cursor-pointer object-cover"
+                                src={
+                                  userProfile?.avatar
+                                    ? `${import.meta.env.VITE_IMAGE_API_URL}/${userProfile?.avatar}`
+                                    : "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
+                                }
+                              />
+                            </Avatar>
+                            <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-500 ring-2 ring-white" />
+                          </div>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="mt-1">
+                          <DropdownMenuLabel>Tài khoản</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <Link to={"/profile/information"}>
+                            <DropdownMenuItem>
+                              <FaRegUser className="mr-2" />
+                              Thông tin
+                            </DropdownMenuItem>
+                          </Link>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={handleLogout}>
+                            <FaPowerOff className="mr-2" />
+                            Đăng xuất
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+    
+                      {/* {hasAppointments && (
+                        <TooltipProvider>
+                          <Tooltip open={isTooltipOpen}>
+                            <TooltipTrigger asChild>
+                              <div
+                                onMouseEnter={handleMouseEnter}
+                                onMouseLeave={handleMouseLeave}
                               >
-                                <FaExternalLinkAlt className="h-4 w-4" />
-                              </Link>
-                            </div>
-                            {hasAppointments ? (
-                              <ul className="space-y-2">
-                                {appointments.map((appointment) => (
-                                  <li key={appointment.id} className="text-sm">
-                                    <p className="text-start font-medium text-black">
-                                      {appointment.date} - {appointment.time}
-                                    </p>
-                                    <p className="text-start text-gray-600">
-                                      Bác sĩ: {appointment.doctor}
-                                    </p>
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              <p className="text-sm text-gray-600">
-                                Bạn không có lịch hẹn nào.
-                              </p>
-                            )}
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )} */}
-                </div>
-              ) : (
-                <Link
-                  to={"/login"}
-                  className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white"
-                >
-                  Đăng nhập
-                </Link>
-              )}
-            </li>
+                                <Badge
+                                  variant="destructive"
+                                  className="absolute -right-2 -top-2 z-20 flex h-5 w-4 cursor-pointer items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white"
+                                >
+                                  {appointments.length}
+                                </Badge>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="bottom"
+                              className="bottom mt-[9px] rounded-xl border border-gray-200 p-0 shadow-2xl"
+                              onMouseEnter={handleMouseEnter}
+                              onMouseLeave={handleMouseLeave}
+                            >
+                              <div className="max-w-xs bg-white p-4">
+                                <div className="mb-2 flex items-center justify-between">
+                                  <div className="flex items-center space-x-2">
+                                    <IoCalendarOutline className="h-5 w-5 text-primary-500" />
+                                    <h3 className="text-sm font-semibold text-black">
+                                      Lịch hẹn khám bệnh
+                                    </h3>
+                                  </div>
+                                  <Link
+                                    to="/appointments"
+                                    className="ml-1 rounded-full p-1 text-primary-500 transition-colors hover:bg-gray-100 hover:text-primary-700"
+                                    aria-label="Xem chi tiết lịch hẹn"
+                                  >
+                                    <FaExternalLinkAlt className="h-4 w-4" />
+                                  </Link>
+                                </div>
+                                {hasAppointments ? (
+                                  <ul className="space-y-2">
+                                    {appointments.map((appointment) => (
+                                      <li key={appointment.id} className="text-sm">
+                                        <p className="text-start font-medium text-black">
+                                          {appointment.date} - {appointment.time}
+                                        </p>
+                                        <p className="text-start text-gray-600">
+                                          Bác sĩ: {appointment.doctor}
+                                        </p>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <p className="text-sm text-gray-600">
+                                    Bạn không có lịch hẹn nào.
+                                  </p>
+                                )}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      )} */}
+                    </div>
+                  ) : (
+                    <Link
+                      to={"/login"}
+                      className="rounded-lg bg-primary-500 px-5 py-3 uppercase text-white"
+                    >
+                      Đăng nhập
+                    </Link>
+                  )}
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </div>

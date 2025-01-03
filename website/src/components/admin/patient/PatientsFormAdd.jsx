@@ -142,7 +142,7 @@ export default function PatientFormAdd() {
                     name="fullName"
                     type="text"
                     id="fullName"
-                    placeholder="Nhập họ và tên bệnh nhân"
+                    placeholder="Nhập họ và tên"
                     control={ control }
                     errors={ errors }
                   />
