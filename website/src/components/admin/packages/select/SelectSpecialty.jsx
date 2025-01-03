@@ -21,7 +21,7 @@ import { specialtyApi } from "@/services/specialtiesApi";
 export default function SelectSpecialty({ control, name, errors, disabled }) {
   const [open, setOpen] = React.useState(false);
   const {
-    data: specialties,
+    data: specialties = [],
     error,
     isLoading,
   } = useQuery({
@@ -33,34 +33,34 @@ export default function SelectSpecialty({ control, name, errors, disabled }) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error loading specialties</div>;
+  if (error || !Array.isArray(specialties)) {
+    return <div>Lỗi khi tải chuyên khoa</div>;
   }
   return (
     <div>
       <Controller
-        control={ control }
-        name={ name }
-        rules={ { required: "Chọn chuyên khoa" } }
-        render={ ({ field }) => (
-          <Popover open={ open } onOpenChange={ setOpen }>
+        control={control}
+        name={name}
+        rules={{ required: "Chọn chuyên khoa" }}
+        render={({ field }) => (
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={ open }
-                className={ cn(
-                  "w-full justify-between py-[21px] shadow-none border border-gray-300",
-                  errors[name] && "",
-                ) }
-                disabled={ disabled }
+                aria-expanded={open}
+                className={cn(
+                  "w-full justify-between border border-gray-300 py-[21px] shadow-none",
+                  errors[name] && ""
+                )}
+                disabled={disabled}
               >
-                { field.value ? (
+                {field.value ? (
                   specialties.find((specialty) => specialty._id === field.value)
                     ?.name
                 ) : (
                   <span className="text-gray-600">Chọn chuyên khoa</span>
-                ) }
+                )}
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -68,39 +68,39 @@ export default function SelectSpecialty({ control, name, errors, disabled }) {
               <Command className="text-left">
                 <CommandList>
                   <CommandGroup>
-                    { specialties.map((specialty) => (
+                    {specialties.map((specialty) => (
                       <CommandItem
-                        key={ specialty._id }
-                        value={ specialty._id }
-                        onSelect={ (currentValue) => {
+                        key={specialty._id}
+                        value={specialty._id}
+                        onSelect={(currentValue) => {
                           if (!disabled) {
                             field.onChange(currentValue);
                             setOpen(false);
                           }
-                        } }
-                        disabled={ disabled }
+                        }}
+                        disabled={disabled}
                       >
                         <Check
-                          className={ cn(
+                          className={cn(
                             "mr-2 h-4 w-4",
                             field.value === specialty._id
                               ? "opacity-100"
-                              : "opacity-0",
-                          ) }
+                              : "opacity-0"
+                          )}
                         />
-                        { specialty.name }
+                        {specialty.name}
                       </CommandItem>
-                    )) }
+                    ))}
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        ) }
+        )}
       />
-      { errors[name] && (
-        <span className="text-sm text-red-500">{ errors[name].message }</span>
-      ) }
+      {errors[name] && (
+        <span className="text-sm text-red-500">{errors[name].message}</span>
+      )}
     </div>
   );
 }

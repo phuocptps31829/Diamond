@@ -32,27 +32,27 @@ export default function SelectRole({
   return (
     <div>
       <Controller
-        control={control}
-        name={name}
-        rules={{ required: "Chọn vai trò" }}
-        render={({ field }) => (
-          <Popover open={open} onOpenChange={setOpen}>
+        control={ control }
+        name={ name }
+        rules={ { required: "Chọn vai trò" } }
+        render={ ({ field }) => (
+          <Popover open={ open } onOpenChange={ setOpen }>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 role="combobox"
-                aria-expanded={open}
-                className={cn(
+                aria-expanded={ open }
+                className={ cn(
                   "w-full justify-between border border-gray-300 py-[21px] shadow-none",
                   errors[name] && ""
-                )}
-                disabled={disabled}
+                ) }
+                disabled={ disabled }
               >
-                {field.value ? (
+                { field.value ? (
                   roles.find((item) => item._id === field.value)?.name
                 ) : (
                   <span className="text-gray-600">Chọn vai trò</span>
-                )}
+                ) }
                 <ChevronsUpDown className="ml-2 h-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -60,39 +60,39 @@ export default function SelectRole({
               <Command className="text-left">
                 <CommandList>
                   <CommandGroup>
-                    {roles.map((item) => (
+                    { roles.map((item) => (
                       <CommandItem
-                        key={item._id}
-                        value={item._id}
-                        onSelect={(currentValue) => {
+                        key={ item._id }
+                        value={ item._id }
+                        onSelect={ (currentValue) => {
                           if (!disabled) {
                             field.onChange(currentValue);
                             setOpen(false);
                           }
-                        }}
-                        disabled={disabled}
+                        } }
+                        disabled={ disabled }
                       >
                         <Check
-                          className={cn(
+                          className={ cn(
                             "mr-2 h-4 w-4",
                             field.value === item._id
                               ? "opacity-100"
                               : "opacity-0"
-                          )}
+                          ) }
                         />
-                        {item.name}
+                        { item.name }
                       </CommandItem>
-                    ))}
+                    )) }
                   </CommandGroup>
                 </CommandList>
               </Command>
             </PopoverContent>
           </Popover>
-        )}
+        ) }
       />
-      {errors[name] && (
-        <span className="text-sm text-red-500">{errors[name].message}</span>
-      )}
+      { errors[name] && (
+        <span className="text-sm text-red-500">{ errors[name].message }</span>
+      ) }
     </div>
   );
 }
