@@ -7,7 +7,6 @@ import Loading from "@/components/ui/Loading";
 
 const AppointmentsDetailAdmin = () => {
   const { id } = useParams();
-  console.log(id, "id");
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["appointment", id],

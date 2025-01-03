@@ -49,7 +49,6 @@ const infoBookingSlice = createSlice({
       }
     },
     initBookingDetails: (state, action) => {
-      console.log('action.payload', action.payload);
       state.bookingDetails = state.bookingDetails.filter(
         (detail) => detail?.serviceID
           ? detail?.serviceID !== null

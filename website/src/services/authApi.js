@@ -19,7 +19,7 @@ export const authApi = {
     return res.data.data;
   },
   googleLogin: async (data) => {
-    const res = await axios.get('http://160.30.44.27:8000/api/v1/auth/google', data);
+    const res = await axios.get('https://diamond.id.vn/api/v1/auth/google', data);
     return res.data;
   },
   refreshToken: async (refreshToken) => {

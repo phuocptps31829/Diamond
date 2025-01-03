@@ -22,6 +22,9 @@ export const axiosInstanceIMG = axios.create({
     secret: BACKEND_SECRET
   }
 });
+export const axiosInstanceRED = axios.create({
+  baseURL: 'https://diamond.id.vn/api/v1',
+});
 
 const interceptors = (axiosInstance) => {
   let isRefreshing = false;
@@ -101,3 +104,4 @@ const interceptors = (axiosInstance) => {
 
 interceptors(axiosInstanceGET);
 interceptors(axiosInstanceCUD);
+interceptors(axiosInstanceRED);

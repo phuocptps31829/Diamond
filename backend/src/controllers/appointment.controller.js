@@ -856,7 +856,7 @@ module.exports = {
                         _id: appointment.serviceID._id,
                         name: appointment.serviceID.name,
                         image: appointment.serviceID.image,
-                        price: appointment.serviceID.price,
+                        price: appointment.serviceID.discountPrice,
                         specialty: {
                             _id: appointment.serviceID.specialtyID._id,
                             name: appointment.serviceID.specialtyID.name

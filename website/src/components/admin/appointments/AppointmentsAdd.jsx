@@ -81,7 +81,6 @@ const AppointmentsAdd = () => {
     setValue("date", "");
     setValue("room", "");
   };
-  console.log(selectedService, "selectedService");
 
   const handleChangeLevel = (levelId, price) => {
     setSelectedLevel({ levelId, price });
@@ -106,7 +105,6 @@ const AppointmentsAdd = () => {
     setValue("date", "");
     setValue("room", "");
   };
-  console.log(selectedPackage, "selectedPackage");
 
   const handleChangeBranch = (branchId) => {
     setSelectedBranchId(branchId);
@@ -226,7 +224,6 @@ const AppointmentsAdd = () => {
       ],
     };
 
-    console.log("Submitted Data:", submissionData);
     mutation.mutate(submissionData);
   };
 

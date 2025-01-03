@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/cartSlice";
 import { useNavigate } from "react-router-dom";
-
 import { initBookingDetails } from "@/redux/bookingSlice";
 import toast from "react-hot-toast";
 
@@ -29,6 +28,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
       ? item.serviceID === product?._id
       : item.medicalPackageID === product?._id
   );
+
   const handleAddToCart = () => {
     if (!userProfile) {
       toast.error("Vui lòng đăng nhập để đặt lịch.");
@@ -71,7 +71,7 @@ const ServiceDetail = ({ medicalPackage, service, isLoading }) => {
             ...(isService ? {} : { levelID: product?.services[0]._id }),
             name: product.name,
             image: product.image,
-            price: product.discountPrice || 0,
+            price: isService ? product.discountPrice : selectedService.discountPrice,
             selectedBranchID: "",
             selectedDoctorID: "",
             selectedWorkScheduleID: "",

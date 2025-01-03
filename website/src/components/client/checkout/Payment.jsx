@@ -15,7 +15,6 @@ import SpinLoader from "@/components/ui/SpinLoader";
 export default function Form() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const bookingInfo = useSelector((state) => state.infoBooking);
-  const cart = useSelector((state) => state.cart.cart);
   const personHelpInfo = useSelector(
     (state) => state.infoBooking.bookingInfoCheckout?.appointmentHelpUser
   );
@@ -35,9 +34,6 @@ export default function Form() {
       if (paymentMethod === "vnpay") {
         location.href = data.data.payUrl;
       }
-      if (paymentMethod === "cod") {
-        location.href = "/payment-success";
-      }
       if (paymentMethod === "zalopay") {
         location.href = data.data.payUrl;
       }
@@ -54,8 +50,10 @@ export default function Form() {
     }
     mutate();
   };
-  const totalAmount = cart.reduce((acc, cur) => (acc += cur.price), 0);
+  const totalAmount = bookingInfo?.bookingInfoCheckout?.data?.reduce((acc, cur) => (acc += cur.price), 0);
   const totalAmountInWords = readNumber(totalAmount);
+
+  console.log(totalAmount);
 
   return (
     <div className="mx-auto max-w-screen-xl px-4 py-3 md:px-5 md:py-10">

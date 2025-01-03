@@ -1,4 +1,4 @@
-import { axiosInstanceCUD, axiosInstanceGET } from "./axiosInstance";
+import { axiosInstanceCUD, axiosInstanceGET, axiosInstanceRED } from "./axiosInstance";
 
 export const appointmentApi = {
   getAppointmentByAges: async () => {
@@ -85,7 +85,7 @@ export const appointmentApi = {
         break;
     }
 
-    const res = await axiosInstanceCUD.post(endpoint, data);
+    const res = await axiosInstanceRED.post(endpoint, data);
     return res.data;
   },
 

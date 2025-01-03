@@ -173,7 +173,6 @@ const AppointmentsEdit = () => {
       price: isServiceSelected ? selectedService.price : null,
     };
 
-    console.log("Submitted Data:", submissionData);
   };
 
   return (

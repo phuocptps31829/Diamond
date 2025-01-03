@@ -84,8 +84,8 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
         const updatedResults =
           existingResultIndex !== -1
             ? prevResults.map((result, index) =>
-                index === existingResultIndex ? newResult : result
-              )
+              index === existingResultIndex ? newResult : result
+            )
             : [...prevResults, newResult];
 
         resolve(updatedResults);
@@ -381,14 +381,14 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
         Dịch vụ trong gói: <span className="text-red-500">*</span>
       </Label>
       <div className="flex w-full flex-col rounded-lg border-2 border-dashed border-primary-200 bg-[#c1e0ff2f] p-5 pt-8">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ handleSubmit(onSubmit) }>
           <div className="mb-5 flex w-full justify-between">
             <div className="flex h-full min-h-[330px] w-[34%] flex-col gap-2 pr-2">
               <RadioServices
-                services={bookingData.medicalPackage?.services}
+                services={ bookingData.medicalPackage?.services }
                 name="serviceID"
-                onChange={handleSelectService}
-                control={control}
+                onChange={ handleSelectService }
+                control={ control }
               />
             </div>
 
@@ -397,13 +397,13 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                 <div className="block">
                   <div className="relative mb-0 mt-5">
                     <InputCustom
-                      label={"Chuẩn đoán"}
+                      label={ "Chuẩn đoán" }
                       required
                       className="col-span-1 sm:col-span-1"
                       name="diagnosis"
                       type="text"
-                      control={control}
-                      errors={errors}
+                      control={ control }
+                      errors={ errors }
                       id="diagnosis"
                       placeholder="Nhập chẩn đoán kết quả sau khi khám..."
                     />
@@ -411,54 +411,54 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                 </div>
                 <Controller
                   name="images"
-                  control={control}
-                  render={({ field }) => (
+                  control={ control }
+                  render={ ({ field }) => (
                     <Uploader
-                      images={field.value}
-                      onChange={(newImages) => {
+                      images={ field.value }
+                      onChange={ (newImages) => {
                         setValue("images", newImages);
                         trigger("images");
-                      }}
+                      } }
                     />
-                  )}
+                  ) }
                 />
-                {errors.images && (
+                { errors.images && (
                   <span className="text-sm text-red-500">
-                    {errors.images.message}
+                    { errors.images.message }
                   </span>
-                )}
+                ) }
                 <div className="w-full">
                   <Label className="mb-2 block bg-white px-1 text-base">
-                    Nhập chi tiết chẩn đoán:{" "}
+                    Nhập chi tiết chẩn đoán:{ " " }
                     <span className="text-red-500">*</span>
                   </Label>
 
                   <Controller
                     name="detail"
-                    control={control}
-                    render={({ field }) => (
+                    control={ control }
+                    render={ ({ field }) => (
                       <Textarea
                         placeholder="Nhập chi tiết chuẩn đoán"
                         id="detail"
                         className="min-h-[100px] w-full"
-                        {...field}
+                        { ...field }
                       />
-                    )}
+                    ) }
                   />
-                  {errors.detail && (
+                  { errors.detail && (
                     <p className="mt-1 text-sm text-red-500">
-                      {errors.detail.message}
+                      { errors.detail.message }
                     </p>
-                  )}
+                  ) }
                 </div>
                 <div className="mt-3">
                   <InputCustom
-                    label={"Lời khuyên"}
+                    label={ "Lời khuyên" }
                     required
                     name="advice"
                     type="text"
-                    control={control}
-                    errors={errors}
+                    control={ control }
+                    errors={ errors }
                     placeholder="Nhập lời khuyên sau khi khám..."
                   />
                 </div>
@@ -467,12 +467,12 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
               <div className="my-3">
                 <Label className="">Thêm đơn thuốc (nếu có):</Label>
                 <div className="mt-1 w-full rounded-lg border-2 border-dashed border-primary-200 bg-white p-6">
-                  {medicines.map((medicine, index) => (
-                    <div key={medicine.id || Date.now()}>
+                  { medicines.map((medicine, index) => (
+                    <div key={ medicine.id || Date.now() }>
                       <h4 className="mb-2 text-lg font-semibold">
-                        Thuốc{" "}
+                        Thuốc{ " " }
                         <strong className="text-primary-500">
-                          {index + 1}
+                          { index + 1 }
                         </strong>
                         <span className="text-red-500"> *</span>
                       </h4>
@@ -482,13 +482,13 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                             Danh mục: <span className="text-red-500">*</span>
                           </Label>
                           <SelectMedicineCategories
-                            name={`medicines[${index}].medicineCategoryID`}
-                            control={control}
-                            errors={errors}
-                            onChange={(categoryID) =>
+                            name={ `medicines[${index}].medicineCategoryID` }
+                            control={ control }
+                            errors={ errors }
+                            onChange={ (categoryID) =>
                               handleSelectCategoryMedicine(index, categoryID)
                             }
-                            setValue={setValue}
+                            setValue={ setValue }
                           />
                         </div>
                         <div className="md:w-2/5">
@@ -496,36 +496,36 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                             Chọn thuốc: <span className="text-red-500">*</span>
                           </Label>
                           <SelectMedicine
-                            name={`medicines[${index}].medicineID`}
-                            control={control}
-                            errors={errors}
-                            medicineCategoryID={medicine.medicineCategoryID}
-                            setValue={setValue}
-                            onChange={(medicineID, price) =>
+                            name={ `medicines[${index}].medicineID` }
+                            control={ control }
+                            errors={ errors }
+                            medicineCategoryID={ medicine.medicineCategoryID }
+                            setValue={ setValue }
+                            onChange={ (medicineID, price) =>
                               handleSelectMedicine(index, medicineID, price)
                             }
                           />
                         </div>
                         <div className="w-1/5">
                           <InputCustom
-                            label={"Số lượng"}
+                            label={ "Số lượng" }
                             required
-                            control={control}
-                            medicineCategoryID={medicine.medicineCategoryID}
-                            errors={errors}
-                            min={1}
-                            name={`medicines[${index}].quantity`}
+                            control={ control }
+                            medicineCategoryID={ medicine.medicineCategoryID }
+                            errors={ errors }
+                            min={ 1 }
+                            name={ `medicines[${index}].quantity` }
                             type="number"
                             placeholder="Số lượng thuốc"
                           />
                         </div>
                       </div>
                       <InputCustom
-                        label={"Hướng dẫn dùng thuốc"}
+                        label={ "Hướng dẫn dùng thuốc" }
                         required
-                        name={`medicines[${index}].usage`}
-                        control={control}
-                        errors={errors}
+                        name={ `medicines[${index}].usage` }
+                        control={ control }
+                        errors={ errors }
                         placeholder="Nhập hướng dẫn"
                       />
                       <div className="mt-2 flex justify-end">
@@ -533,47 +533,47 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                           className="bg-red-400 text-white hover:bg-red-600"
                           variant="outline"
                           type="button"
-                          onClick={() => removeMedicine(index)}
+                          onClick={ () => removeMedicine(index) }
                         >
                           Xóa
                         </Button>
                       </div>
                     </div>
-                  ))}
-                  <Button variant="custom" type="button" onClick={addMedicine}>
+                  )) }
+                  <Button variant="custom" type="button" onClick={ addMedicine }>
                     Thêm thuốc
                   </Button>
                 </div>
-                {errors.medicines && (
+                { errors.medicines && (
                   <span className="text-sm text-red-500">
-                    {errors.medicines.message}
+                    { errors.medicines.message }
                   </span>
-                )}
+                ) }
               </div>
             </div>
           </div>
 
           <div className="mt-3 flex w-full items-center justify-end">
-            <Button variant="outline" type="button" onClick={closeForm}>
+            <Button variant="outline" type="button" onClick={ closeForm }>
               Hủy
             </Button>
             <Button
               type="button"
-              disabled={loadingImage || mutation.isPending}
+              disabled={ loadingImage || mutation.isPending }
               variant="custom"
               className="ml-2"
-              onClick={handleConfirmSave}
+              onClick={ handleConfirmSave }
             >
-              {loadingImage || mutation.isPending ? (
+              { loadingImage || mutation.isPending ? (
                 <>
                   <SpinLoader />
                 </>
               ) : (
                 "Lưu kết quả"
-              )}
+              ) }
             </Button>
 
-            <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialog open={ open } onOpenChange={ setOpen }>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Xác nhận đơn thuốc</AlertDialogTitle>
@@ -588,10 +588,10 @@ const MedicalPackageBooking = ({ bookingData, setIsOpenForm }) => {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setOpen(false)}>
+                  <AlertDialogCancel onClick={ () => setOpen(false) }>
                     Hủy
                   </AlertDialogCancel>
-                  <AlertDialogAction onClick={handleSubmit(onSubmit)}>
+                  <AlertDialogAction onClick={ handleSubmit(onSubmit) }>
                     Xác nhận
                   </AlertDialogAction>
                 </AlertDialogFooter>
