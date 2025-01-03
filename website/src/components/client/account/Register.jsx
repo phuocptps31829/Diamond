@@ -27,6 +27,7 @@ export default function RegisterComponent() {
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      fullName: "",
       phoneNumber: "",
       password: "",
       confirmPassword: "",

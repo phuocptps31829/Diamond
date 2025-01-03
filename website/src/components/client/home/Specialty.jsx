@@ -46,7 +46,7 @@ export default function Specialty() {
             Autoplay({
               delay: 2500,
               stopOnInteraction: false,
-              stopOnMouseEnter: false,
+              stopOnMouseEnter: true,
             }),
           ]}
         >
@@ -75,11 +75,7 @@ export default function Specialty() {
                     key={index}
                     className="basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
                   >
-                    <Link
-                     to={ `/packages?specialtyID=${specialty._id}` }
-                      key={index}
-                    >
-                      <div className="flex max-h-[244px] flex-col items-center rounded-md bg-white p-4 pb-10">
+                      <div className="card-specialty flex max-h-[244px] flex-col items-center rounded-md bg-white p-4 pb-10">
                         <div className="w-full">
                           <img
                             src={URL_IMAGE + "/" + specialty.image}
@@ -88,10 +84,18 @@ export default function Specialty() {
                           />
                         </div>
                         <div className="my-3 text-center text-[14px] sm:text-[16px] font-bold uppercase">
-                          {specialty.name}
+                          {specialty.name} 
                         </div>
+                        <Link to={`/packages?specialtyID=${specialty._id}`} className="btn-fitler btn-fitler-packages">
+                          Gói khám
+                        </Link>
+                        <div className="line-center">
+                          Tìm kiếm theo:
+                        </div>
+                        <Link to={`/services?specialtyID=${specialty._id}`} className="btn-fitler btn-fitler-services">
+                          Dịch vụ
+                        </Link>
                       </div>
-                    </Link>
                   </CarouselItem>
                 ))}
           </CarouselContent>
