@@ -27,10 +27,6 @@ let roomMessages = {};
     io.on('connection', async (socket) => {
         console.log('Connected to socket');
 
-        socket.on('laravel_database_Notifications', (data) => {
-            console.log('data:', data);
-        });
-
         socket.on('getActiveRooms', () => {
             // console.log('romMessages:', roomMessages);
             socket.emit('activeRooms', roomMessages);
@@ -113,9 +109,8 @@ let roomMessages = {};
     // Listen for new notifications
     const subscriber = await redisClient.duplicate();
     await subscriber.connect();
-    subscriber.v4.subscribe('laravel_database_Notifications', (message, channel) => {
+    subscriber.v4.subscribe('diamond_database_Notifications', (message, channel) => {
         const appointmentIds = JSON.parse(JSON.parse(message).data.ids);
-        console.log('appointmentIds:', appointmentIds);
         const messageNotification = {
             data: {
                 title: 'Thông báo mới!',
@@ -123,19 +118,10 @@ let roomMessages = {};
             }
         };
 
-        // if (
-        //     io &&
-        //     io.sockets &&
-        //     io.sockets.sockets &&
-        //     Object.keys(io.sockets.sockets).length > 0
-        // ) {
         io.emit('notification', messageNotification);
-        // } else {
-        //     console.log('No connected sockets to emit notification');
-        // }
     });
 
-    subscriber.v4.subscribe('laravel_database_reset_cache', async (message, channel) => {
+    subscriber.v4.subscribe('diamond_database_reset_cache', async (message, channel) => {
         const modelsName = JSON.parse(JSON.parse(message).data.model);
         await Promise.all(modelsName.map(async (modelName) => delCaches(modelName)));
     });

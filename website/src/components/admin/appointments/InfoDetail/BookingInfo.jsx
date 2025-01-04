@@ -346,12 +346,12 @@ const BookingInfo = ({ data }) => {
                           </span>{ " " }
                           - Giá:{ " " }
                           { formatCurrency(
-                            bookingData.medicalPackage.level.price
+                            bookingData.medicalPackage.level.discountPrice
                           ) }
                         </p>
                       ) : (
                         <p className="text-[14px]">
-                          Giá: { formatCurrency(bookingData.service.price) }
+                          Giá: { formatCurrency(bookingData.service.discountPrice) }
                         </p>
                       ) }
                     </div>

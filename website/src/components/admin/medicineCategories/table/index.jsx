@@ -26,8 +26,8 @@ import { useNavigate } from "react-router-dom";
 import { RECORD_PER_PAGE } from "@/constants/config";
 import Loading from "@/components/ui/Loading";
 
-export default function DataTable({ 
-  columns, 
+export default function DataTable({
+  columns,
   data,
   pageCount,
   pageSize,
@@ -37,7 +37,7 @@ export default function DataTable({
   total,
   searchValue,
   setSearchValue
- }) {
+}) {
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -123,7 +123,7 @@ export default function DataTable({
             size="icon"
             variant="outline"
             className="mr-1 mt-2 h-11 w-11"
-            onClick={ () => navigate("/admin/medicinesCategories/create") }
+            onClick={ () => navigate("/admin/medicines-categories/create") }
           >
             <FaPlus className="text-primary-500"></FaPlus>
           </Button>
@@ -157,52 +157,52 @@ export default function DataTable({
           )) }
         </TableHeader>
         <TableBody>
-          {isLoading ? <Loading ScaleMini={true} />
-          : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                className=""
-                key={ row.id }
-                data-state={ row.getIsSelected() && "selected" }
-              >
-                { row.getVisibleCells().map((cell) => (
-                  <TableCell key={ cell.id }>
-                    { flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext(),
-                    ) }
-                  </TableCell>
-                )) }
+          { isLoading ? <Loading ScaleMini={ true } />
+            : table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  className=""
+                  key={ row.id }
+                  data-state={ row.getIsSelected() && "selected" }
+                >
+                  { row.getVisibleCells().map((cell) => (
+                    <TableCell key={ cell.id }>
+                      { flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      ) }
+                    </TableCell>
+                  )) }
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={ columns.length }
+                  className="h-24 text-center"
+                >
+                  Không có dữ liệu nào.
+                </TableCell>
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={ columns.length }
-                className="h-24 text-center"
-              >
-                Không có dữ liệu nào.
-              </TableCell>
-            </TableRow>
-          ) }
+            ) }
         </TableBody>
       </Table>
       <div className="flex items-end justify-end space-x-2 pt-4 pb-2">
         <div className="flex-1 text-sm text-muted-foreground">
-          {`Hiển thị từ `}
+          { `Hiển thị từ ` }
           <span className="font-bold text-primary-500">
-            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
+            { table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1 }
           </span>
-          {` đến `}
+          { ` đến ` }
           <span className="font-bold text-primary-500">
-            {Math.min(
+            { Math.min(
               (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
               total
-            )}
+            ) }
           </span>
-          {` trong tổng số `}
-          <span className="font-bold text-primary-500">{total}</span>
-          {` mục.`}
+          { ` trong tổng số ` }
+          <span className="font-bold text-primary-500">{ total }</span>
+          { ` mục.` }
         </div>
         <div className="flex items-center space-x-2">
           <Button

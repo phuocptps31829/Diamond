@@ -1,13 +1,17 @@
-
+import { Link, useSearchParams } from "react-router-dom";
+import successImage from "../../assets/images/success-pay.png";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { clearCart } from "@/redux/cartSlice";
 
-import successImage from "../../assets/images/success-pay.png";
-
 export default function PaymentSuccess() {
+    const [searchParams] = useSearchParams();
     const dispatch = useDispatch();
+
+    const getLink = () => {
+        const ids = searchParams.getAll("id[]");
+        return `/profile/appointments/detail/${ids[0]}`;
+    };
 
     useEffect(() => {
         dispatch(clearCart());
@@ -34,7 +38,10 @@ export default function PaymentSuccess() {
                     <Link className="border-primary-500 border px-10 py-3 rounded-lg mr-4 text-primary-500" to="/">
                         Quay về trang chủ
                     </Link>
-                    <Link className="bg-primary-500 px-10 py-3 rounded-lg text-white" to="/profile/appointments">
+                    <Link
+                        className="bg-primary-500 px-10 py-3 rounded-lg text-white"
+                        to={ getLink() }
+                    >
                         Xem lịch sử đặt
                     </Link>
                 </div>

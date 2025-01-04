@@ -37,6 +37,9 @@ export default function Form() {
       if (paymentMethod === "zalopay") {
         location.href = data.data.payUrl;
       }
+      if (paymentMethod === "cod") {
+        location.href = data.data.url;
+      }
     },
     onError: (error) => {
       console.log(error);
