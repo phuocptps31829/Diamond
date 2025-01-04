@@ -29,6 +29,7 @@ const ChatComponent = ({ setShowChat, setConnect }) => {
   const [isFirstMessage, setIsFirstMessage] = useState(true);
   const [sendFirstMessage, setSendFirstMessage] = useState(true);
   const [chatted, setChatted] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
   const pickerRef = useRef(null);
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
@@ -146,6 +147,11 @@ const ChatComponent = ({ setShowChat, setConnect }) => {
     if (userName.trim() === "" || phoneNumber.trim() === "") {
       return;
     }
+
+    if (!/^0\d{9}$/.test(phoneNumber)) {
+      return;
+    }
+
     if (socket) {
       localStorage.setItem("userSocketID", socket.id);
       localStorage.setItem("userName", userName);
@@ -336,7 +342,7 @@ const ChatComponent = ({ setShowChat, setConnect }) => {
             <Input
               type="tel"
               placeholder="Số điện thoại"
-              className="border border-gray-400 p-3 py-5"
+              className={`${phoneError ? "border-red-500" : "border-gray-400"} border p-3 py-5`}
               value={ phoneNumber }
               onChange={ (e) => {
                 const value = e.target.value;
@@ -344,6 +350,13 @@ const ChatComponent = ({ setShowChat, setConnect }) => {
                   setPhoneNumber(value);
                 }
               } }
+              onBlur={() => {
+                if (!/^0\d{9}$/.test(phoneNumber)) {
+                  setPhoneError(true);
+                } else {
+                  setPhoneError(false);
+                }
+              }}
             />
             <button
               className={ `${userName.trim() === "" || phoneNumber.trim() === ""
