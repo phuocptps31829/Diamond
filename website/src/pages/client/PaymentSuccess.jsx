@@ -1,14 +1,9 @@
 import { Link, useSearchParams } from "react-router-dom";
-import successImage from "../../assets/images/success-pay.png";
+import successImage from "../../assets/images/credit.png";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/cartSlice";
 
-<<<<<<< Updated upstream
-=======
-import successImage from "../../assets/images/credit.png";
-
->>>>>>> Stashed changes
 export default function PaymentSuccess() {
     const [searchParams] = useSearchParams();
     const dispatch = useDispatch();
@@ -43,14 +38,10 @@ export default function PaymentSuccess() {
                     <Link className="border-primary-500 border px-5 py-2 rounded-lg mr-4 text-primary-500 block text-[15px]" to="/">
                         Quay về trang chủ
                     </Link>
-<<<<<<< Updated upstream
                     <Link
-                        className="bg-primary-500 px-10 py-3 rounded-lg text-white"
+                        className="bg-primary-500 px-5 py-2 rounded-lg text-white block text-[15px]"
                         to={ getLink() }
                     >
-=======
-                    <Link className="bg-primary-500 px-5 py-2 rounded-lg text-white block text-[15px]" to="/profile/appointments">
->>>>>>> Stashed changes
                         Xem lịch sử đặt
                     </Link>
                 </div>
