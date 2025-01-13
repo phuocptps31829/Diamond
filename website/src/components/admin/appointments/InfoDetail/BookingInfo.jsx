@@ -346,12 +346,12 @@ const BookingInfo = ({ data }) => {
                           </span>{ " " }
                           - Giá:{ " " }
                           { formatCurrency(
-                            bookingData.medicalPackage.level.discountPrice
+                            bookingData.medicalPackage.level.price
                           ) }
                         </p>
                       ) : (
                         <p className="text-[14px]">
-                          Giá: { formatCurrency(bookingData.service.discountPrice) }
+                          Giá: { formatCurrency(bookingData.service.price) }
                         </p>
                       ) }
                     </div>
@@ -387,7 +387,7 @@ const BookingInfo = ({ data }) => {
                 bookingData?.invoice?.price + bookingData?.invoice?.arisePrice
               ) }
             </p>
-            <p className="text-red-600">
+            <p className="text-gray-600">
               <strong className="font-medium text-black">Phí phát sinh:</strong>{ " " }
               { formatCurrency(bookingData?.invoice?.arisePrice || 0) }
             </p>

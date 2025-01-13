@@ -23,7 +23,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
         cell: ({ row }) => (
             <div className="flex items-center gap-3 py-4 lowercase">
                 <span className="w-full whitespace-nowrap text-center">
-                    {pageIndex * pageSize + row.index + 1}
+                    { pageIndex * pageSize + row.index + 1 }
                 </span>
             </div>
         ),
@@ -121,7 +121,7 @@ export const columnsSchedule = (pageIndex, pageSize) => [
             </Button>
         ),
         cell: ({ row }) => (
-            <div className="">{ row.original?.otherInfo?.isInternal ? 'Khoa nội' : 'Khoa ngoại' }</div>
+            <div className="">{ row.original?.otherInfo?.isInternal ? 'Cơ hữu' : 'Ngoài giờ' }</div>
         ),
     },
     {

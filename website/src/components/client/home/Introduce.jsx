@@ -66,10 +66,10 @@ export default function Introduce() {
               src={ img3 } />
           </Link>
         </div>
-        <div className="flex items-center justify-center rounded-md bg-primary-100">
+        <div className="flex items-center justify-center rounded-md bg-primary-100 h-full">
           <Link
             to="/branch"
-            className="flex flex-col items-center p-6 pb-8"
+            className="flex flex-col items-center p-6 pb-8 h-full"
           >
             <h2 className="mb-0 text-[20px] font-bold sm:text-[27px]">
               Hệ thống phòng khám
@@ -78,7 +78,7 @@ export default function Introduce() {
               Xem chi tiết <HiCursorClick />
             </span>
             <img
-              className="rounded-md"
+              className="rounded-md h-full"
               src={ img4 } />
           </Link>
         </div>

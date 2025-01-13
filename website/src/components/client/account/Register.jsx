@@ -208,7 +208,7 @@ export default function RegisterComponent() {
                 ) }
               </button>
 
-              <div className="my-2 flex items-center">
+              {/* <div className="my-2 flex items-center">
                 <div className="flex-grow border-t border-gray-300"></div>
                 <span className="mx-4 text-sm text-gray-800">
                   Hoặc tiếp tục với
@@ -216,7 +216,6 @@ export default function RegisterComponent() {
                 <div className="flex-grow border-t border-gray-300"></div>
               </div>
 
-              {/* GG - FB LOGIN */ }
               <div className="block justify-center md:flex md:space-x-2">
                 <button
                   onClick={ handleLoginGoogle }
@@ -241,7 +240,7 @@ export default function RegisterComponent() {
                   />
                   <span className="block">Facebook</span>
                 </button>
-              </div>
+              </div> */}
 
               <div className="mb-4 mt-3 flex flex-col items-center">
                 <p className="text-center">

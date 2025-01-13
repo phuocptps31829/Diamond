@@ -1,5 +1,5 @@
-import { Link, useSearchParams } from "react-router-dom";
-import successImage from "../../assets/images/credit.png";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import successImage from "../../assets/images/credit.jpg";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { clearCart } from "@/redux/cartSlice";
@@ -7,6 +7,7 @@ import { clearCart } from "@/redux/cartSlice";
 export default function PaymentSuccess() {
     const [searchParams] = useSearchParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const getLink = () => {
         const ids = searchParams.getAll("id[]");
@@ -16,6 +17,15 @@ export default function PaymentSuccess() {
     useEffect(() => {
         dispatch(clearCart());
     }, [dispatch]);
+
+    useEffect(() => {
+        const ids = searchParams.getAll("id[]");
+        if (ids.length === 0) {
+            navigate("/");
+            return;
+        }
+
+    }, [searchParams]);
 
     return (
         <div className="flex items-center justify-center bg-[#E8F2F7]">

@@ -69,7 +69,7 @@ const MedicalPackageService = ({ medicalPackage, isLoading }) => {
                       { i + 1 }
                     </TableCell>
                     <TableCell className="whitespace-nowrap text-left font-normal hover:underline">
-                      <Link to={ `/detail-service/${row._id}` }>
+                      <Link to={ `/service/${row.slug}` }>
                         { row.name }</Link>
                     </TableCell>
                     { levelNames.map((levelName, index) => (

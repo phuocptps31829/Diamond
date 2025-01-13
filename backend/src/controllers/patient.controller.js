@@ -58,8 +58,8 @@ module.exports = {
             if (search) {
                 transformedPatients = transformedPatients.filter(patient => {
                     return patient.fullName.toLowerCase().includes(search.toLowerCase()) ||
-                        patient.email.toLowerCase().includes(search.toLowerCase()) ||
-                        patient.phone.toLowerCase().includes(search.toLowerCase());
+                        patient?.email?.toLowerCase().includes(search.toLowerCase()) ||
+                        patient?.phone?.toLowerCase().includes(search.toLowerCase());
                 });
             }
 

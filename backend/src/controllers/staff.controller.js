@@ -44,8 +44,8 @@ module.exports = {
             if (search) {
                 transformedStaffs = transformedStaffs.filter(staff => {
                     return staff.fullName.toLowerCase().includes(search.toLowerCase()) ||
-                        staff.email.toLowerCase().includes(search.toLowerCase()) ||
-                        staff.phone.toLowerCase().includes(search.toLowerCase()) ||
+                        staff?.email?.toLowerCase().includes(search.toLowerCase()) ||
+                        staff?.phone?.toLowerCase().includes(search.toLowerCase()) ||
                         staff.role.name.toLowerCase().includes(search.toLowerCase());
                 });
             }

@@ -8,7 +8,7 @@ export default function AdsProduct({ index, isLoginForm }) {
   return (
     <img
       src={ ads[index] }
-      className={ `${isLoginForm ? 'h-[600px]' : 'h-[700px]'} w-full object-fill` }
+      className={ `${isLoginForm ? 'h-[500px]' : 'h-[600px]'} w-full object-fill` }
       alt="Ad Banner"
     />
   );

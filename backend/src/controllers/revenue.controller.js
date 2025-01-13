@@ -1,13 +1,10 @@
 const InvoiceModel = require('../models/invoice.model');
-const { createError } = require('../utils/helper.util');
 
 module.exports = {
     getRevenue: async (req, res, next) => {
         try {
             const invoices = await InvoiceModel
-                .find({
-
-                })
+                .find()
                 .populate('appointmentID')
                 .lean();
 
@@ -17,16 +14,22 @@ module.exports = {
             previousDate.setDate(previousDate.getDate() - 1);
             const previousDateString = previousDate.toISOString().slice(0, 10);
             presentRevenueDay = invoices.reduce((acc, invoice) => {
-                const invoiceDate = new Date(invoice.createdAt).toISOString().slice(0, 10);
-                if (invoiceDate === currentDate) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceDate = new Date(invoice.createdAt).toISOString().slice(0, 10);
+                    if (invoiceDate === currentDate) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
             previousRevenueDay = invoices.reduce((acc, invoice) => {
-                const invoiceDate = new Date(invoice.createdAt).toISOString().slice(0, 10);
-                if (invoiceDate === previousDateString) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceDate = new Date(invoice.createdAt).toISOString().slice(0, 10);
+                    if (invoiceDate === previousDateString) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
@@ -37,16 +40,22 @@ module.exports = {
             previousMonth.setMonth(previousMonth.getMonth() - 1);
             const previousMonthString = previousMonth.toISOString().slice(0, 7);
             presentRevenueMonth = invoices.reduce((acc, invoice) => {
-                const invoiceMonth = new Date(invoice.createdAt).toISOString().slice(0, 7);
-                if (invoiceMonth === currentMonth) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceMonth = new Date(invoice.createdAt).toISOString().slice(0, 7);
+                    if (invoiceMonth === currentMonth) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
             previousRevenueMonth = invoices.reduce((acc, invoice) => {
-                const invoiceMonth = new Date(invoice.createdAt).toISOString().slice(0, 7);
-                if (invoiceMonth === previousMonthString) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceMonth = new Date(invoice.createdAt).toISOString().slice(0, 7);
+                    if (invoiceMonth === previousMonthString) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
@@ -57,18 +66,24 @@ module.exports = {
             const previousQuarter = currentQuarter === 1 ? 4 : currentQuarter - 1;
             const previousYear = currentQuarter === 1 ? currentYear - 1 : currentYear;
             const presentRevenueQuarter = invoices.reduce((acc, invoice) => {
-                const invoiceQuarter = Math.floor((new Date(invoice.createdAt).getMonth() + 3) / 3);
-                const invoiceYear = new Date(invoice.createdAt).getFullYear();
-                if (invoiceQuarter === currentQuarter && invoiceYear === currentYear) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceQuarter = Math.floor((new Date(invoice.createdAt).getMonth() + 3) / 3);
+                    const invoiceYear = new Date(invoice.createdAt).getFullYear();
+                    if (invoiceQuarter === currentQuarter && invoiceYear === currentYear) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
             const previousRevenueQuarter = invoices.reduce((acc, invoice) => {
-                const invoiceQuarter = Math.floor((new Date(invoice.createdAt).getMonth() + 3) / 3);
-                const invoiceYear = new Date(invoice.createdAt).getFullYear();
-                if (invoiceQuarter === previousQuarter && invoiceYear === previousYear) {
-                    return acc + invoice.price;
+                if (invoice.appointmentID.payment.status === 'PAID') {
+                    const invoiceQuarter = Math.floor((new Date(invoice.createdAt).getMonth() + 3) / 3);
+                    const invoiceYear = new Date(invoice.createdAt).getFullYear();
+                    if (invoiceQuarter === previousQuarter && invoiceYear === previousYear) {
+                        return acc + invoice.price;
+                    }
+                    return acc;
                 }
                 return acc;
             }, 0);
@@ -76,6 +91,9 @@ module.exports = {
             // Get revenue by year
             let byYearRevenue = {};
             invoices.forEach(invoice => {
+                if (invoice.appointmentID.payment.status !== 'PAID') {
+                    return;
+                }
                 const invoiceYear = new Date(invoice.createdAt).getFullYear();
                 if (!byYearRevenue[invoiceYear]) {
                     byYearRevenue[invoiceYear] = {};
@@ -88,6 +106,9 @@ module.exports = {
             });
 
             const totalRevenue = invoices.reduce((acc, invoice) => {
+                if (invoice.appointmentID.payment.status !== 'PAID') {
+                    return acc;
+                }
                 return acc + invoice.price;
             }, 0);
 

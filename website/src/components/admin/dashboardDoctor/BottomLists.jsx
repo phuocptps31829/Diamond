@@ -160,7 +160,7 @@ export default function BottomLists({ dataUpcomingAppointments, loading }) {
                       <div className="flex items-center space-x-2">
                         <img
                           src={
-                            appointment.user?.avatar ||
+                            appointment.doctor?.avatar ||
                             "https://github.com/shadcn.png"
                           }
                           alt="Doctor"

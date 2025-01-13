@@ -37,7 +37,7 @@ const cacheMiddleware = require('../middlewares/cache.middleware');
 */
 router.get(
     '/',
-    authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN]),
+    // authMiddleware.isHasPermission([process.env.ROLE_ADMIN, process.env.ROLE_SUPER_ADMIN]),
     cacheMiddleware.cache("Staff:"),
     helperMiddleware.checkValueQuery,
     helperMiddleware.checkQueryParams,

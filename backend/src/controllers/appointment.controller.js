@@ -113,7 +113,8 @@ module.exports = {
                     },
                     doctor: {
                         _id: appointment.workScheduleID.doctorID?._id,
-                        fullName: appointment.workScheduleID.doctorID.fullName
+                        fullName: appointment.workScheduleID.doctorID.fullName,
+                        avatar: appointment.workScheduleID.doctorID.avatar
                     },
                     clinic: {
                         _id: appointment.workScheduleID.clinicID?._id,
@@ -175,7 +176,6 @@ module.exports = {
                     const branchName = appointment.branch.name.toLowerCase();
 
                     return patientName.includes(searchValue) ||
-
                         doctorName.includes(searchValue) ||
                         (serviceName && serviceName.includes(searchValue)) ||
                         clinicName.includes(searchValue) ||
@@ -306,7 +306,8 @@ module.exports = {
                         },
                         doctor: {
                             _id: appointment.workScheduleID.doctorID?._id,
-                            fullName: appointment.workScheduleID.doctorID.fullName
+                            fullName: appointment.workScheduleID.doctorID.fullName,
+                            avatar: appointment.workScheduleID.doctorID.avatar
                         },
                         clinic: {
                             _id: appointment.workScheduleID.clinicID?._id,
@@ -489,7 +490,8 @@ module.exports = {
                     },
                     doctor: {
                         _id: appointment.workScheduleID.doctorID?._id,
-                        fullName: appointment.workScheduleID.doctorID.fullName
+                        fullName: appointment.workScheduleID.doctorID.fullName,
+                        avatar: appointment.workScheduleID.doctorID.avatar
                     },
                     clinic: {
                         _id: appointment.workScheduleID.clinicID?._id,
@@ -841,7 +843,8 @@ module.exports = {
                 },
                 doctor: {
                     _id: appointment.workScheduleID.doctorID._id,
-                    fullName: appointment.workScheduleID.doctorID.fullName
+                    fullName: appointment.workScheduleID.doctorID.fullName,
+                    avatar: appointment.workScheduleID.doctorID.avatar
                 },
                 clinic: {
                     _id: appointment.workScheduleID.clinicID._id,
@@ -872,7 +875,7 @@ module.exports = {
                         level: {
                             _id: level._id,
                             name: level.levelName,
-                            price: level.price
+                            price: level.discountPrice
                         },
                         specialty: {
                             _id: medicalPackage.specialtyID._id,

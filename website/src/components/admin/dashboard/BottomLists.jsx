@@ -160,7 +160,7 @@ export default function BottomLists({ dataUpcomingAppointments, loading }) {
                       <div className="flex items-center space-x-2">
                         <img
                           src={
-                            appointment.user?.avatar ||
+                            import.meta.env.VITE_IMAGE_API_URL + '/' + appointment.doctor?.avatar ||
                             "https://github.com/shadcn.png"
                           }
                           alt="Doctor"
@@ -195,10 +195,12 @@ export default function BottomLists({ dataUpcomingAppointments, loading }) {
                             <CiMenuKebab />
                           </MenubarTrigger>
                           <MenubarContent>
-                            <MenubarItem className="flex cursor-pointer items-center text-[13px]">
-                              <FaEdit className="mr-2" size={ 18 } />{ " " }
-                              <span>Xem chi tiết</span>
-                            </MenubarItem>
+                            <Link to={ `/admin/appointments/detail/${appointment._id}` }>
+                              <MenubarItem className="flex cursor-pointer items-center text-[13px]">
+                                <FaEdit className="mr-2" size={ 18 } />{ " " }
+                                <span>Xem chi tiết</span>
+                              </MenubarItem>
+                            </Link>
                           </MenubarContent>
                         </MenubarMenu>
                       </Menubar>

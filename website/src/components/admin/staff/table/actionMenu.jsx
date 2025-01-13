@@ -73,10 +73,10 @@ const ActionMenu = ({ row }) => {
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      Bạn có chắc chắn muốn xóa người dùng này?
+                      Bạn có chắc chắn muốn xóa nhân viên này?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Hành động này không thể hoàn tác. Người dùng sẽ bị xóa
+                      Hành động này không thể hoàn tác. Nhân viên sẽ bị xóa
                       vĩnh viễn khỏi hệ thống.
                     </AlertDialogDescription>
                   </AlertDialogHeader>

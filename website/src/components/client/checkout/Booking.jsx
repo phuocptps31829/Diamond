@@ -18,6 +18,7 @@ import {
   removeItemInfo,
   saveBookingInfo,
   changeBookingDetails,
+  clearBookingDetails,
 } from "@/redux/bookingSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import useNavigationPrompt from "@/hooks/useNavigationInterceptor";
@@ -246,6 +247,12 @@ export default function Form() {
       date: "",
     });
   }, [pathname, reset]);
+
+  // useEffect(() => {
+  //   return () => {
+  //     dispatch(clearBookingDetails());
+  //   };
+  // }, [dispatch]);
 
   const handleSwitchChange = (checked) => {
     setIsBookingForOthers(checked);

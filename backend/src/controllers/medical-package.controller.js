@@ -135,7 +135,7 @@ module.exports = {
                     _id: { $in: arrayServices[0].servicesID },
 
                 }, {
-                    _id: 1, name: 1
+                    _id: 1, name: 1, slug: 1
                 });
 
             let formattedMedicalPackage = {
@@ -188,7 +188,7 @@ module.exports = {
                     _id: { $in: arrayServices[0].servicesID },
 
                 }, {
-                    _id: 1, name: 1
+                    _id: 1, name: 1, slug: 1
                 });
 
             let formattedMedicalPackage = {

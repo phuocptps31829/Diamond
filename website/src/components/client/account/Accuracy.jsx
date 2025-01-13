@@ -219,14 +219,13 @@ export default function AccurancyComponent() {
               ) }
             </button>
 
-            <div className="my-2 flex items-center">
+            {/* <div className="my-2 flex items-center">
               <div className="flex-grow border-t border-gray-300"></div>
               <span className="mx-4 text-sm text-gray-800">
                 Hoặc tiếp tục với
               </span>
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
-            {/* GG - FB LOGIN */ }
             <div className="block justify-center md:flex md:space-x-2">
               <button
                 onClick={ () => { } }
@@ -251,7 +250,7 @@ export default function AccurancyComponent() {
                 />
                 <span className="block">Tài khoản Facebook</span>
               </button>
-            </div>
+            </div> */}
             <div className="mb-10 mt-3 flex flex-col items-center">
               <p className="text-center">
                 Bạn chưa có tài khoản?
