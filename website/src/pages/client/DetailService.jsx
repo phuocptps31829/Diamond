@@ -99,6 +99,7 @@ const DetailService = () => {
         serviceSpecialty={ serviceSpecialty }
         medicalPackageSpecialty={ medicalPackageSpecialty }
         isLoading={ isLoading }
+        currentSlug={ slug }
       />
     </div>
   );
