@@ -17,6 +17,7 @@ import SpinLoader from "@/components/ui/SpinLoader";
 const URL_IMAGE = import.meta.env.VITE_IMAGE_API_URL;
 
 export default function PatientFormFix({ patientDetail }) {
+  console.log("patientDetail", patientDetail)
   const queryClient = useQueryClient();
   const [loadingImage, setLoadingImage] = useState(false);
   const [fileImage, setFileImage] = useState(null);
@@ -105,6 +106,7 @@ export default function PatientFormFix({ patientDetail }) {
       isActivated: data.isActivated,
       address: data.address,
       otherInfo: {
+        patientCode: patientDetail.otherInfo.patientCode,
         occupation: data.occupation,
         insuranceCode: data.insuranceCode,
         ethnic: data.ethnic,
