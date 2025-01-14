@@ -29,7 +29,7 @@ const radioButtons = [
     label: "Nam",
   },
   {
-    id: "Nu",
+    id: "Nữ",
     label: "Nữ",
   },
 ];
@@ -84,7 +84,6 @@ const OtherInfo = () => {
       return patientApi.updatePatient(id, requestBody);
     },
     onSuccess: (newData) => {
-      console.log("newData", newData);
       newData._id = profile._id;
       dispatch(setProfile(newData));
       ToastUI({
@@ -120,7 +119,7 @@ const OtherInfo = () => {
     const requestBody = {
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
-      email: data.email,
+      email: data.email.trim() === "" ? null : data.email,
       dateOfBirth: formatDate(data.dateOfBirth),
       gender: data.gender,
       password: data.password,
@@ -128,6 +127,7 @@ const OtherInfo = () => {
       isActivated: true,
       address: data.address,
       otherInfo: {
+        patientCode: profile.otherInfo.patientCode,
         occupation: data.occupation,
         insuranceCode: data.insuranceCode,
         ethnic: data.ethnic,
