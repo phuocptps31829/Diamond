@@ -113,6 +113,7 @@ const UserInfoForm = () => {
         occupation: data.occupation,
         insuranceCode: data.insuranceCode,
         ethnic: data.ethnic,
+        patientCode: profileFetched?.data?.otherInfo?.patientCode,
       },
     };
 

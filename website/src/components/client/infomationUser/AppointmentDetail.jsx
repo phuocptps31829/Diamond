@@ -184,7 +184,7 @@ const AppointmentDetail = () => {
                 : appointment?.payment?.method }
             </TableCell>
           </TableRow>
-          { appointment?.status === "EXAMINED" && (
+          { appointment?.status === "EXAMINED" && !appointment.helper && (
             <>
               <TableRow>
                 <TableCell className="w-1/5 whitespace-nowrap border-r px-4 py-3">

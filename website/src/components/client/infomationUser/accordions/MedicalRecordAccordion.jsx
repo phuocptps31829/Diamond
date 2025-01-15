@@ -40,7 +40,7 @@ export function MedicalRecordAccordion({ medicalRecords }) {
             collapsible
             className="w-full"
         >
-            { medicalRecords?.data?.map((record) => {
+            { medicalRecords?.data?.filter(m => !m.patientHelpID)?.map((record) => {
                 const { results } = record;
                 return <AccordionItem key={ record._id } value={ record._id }>
                     <AccordionTrigger className="text-base">
@@ -194,6 +194,7 @@ export function MedicalRecordAccordion({ medicalRecords }) {
                                                                     </li>
                                                                     <li className="list-none mt-2 float-right pr-4">
                                                                         { <a
+                                                                            target="_blank"
                                                                             href={ import.meta.env.VITE_CUD_API_URL + "/prescriptions/export/" + result?.prescription?._id }
                                                                             className="text-xs text-white px-2 py-1 rounded-md bg-blue-500 cursor-pointer inline-block">
                                                                             📜 Xem đơn thuốc

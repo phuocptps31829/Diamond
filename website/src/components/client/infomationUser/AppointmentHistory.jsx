@@ -16,6 +16,7 @@ import AppointmentHistorySkeleton from "./skeletons/AppointmentHistorySkeleton";
 import { useEffect, useState } from "react";
 import { DateRangePicker } from "@/components/ui/DateRangePicker";
 import { Badge } from "@/components/ui/Badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/Tooltip";
 
 const statusOptions = [
   { value: "PENDING", label: "Chờ xác nhận", variant: "pending" },
@@ -146,7 +147,7 @@ const AppointmentHistory = () => {
                 <TableCell className="text-xs md:text-sm">
                   { RECORD_PER_PAGE * (curPage - 1) + index + 1 }
                 </TableCell>
-                <TableCell className="text-xs whitespace-nowrap  md:text-sm">
+                <TableCell className="text-xs whitespace-nowrap gap-2 flex items-center md:text-sm">
                   <div
                     className={ `inline-block rounded-md px-2 py-1 ${appointment?.medicalPackage?.services?.length > 0
                       ? "bg-primary-500/20 text-primary-900"
@@ -157,6 +158,16 @@ const AppointmentHistory = () => {
                       { appointment?.service?.name || appointment?.medicalPackage?.name }
                     </span>
                   </div>
+                  { appointment.patientHelpID && <TooltipProvider delayDuration={ 200 }>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        💁‍♂️
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        Đặt hộ
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider> }
                 </TableCell>
                 <TableCell className="text-xs whitespace-nowrap  md:text-sm">
                   { formatDateTimeLocale(appointment.time) }

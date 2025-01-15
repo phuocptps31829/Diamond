@@ -384,7 +384,10 @@ module.exports = {
 
             const appointments = await AppointmentModel
                 .find({
-                    patientID: id,
+                    $or: [
+                        { patientID: id },
+                        { patientHelpID: id }
+                    ],
                     ...(status ? { status } : {}),
                     ...(startDay && endDay ? { time: { $gte: startDay, $lte: endDay } } :
                         startDay ? { time: { $gte: startDay } } :
