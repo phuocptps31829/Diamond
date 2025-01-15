@@ -35,7 +35,7 @@ class CheckWorkSchedule extends Command
      *
      * @var string
      */
-    protected $description = 'Chạy lúc 4h chiều hằng ngày: Kiểm tra dữ liệu lịch làm việc bác sĩ';
+    protected $description = 'Chạy lúc 5h chiều hằng ngày: Kiểm tra dữ liệu lịch làm việc bác sĩ';
 
     public function __construct()
     {

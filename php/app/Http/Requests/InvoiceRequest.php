@@ -8,6 +8,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class InvoiceRequest extends FormRequest
 {
     /**
+     *
+     * 
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
@@ -24,7 +26,7 @@ class InvoiceRequest extends FormRequest
         return [
             'patientID' =>  ['required',new IsValidMongoId('User')],
             'data' => 'required|array',
-            'data.*.medicalPackageID' => ['nullable',new IsValidMongoId('MedicalPackage')],
+            'data.*.medicalPackageID' =>  ['nullable','string'],
             'data.*.serviceID' =>['nullable',new IsValidMongoId('Service')],
             'data.*.workScheduleID' => 'nullable|string',
             'data.*.type' => 'required|string',

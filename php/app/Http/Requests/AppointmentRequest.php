@@ -25,7 +25,7 @@ class AppointmentRequest extends FormRequest
             'patientID' =>  ['required',new IsValidMongoId('Patient')],
             'data.*.workScheduleID' =>  ['required',new IsValidMongoId('WorkSchedule')],
             'data.*.serviceID' =>  ['nullable',new IsValidMongoId('Service')],
-            'data.*.medicalPackageID' =>  ['nullable',new IsValidMongoId('MedicalPackage')],
+            'data.*.medicalPackageID' =>  ['nullable','string'],
             'data.*.patientHelpID' =>  ['nullable',new IsValidMongoId('User')],
 
             'data.*.type' => 'required|string',

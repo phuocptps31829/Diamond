@@ -214,13 +214,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //------------------  api không yêu cầu đăng nhập   --------------------------------------
 Route::post('/v1/invoices/cancel/{id}', [InvoiceController::class, 'cancelAppointment']);
-Route::middleware(['web'])->group(function () {
+Route::middleware(['web', \Illuminate\Http\Middleware\HandleCors::class])->group(function () {
     Route::get('/v1/auth/google', [AuthController::class, 'loginGoogle']);
     Route::get('/v1/auth/google/callback', [AuthController::class, 'googleCallback']);
     Route::get('/v1/auth/facebook', [AuthController::class, 'loginFacebook']);
     Route::get('/v1/auth/facebook/callback', [AuthController::class, 'facebookCallback']);
 });
 
+Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
 Route::post('/v1/auth/login', [AuthController::class, 'login']);
 Route::post('/v1/auth/register', [AuthController::class, 'register']);
 Route::post('/v1/auth/forgot-password/send-otp/{phone}', [AuthController::class, 'sendOTPForgotPassword']);
@@ -231,11 +232,16 @@ Route::post('/v1/auth/logout', [AuthController::class, 'logout'])->middleware('V
 Route::put('/v1/auth/change-password', [AuthController::class, 'resetPassword'])->middleware('CheckToken');
 
 //======== callback thanh toán ============
-    Route::get('/v1/invoices/payment/zalo/callback', [InvoiceController::class, 'zaloPaymentCallback']);
+
+Route::get('/v1/invoices/payment/zalo/callback', [InvoiceController::class, 'zaloPaymentCallback']);
+Route::get('v1/invoices/payment/payment-success-redirect', [InvoiceController::class, 'momoPaymentCallbackRedirect']);
     Route::get('/v1/invoices/payment/vnpay/vnpay_return', [InvoiceController::class, 'vnpayPaymentCallback']);
     Route::post('/v1/invoices/payment/momo/callback', [InvoiceController::class, 'momoPaymentCallback']);
 
-
+Route::post('/v1/invoices/payment/zalopay', [InvoiceController::class, 'zaloPayment']);
+Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
+Route::post('/v1/invoices/payment/momo', [InvoiceController::class, 'momoPayment']);
+Route::post('/v1/invoices/payment/cod', [InvoiceController::class, 'codPayment']);
 Route::post('/v1/notifications/update/is-read/{id}', [\App\Http\Controllers\NotificationController::class, 'updateIsRead']);
 
 Route::get('/v1/prescriptions/export/{id}', [\App\Http\Controllers\PrescriptionController::class, 'export']);
@@ -247,17 +253,17 @@ Route::get('/v1/contracts/export/{id}', [ContractController::class, 'export']);
 //     Route::get('/v1/prescriptions/export/{id}', [\App\Http\Controllers\PrescriptionController::class, 'export']);
      //======== thông tin bệnh nhân ============
      Route::group(['middleware' => ['permission:superAdmin,admin,patient']], function () {
-         Route::post('/v1/patients/add', [PatientController::class, 'createPatient'])->middleware('VerifyOTP');
+
          Route::post('/v1/patients/admin-add', [PatientController::class, 'createPatientFromAdmin']);
          Route::put('/v1/patients/update/{id}', [PatientController::class, 'updatePatient'])->middleware('CheckValidId');
          Route::put('/v1/patients/update/avatar/{id}', [PatientController::class, 'updateImage'])->middleware('CheckValidId');
          Route::delete('/v1/patients/delete/{id}', [PatientController::class, 'deletePatient']);
      });
 //     Gọi thanh toán
-     Route::post('/v1/invoices/payment/zalopay', [InvoiceController::class, 'zaloPayment']);
-     Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
-     Route::post('/v1/invoices/payment/momo', [InvoiceController::class, 'momoPayment']);
-     Route::post('/v1/invoices/payment/cod', [InvoiceController::class, 'codPayment']);
+//     Route::post('/v1/invoices/payment/zalopay', [InvoiceController::class, 'zaloPayment']);
+//     Route::post('/v1/invoices/payment/vnpay', [InvoiceController::class, 'vnpayPayment']);
+//     Route::post('/v1/invoices/payment/momo', [InvoiceController::class, 'momoPayment']);
+//     Route::post('/v1/invoices/payment/cod', [InvoiceController::class, 'codPayment']);
 //======== upload ảnh ============
 Route::post('/v1/images/upload', [ImageController::class, 'uploadImage']);
 Route::post('/v1/images/upload-images', [ImageController::class, 'uploadImages']);
@@ -409,5 +415,6 @@ Route::delete('/v1/doctors/delete/{id}', [DoctorController::class, 'deleteDoctor
          Route::post('/v1/contracts/add/doctor', [ContractController::class, 'create']);
         Route::post('/v1/contracts/add/health', [ContractController::class, 'medicalContract']);
         Route::post('/v1/contracts/add', [ContractController::class, 'create']);
+            Route::delete('/v1/contracts/delete/{id}', [ContractController::class, 'deleteContract']);
      });
 });

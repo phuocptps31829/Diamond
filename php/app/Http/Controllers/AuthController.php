@@ -8,6 +8,7 @@ use App\Models\Doctor;
 use App\Models\OTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use MongoDB\BSON\ObjectId;
 use Firebase\JWT\Key;
 use Firebase\JWT\JWT;
@@ -37,7 +38,7 @@ class AuthController extends Controller
 {
     public function loginFacebook()
     {
-        return Socialite::driver('facebook')->redirect();
+        return  Socialite::driver('facebook')->redirect();
     }
     public function facebookCallback()
     {
@@ -74,7 +75,13 @@ class AuthController extends Controller
 
     public function loginGoogle()
     {
-        return Socialite::driver('google')->redirect();
+      $url= Socialite::driver('google')->redirect()->getTargetUrl();
+       return  response()->json([
+        'message' => 'Successfully',
+        'data' => [
+            'url' => $url
+        ]
+    ], 200);
     }
 
     public function googleCallback()
@@ -95,16 +102,8 @@ class AuthController extends Controller
                 ]);
                 $token = generateAccessRefreshToken($userNew);
             }
-            \Log::info($token['accessToken']);
             $redirect=env('GOOGLE_LOGIN_REDIRECT')."?accessToken=".$token['accessToken']['token']."&refreshToken=".$token['refreshToken']['token'];
             return redirect($redirect);
-//            return response()->json([
-//                'message' => 'User logged in successfully.',
-//                'data' => [
-//                    'accessToken' => $token['accessToken'],
-//                    'refreshToken' => $token['refreshToken']
-//                ]
-//            ], 200);
         } catch (Exception $e) {
               return handleException($e);
         }

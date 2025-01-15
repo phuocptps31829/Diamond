@@ -55,7 +55,6 @@ class CheckAppointment extends Command
     {
         $appointmentsJson = Redis::get('upcomingAppointments');
         $ids=[];
-\Log::info($appointmentsJson) ;
         if ($appointmentsJson) {
             $appointments = json_decode($appointmentsJson, true);
             foreach ($appointments as $index => $appointment) {

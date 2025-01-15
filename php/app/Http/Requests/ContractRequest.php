@@ -34,7 +34,7 @@ class ContractRequest extends FormRequest
             "file"=>"required|file|mimes:jpg,jpeg,png,gif,bmp,tiff|max:2048",
             "startTime"=>"nullable|string",
             "endTime"=>"nullable|string",
-            "countDate"=>"required|numeric",
+            "countDate"=>"nullable|numeric",
             "timeWork"=>"nullable|integer",
         ];
     }

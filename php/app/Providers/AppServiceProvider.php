@@ -43,11 +43,29 @@ class AppServiceProvider extends ServiceProvider
                 if (is_subclass_of($className, \Illuminate\Database\Eloquent\Model::class)) {
                     foreach ($events as $event) {
                         // Đăng ký sự kiện cho model
+
                         $className::registerModelEvent($event, function ($model) use ($event) {
                             $modelName = class_basename($model);
-                            // Gửi sự kiện reset cache
-                            event(new ResetCacheEvent([$modelName]));
+
+                          if($modelName == 'User') {
+                              $updatedAttributes = $model->getAttributes();
+                              if(strval($updatedAttributes['roleID'])==env('ROLE_PATIENT')){
+                                  event(new ResetCacheEvent(['Patient']));
+                              }elseif (strval($updatedAttributes['roleID'])==env('ROLE_DOCTOR')) {
+                                  event(new ResetCacheEvent(['Doctor']));
+                              }elseif (strval($updatedAttributes['roleID'])==env('ROLE_STAFF')) {
+                                  event(new ResetCacheEvent(['Staff']));
+                              }else{
+                                  event(new ResetCacheEvent([$modelName]));
+                              }
+                          }else{
+                              // Gửi sự kiện reset cache
+                              if($modelName == 'Appointment'){
+                                  event(new ResetCacheEvent(['Invoice']));
+                              }
+                              event(new ResetCacheEvent([$modelName]));
 //                            \Log::info('Reset cache for model: ' . $modelName);
+                          }
                         });
                     }
                 }

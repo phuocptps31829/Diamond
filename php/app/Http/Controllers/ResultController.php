@@ -437,11 +437,13 @@ class ResultController extends Controller
                     ]);
 
                     $prescription[] = $prescriptionNew;
-                    $invoice = Invoice::create([
-                        "appointmentID" => $dataResult['appointmentID'],
-                        "price" => $dataPrescription['price'],
-                        "prescriptionID" => $prescriptionNew->id
-                    ]);
+                            if(isset($prescriptionNew)){
+                                $invoice = Invoice::create([
+                                    "appointmentID" => $dataResult['appointmentID'],
+                                    "price" => $dataPrescription['price'],
+                                    "prescriptionID" => $prescriptionNew->id
+                                ]);
+                            }
                 }
             }
             return response()->json([
