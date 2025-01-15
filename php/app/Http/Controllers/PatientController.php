@@ -305,6 +305,9 @@ class PatientController extends Controller
             } else {
                 $codePatient = "BN1";
             }
+            $otherInfo = [
+                'patientCode' => $codePatient
+            ];
 
             $patient = User::create([
                 'fullName' => $request->newUser['fullName'],
@@ -313,7 +316,7 @@ class PatientController extends Controller
                 'patientCode' => $codePatient,
                 'isActivated' => true,
                 'roleID' => env("ROLE_PATIENT"),
-                'otherInfo' => new \stdClass()
+                "otherInfo" => $otherInfo
             ]);
 
             return response()->json([

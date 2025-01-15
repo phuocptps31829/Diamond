@@ -148,17 +148,21 @@ class InvoiceController extends Controller
                 $nameUnit=Medicine::find($medicine['medicineID']);
                 $medicine['unit']=$nameUnit->unit;
                 $medicine['name']=$nameUnit->name;
-                $medicine['price']=$nameUnit->price;
+                $medicine['price']=$invoice->price;
                 $items[]=$medicine;
             }
         }else{
             if(isset($appointment->serviceID)){
                 $service=Service::find($appointment->serviceID);
                 $appointment->name=$service->name;
+                $appointment->quantity=1;
+                $appointment->price=$invoice->price;
                 $items[]=$appointment;
             }else{
                 $medicalPackage=MedicalPackage::find($appointment->medicalPackageID);
                 $appointment->name=$medicalPackage->name;
+                $appointment->quantity=1;
+                $appointment->price=$invoice->price;
                 $items[]=$appointment;
             }
         }
@@ -490,181 +494,29 @@ class InvoiceController extends Controller
             $request->validate($InvoiceRequest->rules());
             $appointmentData = $request->all();
 
-            $newPatient = null;
-            $orderNumber = [];
-            if (isset($appointmentData['appointmentHelpUser'])) {
-                $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
-                $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
+            $totalPrice =$this->totalPrice($appointmentData);
 
-                if (!$newUser) {
-                    $roleID = env('ROLE_PATIENT');
-                    $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
+            $appointmentData['price'] = $totalPrice;
+            $appointmentData=json_encode($appointmentData);
 
-                    $codePatient = "";
-                    if ($endUser && isset($endUser->otherInfo['patientCode'])) {
-                        $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
-                    } else {
-                        $codePatient = "BN1";
+            $dataAppointment =  $this->saveAppointment($appointmentData,"","EXAMINED","COD");
+            $link='';
+            if($dataAppointment){
+                foreach ($dataAppointment['appointmentID'] as $id) {
+                    if($link==''){
+                        $link.='?id[]='.strval($id);
+                    }else{
+                        $link.='&id[]='.strval($id);
                     }
-
-                    $otherInfo = [
-                        'occupation' => $appointmentHelpUser['occupation'] ?? '',
-                        'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
-                        'patientCode' => $codePatient,
-                        'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
-                    ];
-                    $newPatient = User::create([
-                        "fullName" => $appointmentHelpUser['fullName'],
-                        "phoneNumber" => $appointmentHelpUser['phoneNumber'],
-                        "email" => $appointmentHelpUser['email'] ?? '',
-                        "gender" => $appointmentHelpUser['gender'],
-                        "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
-                        "address" => $appointmentHelpUser['address'],
-                        "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
-                        "password" => generateRandomString(),
-                        "isActivated" => true,
-                        "roleID" => env('ROLE_PATIENT'),
-                        'otherInfo' => $otherInfo
-                    ]);
-                } else {
-                    $newPatient = $newUser;
                 }
             }
-            foreach ($appointmentData['data'] as $appointment) {
-                $newAppointment = null;
-
-                if ($newPatient) {
-                    if (isset($appointment['serviceID'])) {
-                        return
-                            $newAppointment = Appointment::create([
-                                'serviceID' => $appointment['serviceID'],
-                                'workScheduleID' => $appointment['workScheduleID'],
-                                'type' => $appointment['type'],
-                                'time' => $appointment['time'],
-                                'status' => $appointment['status'],
-                                'payment' => [
-                                    'method' => 'COD',
-                                    'refundCode' => 'cod',
-                                    'status' => 'PENDING'
-                                ],
-                                'patientID' => $newPatient['id'],
-                                'patientHelpID' => new ObjectId($appointmentData['patientID']),
-                            ]);
-                    } else {
-
-                        $newAppointment = Appointment::create([
-                            'medicalPackageID' => $appointment['medicalPackageID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'COD',
-                                'refundCode' => 'cod',
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $newPatient['id'],
-                            'patientHelpID' => new ObjectId($appointmentData['patientID']),
-                        ]);
-                    }
-
-                    $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
-
-                    if ($patientUpdate) {
-                        $otherInfo = $patientUpdate->otherInfo ?: [];
-
-                        if (!isset($otherInfo['relatedPatientsID'])) {
-                            $otherInfo['relatedPatientsID'] = [];
-                        }
-                        $newPatientId = new ObjectId($newPatient->id);
-                        $exists = false;
-
-                        foreach ($otherInfo['relatedPatientsID'] as $existingId) {
-                            if ((string)$existingId === (string)$newPatientId) {
-                                $exists = true;
-                                break;
-                            }
-                        }
-                        if (!$exists) {
-                            $otherInfo['relatedPatientsID'][] = $newPatientId;
-                            $patientUpdate->otherInfo = $otherInfo;
-                            $patientUpdate->save();
-                        }
-                    }
-
-                } else {
-                    if (isset($appointment['serviceID'])) {
-                        $newAppointment = Appointment::create([
-                            'serviceID' => $appointment['serviceID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'COD',
-                                'refundCode' => 'cod',
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $appointmentData['patientID'],
-                        ]);
-                    } else {
-                        $newAppointment = Appointment::create([
-                            'medicalPackageID' => $appointment['medicalPackageID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'COD',
-                                'refundCode' => 'cod',
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $appointmentData['patientID'],
-                        ]);
-                    }
-                }
-                if (isset($appointment['serviceID'])) {
-                    $service = Service::where('id', $appointment['serviceID'])->first();
-                    $service->orderCount++;
-                    $service->save();
-                } else {
-                    $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
-                    $medicalPackage->orderCount++;
-                    $medicalPackage->save();
-                }
-
-                // Tìm các cuộc hẹn trong ngày
-                // "time": "2024-07-23T09:05:31.473+00:00"
-                $date = $newAppointment->time;
-                $startOfDay = Carbon::parse($date)->startOfDay();
-                $endOfDay = Carbon::parse($date)->endOfDay();
-
-                $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
-                    ->where('time', '<=', $endOfDay->toISOString())
-                    ->pluck('id');
-
-                $listID = [];
-                foreach ($appointmentIDsInDay as $appointment1) {
-                    array_push($listID, new ObjectId($appointment1));
-                }
-
-                $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
-                    ->orderBy('number', 'desc')
-                    ->first();
-
-                $newOrderNumber = OrderNumber::create([
-                    'appointmentID' => $newAppointment->id,
-                    'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
-                    'priority' => 0
-                ]);
-                $newInvoice = Invoice::create([
-                    'appointmentID' => $newAppointment->id,
-                    'price' => (int)$appointment['price'],
-
-                ]);
-                $orderNumber[0] = $newOrderNumber;
-            }
-            return response()->json(['status' => 'success', 'message' => 'Buy successfully.', "data" => $orderNumber], 200);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Appointment update payment status successfully.',
+                'data' => [
+                    'url'=> env('LINK_SUCCESS').$link
+                ],
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -676,11 +528,7 @@ class InvoiceController extends Controller
             $InvoiceRequest = new InvoiceRequest();
             $request->validate($InvoiceRequest->rules());
             $allData = $request->all();
-
-            $totalPrice = array_reduce($allData['data'], function ($a, $b) {
-                return $a + (float)$b['price'];
-            }, 0);
-
+            $totalPrice = $this->totalPrice($allData);
             $config = [
                 "app_id" => env('ZALO_PAY_APP_ID'),
                 "key1" => env('ZALO_PAY_KEY_1'),
@@ -755,193 +603,24 @@ class InvoiceController extends Controller
                 $jsonData = Redis::get($app_trans_id);
                 if ($jsonData) {
                     $signature = $order_token;
-                    $appointmentData = json_decode($jsonData, true);
-
-                    $newPatient = null;
-                    if (isset($appointmentData['appointmentHelpUser'])) {
-                        $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
-                        $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
-                        if (!$newUser) {
-                            $roleID = env('ROLE_PATIENT');
-                            $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
-
-                            $codePatient = "";
-                            if ($endUser && isset($endUser->otherInfo['patientCode'])) {
-                                $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
-                            } else {
-                                $codePatient = "BN1";
-                            }
-                            $otherInfo = [
-                                'occupation' => $appointmentHelpUser['occupation'] ?? '',
-                                'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
-                                'patientCode' => $codePatient,
-                                'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
-                            ];
-                            $newPatient = User::create([
-                                "fullName" => $appointmentHelpUser['fullName'],
-                                "phoneNumber" => $appointmentHelpUser['phoneNumber'],
-                                "email" => $appointmentHelpUser['email'],
-                                "gender" => $appointmentHelpUser['gender'],
-                                "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
-                                "address" => $appointmentHelpUser['address'],
-                                "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
-                                "otherInfo" => $otherInfo,
-                                "password" => generateRandomString(),
-                                "isActivated" => true,
-                                "roleID" => env('ROLE_PATIENT')
-                            ]);
-                        } else {
-                            $newPatient = $newUser;
-                        }
-                    }
-
-                    foreach ($appointmentData['data'] as $appointment) {
-                        $newAppointment = null;
-
-                        if ($newPatient) {
-
-                            if (isset($appointment['serviceID'])) {
-                                $newAppointment = Appointment::create([
-                                    'serviceID' => $appointment['serviceID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'ZALOPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $newPatient['id'],
-                                    'patientHelpID' => new objectId($appointmentData['patientID']),
-                                ]);
-                            } else {
-
-                                $newAppointment = Appointment::create([
-                                    'medicalPackageID' => $appointment['medicalPackageID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'ZALOPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $newPatient['id'],
-                                    'patientHelpID' => new objectId($appointmentData['patientID']),
-                                ]);
-
-                            }
-
-                            $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
-
-                            if ($patientUpdate) {
-                                $otherInfo = $patientUpdate->otherInfo ?: [];
-
-                                if (!isset($otherInfo['relatedPatientsID'])) {
-                                    $otherInfo['relatedPatientsID'] = [];
-                                }
-                                $newPatientId = new ObjectId($newPatient->id);
-                                $exists = false;
-
-                                foreach ($otherInfo['relatedPatientsID'] as $existingId) {
-                                    if ((string)$existingId === (string)$newPatientId) {
-                                        $exists = true;
-                                        break;
-                                    }
-                                }
-                                if (!$exists) {
-                                    $otherInfo['relatedPatientsID'][] = $newPatientId;
-                                    $patientUpdate->otherInfo = $otherInfo;
-                                    $patientUpdate->save();
-                                }
-                            }
-                        } else {
-                            if ($appointment['serviceID']) {
-                                $newAppointment = Appointment::create([
-                                    'serviceID' => $appointment['serviceID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'ZALOPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $appointmentData['patientID'],
-                                ]);
-                            } else {
-                                $newAppointment = Appointment::create([
-                                    'medicalPackageID' => $appointment['medicalPackageID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'ZALOPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $appointmentData['patientID'],
-                                ]);
-                            }
-
-                        }
-                        if (isset($appointment['serviceID'])) {
-                            $service = Service::where('id', $appointment['serviceID'])->first();
-                            $service->orderCount++;
-                            $service->save();
-                        } else {
-                            $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
-                            $medicalPackage->orderCount++;
-                            $medicalPackage->save();
-                        }
-                        // Tìm các cuộc hẹn trong ngày
-                        // "time": "2024-07-23T09:05:31.473+00:00"
-                        $date = $newAppointment->time;
-                        $startOfDay = Carbon::parse($date)->startOfDay();
-                        $endOfDay = Carbon::parse($date)->endOfDay();
-
-                        $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
-                            ->where('time', '<=', $endOfDay->toISOString())
-                            ->pluck('id');
-
-                        $listID = [];
-                        foreach ($appointmentIDsInDay as $appointment1) {
-                            array_push($listID, new ObjectId($appointment1));
-                        }
-
-                        $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
-                            ->orderBy('number', 'desc')
-                            ->first();
-
-                        $newOrderNumber = OrderNumber::create([
-                            'appointmentID' => $newAppointment->id,
-                            'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
-                            'priority' => 0
-                        ]);
-
-                        $newInvoice = Invoice::create([
-                            'appointmentID' => $newAppointment->id,
-                            'price' => (int)$appointment['price'],
-                        ]);
-                    }
+                    $dataAppointment=$this->saveAppointment($jsonData,$signature,"PAID","ZALOPAY");
                     Redis::del($app_trans_id);
-                    return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công.'], 200);
-
+                    $link='';
+                        if($dataAppointment){
+                            foreach ($dataAppointment['appointmentID'] as $id) {
+                                if($link==''){
+                                    $link.='?id[]='.strval($id);
+                                }else{
+                                    $link.='&id[]='.strval($id);
+                                }
+                            }
+                        }
+                    return redirect(env('LINK_SUCCESS').$link);
                 } else {
                     return response()->json(['error' => 'Lỗi không tìm thấy dịch vụ. '], 404);
                 }
 
-                $datajson = json_decode($postdatajson["data"], true);
-                // echo "update order's status = success where app_trans_id = ". $dataJson["app_trans_id"];
-
-                $result["return_code"] = 1;
-                $result["return_message"] = "success";
             }
-//            return response()->json(['status' => 'success', 'message' => 'Buy successfully.'], 200);
             return redirect(env('ZALO_PAY_REDIRECT_URL'));
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -1041,181 +720,19 @@ class InvoiceController extends Controller
                 $jsonData = Redis::get($vnp_TxnRef);
                 if ($jsonData) {
                     $signature = $vnp_BankTranNo;
-                    $appointmentData = json_decode($jsonData, true);
-
-                    $newPatient = null;
-                    if (isset($appointmentData['appointmentHelpUser'])) {
-                        $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
-                        $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
-                        if (!$newUser) {
-                            $roleID = '66fcca5b682b8e25c2dc43a4';
-                            $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
-
-                            $codePatient = "";
-                            if ($endUser && isset($endUser->otherInfo['patientCode'])) {
-                                $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
-                            } else {
-                                $codePatient = "BN1";
-                            }
-                            $otherInfo = [
-                                'occupation' => $appointmentHelpUser['occupation'] ?? '',
-                                'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
-                                'patientCode' => $codePatient,
-                                'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
-                            ];
-                            $newPatient = User::create([
-                                "fullName" => $appointmentHelpUser['fullName'],
-                                "phoneNumber" => $appointmentHelpUser['phoneNumber'],
-                                "email" => $appointmentHelpUser['email'],
-                                "gender" => $appointmentHelpUser['gender'],
-                                "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
-                                "address" => $appointmentHelpUser['address'],
-                                "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
-                                "otherInfo" => $otherInfo,
-                                "password" => generateRandomString(),
-                                "isActivated" => true,
-                                "roleID" => env('ROLE_PATIENT')
-                            ]);
-                        } else {
-                            $newPatient = $newUser;
-                        }
-                    }
-
-                    foreach ($appointmentData['data'] as $appointment) {
-                        $newAppointment = null;
-
-                        if ($newPatient) {
-
-                            if (isset($appointment['serviceID'])) {
-                                $newAppointment = Appointment::create([
-                                    'serviceID' => $appointment['serviceID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'VNPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $newPatient['id'],
-                                    'patientHelpID' => new objectId($appointmentData['patientID']),
-                                ]);
-                            } else {
-
-                                $newAppointment = Appointment::create([
-                                    'medicalPackageID' => $appointment['medicalPackageID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'VNPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $newPatient['id'],
-                                    'patientHelpID' => new objectId($appointmentData['patientID']),
-                                ]);
-
-                            }
-
-                            $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
-
-                            if ($patientUpdate) {
-                                $otherInfo = $patientUpdate->otherInfo ?: [];
-
-                                if (!isset($otherInfo['relatedPatientsID'])) {
-                                    $otherInfo['relatedPatientsID'] = [];
-                                }
-                                $newPatientId = new ObjectId($newPatient->id);
-                                $exists = false;
-
-                                foreach ($otherInfo['relatedPatientsID'] as $existingId) {
-                                    if ((string)$existingId === (string)$newPatientId) {
-                                        $exists = true;
-                                        break;
-                                    }
-                                }
-                                if (!$exists) {
-                                    $otherInfo['relatedPatientsID'][] = $newPatientId;
-                                    $patientUpdate->otherInfo = $otherInfo;
-                                    $patientUpdate->save();
-                                }
-                            }
-                        } else {
-                            if ($appointment['serviceID']) {
-                                $newAppointment = Appointment::create([
-                                    'serviceID' => $appointment['serviceID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'VNPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $appointmentData['patientID'],
-                                ]);
-                            } else {
-                                $newAppointment = Appointment::create([
-                                    'medicalPackageID' => $appointment['medicalPackageID'],
-                                    'workScheduleID' => $appointment['workScheduleID'],
-                                    'type' => $appointment['type'],
-                                    'time' => $appointment['time'],
-                                    'status' => $appointment['status'],
-                                    'payment' => [
-                                        'method' => 'VNPAY',
-                                        'refundCode' => $signature,
-                                        'status' => 'PENDING'
-                                    ],
-                                    'patientID' => $appointmentData['patientID'],
-                                ]);
-                            }
-
-                        }
-                        if (isset($appointment['serviceID'])) {
-                            $service = Service::where('id', $appointment['serviceID'])->first();
-                            $service->orderCount++;
-                            $service->save();
-                        } else {
-                            $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
-                            $medicalPackage->orderCount++;
-                            $medicalPackage->save();
-                        }
-                        // Tìm các cuộc hẹn trong ngày
-                        // "time": "2024-07-23T09:05:31.473+00:00"
-                        $date = $newAppointment->time;
-                        $startOfDay = Carbon::parse($date)->startOfDay();
-                        $endOfDay = Carbon::parse($date)->endOfDay();
-
-                        $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
-                            ->where('time', '<=', $endOfDay->toISOString())
-                            ->pluck('id');
-
-                        $listID = [];
-                        foreach ($appointmentIDsInDay as $appointment1) {
-                            array_push($listID, new ObjectId($appointment1));
-                        }
-
-                        $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
-                            ->orderBy('number', 'desc')
-                            ->first();
-
-                        $newOrderNumber = OrderNumber::create([
-                            'appointmentID' => $newAppointment->id,
-                            'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
-                            'priority' => 0
-                        ]);
-
-                        $newInvoice = Invoice::create([
-                            'appointmentID' => $newAppointment->id,
-                            'price' => (int)$appointment['price'],
-                        ]);
-                    }
+                    $dataAppointment=$this->saveAppointment($jsonData,$signature,"PAID","VNPAY");
                     Redis::del($vnp_TxnRef);
-                    return response()->json(['status' => 'success', 'message' => 'Thanh toán thành công.'], 200);
+                    $link='';
+                    if($dataAppointment){
+                        foreach ($dataAppointment['appointmentID'] as $id) {
+                            if($link==''){
+                                $link.='?id[]='.strval($id);
+                            }else{
+                                $link.='&id[]='.strval($id);
+                            }
+                        }
+                    }
+                    return redirect('LINK_SUCCESS'.$link);
 
                 } else {
                     return response()->json(['error' => 'Lỗi không tìm thấy dịch vụ. '], 404);
@@ -1235,18 +752,19 @@ class InvoiceController extends Controller
             $InvoiceRequest = new InvoiceRequest();
             $request->validate($InvoiceRequest->rules());
             $allData = $request->all();
-            $totalPrice = array_reduce($allData['data'], function ($a, $b) {
-                return $a + (float)$b['price'];
-            }, 0);
+//            $totalPrice = array_reduce($allData['data'], function ($a, $b) {
+//                return $a + (float)$b['price'];
+//            }, 0);
+            $totalPrice =$this->totalPrice($allData);
             $accessKey = 'F8BBA842ECF85';
             $secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
             // $accessKey = env('MOMO_SECRET_KEY');
             // $secretKey = env('MOMO_SECRET_KEY');
             $orderInfo = 'Thanh toán với MoMo';
             $partnerCode = 'MOMO';
-            $redirectUrl = 'http://localhost:5173/payment-success';
+            $redirectUrl =env('MOMO_REDIRECT_URL');
             // $ipnUrl = env('MOMO_CALLBACK_URL');
-            $ipnUrl = 'https://laravel.diamond.id.vn/api/v1/invoices/payment/momo/callback';
+            $ipnUrl =env('MOMO_CALLBACK_URL');
             $requestType = "captureWallet";
             $amount = $totalPrice;
             $orderId = time() . "";
@@ -1296,6 +814,41 @@ class InvoiceController extends Controller
         } catch (\Exception $e) {
 
             return handleException($e);
+        }
+    }
+    function momoPaymentCallbackRedirect(Request $request)
+    {
+        try {
+
+            $resultCode = $request->resultCode;
+            // return $resultCode;
+            if ($resultCode !== 0) {
+                return response()->json(['error' => 'Paid fail.'], 400);
+            }
+
+            $amount = $request->input('amount');
+            $signature = $request->input('signature');
+            $extraData = $request->input('extraData');
+
+            $appointmentData = $extraData;
+
+//            $appointmentData = json_decode($extraData, true);
+
+            $newPatient = null;
+            $dataAppointment = $this->saveAppointment($appointmentData,$signature,"PAID","MOMO");
+            $link='';
+            if($dataAppointment){
+                foreach ($dataAppointment['appointmentID'] as $id) {
+                    if($link==''){
+                        $link.='?id[]='. strval($id);
+                    }else{
+                        $link.='&id[]='. strval($id);
+                    }
+                }
+            }
+            return redirect(env('LINK_SUCCESS').$link);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
@@ -1355,182 +908,236 @@ class InvoiceController extends Controller
             $extraData = $request->input('extraData');
 
             $appointmentData = $extraData;
-            $appointmentData = json_decode($extraData, true);
+
+//            $appointmentData = json_decode($extraData, true);
 
             $newPatient = null;
-            if (isset($appointmentData['appointmentHelpUser'])) {
-                $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
-                $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
-                if (!$newUser) {
-                    $roleID = '66fcca5b682b8e25c2dc43a4';
-                    $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
-
-                    $codePatient = "";
-                    if ($endUser && isset($endUser->otherInfo['patientCode'])) {
-                        $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
-                    } else {
-                        $codePatient = "BN1";
+            $dataAppointment = $this->saveAppointment($appointmentData,$signature,"PAID","MOMO");
+            $link='';
+            if($dataAppointment){
+                foreach ($dataAppointment['appointmentID'] as $id) {
+                    if($link==''){
+                        $link.='?id[]='. strval($id);
+                    }else{
+                        $link.='&id[]='. strval($id);
                     }
-                    $otherInfo = [
-                        'occupation' => $appointmentHelpUser['occupation'] ?? '',
-                        'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
-                        'patientCode' => $codePatient,
-                        'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
-                    ];
-                    $newPatient = User::create([
-                        "fullName" => $appointmentHelpUser['fullName'],
-                        "phoneNumber" => $appointmentHelpUser['phoneNumber'],
-                        "email" => $appointmentHelpUser['email'],
-                        "gender" => $appointmentHelpUser['gender'],
-                        "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
-                        "address" => $appointmentHelpUser['address'],
-                        "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
-                        "otherInfo" => $otherInfo,
-                        "password" => generateRandomString(),
-                        "isActivated" => true,
-                        "roleID" => env('ROLE_PATIENT')
-                    ]);
-                } else {
-                    $newPatient = $newUser;
                 }
             }
-
-            foreach ($appointmentData['data'] as $appointment) {
-                $newAppointment = null;
-
-                if ($newPatient) {
-
-                    if (isset($appointment['serviceID'])) {
-                        $newAppointment = Appointment::create([
-                            'serviceID' => $appointment['serviceID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'MOMO',
-                                'refundCode' => $signature,
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $newPatient['id'],
-                            'patientHelpID' => new objectId($appointmentData['patientID']),
-                        ]);
-                    } else {
-
-                        $newAppointment = Appointment::create([
-                            'medicalPackageID' => $appointment['medicalPackageID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'MOMO',
-                                'refundCode' => $signature,
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $newPatient['id'],
-                            'patientHelpID' => new objectId($appointmentData['patientID']),
-                        ]);
-
-                    }
-
-                    $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
-
-                    if ($patientUpdate) {
-                        $otherInfo = $patientUpdate->otherInfo ?: [];
-
-                        if (!isset($otherInfo['relatedPatientsID'])) {
-                            $otherInfo['relatedPatientsID'] = [];
-                        }
-                        $newPatientId = new ObjectId($newPatient->id);
-                        $exists = false;
-
-                        foreach ($otherInfo['relatedPatientsID'] as $existingId) {
-                            if ((string)$existingId === (string)$newPatientId) {
-                                $exists = true;
-                                break;
-                            }
-                        }
-                        if (!$exists) {
-                            $otherInfo['relatedPatientsID'][] = $newPatientId;
-                            $patientUpdate->otherInfo = $otherInfo;
-                            $patientUpdate->save();
-                        }
-                    }
-                } else {
-                    if ($appointment['serviceID']) {
-                        $newAppointment = Appointment::create([
-                            'serviceID' => $appointment['serviceID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'MOMO',
-                                'refundCode' => $signature,
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $appointmentData['patientID'],
-                        ]);
-                    } else {
-                        $newAppointment = Appointment::create([
-                            'medicalPackageID' => $appointment['medicalPackageID'],
-                            'workScheduleID' => $appointment['workScheduleID'],
-                            'type' => $appointment['type'],
-                            'time' => $appointment['time'],
-                            'status' => $appointment['status'],
-                            'payment' => [
-                                'method' => 'MOMO',
-                                'refundCode' => $signature,
-                                'status' => 'PENDING'
-                            ],
-                            'patientID' => $appointmentData['patientID'],
-                        ]);
-                    }
-
-                }
-                if (isset($appointment['serviceID'])) {
-                    $service = Service::where('id', $appointment['serviceID'])->first();
-                    $service->orderCount++;
-                    $service->save();
-                } else {
-                    $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
-                    $medicalPackage->orderCount++;
-                    $medicalPackage->save();
-                }
-                // Tìm các cuộc hẹn trong ngày
-                // "time": "2024-07-23T09:05:31.473+00:00"
-                $date = $newAppointment->time;
-                $startOfDay = Carbon::parse($date)->startOfDay();
-                $endOfDay = Carbon::parse($date)->endOfDay();
-
-                $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
-                    ->where('time', '<=', $endOfDay->toISOString())
-                    ->pluck('id');
-
-                $listID = [];
-                foreach ($appointmentIDsInDay as $appointment1) {
-                    array_push($listID, new ObjectId($appointment1));
-                }
-
-                $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
-                    ->orderBy('number', 'desc')
-                    ->first();
-
-                $newOrderNumber = OrderNumber::create([
-                    'appointmentID' => $newAppointment->id,
-                    'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
-                    'priority' => 0
-                ]);
-
-                $newInvoice = Invoice::create([
-                    'appointmentID' => $newAppointment->id,
-                    'price' => (int)$appointment['price'],
-                ]);
-            }
-            return response()->json(['status' => 'success', 'message' => 'Buy successfully.'], 200);
+            return redirect(env('LINK_SUCCESS').$link);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+    function saveAppointment($dataAppointment,$signature,$status,$payment)
+    {
+        $appointmentData = json_decode($dataAppointment, true);
+
+        $newPatient = null;
+        $appointmentID=[];
+        $createNewPatient=false;
+        if (isset($appointmentData['appointmentHelpUser'])) {
+            $appointmentHelpUser = $appointmentData['appointmentHelpUser'];
+            $newUser = User::where("phoneNumber", $appointmentHelpUser["phoneNumber"])->first();
+            if (!$newUser) {
+                $roleID = env('ROLE_PATIENT');
+                $endUser = User::where('roleID', new ObjectId($roleID))->whereNotNull('otherInfo.patientCode')->latest("id")->first();
+
+                $codePatient = "";
+                if ($endUser && isset($endUser->otherInfo['patientCode'])) {
+                    $codePatient = "BN" . ((int)substr($endUser->otherInfo['patientCode'], 2) + 1);
+                } else {
+                    $codePatient = "BN1";
+                }
+                $otherInfo = [
+                    'occupation' => $appointmentHelpUser['occupation'] ?? '',
+                    'ethnic' => $appointmentHelpUser['ethnic'] ?? '',
+                    'patientCode' => $codePatient,
+                    'insuranceCode' => $appointmentHelpUser['insuranceCode'] ?? '',
+                ];
+                $newPatient = User::create([
+                    "fullName" => $appointmentHelpUser['fullName'],
+                    "phoneNumber" => $appointmentHelpUser['phoneNumber'],
+                    "email" => $appointmentHelpUser['email'],
+                    "gender" => $appointmentHelpUser['gender'],
+                    "dateOfBirth" => $appointmentHelpUser['dateOfBirth'],
+                    "address" => $appointmentHelpUser['address'],
+                    "citizenIdentificationNumber" => $appointmentHelpUser['citizenIdentificationNumber'],
+                    "otherInfo" => $otherInfo,
+                    "password" => generateRandomString(),
+                    "isActivated" => true,
+                    "roleID" => env('ROLE_PATIENT')
+                ]);
+                $createNewPatient = true;
+            } else {
+                $newPatient = $newUser;
+            }
+        }
+
+        foreach ($appointmentData['data'] as $appointment) {
+            $newAppointment = null;
+            if ($newPatient) {
+                if (isset($appointment['serviceID'])) {
+                    $newAppointment = Appointment::create([
+                        'serviceID' => $appointment['serviceID'],
+                        'workScheduleID' => $appointment['workScheduleID'],
+                        'type' => $appointment['type'],
+                        'time' => $appointment['time'],
+                        'status' => $appointment['status'],
+                        'payment' => [
+                            'method' => $payment,
+                            'refundCode' => $signature,
+                            'status' => $status
+                        ],
+                        'patientID' => $newPatient['id'],
+                        'patientHelpID' => new objectId($appointmentData['patientID']),
+                    ]);
+                    $appointmentID[]=strval($newAppointment->id);
+                } else {
+                    $newAppointment = Appointment::create([
+                        'medicalPackageID' => $appointment['medicalPackageID'],
+                        'workScheduleID' => $appointment['workScheduleID'],
+                        'type' => $appointment['type'],
+                        'time' => $appointment['time'],
+                        'status' => $appointment['status'],
+                        'payment' => [
+                            'method' => $payment,
+                            'refundCode' => $signature,
+                            'status' => $status
+                        ],
+                        'patientID' => $newPatient['id'],
+                        'patientHelpID' => new objectId($appointmentData['patientID']),
+                    ]);
+                    $appointmentID[]=strval($newAppointment->id);
+
+                }
+
+                $patientUpdate = User::where('id', $appointmentData['patientID'])->first();
+
+                if ($patientUpdate) {
+                    $otherInfo = $patientUpdate->otherInfo ?: [];
+
+                    if (!isset($otherInfo['relatedPatientsID'])) {
+                        $otherInfo['relatedPatientsID'] = [];
+                    }
+                    $newPatientId = new ObjectId($newPatient->id);
+                    $exists = false;
+
+                    foreach ($otherInfo['relatedPatientsID'] as $existingId) {
+                        if ((string)$existingId === (string)$newPatientId) {
+                            $exists = true;
+                            break;
+                        }
+                    }
+                    if (!$exists) {
+                        $otherInfo['relatedPatientsID'][] = $newPatientId;
+                        $patientUpdate->otherInfo = $otherInfo;
+                        $patientUpdate->save();
+                    }
+                }
+            } else {
+                if (isset($appointment['serviceID'])) {
+                    $newAppointment = Appointment::create([
+                        'serviceID' => $appointment['serviceID'],
+                        'workScheduleID' => $appointment['workScheduleID'],
+                        'type' => $appointment['type'],
+                        'time' => $appointment['time'],
+                        'status' => $appointment['status'],
+                        'payment' => [
+                            'method' => $payment,
+                            'refundCode' => $signature,
+                            'status' => $status
+                        ],
+                        'patientID' => $appointmentData['patientID'],
+                    ]);
+                    $appointmentID[]=strval($newAppointment->id);
+
+                } else {
+                    $newAppointment = Appointment::create([
+                        'medicalPackageID' => $appointment['medicalPackageID'],
+                        'workScheduleID' => $appointment['workScheduleID'],
+                        'type' => $appointment['type'],
+                        'time' => $appointment['time'],
+                        'status' => $appointment['status'],
+                        'payment' => [
+                            'method' => $payment,
+                            'refundCode' => $signature,
+                            'status' => $status
+                        ],
+                        'patientID' => $appointmentData['patientID'],
+                    ]);
+                    $appointmentID[]=strval($newAppointment->id);
+
+                }
+
+            }
+            if (isset($appointment['serviceID'])) {
+                $service = Service::where('id', $appointment['serviceID'])->first();
+                $service->orderCount++;
+                $service->save();
+            } else {
+                $medicalPackage = MedicalPackage::where('services._id', new ObjectId($appointment['medicalPackageID']))->first();
+                $medicalPackage->orderCount++;
+                $medicalPackage->save();
+            }
+            // Tìm các cuộc hẹn trong ngày
+            // "time": "2024-07-23T09:05:31.473+00:00"
+            $date = $newAppointment->time;
+            $startOfDay = Carbon::parse($date)->startOfDay();
+            $endOfDay = Carbon::parse($date)->endOfDay();
+
+            $appointmentIDsInDay = Appointment::where('time', '>=', $startOfDay->toISOString())
+                ->where('time', '<=', $endOfDay->toISOString())
+                ->pluck('id');
+
+            $listID = [];
+            foreach ($appointmentIDsInDay as $appointment1) {
+                array_push($listID, new ObjectId($appointment1));
+            }
+
+            $lastOrderNumberInDay = OrderNumber::whereIn('appointmentID', $listID)
+                ->orderBy('number', 'desc')
+                ->first();
+
+            $newOrderNumber = OrderNumber::create([
+                'appointmentID' => $newAppointment->id,
+                'number' => $lastOrderNumberInDay ? $lastOrderNumberInDay->number + 1 : 1,
+                'priority' => 0
+            ]);
+
+            $newInvoice = Invoice::create([
+                'appointmentID' => $newAppointment->id,
+                'price' => (int)$appointment['price'],
+            ]);
+        }
+        return [
+            "appointmentID" => $appointmentID,
+            "newPatient" => $createNewPatient?$newPatient:null,
+        ];
+    }
+    function totalPrice($appointment)
+    {
+        $totalPrice = 0;
+       if(isset($appointment['data']) && is_array($appointment['data'])) {
+           foreach ($appointment['data'] as $index => $item) {
+
+               if(isset($item['serviceID'])) {
+                   $servicePrice=Service::find($item['serviceID'],['discountPrice']);
+                   if($servicePrice) {
+                       $totalPrice += $servicePrice->discountPrice;
+                   }
+               }else{
+                   $medicalPackage = MedicalPackage::where('services._id', new ObjectId($item['medicalPackageID']))->first();
+                   if($medicalPackage) {
+                      foreach ($medicalPackage->services as $service) {
+                          if(strval($service['id'])==$appointment['data'][$index]['medicalPackageID']) {
+                              $totalPrice += $service['discountPrice'];
+                              break;
+                          }
+                      }
+                   }
+               }
+            }
+       }
+       return $totalPrice;
     }
 }

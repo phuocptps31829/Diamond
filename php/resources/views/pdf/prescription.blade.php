@@ -88,6 +88,7 @@
             color: #007BBB;
             text-align: left;
         }
+
     </style>
 </head>
 <body style="margin:0">
@@ -157,9 +158,16 @@
                     </thead>
                     <tbody>
                     @foreach ($medicines as $index => $medicine)
-                    <tr>
+                    <tr style="height: auto">
                         <td>{{$index+1}}</td>
-                        <td>{{$medicine['name'] }} <br> <p style="font-size: 12px;">{{$medicine['dosage']}} </p> </td>
+                        <td>
+                            <span>{{ $medicine['name'] }}</span>
+                            @if(isset($medicine['dosage']))
+                            (
+                            <span style="font-size: 12px;">{{ $medicine['dosage'] }}</span> )
+                            @endif
+                        </td>
+{{--                        <td>{{$medicine['name'] }} <br> <p style="font-size: 12px;">{{$medicine['dosage']}} </p> </td>--}}
                         <td>{{$medicine['quantity']}}</td>
                         <td>{{$medicine['unit']}}</td>
                     </tr>

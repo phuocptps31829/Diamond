@@ -87,7 +87,7 @@ class WorkSchedule extends Model
             sendNotification(
                 $model->doctorID,
                 "Lưu ý!",
-                "Bạn có lịch làm việc vào lúc"
+                "Bạn có lịch làm việc vào lúc "
                 . $model->hour['startTime'] . ' đến '
                 . $model->hour['endTime'] . ' ngày '
                 . Carbon::parse($model->day)->format('d-m-Y'),

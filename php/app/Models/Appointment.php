@@ -84,6 +84,7 @@ class Appointment extends Model
                 ]);
                 $ids[]=$model->patientID;
                 $patient=User::find($model->patientID);
+                 if($model->status=='CONFIRMED'||$model->status=='PENDING')
                 callNotification($patient->phoneNumber,"
                     Xin chào đây là cuộc gọi đến từ y khoa diamond, xin thông báo lịch hẹn của bạn có thay đổi xin mời vào website hoặc ứng dụng diamond để xem chi tiết.
                     ");
@@ -112,10 +113,17 @@ class Appointment extends Model
                 "isRead" => false,
                 "redirect" => $redirect
             ]);
+
             $ids[] = $model->patientID;
             event(new NotificationsEvent($ids));
 //            Gửi mail thông báo qua hàng đợi
             $patient=User::find($model->patientID);
+            if(isset($model->patientHelpID)){
+                callNotification($patient->phoneNumber,"
+                    Xin chào đây là cuộc gọi đến từ y khoa diamond, xin thông báo bạn vừa được tạo một tài khoản tại hệ thống y khoa diamond, xin vui lòng vào diamond.id.vn và chọn quên mật khẩu để đổi mật khẩu.
+                    ");
+            }
+
             if (isset($patient->email) && $patient->email != "") {
                 $data['fullName'] ='';
                 if (isset($patient->gender)) {
@@ -127,9 +135,9 @@ class Appointment extends Model
                 }
                 if(isset($model->serviceID)){
                     $service=Service::find($model->serviceID);
-                    $data['nameService'] = $service->name;
+                        $data['nameService'] = $service->name;
                 }else{
-                    $medicalPackage=MedicalPackage::find($model->medicalPackageID);
+                    $medicalPackage=MedicalPackage::where('services._id',$model->serviceID)->first();
                     $data['nameService'] = $medicalPackage->name;
                 }
                 $data['fullName'] .= $patient->fullName;

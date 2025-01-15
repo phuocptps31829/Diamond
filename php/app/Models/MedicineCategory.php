@@ -16,7 +16,8 @@ class MedicineCategory extends Model
     protected $casts = [
         'name' => 'string',
     ];
-
+    const CREATED_AT = 'createdAt';
+    const UPDATED_AT = 'updatedAt';
     public function getTable()
     {
         return 'MedicineCategory';

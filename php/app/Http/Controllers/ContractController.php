@@ -165,4 +165,31 @@ class ContractController extends Controller
         }
     }
 
+    public function deleteContract($id)
+    {
+        try {
+            if (!$id) {
+                return createError(400, 'ID không được trống!');
+            }
+
+            if (!isValidMongoId($id)) {
+                return createError(400, 'ID không hợp lệ!');
+            }
+
+            $contract = Contract::where('_id', $id)->first();
+            if (!$contract) {
+                return createError(404, 'Không tìm thấy hợp đồng!');
+            }
+
+            $contract->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Xóa hợp đồng thành công!',
+                'data' => $contract,
+            ], 200);
+        } catch (\Exception $e) {
+            return handleException($e);
+        }
+    }
+
 }

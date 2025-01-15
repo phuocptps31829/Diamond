@@ -452,23 +452,29 @@ if (!function_exists('searchInTable')) {
     function checkPhoneAndEmail($phoneNumber = null, $email = null, $userId = null)
     {
         if (!$phoneNumber && !$email) {
-            createError(500, 'Required phone number or email');
+            createError(500, 'Không được trống số điện thoại và email');
         }
+        if($phoneNumber){
+            if (!preg_match('/^0[2-9]{1}[0-9]{8}$/', $phoneNumber)) {
+                createError(422, 'Số điện thoại không hợp lệ');
+            }
+        }
+
         if ($userId) {
             $user = User::where('_id', new \MongoDB\BSON\ObjectId($userId))->first();
             if (!$user) {
-                return 'User not found';
+                return 'Không tìm thấy tài khoản';
             }
             if ($phoneNumber && $user->phoneNumber != $phoneNumber) {
                 $userPhone = User::where('phoneNumber', $phoneNumber)->where('_id','!=',$userId)->first();
                 if ($userPhone) {
-                    return 'Phone number already exists';
+                    return 'Số điện thoại đã được đăng ký';
                 }
             }
             if ($email && $user && $user->email != $email) {
                 $userMail = User::where('email', $email)->where('_id','!=',new \MongoDB\BSON\ObjectId($userId))->first();
                 if ($userMail) {
-                    return 'Email already exists';
+                    return 'Email đã được đăng ký';
                 }
             }
             return null;
@@ -476,13 +482,13 @@ if (!function_exists('searchInTable')) {
             if ($phoneNumber) {
                 $user = User::where('phoneNumber', $phoneNumber)->first();
                 if ($user) {
-                    return 'Phone number already exists';
+                    return 'Số điện thoại đã được đăng ký';
                 }
             }
             if ($email) {
                 $user = User::where('email', $email)->first();
                 if ($user) {
-                    return 'Email already exists';
+                    return 'Email đã được đăng ký';
                 }
             }
         }
