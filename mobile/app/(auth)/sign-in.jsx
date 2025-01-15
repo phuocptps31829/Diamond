@@ -94,13 +94,13 @@ const SignIn = () => {
     <>
       <ScrollView
         className="bg-white"
-        contentContainerStyle={{
+        contentContainerStyle={ {
           height: "100%",
-        }}
+        } }
       >
         <View className="w-full max-h-[250px] h-[100%] flex justify-center items-center bg-[#209bdd]">
           <Image
-            source={require("../../assets/images/brandLogo.png")}
+            source={ require("../../assets/images/brandLogo.png") }
             className="w-[280px]"
             resizeMode="contain"
           ></Image>
@@ -108,42 +108,41 @@ const SignIn = () => {
 
         <View className="flex-1 px-6 pt-12 bg-white">
           <Input
-            control={control}
+            control={ control }
             name="phoneNumber"
-            error={errors.phoneNumber?.message}
+            error={ errors.phoneNumber?.message }
             placeholder="Nhập số điện thoại đăng nhập"
-            isInputPw={false}
+            isInputPw={ false }
           />
           <Input
-            control={control}
+            control={ control }
             name="password"
-            error={errors.password?.message}
+            error={ errors.password?.message }
             placeholder="Nhập mật khẩu"
           />
           <View className="flex flex-row justify-between">
             <Text></Text>
-            <TouchableOpacity onPress={() => router.push("forget")}>
+            <TouchableOpacity onPress={ () => router.push("forget") }>
               <Text className="text-center text-[14px] text-blue-500">
                 Quên mật khẩu?
               </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            className={`${
-              (isPending || loadingGetProfile) ? "opacity-50" : ""
-            } bg-[#209bdd] py-3 mt-7 rounded-md items-center`}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isPending || loadingGetProfile}
+            className={ `${(isPending || loadingGetProfile) ? "opacity-50" : ""
+              } bg-[#209bdd] py-3 mt-7 rounded-md items-center` }
+            onPress={ handleSubmit(onSubmit) }
+            disabled={ isPending || loadingGetProfile }
           >
             <Text className="text-white uppercase text-sm font-bold">
-              {isPending || loadingGetProfile ? (
+              { isPending || loadingGetProfile ? (
                 <ActivityIndicator size="small" color="#fff" />
               ) : (
                 "Đăng nhập"
-              )}
+              ) }
             </Text>
           </TouchableOpacity>
-          <View className="my-6 flex items-center flex-row">
+          {/* <View className="my-6 flex items-center flex-row">
             <Text className="flex-grow bg-gray-300 h-[1px]"></Text>
             <Text className="mx-4 text-sm text-gray-800">
               Hoặc tiếp tục với
@@ -172,12 +171,12 @@ const SignIn = () => {
                 Facebook
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View className="flex-row items-center mt-7 justify-center">
             <Text className="text-center text-[14px] mr-1">
               Bạn chưa có tài khoản?
             </Text>
-            <TouchableOpacity onPress={() => router.push("sign-up")}>
+            <TouchableOpacity onPress={ () => router.push("sign-up") }>
               <Text className="text-center text-[14px] text-blue-500">
                 Đăng ký
               </Text>

@@ -123,43 +123,43 @@ const SignUp = () => {
         error.response?.data?.error ||
         error.message ||
         "Đã xảy ra lỗi, vui lòng thử lại.";
-        ToastUI({
-          type: "error",
-          text1: "Gửi lại mã OTP thất bại",
-          text2: errorMessage,
-        });
+      ToastUI({
+        type: "error",
+        text1: "Gửi lại mã OTP thất bại",
+        text2: errorMessage,
+      });
     },
   });
 
   const { mutate: otpUserVerificationMutation, isPending: isOtpPending } = useMutation({
-      mutationFn: (data) => {
-        return authApi.otpUserVerification(data);
-      },
-      onSuccess: async () => {
-        await AsyncStorage.removeItem("otpToken");
-        await AsyncStorage.removeItem("otpSentTime");
-        await AsyncStorage.removeItem("password");
-        await AsyncStorage.removeItem("fullName");
-        await AsyncStorage.removeItem("phoneNumber");
-        ToastUI({
-          type: "success",
-          text1: "Đăng ký thành công",
-          text2: "Chúc mừng bạn đã đăng ký thành công tài khoản.",
-        });
-        router.replace("sign-in");
-      },
-      onError: (error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          error.message ||
-          "Đã xảy ra lỗi, vui lòng thử lại.";
-        ToastUI({
-          type: "error",
-          text1: "Xác thực thất bại",
-          text2: errorMessage,
-        });
-      },
-    });
+    mutationFn: (data) => {
+      return authApi.otpUserVerification(data);
+    },
+    onSuccess: async () => {
+      await AsyncStorage.removeItem("otpToken");
+      await AsyncStorage.removeItem("otpSentTime");
+      await AsyncStorage.removeItem("password");
+      await AsyncStorage.removeItem("fullName");
+      await AsyncStorage.removeItem("phoneNumber");
+      ToastUI({
+        type: "success",
+        text1: "Đăng ký thành công",
+        text2: "Chúc mừng bạn đã đăng ký thành công tài khoản.",
+      });
+      router.replace("sign-in");
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Đã xảy ra lỗi, vui lòng thử lại.";
+      ToastUI({
+        type: "error",
+        text1: "Xác thực thất bại",
+        text2: errorMessage,
+      });
+    },
+  });
 
   const handleOtpChange = (text, index) => {
     if (!/^\d$/.test(text) && text !== "") return;
@@ -174,7 +174,7 @@ const SignUp = () => {
   };
 
   const handleKeyPress = (event, index) => {
-    
+
     if (event.nativeEvent.key === "Backspace" && !otp[index] && index > 0 && index !== 5) {
       const prevInput = index - 1;
       const updatedOtp = [...otp];
@@ -237,21 +237,21 @@ const SignUp = () => {
       phoneNumber: phoneNumber,
     };
     sendOtpAgainMutation(data);
-  }
+  };
 
   return (
-    <ScrollView className="bg-white" showsVerticalScrollIndicator={false}>
+    <ScrollView className="bg-white" showsVerticalScrollIndicator={ false }>
       <View className="w-full max-h-[250px] h-[100%] flex justify-center items-center bg-[#209bdd]">
         <Image
-          source={require("../../assets/images/brandLogo.png")}
+          source={ require("../../assets/images/brandLogo.png") }
           className="w-[280px]"
           resizeMode="contain"
         />
       </View>
-      {verifyOtp ? (
+      { verifyOtp ? (
         <View className="flex-1 px-6 pt-6 bg-white">
-          <TouchableOpacity onPress={() => setVerifyOtp(false)} className="flex-row items-center gap-1 mb-4">
-            <MaterialIcons name="arrow-back-ios" size={15} color="red" />
+          <TouchableOpacity onPress={ () => setVerifyOtp(false) } className="flex-row items-center gap-1 mb-4">
+            <MaterialIcons name="arrow-back-ios" size={ 15 } color="red" />
             <Text className="font-semibold text-[16px] text-red-500">
               Hủy bỏ xác thực
             </Text>
@@ -263,47 +263,47 @@ const SignUp = () => {
             Nhập mã OTP gửi qua số điện thoại của bạn.
           </Text>
           <Text className="text-center text-[14px] text-gray-600">
-            Số điện thoại:{" "}
+            Số điện thoại:{ " " }
             <Text className="font-bold text-primary-400">
-              {formatPhoneNumber(dataLocal.phoneNumber)}
+              { formatPhoneNumber(dataLocal.phoneNumber) }
             </Text>
           </Text>
           <View className="flex-row justify-between mt-6">
-            {otp.map((value, index) => (
+            { otp.map((value, index) => (
               <TextInput
-                key={index}
-                id={`otp-input-${index}`}
-                value={value}
-                onChangeText={(text) => handleOtpChange(text, index)}
-                maxLength={1}
+                key={ index }
+                id={ `otp-input-${index}` }
+                value={ value }
+                onChangeText={ (text) => handleOtpChange(text, index) }
+                maxLength={ 1 }
                 keyboardType="numeric"
-                onKeyPress={(event) => handleKeyPress(event, index)}
-                ref={otpRefs.current[index]}
+                onKeyPress={ (event) => handleKeyPress(event, index) }
+                ref={ otpRefs.current[index] }
                 className="w-12 h-12 border border-[#209bdd] rounded-md text-center text-[18px] font-bold"
               />
-            ))}
+            )) }
           </View>
           <View className="flex-row justify-between mt-3 ">
             <Text className="font-semibold text-[12px]">
-              Yêu cầu mã OTP mới sau:{" "}
-              <Text className="font-bold text-primary-500">{formatTime(timeLeft)}</Text>
+              Yêu cầu mã OTP mới sau:{ " " }
+              <Text className="font-bold text-primary-500">{ formatTime(timeLeft) }</Text>
             </Text>
-            <TouchableOpacity onPress={() => handleSendAgainOtp()} disabled={isSendOtpAgainPending || timeLeft > 0} className={`${isSendOtpAgainPending || timeLeft > 0 ? "opacity-50" : ""}`}>
+            <TouchableOpacity onPress={ () => handleSendAgainOtp() } disabled={ isSendOtpAgainPending || timeLeft > 0 } className={ `${isSendOtpAgainPending || timeLeft > 0 ? "opacity-50" : ""}` }>
               <Text className="font-semibold text-[12px]">
-                {isSendOtpAgainPending ? <ActivityIndicator size="small" color="blue" /> : "Gửi lại mã OTP"}
+                { isSendOtpAgainPending ? <ActivityIndicator size="small" color="blue" /> : "Gửi lại mã OTP" }
               </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => verifyOtpSubmit()}
-            disabled={isOtpPending}
+            onPress={ () => verifyOtpSubmit() }
+            disabled={ isOtpPending }
             className="bg-[#209bdd] py-3 mt-7 rounded-md items-center"
           >
             <Text className="text-white uppercase text-sm font-bold">
-              {isOtpPending ? <ActivityIndicator size="small" color="white" /> : "Xác thực"}
+              { isOtpPending ? <ActivityIndicator size="small" color="white" /> : "Xác thực" }
             </Text>
           </TouchableOpacity>
-          <View className="my-6 flex items-center flex-row">
+          {/* <View className="my-6 flex items-center flex-row">
             <Text className="flex-grow bg-gray-300 h-[1px]"></Text>
             <Text className="mx-4 text-sm text-gray-800">
               Hoặc tiếp tục với
@@ -329,12 +329,12 @@ const SignUp = () => {
                 Facebook
               </Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View className="pb-20 flex-row items-center justify-center mt-6">
             <Text className="text-center text-[14px]">
               Bạn đã có tài khoản?
             </Text>
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={ () => router.back() }>
               <Text className="text-center text-[14px] text-blue-500 ml-1">
                 Đăng nhập
               </Text>
@@ -344,63 +344,63 @@ const SignUp = () => {
       ) : (
         <View className="flex-1 px-6 pt-8 bg-white">
           <Input
-            control={control}
+            control={ control }
             name="name"
-            error={errors.name?.message}
+            error={ errors.name?.message }
             placeholder="Nhập tên của bạn"
-            isInputPw={false}
+            isInputPw={ false }
           />
           <Input
-            control={control}
+            control={ control }
             name="phone"
             placeholder="Nhập số điện thoại đăng ký"
-            isInputPw={false}
-            error={errors.phone?.message}
+            isInputPw={ false }
+            error={ errors.phone?.message }
           />
           <Input
-            control={control}
+            control={ control }
             name="password"
             placeholder="Nhập mật khẩu"
-            error={errors.password?.message}
+            error={ errors.password?.message }
           />
           <Input
-            control={control}
+            control={ control }
             name="confirmPassword"
             placeholder="Nhập lại mật khẩu"
-            error={errors.confirmPassword?.message}
+            error={ errors.confirmPassword?.message }
           />
           <Input
-            control={control}
+            control={ control }
             name="referralCode"
             placeholder="Nhập mã giới thiệu (nếu có)"
-            error={errors.referralCode?.message}
-            isInputPw={false}
+            error={ errors.referralCode?.message }
+            isInputPw={ false }
           />
           <TouchableOpacity
-            disabled={isPending}
-            onPress={handleSubmit(onSubmit)}
+            disabled={ isPending }
+            onPress={ handleSubmit(onSubmit) }
             className="bg-[#209bdd] py-3 mt-4 rounded-md items-center"
           >
             <Text className="text-white uppercase text-sm font-bold">
-              {isPending ? (
+              { isPending ? (
                 <ActivityIndicator size="small" color="white" />
               ) : (
                 "Đăng ký"
-              )}
+              ) }
             </Text>
           </TouchableOpacity>
           <View className="pb-20 flex-row items-center justify-center mt-6">
             <Text className="text-center text-[14px]">
               Bạn đã có tài khoản?
             </Text>
-            <TouchableOpacity onPress={() => router.back()}>
+            <TouchableOpacity onPress={ () => router.back() }>
               <Text className="text-center text-[14px] text-blue-500 ml-1">
                 Đăng nhập
               </Text>
             </TouchableOpacity>
           </View>
         </View>
-      )}
+      ) }
     </ScrollView>
   );
 };
